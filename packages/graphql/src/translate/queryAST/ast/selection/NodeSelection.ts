@@ -27,20 +27,43 @@ export class NodeSelection extends EntitySelection {
     private target: ConcreteEntityAdapter;
     private alias: string | undefined;
     private optional: boolean;
+    private useContextTarget: boolean;
 
-    constructor({ target, alias, optional }: { target: ConcreteEntityAdapter; alias?: string; optional?: boolean }) {
+    constructor({
+        target,
+        alias,
+        optional,
+        useContextTarget,
+    }: {
+        target: ConcreteEntityAdapter;
+        alias?: string;
+        optional?: boolean;
+        useContextTarget?: boolean;
+    }) {
         super();
         this.target = target;
         this.alias = alias;
         this.optional = optional ?? false;
+        this.useContextTarget = useContextTarget ?? false;
     }
 
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
-        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias);
-        const match = new Cypher.Match(node);
+        let node;
+        let match;
+        if (this.useContextTarget) {
+            if (!context.hasTarget()) {
+                throw new Error("No target to match on");
+            }
+            node = context.target;
+            const nodePattern = new Cypher.Pattern(node).withoutLabels();
+            match = new Cypher.Match(nodePattern);
+        } else {
+            node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias);
+            match = new Cypher.Match(node);
+        }
         if (this.optional) {
             match.optional();
         }

@@ -618,10 +618,10 @@ describe("Cypher directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
-                MATCH (m:Movie {title: $title})
-                RETURN m
+                    MATCH (m:Movie {title: $param0})
+                    RETURN m
                 }
-                WITH m as this
+                WITH m AS this
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -633,7 +633,7 @@ describe("Cypher directive", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"title\\": \\"The Matrix\\"
+                    \\"param0\\": \\"The Matrix\\"
                 }"
             `);
         });
@@ -679,10 +679,10 @@ describe("Cypher directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
-                MATCH (m:Movie {title: $title})
-                RETURN m
+                    MATCH (m:Movie {title: $param0})
+                    RETURN m
                 }
-                WITH m as this
+                WITH m AS this
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -694,7 +694,7 @@ describe("Cypher directive", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"title\\": \\"The Matrix\\"
+                    \\"param0\\": \\"The Matrix\\"
                 }"
             `);
         });

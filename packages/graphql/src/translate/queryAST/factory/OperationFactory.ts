@@ -63,11 +63,16 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
-import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
+import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { UpdateOperation } from "../ast/operations/UpdateOperation";
 import { DeleteOperation } from "../ast/operations/DeleteOperation";
-import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { UpdateOperation } from "../ast/operations/UpdateOperation";
+import { CypherOperation } from "../ast/operations/CypherOperation";
+import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
+import { CypherUnionOperation } from "../ast/operations/CypherUnionOperation";
+import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { CypherFieldOperation } from "../ast/operations/CypherFieldOperation";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -86,12 +91,25 @@ export class OperationsFactory {
         this.experimental = queryASTFactory.experimental;
     }
 
-    public createTopLevelOperation(
-        entity: EntityAdapter | RelationshipAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        varName?: string
-    ): Operation {
+    public createTopLevelOperation({
+        entity,
+        resolveTree,
+        context,
+        varName,
+    }: {
+        entity?: EntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+    }): Operation {
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
+        if (!entity && operationMatch.isCustomCypher) {
+            return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+        }
+        if (!entity) {
+            throw new Error("Transpilation error: Entity for custom cypher operation not found");
+        }
+
         if (isConcreteEntity(entity)) {
             // Handles deprecated top level fulltext
             if (context.resolveTree.args.phrase) {
@@ -108,12 +126,14 @@ export class OperationsFactory {
                 return op;
             }
 
-            const operationMatch = parseOperationField(resolveTree.name, entity);
-
             if (operationMatch.isCreate) {
                 return this.createCreateOperation(entity, resolveTree, context);
             } else if (operationMatch.isUpdate) {
                 const op = this.createUpdateOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            } else if (operationMatch.isCustomCypher) {
+                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isDelete) {
@@ -135,7 +155,6 @@ export class OperationsFactory {
                         varName,
                     }) as ReadOperation;
                 }
-
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isConnection) {
@@ -156,7 +175,6 @@ export class OperationsFactory {
         }
 
         if (isInterfaceEntity(entity)) {
-            const operationMatch = parseInterfaceOperationField(resolveTree.name, entity);
             if (operationMatch.isAggregation) {
                 const op = this.createAggregationOperation(entity, resolveTree, context);
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -164,6 +182,14 @@ export class OperationsFactory {
             }
         }
 
+        if (isUnionEntity(entity)) {
+            if (operationMatch.isCustomCypher) {
+                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
+            // if it's not a custom cypher, it's a read
+        }
         return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
 
@@ -902,6 +928,72 @@ export class OperationsFactory {
 
         updateOp.addProjectionOperations(projectionFields);
         return updateOp;
+    }
+
+    private createCustomCypherOperation({
+        resolveTree,
+        context,
+        entity,
+        varName,
+    }: {
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        entity?: EntityAdapter;
+        varName?: string;
+    }): CypherOperation | CypherUnionOperation | CypherFieldOperation {
+        const operationAttribute =
+            context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
+            context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
+
+        if (!operationAttribute) {
+            throw new Error(`Failed to collect information about the operation field with name: ${resolveTree.name}`);
+        }
+        const operationField = new AttributeAdapter(operationAttribute);
+        if (!entity) {
+            const selection = new CustomCypherSelection({
+                operationField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+            return new CypherFieldOperation(selection);
+        }
+        if (isConcreteEntity(entity)) {
+            const selection = new CustomCypherSelection({
+                operationField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+            const customCypher = new CypherOperation({ target: entity, selection });
+            return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+        } else if (isUnionEntity(entity)) {
+            const selection = new CustomCypherSelection({
+                operationField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+
+            const CypherUnionPartials = entity.concreteEntities.map((concreteEntity) => {
+                const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
+                const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
+                // The Typename filter here is required to access concrete entities from a Cypher Union selection.
+                // It would be probably more correct to pass the label filter with the selection,
+                // although is currently not possible to do so with Cypher.Builder
+                partial.addFilters(new TypenameFilter([concreteEntity]));
+                return this.hydrateReadOperation({
+                    entity: concreteEntity,
+                    operation: partial,
+                    resolveTree,
+                    context,
+                    whereArgs: {},
+                });
+            });
+            return new CypherUnionOperation({ target: entity, selection, partials: CypherUnionPartials });
+        }
+        // TODO test interface entity/
+        throw new Error("long journey");
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {

@@ -28,9 +28,14 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
     beforeAll(() => {
         typeDefs = gql`
+            type Author {
+                name: String!
+            }
+
             type Content {
                 id: Int!
                 name: String!
+                authors: [Author!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type Project {
@@ -69,6 +74,10 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                         __typename
                         ... on Content {
                             name
+                            authors {
+                                name
+                            }
+
                         }
                         ... on Project {
                             name

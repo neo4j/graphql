@@ -38,7 +38,7 @@ export function translateAggregate({
     const queryASTFactory = new QueryASTFactory(context.schemaModel, context.experimental);
 
     if (!entityAdapter) throw new Error("Entity not found");
-    const queryAST = queryASTFactory.createQueryAST(resolveTree, entityAdapter, context);
+    const queryAST = queryASTFactory.createQueryAST({resolveTree, entityAdapter, context});
     debug(queryAST.print());
     const clause = queryAST.buildNew(context);
     return clause.build();
