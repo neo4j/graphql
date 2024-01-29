@@ -24,7 +24,7 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { PROPAGATED_DIRECTIVES } from "../../constants";
-import { FIELD_DIRECTIVES, INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES } from "../../schema-model/library-directives";
+import { LIBRARY_DIRECTIVES } from "../../schema-model/library-directives";
 import { isInArray } from "../../utils/is-in-array";
 import type { DefinitionNodes } from "../get-definition-nodes";
 
@@ -56,7 +56,7 @@ function getUserDefinedMergedFieldDirectivesForDefinition(
             return userDefinedFieldDirectives;
         }
 
-        const matched = field.directives.filter((directive) => !isInArray(FIELD_DIRECTIVES, directive.name.value));
+        const matched = field.directives.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value));
         if (matched.length) {
             userDefinedFieldDirectives.set(field.name.value, matched);
         }
@@ -80,7 +80,8 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
 
     for (const definitionNode of definitionNodes.objectTypes) {
         const userDefinedObjectDirectives =
-            definitionNode.directives?.filter((directive) => !isInArray(OBJECT_DIRECTIVES, directive.name.value)) || [];
+            definitionNode.directives?.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value)) ||
+            [];
         const propagatedDirectives =
             definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
             [];
@@ -95,7 +96,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
 
     for (const definitionNode of definitionNodes.interfaceTypes) {
         const userDefinedInterfaceDirectives =
-            definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
+            definitionNode.directives?.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value)) ||
             [];
         const propagatedDirectives =
             definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
@@ -111,7 +112,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
 
     for (const definitionNode of definitionNodes.unionTypes) {
         const userDefinedUnionDirectives =
-            definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
+            definitionNode.directives?.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value)) ||
             [];
         const propagatedDirectives =
             definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||

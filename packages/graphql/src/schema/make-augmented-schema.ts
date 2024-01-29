@@ -244,6 +244,7 @@ function makeAugmentedSchema({
     interfaceRelationships.forEach((interfaceRelationship) => {
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
         const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
+        const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(interfaceEntity.name) || [];
         const updatedRelationships = doForInterfacesThatAreTargetOfARelationship({
             composer,
             interfaceEntityAdapter,
@@ -251,6 +252,7 @@ function makeAugmentedSchema({
             relationships,
             relationshipFields,
             userDefinedFieldDirectivesForNode,
+            userDefinedInterfaceDirectives,
             propagatedDirectivesForNode,
             experimental,
             aggregationTypesMapper,
@@ -702,6 +704,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     relationships,
     relationshipFields,
     userDefinedFieldDirectivesForNode,
+    userDefinedInterfaceDirectives,
     propagatedDirectivesForNode,
     experimental,
     aggregationTypesMapper,
@@ -713,6 +716,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     relationships: Relationship[];
     relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+    userDefinedInterfaceDirectives: DirectiveNode[];
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
     experimental: boolean;
     aggregationTypesMapper: AggregationTypesMapper;
@@ -735,7 +739,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     const composeInterface = withInterfaceType({
         entityAdapter: interfaceEntityAdapter,
         userDefinedFieldDirectives,
-        userDefinedInterfaceDirectives: [],
+        userDefinedInterfaceDirectives,
         composer,
     });
     createRelationshipFields({
