@@ -66,6 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
         await driver.close();
     });
 
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip("should throw forbidden when user does not have correct allow on projection field", async () => {
         const typeDefs = `
             type ${Post.name} {
