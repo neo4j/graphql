@@ -26,6 +26,7 @@ import { CypherAnnotationSubqueryGenerator } from "../../../cypher-generators/Cy
 import type { QueryASTNode } from "../../QueryASTNode";
 
 // Should Cypher be an operation?
+// TODO: Top Level Cypher are currently operations, deprecate this in favor of the operation approach.
 export class CypherAttributeField extends AttributeField {
     protected customCypherVar = new Cypher.Node(); // TODO: should be from context scope
     protected projection: Record<string, string> | undefined;

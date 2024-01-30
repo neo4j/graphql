@@ -18,12 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { EntitySelection } from "../../selection/EntitySelection";
-
 import { Operation, type OperationTranspileResult } from "../operations";
-import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { CompositeReadPartial } from "./CompositeReadPartial";
 
@@ -32,16 +29,7 @@ export class CompositeCypherOperation extends Operation {
     private partials: CompositeReadPartial[];
     public nodeAlias: string | undefined;
 
-    constructor({
-        selection,
-        partials,
-    }: {
-        target: UnionEntityAdapter;
-        relationship?: RelationshipAdapter;
-        directed?: boolean;
-        selection: EntitySelection;
-        partials: CompositeReadPartial[];
-    }) {
+    constructor({ selection, partials }: { selection: EntitySelection; partials: CompositeReadPartial[] }) {
         super();
         this.selection = selection;
         this.partials = partials;

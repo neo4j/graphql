@@ -18,16 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryASTContext } from "../QueryASTContext";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
 import { createNodeFromEntity } from "../../utils/create-node-from-entity";
-import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 
 export class CustomCypherSelection extends EntitySelection {
     private operationField: AttributeAdapter;
-    private target: ConcreteEntityAdapter | UnionEntityAdapter | undefined;
+    private target?: EntityAdapter;
     private alias?: string;
     private rawArguments: Record<string, any>;
 
@@ -38,7 +38,7 @@ export class CustomCypherSelection extends EntitySelection {
         rawArguments = {},
     }: {
         operationField: AttributeAdapter;
-        target?: ConcreteEntityAdapter | UnionEntityAdapter;
+        target?: EntityAdapter;
         alias?: string;
         rawArguments: Record<string, any>;
     }) {
@@ -79,13 +79,14 @@ export class CustomCypherSelection extends EntitySelection {
         });
 
         const statementSubquery = new Cypher.Call(statementCypherQuery);
-        const res = new Cypher.NamedVariable("res");
+
         const thisVariable = new Cypher.NamedVariable("this");
 
         let selection: Cypher.With;
         // TODO: Check if the UNWIND is needed not only for scalar but also Complex types
+        const unwindVariable = new Cypher.Variable();
         if (this.operationField.typeHelper.isList() && this.operationField.typeHelper.isScalar()) {
-            selection = statementSubquery.unwind([returnVariable, res]).with([res, thisVariable]);
+            selection = statementSubquery.unwind([returnVariable, unwindVariable]).with([unwindVariable, thisVariable]);
         } else {
             selection = statementSubquery.with([returnVariable, thisVariable]);
         }

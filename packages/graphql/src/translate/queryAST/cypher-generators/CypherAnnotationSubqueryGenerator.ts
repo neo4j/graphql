@@ -25,7 +25,6 @@ import type { Field } from "../ast/fields/Field";
 import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { assertIsCypherNode } from "../utils/is-cypher-node";
 import { wrapSubqueryInCall } from "../utils/wrap-subquery-in-call";
-import { hasTarget } from "../utils/context-has-target";
 
 /** Variable exposed to the user in their custom cypher */
 const CYPHER_TARGET_VARIABLE = new Cypher.NamedVariable("this");
@@ -39,7 +38,9 @@ export class CypherAnnotationSubqueryGenerator {
 
     constructor({ context, attribute }: { context: QueryASTContext; attribute: AttributeAdapter }) {
         const cypherAnnotation = attribute.annotations.cypher;
-        if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
+        if (!cypherAnnotation) {
+            throw new Error("Missing Cypher Annotation on Cypher field");
+        }
         this.cypherAnnotation = cypherAnnotation;
         this.attribute = attribute;
         this.context = context;
@@ -119,7 +120,9 @@ export class CypherAnnotationSubqueryGenerator {
         rawArguments: Record<string, any>;
         extraParams: Record<string, any>;
     }): Cypher.Call {
-        if (!hasTarget(this.context)) throw new Error("No parent node found!");
+        if (!this.context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const target = this.context.target;
         const aliasTargetToPublicTarget = new Cypher.With([target, CYPHER_TARGET_VARIABLE]);
 
@@ -240,8 +243,9 @@ export class CypherAnnotationSubqueryGenerator {
     ): Cypher.MapProjection {
         const projection = new Cypher.MapProjection(fromVariable);
         for (const [alias, name] of Object.entries(fields)) {
-            if (alias === name) projection.set(alias);
-            else {
+            if (alias === name) {
+                projection.set(alias);
+            } else {
                 projection.set({
                     [alias]: fromVariable.property(name),
                 });

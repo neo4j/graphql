@@ -25,7 +25,6 @@ import type { QueryASTNode } from "../QueryASTNode";
 
 export class CypherFieldOperation extends Operation {
     private selection: EntitySelection;
-    s;
     constructor(selection: EntitySelection) {
         super();
         this.selection = selection;

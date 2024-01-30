@@ -106,6 +106,7 @@ export class OperationsFactory {
         if (!entity && operationMatch.isCustomCypher) {
             return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
         }
+        // entity could be undefined only in case of custom fields.
         if (!entity) {
             throw new Error("Transpilation error: Entity for custom cypher operation not found");
         }
@@ -180,6 +181,11 @@ export class OperationsFactory {
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
+            if (operationMatch.isCustomCypher) {
+                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
         }
 
         if (isUnionEntity(entity)) {
@@ -188,7 +194,6 @@ export class OperationsFactory {
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
-            // if it's not a custom cypher, it's a read
         }
         return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
@@ -967,33 +972,30 @@ export class OperationsFactory {
             });
             const customCypher = new CypherOperation({ target: entity, selection });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
-        } else if (isUnionEntity(entity)) {
-            const selection = new CustomCypherSelection({
-                operationField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
-            });
-
-            const CypherUnionPartials = entity.concreteEntities.map((concreteEntity) => {
-                const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
-                const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
-                // The Typename filter here is required to access concrete entities from a Cypher Union selection.
-                // It would be probably more correct to pass the label filter with the selection,
-                // although is currently not possible to do so with Cypher.Builder
-                partial.addFilters(new TypenameFilter([concreteEntity]));
-                return this.hydrateReadOperation({
-                    entity: concreteEntity,
-                    operation: partial,
-                    resolveTree,
-                    context,
-                    whereArgs: {},
-                });
-            });
-            return new CompositeCypherOperation({ target: entity, selection, partials: CypherUnionPartials });
         }
-        // TODO test interface entity/
-        throw new Error("long journey");
+        const selection = new CustomCypherSelection({
+            operationField,
+            target: entity,
+            alias: varName,
+            rawArguments: resolveTree.args,
+        });
+
+        const CypherUnionPartials = entity.concreteEntities.map((concreteEntity) => {
+            const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
+            const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
+            // The Typename filter here is required to access concrete entities from a Cypher Union selection.
+            // It would be probably more ergonomic to pass the label filter with the selection,
+            // although is currently not possible to do so with Cypher.Builder
+            partial.addFilters(new TypenameFilter([concreteEntity]));
+            return this.hydrateReadOperation({
+                entity: concreteEntity,
+                operation: partial,
+                resolveTree,
+                context,
+                whereArgs: {},
+            });
+        });
+        return new CompositeCypherOperation({ selection, partials: CypherUnionPartials });
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
