@@ -23,40 +23,62 @@ import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
 
-describe.skip("https://github.com/neo4j/graphql/issues/4617", () => {
+describe("https://github.com/neo4j/graphql/issues/4617", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
+    let User: UniqueType;
+    let Post: UniqueType;
+    let id: string;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("should throw forbidden when user does not have correct allow on projection field(using Query)", async () => {
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
         const session = await neo4j.getSession();
-
-        const id = generate({
+        id = generate({
             charset: "alphabetic",
         });
 
+        try {
+            await session.run(
+                `   CREATE (:${Post.name} {title: "Post 1"})
+                    CREATE (:${User.name} {id: $id, email: randomUUID()})
+                `,
+                { id }
+            );
+        } finally {
+            await session.close();
+        }
+    });
+
+    afterAll(async () => {
+        const session = await neo4j.getSession();
+        try {
+            await cleanNodes(session, [User, Post]);
+        } finally {
+            await session.close();
+        }
+        await driver.close();
+    });
+
+    test.skip("should throw forbidden when user does not have correct allow on projection field", async () => {
         const typeDefs = `
-            type Post {
+            type ${Post.name} {
                 title: String
-                likedBy: [User!]! @cypher(
+                likedBy: [${User.name}!]! @cypher(
                     statement: """
-                        MATCH (user:User { id: "${id}" })
+                        MATCH (user:${User.name} { id: "${id}" })
                         RETURN user
                     """, columnName: "user"
                   )
             }
 
-            type User {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
@@ -64,6 +86,7 @@ describe.skip("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
+            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -73,7 +96,7 @@ describe.skip("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const query = `
             {
-                posts {
+                ${Post.plural} {
                     likedBy {
                         email
                     }
@@ -81,27 +104,15 @@ describe.skip("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
-                    CREATE (:User {id: $id, email: randomUUID()})
-                `,
-                { id }
-            );
+        const token = createBearerToken(secret, { sub: "invalid" });
 
-            const token = createBearerToken(secret, { sub: "invalid" });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            variableValues: { id },
+            contextValue: neo4j.getContextValues({ token }),
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id },
-                contextValue: neo4j.getContextValues({ token }),
-            });
-
-            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
-
 });
