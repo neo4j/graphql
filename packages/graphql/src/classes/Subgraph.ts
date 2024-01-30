@@ -31,7 +31,6 @@ import type {
 import { Kind, parse, print } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
-import type { Node } from "../types";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { isInArray } from "../utils/is-in-array";
@@ -106,7 +105,7 @@ export class Subgraph {
         });
     }
 
-    public getReferenceResolvers(nodes: Node[], schemaModel: Neo4jGraphQLSchemaModel): IResolvers {
+    public getReferenceResolvers(schemaModel: Neo4jGraphQLSchemaModel): IResolvers {
         const resolverMap: IResolvers = {};
 
         const document = mergeTypeDefs(this.typeDefs);
@@ -125,7 +124,7 @@ export class Subgraph {
                 }
 
                 resolverMap[def.name.value] = {
-                    __resolveReference: this.getReferenceResolver(nodes),
+                    __resolveReference: this.getReferenceResolver(schemaModel),
                 };
             }
         });
@@ -133,7 +132,7 @@ export class Subgraph {
         return resolverMap;
     }
 
-    private getReferenceResolver(nodes: Node[]): ReferenceResolver {
+    private getReferenceResolver(schemaModel: Neo4jGraphQLSchemaModel): ReferenceResolver {
         const __resolveReference = async (
             reference,
             context: Neo4jGraphQLComposedContext,
@@ -141,18 +140,15 @@ export class Subgraph {
         ): Promise<unknown> => {
             const { __typename } = reference;
 
-            const node = nodes.find((n) => n.name === __typename);
-
-            if (!node) {
-                throw new Error("Unable to find matching node");
+            const entityAdapter = schemaModel.getConcreteEntityAdapter(__typename);
+            if (!entityAdapter) {
+                throw new Error(`Unable to find matching entity with name ${__typename}`);
             }
-
             (context as Neo4jGraphQLTranslationContext).resolveTree = getNeo4jResolveTree(info);
 
             const { cypher, params } = translateResolveReference({
                 context: context as Neo4jGraphQLTranslationContext,
-                node,
-                reference,
+                entityAdapter,
             });
 
             const executeResult = await execute({

@@ -128,11 +128,25 @@ export class OperationsFactory {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
+                    let subGraphWhere;
+                    if (context.resolveTree.name === "_entities") {
+                        // find the where argument in the subgraph
+                        const referenceArgument = asArray(resolveTree.args.representations).find(
+                            (representation) => representation.__typename === entity.name
+                        );
+                        if (!referenceArgument) {
+                            throw new Error("Failed to find subGraph reference");
+                        }
+
+                        const { __typename, ...where } = referenceArgument;
+                        subGraphWhere = where;
+                    }
                     op = this.createReadOperation({
                         entityOrRel: entity,
                         resolveTree,
                         context,
                         varName,
+                        subGraphWhere,
                     }) as ReadOperation;
                 }
 
@@ -262,16 +276,19 @@ export class OperationsFactory {
         resolveTree,
         context,
         varName,
+        subGraphWhere,
     }: {
         entityOrRel: EntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
+        subGraphWhere?: Record<string, any>;
     }): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
-        const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
 
+        let resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        resolveTreeWhere = { ...resolveTreeWhere, ...subGraphWhere };
         if (isConcreteEntity(entity)) {
             checkEntityAuthentication({
                 entity: entity.entity,

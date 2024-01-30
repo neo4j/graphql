@@ -461,7 +461,7 @@ class Neo4jGraphQL {
         this._relationships = relationships;
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
-        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.schemaModel);
+        const referenceResolvers = subgraph.getReferenceResolvers(this.schemaModel);
 
         const schema = subgraph.buildSchema({
             typeDefs,

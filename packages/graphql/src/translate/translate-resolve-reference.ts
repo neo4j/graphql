@@ -17,79 +17,26 @@
  * limitations under the License.
  */
 
-import type { Node } from "../classes";
-import createProjectionAndParams from "./create-projection-and-params";
-import { createMatchClause } from "./translate-top-level-match";
-import Cypher from "@neo4j/cypher-builder";
-import { compileCypher } from "../utils/compile-cypher";
+import type Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import Debug from "debug";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import { DEBUG_TRANSLATE } from "../constants";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export function translateResolveReference({
-    node,
+    entityAdapter,
     context,
-    reference,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    node: Node;
-    reference: any;
+    entityAdapter: EntityAdapter;
 }): Cypher.CypherResult {
-    const varName = "this";
     const { resolveTree } = context;
-
-    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
-
-    const { __typename, ...where } = reference;
-
-    const {
-        matchClause: topLevelMatch,
-        preComputedWhereFieldSubqueries,
-        whereClause: topLevelWhereClause,
-    } = createMatchClause({
-        matchNode,
-        node,
-        context,
-        operation: "READ",
-        where,
-    });
-
-    const projection = createProjectionAndParams({
-        node,
-        context,
-        resolveTree,
-        varName: matchNode,
-        cypherFieldAliasMap: {},
-    });
-
-    let projAuth: Cypher.Clause | undefined;
-
-    const predicates: Cypher.Predicate[] = [];
-
-    predicates.push(...projection.predicates);
-
-    if (predicates.length) {
-        projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
-    }
-
-    const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);
-
-    const projectionExpression = new Cypher.Raw((env) => {
-        return [`${varName} ${compileCypher(projection.projection, env)}`, projection.params];
-    });
-
-    const returnClause = new Cypher.Return([projectionExpression, varName]);
-
-    const preComputedWhereFields =
-        preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
-            ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
-            : topLevelWhereClause;
-
-    const readQuery = Cypher.concat(
-        topLevelMatch,
-        preComputedWhereFields,
-        projAuth,
-        projectionSubqueries,
-        returnClause
-    );
-
-    return readQuery.build();
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
+    const operationsTree = operationsTreeFactory.createQueryAST(resolveTree, entityAdapter, context);
+    debug(operationsTree.print());
+    const clause = operationsTree.build(context);
+    return clause.build();
 }
