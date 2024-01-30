@@ -160,8 +160,8 @@ describe("Interfaces", () => {
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies: [Movie!]!
-              moviesConnection: MovieNodeMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
             input MovieNodeMoviesConnectFieldInput {
@@ -490,8 +490,8 @@ describe("Interfaces", () => {
             interface MovieNode @something(something: \\"test\\") {
               customQuery: [Movie]
               id: ID
-              movies: [Movie!]!
-              moviesConnection: MovieNodeMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
             input MovieNodeMoviesConnectFieldInput {
