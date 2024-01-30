@@ -25,6 +25,7 @@ import type { Field } from "../ast/fields/Field";
 import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { assertIsCypherNode } from "../utils/is-cypher-node";
 import { wrapSubqueryInCall } from "../utils/wrap-subquery-in-call";
+import { replaceArgumentsInStatement } from "../utils/replace-arguments-in-statement";
 
 /** Variable exposed to the user in their custom cypher */
 const CYPHER_TARGET_VARIABLE = new Cypher.NamedVariable("this");
@@ -127,9 +128,11 @@ export class CypherAnnotationSubqueryGenerator {
         const aliasTargetToPublicTarget = new Cypher.With([target, CYPHER_TARGET_VARIABLE]);
 
         const statementCypherQuery = new Cypher.Raw((env) => {
-            const statement = this.replaceArgumentsInStatement({
+            const statement = replaceArgumentsInStatement({
                 env,
+                definedArguments: this.attribute.args,
                 rawArguments,
+                statement: this.cypherAnnotation.statement,
             });
 
             return [statement, extraParams];
@@ -146,27 +149,6 @@ export class CypherAnnotationSubqueryGenerator {
         }
 
         return callStatement;
-    }
-
-    private replaceArgumentsInStatement({
-        env,
-        rawArguments,
-    }: {
-        env: Cypher.Environment;
-        rawArguments: Record<string, any>;
-    }): string {
-        let cypherStatement = this.cypherAnnotation.statement;
-        this.attribute.args.forEach((arg) => {
-            const value = rawArguments[arg.name];
-            if (value) {
-                const paramName = new Cypher.Param(value).getCypher(env);
-                cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, paramName);
-            } else {
-                cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, "NULL");
-            }
-        });
-
-        return cypherStatement;
     }
 
     private getNestedFieldsSubquery(nestedFields: Field[] | undefined): Cypher.Clause | undefined {

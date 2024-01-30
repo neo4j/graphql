@@ -25,6 +25,7 @@ import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import type { CypherAnnotation } from "../../../../schema-model/annotation/CypherAnnotation";
+import { replaceArgumentsInStatement } from "../../utils/replace-arguments-in-statement";
 
 export class CustomCypherSelection extends EntitySelection {
     private operationField: AttributeAdapter;
@@ -72,8 +73,9 @@ export class CustomCypherSelection extends EntitySelection {
         const returnVariable = new Cypher.NamedVariable(this.cypherAnnotation.columnName);
 
         const statementCypherQuery = new Cypher.Raw((env) => {
-            const statement = this.replaceArgumentsInStatement({
+            const statement = replaceArgumentsInStatement({
                 env,
+                definedArguments: this.operationField.args,
                 rawArguments: this.rawArguments,
                 statement: this.cypherAnnotation.statement,
             });
@@ -86,7 +88,6 @@ export class CustomCypherSelection extends EntitySelection {
         const thisVariable = new Cypher.NamedVariable("this");
 
         let selection: Cypher.With;
-        // TODO: Check if the UNWIND is needed not only for scalar but also Complex types
         const unwindVariable = new Cypher.Variable();
         if (this.operationField.typeHelper.isList() && this.operationField.typeHelper.isScalar()) {
             selection = statementSubquery.unwind([returnVariable, unwindVariable]).with([unwindVariable, thisVariable]);
@@ -103,28 +104,5 @@ export class CustomCypherSelection extends EntitySelection {
                 shouldCollect: context.shouldCollect,
             }),
         };
-    }
-
-    private replaceArgumentsInStatement({
-        env,
-        rawArguments,
-        statement,
-    }: {
-        env: Cypher.Environment;
-        rawArguments: Record<string, any>;
-        statement: string;
-    }): string {
-        let cypherStatement = statement;
-        this.operationField.args.forEach((arg) => {
-            const value = rawArguments[arg.name];
-            if (value) {
-                const paramName = new Cypher.Param(value).getCypher(env);
-                cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, paramName);
-            } else {
-                cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, "NULL");
-            }
-        });
-
-        return cypherStatement;
     }
 }
