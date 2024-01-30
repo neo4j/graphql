@@ -45,10 +45,10 @@ describe("Bigint", () => {
             scalar BigInt
 
             type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
+              average: BigInt
+              max: BigInt
+              min: BigInt
+              sum: BigInt
             }
 
             type CreateFilesMutationResponse {
@@ -178,8 +178,8 @@ describe("Bigint", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateFilesMutationResponse {

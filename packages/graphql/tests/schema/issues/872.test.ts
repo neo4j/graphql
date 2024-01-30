@@ -583,8 +583,8 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -717,8 +717,8 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActor2sMutationResponse {

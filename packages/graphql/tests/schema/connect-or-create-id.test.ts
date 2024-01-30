@@ -323,8 +323,8 @@ describe("connect or create with id", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -451,8 +451,8 @@ describe("connect or create with id", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -539,8 +539,8 @@ describe("connect or create with id", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -853,8 +853,8 @@ describe("connect or create with id", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

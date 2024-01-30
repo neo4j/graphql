@@ -78,8 +78,8 @@ describe("@customResolver directive", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -113,8 +113,8 @@ describe("@customResolver directive", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {

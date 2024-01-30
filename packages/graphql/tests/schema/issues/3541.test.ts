@@ -314,8 +314,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             scalar _Any
@@ -727,8 +727,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

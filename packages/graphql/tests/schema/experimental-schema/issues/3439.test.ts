@@ -1265,8 +1265,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -2460,8 +2460,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -3253,8 +3253,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type Subscription {

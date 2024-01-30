@@ -538,8 +538,8 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateGenresMutationResponse {
@@ -1040,8 +1040,8 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateGenresMutationResponse {
