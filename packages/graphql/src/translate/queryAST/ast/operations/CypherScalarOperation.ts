@@ -23,7 +23,10 @@ import type { EntitySelection } from "../selection/EntitySelection";
 import { Operation, type OperationTranspileResult } from "./operations";
 import type { QueryASTNode } from "../QueryASTNode";
 
-export class CypherFieldOperation extends Operation {
+/**
+ * This operation is used to return top-level @cypher fields that returns a scalar value.
+ **/
+export class CypherScalarOperation extends Operation {
     private selection: EntitySelection;
     constructor(selection: EntitySelection) {
         super();
@@ -35,8 +38,7 @@ export class CypherFieldOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
-        // eslint-disable-next-line prefer-const
-        let { selection: matchClause } = this.selection.apply(context);
+        const { selection: matchClause } = this.selection.apply(context);
         const clauses: Cypher.Clause[] = [matchClause];
 
         clauses.push(new Cypher.Return(context.returnVariable));

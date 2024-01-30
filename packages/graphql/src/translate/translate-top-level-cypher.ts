@@ -53,15 +53,15 @@ export function translateTopLevelCypher({
     if (!operationField) {
         throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
     }
+    const entity = context.schemaModel.entities.get(field.typeMeta.name);
+
     const annotation = operationField.annotations.authentication;
     if (annotation) {
         applyAuthentication({ context, annotation });
     }
-
     const { resolveTree } = context;
 
-    const entity = context.schemaModel.entities.get(field.typeMeta.name);
-
+    // entity could be undefined as the field could be a scalar
     const entityAdapter = entity && getEntityAdapter(entity);
 
     const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST({

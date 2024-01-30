@@ -24,12 +24,14 @@ import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
+import type { CypherAnnotation } from "../../../../schema-model/annotation/CypherAnnotation";
 
 export class CustomCypherSelection extends EntitySelection {
     private operationField: AttributeAdapter;
     private target?: EntityAdapter;
     private alias?: string;
     private rawArguments: Record<string, any>;
+    private cypherAnnotation: CypherAnnotation;
 
     constructor({
         operationField,
@@ -47,6 +49,10 @@ export class CustomCypherSelection extends EntitySelection {
         this.target = target;
         this.alias = alias;
         this.rawArguments = rawArguments;
+        if (!this.operationField.annotations.cypher) {
+            throw new Error("Missing Cypher Annotation on Cypher field");
+        }
+        this.cypherAnnotation = this.operationField.annotations.cypher;
     }
 
     public apply(context: QueryASTContext): {
@@ -56,23 +62,20 @@ export class CustomCypherSelection extends EntitySelection {
         const node = this.target
             ? createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias)
             : new Cypher.Node();
-        const cypherAnnotation = this.operationField.annotations.cypher;
-        if (!cypherAnnotation) {
-            throw new Error("Missing Cypher Annotation on Cypher field");
-        }
+
         const extraParams: Record<string, any> = {};
 
-        if (cypherAnnotation.statement.includes("$jwt") && context.neo4jGraphQLContext.authorization.jwtParam) {
+        if (this.cypherAnnotation.statement.includes("$jwt") && context.neo4jGraphQLContext.authorization.jwtParam) {
             extraParams.jwt = context.neo4jGraphQLContext.authorization.jwtParam.value;
         }
 
-        const returnVariable = new Cypher.NamedVariable(cypherAnnotation.columnName);
+        const returnVariable = new Cypher.NamedVariable(this.cypherAnnotation.columnName);
 
         const statementCypherQuery = new Cypher.Raw((env) => {
             const statement = this.replaceArgumentsInStatement({
                 env,
                 rawArguments: this.rawArguments,
-                statement: cypherAnnotation.statement,
+                statement: this.cypherAnnotation.statement,
             });
 
             return [statement, extraParams];

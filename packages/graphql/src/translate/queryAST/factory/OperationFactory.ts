@@ -72,7 +72,7 @@ import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { CypherFieldOperation } from "../ast/operations/CypherFieldOperation";
+import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -945,7 +945,7 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
         varName?: string;
-    }): CypherOperation | CompositeCypherOperation | CypherFieldOperation {
+    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
         const operationAttribute =
             context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
             context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
@@ -961,7 +961,7 @@ export class OperationsFactory {
                 alias: varName,
                 rawArguments: resolveTree.args,
             });
-            return new CypherFieldOperation(selection);
+            return new CypherScalarOperation(selection);
         }
         if (isConcreteEntity(entity)) {
             const selection = new CustomCypherSelection({
@@ -980,7 +980,7 @@ export class OperationsFactory {
             rawArguments: resolveTree.args,
         });
 
-        const CypherUnionPartials = entity.concreteEntities.map((concreteEntity) => {
+        const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
             const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
             const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
             // The Typename filter here is required to access concrete entities from a Cypher Union selection.
@@ -995,7 +995,7 @@ export class OperationsFactory {
                 whereArgs: {},
             });
         });
-        return new CompositeCypherOperation({ selection, partials: CypherUnionPartials });
+        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
