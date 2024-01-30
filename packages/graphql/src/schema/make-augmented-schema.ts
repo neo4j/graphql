@@ -18,10 +18,11 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import type {
+import {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,
+    GraphQLNonNull,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     NameNode,
@@ -658,9 +659,17 @@ function doForRelationshipDeclaration({
             continue;
         }
 
-        composer
+        const propertiesType = composer
             .getOrCreateUTC(relationshipDeclarationAdapter.operations.relationshipPropertiesFieldTypename)
             .addType(relationshipAdapter.propertiesTypeName);
+
+        composer.getOrCreateOTC(relationshipDeclarationAdapter.operations.relationshipFieldTypename, (tc) =>
+            tc.addFields({
+                cursor: new GraphQLNonNull(GraphQLString),
+                node: `${relationshipDeclarationAdapter.target.name}!`,
+                properties: propertiesType.NonNull,
+            })
+        );
 
         withEdgeWrapperType({
             edgeTypeName: relationshipDeclarationAdapter.operations.whereInputTypeName,

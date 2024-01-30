@@ -286,25 +286,26 @@ function getInterfaceNameIfInheritedField(
     definitionCollection: DefinitionCollection
 ): string | undefined {
     // TODO: potentially use this instead
-    // const fieldNameToSourceNameMap = definition.interfaces?.reduce((acc, interfaceNamedNode) => {
-    //     const interfaceName = interfaceNamedNode.name.value;
-    //     const fields = definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
-    //     fields.forEach((f) => {
-    //         const exists = acc.has(f.name.value);
-    //         if (!exists) {
-    //             acc.set(f.name.value, interfaceName);
-    //         }
-    //     });
-    //     return acc;
-    // }, new Map<string, string>());
+    const fieldNameToSourceNameMap = definition.interfaces?.reduce((acc, interfaceNamedNode) => {
+        const interfaceName = interfaceNamedNode.name.value;
+        const fields = definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+        fields.forEach((f) => {
+            const isRelationshipDeclaration = f.directives?.some((d) => d.name.value === "declareRelationship");
+            const exists = acc.has(f.name.value);
+            if (isRelationshipDeclaration && !exists) {
+                acc.set(f.name.value, interfaceName);
+            }
+        });
+        return acc;
+    }, new Map<string, string>());
 
     // deliberately using the first interface ONLY
-    const fieldNameToSourceNameMap = new Map<string, string>();
-    const firstInterfaceName = definition.interfaces?.[0]?.name.value;
-    if (firstInterfaceName) {
-        const fields = definitionCollection.interfaceTypes.get(firstInterfaceName)?.fields || [];
-        fields.forEach((field) => fieldNameToSourceNameMap.set(field.name.value, firstInterfaceName));
-    }
+    // const fieldNameToSourceNameMap = new Map<string, string>();
+    // const firstInterfaceName = definition.interfaces?.[0]?.name.value;
+    // if (firstInterfaceName) {
+    //     const fields = definitionCollection.interfaceTypes.get(firstInterfaceName)?.fields || [];
+    //     fields.forEach((field) => fieldNameToSourceNameMap.set(field.name.value, firstInterfaceName));
+    // }
     return fieldNameToSourceNameMap?.get(fieldName);
 }
 

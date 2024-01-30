@@ -166,6 +166,8 @@ export function createConnectionFields({
 
         const connectionWhereITC = schemaComposer.getOrCreateITC(relationship.operations.connectionWhereInputTypename);
 
+        // TODO: create a fn that makes the relationship Type and potentially the connectionField as well..
+        // use it both here and in the doForRelationshipDeclaration
         const relationshipObjectType = schemaComposer.getOrCreateOTC(
             relationship.operations.relationshipFieldTypename,
             (tc) => {
@@ -184,13 +186,18 @@ export function createConnectionFields({
             });
         });
 
-        if (!relationshipObjectType.hasField("properties") && relationship.hasAnyProperties) {
+        // if (!relationshipObjectType.hasField("properties") && relationship.hasAnyProperties) {
+        if (
+            !relationshipObjectType.hasField("properties") &&
+            relationship instanceof RelationshipAdapter &&
+            relationship.hasAnyProperties
+        ) {
             let propertiesType: UnionTypeComposer | ObjectTypeComposer | undefined;
-            if (relationship instanceof RelationshipDeclarationAdapter) {
-                propertiesType = schemaComposer.getUTC(relationship.operations.relationshipPropertiesFieldTypename);
-            } else {
-                propertiesType = schemaComposer.getOTC(relationship.propertiesTypeName);
-            }
+            // if (relationship instanceof RelationshipDeclarationAdapter) {
+            //     propertiesType = schemaComposer.getUTC(relationship.operations.relationshipPropertiesFieldTypename);
+            // } else {
+            propertiesType = schemaComposer.getOTC(relationship.propertiesTypeName);
+            // }
             relationshipObjectType.addFields({
                 properties: propertiesType.NonNull,
             });
@@ -268,6 +275,8 @@ export function createConnectionFields({
             });
         }
 
+        // TODO: extract code below into legacy function marked to be deleted once SchemaModel moved completed
+        // everything above should be refactored into new style
         const relFields: ObjectFields | undefined =
             relationship instanceof RelationshipAdapter && relationship.propertiesTypeName
                 ? relationshipFields.get(relationship.propertiesTypeName)
