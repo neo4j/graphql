@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/487", () => {
+describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -82,6 +82,123 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     }
                     ... on Movie {
                         id
+                        director {
+                            id
+                        }
+                        __typename
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (node)
+                WHERE
+                    \\"Book\\" IN labels(node) OR
+                    \\"Movie\\" IN labels(node)
+                RETURN node
+            }
+            WITH node AS this
+            CALL {
+                WITH this
+                CALL {
+                    WITH *
+                    MATCH (this)
+                    WHERE this:Book
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:WROTE]-(this1:Author)
+                        WITH this1 { .id } AS this1
+                        RETURN head(collect(this1)) AS var2
+                    }
+                    WITH this { .id, author: var2, __resolveType: \\"Book\\", __id: id(this) } AS this
+                    RETURN this AS var3
+                    UNION
+                    WITH *
+                    MATCH (this)
+                    WHERE this:Movie
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this4:DIRECTED]-(this5:Director)
+                        WITH this5 { .id } AS this5
+                        RETURN head(collect(this5)) AS var6
+                    }
+                    WITH this { .id, director: var6, __resolveType: \\"Movie\\", __id: id(this) } AS this
+                    RETURN this AS var3
+                }
+                RETURN var3
+            }
+            RETURN var3 AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+});
+
+describe("https://github.com/neo4j/graphql/issues/487, test on interface", () => {
+    let typeDefs: DocumentNode;
+    let neoSchema: Neo4jGraphQL;
+
+    beforeAll(() => {
+        typeDefs = gql`
+            type Author {
+                id: ID!
+            }
+
+            type Director {
+                id: ID!
+            }
+
+            type Book implements Thing {
+                id: ID!
+                author: Author! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type Movie implements Thing {
+                id: ID!
+                director: Director! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            interface Thing {
+                id: ID!
+            }
+
+            type Query {
+                getThings: [Thing!]
+                    @cypher(
+                        statement: """
+                        MATCH (node)
+                        WHERE
+                            "Book" IN labels(node) OR
+                            "Movie" IN labels(node)
+                        RETURN node
+                        """
+                        columnName: "node"
+                    )
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+    });
+
+    test("related fields should resolve on custom queries", async () => {
+        const query = gql`
+            query {
+                getThings {
+                    __typename
+                    id
+                    ... on Book {
+                        author {
+                            id
+                        }
+                        __typename
+                    }
+                    ... on Movie {
                         director {
                             id
                         }
