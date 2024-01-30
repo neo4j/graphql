@@ -1384,7 +1384,7 @@ describe("Declare Relationship", () => {
             }
 
             input ShowActorsConnectionSort {
-              edge: ActedInSort
+              edge: ShowActorsEdgeSort
               node: ActorSort
             }
 
@@ -1392,8 +1392,8 @@ describe("Declare Relationship", () => {
               AND: [ShowActorsConnectionWhere!]
               NOT: ShowActorsConnectionWhere
               OR: [ShowActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              edge: ShowActorsEdgeWhere
+              edge_NOT: ShowActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
               node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
@@ -1419,6 +1419,32 @@ describe("Declare Relationship", () => {
               * Series
               \\"\\"\\"
               StarredIn: SeriesActorsEdgeAggregationWhereInput
+            }
+
+            input ShowActorsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInSort
+            }
+
+            input ShowActorsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInWhere
             }
 
             input ShowActorsNodeAggregationWhereInput {
@@ -1562,10 +1588,28 @@ describe("Declare Relationship", () => {
               episodeNr: Int!
             }
 
+            input StarredInSort {
+              episodeNr: SortDirection
+            }
+
             input StarredInUpdateInput {
               episodeNr: Int
               episodeNr_DECREMENT: Int
               episodeNr_INCREMENT: Int
+            }
+
+            input StarredInWhere {
+              AND: [StarredInWhere!]
+              NOT: StarredInWhere
+              OR: [StarredInWhere!]
+              episodeNr: Int
+              episodeNr_GT: Int
+              episodeNr_GTE: Int
+              episodeNr_IN: [Int!]
+              episodeNr_LT: Int
+              episodeNr_LTE: Int
+              episodeNr_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodeNr_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type StringAggregateSelectionNonNullable {

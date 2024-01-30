@@ -260,26 +260,47 @@ function makeAugmentedSchema({
         }
     });
 
-    // temporary helper to keep track of which interface entities were already "visited"
-    // currently generated schema depends on these types being created BEFORE the rest
-    // ideally the dependency should be eradicated and these should be part of the schemaModel.compositeEntities.forEach
-    const seenInterfaces = new Set<string>();
-    interfaceRelationships.forEach((interfaceRelationship) => {
-        const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
-        const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
-        const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(interfaceEntity.name) || [];
-        const connectionFields = generateInterfaceObjectType({
-            composer,
-            interfaceEntityAdapter,
-            subgraph,
-            relationshipFields,
-            userDefinedFieldDirectivesForNode,
-            userDefinedInterfaceDirectives,
-            propagatedDirectivesForNode,
-            aggregationTypesMapper,
-        });
-        relationships = [...relationships, ...connectionFields];
-        seenInterfaces.add(interfaceRelationship.name.value);
+    schemaModel.compositeEntities.forEach((entity) => {
+        if (entity instanceof UnionEntity) {
+            const unionEntityAdapter = new UnionEntityAdapter(entity);
+            withWhereInputType({
+                entityAdapter: unionEntityAdapter,
+                userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
+                features,
+                composer,
+            });
+            // strip-out the schema config directives from the union type
+            const def = composer.getUTC(unionEntityAdapter.name);
+            def.setDirectives(
+                graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
+            );
+
+            if (unionEntityAdapter.isReadable) {
+                composer.Query.addFields({
+                    [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                        entityAdapter: unionEntityAdapter,
+                    }),
+                });
+            }
+            return;
+        }
+        if (entity instanceof InterfaceEntity) {
+            const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
+            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            const connectionFields = generateInterfaceObjectType({
+                composer,
+                interfaceEntityAdapter,
+                subgraph,
+                relationshipFields,
+                userDefinedInterfaceDirectives,
+                userDefinedFieldDirectivesForNode,
+                propagatedDirectivesForNode,
+                aggregationTypesMapper,
+            });
+            if (interfaceRelationships.some((r) => r.name.value === entity.name)) {
+                relationships = [...relationships, ...connectionFields];
+            }
+        }
     });
 
     schemaModel.concreteEntities.forEach((concreteEntity) => {
@@ -422,46 +443,6 @@ function makeAugmentedSchema({
                 concreteEntityAdapter.operations.rootTypeFieldNames.update,
                 graphqlDirectivesToCompose(propagatedDirectives)
             );
-        }
-    });
-
-    schemaModel.compositeEntities.forEach((entity) => {
-        if (entity instanceof UnionEntity) {
-            const unionEntityAdapter = new UnionEntityAdapter(entity);
-            withWhereInputType({
-                entityAdapter: unionEntityAdapter,
-                userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
-                features,
-                composer,
-            });
-            // strip-out the schema config directives from the union type
-            const def = composer.getUTC(unionEntityAdapter.name);
-            def.setDirectives(
-                graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
-            );
-
-            if (unionEntityAdapter.isReadable) {
-                composer.Query.addFields({
-                    [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                        entityAdapter: unionEntityAdapter,
-                    }),
-                });
-            }
-            return;
-        }
-        if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
-            const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
-            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
-            generateInterfaceObjectType({
-                composer,
-                interfaceEntityAdapter,
-                subgraph,
-                relationshipFields,
-                userDefinedInterfaceDirectives,
-                userDefinedFieldDirectivesForNode,
-                propagatedDirectivesForNode,
-                aggregationTypesMapper,
-            });
         }
     });
 

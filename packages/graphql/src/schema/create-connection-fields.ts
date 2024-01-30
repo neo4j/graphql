@@ -24,6 +24,11 @@ import { RelationshipAdapter } from "../schema-model/relationship/model-adapters
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { ObjectFields } from "./get-obj-field-meta";
 
+/**
+ * TODO [translation-layer-compatibility]
+ * keeping this `relationshipFields` scaffold for backwards compatibility on translation layer
+ * actual functional logic is in schemaModel.concreteEntities.forEach
+ */
 export function createConnectionFields({
     entityAdapter,
     relationshipFields,
