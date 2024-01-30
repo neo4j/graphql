@@ -32,7 +32,6 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
@@ -178,47 +177,6 @@ export function withSourceWhereInputType({
     }
 
     return whereInput;
-}
-
-// TODO: make another one of these for non-union ConnectionWhereInputType
-export function makeConnectionWhereInputType({
-    relationshipAdapter,
-    memberEntity,
-    composer,
-}: {
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    memberEntity: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposer {
-    const typeName = relationshipAdapter.operations.getConnectionWhereTypename(memberEntity);
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-    const connectionWhereInputType = composer.createInputTC({
-        name: typeName,
-        fields: {
-            node: memberEntity.operations.whereInputTypeName,
-            node_NOT: {
-                type: memberEntity.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        },
-    });
-    connectionWhereInputType.addFields({
-        AND: connectionWhereInputType.NonNull.List,
-        OR: connectionWhereInputType.NonNull.List,
-        NOT: connectionWhereInputType,
-    });
-    if (relationshipAdapter.hasAnyProperties) {
-        connectionWhereInputType.addFields({
-            edge: relationshipAdapter.operations.whereInputTypeName,
-            edge_NOT: {
-                type: relationshipAdapter.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        });
-    }
-    return connectionWhereInputType;
 }
 
 export function withConnectWhereFieldInputType(

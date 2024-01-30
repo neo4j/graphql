@@ -38,7 +38,7 @@ import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
 import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
 import { withCreateFieldInputType } from "./relation-input";
-import { makeConnectionWhereInputType } from "./where-input";
+import { withConnectionWhereInputType } from "./connection-where-input";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -228,7 +228,7 @@ function makeUpdateFieldInputTypeFields({
         if (!ifUnionMemberEntity) {
             throw new Error("Member Entity required.");
         }
-        connectionWhereInputType = makeConnectionWhereInputType({
+        connectionWhereInputType = withConnectionWhereInputType({
             relationshipAdapter,
             memberEntity: ifUnionMemberEntity,
             composer,

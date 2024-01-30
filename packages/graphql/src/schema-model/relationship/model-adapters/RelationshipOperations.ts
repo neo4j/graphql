@@ -81,18 +81,8 @@ export class RelationshipOperations {
         return `${this.relationship.target.name}${this.relationship.isNullable === false ? "!" : ""}`;
     }
 
-    public getConnectionUnionWhereInputTypename(concreteEntityAdapter: ConcreteEntityAdapter): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
-            concreteEntityAdapter.name
-        }ConnectionWhere`;
-    }
-
     public get connectionSortInputTypename(): string {
         return `${this.connectionFieldTypename}Sort`;
-    }
-
-    public get connectionWhereInputTypename(): string {
-        return `${this.connectionFieldTypename}Where`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */

@@ -82,10 +82,6 @@ export class RelationshipDeclarationOperations {
         return `${this.connectionFieldTypename}Sort`;
     }
 
-    public get connectionWhereInputTypename(): string {
-        return `${this.connectionFieldTypename}Where`;
-    }
-
     /**Note: Required for now to infer the types without ResolveTree */
     public get relationshipFieldTypename(): string {
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}Relationship`;

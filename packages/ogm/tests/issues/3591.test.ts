@@ -635,8 +635,8 @@ describe("issues/3591", () => {
             };
 
             export type UserCompanyConnectionWhere = {
-              OR?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               AND?: InputMaybe<Array<UserCompanyConnectionWhere>>;
+              OR?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               NOT?: InputMaybe<UserCompanyConnectionWhere>;
               node?: InputMaybe<CompanyWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -895,8 +895,8 @@ describe("issues/3591", () => {
             };
 
             export type UserFavoriteRestaurantsConnectionWhere = {
-              OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               AND?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
+              OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               node?: InputMaybe<RestaurantWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */

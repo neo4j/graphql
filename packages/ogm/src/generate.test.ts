@@ -1327,8 +1327,8 @@ describe("generate", () => {
             };
 
             export type MovieActorsConnectionWhere = {
-              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
               node?: InputMaybe<PersonWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -2207,8 +2207,8 @@ describe("generate", () => {
             };
 
             export type FaqEntriesConnectionWhere = {
-              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               AND?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               node?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -2479,8 +2479,8 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaQsConnectionWhere = {
-              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               AND?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               node?: InputMaybe<FaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
