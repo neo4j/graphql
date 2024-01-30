@@ -34,7 +34,10 @@ import type { RelationshipDeclarationAdapter } from "../../schema-model/relation
 import type { Neo4jFeaturesSettings } from "../../types";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType } from "./aggregate-types";
-import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
+import {
+    augmentWhereInputTypeWithConnectionFields,
+    augmentWhereInputTypeWithRelationshipFields,
+} from "./augment-where-input";
 
 export function withUniqueWhereInputType({
     concreteEntityAdapter,
@@ -148,16 +151,24 @@ export function withSourceWhereInputType({
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
-    if (relationshipTarget instanceof InterfaceEntityAdapter) {
-        throw new Error("Unexpected interface target");
-    }
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
+    // TODO: ALE; relationship simple filters were not supported on Interface target, only connection filters
+    // needs translation
+    // ideally interfaces should go all the way to the next if
+    if (relationshipTarget instanceof InterfaceEntityAdapter) {
+        const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+        whereInput.addFields(connectionFields);
+        return whereInput;
+    }
     const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
     whereInput.addFields(fields);
 
+    const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+    whereInput.addFields(connectionFields);
+
     // TODO: Current unions are not supported as relationship targets beyond the above fields
-    if (relationshipTarget instanceof UnionEntityAdapter) {
+    if (relationshipTarget instanceof UnionEntityAdapter || relationshipTarget instanceof InterfaceEntityAdapter) {
         return;
     }
 

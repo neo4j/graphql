@@ -16,15 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import type { Directive } from "graphql-compose";
+import { DirectiveNode, GraphQLInt, GraphQLResolveInfo, GraphQLString } from "graphql";
+import type {
+    AnyTypeComposer,
+    Directive,
+    ObjectTypeComposerArgumentConfigMapDefinition,
+    SchemaComposer,
+} from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
+import { DEPRECATED } from "../../constants";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { getDirectedArgument } from "../directed-argument";
+import { ConnectionQueryArgs } from "../../types";
+import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
+import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import {
+    makeConnectionWhereInputType,
+    withConnectionObjectType,
+    withConnectionSortInputType,
+} from "./connection-where-input";
 
 export function augmentObjectOrInterfaceTypeWithRelationshipField(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
@@ -69,6 +82,61 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
 
     if (relationshipAdapter.isReadable()) {
         fields[relationshipAdapter.name] = relationshipField;
+    }
+    return fields;
+}
+
+export function augmentObjectOrInterfaceTypeWithConnectionField(
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    schemaComposer: SchemaComposer
+): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
+    const fields = {};
+    const deprecatedDirectives = graphqlDirectivesToCompose(
+        (userDefinedFieldDirectives.get(relationshipAdapter.name) || []).filter(
+            (directive) => directive.name.value === DEPRECATED
+        )
+    );
+    const composeNodeArgs = addDirectedArgument<ObjectTypeComposerArgumentConfigMapDefinition>(
+        {
+            where: makeConnectionWhereInputType({
+                relationshipAdapter,
+                composer: schemaComposer,
+            }),
+            first: {
+                type: GraphQLInt,
+            },
+            after: {
+                type: GraphQLString,
+            },
+        },
+        relationshipAdapter
+    );
+    const connectionSortITC = withConnectionSortInputType({
+        relationshipAdapter,
+        composer: schemaComposer,
+    });
+    if (connectionSortITC) {
+        composeNodeArgs.sort = connectionSortITC.NonNull.List;
+    }
+
+    if (relationshipAdapter.isReadable()) {
+        fields[relationshipAdapter.operations.connectionFieldName] = {
+            type: withConnectionObjectType({
+                relationshipAdapter,
+                composer: schemaComposer,
+            }).NonNull,
+            args: composeNodeArgs,
+            directives: deprecatedDirectives,
+            resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
+                return connectionFieldResolver({
+                    connectionFieldName: relationshipAdapter.operations.connectionFieldName,
+                    args,
+                    info,
+                    source,
+                });
+            },
+        };
     }
     return fields;
 }

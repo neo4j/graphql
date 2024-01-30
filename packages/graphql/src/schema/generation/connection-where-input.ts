@@ -106,6 +106,18 @@ export function withConnectionWhereInputType({
     return connectionWhereInputType;
 }
 
+function shouldGenerateConnectionSortInput(
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
+): boolean {
+    if (relationshipAdapter.hasAnyProperties) {
+        return true;
+    }
+    if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
+        return true;
+    }
+    return false;
+}
+
 export function withConnectionSortInputType({
     relationshipAdapter,
     composer,
@@ -113,6 +125,9 @@ export function withConnectionSortInputType({
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
+    if (!shouldGenerateConnectionSortInput(relationshipAdapter)) {
+        return;
+    }
     const typeName = relationshipAdapter.operations.connectionSortInputTypename;
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
@@ -160,7 +175,7 @@ function makeConnectionSortInputTypeFields({
     return fields;
 }
 
-export function withRelationshipObjectType({
+function withRelationshipObjectType({
     relationshipAdapter,
     composer,
 }: {

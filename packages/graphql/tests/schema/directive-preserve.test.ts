@@ -4822,14 +4822,14 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               contentConnection_SOME: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
               \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
-              content_ALL: ContentWhere
+              content_ALL: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
-              content_NONE: ContentWhere
+              content_NONE: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               content_NOT: ContentWhere @deprecated(reason: \\"Use \`content_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
-              content_SINGLE: ContentWhere
+              content_SINGLE: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
-              content_SOME: ContentWhere
+              content_SOME: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

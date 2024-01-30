@@ -342,9 +342,6 @@ function makeAugmentedSchema({
             ...relationships,
             ...createConnectionFields({
                 entityAdapter: concreteEntityAdapter,
-                schemaComposer: composer,
-                composeNode,
-                userDefinedFieldDirectives,
                 relationshipFields,
             }),
         ];
@@ -799,9 +796,6 @@ function generateInterfaceObjectType({
 
     const connectionFields = createConnectionFields({
         entityAdapter: interfaceEntityAdapter,
-        schemaComposer: composer,
-        composeNode: composeInterface,
-        userDefinedFieldDirectives,
         relationshipFields,
     });
 

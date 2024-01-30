@@ -19,15 +19,21 @@
 
 import type { DirectiveNode } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer, InterfaceTypeComposer } from "graphql-compose";
+import { DEPRECATED } from "../../constants";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
+import {
+    augmentObjectOrInterfaceTypeWithConnectionField,
+    augmentObjectOrInterfaceTypeWithRelationshipField,
+} from "../generation/augment-object-or-interface";
 import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
 import { augmentCreateInputTypeWithRelationshipsInput, withFieldInputType } from "../generation/create-input";
 import { augmentDeleteInputTypeWithDeleteFieldInput } from "../generation/delete-input";
 import { augmentDisconnectInputTypeWithDisconnectFieldInput } from "../generation/disconnect-input";
 import { withRelationInputType } from "../generation/relation-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput } from "../generation/update-input";
+import { withSourceWhereInputType } from "../generation/where-input";
+import { graphqlDirectivesToCompose } from "../to-compose";
 
 export function createRelationshipInterfaceFields({
     relationship,
@@ -40,6 +46,12 @@ export function createRelationshipInterfaceFields({
     schemaComposer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }) {
+    const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(relationship.name);
+    const deprecatedDirectives = graphqlDirectivesToCompose(
+        (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
+    );
+
+    withSourceWhereInputType({ relationshipAdapter: relationship, composer: schemaComposer, deprecatedDirectives });
     // ======== all relationships but DEPENDENCY ALERT:
     // this has to happen for InterfaceRelationships (Interfaces that are target of relationships) before it happens for ConcreteEntity targets
     // it has sth to do with fieldInputPrefixForTypename vs prefixForTypename
@@ -48,6 +60,10 @@ export function createRelationshipInterfaceFields({
 
     // ======== all relationships:
     composeNode.addFields(augmentObjectOrInterfaceTypeWithRelationshipField(relationship, userDefinedFieldDirectives));
+
+    composeNode.addFields(
+        augmentObjectOrInterfaceTypeWithConnectionField(relationship, userDefinedFieldDirectives, schemaComposer)
+    );
 
     withRelationInputType({
         relationshipAdapter: relationship,
