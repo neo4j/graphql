@@ -45,8 +45,6 @@ export function createConnectionClause({
     returnVariable: Cypher.Variable;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): Cypher.Clause {
-    // eslint-disable-next-line no-constant-condition
-    if (new Date()) throw new Error("sdfs");
     if (field.relationship.union || field.relationship.interface) {
         return createConnectionClauseForUnions({
             resolveTree,

@@ -112,8 +112,7 @@ export function createEdgeSubquery({
             preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationSubqueries);
         }
     }
-    // eslint-disable-next-line no-constant-condition
-    if (new Date()) throw new Error("asd");
+
     const projection = createEdgeProjection({
         resolveTree,
         field,

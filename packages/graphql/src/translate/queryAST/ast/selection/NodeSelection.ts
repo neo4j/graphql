@@ -32,8 +32,8 @@ export class NodeSelection extends EntitySelection {
     constructor({
         target,
         alias,
-        optional,
-        useContextTarget,
+        optional = false,
+        useContextTarget = false,
     }: {
         target: ConcreteEntityAdapter;
         alias?: string;
@@ -43,30 +43,34 @@ export class NodeSelection extends EntitySelection {
         super();
         this.target = target;
         this.alias = alias;
-        this.optional = optional ?? false;
-        this.useContextTarget = useContextTarget ?? false;
+        this.optional = optional;
+        this.useContextTarget = useContextTarget;
     }
 
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
-        let node;
-        let match;
+        let node: Cypher.Node;
+        let matchPattern: Cypher.Pattern | undefined;
+
+        // useContextTarget is used when you have to select a node already matched,
+        // this could be simplified a lot, it's currently not possible as there is no way to build a Cypher.Node from an existing Cypher.Node.
         if (this.useContextTarget) {
             if (!context.hasTarget()) {
-                throw new Error("No target to match on");
+                throw new Error("No target found in the context");
             }
             node = context.target;
-            const nodePattern = new Cypher.Pattern(node).withoutLabels();
-            match = new Cypher.Match(nodePattern);
+            matchPattern = new Cypher.Pattern(node).withoutLabels();
         } else {
             node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias);
-            match = new Cypher.Match(node);
         }
+        const match = new Cypher.Match(matchPattern ?? node);
+
         if (this.optional) {
             match.optional();
         }
+
         return {
             selection: match,
             nestedContext: new QueryASTContext({
