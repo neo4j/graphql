@@ -962,7 +962,7 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
         varName?: string;
-    }): Operation {
+    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
         const operationAttribute =
             context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
             context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
