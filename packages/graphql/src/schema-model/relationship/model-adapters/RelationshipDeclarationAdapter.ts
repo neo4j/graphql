@@ -50,6 +50,8 @@ export class RelationshipDeclarationAdapter {
     public readonly args: Argument[];
     public readonly relationshipImplementations: RelationshipAdapter[];
 
+    public readonly firstDeclaredInTypeName: string | undefined;
+
     private _singular: string | undefined;
     private _plural: string | undefined;
 
@@ -68,6 +70,7 @@ export class RelationshipDeclarationAdapter {
             isNullable,
             description,
             annotations,
+            firstDeclaredInTypeName,
         } = relationshipDeclaration;
         this.name = name;
         this.args = args;
@@ -94,6 +97,7 @@ export class RelationshipDeclarationAdapter {
         this.relationshipImplementations = relationshipDeclaration.relationshipImplementations.map(
             (r) => new RelationshipAdapter(r)
         );
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
     }
 
     public get listFiltersModel(): ListFiltersAdapter | undefined {

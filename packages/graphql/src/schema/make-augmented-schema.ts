@@ -258,9 +258,7 @@ function makeAugmentedSchema({
                 aggregationTypesMapper,
                 seenRelationshipPropertiesTypes,
             });
-            if (interfaceRelationships.some((r) => r.name.value === entity.name)) {
-                relationships = [...relationships, ...connectionFields];
-            }
+            relationships = [...relationships, ...connectionFields];
             return;
         }
         if (entity instanceof ConcreteEntity) {
@@ -481,6 +479,8 @@ function makeAugmentedSchema({
 
 export default makeAugmentedSchema;
 
+// TODO: unify object & interface fns
+
 function generateObjectType({
     composer,
     concreteEntityAdapter,
@@ -511,12 +511,6 @@ function generateObjectType({
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
 }) {
     withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-    withAggregateSelectionType({
-        entityAdapter: concreteEntityAdapter,
-        aggregationTypesMapper,
-        propagatedDirectives,
-        composer,
-    });
     withWhereInputType({
         entityAdapter: concreteEntityAdapter,
         userDefinedFieldDirectives,
@@ -580,6 +574,13 @@ function generateObjectType({
         );
     }
     if (concreteEntityAdapter.isAggregable) {
+        withAggregateSelectionType({
+            entityAdapter: concreteEntityAdapter,
+            aggregationTypesMapper,
+            propagatedDirectives,
+            composer,
+        });
+
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
                 concreteEntityAdapter,
@@ -701,49 +702,29 @@ function generateInterfaceObjectType({
                 entityAdapter: interfaceEntityAdapter,
             }),
         });
-
-        if (interfaceEntityAdapter.isAggregable) {
-            addInterfaceAggregateSelectionStuff({
-                entityAdapter: interfaceEntityAdapter,
-                aggregationTypesMapper,
-                propagatedDirectives,
-                composer,
-            });
-        }
         composer.Query.setFieldDirectives(
             interfaceEntityAdapter.operations.rootTypeFieldNames.read,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
+    if (interfaceEntityAdapter.isAggregable) {
+        withAggregateSelectionType({
+            entityAdapter: interfaceEntityAdapter,
+            aggregationTypesMapper,
+            propagatedDirectives,
+            composer,
+        });
+
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                concreteEntityAdapter: interfaceEntityAdapter,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
 
     return connectionFields;
-}
-
-function addInterfaceAggregateSelectionStuff({
-    entityAdapter,
-    aggregationTypesMapper,
-    propagatedDirectives,
-    composer,
-}: {
-    entityAdapter: InterfaceEntityAdapter;
-    aggregationTypesMapper: AggregationTypesMapper;
-    propagatedDirectives: DirectiveNode[];
-    composer: SchemaComposer;
-}) {
-    withAggregateSelectionType({
-        entityAdapter,
-        aggregationTypesMapper,
-        propagatedDirectives,
-        composer,
-    });
-
-    composer.Query.addFields({
-        [entityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-            concreteEntityAdapter: entityAdapter,
-        }),
-    });
-    composer.Query.setFieldDirectives(
-        entityAdapter.operations.rootTypeFieldNames.aggregate,
-        graphqlDirectivesToCompose(propagatedDirectives)
-    );
 }

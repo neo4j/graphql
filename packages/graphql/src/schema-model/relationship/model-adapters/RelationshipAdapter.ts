@@ -50,7 +50,7 @@ export class RelationshipAdapter {
     public readonly isNullable: boolean;
     public readonly description?: string;
     public readonly propertiesTypeName: string | undefined;
-    public readonly inheritedFrom: string | undefined;
+    public readonly firstDeclaredInTypeName: string | undefined;
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
@@ -78,7 +78,7 @@ export class RelationshipAdapter {
             description,
             annotations,
             propertiesTypeName,
-            inheritedFrom,
+            firstDeclaredInTypeName,
         } = relationship;
         this.name = name;
         this.type = type;
@@ -107,7 +107,7 @@ export class RelationshipAdapter {
         this.description = description;
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
     }
 
     public get operations(): RelationshipOperations {

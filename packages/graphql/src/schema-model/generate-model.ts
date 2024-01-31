@@ -20,6 +20,7 @@ import type {
     DocumentNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
+    NamedTypeNode,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
@@ -243,7 +244,7 @@ function hydrateRelationships(
             schema,
             entity,
             definitionCollection,
-            getInterfaceNameIfInheritedField(definition, fieldDefinition.name.value, definitionCollection)
+            getTypeNameWhereRelationshipFirstDeclared(definition, fieldDefinition.name.value, definitionCollection)
         );
         if (relationshipField) {
             entity.addRelationship(relationshipField);
@@ -272,7 +273,8 @@ function hydrateRelationshipDeclarations(
             fieldDefinition,
             schema,
             entity,
-            definitionCollection
+            definitionCollection,
+            getTypeNameWhereRelationshipFirstDeclared(definition, fieldDefinition.name.value, definitionCollection)
         );
         if (relationshipField) {
             entity.addRelationshipDeclaration(relationshipField);
@@ -280,33 +282,43 @@ function hydrateRelationshipDeclarations(
     }
 }
 
-function getInterfaceNameIfInheritedField(
+function hasFieldDeclaredAsRel(
+    interfaceDef: InterfaceTypeDefinitionNode,
+    fieldName: string
+): FieldDefinitionNode | undefined {
+    const fields = interfaceDef?.fields || [];
+    return fields.find(
+        (field) =>
+            field.name.value === fieldName && field.directives?.some((d) => d.name.value === "declareRelationship")
+    );
+}
+function getDefinitionNodeFromNamedNode(interfaceNamedNode: NamedTypeNode, definitionCollection: DefinitionCollection) {
+    const interfaceName = interfaceNamedNode.name.value;
+    return definitionCollection.interfaceTypes.get(interfaceName) as InterfaceTypeDefinitionNode;
+}
+
+function getTypeNameWhereRelationshipFirstDeclared(
     definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     fieldName: string,
     definitionCollection: DefinitionCollection
 ): string | undefined {
-    // TODO: potentially use this instead
-    const fieldNameToSourceNameMap = definition.interfaces?.reduce((acc, interfaceNamedNode) => {
-        const interfaceName = interfaceNamedNode.name.value;
-        const fields = definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
-        fields.forEach((f) => {
-            const isRelationshipDeclaration = f.directives?.some((d) => d.name.value === "declareRelationship");
-            const exists = acc.has(f.name.value);
-            if (isRelationshipDeclaration && !exists) {
-                acc.set(f.name.value, interfaceName);
-            }
-        });
-        return acc;
-    }, new Map<string, string>());
+    const inheritedInterfaceWithDeclaredField = definition.interfaces?.find((interfaceNamedNode) => {
+        const interfaceDef = getDefinitionNodeFromNamedNode(interfaceNamedNode, definitionCollection);
+        if (hasFieldDeclaredAsRel(interfaceDef, fieldName)) {
+            return interfaceDef;
+        }
+        return;
+    });
 
-    // deliberately using the first interface ONLY
-    // const fieldNameToSourceNameMap = new Map<string, string>();
-    // const firstInterfaceName = definition.interfaces?.[0]?.name.value;
-    // if (firstInterfaceName) {
-    //     const fields = definitionCollection.interfaceTypes.get(firstInterfaceName)?.fields || [];
-    //     fields.forEach((field) => fieldNameToSourceNameMap.set(field.name.value, firstInterfaceName));
-    // }
-    return fieldNameToSourceNameMap?.get(fieldName);
+    if (!inheritedInterfaceWithDeclaredField) {
+        return;
+    }
+
+    const interfaceDef = getDefinitionNodeFromNamedNode(inheritedInterfaceWithDeclaredField, definitionCollection);
+    return (
+        getTypeNameWhereRelationshipFirstDeclared(interfaceDef, fieldName, definitionCollection) ||
+        inheritedInterfaceWithDeclaredField?.name.value
+    );
 }
 
 function generateRelationshipField(
@@ -314,7 +326,7 @@ function generateRelationshipField(
     schema: Neo4jGraphQLSchemaModel,
     source: ConcreteEntity | InterfaceEntity,
     definitionCollection: DefinitionCollection,
-    inheritedFrom: string | undefined
+    firstDeclaredInTypeName: string | undefined
 ): Relationship | undefined {
     // TODO: remove reference to getFieldTypeMeta
     const fieldTypeMeta = getFieldTypeMeta(field.type);
@@ -376,7 +388,7 @@ function generateRelationshipField(
         description: field.description?.value,
         annotations: annotations,
         propertiesTypeName,
-        inheritedFrom,
+        firstDeclaredInTypeName,
     });
 }
 
@@ -384,7 +396,8 @@ function generateRelationshipDeclaration(
     field: FieldDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
     source: InterfaceEntity,
-    definitionCollection: DefinitionCollection
+    definitionCollection: DefinitionCollection,
+    firstDeclaredInTypeName: string | undefined
 ): RelationshipDeclaration | undefined {
     // TODO: remove reference to getFieldTypeMeta
     const fieldTypeMeta = getFieldTypeMeta(field.type);
@@ -420,6 +433,7 @@ function generateRelationshipDeclaration(
         args: parseAttributeArguments(field.arguments || [], definitionCollection),
         annotations,
         relationshipImplementations,
+        firstDeclaredInTypeName,
     });
 }
 

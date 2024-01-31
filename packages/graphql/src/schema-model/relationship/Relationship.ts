@@ -47,7 +47,7 @@ export class Relationship {
     public readonly description?: string;
     public readonly annotations: Partial<Annotations>;
     public readonly propertiesTypeName: string | undefined;
-    public readonly inheritedFrom: string | undefined;
+    public readonly firstDeclaredInTypeName: string | undefined;
 
     constructor({
         name,
@@ -65,7 +65,7 @@ export class Relationship {
         description,
         annotations = {},
         propertiesTypeName,
-        inheritedFrom,
+        firstDeclaredInTypeName,
     }: {
         name: string;
         type: string;
@@ -82,7 +82,7 @@ export class Relationship {
         description?: string;
         annotations?: Partial<Annotations>;
         propertiesTypeName?: string;
-        inheritedFrom?: string;
+        firstDeclaredInTypeName?: string;
     }) {
         this.type = type;
         this.source = source;
@@ -98,7 +98,7 @@ export class Relationship {
         this.description = description;
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -122,7 +122,7 @@ export class Relationship {
             description: this.description,
             annotations: this.annotations,
             propertiesTypeName: this.propertiesTypeName,
-            inheritedFrom: this.inheritedFrom,
+            firstDeclaredInTypeName: this.firstDeclaredInTypeName,
         });
     }
 

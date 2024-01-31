@@ -45,11 +45,7 @@ export class RelationshipOperations {
     }
 
     public get prefixForTypename(): string {
-        // if relationship field is inherited  by source
-        // (part of a implemented Interface, not necessarily annotated as rel)
-        // then return this.interface.name
-
-        return this.relationship.inheritedFrom || this.relationship.source.name;
+        return this.relationship.firstDeclaredInTypeName || this.relationship.source.name;
     }
 
     public get fieldInputPrefixForTypename(): string {
