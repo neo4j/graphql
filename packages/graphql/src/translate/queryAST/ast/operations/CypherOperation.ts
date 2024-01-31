@@ -18,10 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTContext } from "../QueryASTContext";
-import type { EntitySelection } from "../selection/EntitySelection";
 import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
