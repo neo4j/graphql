@@ -435,16 +435,16 @@ export default async function translateUpdate({
             });
         });
     }
-    const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!concreteEntityAdapter) {
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!entityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST(
+    const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST({
         resolveTree,
-        concreteEntityAdapter,
-        context
-    );
+        entityAdapter,
+        context,
+    });
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({

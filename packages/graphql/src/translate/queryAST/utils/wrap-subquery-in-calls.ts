@@ -34,7 +34,9 @@ export function wrapSubqueriesInCypherCalls(
         })
     ).map((sq) => {
         const call = new Cypher.Call(sq);
-        if (withArgs) call.innerWith(...withArgs);
+        if (withArgs) {
+            call.innerWith(...withArgs);
+        }
         return call;
     });
 }

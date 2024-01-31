@@ -114,16 +114,16 @@ export default async function translateCreate({
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
-    const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!concreteEntityAdapter) {
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!entityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel, context.experimental).createQueryAST(
+    const queryAST = new QueryASTFactory(context.schemaModel, context.experimental).createQueryAST({
         resolveTree,
-        concreteEntityAdapter,
-        context
-    );
+        entityAdapter,
+        context,
+    });
     const queryASTEnv = new QueryASTEnv();
     const projectedVariables: Cypher.Node[] = [];
     /**
