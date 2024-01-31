@@ -37,6 +37,10 @@ import { withAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
 import { makeImplementationsWhereInput } from "./implementation-inputs";
 
+function isEmptyObject(obj: Record<string, unknown>): boolean {
+    return !Object.keys(obj).length;
+}
+
 export function withUniqueWhereInputType({
     concreteEntityAdapter,
     composer,
@@ -61,45 +65,56 @@ export function withWhereInputType({
     features,
     composer,
     experimental,
+    typeName = entityAdapter.operations.whereInputTypeName,
+    getConcreteEntityWhereInputType = (entityAdapter: ConcreteEntityAdapter) =>
+        entityAdapter.operations.whereInputTypeName,
+    interfaceOnTypeName = entityAdapter instanceof InterfaceEntityAdapter
+        ? entityAdapter.operations.whereOnImplementationsWhereInputTypeName
+        : undefined,
+    returnUndefinedIfEmpty = false,
+    alwaysAllowNesting,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    typeName?: string;
+    userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
     experimental: boolean;
-}): InputTypeComposer {
-    if (composer.has(entityAdapter.operations.whereInputTypeName)) {
-        return composer.getITC(entityAdapter.operations.whereInputTypeName);
+    getConcreteEntityWhereInputType?: (entityAdapter: ConcreteEntityAdapter) => string;
+    interfaceOnTypeName?: string;
+    returnUndefinedIfEmpty?: boolean;
+    alwaysAllowNesting?: boolean;
+}): InputTypeComposer | undefined {
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
     }
     const whereFields = makeWhereFields({ entityAdapter, userDefinedFieldDirectives, features });
+    if (returnUndefinedIfEmpty && isEmptyObject(whereFields)) {
+        return undefined;
+    }
     const whereInputType = composer.createInputTC({
-        name: entityAdapter.operations.whereInputTypeName,
+        name: typeName,
         fields: whereFields,
     });
 
-    if (entityAdapter instanceof ConcreteEntityAdapter) {
-        whereInputType.addFields({
-            OR: whereInputType.NonNull.List,
-            AND: whereInputType.NonNull.List,
-            NOT: whereInputType,
-        });
-        if (entityAdapter.isGlobalNode()) {
-            whereInputType.addFields({ id: GraphQLID });
-        }
-    } else if (entityAdapter instanceof RelationshipAdapter) {
-        whereInputType.addFields({
-            OR: whereInputType.NonNull.List,
-            AND: whereInputType.NonNull.List,
-            NOT: whereInputType,
-        });
-    } else if (entityAdapter instanceof InterfaceEntityAdapter) {
-        if (experimental) {
-            whereInputType.addFields({
-                OR: whereInputType.NonNull.List,
-                AND: whereInputType.NonNull.List,
-                NOT: whereInputType,
-            });
+    const allowNesting =
+        alwaysAllowNesting ||
+        entityAdapter instanceof ConcreteEntityAdapter ||
+        entityAdapter instanceof RelationshipAdapter ||
+        (entityAdapter instanceof InterfaceEntityAdapter && experimental);
 
+    if (allowNesting) {
+        whereInputType.addFields({
+            OR: whereInputType.NonNull.List,
+            AND: whereInputType.NonNull.List,
+            NOT: whereInputType,
+        });
+    }
+    if (entityAdapter instanceof ConcreteEntityAdapter && entityAdapter.isGlobalNode()) {
+        whereInputType.addFields({ id: GraphQLID });
+    }
+    if (entityAdapter instanceof InterfaceEntityAdapter) {
+        if (experimental) {
             const enumValues = Object.fromEntries(
                 entityAdapter.concreteEntities.map((concreteEntity) => [
                     concreteEntity.name,
@@ -112,9 +127,14 @@ export function withWhereInputType({
             });
             whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
         } else {
+            if (!interfaceOnTypeName) {
+                throw new Error("Unexpected missing interfaceOnTypeName");
+            }
             const implementationsWhereInputType = makeImplementationsWhereInput({
                 interfaceEntityAdapter: entityAdapter,
                 composer,
+                getConcreteEntityWhereInputType,
+                onTypeName: interfaceOnTypeName,
             });
             // TODO: add interfaces that implement this interface here
             whereInputType.addFields({ _on: implementationsWhereInputType });
@@ -129,7 +149,7 @@ function makeWhereFields({
     features,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     if (entityAdapter instanceof UnionEntityAdapter) {

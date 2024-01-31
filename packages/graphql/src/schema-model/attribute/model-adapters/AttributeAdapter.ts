@@ -143,12 +143,6 @@ export class AttributeAdapter {
         return this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar();
     }
 
-    isSubscriptionWhereField(): boolean {
-        return (
-            (this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar()) && !this.isCypher()
-        );
-    }
-
     isSubscriptionConnectedRelationshipField(): boolean {
         return (
             (this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar()) && !this.isCypher()
