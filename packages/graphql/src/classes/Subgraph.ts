@@ -139,7 +139,6 @@ export class Subgraph {
             info: GraphQLResolveInfo
         ): Promise<unknown> => {
             const { __typename } = reference;
-
             const entityAdapter = schemaModel.getConcreteEntityAdapter(__typename);
             if (!entityAdapter) {
                 throw new Error(`Unable to find matching entity with name ${__typename}`);
@@ -149,6 +148,7 @@ export class Subgraph {
             const { cypher, params } = translateResolveReference({
                 context: context as Neo4jGraphQLTranslationContext,
                 entityAdapter,
+                reference,
             });
 
             const executeResult = await execute({

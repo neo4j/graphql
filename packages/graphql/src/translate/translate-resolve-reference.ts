@@ -29,13 +29,15 @@ const debug = Debug(DEBUG_TRANSLATE);
 export function translateResolveReference({
     entityAdapter,
     context,
+    reference,
 }: {
     context: Neo4jGraphQLTranslationContext;
     entityAdapter: EntityAdapter;
+    reference: any;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
-    const operationsTree = operationsTreeFactory.createQueryAST(resolveTree, entityAdapter, context);
+    const operationsTree = operationsTreeFactory.createQueryAST({ resolveTree, entityAdapter, context, reference });
     debug(operationsTree.print());
     const clause = operationsTree.build(context);
     return clause.build();

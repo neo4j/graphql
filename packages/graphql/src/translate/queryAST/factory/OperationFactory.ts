@@ -96,11 +96,13 @@ export class OperationsFactory {
         resolveTree,
         context,
         varName,
+        reference,
     }: {
         entity?: EntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
+        reference?: any;
     }): Operation {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
         if (!entity && operationMatch.isCustomCypher) {
@@ -151,15 +153,10 @@ export class OperationsFactory {
                 } else {
                     let subGraphWhere;
                     if (context.resolveTree.name === "_entities") {
-                        // find the where argument in the subgraph
-                        const referenceArgument = asArray(resolveTree.args.representations).find(
-                            (representation) => representation.__typename === entity.name
-                        );
-                        if (!referenceArgument) {
-                            throw new Error("Failed to find subGraph reference");
+                        if (!reference) {
+                            throw new Error("Transpilation error: SubGraph reference not found");
                         }
-
-                        const { __typename, ...where } = referenceArgument;
+                        const { __typename, ...where } = reference;
                         subGraphWhere = where;
                     }
                     op = this.createReadOperation({
