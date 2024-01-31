@@ -92,6 +92,7 @@ import { generateSubscriptionTypes } from "./subscriptions/generate-subscription
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
 import { SHAREABLE } from "../constants";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -260,7 +261,7 @@ function makeAugmentedSchema({
         }
     });
 
-    schemaModel.compositeEntities.forEach((entity) => {
+    schemaModel.entities.forEach((entity) => {
         if (entity instanceof UnionEntity) {
             const unionEntityAdapter = new UnionEntityAdapter(entity);
             withWhereInputType({
@@ -300,149 +301,41 @@ function makeAugmentedSchema({
             if (interfaceRelationships.some((r) => r.name.value === entity.name)) {
                 relationships = [...relationships, ...connectionFields];
             }
+            return;
         }
-    });
+        if (entity instanceof ConcreteEntity) {
+            /**
+             * TODO [translation-layer-compatibility]
+             * need the node for fulltext translation
+             */
+            const node = nodes.find((n) => n.name === entity.name);
+            if (!node) {
+                throw new Error(`Node not found with the name ${entity.name}`);
+            }
+            const concreteEntityAdapter = new ConcreteEntityAdapter(entity);
+            const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
+            if (!userDefinedFieldDirectives) {
+                throw new Error(`User defined field directives not found for ${concreteEntityAdapter.name}`);
+            }
 
-    schemaModel.concreteEntities.forEach((concreteEntity) => {
-        /**
-         * TODO [translation-layer-compatibility]
-         * need the node for fulltext translation
-         */
-        const node = nodes.find((n) => n.name === concreteEntity.name);
-        if (!node) {
-            throw new Error(`Node not found with the name ${concreteEntity.name}`);
-        }
-        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
-
-        const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
-        if (!userDefinedFieldDirectives) {
-            throw new Error(`User defined field directives not found for ${concreteEntityAdapter.name}`);
-        }
-
-        const propagatedDirectives = propagatedDirectivesForNode.get(concreteEntity.name) || [];
-        const userDefinedObjectDirectives = (userDefinedDirectivesForNode.get(concreteEntity.name) || []).concat(
-            propagatedDirectives
-        );
-
-        withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-        withAggregateSelectionType({
-            entityAdapter: concreteEntityAdapter,
-            aggregationTypesMapper,
-            propagatedDirectives,
-            composer,
-        });
-        withWhereInputType({
-            entityAdapter: concreteEntityAdapter,
-            userDefinedFieldDirectives,
-            features,
-            composer,
-        });
-        /**
-         * TODO [translation-layer-compatibility]
-         * Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
-         */
-        augmentFulltextSchema(node, composer, concreteEntityAdapter);
-        withUniqueWhereInputType({ concreteEntityAdapter, composer });
-        withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-        withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-        withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
-        const composeNode = withObjectType({
-            entityAdapter: concreteEntityAdapter,
-            userDefinedFieldDirectives,
-            userDefinedObjectDirectives,
-            composer,
-        });
-        createRelationshipFields({
-            entityAdapter: concreteEntityAdapter,
-            schemaComposer: composer,
-            composeNode,
-            subgraph,
-            userDefinedFieldDirectives,
-        });
-        relationships = [
-            ...relationships,
-            ...createConnectionFields({
-                entityAdapter: concreteEntityAdapter,
+            const propagatedDirectives = propagatedDirectivesForNode.get(entity.name) || [];
+            const userDefinedObjectDirectives = (userDefinedDirectivesForNode.get(entity.name) || []).concat(
+                propagatedDirectives
+            );
+            const connectionFields = generateObjectType({
+                composer,
+                concreteEntityAdapter,
+                subgraph,
+                features,
                 relationshipFields,
-            }),
-        ];
-
-        ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
-        ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
-
-        if (concreteEntityAdapter.isReadable) {
-            composer.Query.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                    entityAdapter: concreteEntityAdapter,
-                }),
+                userDefinedObjectDirectives,
+                userDefinedFieldDirectives,
+                propagatedDirectives,
+                aggregationTypesMapper,
+                node,
             });
-            composer.Query.setFieldDirectives(
-                concreteEntityAdapter.operations.rootTypeFieldNames.read,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
-            composer.Query.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                    composer,
-                    concreteEntityAdapter,
-                    propagatedDirectives,
-                }),
-            });
-            composer.Query.setFieldDirectives(
-                concreteEntityAdapter.operations.rootTypeFieldNames.connection,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
-        }
-        if (concreteEntityAdapter.isAggregable) {
-            composer.Query.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                    concreteEntityAdapter,
-                }),
-            });
-            composer.Query.setFieldDirectives(
-                concreteEntityAdapter.operations.rootTypeFieldNames.aggregate,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
-        }
-
-        if (concreteEntityAdapter.isCreatable) {
-            composer.Mutation.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver({
-                    node,
-                    concreteEntityAdapter,
-                }),
-            });
-            composer.Mutation.setFieldDirectives(
-                concreteEntityAdapter.operations.rootTypeFieldNames.create,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
-        }
-
-        if (concreteEntityAdapter.isDeletable) {
-            composer.Mutation.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.delete]: deleteResolver({
-                    node,
-                    composer,
-                    concreteEntityAdapter,
-                }),
-            });
-            composer.Mutation.setFieldDirectives(
-                concreteEntityAdapter.operations.rootTypeFieldNames.delete,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
-        }
-
-        if (concreteEntityAdapter.isUpdatable) {
-            composer.Mutation.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver({
-                    node,
-                    composer,
-                    concreteEntityAdapter,
-                }),
-            });
-            composer.Mutation.setFieldDirectives(
-                concreteEntityAdapter.operations.rootTypeFieldNames.update,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
+            relationships = [...relationships, ...connectionFields];
+            return;
         }
     });
 
@@ -724,6 +617,149 @@ function doForRelationshipPropertiesType({
         composer,
     });
     withCreateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
+}
+
+function generateObjectType({
+    composer,
+    concreteEntityAdapter,
+    features,
+    subgraph,
+    relationshipFields,
+    userDefinedFieldDirectives,
+    userDefinedObjectDirectives,
+    propagatedDirectives,
+    aggregationTypesMapper,
+    node,
+}: {
+    composer: SchemaComposer;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+    features?: Neo4jFeaturesSettings;
+    subgraph?: Subgraph;
+    relationshipFields: Map<string, ObjectFields>;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    userDefinedObjectDirectives: DirectiveNode[];
+    propagatedDirectives: DirectiveNode[];
+    aggregationTypesMapper: AggregationTypesMapper;
+    node: Node;
+}) {
+    withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+    withAggregateSelectionType({
+        entityAdapter: concreteEntityAdapter,
+        aggregationTypesMapper,
+        propagatedDirectives,
+        composer,
+    });
+    withWhereInputType({
+        entityAdapter: concreteEntityAdapter,
+        userDefinedFieldDirectives,
+        features,
+        composer,
+    });
+    /**
+     * TODO [translation-layer-compatibility]
+     * Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
+     */
+    augmentFulltextSchema(node, composer, concreteEntityAdapter);
+    withUniqueWhereInputType({ concreteEntityAdapter, composer });
+    withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+    withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+    withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
+    const composeNode = withObjectType({
+        entityAdapter: concreteEntityAdapter,
+        userDefinedFieldDirectives,
+        userDefinedObjectDirectives,
+        composer,
+    });
+    createRelationshipFields({
+        entityAdapter: concreteEntityAdapter,
+        schemaComposer: composer,
+        composeNode,
+        subgraph,
+        userDefinedFieldDirectives,
+    });
+    const connectionFields = createConnectionFields({
+        entityAdapter: concreteEntityAdapter,
+        relationshipFields,
+    });
+
+    ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
+    ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
+
+    if (concreteEntityAdapter.isReadable) {
+        composer.Query.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                entityAdapter: concreteEntityAdapter,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.read,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+        composer.Query.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                concreteEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.connection,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
+    if (concreteEntityAdapter.isAggregable) {
+        composer.Query.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                concreteEntityAdapter,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.aggregate,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
+
+    if (concreteEntityAdapter.isCreatable) {
+        composer.Mutation.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver({
+                node,
+                concreteEntityAdapter,
+            }),
+        });
+        composer.Mutation.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.create,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
+
+    if (concreteEntityAdapter.isDeletable) {
+        composer.Mutation.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.delete]: deleteResolver({
+                node,
+                composer,
+                concreteEntityAdapter,
+            }),
+        });
+        composer.Mutation.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.delete,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
+
+    if (concreteEntityAdapter.isUpdatable) {
+        composer.Mutation.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver({
+                node,
+                composer,
+                concreteEntityAdapter,
+            }),
+        });
+        composer.Mutation.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.update,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
+    return connectionFields;
 }
 
 function generateInterfaceObjectType({
