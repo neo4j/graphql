@@ -26,20 +26,6 @@ import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
 export class CypherOperation extends ReadOperation {
-    constructor({
-        target,
-        relationship,
-        directed,
-        selection,
-    }: {
-        target: ConcreteEntityAdapter;
-        relationship?: RelationshipAdapter;
-        directed?: boolean;
-        selection: EntitySelection;
-    }) {
-        super({ target, relationship, directed, selection });
-    }
-
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
         // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
@@ -47,15 +33,17 @@ export class CypherOperation extends ReadOperation {
             ...this.getFieldsSubqueries(nestedContext),
             ...this.getCypherFieldsSubqueries(nestedContext)
         );
-        
+
         const authSubqueries = this.getAuthFilterSubqueries(nestedContext);
         const authPredicates = this.getAuthFilterPredicate(nestedContext);
-        
-        const authClauses = authPredicates.length ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))] : [];
-        
+
+        const authClauses = authPredicates.length
+            ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
+            : [];
+
         const ret = this.getReturnStatement(context, context.returnVariable);
         return {
-            clauses: [matchClause, fieldSubqueries, ...authClauses,  ret],
+            clauses: [matchClause, fieldSubqueries, ...authClauses, ret],
             projectionExpr: context.returnVariable,
         };
     }

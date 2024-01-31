@@ -25,7 +25,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
-describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
+describe("https://github.com/neo4j/graphql/issues/487", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
         await driver.close();
     });
 
-    test("related fields should resolve on custom queries", async () => {
+    test("related fields should resolve on custom queries (union)", async () => {
         const session = await neo4j.getSession();
 
         const typeAuthor = new UniqueType("Author");
@@ -162,22 +162,8 @@ describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
             await session.close();
         }
     });
-});
 
-describe("https://github.com/neo4j/graphql/issues/487, test on interface", () => {
-    let driver: Driver;
-    let neo4j: Neo4j;
-
-    beforeAll(async () => {
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("related fields should resolve on custom queries", async () => {
+    test("related fields should resolve on custom queries (interface)", async () => {
         const session = await neo4j.getSession();
 
         const typeAuthor = new UniqueType("Author");

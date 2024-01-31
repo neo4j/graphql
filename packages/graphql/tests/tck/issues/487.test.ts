@@ -22,12 +22,9 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
-    let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
-
-    beforeAll(() => {
-        typeDefs = gql`
+describe("https://github.com/neo4j/graphql/issues/487", () => {
+    test("related fields should resolve on custom queries (union)", async () => {
+        const typeDefs = gql`
             type Author {
                 id: ID!
             }
@@ -63,12 +60,9 @@ describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-    });
-
-    test("related fields should resolve on custom queries", async () => {
         const query = gql`
             query {
                 getThings {
@@ -136,14 +130,9 @@ describe("https://github.com/neo4j/graphql/issues/487, test on union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
-});
 
-describe("https://github.com/neo4j/graphql/issues/487, test on interface", () => {
-    let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
-
-    beforeAll(() => {
-        typeDefs = gql`
+    test("related fields should resolve on custom queries (interface)", async () => {
+        const typeDefs = gql`
             type Author {
                 id: ID!
             }
@@ -181,12 +170,9 @@ describe("https://github.com/neo4j/graphql/issues/487, test on interface", () =>
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-    });
-
-    test("related fields should resolve on custom queries", async () => {
         const query = gql`
             query {
                 getThings {
@@ -254,3 +240,5 @@ describe("https://github.com/neo4j/graphql/issues/487, test on interface", () =>
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });
+
+describe("https://github.com/neo4j/graphql/issues/487, test on interface", () => {});
