@@ -24,14 +24,17 @@ import { EventType } from "../../graphql/enums/EventType";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../types";
+import type {
+    Neo4jFeaturesSettings,
+    NodeSubscriptionsEvent,
+    RelationshipSubscriptionsEvent,
+    SubscriptionsEvent,
+} from "../../types";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import { attributeAdapterToComposeFields } from "../to-compose";
 import { getConnectedTypes, hasProperties } from "./generate-subscription-connection-types";
-import {
-    generateSubscriptionConnectionWhereType,
-    generateSubscriptionWhereType,
-} from "./generate-subscription-where-type";
+import { generateSubscriptionConnectionWhereType } from "./generate-subscription-where-type";
+import { withWhereInputType } from "../generation/where-input";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -39,12 +42,14 @@ export function generateSubscriptionTypes({
     userDefinedFieldDirectivesForNode,
     generateRelationshipTypes,
     experimental,
+    features,
 }: {
     schemaComposer: SchemaComposer;
     schemaModel: Neo4jGraphQLSchemaModel;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     generateRelationshipTypes: boolean;
     experimental: boolean;
+    features: Neo4jFeaturesSettings | undefined;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
@@ -68,13 +73,33 @@ export function generateSubscriptionTypes({
         return acc;
     }, {});
 
-    allNodes.forEach((entityAdapter) => generateSubscriptionWhereType(entityAdapter, schemaComposer));
+    allNodes.forEach((entityAdapter) =>
+        withWhereInputType({
+            entityAdapter,
+            composer: schemaComposer,
+            typeName: entityAdapter.operations.subscriptionWhereInputTypeName,
+            experimental,
+            features,
+            userDefinedFieldDirectives: userDefinedFieldDirectivesForNode[entityAdapter.name],
+            returnUndefinedIfEmpty: true,
+            alwaysAllowNesting: true,
+        })
+    );
 
     const nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>> = new Map();
     const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
     nodesWithSubscriptionOperation.forEach((entityAdapter) => {
         const eventPayload = nodeNameToEventPayloadTypes[entityAdapter.name] as ObjectTypeComposer;
-        const where = generateSubscriptionWhereType(entityAdapter, schemaComposer);
+        const where = withWhereInputType({
+            entityAdapter,
+            composer: schemaComposer,
+            typeName: entityAdapter.operations.subscriptionWhereInputTypeName,
+            experimental,
+            features,
+            userDefinedFieldDirectives: userDefinedFieldDirectivesForNode[entityAdapter.name],
+            returnUndefinedIfEmpty: true,
+            alwaysAllowNesting: true,
+        });
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: entityAdapter.operations.subscriptionEventTypeNames.create,
@@ -304,6 +329,7 @@ export function generateSubscriptionTypes({
                 entityAdapter,
                 schemaComposer,
                 experimental,
+                features,
             });
             if (entityAdapter.relationships.size > 0) {
                 if (entityAdapter.isSubscribableOnRelationshipCreate) {
