@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type * as neo4j from "neo4j-driver";
-import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import { Builder } from "./builder";
-import { Executor } from "../../../src/classes/Executor";
-import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntity } from "../../../src/schema-model/entity/ConcreteEntity";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type * as neo4j from "neo4j-driver";
+import { Executor } from "../../../src/classes/Executor";
+import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
+import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
 import type { CompositeEntity } from "../../../src/schema-model/entity/CompositeEntity";
+import type { ConcreteEntity } from "../../../src/schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../../src/types/neo4j-graphql-translation-context";
+import { Builder } from "./builder";
 
 export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4jGraphQLTranslationContext> {
     constructor(newOptions: Partial<Neo4jGraphQLTranslationContext> = {}) {
@@ -50,7 +50,6 @@ export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4
                 isAuthenticated: true,
                 isAuthenticatedParam: new Cypher.Param(true),
             },
-            experimental: false,
             ...newOptions,
         });
     }

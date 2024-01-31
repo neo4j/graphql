@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Experimental Plural option", () => {
+describe("Plural option", () => {
     test("Plural on interface and union", async () => {
         const typeDefs = gql`
             interface Animal @plural(value: "animales") {
