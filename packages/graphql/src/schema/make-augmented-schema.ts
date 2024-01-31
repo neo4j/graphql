@@ -220,47 +220,6 @@ function makeAugmentedSchema({
     // this is the new "functional" way for the above forEach
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
     const seenRelationshipPropertiesTypes = new Set<string>();
-    schemaModel.concreteEntities.forEach((concreteEntity) => {
-        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
-
-        for (const relationshipAdapter of concreteEntityAdapter.relationships.values()) {
-            {
-                if (!relationshipAdapter.propertiesTypeName) {
-                    continue;
-                }
-                if (seenRelationshipPropertiesTypes.has(relationshipAdapter.propertiesTypeName)) {
-                    // update description
-                    const propertiesObjectType = composer.getOTC(relationshipAdapter.propertiesTypeName);
-                    propertiesObjectType.setDescription(
-                        getRelationshipPropertiesTypeDescription({ relationshipAdapter, propertiesObjectType })
-                    );
-                    continue;
-                }
-                doForRelationshipPropertiesType({
-                    composer,
-                    relationshipAdapter,
-                    userDefinedDirectivesForNode,
-                    userDefinedFieldDirectivesForNode,
-                    features,
-                });
-                seenRelationshipPropertiesTypes.add(relationshipAdapter.propertiesTypeName);
-            }
-        }
-    });
-
-    // creates the type for the `edge` field that contains all possible implementations of a declared relationship
-    // an implementation being a relationship directive with different `properties` value
-    schemaModel.compositeEntities.forEach((compositeEntity) => {
-        if (!(compositeEntity instanceof InterfaceEntity)) {
-            return;
-        }
-        const interfaceEntityAdapter = new InterfaceEntityAdapter(compositeEntity);
-        for (const relationshipDeclarationAdapter of interfaceEntityAdapter.relationshipDeclarations.values()) {
-            // this is a declaration, that has multiple implementations
-            doForRelationshipDeclaration({ relationshipDeclarationAdapter, composer });
-        }
-    });
-
     schemaModel.entities.forEach((entity) => {
         if (entity instanceof UnionEntity) {
             const unionEntityAdapter = new UnionEntityAdapter(entity);
@@ -297,6 +256,7 @@ function makeAugmentedSchema({
                 userDefinedFieldDirectivesForNode,
                 propagatedDirectivesForNode,
                 aggregationTypesMapper,
+                seenRelationshipPropertiesTypes,
             });
             if (interfaceRelationships.some((r) => r.name.value === entity.name)) {
                 relationships = [...relationships, ...connectionFields];
@@ -333,6 +293,9 @@ function makeAugmentedSchema({
                 propagatedDirectives,
                 aggregationTypesMapper,
                 node,
+                seenRelationshipPropertiesTypes,
+                userDefinedDirectivesForNode,
+                userDefinedFieldDirectivesForNode,
             });
             relationships = [...relationships, ...connectionFields];
             return;
@@ -518,107 +481,6 @@ function makeAugmentedSchema({
 
 export default makeAugmentedSchema;
 
-function doForRelationshipDeclaration({
-    relationshipDeclarationAdapter,
-    composer,
-}: {
-    relationshipDeclarationAdapter: RelationshipDeclarationAdapter;
-    composer: SchemaComposer;
-}) {
-    for (const relationshipAdapter of relationshipDeclarationAdapter.relationshipImplementations) {
-        if (!relationshipAdapter.propertiesTypeName) {
-            continue;
-        }
-
-        const propertiesType = composer
-            .getOrCreateUTC(relationshipDeclarationAdapter.operations.relationshipPropertiesFieldTypename)
-            .addType(relationshipAdapter.propertiesTypeName);
-
-        composer.getOrCreateOTC(relationshipDeclarationAdapter.operations.relationshipFieldTypename, (tc) =>
-            tc.addFields({
-                cursor: new GraphQLNonNull(GraphQLString),
-                node: `${relationshipDeclarationAdapter.target.name}!`,
-                properties: propertiesType.NonNull,
-            })
-        );
-
-        withEdgeWrapperType({
-            edgeTypeName: relationshipDeclarationAdapter.operations.whereInputTypeName,
-            edgeFieldTypeName: relationshipAdapter.operations.whereInputTypeName,
-            edgeFieldAdapter: relationshipAdapter,
-            composer,
-        });
-        withEdgeWrapperType({
-            edgeTypeName: relationshipDeclarationAdapter.operations.sortInputTypeName,
-            edgeFieldTypeName: relationshipAdapter.operations.sortInputTypeName,
-            edgeFieldAdapter: relationshipAdapter,
-            composer,
-        });
-
-        if (relationshipAdapter.hasCreateInputFields) {
-            withEdgeWrapperType({
-                edgeTypeName: relationshipDeclarationAdapter.operations.createInputTypeName,
-                edgeFieldTypeName: relationshipAdapter.operations.edgeCreateInputTypeName,
-                edgeFieldAdapter: relationshipAdapter,
-                composer,
-            });
-        }
-        if (relationshipAdapter.hasUpdateInputFields) {
-            withEdgeWrapperType({
-                edgeTypeName: relationshipDeclarationAdapter.operations.edgeUpdateInputTypeName,
-                edgeFieldTypeName: relationshipAdapter.operations.edgeUpdateInputTypeName,
-                edgeFieldAdapter: relationshipAdapter,
-                composer,
-            });
-        }
-
-        if (relationshipAdapter.aggregationWhereFields) {
-            withEdgeWrapperType({
-                edgeTypeName: relationshipDeclarationAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
-                edgeFieldTypeName: relationshipAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
-                edgeFieldAdapter: relationshipAdapter,
-                composer,
-            });
-        }
-    }
-}
-function doForRelationshipPropertiesType({
-    composer,
-    relationshipAdapter,
-    userDefinedDirectivesForNode,
-    userDefinedFieldDirectivesForNode,
-    features,
-}: {
-    composer: SchemaComposer;
-    relationshipAdapter: RelationshipAdapter;
-    userDefinedDirectivesForNode: Map<string, DirectiveNode[]>;
-    userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
-    features?: Neo4jFeaturesSettings;
-}) {
-    if (!relationshipAdapter.propertiesTypeName) {
-        return;
-    }
-    const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(
-        relationshipAdapter.propertiesTypeName
-    ) as Map<string, DirectiveNode[]>;
-    const userDefinedInterfaceDirectives = userDefinedDirectivesForNode.get(relationshipAdapter.name) || [];
-    withObjectType({
-        entityAdapter: relationshipAdapter,
-        userDefinedFieldDirectives,
-        userDefinedObjectDirectives: userDefinedInterfaceDirectives,
-        composer,
-    });
-    withSortInputType({ relationshipAdapter, userDefinedFieldDirectives, composer });
-    withUpdateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
-    withWhereInputType({
-        entityAdapter: relationshipAdapter,
-        userDefinedFieldDirectives,
-        features,
-        composer,
-    });
-    withCreateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
-}
-
 function generateObjectType({
     composer,
     concreteEntityAdapter,
@@ -630,6 +492,9 @@ function generateObjectType({
     propagatedDirectives,
     aggregationTypesMapper,
     node,
+    seenRelationshipPropertiesTypes,
+    userDefinedDirectivesForNode,
+    userDefinedFieldDirectivesForNode,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
@@ -641,6 +506,9 @@ function generateObjectType({
     propagatedDirectives: DirectiveNode[];
     aggregationTypesMapper: AggregationTypesMapper;
     node: Node;
+    seenRelationshipPropertiesTypes: Set<string>;
+    userDefinedDirectivesForNode: Map<string, DirectiveNode[]>;
+    userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
 }) {
     withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
     withAggregateSelectionType({
@@ -676,6 +544,10 @@ function generateObjectType({
         composeNode,
         subgraph,
         userDefinedFieldDirectives,
+        userDefinedDirectivesForNode,
+        userDefinedFieldDirectivesForNode,
+        features,
+        seenRelationshipPropertiesTypes,
     });
     const connectionFields = createConnectionFields({
         entityAdapter: concreteEntityAdapter,
@@ -772,6 +644,7 @@ function generateInterfaceObjectType({
     userDefinedInterfaceDirectives,
     propagatedDirectivesForNode,
     aggregationTypesMapper,
+    seenRelationshipPropertiesTypes,
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
@@ -782,6 +655,7 @@ function generateInterfaceObjectType({
     userDefinedInterfaceDirectives: DirectiveNode[];
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
     aggregationTypesMapper: AggregationTypesMapper;
+    seenRelationshipPropertiesTypes: Set<string>;
 }) {
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
         string,
@@ -809,6 +683,10 @@ function generateInterfaceObjectType({
         composeNode: composeInterface,
         subgraph,
         userDefinedFieldDirectives,
+        userDefinedDirectivesForNode: new Map<string, DirectiveNode[]>(),
+        userDefinedFieldDirectivesForNode,
+        features,
+        seenRelationshipPropertiesTypes,
     });
 
     const connectionFields = createConnectionFields({
