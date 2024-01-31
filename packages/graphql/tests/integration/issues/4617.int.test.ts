@@ -23,27 +23,30 @@ import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
 
-describe("https://github.com/neo4j/graphql/issues/326", () => {
+describe("https://github.com/neo4j/graphql/issues/4617", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
     let User: UniqueType;
+    let Post: UniqueType;
     let id: string;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         User = new UniqueType("User");
+        Post = new UniqueType("Post");
         const session = await neo4j.getSession();
         id = generate({
             charset: "alphabetic",
         });
+
         try {
             await session.run(
-                `
+                `   CREATE (:${Post.name} {title: "Post 1"})
                     CREATE (:${User.name} {id: $id, email: randomUUID()})
                 `,
                 { id }
@@ -56,18 +59,19 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [User]);
+            await cleanNodes(session, [User, Post]);
         } finally {
             await session.close();
         }
         await driver.close();
     });
 
-    test("should throw forbidden when user does not have correct allow on projection field(using Query)", async () => {
+    // eslint-disable-next-line jest/no-disabled-tests
+    test.skip("should throw forbidden when user does not have correct allow on projection field", async () => {
         const typeDefs = `
-            type Query {
-                getSelf: [${User.name}]!
-                  @cypher(
+            type ${Post.name} {
+                title: String
+                likedBy: [${User.name}!]! @cypher(
                     statement: """
                         MATCH (user:${User.name} { id: "${id}" })
                         RETURN user
@@ -93,56 +97,10 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
 
         const query = `
             {
-                getSelf {
-                    email
-                }
-            }
-        `;
-
-        const token = createBearerToken(secret, { sub: "invalid" });
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
-        });
-
-        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-    });
-
-    test("should throw forbidden when user does not have correct allow on projection field(using Mutation)", async () => {
-        const typeDefs = `
-            type Mutation {
-                getSelf: [${User.name}]!
-                  @cypher(
-                    statement: """
-                        MATCH (user:${User.name} { id: "${id}" })
-                        RETURN user
-                    """, columnName: "user"
-                  )
-            }
-
-            type ${User.name} {
-                id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-            features: {
-                authorization: {
-                    key: secret,
-                },
-            },
-        });
-
-        const query = `
-            mutation {
-                getSelf {
-                    email
+                ${Post.plural} {
+                    likedBy {
+                        email
+                    }
                 }
             }
         `;

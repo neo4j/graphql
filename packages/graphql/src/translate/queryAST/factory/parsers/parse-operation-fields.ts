@@ -17,8 +17,13 @@
  * limitations under the License.
  */
 
+import type { Neo4jGraphQLSchemaModel } from "../../../../schema-model/Neo4jGraphQLSchemaModel";
+import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import { isUnionEntity } from "../../utils/is-union-entity";
 
 export type OperationFieldMatch = {
     isRead: boolean;
@@ -26,10 +31,41 @@ export type OperationFieldMatch = {
     isAggregation: boolean;
     isCreate: boolean;
     isUpdate: boolean;
+    isCustomCypher: boolean;
     isDelete: boolean;
 };
 
-export function parseOperationField(field: string, entityAdapter: ConcreteEntityAdapter): OperationFieldMatch {
+export function parseTopLevelOperationField(
+    field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter?: EntityAdapter
+): OperationFieldMatch {
+    if (!entityAdapter) {
+        return {
+            isRead: false,
+            isConnection: false,
+            isAggregation: false,
+            isCreate: false,
+            isUpdate: false,
+            isCustomCypher: true,
+            isDelete: false,
+        };
+    }
+    if (isInterfaceEntity(entityAdapter)) {
+        return parseInterfaceOperationField(field, schemaModel, entityAdapter);
+    }
+    if (isUnionEntity(entityAdapter)) {
+        return parseUnionOperationField(field, schemaModel, entityAdapter);
+    }
+
+    return parseOperationField(field, schemaModel, entityAdapter);
+}
+
+function parseOperationField(
+    field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter: ConcreteEntityAdapter
+): OperationFieldMatch {
     const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
     return {
         isRead: field === rootTypeFieldNames.read,
@@ -37,12 +73,16 @@ export function parseOperationField(field: string, entityAdapter: ConcreteEntity
         isAggregation: field === rootTypeFieldNames.aggregate,
         isCreate: field === rootTypeFieldNames.create,
         isUpdate: field === rootTypeFieldNames.update,
+        isCustomCypher: !!(
+            schemaModel.operations.Query?.findAttribute(field) || schemaModel.operations.Mutation?.findAttribute(field)
+        ),
         isDelete: field === rootTypeFieldNames.delete,
     };
 }
 
-export function parseInterfaceOperationField(
+function parseInterfaceOperationField(
     field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
     entityAdapter: InterfaceEntityAdapter
 ): OperationFieldMatch {
     const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
@@ -52,6 +92,28 @@ export function parseInterfaceOperationField(
         isAggregation: field === rootTypeFieldNames.aggregate,
         isCreate: field === rootTypeFieldNames.create,
         isUpdate: field === rootTypeFieldNames.update,
+        isCustomCypher: !!(
+            schemaModel.operations.Query?.findAttribute(field) || schemaModel.operations.Mutation?.findAttribute(field)
+        ),
+        isDelete: false, //delete not supported as interface top-level operation
+    };
+}
+
+function parseUnionOperationField(
+    field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter: UnionEntityAdapter
+): OperationFieldMatch {
+    const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
+    return {
+        isRead: field === rootTypeFieldNames.read,
+        isConnection: false,
+        isAggregation: false,
+        isCreate: false,
+        isUpdate: false,
+        isCustomCypher: !!(
+            schemaModel.operations.Query?.findAttribute(field) || schemaModel.operations.Mutation?.findAttribute(field)
+        ),
         isDelete: false, //delete not supported as interface top-level operation
     };
 }

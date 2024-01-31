@@ -39,16 +39,13 @@ export function cypherResolver({
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info);
-        const statement = attributeAdapter.annotations.cypher?.statement as string; // this is known because of how we get here
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateTopLevelCypher({
             context: context as Neo4jGraphQLTranslationContext,
             field,
-            args,
             type,
-            statement,
         });
 
         const executeResult = await execute({
