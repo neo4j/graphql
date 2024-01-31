@@ -198,7 +198,6 @@ describe("Cypher Auth Allow", () => {
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this1 { .content } AS this1
                 RETURN collect(this1) AS var3
@@ -294,14 +293,12 @@ describe("Cypher Auth Allow", () => {
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WITH *
                 WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 CALL {
                     WITH this1
                     MATCH (this1)-[this3:HAS_COMMENT]->(this4:Comment)
                     OPTIONAL MATCH (this4)<-[:HAS_COMMENT]-(this5:User)
                     WITH *, count(this5) AS creatorCount
-                    WITH *
                     WITH *
                     WHERE (this4.id = $param4 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this4 { .content } AS this4

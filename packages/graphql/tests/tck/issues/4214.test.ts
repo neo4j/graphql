@@ -225,6 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             }
             CALL {
                 WITH this0
+                WITH *
                 CALL {
                     WITH this0
                     MATCH (this0)-[create_this0:ITEM_TRANSACTED]->(create_this1:Transaction)

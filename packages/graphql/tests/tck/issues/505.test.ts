@@ -128,7 +128,6 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 OPTIONAL MATCH (this1)<-[:HAS_PAGE]-(this3:Workspace)
                 WITH *, count(this3) AS workspaceCount
                 WITH *
-                WITH *
                 WHERE ($isAuthenticated = true AND ((ownerCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.authId = $jwt.sub)) OR (($param3 IS NOT NULL AND this1.shared = $param3) AND (workspaceCount <> 0 AND (size([(this3)<-[:MEMBER_OF]-(this4:User) WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub) | 1]) > 0 OR size([(this3)-[:HAS_ADMIN]->(this5:User) WHERE ($jwt.sub IS NOT NULL AND this5.authId = $jwt.sub) | 1]) > 0)))))
                 WITH this1 { .id } AS this1
                 RETURN collect(this1) AS var6
@@ -171,7 +170,6 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 WITH *, count(this4) AS ownerCount
                 OPTIONAL MATCH (this3)<-[:HAS_PAGE]-(this5:Workspace)
                 WITH *, count(this5) AS workspaceCount
-                WITH *
                 WITH *
                 WHERE ($isAuthenticated = true AND ((ownerCount <> 0 AND ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub)) OR (($param3 IS NOT NULL AND this3.shared = $param3) AND (workspaceCount <> 0 AND (size([(this5)<-[:MEMBER_OF]-(this6:User) WHERE ($jwt.sub IS NOT NULL AND this6.authId = $jwt.sub) | 1]) > 0 OR size([(this5)-[:HAS_ADMIN]->(this7:User) WHERE ($jwt.sub IS NOT NULL AND this7.authId = $jwt.sub) | 1]) > 0)))))
                 WITH this3 { .id } AS this3
