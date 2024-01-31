@@ -116,8 +116,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {

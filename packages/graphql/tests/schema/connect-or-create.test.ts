@@ -483,8 +483,8 @@ describe("Connect Or Create", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -980,10 +980,10 @@ describe("Connect Or Create", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -1113,8 +1113,8 @@ describe("Connect Or Create", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {

@@ -162,8 +162,8 @@ describe("200", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -195,8 +195,8 @@ describe("200", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateCategoriesMutationResponse {

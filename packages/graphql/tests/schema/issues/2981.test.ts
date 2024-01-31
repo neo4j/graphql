@@ -883,8 +883,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateBookTitleEnsMutationResponse {

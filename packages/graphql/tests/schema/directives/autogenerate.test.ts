@@ -63,8 +63,8 @@ describe("Autogenerate", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -169,8 +169,8 @@ describe("Autogenerate", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

@@ -627,8 +627,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -1092,8 +1092,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -1519,8 +1519,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
+                      longest: String
+                      shortest: String
                     }
 
                     type StringAggregateSelectionNullable {
@@ -1955,8 +1955,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
+                      longest: String
+                      shortest: String
                     }
 
                     type StringAggregateSelectionNullable {
@@ -2486,8 +2486,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
+                      longest: String
+                      shortest: String
                     }
 
                     type StringAggregateSelectionNullable {
@@ -3019,8 +3019,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
+                      longest: String
+                      shortest: String
                     }
 
                     type StringAggregateSelectionNullable {

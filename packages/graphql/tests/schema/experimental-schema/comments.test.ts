@@ -983,10 +983,10 @@ describe("Comments", () => {
                 }
 
                 type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
                 }
 
                 type Movie implements Production {
@@ -1242,8 +1242,8 @@ describe("Comments", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateActorsMutationResponse {

@@ -255,17 +255,17 @@ describe("typename_IN", () => {
             }
 
             type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -571,8 +571,8 @@ describe("typename_IN", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

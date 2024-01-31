@@ -304,10 +304,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -563,8 +563,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1141,10 +1141,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -2141,8 +2141,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2727,10 +2727,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -3783,8 +3783,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -4169,8 +4169,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {
@@ -4885,10 +4885,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             interface Interface1 {
@@ -5235,8 +5235,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {
@@ -5973,10 +5973,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             interface Interface1 {
@@ -6302,8 +6302,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {

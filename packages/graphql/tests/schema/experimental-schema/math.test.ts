@@ -67,10 +67,10 @@ describe("Algebraic", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -215,10 +215,10 @@ describe("Algebraic", () => {
             scalar BigInt
 
             type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
+              average: BigInt
+              max: BigInt
+              min: BigInt
+              sum: BigInt
             }
 
             \\"\\"\\"
@@ -410,10 +410,10 @@ describe("Algebraic", () => {
             }
 
             type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
             type IDAggregateSelectionNullable {
@@ -831,10 +831,10 @@ describe("Algebraic", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -1103,8 +1103,8 @@ describe("Algebraic", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateDirectorsMutationResponse {
@@ -1189,10 +1189,10 @@ describe("Algebraic", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -1710,8 +1710,8 @@ describe("Algebraic", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -2450,8 +2450,8 @@ describe("Algebraic", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

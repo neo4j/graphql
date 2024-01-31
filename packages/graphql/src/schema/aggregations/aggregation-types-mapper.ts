@@ -61,19 +61,19 @@ export class AggregationTypesMapper {
         nullable: boolean;
     }): Record<string, ObjectTypeComposer<unknown, unknown>> {
         const composeInt = {
-            type: this.makeNullable("Int", nullable),
+            type: "Int",
             resolve: numericalResolver,
             args: {},
         };
 
         const composeFloat = {
-            type: this.makeNullable("Float", nullable),
+            type: "Float",
             resolve: numericalResolver,
             args: {},
         };
 
         const composeId = {
-            type: this.makeNullable("ID", nullable),
+            type: "ID",
             resolve: idResolver,
             args: {},
         };
@@ -96,8 +96,8 @@ export class AggregationTypesMapper {
             {
                 name: "String",
                 fields: {
-                    shortest: this.makeNullable("String", nullable),
-                    longest: this.makeNullable("String", nullable),
+                    shortest: "String",
+                    longest: "String",
                 },
                 directives,
             },
@@ -124,10 +124,10 @@ export class AggregationTypesMapper {
             {
                 name: "BigInt",
                 fields: {
-                    max: this.makeNullable("BigInt", nullable),
-                    min: this.makeNullable("BigInt", nullable),
-                    average: this.makeNullable("BigInt", nullable),
-                    sum: this.makeNullable("BigInt", nullable),
+                    max: "BigInt",
+                    min: "BigInt",
+                    average: "BigInt",
+                    sum: "BigInt",
                 },
                 directives,
             },

@@ -106,8 +106,8 @@ describe("Pluralize consistency", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type SuperFriendsConnection {

@@ -216,10 +216,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -956,8 +956,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type Subscription {

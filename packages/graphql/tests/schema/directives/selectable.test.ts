@@ -171,8 +171,8 @@ describe("@selectable", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {
@@ -339,8 +339,8 @@ describe("@selectable", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -501,8 +501,8 @@ describe("@selectable", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -722,8 +722,8 @@ describe("@selectable", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type StringAggregateSelectionNullable {
@@ -1172,8 +1172,8 @@ describe("@selectable", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -1636,8 +1636,8 @@ describe("@selectable", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -2170,8 +2170,8 @@ describe("@selectable", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -2719,8 +2719,8 @@ describe("@selectable", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -3239,8 +3239,8 @@ describe("@selectable", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
@@ -3773,8 +3773,8 @@ describe("@selectable", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type StringAggregateSelectionNullable {
