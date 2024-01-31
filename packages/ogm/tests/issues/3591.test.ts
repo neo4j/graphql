@@ -279,8 +279,8 @@ describe("issues/3591", () => {
 
             export type IdAggregateSelectionNonNullable = {
               __typename?: \\"IDAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"ID\\"][\\"output\\"];
-              longest: Scalars[\\"ID\\"][\\"output\\"];
+              shortest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
             };
 
             /** Pagination information (Relay) */
