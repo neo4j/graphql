@@ -149,8 +149,4 @@ export class InterfaceEntityAdapter {
     public get subscriptionEventPayloadFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
     }
-
-    public get subscriptionWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
-    }
 }

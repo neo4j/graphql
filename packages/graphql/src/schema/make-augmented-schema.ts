@@ -460,6 +460,7 @@ function makeAugmentedSchema({
             userDefinedFieldDirectivesForNode,
             generateRelationshipTypes: !isCDCEngine,
             experimental,
+            features,
         });
     }
 
