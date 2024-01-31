@@ -4619,7 +4619,7 @@ describe("Directive-preserve", () => {
             }
 
             input UserConnectInput {
-              content: UserContentConnectInput
+              content: UserContentConnectInput @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserContentBlogConnectFieldInput {
@@ -4668,8 +4668,8 @@ describe("Directive-preserve", () => {
             }
 
             input UserContentConnectInput {
-              Blog: [UserContentBlogConnectFieldInput!]
-              Post: [UserContentPostConnectFieldInput!]
+              Blog: [UserContentBlogConnectFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
+              Post: [UserContentPostConnectFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
             }
 
             type UserContentConnection {
@@ -4684,23 +4684,23 @@ describe("Directive-preserve", () => {
             }
 
             input UserContentCreateFieldInput {
-              Blog: [UserContentBlogCreateFieldInput!]
-              Post: [UserContentPostCreateFieldInput!]
+              Blog: [UserContentBlogCreateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
+              Post: [UserContentPostCreateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserContentCreateInput {
-              Blog: UserContentBlogFieldInput
-              Post: UserContentPostFieldInput
+              Blog: UserContentBlogFieldInput @deprecated(reason: \\"Do not use user.content\\")
+              Post: UserContentPostFieldInput @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserContentDeleteInput {
-              Blog: [UserContentBlogDeleteFieldInput!]
-              Post: [UserContentPostDeleteFieldInput!]
+              Blog: [UserContentBlogDeleteFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
+              Post: [UserContentPostDeleteFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserContentDisconnectInput {
-              Blog: [UserContentBlogDisconnectFieldInput!]
-              Post: [UserContentPostDisconnectFieldInput!]
+              Blog: [UserContentBlogDisconnectFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
+              Post: [UserContentPostDisconnectFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserContentPostConnectFieldInput {
@@ -4751,21 +4751,21 @@ describe("Directive-preserve", () => {
             }
 
             input UserContentUpdateInput {
-              Blog: [UserContentBlogUpdateFieldInput!]
-              Post: [UserContentPostUpdateFieldInput!]
+              Blog: [UserContentBlogUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
+              Post: [UserContentPostUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserCreateInput {
-              content: UserContentCreateInput
+              content: UserContentCreateInput @deprecated(reason: \\"Do not use user.content\\")
               name: String
             }
 
             input UserDeleteInput {
-              content: UserContentDeleteInput
+              content: UserContentDeleteInput @deprecated(reason: \\"Do not use user.content\\")
             }
 
             input UserDisconnectInput {
-              content: UserContentDisconnectInput
+              content: UserContentDisconnectInput @deprecated(reason: \\"Do not use user.content\\")
             }
 
             type UserEdge {
@@ -4783,7 +4783,7 @@ describe("Directive-preserve", () => {
             }
 
             input UserRelationInput {
-              content: UserContentCreateFieldInput
+              content: UserContentCreateFieldInput @deprecated(reason: \\"Do not use user.content\\")
             }
 
             \\"\\"\\"
@@ -4794,7 +4794,7 @@ describe("Directive-preserve", () => {
             }
 
             input UserUpdateInput {
-              content: UserContentUpdateInput
+              content: UserContentUpdateInput @deprecated(reason: \\"Do not use user.content\\")
               name: String
             }
 
