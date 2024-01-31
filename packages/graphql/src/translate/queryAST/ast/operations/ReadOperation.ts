@@ -100,79 +100,6 @@ export class ReadOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    private transpileNestedRelationship(
-        entity: RelationshipAdapter,
-        context: QueryASTContext
-    ): OperationTranspileResult {
-        const isCreateSelection = context.env.topLevelOperationName === "CREATE";
-        //TODO: dupe from transpile
-        if (!hasTarget(context)) {
-            throw new Error("No parent node found!");
-        }
-
-        // eslint-disable-next-line prefer-const
-        let { selection: matchClause, nestedContext } = this.selection.apply(context);
-
-        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
-        const filterPredicates = this.getPredicates(nestedContext);
-        const fieldSubqueries = this.getFieldsSubqueries(nestedContext);
-        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
-        const subqueries = Cypher.concat(...fieldSubqueries, ...cypherFieldSubqueries);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
-
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).innerWith(nestedContext.target)
-        );
-
-        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
-        const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
-
-        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
-            return f.getSelection(nestedContext);
-        });
-        if (extraMatches.length > 0) {
-            extraMatches = [matchClause, ...extraMatches];
-            matchClause = new Cypher.With("*");
-        }
-
-        let filterSubqueryWith: Cypher.With | undefined;
-        let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
-        // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFilterSubqueries.length > 0 || authFiltersPredicate.length > 0;
-        if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
-            if (!isCreateSelection || authFilterSubqueries.length) {
-                filterSubqueriesClause = Cypher.concat(...filterSubqueries);
-                // for creates auth filters sometimes use variables from the subquery
-                filterSubqueryWith = new Cypher.With("*");
-            }
-        }
-
-        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
-        if (wherePredicate) {
-            if (filterSubqueryWith) {
-                filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
-            } else {
-                matchClause.where(wherePredicate);
-            }
-        }
-
-        const clause = Cypher.concat(
-            ...extraMatches,
-            matchClause,
-            ...authFilterSubqueries,
-            filterSubqueriesClause,
-            filterSubqueryWith,
-            subqueries,
-            ...sortSubqueries,
-            ret
-        );
-
-        return {
-            clauses: [clause],
-            projectionExpr: context.returnVariable,
-        };
-    }
-
     protected getProjectionClause(
         context: QueryASTContext,
         returnVariable: Cypher.Variable,
@@ -199,28 +126,26 @@ export class ReadOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (this.relationship) {
-            return this.transpileNestedRelationship(this.relationship, context);
-        }
-
         // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
 
-        const isCreateSelection = nestedContext.env.topLevelOperationName === "CREATE";
-        const isUpdateSelection = nestedContext.env.topLevelOperationName === "UPDATE";
+        const topLevelOperationName = (this.relationship ? context : nestedContext).env.topLevelOperationName;
+        const isCreateSelection = topLevelOperationName === "CREATE";
+        const isUpdateSelection = topLevelOperationName === "UPDATE";
         if (isCreateSelection || isUpdateSelection) {
             if (!context.hasTarget()) {
                 throw new Error("Invalid target for create operation");
             }
-            // Match is not applied on mutations (last concat ignores the top level match) so we revert the context apply
-            nestedContext = context;
+            if (!this.relationship) {
+                // Match is not applied on mutations (last concat ignores the top level match) so we revert the context apply
+                nestedContext = context;
+            }
         }
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         const filterPredicates = this.getPredicates(nestedContext);
         const fieldSubqueries = this.getFieldsSubqueries(nestedContext);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
-        const subqueries = Cypher.concat(...fieldSubqueries);
         const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
@@ -228,72 +153,68 @@ export class ReadOperation extends Operation {
         );
 
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
-        const ret: Cypher.Return = this.getReturnStatement(
-            isCreateSelection || isUpdateSelection ? context : nestedContext,
-            nestedContext.returnVariable
-        );
-
-        const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
-            return f.getSelection(nestedContext);
-        });
+        const ret: Cypher.Return = this.relationship
+            ? this.getProjectionClause(nestedContext, context.returnVariable, this.relationship.isList)
+            : this.getReturnStatement(
+                  isCreateSelection || isUpdateSelection ? context : nestedContext,
+                  nestedContext.returnVariable
+              );
 
         let filterSubqueryWith: Cypher.With | undefined;
-        let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
+        let filterSubqueriesClause: Cypher.Clause | undefined;
         // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFiltersPredicate.length > 0;
-        if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
+        const shouldAddWithForAuth = authFilterSubqueries.length || authFiltersPredicate.length;
+        if (filterSubqueries.length || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
-            if (!isCreateSelection) {
+            if (!isCreateSelection || authFilterSubqueries.length) {
                 filterSubqueryWith = new Cypher.With("*");
             }
         }
 
-        const wherePredicate = isCreateSelection
-            ? filterPredicates
-            : Cypher.and(filterPredicates, ...authFiltersPredicate);
+        let sortAndLimitBlock: Cypher.Clause | undefined;
+        let subqueries: Cypher.Clause;
+        if (this.relationship) {
+            subqueries = Cypher.concat(...fieldSubqueries, ...cypherFieldSubqueries, ...sortSubqueries);
+        } else {
+            subqueries = Cypher.concat(...fieldSubqueries);
 
-        let extraMatchesWith: Cypher.With | undefined;
-        if (wherePredicate) {
-            if (filterSubqueryWith) {
-                filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
-            } else if (extraMatches.length) {
-                extraMatchesWith = new Cypher.With("*");
-                extraMatchesWith.where(wherePredicate);
-            } else {
-                matchClause.where(wherePredicate);
+            let sortClause: Cypher.With | undefined;
+            if (this.sortFields.length || this.pagination) {
+                sortClause = new Cypher.With("*");
+                this.addSortToClause(nestedContext, nestedContext.target, sortClause);
             }
+            const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
+
+            sortAndLimitBlock = this.hasCypherSort()
+                ? Cypher.concat(...cypherFieldSubqueries, sortBlock)
+                : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
         }
-
-        let sortClause: Cypher.With | undefined;
-        if (this.sortFields.length > 0 || this.pagination) {
-            sortClause = new Cypher.With("*");
-            this.addSortToClause(nestedContext, nestedContext.target, sortClause);
-        }
-
-        const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
-
-        const sortAndLimitBlock: Cypher.Clause = this.hasCypherSort()
-            ? Cypher.concat(...cypherFieldSubqueries, sortBlock)
-            : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
         let clause: Cypher.Clause;
-        // Top-level read part of a mutation does not contain the MATCH clause as it's implicit in the mutation.
-        if (isCreateSelection) {
+        if (isCreateSelection && !this.relationship) {
+            // Top-level read part of a mutation does not contain the MATCH clause as it's implicit in the mutation.
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
-        } else if (isUpdateSelection) {
-            const matchBlock = extraMatches.length > 0 ? [...extraMatches, extraMatchesWith] : [];
-            clause = Cypher.concat(
-                ...matchBlock,
-                ...authFilterSubqueries,
-                filterSubqueriesClause,
-                filterSubqueryWith,
-                sortAndLimitBlock,
-                subqueries,
-                ret
-            );
         } else {
-            const matchBlock =
-                extraMatches.length > 0 ? [matchClause, ...extraMatches, extraMatchesWith] : [matchClause];
+            const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => f.getSelection(nestedContext));
+            let extraMatchesWith: Cypher.With | undefined;
+
+            const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
+            if (wherePredicate) {
+                if (filterSubqueryWith) {
+                    filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
+                } else if (extraMatches.length) {
+                    extraMatchesWith = new Cypher.With("*").where(wherePredicate);
+                } else {
+                    matchClause.where(wherePredicate);
+                }
+            }
+
+            const matchBlock: (SelectionClause | undefined)[] = [];
+            if (!isUpdateSelection || this.relationship) {
+                matchBlock.push(matchClause);
+            }
+            matchBlock.push(...extraMatches, extraMatchesWith);
+
             clause = Cypher.concat(
                 ...matchBlock,
                 ...authFilterSubqueries,
