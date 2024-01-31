@@ -23,8 +23,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "./ReadOperation";
-import type { OperationTranspileResult } from "./operations";
-import { MutationOperation } from "./operations";
+import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 /**
  * This is currently just a dummy tree node,
@@ -63,4 +62,3 @@ export class CreateOperation extends MutationOperation {
         });
     }
 }
-

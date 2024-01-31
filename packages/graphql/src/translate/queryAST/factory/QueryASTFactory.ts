@@ -50,12 +50,21 @@ export class QueryASTFactory {
         this.operationsFactory = new OperationsFactory(this);
     }
 
-    public createQueryAST(
-        resolveTree: ResolveTree,
-        entityAdapter: EntityAdapter,
-        context: Neo4jGraphQLTranslationContext
-    ): QueryAST {
-        const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context, "this");
+    public createQueryAST({
+        resolveTree,
+        entityAdapter,
+        context,
+    }: {
+        resolveTree: ResolveTree;
+        entityAdapter?: EntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+    }): QueryAST {
+        const operation = this.operationsFactory.createTopLevelOperation({
+            entity: entityAdapter,
+            resolveTree,
+            context,
+            varName: "this",
+        });
         return new QueryAST(operation);
     }
 }

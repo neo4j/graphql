@@ -70,10 +70,10 @@ describe("https://github.com/neo4j/graphql/issues/3905", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            WITH [[{entity_id:1, other_entity_id: 2}],[{entity_id: 2, other_entity_id:3},{entity_id:3, other_entity_id: 4}]] as paths
-            RETURN {paths: paths} as result
+                WITH [[{entity_id:1, other_entity_id: 2}],[{entity_id: 2, other_entity_id:3},{entity_id:3, other_entity_id: 4}]] as paths
+                RETURN {paths: paths} as result
             }
-            WITH result as this
+            WITH result AS this
             RETURN this { .paths } AS this"
         `);
 

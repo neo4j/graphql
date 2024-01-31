@@ -55,16 +55,16 @@ export default async function unwindCreate({
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
-    const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!concreteEntityAdapter) {
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!entityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel, context.experimental).createQueryAST(
+    const queryAST = new QueryASTFactory(context.schemaModel, context.experimental).createQueryAST({
         resolveTree,
-        concreteEntityAdapter,
-        context
-    );
+        entityAdapter,
+        context,
+    });
     debug(queryAST.print());
     const queryASTEnv = new QueryASTEnv();
     const queryASTContext = new QueryASTContext({
