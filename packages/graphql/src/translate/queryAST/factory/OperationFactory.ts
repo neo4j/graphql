@@ -152,7 +152,7 @@ export class OperationsFactory {
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
                     let subGraphWhere;
-                    if (context.resolveTree.name === "_entities") {
+                    if (context.resolveTree.name === "_entities" && reference) {
                         if (!reference) {
                             throw new Error("Transpilation error: SubGraph reference not found");
                         }
