@@ -170,7 +170,7 @@ export function createRelationshipFields({
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
-    composeNode: ObjectTypeComposer | InterfaceTypeComposer; // remove this just call with* fn
+    composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     seenRelationshipPropertiesTypes: Set<string>;
@@ -191,6 +191,9 @@ export function createRelationshipFields({
         if (!relationshipAdapter) {
             return;
         }
+
+        // TODO: save relationshipDeclaration on relationshipAdapter sth like implementedDeclaration
+        // and merge these 2 into 1 RelationshipProperties generation function
         if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
             doForRelationshipDeclaration({
                 relationshipDeclarationAdapter: relationshipAdapter,
