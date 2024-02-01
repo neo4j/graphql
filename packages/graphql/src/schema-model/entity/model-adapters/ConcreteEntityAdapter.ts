@@ -228,10 +228,6 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
     }
 
-    public get subscriptionWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
-    }
-
     public findRelationship(name: string): RelationshipAdapter | undefined {
         return this.relationships.get(name);
     }
