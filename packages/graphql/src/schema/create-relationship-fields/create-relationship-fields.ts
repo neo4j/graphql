@@ -18,7 +18,7 @@
  */
 
 import { DirectiveNode, GraphQLNonNull, GraphQLString } from "graphql";
-import type { Directive, InterfaceTypeComposer, SchemaComposer, UnionTypeComposer } from "graphql-compose";
+import type { Directive, InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
 import { ObjectTypeComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";

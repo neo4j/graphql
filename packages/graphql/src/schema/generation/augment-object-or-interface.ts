@@ -17,18 +17,13 @@
  * limitations under the License.
  */
 import { DirectiveNode, GraphQLInt, GraphQLResolveInfo, GraphQLString } from "graphql";
-import type {
-    AnyTypeComposer,
-    Directive,
-    ObjectTypeComposerArgumentConfigMapDefinition,
-    SchemaComposer,
-} from "graphql-compose";
+import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { ConnectionQueryArgs } from "../../types";
 import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
@@ -61,12 +56,17 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
     }
 
     if (generateRelFieldArgs) {
-        // TODO: replace name reference with getType method
+        const relationshipTarget =
+            relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.originalTarget
+                ? relationshipAdapter.originalTarget
+                : relationshipAdapter.target;
+
         const optionsTypeName =
-            relationshipAdapter.target instanceof UnionEntityAdapter
+            relationshipTarget instanceof UnionEntityAdapter
                 ? QueryOptions
-                : relationshipAdapter.target.operations.optionsInputTypeName;
-        const whereTypeName = relationshipAdapter.target.operations.whereInputTypeName;
+                : relationshipTarget.operations.optionsInputTypeName;
+        const whereTypeName = relationshipTarget.operations.whereInputTypeName;
+
         const nodeFieldsArgs = {
             where: whereTypeName,
             options: optionsTypeName,

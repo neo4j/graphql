@@ -52,6 +52,8 @@ import type { NestedOperation, QueryDirection, RelationshipDirection } from "./r
 import { Relationship } from "./relationship/Relationship";
 import { isInArray } from "../utils/is-in-array";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
+import { Entity } from "./entity/Entity";
+import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -238,13 +240,21 @@ function hydrateRelationships(
     if (!definition.fields?.length) {
         return;
     }
+
     for (const fieldDefinition of definition.fields) {
+        const { firstDeclaredInTypeName, originalTarget } = getFirstDeclaration(
+            definition,
+            fieldDefinition.name.value,
+            definitionCollection,
+            schema
+        );
         const relationshipField = generateRelationshipField(
             fieldDefinition,
             schema,
             entity,
             definitionCollection,
-            getTypeNameWhereRelationshipFirstDeclared(definition, fieldDefinition.name.value, definitionCollection)
+            firstDeclaredInTypeName,
+            originalTarget
         );
         if (relationshipField) {
             entity.addRelationship(relationshipField);
@@ -269,12 +279,18 @@ function hydrateRelationshipDeclarations(
         return;
     }
     for (const fieldDefinition of definition.fields) {
+        const { firstDeclaredInTypeName } = getFirstDeclaration(
+            definition,
+            fieldDefinition.name.value,
+            definitionCollection,
+            schema
+        );
         const relationshipField = generateRelationshipDeclaration(
             fieldDefinition,
             schema,
             entity,
             definitionCollection,
-            getTypeNameWhereRelationshipFirstDeclared(definition, fieldDefinition.name.value, definitionCollection)
+            firstDeclaredInTypeName
         );
         if (relationshipField) {
             entity.addRelationshipDeclaration(relationshipField);
@@ -282,7 +298,7 @@ function hydrateRelationshipDeclarations(
     }
 }
 
-function hasFieldDeclaredAsRel(
+function getFieldDeclaredAsRelationship(
     interfaceDef: InterfaceTypeDefinitionNode,
     fieldName: string
 ): FieldDefinitionNode | undefined {
@@ -297,28 +313,48 @@ function getDefinitionNodeFromNamedNode(interfaceNamedNode: NamedTypeNode, defin
     return definitionCollection.interfaceTypes.get(interfaceName) as InterfaceTypeDefinitionNode;
 }
 
-function getTypeNameWhereRelationshipFirstDeclared(
+function getFirstDeclaration(
     definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     fieldName: string,
-    definitionCollection: DefinitionCollection
-): string | undefined {
-    const inheritedInterfaceWithDeclaredField = definition.interfaces?.find((interfaceNamedNode) => {
-        const interfaceDef = getDefinitionNodeFromNamedNode(interfaceNamedNode, definitionCollection);
-        if (hasFieldDeclaredAsRel(interfaceDef, fieldName)) {
-            return interfaceDef;
+    definitionCollection: DefinitionCollection,
+    schema: Neo4jGraphQLSchemaModel
+): { originalTarget?: Entity; firstDeclaredInTypeName?: string } {
+    if (!definition.interfaces) {
+        return {};
+    }
+    const { inheritedInterfaceWithDeclaredField, declaredFieldTypeName } = definition.interfaces.reduce(
+        (acc, interfaceNamedNode) => {
+            const interfaceDef = getDefinitionNodeFromNamedNode(interfaceNamedNode, definitionCollection);
+            const declaredRelationshipField = getFieldDeclaredAsRelationship(interfaceDef, fieldName);
+            if (declaredRelationshipField) {
+                return {
+                    inheritedInterfaceWithDeclaredField: interfaceNamedNode,
+                    declaredFieldTypeName: getInnerTypeName(declaredRelationshipField.type),
+                };
+            }
+            return acc;
+        },
+        {} as {
+            inheritedInterfaceWithDeclaredField: NamedTypeNode | undefined;
+            declaredFieldTypeName: string | undefined;
         }
-        return;
-    });
-
+    );
     if (!inheritedInterfaceWithDeclaredField) {
-        return;
+        return {};
     }
 
+    const currentInChain = {
+        originalTarget: schema.getEntity(declaredFieldTypeName || ""),
+        firstDeclaredInTypeName: inheritedInterfaceWithDeclaredField?.name.value,
+    };
+
     const interfaceDef = getDefinitionNodeFromNamedNode(inheritedInterfaceWithDeclaredField, definitionCollection);
-    return (
-        getTypeNameWhereRelationshipFirstDeclared(interfaceDef, fieldName, definitionCollection) ||
-        inheritedInterfaceWithDeclaredField?.name.value
-    );
+    const prevInChain = getFirstDeclaration(interfaceDef, fieldName, definitionCollection, schema);
+    if (prevInChain.firstDeclaredInTypeName) {
+        return prevInChain;
+    }
+
+    return currentInChain;
 }
 
 function generateRelationshipField(
@@ -326,7 +362,8 @@ function generateRelationshipField(
     schema: Neo4jGraphQLSchemaModel,
     source: ConcreteEntity | InterfaceEntity,
     definitionCollection: DefinitionCollection,
-    firstDeclaredInTypeName: string | undefined
+    firstDeclaredInTypeName: string | undefined,
+    originalTarget: Entity | undefined
 ): Relationship | undefined {
     // TODO: remove reference to getFieldTypeMeta
     const fieldTypeMeta = getFieldTypeMeta(field.type);
@@ -389,6 +426,7 @@ function generateRelationshipField(
         annotations: annotations,
         propertiesTypeName,
         firstDeclaredInTypeName,
+        originalTarget,
     });
 }
 

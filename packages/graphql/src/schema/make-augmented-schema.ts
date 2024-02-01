@@ -22,7 +22,6 @@ import {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,
-    GraphQLNonNull,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     NameNode,
@@ -69,7 +68,6 @@ import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { filterTruthy } from "../utils/utils";
@@ -81,7 +79,7 @@ import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator"
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
 import { withInterfaceType } from "./generation/interface-type";
-import { getRelationshipPropertiesTypeDescription, withObjectType } from "./generation/object-type";
+import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType, withSortInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";

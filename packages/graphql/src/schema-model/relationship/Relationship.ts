@@ -49,6 +49,7 @@ export class Relationship {
     public readonly propertiesTypeName: string | undefined;
     public readonly firstDeclaredInTypeName: string | undefined;
 
+    public readonly originalTarget?: Entity;
     constructor({
         name,
         type,
@@ -66,6 +67,7 @@ export class Relationship {
         annotations = {},
         propertiesTypeName,
         firstDeclaredInTypeName,
+        originalTarget,
     }: {
         name: string;
         type: string;
@@ -83,6 +85,7 @@ export class Relationship {
         annotations?: Partial<Annotations>;
         propertiesTypeName?: string;
         firstDeclaredInTypeName?: string;
+        originalTarget?: Entity;
     }) {
         this.type = type;
         this.source = source;
@@ -99,6 +102,7 @@ export class Relationship {
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
         this.firstDeclaredInTypeName = firstDeclaredInTypeName;
+        this.originalTarget = originalTarget;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -123,6 +127,7 @@ export class Relationship {
             annotations: this.annotations,
             propertiesTypeName: this.propertiesTypeName,
             firstDeclaredInTypeName: this.firstDeclaredInTypeName,
+            originalTarget: this.originalTarget,
         });
     }
 

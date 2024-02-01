@@ -74,6 +74,7 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -1102,7 +1103,13 @@ export class OperationsFactory {
             operation,
         });
         const isTopLevel = !relationship;
-        const resolveTreeNodeFieldsTypesNames = isTopLevel ? [target.name] : [target.name, relationship.target.name];
+        const resolveTreeNodeFieldsTypesNames = isTopLevel
+            ? [target.name]
+            : [
+                  target.name,
+                  relationship.target.name,
+                  ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+              ];
 
         const resolveTreeNodeFields = getFieldsByTypeName(nodeFieldsRaw, resolveTreeNodeFieldsTypesNames);
         const nodeFields = this.fieldFactory.createFields(target, resolveTreeNodeFields, context);

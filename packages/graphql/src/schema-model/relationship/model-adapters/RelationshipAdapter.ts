@@ -42,7 +42,9 @@ export class RelationshipAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly source: EntityAdapter;
     private rawEntity: Entity;
+    private rawOriginalTargetEntity?: Entity;
     private _target: EntityAdapter | undefined;
+    private _originalTarget: EntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: Set<NestedOperation>;
@@ -79,6 +81,7 @@ export class RelationshipAdapter {
             annotations,
             propertiesTypeName,
             firstDeclaredInTypeName,
+            originalTarget,
         } = relationship;
         this.name = name;
         this.type = type;
@@ -108,6 +111,7 @@ export class RelationshipAdapter {
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
         this.firstDeclaredInTypeName = firstDeclaredInTypeName;
+        this.rawOriginalTargetEntity = originalTarget;
     }
 
     public get operations(): RelationshipOperations {
@@ -197,6 +201,23 @@ export class RelationshipAdapter {
             }
         }
         return this._target;
+    }
+    public get originalTarget(): EntityAdapter | undefined {
+        if (!this.rawOriginalTargetEntity) {
+            return;
+        }
+        if (!this._originalTarget) {
+            if (this.rawOriginalTargetEntity instanceof ConcreteEntity) {
+                this._originalTarget = new ConcreteEntityAdapter(this.rawOriginalTargetEntity);
+            } else if (this.rawOriginalTargetEntity instanceof InterfaceEntity) {
+                this._originalTarget = new InterfaceEntityAdapter(this.rawOriginalTargetEntity);
+            } else if (this.rawOriginalTargetEntity instanceof UnionEntity) {
+                this._originalTarget = new UnionEntityAdapter(this.rawOriginalTargetEntity);
+            } else {
+                throw new Error("invalid original target entity type");
+            }
+        }
+        return this._originalTarget;
     }
 
     public isReadable(): boolean {

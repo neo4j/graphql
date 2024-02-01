@@ -89,7 +89,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name } }) AS create_var4
+                    RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name, __resolveType: \\"Actor\\" } }) AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
@@ -149,7 +149,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name } }) AS create_var4
+                    RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name, __resolveType: \\"Actor\\" } }) AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
@@ -213,7 +213,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name } }) AS create_var4
+                    RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name, __resolveType: \\"Actor\\" } }) AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
