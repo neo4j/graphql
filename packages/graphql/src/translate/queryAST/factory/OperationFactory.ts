@@ -96,11 +96,13 @@ export class OperationsFactory {
         resolveTree,
         context,
         varName,
+        reference,
     }: {
         entity?: EntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
+        reference?: any;
     }): Operation {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
         if (!entity && operationMatch.isCustomCypher) {
@@ -154,6 +156,7 @@ export class OperationsFactory {
                         resolveTree,
                         context,
                         varName,
+                        reference,
                     }) as ReadOperation;
                 }
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -203,7 +206,7 @@ export class OperationsFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): FulltextOperation {
-        let resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        let resolveTreeWhere: Record<string, any> = this.getWhereArgs(resolveTree);
         let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
         let fieldsByTypeName = resolveTree.fieldsByTypeName;
         let resolverArgs = resolveTree.args;
@@ -293,15 +296,17 @@ export class OperationsFactory {
         resolveTree,
         context,
         varName,
+        reference,
     }: {
         entityOrRel: EntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
+        reference?: any;
     }): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
-        const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        const resolveTreeWhere: Record<string, any> = this.getWhereArgs(resolveTree, reference);
 
         if (isConcreteEntity(entity)) {
             checkEntityAuthentication({
@@ -408,7 +413,7 @@ export class OperationsFactory {
             entity = entityOrRel;
         }
 
-        const resolveTreeWhere = (resolveTree.args.where || {}) as Record<string, unknown>;
+        const resolveTreeWhere = this.getWhereArgs(resolveTree);
 
         if (entityOrRel instanceof RelationshipAdapter) {
             if (isConcreteEntity(entity)) {
@@ -499,7 +504,7 @@ export class OperationsFactory {
 
                 operation.setFields(fields);
 
-                const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
+                const whereArgs = this.getWhereArgs(resolveTree);
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
@@ -571,7 +576,7 @@ export class OperationsFactory {
             throw new Error("Top-Level Connection are currently supported only for concrete entities");
         }
         const directed = Boolean(resolveTree.args.directed) ?? true;
-        const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        const resolveTreeWhere: Record<string, any> = this.getWhereArgs(resolveTree);
 
         let nodeWhere: Record<string, any>;
         if (isInterfaceEntity(target)) {
@@ -628,7 +633,7 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
     }): ConnectionReadOperation {
         const directed = Boolean(resolveTree.args.directed) ?? true;
-        const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        const resolveTreeWhere: Record<string, any> = this.getWhereArgs(resolveTree);
         checkEntityAuthentication({
             entity: target.entity,
             targetOperations: ["READ"],
@@ -1410,5 +1415,15 @@ export class OperationsFactory {
                 operation.addPagination(pagination);
             }
         }
+    }
+
+    private getWhereArgs(resolveTree: ResolveTree, reference?: any): Record<string, any> {
+        const whereArgs = isRecord(resolveTree.args.where) ? resolveTree.args.where : {};
+
+        if (resolveTree.name === "_entities" && reference) {
+            const { __typename, ...referenceWhere } = reference;
+            return { ...referenceWhere, ...whereArgs };
+        }
+        return whereArgs;
     }
 }
