@@ -1,5 +1,4 @@
 ---
-"server_perf": major
 "@neo4j/graphql-toolbox": major
 "@neo4j/introspector": major
 "@neo4j/graphql": major
