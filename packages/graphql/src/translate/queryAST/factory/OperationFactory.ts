@@ -22,6 +22,7 @@ import * as Cypher from "@neo4j/cypher-builder";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -35,9 +36,12 @@ import type { Field } from "../ast/fields/Field";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { Filter } from "../ast/filters/Filter";
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
+import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { CreateOperation } from "../ast/operations/CreateOperation";
+import { CypherOperation } from "../ast/operations/CypherOperation";
+import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import { DeleteOperation } from "../ast/operations/DeleteOperation";
 import type { FulltextOptions } from "../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../ast/operations/FulltextOperation";
@@ -47,9 +51,11 @@ import { CompositeAggregationOperation } from "../ast/operations/composite/Compo
 import { CompositeAggregationPartial } from "../ast/operations/composite/CompositeAggregationPartial";
 import { CompositeConnectionPartial } from "../ast/operations/composite/CompositeConnectionPartial";
 import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
+import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import type { Operation } from "../ast/operations/operations";
+import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import type { EntitySelection } from "../ast/selection/EntitySelection";
 import { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { NodeSelection } from "../ast/selection/NodeSelection";
@@ -66,9 +72,8 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
-import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
+import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -77,22 +82,34 @@ export class OperationsFactory {
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
-    private experimental: boolean;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.filterFactory = queryASTFactory.filterFactory;
         this.fieldFactory = queryASTFactory.fieldFactory;
         this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
         this.authorizationFactory = queryASTFactory.authorizationFactory;
-        this.experimental = queryASTFactory.experimental;
     }
 
-    public createTopLevelOperation(
-        entity: EntityAdapter | RelationshipAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        varName?: string
-    ): Operation {
+    public createTopLevelOperation({
+        entity,
+        resolveTree,
+        context,
+        varName,
+    }: {
+        entity?: EntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+    }): Operation {
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
+        if (!entity && operationMatch.isCustomCypher) {
+            return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+        }
+        // entity could be undefined only in case of custom fields.
+        if (!entity) {
+            throw new Error("Transpilation error: Entity for custom cypher operation not found");
+        }
+
         if (isConcreteEntity(entity)) {
             // Handles deprecated top level fulltext
             if (context.resolveTree.args.phrase) {
@@ -109,12 +126,14 @@ export class OperationsFactory {
                 return op;
             }
 
-            const operationMatch = parseOperationField(resolveTree.name, entity);
-
             if (operationMatch.isCreate) {
                 return this.createCreateOperation(entity, resolveTree, context);
             } else if (operationMatch.isUpdate) {
                 const op = this.createUpdateOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            } else if (operationMatch.isCustomCypher) {
+                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isDelete) {
@@ -136,7 +155,6 @@ export class OperationsFactory {
                         varName,
                     }) as ReadOperation;
                 }
-
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isConnection) {
@@ -157,14 +175,25 @@ export class OperationsFactory {
         }
 
         if (isInterfaceEntity(entity)) {
-            const operationMatch = parseInterfaceOperationField(resolveTree.name, entity);
             if (operationMatch.isAggregation) {
                 const op = this.createAggregationOperation(entity, resolveTree, context);
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
+            if (operationMatch.isCustomCypher) {
+                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
         }
 
+        if (isUnionEntity(entity)) {
+            if (operationMatch.isCustomCypher) {
+                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
+        }
         return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
 
@@ -714,12 +743,8 @@ export class OperationsFactory {
     }): DeleteOperation[] {
         const { whereArg } = this.parseDeleteArgs(deleteArg, true);
         // TODO: Remove branch condition with the 5.0 release
-        const sharedFilters = this.experimental
-            ? this.filterFactory.createNodeFilters(target, whereArg.node)
-            : undefined;
-        const concreteEntities = this.experimental
-            ? target.concreteEntities
-            : getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
+        const sharedFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
+        const concreteEntities = target.concreteEntities;
         return concreteEntities.flatMap((concreteEntity) => {
             return this.createNestedDeleteOperation({
                 relationship,
@@ -893,6 +918,69 @@ export class OperationsFactory {
 
         updateOp.addProjectionOperations(projectionFields);
         return updateOp;
+    }
+
+    private createCustomCypherOperation({
+        resolveTree,
+        context,
+        entity,
+        varName,
+    }: {
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        entity?: EntityAdapter;
+        varName?: string;
+    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+        const operationAttribute =
+            context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
+            context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
+
+        if (!operationAttribute) {
+            throw new Error(`Failed to collect information about the operation field with name: ${resolveTree.name}`);
+        }
+        const operationField = new AttributeAdapter(operationAttribute);
+        if (!entity) {
+            const selection = new CustomCypherSelection({
+                operationField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+            return new CypherScalarOperation(selection);
+        }
+        if (isConcreteEntity(entity)) {
+            const selection = new CustomCypherSelection({
+                operationField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+            const customCypher = new CypherOperation({ target: entity, selection });
+            return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+        }
+        const selection = new CustomCypherSelection({
+            operationField,
+            target: entity,
+            alias: varName,
+            rawArguments: resolveTree.args,
+        });
+
+        const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
+            const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
+            const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
+            // The Typename filter here is required to access concrete entities from a Cypher Union selection.
+            // It would be probably more ergonomic to pass the label filter with the selection,
+            // although is currently not possible to do so with Cypher.Builder
+            partial.addFilters(new TypenameFilter([concreteEntity]));
+            return this.hydrateReadOperation({
+                entity: concreteEntity,
+                operation: partial,
+                resolveTree,
+                context,
+                whereArgs: {},
+            });
+        });
+        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {

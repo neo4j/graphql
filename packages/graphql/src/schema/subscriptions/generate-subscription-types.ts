@@ -38,13 +38,11 @@ export function generateSubscriptionTypes({
     schemaModel,
     userDefinedFieldDirectivesForNode,
     generateRelationshipTypes,
-    experimental,
 }: {
     schemaComposer: SchemaComposer;
     schemaModel: Neo4jGraphQLSchemaModel;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     generateRelationshipTypes: boolean;
-    experimental: boolean;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
@@ -303,7 +301,6 @@ export function generateSubscriptionTypes({
             const connectionWhere = generateSubscriptionConnectionWhereType({
                 entityAdapter,
                 schemaComposer,
-                experimental,
             });
             if (entityAdapter.relationships.size > 0) {
                 if (entityAdapter.isSubscribableOnRelationshipCreate) {

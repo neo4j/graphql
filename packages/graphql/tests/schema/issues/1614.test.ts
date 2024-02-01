@@ -407,8 +407,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateCrewMembersMutationResponse {

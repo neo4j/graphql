@@ -53,7 +53,7 @@ export class FulltextSelection extends EntitySelection {
         const phraseParam = new Cypher.Param(this.fulltext.phrase);
         const indexName = new Cypher.Literal(this.fulltext.index);
 
-        const fulltextClause: Cypher.Yield | Cypher.With = Cypher.db.index.fulltext
+        const fulltextClause: Cypher.Yield = Cypher.db.index.fulltext
             .queryNodes(indexName, phraseParam)
             .yield(["node", node], ["score", this.scoreVariable]);
 

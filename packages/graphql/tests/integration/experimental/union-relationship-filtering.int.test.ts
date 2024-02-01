@@ -105,7 +105,6 @@ describe("Union filtering", () => {
                     key: secret,
                 },
             },
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });

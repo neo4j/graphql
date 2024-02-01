@@ -19,21 +19,21 @@
 
 import { Neo4jGraphQLError } from "../../../classes";
 import { AUTHORIZATION_UNAUTHENTICATED } from "../../../constants";
-import type { Annotation } from "../../../schema-model/annotation/Annotation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterByValues } from "./filter-by-values";
+import type { AuthenticationAnnotation } from "../../../schema-model/annotation/AuthenticationAnnotation";
 
 export function applyAuthentication({
     context,
     annotation,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    annotation: Annotation;
+    annotation: AuthenticationAnnotation;
 }): void {
     if (!context.authorization.isAuthenticated) {
         throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
     }
-    if ("jwt" in annotation && annotation.jwt) {
+    if (annotation.jwt) {
         const { jwt, claims } = context.authorization;
         if (!jwt || !filterByValues(annotation.jwt, jwt, claims)) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);

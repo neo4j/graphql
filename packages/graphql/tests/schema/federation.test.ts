@@ -349,8 +349,8 @@ describe("Apollo Federation", () => {
             }
 
             type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -956,8 +956,8 @@ describe("Apollo Federation", () => {
             }
 
             type StringAggregateSelectionNonNullable @federation__shareable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

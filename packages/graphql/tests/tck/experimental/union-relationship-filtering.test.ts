@@ -58,7 +58,6 @@ describe("Union relationship filtering operations", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
-            experimental: true,
         });
     });
 

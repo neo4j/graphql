@@ -56,6 +56,7 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
 import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
+import { SHAREABLE } from "../constants";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
@@ -69,6 +70,7 @@ import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/Con
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { filterTruthy } from "../utils/utils";
 import { createConnectionFields } from "./create-connection-fields";
@@ -89,9 +91,6 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
-import { SHAREABLE } from "../constants";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
@@ -104,14 +103,12 @@ function makeAugmentedSchema({
     userCustomResolvers,
     subgraph,
     schemaModel,
-    experimental,
 }: {
     document: DocumentNode;
     features?: Neo4jFeaturesSettings;
     userCustomResolvers?: IResolvers | Array<IResolvers>;
     subgraph?: Subgraph;
     schemaModel: Neo4jGraphQLSchemaModel;
-    experimental: boolean;
 }): {
     nodes: Node[];
     relationships: Relationship[];
@@ -307,7 +304,6 @@ function makeAugmentedSchema({
             schemaModel,
             userDefinedFieldDirectivesForNode,
             generateRelationshipTypes: !isCDCEngine,
-            experimental,
         });
     }
 

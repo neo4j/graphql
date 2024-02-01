@@ -367,8 +367,9 @@ export class ReadOperation extends Operation {
         let otherFields: Record<string, Cypher.Expr> = {};
 
         for (const field of uniqueProjectionFields) {
-            if (typeof field === "string") stringFields.push(field);
-            else {
+            if (typeof field === "string") {
+                stringFields.push(field);
+            } else {
                 otherFields = { ...otherFields, ...field };
             }
         }

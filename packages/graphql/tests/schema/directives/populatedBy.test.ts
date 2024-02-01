@@ -318,8 +318,8 @@ describe("@populatedBy tests", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 \\"\\"\\"
@@ -404,10 +404,10 @@ describe("@populatedBy tests", () => {
                 }
 
                 type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
                 }
 
                 type Movie {
@@ -821,8 +821,8 @@ describe("@populatedBy tests", () => {
                 }
 
                 type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
+                  longest: ID
+                  shortest: ID
                 }
 
                 type IDAggregateSelectionNullable {
@@ -1264,8 +1264,8 @@ describe("@populatedBy tests", () => {
                 }
 
                 type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateGenresMutationResponse {
@@ -1428,8 +1428,8 @@ describe("@populatedBy tests", () => {
                 }
 
                 type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
+                  longest: ID
+                  shortest: ID
                 }
 
                 type IDAggregateSelectionNullable {
@@ -1438,10 +1438,10 @@ describe("@populatedBy tests", () => {
                 }
 
                 type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
                 }
 
                 type Movie {

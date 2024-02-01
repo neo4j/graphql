@@ -1126,10 +1126,10 @@ describe("generate", () => {
 
             export type IntAggregateSelectionNonNullable = {
               __typename?: \\"IntAggregateSelectionNonNullable\\";
-              max: Scalars[\\"Int\\"][\\"output\\"];
-              min: Scalars[\\"Int\\"][\\"output\\"];
-              average: Scalars[\\"Float\\"][\\"output\\"];
-              sum: Scalars[\\"Int\\"][\\"output\\"];
+              max?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              min?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              average?: Maybe<Scalars[\\"Float\\"][\\"output\\"]>;
+              sum?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
             };
 
             export type Movie = {
@@ -1244,8 +1244,8 @@ describe("generate", () => {
 
             export type StringAggregateSelectionNonNullable = {
               __typename?: \\"StringAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"String\\"][\\"output\\"];
-              longest: Scalars[\\"String\\"][\\"output\\"];
+              shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             /** Information about the number of nodes and relationships created and deleted during an update mutation */
@@ -2100,8 +2100,8 @@ describe("generate", () => {
 
             export type IdAggregateSelectionNonNullable = {
               __typename?: \\"IDAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"ID\\"][\\"output\\"];
-              longest: Scalars[\\"ID\\"][\\"output\\"];
+              shortest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
             };
 
             export type IntAggregateSelectionNullable = {
@@ -2123,8 +2123,8 @@ describe("generate", () => {
 
             export type StringAggregateSelectionNonNullable = {
               __typename?: \\"StringAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"String\\"][\\"output\\"];
-              longest: Scalars[\\"String\\"][\\"output\\"];
+              shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             export type UpdateFaqEntriesMutationResponse = {

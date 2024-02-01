@@ -73,8 +73,8 @@ describe("Relationship nested operations", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type IDAggregateSelectionNullable {

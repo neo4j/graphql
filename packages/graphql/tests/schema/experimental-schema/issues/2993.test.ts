@@ -112,8 +112,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -219,8 +219,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -518,8 +518,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -624,8 +624,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

@@ -42,7 +42,7 @@ describe("Union Relationships Filtering", () => {
           }
       `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -645,8 +645,8 @@ describe("Union Relationships Filtering", () => {
             }
 
             type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
