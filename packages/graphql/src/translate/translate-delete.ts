@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { Node } from "../classes";
-import type { GraphQLWhereArg } from "../types";
-import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
-import createDeleteAndParams from "./create-delete-and-params";
-import { translateTopLevelMatch } from "./translate-top-level-match";
-import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
-import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
-import { checkAuthentication } from "./authorization/check-authentication";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import Debug from "debug";
-import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import type { Node } from "../classes";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import type { GraphQLWhereArg } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { checkAuthentication } from "./authorization/check-authentication";
+import createDeleteAndParams from "./create-delete-and-params";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { translateTopLevelMatch } from "./translate-top-level-match";
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 
@@ -46,7 +46,7 @@ function translateUsingQueryAST({
     resolveTree: ResolveTree;
     varName: string;
 }) {
-    const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
 
     if (!entityAdapter) {
         throw new Error("Entity not found");

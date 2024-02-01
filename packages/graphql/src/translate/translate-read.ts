@@ -37,7 +37,7 @@ export function translateRead(
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
-    const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
 
     if (!entityAdapter) throw new Error("Entity not found");
     const operationsTree = operationsTreeFactory.createQueryAST({resolveTree, entityAdapter, context});

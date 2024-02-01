@@ -22,6 +22,7 @@ import * as Cypher from "@neo4j/cypher-builder";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -35,9 +36,12 @@ import type { Field } from "../ast/fields/Field";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { Filter } from "../ast/filters/Filter";
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
+import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { CreateOperation } from "../ast/operations/CreateOperation";
+import { CypherOperation } from "../ast/operations/CypherOperation";
+import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import { DeleteOperation } from "../ast/operations/DeleteOperation";
 import type { FulltextOptions } from "../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../ast/operations/FulltextOperation";
@@ -47,9 +51,11 @@ import { CompositeAggregationOperation } from "../ast/operations/composite/Compo
 import { CompositeAggregationPartial } from "../ast/operations/composite/CompositeAggregationPartial";
 import { CompositeConnectionPartial } from "../ast/operations/composite/CompositeConnectionPartial";
 import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
+import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import type { Operation } from "../ast/operations/operations";
+import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import type { EntitySelection } from "../ast/selection/EntitySelection";
 import { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { NodeSelection } from "../ast/selection/NodeSelection";
@@ -68,12 +74,6 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { CypherOperation } from "../ast/operations/CypherOperation";
-import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
-import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
-import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
-import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -82,14 +82,12 @@ export class OperationsFactory {
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
-    private experimental: boolean;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.filterFactory = queryASTFactory.filterFactory;
         this.fieldFactory = queryASTFactory.fieldFactory;
         this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
         this.authorizationFactory = queryASTFactory.authorizationFactory;
-        this.experimental = queryASTFactory.experimental;
     }
 
     public createTopLevelOperation({
@@ -745,12 +743,8 @@ export class OperationsFactory {
     }): DeleteOperation[] {
         const { whereArg } = this.parseDeleteArgs(deleteArg, true);
         // TODO: Remove branch condition with the 5.0 release
-        const sharedFilters = this.experimental
-            ? this.filterFactory.createNodeFilters(target, whereArg.node)
-            : undefined;
-        const concreteEntities = this.experimental
-            ? target.concreteEntities
-            : getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
+        const sharedFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
+        const concreteEntities = target.concreteEntities;
         return concreteEntities.flatMap((concreteEntity) => {
             return this.createNestedDeleteOperation({
                 relationship,

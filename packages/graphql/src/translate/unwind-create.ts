@@ -60,7 +60,7 @@ export default async function unwindCreate({
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel, context.experimental).createQueryAST({
+    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
         resolveTree,
         entityAdapter,
         context,

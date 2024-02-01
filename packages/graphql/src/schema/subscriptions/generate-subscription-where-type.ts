@@ -46,16 +46,13 @@ export function generateSubscriptionWhereType(
 export function generateSubscriptionConnectionWhereType({
     entityAdapter,
     schemaComposer,
-    experimental,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
 }): { created: InputTypeComposer; deleted: InputTypeComposer } | undefined {
     const connectedRelationship = getRelationshipConnectionWhereTypes({
         entityAdapter,
         schemaComposer,
-        experimental,
     });
     const isConnectedNodeTypeNotExcluded = schemaComposer.has(entityAdapter.operations.subscriptionWhereInputTypeName);
     if (!isConnectedNodeTypeNotExcluded && !connectedRelationship) {
@@ -94,18 +91,15 @@ export function generateSubscriptionConnectionWhereType({
 function getRelationshipConnectionWhereTypes({
     entityAdapter,
     schemaComposer,
-    experimental,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
 }): InputTypeComposer | undefined {
     const relationsFieldInputWhereTypeFields = Array.from(entityAdapter.relationships.values()).reduce(
         (acc, relationshipAdapter) => {
             const fields = makeNodeRelationFields({
                 relationshipAdapter,
                 schemaComposer,
-                experimental,
             });
             if (!fields) {
                 return acc;
@@ -133,11 +127,9 @@ function getRelationshipConnectionWhereTypes({
 function makeNodeRelationFields({
     relationshipAdapter,
     schemaComposer,
-    experimental,
 }: {
     relationshipAdapter: RelationshipAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
 }) {
     const edgeType = makeRelationshipWhereType({
         schemaComposer,
@@ -156,7 +148,6 @@ function makeNodeRelationFields({
             schemaComposer,
             interfaceEntity,
             edgeType,
-            experimental,
         });
     }
     return makeRelationshipToConcreteTypeWhereType({ relationshipAdapter, edgeType, schemaComposer });
@@ -238,12 +229,10 @@ function makeRelationshipToInterfaceTypeWhereType({
     schemaComposer,
     interfaceEntity,
     edgeType,
-    experimental,
 }: {
     schemaComposer: SchemaComposer;
     interfaceEntity: InterfaceEntityAdapter;
     edgeType: InputTypeComposer | undefined;
-    experimental: boolean;
 }): { node?: InputTypeComposer; edge?: InputTypeComposer } | undefined {
     let interfaceNodeType: InputTypeComposer | undefined = undefined;
 

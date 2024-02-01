@@ -37,68 +37,6 @@ const additionalDefinitions = {
     objects: [] as ObjectTypeDefinitionNode[],
 };
 
-describe("experimental flag warning", () => {
-    let warn: jest.SpyInstance;
-
-    beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-        warn.mockReset();
-    });
-
-    test("experimental warning happens when flag is true", () => {
-        const doc = gql`
-            type Movie {
-                id: ID
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-
-            type Actor {
-                name: String
-            }
-        `;
-
-        validateDocument({
-            document: doc,
-            additionalDefinitions,
-            features: {},
-            experimental: true,
-        });
-
-        expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledOnce();
-    });
-
-    test("experimental warning does not happen when flag is false", () => {
-        const doc = gql`
-            type Movie {
-                id: ID
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-
-            type Actor {
-                name: String
-            }
-        `;
-
-        validateDocument({
-            document: doc,
-            additionalDefinitions,
-            features: {},
-            experimental: true,
-        });
-
-        expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledOnce();
-    });
-});
-
 describe("authorization warning", () => {
     let warn: jest.SpyInstance;
 
@@ -126,7 +64,6 @@ describe("authorization warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: false,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -162,7 +99,6 @@ describe("list of lists warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: false,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -182,7 +118,6 @@ describe("list of lists warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: false,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -218,13 +153,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
-
-        expect(warn).toHaveBeenCalledOnce();
-        expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
     });
 
     test("max limit on concrete should trigger warning if no limit on interface", () => {
@@ -242,16 +171,12 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledTimes(2);
+        expect(warn).toHaveBeenCalledTimes(1);
     });
 
     test("max limit lower on interface than concrete does not trigger warning", () => {
@@ -269,13 +194,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
-
-        expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledOnce();
     });
 
     test("Max limit higher on interface than concrete should trigger warning", () => {
@@ -293,16 +212,12 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledTimes(2);
+        expect(warn).toHaveBeenCalledTimes(1);
     });
 
     test("Max limit higher on interface than concrete should trigger warning - multiple implementing types", () => {
@@ -324,16 +239,12 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledTimes(2);
+        expect(warn).toHaveBeenCalledTimes(1);
     });
 
     test("Max limit higher on interface than concrete should trigger warning - on both implementing types", () => {
@@ -355,19 +266,15 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
-        expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledTimes(3);
+        expect(warn).toHaveBeenCalledTimes(2);
     });
 
     test("Max limit on interface does not trigger warning if only default limit set on concrete", () => {
@@ -389,13 +296,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
-
-        expect(warn).toHaveBeenCalledWith(
-            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
-        );
-        expect(warn).toHaveBeenCalledOnce();
     });
 });
 
@@ -414,9 +315,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@cypher" argument "columnName" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -427,9 +326,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@cypher" argument "statement" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -446,9 +343,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@alias", () => {
@@ -459,9 +354,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -472,9 +365,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@coalesce", () => {
@@ -491,7 +382,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
@@ -509,7 +399,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -528,7 +417,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@default" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
@@ -546,7 +434,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -559,9 +446,7 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "[FullTextInput]!" type exposed to the user?
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
                 );
             });
@@ -572,9 +457,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@jwtClaim", () => {
@@ -585,9 +468,7 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@jwtClaim" argument "path" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -598,9 +479,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@node", () => {
@@ -611,9 +490,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@plural", () => {
@@ -624,9 +501,7 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@plural" argument "value" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -637,9 +512,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
-                ).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@populatedBy", () => {
@@ -655,7 +528,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                         additionalDefinitions,
-                        experimental: false,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
@@ -673,7 +545,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                         additionalDefinitions,
-                        experimental: false,
                     })
                 ).not.toThrow();
             });
@@ -694,7 +565,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
@@ -715,7 +585,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
@@ -736,7 +605,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "direction" of type "RelationshipDirection!" is required, but it was not provided.'
@@ -757,7 +625,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -772,8 +639,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -792,8 +658,7 @@ describe("validation 2.0", () => {
                 extend type User @fulltext(indexes: [{ name: "something" }])
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -819,7 +684,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
@@ -849,7 +713,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
@@ -876,7 +739,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
@@ -910,7 +772,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions: { ...additionalDefinitions, interfaces },
                     features: {},
-                    experimental: false,
                 });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
@@ -948,7 +809,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions: { ...additionalDefinitions, interfaces },
                     features: {},
-                    experimental: false,
                 });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
@@ -966,8 +826,7 @@ describe("validation 2.0", () => {
                     myStuff: String @customResolver(requires: 42)
                 }
             `;
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -985,8 +844,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1007,8 +865,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1032,8 +889,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1050,8 +906,7 @@ describe("validation 2.0", () => {
                     name: String
                 }
             `;
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1069,8 +924,7 @@ describe("validation 2.0", () => {
                 }
                 extend type User @node(labels: [null])
             `;
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1096,7 +950,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1122,7 +975,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1145,7 +997,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1174,7 +1025,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1206,7 +1056,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -1234,7 +1083,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1269,7 +1117,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1303,7 +1150,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -1320,7 +1166,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1342,7 +1187,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1360,7 +1204,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1385,7 +1228,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1403,7 +1245,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1425,7 +1266,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1443,7 +1283,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1468,7 +1307,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1486,7 +1324,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1508,7 +1345,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1526,7 +1362,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1551,7 +1386,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1569,7 +1403,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1591,7 +1424,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1609,7 +1441,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1634,7 +1465,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1652,7 +1482,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1674,7 +1503,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1699,7 +1527,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1717,7 +1544,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -1735,7 +1561,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1760,7 +1585,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -1798,7 +1622,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1833,7 +1656,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1865,7 +1687,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -1893,7 +1714,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1928,7 +1748,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1963,7 +1782,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -1980,7 +1798,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2002,7 +1819,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2020,7 +1836,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2045,7 +1860,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2063,7 +1877,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2085,7 +1898,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2103,7 +1915,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2128,7 +1939,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2146,7 +1956,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2171,7 +1980,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2189,7 +1997,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2214,7 +2021,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2232,7 +2038,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2254,7 +2059,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2272,7 +2076,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2297,7 +2100,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2315,7 +2117,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2337,7 +2138,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2362,7 +2162,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2380,7 +2179,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -2398,7 +2196,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2420,7 +2217,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2445,7 +2241,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2470,8 +2265,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2490,8 +2284,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2511,8 +2304,7 @@ describe("validation 2.0", () => {
                     extend type User @limit(default: -1)
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2531,8 +2323,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2548,8 +2339,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2568,8 +2358,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -2580,8 +2369,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -2596,8 +2384,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2616,8 +2403,7 @@ describe("validation 2.0", () => {
                         @fulltext(indexes: [{ indexName: "a", fields: ["name"] }, { indexName: "a", fields: ["id"] }])
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2633,8 +2419,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2655,8 +2440,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -2680,7 +2464,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2716,7 +2499,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2755,7 +2537,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -2784,7 +2565,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -2814,7 +2594,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -2851,7 +2630,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -2891,7 +2669,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -2922,7 +2699,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -2947,7 +2723,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
                 try {
                     executeValidate();
@@ -2966,8 +2741,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -2996,7 +2770,6 @@ describe("validation 2.0", () => {
                             },
                         },
                         additionalDefinitions,
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -3029,7 +2802,6 @@ describe("validation 2.0", () => {
                             },
                         },
                         additionalDefinitions,
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -3053,7 +2825,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         features: { populatedBy: { callbacks: { getUName: () => "myUserName" } } },
                         additionalDefinitions,
-                        experimental: false,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -3067,8 +2838,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3079,8 +2849,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3100,8 +2869,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3117,8 +2885,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3135,8 +2902,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3147,8 +2913,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3164,8 +2929,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3181,8 +2945,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3203,8 +2966,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3215,8 +2977,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3232,8 +2993,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3266,8 +3026,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3279,8 +3038,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3293,8 +3051,7 @@ describe("validation 2.0", () => {
                     extend schema @mutation(operations: [])
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -3316,7 +3073,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3347,7 +3103,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3380,7 +3135,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3413,7 +3167,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3450,7 +3203,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3490,7 +3242,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3530,7 +3281,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 const errors = getError(executeValidate);
@@ -3567,8 +3317,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3588,8 +3337,7 @@ describe("validation 2.0", () => {
                     extend type User @query(read: false)
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3609,8 +3357,7 @@ describe("validation 2.0", () => {
                     extend schema @query(read: false)
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -3640,7 +3387,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3674,7 +3420,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3704,7 +3449,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3734,7 +3478,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3767,7 +3510,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3804,7 +3546,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3840,7 +3581,6 @@ describe("validation 2.0", () => {
                             },
                         },
                     },
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3877,7 +3617,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -3905,7 +3644,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -3933,7 +3671,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -3971,7 +3708,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -4002,7 +3738,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4034,7 +3769,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4056,7 +3790,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4080,7 +3813,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4110,7 +3842,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4132,7 +3863,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4163,7 +3893,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4186,7 +3915,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4209,7 +3937,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4240,7 +3967,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4275,7 +4001,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4309,7 +4034,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4334,7 +4058,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4372,7 +4095,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4400,7 +4122,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4424,8 +4145,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4445,8 +4165,7 @@ describe("validation 2.0", () => {
                     extend type JWTPayload @jwt
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4472,8 +4191,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4492,8 +4210,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4516,8 +4233,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(2);
@@ -4545,8 +4261,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4571,8 +4286,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4607,7 +4321,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         features: {},
                         additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
 
@@ -4629,8 +4342,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -4645,8 +4357,7 @@ describe("validation 2.0", () => {
                         name: ID! @relayId
                     }
                 `;
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4666,8 +4377,7 @@ describe("validation 2.0", () => {
                         name: ID! @relayId
                     }
                 `;
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4687,8 +4397,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4710,8 +4419,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -4729,8 +4437,7 @@ describe("validation 2.0", () => {
                         dbId: ID! @relayId
                     }
                 `;
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -4743,8 +4450,7 @@ describe("validation 2.0", () => {
                         id: Int @alias(property: "other")
                     }
                 `;
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -4758,8 +4464,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -4784,8 +4489,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(2);
@@ -4820,8 +4524,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -4842,8 +4545,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -4866,8 +4568,7 @@ describe("validation 2.0", () => {
                     id: ID!
                 }
             `;
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -4888,8 +4589,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -4908,8 +4608,7 @@ describe("validation 2.0", () => {
                 union Production
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -4930,8 +4629,7 @@ describe("validation 2.0", () => {
                 union Production = Movie | Series
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -4962,7 +4660,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
 
@@ -4995,7 +4692,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
 
@@ -5029,7 +4725,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
 
@@ -5047,8 +4742,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5068,8 +4762,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -5082,8 +4775,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5103,8 +4795,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -5116,8 +4807,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 const error = `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(
@@ -5138,8 +4828,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5158,8 +4847,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -5171,8 +4859,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(2);
@@ -5216,7 +4903,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5259,7 +4945,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5298,7 +4983,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5337,7 +5021,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5377,7 +5060,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5418,7 +5100,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5458,7 +5139,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5504,7 +5184,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5546,7 +5225,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions: { enums, interfaces, unions, objects },
                             features: {},
-                            experimental: false,
                         });
 
                     expect(executeValidate).not.toThrow();
@@ -5571,7 +5249,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions,
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5599,7 +5276,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions,
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5631,7 +5307,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions,
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5658,7 +5333,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions,
                             features: {},
-                            experimental: false,
                         });
 
                     const errors = getError(executeValidate);
@@ -5687,7 +5361,7 @@ describe("validation 2.0", () => {
                     `;
 
                     const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                        validateDocument({ document: doc, features: {}, additionalDefinitions });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -5706,7 +5380,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             additionalDefinitions,
                             features: {},
-                            experimental: false,
                         });
 
                     expect(executeValidate).not.toThrow();
@@ -5742,7 +5415,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -5783,7 +5455,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
 
@@ -5822,7 +5493,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: {},
-                        experimental: false,
                     });
                 const errors = getError(executeValidate);
 
@@ -5841,8 +5511,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5860,8 +5529,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5880,8 +5548,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5900,8 +5567,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5917,8 +5583,7 @@ describe("validation 2.0", () => {
                     scalar PageInfo
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5936,8 +5601,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5955,8 +5619,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5974,8 +5637,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -5994,8 +5656,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -6014,8 +5675,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -6031,8 +5691,7 @@ describe("validation 2.0", () => {
                     scalar Node
                 `;
 
-                const executeValidate = () =>
-                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -6062,7 +5721,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions: { enums, interfaces, unions, objects },
                     features: undefined,
-                    experimental: false,
                 });
 
             expect(executeValidate).toThrow('Directive "@coalesce" may not be used on OBJECT.');
@@ -6084,7 +5742,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions: { enums, interfaces, unions, objects },
                     features: undefined,
-                    experimental: false,
                 });
 
             expect(executeValidate).toThrow(
@@ -6099,9 +5756,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow('Unknown type "Unknown".');
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                'Unknown type "Unknown".'
+            );
         });
 
         test("should throw an error if a user tries to pass in their own Point definition", () => {
@@ -6116,9 +5773,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow('Type "Point" already exists in the schema. It cannot also be defined in this type definition.');
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
+            );
         });
 
         test("should throw an error if a user tries to pass in their own DateTime definition", () => {
@@ -6130,9 +5787,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
             );
         });
@@ -6146,9 +5801,7 @@ describe("validation 2.0", () => {
                 extend type User @fulltext
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
             );
         });
@@ -6165,9 +5818,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
             );
         });
@@ -6183,9 +5834,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow("Interface field UserInterface.age expected but User does not provide it.");
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                "Interface field UserInterface.age expected but User does not provide it."
+            );
         });
 
         test("should throw an error a user tries to redefine one of our directives", () => {
@@ -6197,9 +5848,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() =>
-                validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-            ).toThrow('Directive "@relationship" already exists in the schema. It cannot be redefined.');
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                'Directive "@relationship" already exists in the schema. It cannot be redefined.'
+            );
         });
 
         test("should not throw error on use of internal node input types", () => {
@@ -6231,7 +5882,6 @@ describe("validation 2.0", () => {
                 document: doc,
                 features: undefined,
                 additionalDefinitions,
-                experimental: false,
             });
             expect(res).toBeUndefined();
         });
@@ -6266,7 +5916,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions: { enums, interfaces, unions, objects },
                         features: undefined,
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -6279,9 +5928,9 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-                ).toThrow('Directive "@relationshipProperties" may not be used on INTERFACE.');
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                    'Directive "@relationshipProperties" may not be used on INTERFACE.'
+                );
             });
 
             test("should throw if used on a field", () => {
@@ -6291,9 +5940,9 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() =>
-                    validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-                ).toThrow('Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.');
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                    'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
+                );
             });
         });
 
@@ -6378,7 +6027,6 @@ describe("validation 2.0", () => {
                 document: doc,
                 features: undefined,
                 additionalDefinitions,
-                experimental: false,
             });
             expect(res).toBeUndefined();
         });
@@ -6399,7 +6047,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6442,7 +6089,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -6484,7 +6130,6 @@ describe("validation 2.0", () => {
                         document: doc,
                         additionalDefinitions,
                         features: {},
-                        experimental: false,
                     });
 
                 expect(executeValidate).not.toThrow();
@@ -6508,7 +6153,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6529,7 +6173,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6668,7 +6311,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6696,7 +6338,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6709,9 +6350,7 @@ describe("validation 2.0", () => {
                         name: String @alias
                     }
                 `;
-                expect(() =>
-                    validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-                ).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -6721,9 +6360,9 @@ describe("validation 2.0", () => {
                         name: String
                     }
                 `;
-                expect(() =>
-                    validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-                ).toThrow('Directive "@alias" may not be used on OBJECT.');
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                    'Directive "@alias" may not be used on OBJECT.'
+                );
             });
             test("should not throw when used correctly", () => {
                 const doc = gql`
@@ -6735,7 +6374,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6755,7 +6393,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             features: undefined,
                             additionalDefinitions,
-                            experimental: false,
                         })
                     ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error);
                 });
@@ -6772,7 +6409,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             features: undefined,
                             additionalDefinitions,
-                            experimental: false,
                         })
                     ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error);
                 });
@@ -6789,7 +6425,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             features: undefined,
                             additionalDefinitions,
-                            experimental: false,
                         })
                     ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error);
                 });
@@ -6817,7 +6452,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             features: undefined,
                             additionalDefinitions,
-                            experimental: false,
                         })
                     ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error);
                 });
@@ -6844,7 +6478,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             features: undefined,
                             additionalDefinitions,
-                            experimental: false,
                         })
                     ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error);
                 });
@@ -6870,7 +6503,6 @@ describe("validation 2.0", () => {
                             document: doc,
                             features: undefined,
                             additionalDefinitions,
-                            experimental: false,
                         })
                     ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error);
                 });
@@ -6889,7 +6521,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });
@@ -6915,7 +6546,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     features: undefined,
                     additionalDefinitions,
-                    experimental: false,
                 });
                 expect(res).toBeUndefined();
             });

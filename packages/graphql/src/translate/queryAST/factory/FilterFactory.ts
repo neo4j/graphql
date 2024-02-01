@@ -57,11 +57,7 @@ type AggregateWhereInput = {
 };
 
 export class FilterFactory {
-    protected experimental: boolean;
-
-    constructor(queryASTFactory: QueryASTFactory) {
-        this.experimental = queryASTFactory.experimental;
-    }
+    constructor(_queryASTFactory: QueryASTFactory) {}
 
     /**
      * Get all the entities explicitly required by the where "on" object. If it's a concrete entity it will return itself.

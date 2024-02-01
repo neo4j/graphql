@@ -61,7 +61,6 @@ import {
 import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
-import { WarnIfExperimentalMode } from "./custom-rules/warnings/experimental-mode";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
@@ -181,7 +180,6 @@ function runValidationRulesOnFilteredDocument({
     document,
     extra,
     features,
-    experimental,
 }: {
     schema: GraphQLSchema;
     document: DocumentNode;
@@ -192,7 +190,6 @@ function runValidationRulesOnFilteredDocument({
         objects?: ObjectTypeDefinitionNode[];
     };
     features: Neo4jFeaturesSettings | undefined;
-    experimental: boolean;
 }) {
     const errors = validateSDL(
         document,
@@ -214,7 +211,6 @@ function runValidationRulesOnFilteredDocument({
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
-            WarnIfExperimentalMode(experimental),
         ],
         schema
     );
@@ -228,7 +224,6 @@ function validateDocument({
     document,
     features,
     additionalDefinitions,
-    experimental,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
@@ -240,7 +235,6 @@ function validateDocument({
         unions?: UnionTypeDefinitionNode[];
         objects?: ObjectTypeDefinitionNode[];
     };
-    experimental: boolean;
 }): void {
     const filteredDocument = filterDocument(document);
     const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
@@ -269,7 +263,6 @@ function validateDocument({
         document: filteredDocument,
         extra,
         features,
-        experimental,
     });
 
     const schema = extendSchema(schemaToExtend, filteredDocument);
