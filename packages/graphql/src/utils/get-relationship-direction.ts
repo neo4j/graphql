@@ -21,9 +21,8 @@ import { Neo4jGraphQLError } from "../classes/Error";
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationField } from "../types";
 
-export type DirectionString = "-" | "->" | "<-";
-export type QueryRelationshipDirection = "IN" | "OUT" | "undirected";
-export type CypherRelationshipDirection = "left" | "right" | "undirected";
+type QueryRelationshipDirection = "IN" | "OUT" | "undirected";
+type CypherRelationshipDirection = "left" | "right" | "undirected";
 
 export function getCypherRelationshipDirection(
     relationField: RelationField,
