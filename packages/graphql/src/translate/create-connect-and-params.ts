@@ -31,11 +31,21 @@ import createSetRelationshipPropertiesAndParams from "./create-set-relationship-
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import createWhereAndParams from "./where/create-where-and-params";
+import { asArray } from "../utils/utils";
+import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 interface Res {
     connects: string[];
     params: any;
 }
+
+type Filters = {
+    preComputedSubqueries?: string;
+    predicate: [string, Record<string, any>];
+};
 
 function createConnectAndParams({
     withVars,
@@ -73,7 +83,8 @@ function createConnectAndParams({
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
-        index: number
+        index: number,
+        filters?: Filters
     ): { subquery: string; params: Record<string, any> } {
         checkAuthentication({ context, node: relatedNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
@@ -100,27 +111,11 @@ function createConnectAndParams({
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
-        let aggregationWhere = false;
-        if (connect.where) {
-            const whereInput = {
-                ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                    return { ...args, [k]: v };
-                }, {}),
-            };
-            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
-                whereInput,
-                context,
-                node: relatedNode,
-                varName: nodeName,
-                recursing: true,
-            });
-            if (rootNodeWhereCypher) {
-                whereStrs.push(rootNodeWhereCypher);
-                params = { ...params, ...rootNodeWhereParams };
-                if (preComputedSubqueries) {
-                    subquery.push(preComputedSubqueries);
-                    aggregationWhere = true;
-                }
+        if (filters) {
+            whereStrs.push(filters.predicate[0]);
+            params = { ...params, ...filters.predicate[1] };
+            if (filters.preComputedSubqueries) {
+                subquery.push(filters.preComputedSubqueries);
             }
         }
 
@@ -155,7 +150,7 @@ function createConnectAndParams({
 
         if (whereStrs.length) {
             const predicate = `${whereStrs.join(" AND ")}`;
-            if (aggregationWhere) {
+            if (filters?.preComputedSubqueries?.length) {
                 const columns = [new Cypher.NamedVariable(nodeName)];
                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
@@ -363,10 +358,20 @@ function createConnectAndParams({
         }
 
         const inner: string[] = [];
+
         if (relationField.interface) {
             const subqueries: string[] = [];
+            const targetInterface = context.schemaModel.compositeEntities.find(
+                (x) => x.name === relationField.typeMeta.name
+            );
+            if (!targetInterface || !(targetInterface instanceof InterfaceEntity)) {
+                throw new Error("No targetInterface found");
+            }
+            const entity = new InterfaceEntityAdapter(targetInterface);
             refNodes.forEach((refNode, i) => {
-                const subquery = createSubqueryContents(refNode, connect, i);
+                const filters = getFilters({ connect, context, entity, varName, index: i });
+
+                const subquery = createSubqueryContents(refNode, connect, i, filters);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
@@ -383,7 +388,13 @@ function createConnectAndParams({
                 }
             }
         } else {
-            const subquery = createSubqueryContents(refNodes[0] as Node, connect, index);
+            const targetNode = refNodes[0];
+            if (!targetNode) {
+                throw new Error("No refNodes found");
+            }
+            const entity = getEntityAdapterFromNode(targetNode, context);
+            const filters = getFilters({ connect, context, entity, varName, index });
+            const subquery = createSubqueryContents(targetNode, connect, index, filters);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }
@@ -401,12 +412,59 @@ function createConnectAndParams({
         return res;
     }
 
-    const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
+    const { connects, params } = asArray(value).reduce(reducer, {
         connects: [],
         params: {},
     });
 
     return [connects.join("\n"), params];
+}
+
+function getFilters({
+    connect,
+    entity,
+    context,
+    varName,
+    index,
+}: {
+    connect: any;
+    entity: EntityAdapter;
+    context: Neo4jGraphQLTranslationContext;
+    varName: string;
+    index: number;
+}): Filters | undefined {
+    if (!connect.where) {
+        return;
+    }
+    const baseName = `${varName}${index}`;
+    const nodeName = `${baseName}_node`;
+    const targetElement = new Cypher.NamedNode(nodeName);
+    let whereString: string | undefined;
+    let params = {};
+
+    const whereInput = {
+        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+            return { ...args, [k]: v };
+        }, {}),
+    };
+
+    const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
+        entity,
+        targetElement,
+        whereInput,
+        context,
+        varName: nodeName,
+        recursing: true,
+    });
+    if (rootNodeWhereCypher) {
+        whereString = rootNodeWhereCypher;
+        params = { ...params, ...rootNodeWhereParams };
+
+        return {
+            predicate: [whereString, params],
+            preComputedSubqueries,
+        };
+    }
 }
 
 export default createConnectAndParams;
