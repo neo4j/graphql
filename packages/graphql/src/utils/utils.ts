@@ -55,11 +55,6 @@ export function toNumber(value: Integer | number): number {
     return isNeoInt(value) ? value.toNumber() : value;
 }
 
-/** Joins all strings with given separator, ignoring empty or undefined statements */
-export function joinStrings(statements: string | Array<string | undefined>, separator = "\n"): string {
-    return filterTruthy(asArray(statements)).join(separator);
-}
-
 /** Makes sure input is an array, if not it turns into an array (empty array if input is null or undefined) */
 export function asArray<T>(raw: T | Array<T> | undefined | null): Array<T> {
     if (Array.isArray(raw)) return raw;
@@ -70,14 +65,6 @@ export function asArray<T>(raw: T | Array<T> | undefined | null): Array<T> {
 /** Filter all elements in an array, only leaving truthy values */
 export function filterTruthy<T>(arr: Array<T | null | undefined | void>): Array<T> {
     return arr.filter((v): v is T => !!v);
-}
-
-/** Check if both arrays share at least one element */
-export function haveSharedElement(arr1: Array<any>, arr2: Array<any>): boolean {
-    for (const element of arr1) {
-        if (arr2.includes(element)) return true;
-    }
-    return false;
 }
 
 /** Removes duplicate elements of an array */

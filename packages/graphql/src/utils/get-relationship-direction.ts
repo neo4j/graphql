@@ -45,7 +45,7 @@ export function getCypherRelationshipDirection(
     }
 }
 
-export function getRelationshipDirection(
+function getRelationshipDirection(
     relationField: RelationField,
     fieldArgs: { directed?: boolean }
 ): QueryRelationshipDirection {
@@ -78,29 +78,3 @@ export function getRelationshipDirection(
     }
 }
 
-export function getRelationshipDirectionStr(
-    relationField: RelationField,
-    fieldArgs: { directed?: boolean }
-): DirectionResult {
-    const direction = getRelationshipDirection(relationField, fieldArgs);
-
-    switch (direction) {
-        case "IN":
-            return {
-                inStr: "<-",
-                outStr: "-",
-            };
-        case "OUT":
-            return {
-                inStr: "-",
-                outStr: "->",
-            };
-        case "undirected":
-            return {
-                inStr: "-",
-                outStr: "-",
-            };
-        default:
-            throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
-    }
-}
