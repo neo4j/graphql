@@ -57,7 +57,7 @@ type CreateMatchClauseReturn = {
     whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 };
 
-export function createMatchClause({
+function createMatchClause({
     matchNode,
     node,
     context,

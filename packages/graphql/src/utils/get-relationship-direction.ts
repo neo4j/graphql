@@ -25,11 +25,6 @@ export type DirectionString = "-" | "->" | "<-";
 export type QueryRelationshipDirection = "IN" | "OUT" | "undirected";
 export type CypherRelationshipDirection = "left" | "right" | "undirected";
 
-type DirectionResult = {
-    inStr: DirectionString;
-    outStr: DirectionString;
-};
-
 export function getCypherRelationshipDirection(
     relationField: RelationField,
     fieldArgs: { directed?: boolean } = {}
@@ -77,4 +72,3 @@ function getRelationshipDirection(
             throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
     }
 }
-
