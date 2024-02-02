@@ -54,7 +54,7 @@
         "@faker-js/faker": "8.4.0",
         "@types/deep-equal": "1.0.4",
         "@types/is-uuid": "1.0.2",
-        "@types/jest": "29.5.11",
+        "@types/jest": "29.5.12",
         "@types/jsonwebtoken": "9.0.5",
         "@types/node": "20.11.15",
         "@types/pluralize": "0.0.33",
