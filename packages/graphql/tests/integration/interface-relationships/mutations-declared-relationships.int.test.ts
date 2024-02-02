@@ -111,8 +111,7 @@ describe("interface with declared relationships", () => {
         await driver.close();
     });
 
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("should create a relationship only to one of the implementing entities", async () => {
+    test("should create a relationship only to one of the implementing entities", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
 

@@ -30,12 +30,13 @@ import createRelationshipValidationString from "./create-relationship-validation
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
-import createWhereAndParams from "./where/create-where-and-params";
 import { asArray } from "../utils/utils";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { compileCypherIfExists } from "../utils/compile-cypher";
+import { createWhereNodePredicate } from "./where/create-where-predicate";
 
 interface Res {
     connects: string[];
@@ -89,9 +90,8 @@ function createConnectAndParams({
         checkAuthentication({ context, node: relatedNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
         let params = {};
-        const baseName = `${varName}${index}`;
-        const nodeName = `${baseName}_node`;
-        const relationshipName = `${baseName}_relationship`;
+        const nodeName = getConnectNodeName(varName, index);
+        const relationshipName = getConnectEdgeName(varName, index);
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${relationField.properties || context.subscriptionsEnabled ? relationshipName : ""}:${
@@ -113,7 +113,7 @@ function createConnectAndParams({
         const whereStrs: string[] = [];
         if (filters) {
             whereStrs.push(filters.predicate[0]);
-            params = { ...params, ...filters.predicate[1] };
+            params = { ...filters.predicate[1] };
             if (filters.preComputedSubqueries) {
                 subquery.push(filters.preComputedSubqueries);
             }
@@ -365,11 +365,12 @@ function createConnectAndParams({
                 (x) => x.name === relationField.typeMeta.name
             );
             if (!targetInterface || !(targetInterface instanceof InterfaceEntity)) {
-                throw new Error("No targetInterface found");
+                throw new Error(`Target with name ${relationField.typeMeta.name} not found`);
             }
             const entity = new InterfaceEntityAdapter(targetInterface);
             refNodes.forEach((refNode, i) => {
-                const filters = getFilters({ connect, context, entity, varName, index: i });
+                const nodeName = getConnectNodeName(varName, i);
+                const filters = getFilters({ connect, context, entity, nodeName });
 
                 const subquery = createSubqueryContents(refNode, connect, i, filters);
                 if (subquery.subquery) {
@@ -393,7 +394,8 @@ function createConnectAndParams({
                 throw new Error("No refNodes found");
             }
             const entity = getEntityAdapterFromNode(targetNode, context);
-            const filters = getFilters({ connect, context, entity, varName, index });
+            const nodeName = getConnectNodeName(varName, index);
+            const filters = getFilters({ connect, context, entity, nodeName });
             const subquery = createSubqueryContents(targetNode, connect, index, filters);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
@@ -420,49 +422,53 @@ function createConnectAndParams({
     return [connects.join("\n"), params];
 }
 
+// function to have a single source of truth for the node name of a connect operation, until the refactor to use CypherBuilder.
+function getConnectNodeName(varName: string, index: number): string {
+    return `${varName}${index}_node`;
+}
+// function to have a single source of truth for the edge name of a connect operation, until the refactor to use CypherBuilder.
+function getConnectEdgeName(varName: string, index: number): string {
+    return `${varName}${index}_relationship`;
+}
+
 function getFilters({
     connect,
     entity,
     context,
-    varName,
-    index,
+    nodeName,
 }: {
     connect: any;
     entity: EntityAdapter;
     context: Neo4jGraphQLTranslationContext;
-    varName: string;
-    index: number;
+    nodeName: string;
 }): Filters | undefined {
     if (!connect.where) {
         return;
     }
-    const baseName = `${varName}${index}`;
-    const nodeName = `${baseName}_node`;
+
     const targetElement = new Cypher.NamedNode(nodeName);
-    let whereString: string | undefined;
-    let params = {};
+    const whereInput = connect.where.node ?? {};
 
-    const whereInput = {
-        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-            return { ...args, [k]: v };
-        }, {}),
-    };
-
-    const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
+    const { predicate: wherePredicate, preComputedSubqueries } = createWhereNodePredicate({
         entity,
-        targetElement,
-        whereInput,
         context,
-        varName: nodeName,
-        recursing: true,
+        whereInput,
+        targetElement,
     });
-    if (rootNodeWhereCypher) {
-        whereString = rootNodeWhereCypher;
-        params = { ...params, ...rootNodeWhereParams };
+    let preComputedWhereFieldsResult = "";
 
+    const whereCypher = new Cypher.Raw((env: Cypher.Environment) => {
+        preComputedWhereFieldsResult = compileCypherIfExists(preComputedSubqueries, env);
+        const cypher = (wherePredicate as any)?.getCypher(env) || "";
+        return [cypher, {}];
+    });
+
+    const result = whereCypher.build(`${nodeName}_`);
+
+    if (result.cypher) {
         return {
-            predicate: [whereString, params],
-            preComputedSubqueries,
+            predicate: [result.cypher, result.params],
+            preComputedSubqueries: preComputedWhereFieldsResult,
         };
     }
 }
