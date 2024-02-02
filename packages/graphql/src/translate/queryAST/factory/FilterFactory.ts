@@ -45,6 +45,8 @@ import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
+import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
+import { RelationshipDeclarationAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 type AggregateWhereInput = {
     count: number;
@@ -57,7 +59,10 @@ type AggregateWhereInput = {
 };
 
 export class FilterFactory {
-    constructor(_queryASTFactory: QueryASTFactory) {}
+    private queryASTFactory: QueryASTFactory;
+    constructor(queryASTFactory: QueryASTFactory) {
+        this.queryASTFactory = queryASTFactory;
+    }
 
     /**
      * Get all the entities explicitly required by the where "on" object. If it's a concrete entity it will return itself.
@@ -439,6 +444,42 @@ export class FilterFactory {
     }
 
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
+        const allPropertiesTypeNames: string[] = [];
+        if (relationship.firstDeclaredInTypeName) {
+            // TODO: when adding support for interfaces relationship will be a RelationshipDeclarationAdapter
+            // at that point we will have access to all possible propertiesTypeNames across all implementations of the relationship declaration
+            // (replace originalRelationshipDeclaration with relationship for that case)
+            const schema = this.queryASTFactory.schemaModel;
+            const originalRelationshipDeclaration = (
+                schema.getEntity(relationship.firstDeclaredInTypeName) as InterfaceEntity
+            ).relationshipDeclarations.get(relationship.name);
+            originalRelationshipDeclaration?.relationshipImplementations.forEach((r) => {
+                if (r.propertiesTypeName) {
+                    allPropertiesTypeNames.push(r.propertiesTypeName);
+                }
+            });
+        }
+
+        // The type T in ConcreteEntity.relationshipConnection(where: {edge: T}) defines all possible propertiesTypeNames as well (bc the relationshipConnection field is inherited from the Interface)
+        // that means users are able to filter the edge by a propertiesTypeName that the relationship does not know of
+        if (Object.keys(where).some((k) => allPropertiesTypeNames.includes(k))) {
+            if (relationship instanceof RelationshipAdapter && relationship.propertiesTypeName) {
+                // ignores all other propertiesTypeName and only generates filter for the applicable one
+                return this.createEdgeFilters(relationship, where[relationship.propertiesTypeName] || {});
+            }
+            if (relationship instanceof RelationshipDeclarationAdapter) {
+                // apply all filters for all possible propertiesTypeNames
+                const nestedFilters = allPropertiesTypeNames.flatMap((key) => {
+                    return this.createEdgeFilters(relationship, where[key] || {});
+                });
+                return this.wrapMultipleFiltersInLogical([
+                    new LogicalFilter({
+                        operation: "OR",
+                        filters: nestedFilters,
+                    }),
+                ]);
+            }
+        }
         const filterASTs = Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {

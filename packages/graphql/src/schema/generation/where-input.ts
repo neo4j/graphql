@@ -153,9 +153,9 @@ export function withSourceWhereInputType({
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
-    // TODO: ALE; relationship simple filters were not supported on Interface target, only connection filters
+    // TODO: relationship simple filters were not supported on Interface target, only connection filters
     // needs translation
-    // ideally interfaces should go all the way to the next if
+    // when implementing, simply remove this if-case
     if (relationshipTarget instanceof InterfaceEntityAdapter) {
         const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
         whereInput.addFields(connectionFields);

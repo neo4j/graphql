@@ -192,8 +192,7 @@ export function createRelationshipFields({
             return;
         }
 
-        // TODO: save relationshipDeclaration on relationshipAdapter sth like implementedDeclaration
-        // and merge these 2 into 1 RelationshipProperties generation function
+        // TODO: find a way to merge these 2 into 1 RelationshipProperties generation function
         if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
             doForRelationshipDeclaration({
                 relationshipDeclarationAdapter: relationshipAdapter,
