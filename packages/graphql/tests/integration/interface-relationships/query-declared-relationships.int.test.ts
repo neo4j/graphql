@@ -18,7 +18,7 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
+import { graphql, Source } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -6605,18 +6605,19 @@ describe("type narrowing - simple case", () => {
 
             interface Person {
                 name: String!
+                actedIn: [Production!]! @declareRelationship
             }
 
             type ${Actor} implements Person {
                 name: String!
                 moviesCnt: Int!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type ${UntrainedPerson} implements Person {
                 name: String!
                 age: Int!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
+                actedIn: [${AmatureProduction}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
             }
         `;
 
@@ -6646,7 +6647,7 @@ describe("type narrowing - simple case", () => {
         await driver.close();
     });
 
-    test("THING should read connection and return interface relationship fields", async () => {
+    test("get narrowed connection field", async () => {
         const actorName = "actor1";
         const untrainedPersonName = "anyone";
 
@@ -6762,6 +6763,211 @@ describe("type narrowing - simple case", () => {
                             node: {
                                 name: untrainedPersonName,
                                 age: 20,
+                            },
+                            properties: {
+                                screenTime: seriesScreenTime,
+                            },
+                        },
+                    ]),
+                },
+            },
+        ]);
+    });
+
+    test("get narrowed connection field - nested", async () => {
+        const actorName = "actor1";
+        const untrainedPersonName = "anyone";
+
+        const movieTitle = "movie1";
+        const movieTitle2 = "movie2";
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const amatureProductionTitle = "amature";
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const sceneNr = faker.number.int({ max: 100000 });
+
+        const query = /* GraphQL */ `
+            query Productions {
+                productions {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                                actedInConnection {
+                                    edges {
+                                        node {
+                                            title
+                                            ... on ${Movie} {
+                                                runtime
+                                            }
+                                            ... on ${AmatureProduction} {
+                                                episodeCount
+                                            }
+                                        }
+                                        properties {
+                                            ... on ActedIn {
+                                                screenTime
+                                            }
+                                            ... on AppearsIn {
+                                                sceneNr
+                                            }
+                                        }
+                                    }
+                                }
+                                ... on ${Actor} {
+                                    moviesCnt
+                                }
+                                ... on ${UntrainedPerson} {
+                                    age
+                                }
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                               
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
+                CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr }]->(m2)
+                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr, screenTime: $seriesScreenTime }]->(:${AmatureProduction} { title: $amatureProductionTitle, episodeCount: $seriesEpisodes })
+            `,
+            {
+                actorName,
+                untrainedPersonName,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesEpisodes,
+                seriesScreenTime,
+                amatureProductionTitle,
+                sceneNr,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data?.["productions"]).toIncludeSameMembers([
+            {
+                title: movieTitle,
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                name: actorName,
+                                moviesCnt: 1,
+                                actedInConnection: {
+                                    edges: expect.toIncludeSameMembers([
+                                        {
+                                            node: {
+                                                title: movieTitle,
+                                                runtime: movieRuntime,
+                                            },
+                                            properties: {
+                                                screenTime: movieScreenTime,
+                                            },
+                                        },
+                                        {
+                                            node: {
+                                                title: movieTitle2,
+                                                runtime: movieRuntime,
+                                            },
+                                            properties: {
+                                                screenTime: movieScreenTime,
+                                            },
+                                        },
+                                    ]),
+                                },
+                            },
+                            properties: {
+                                screenTime: movieScreenTime,
+                            },
+                        },
+                    ]),
+                },
+            },
+            {
+                title: movieTitle2,
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                name: actorName,
+                                moviesCnt: 1,
+                                actedInConnection: {
+                                    edges: expect.toIncludeSameMembers([
+                                        {
+                                            node: {
+                                                title: movieTitle,
+                                                runtime: movieRuntime,
+                                            },
+                                            properties: {
+                                                screenTime: movieScreenTime,
+                                            },
+                                        },
+                                        {
+                                            node: {
+                                                title: movieTitle2,
+                                                runtime: movieRuntime,
+                                            },
+                                            properties: {
+                                                screenTime: movieScreenTime,
+                                            },
+                                        },
+                                    ]),
+                                },
+                            },
+                            properties: {
+                                screenTime: movieScreenTime,
+                            },
+                        },
+                    ]),
+                },
+            },
+            {
+                title: amatureProductionTitle,
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                name: untrainedPersonName,
+                                age: 20,
+                                actedInConnection: {
+                                    edges: expect.toIncludeSameMembers([
+                                        {
+                                            node: {
+                                                title: amatureProductionTitle,
+                                                episodeCount: seriesEpisodes,
+                                            },
+                                            properties: {
+                                                sceneNr,
+                                            },
+                                        },
+                                    ]),
+                                },
                             },
                             properties: {
                                 screenTime: seriesScreenTime,
@@ -7701,5 +7907,407 @@ describe("type narrowing - simple case", () => {
     // });
 });
 
+describe("type narrowing nested connections", () => {
+    let driver: Driver;
+    let neo4j: Neo4j;
+    let session: Session;
+    let neoSchema: Neo4jGraphQL;
+    let gqlQuery: string | Source;
+
+    let Movie: UniqueType;
+    let AmatureProduction: UniqueType;
+    let Actor: UniqueType;
+    let UntrainedPerson: UniqueType;
+
+    let actorName: string;
+    let untrainedPersonName: string;
+    let movieTitle: string;
+    let movieTitle2: string;
+    let movieRuntime: number;
+    let movieScreenTime: number;
+    let amatureProductionTitle: string;
+    let seriesEpisodes: number;
+    let seriesScreenTime: number;
+    let sceneNr: number;
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+
+        actorName = "actor1";
+        untrainedPersonName = "anyone";
+        movieTitle = "movie1";
+        movieTitle2 = "movie2";
+        movieRuntime = faker.number.int({ max: 100000 });
+        movieScreenTime = faker.number.int({ max: 100000 });
+        amatureProductionTitle = "amature";
+        seriesEpisodes = faker.number.int({ max: 100000 });
+        seriesScreenTime = faker.number.int({ max: 100000 });
+        sceneNr = faker.number.int({ max: 100000 });
+
+        Movie = new UniqueType("Movie");
+        AmatureProduction = new UniqueType("AmatureProduction");
+        Actor = new UniqueType("Actor");
+        UntrainedPerson = new UniqueType("UntrainedPerson");
+        session = await neo4j.getSession();
+
+        await session.run(
+            `
+                CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
+                CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr }]->(m2)
+                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr, screenTime: $seriesScreenTime }]->(:${AmatureProduction} { title: $amatureProductionTitle, episodeCount: $seriesEpisodes })
+            `,
+            {
+                actorName,
+                untrainedPersonName,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesEpisodes,
+                seriesScreenTime,
+                amatureProductionTitle,
+                sceneNr,
+            }
+        );
+
+        gqlQuery = /* GraphQL */ `
+        query Productions {
+            productions {
+                title
+                actorsConnection {
+                    edges {
+                        node {
+                            name
+                            actedInConnection {
+                                edges {
+                                    node {
+                                        title
+                                        ... on ${Movie} {
+                                            runtime
+                                        }
+                                        ... on ${AmatureProduction} {
+                                            episodeCount
+                                        }
+                                    }
+                                    properties {
+                                        ... on ActedIn {
+                                            screenTime
+                                        }
+                                        ... on AppearsIn {
+                                            sceneNr
+                                        }
+                                    }
+                                }
+                            }
+                            ... on ${Actor} {
+                                moviesCnt
+                            }
+                            ... on ${UntrainedPerson} {
+                                age
+                            }
+                        }
+                        properties {
+                            ... on ActedIn {
+                                screenTime
+                            }
+                           
+                        }
+                    }
+                }
+            }
+        }
+    `;
+    });
+
+    afterAll(async () => {
+        await session.run(
+            `
+                MATCH(a:${Movie})
+                MATCH(b:${AmatureProduction})
+                MATCH(c:${Actor})
+                MATCH(d:${UntrainedPerson})
+
+                DETACH DELETE a
+                DETACH DELETE b
+                DETACH DELETE c
+                DETACH DELETE d
+            `
+        );
+        await driver.close();
+    });
+
+    test("connection field has relationship to one narrowed type only", async () => {
+        const typeDefs = gql`
+        interface Production {
+            title: String!
+            actors: [Person!]! @declareRelationship
+        }
+
+        type ${Movie} implements Production {
+            title: String!
+            runtime: Int!
+            actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        }
+
+        type ${AmatureProduction} implements Production {
+            title: String!
+            episodeCount: Int!
+            actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        }
+
+        type ActedIn @relationshipProperties {
+            screenTime: Int!
+        }
+
+        type AppearsIn @relationshipProperties {
+            sceneNr: Int!
+        }
+
+        interface Person {
+            name: String!
+            actedIn: [Production!]! @declareRelationship
+        }
+
+        type ${Actor} implements Person {
+            name: String!
+            moviesCnt: Int!
+            actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+        }
+
+        type ${UntrainedPerson} implements Person {
+            name: String!
+            age: Int!
+            actedIn: [${AmatureProduction}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
+        }
+    `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: gqlQuery,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(
+            (gqlResult.data?.["productions"] as any).find((r) => r.title === amatureProductionTitle).actorsConnection
+                .edges
+        ).toIncludeSameMembers([
+            {
+                node: {
+                    name: untrainedPersonName,
+                    age: 20,
+                    actedInConnection: {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: amatureProductionTitle,
+                                    episodeCount: seriesEpisodes,
+                                },
+                                properties: {
+                                    sceneNr,
+                                },
+                            },
+                        ]),
+                    },
+                },
+                properties: {
+                    screenTime: seriesScreenTime,
+                },
+            },
+        ]);
+    });
+    test("connection field has relationship to the other one narrowed type only", async () => {
+        const typeDefs = gql`
+        interface Production {
+            title: String!
+            actors: [Person!]! @declareRelationship
+        }
+
+        type ${Movie} implements Production {
+            title: String!
+            runtime: Int!
+            actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        }
+
+        type ${AmatureProduction} implements Production {
+            title: String!
+            episodeCount: Int!
+            actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        }
+
+        type ActedIn @relationshipProperties {
+            screenTime: Int!
+        }
+
+        type AppearsIn @relationshipProperties {
+            sceneNr: Int!
+        }
+
+        interface Person {
+            name: String!
+            actedIn: [Production!]! @declareRelationship
+        }
+
+        type ${Actor} implements Person {
+            name: String!
+            moviesCnt: Int!
+            actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+        }
+
+        type ${UntrainedPerson} implements Person {
+            name: String!
+            age: Int!
+            actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
+        }
+    `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: gqlQuery,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(
+            (gqlResult.data?.["productions"] as any).find((r) => r.title === amatureProductionTitle).actorsConnection
+                .edges
+        ).toIncludeSameMembers([
+            {
+                node: {
+                    name: untrainedPersonName,
+                    age: 20,
+                    actedInConnection: {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: movieTitle2,
+                                    runtime: movieRuntime,
+                                },
+                                properties: {
+                                    sceneNr,
+                                },
+                            },
+                        ]),
+                    },
+                },
+                properties: {
+                    screenTime: seriesScreenTime,
+                },
+            },
+        ]);
+    });
+    test("connection field has relationship to interface directly", async () => {
+        const typeDefs = gql`
+        interface Production {
+            title: String!
+            actors: [Person!]! @declareRelationship
+        }
+
+        type ${Movie} implements Production {
+            title: String!
+            runtime: Int!
+            actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        }
+
+        type ${AmatureProduction} implements Production {
+            title: String!
+            episodeCount: Int!
+            actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        }
+
+        type ActedIn @relationshipProperties {
+            screenTime: Int!
+        }
+
+        type AppearsIn @relationshipProperties {
+            sceneNr: Int!
+        }
+
+        interface Person {
+            name: String!
+            actedIn: [Production!]! @declareRelationship
+        }
+
+        type ${Actor} implements Person {
+            name: String!
+            moviesCnt: Int!
+            actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+        }
+
+        type ${UntrainedPerson} implements Person {
+            name: String!
+            age: Int!
+            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
+        }
+    `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: gqlQuery,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(
+            (gqlResult.data?.["productions"] as any).find((r) => r.title === amatureProductionTitle).actorsConnection
+                .edges
+        ).toIncludeSameMembers([
+            {
+                node: {
+                    name: untrainedPersonName,
+                    age: 20,
+                    actedInConnection: {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: movieTitle2,
+                                    runtime: movieRuntime,
+                                },
+                                properties: {
+                                    sceneNr,
+                                },
+                            },
+                            {
+                                node: {
+                                    title: amatureProductionTitle,
+                                    episodeCount: seriesEpisodes,
+                                },
+                                properties: {
+                                    sceneNr,
+                                },
+                            },
+                        ]),
+                    },
+                },
+                properties: {
+                    screenTime: seriesScreenTime,
+                },
+            },
+        ]);
+    });
+});
+
 // TODO: type narrowing
 // TODO: mutations
+// TODO: simple query version of all connection operations
