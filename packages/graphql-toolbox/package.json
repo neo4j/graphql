@@ -45,11 +45,11 @@
         "@codemirror/autocomplete": "6.12.0",
         "@codemirror/commands": "6.3.3",
         "@codemirror/lang-javascript": "6.2.1",
-        "@codemirror/language": "6.10.0",
+        "@codemirror/language": "6.10.1",
         "@dnd-kit/core": "6.1.0",
         "@dnd-kit/modifiers": "7.0.0",
         "@dnd-kit/sortable": "8.0.0",
-        "@graphiql/react": "0.20.2",
+        "@graphiql/react": "0.20.3",
         "@neo4j-ndl/base": "2.3.5",
         "@neo4j-ndl/react": "2.3.9",
         "@neo4j/graphql": "4.4.5",
@@ -70,7 +70,7 @@
         "zustand": "4.5.0"
     },
     "devDependencies": {
-        "@playwright/test": "1.41.1",
+        "@playwright/test": "1.41.2",
         "@tsconfig/create-react-app": "2.0.2",
         "@types/codemirror": "5.60.15",
         "@types/lodash.debounce": "4.0.9",
@@ -102,7 +102,7 @@
         "ts-node": "10.9.2",
         "tsconfig-paths-webpack-plugin": "4.1.0",
         "typescript": "5.1.6",
-        "webpack": "5.90.0",
+        "webpack": "5.90.1",
         "webpack-cli": "5.1.4",
         "webpack-dev-server": "4.15.1",
         "webpack-notifier": "1.15.0"
