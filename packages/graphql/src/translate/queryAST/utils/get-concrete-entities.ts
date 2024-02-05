@@ -23,18 +23,17 @@ import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adap
 import { isUnionEntity } from "./is-union-entity";
 
 /**
- * Returns the concrete entities presents in the where,
+ * Returns the concrete entities presents in the where, for interface this implicit behavior was substituted by the typename filters therefore we return all the concrete entities,
  * if the where argument is not defined then returns all the concrete entities of the composite target.
  **/
-export function getConcreteEntitiesInOnArgumentOfWhere(
+export function getConcreteEntities(
     compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
     whereArgs?: Record<string, any>
 ): ConcreteEntityAdapter[] {
     if (isUnionEntity(compositeTarget)) {
         return getConcreteEntitiesInOnArgumentOfWhereUnion(compositeTarget, whereArgs);
-    } else {
-        return compositeTarget.concreteEntities;
     }
+    return compositeTarget.concreteEntities;
 }
 
 function getConcreteEntitiesInOnArgumentOfWhereUnion(

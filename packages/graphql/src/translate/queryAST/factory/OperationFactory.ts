@@ -60,9 +60,9 @@ import type { EntitySelection } from "../ast/selection/EntitySelection";
 import { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { NodeSelection } from "../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../ast/selection/RelationshipSelection";
-import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
+import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { getConcreteWhere } from "../utils/get-concrete-where";
-import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { assertIsConcreteEntity, isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { AuthorizationFactory } from "./AuthorizationFactory";
@@ -103,64 +103,43 @@ export class OperationsFactory {
         varName?: string;
         reference?: any;
     }): Operation {
-        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
-        if (!entity && operationMatch.isCustomCypher) {
-            return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-        }
-        // entity could be undefined only in case of custom fields.
-        if (!entity) {
-            throw new Error("Transpilation error: Entity for custom cypher operation not found");
-        }
-
-        if (isConcreteEntity(entity)) {
-            // Handles deprecated top level fulltext
-            if (context.resolveTree.args.phrase) {
-                if (!context.fulltext) {
-                    throw new Error("Failed to get context fulltext");
-                }
-                const indexName = context.fulltext.indexName || context.fulltext.name;
-                if (indexName === undefined) {
-                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-                }
-
-                const op = this.createFulltextOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
+        // Handles deprecated top level fulltext
+        if (context.resolveTree.args.phrase) {
+            if (!context.fulltext) {
+                throw new Error("Failed to get context fulltext");
             }
-
-            if (operationMatch.isCreate) {
-                return this.createCreateOperation(entity, resolveTree, context);
-            } else if (operationMatch.isUpdate) {
-                const op = this.createUpdateOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            } else if (operationMatch.isCustomCypher) {
-                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            } else if (operationMatch.isDelete) {
-                return this.createTopLevelDeleteOperation({
-                    entity,
-                    resolveTree,
-                    context,
-                    varName,
-                });
-            } else if (operationMatch.isRead) {
+            const indexName = context.fulltext.indexName || context.fulltext.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            assertIsConcreteEntity(entity);
+            const op = this.createFulltextOperation(entity, resolveTree, context);
+            op.nodeAlias = TOP_LEVEL_NODE_NAME;
+            return op;
+        }
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
+        switch (operationMatch) {
+            case "READ": {
                 let op: ReadOperation;
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    assertIsConcreteEntity(entity);
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
+                    const varNameArg = entity && isConcreteEntity(entity) ? varName : undefined;
                     op = this.createReadOperation({
-                        entityOrRel: entity,
+                        entityOrRel: entity as EntityAdapter,
                         resolveTree,
                         context,
-                        varName,
+                        varName: varNameArg,
                         reference,
                     }) as ReadOperation;
                 }
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
+
                 return op;
-            } else if (operationMatch.isConnection) {
+            }
+            case "CONNECTION": {
+                assertIsConcreteEntity(entity);
                 const topLevelConnectionResolveTree = this.normalizeResolveTreeForTopLevelConnection(resolveTree);
                 const op = this.createConnectionOperationAST({
                     target: entity,
@@ -169,35 +148,38 @@ export class OperationsFactory {
                 });
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
-            } else if (operationMatch.isAggregation) {
+            }
+            case "AGGREGATE": {
+                if (!entity || isUnionEntity(entity)) {
+                    throw new Error("Aggregate operations are not supported for Union types");
+                }
                 const op = this.createAggregationOperation(entity, resolveTree, context);
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
-            throw new Error(`Operation: ${resolveTree.name} is not yet supported by the QueryAST`);
-        }
-
-        if (isInterfaceEntity(entity)) {
-            if (operationMatch.isAggregation) {
-                const op = this.createAggregationOperation(entity, resolveTree, context);
+            case "CREATE": {
+                assertIsConcreteEntity(entity);
+                return this.createCreateOperation(entity, resolveTree, context);
+            }
+            case "UPDATE": {
+                assertIsConcreteEntity(entity);
+                const op = this.createUpdateOperation(entity, resolveTree, context);
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
-            if (operationMatch.isCustomCypher) {
-                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
+            case "DELETE": {
+                assertIsConcreteEntity(entity);
+                return this.createTopLevelDeleteOperation({
+                    entity,
+                    resolveTree,
+                    context,
+                    varName,
+                });
+            }
+            case "CUSTOM_CYPHER": {
+                return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
             }
         }
-
-        if (isUnionEntity(entity)) {
-            if (operationMatch.isCustomCypher) {
-                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            }
-        }
-        return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
 
     public createFulltextOperation(
@@ -346,9 +328,7 @@ export class OperationsFactory {
             // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
             const isInterface = isInterfaceEntity(entity);
 
-            const concreteEntities = isInterface
-                ? entity.concreteEntities
-                : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+            const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
             const sharedFilters = isInterface
                 ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
@@ -442,7 +422,7 @@ export class OperationsFactory {
                     whereArgs: resolveTreeWhere,
                 });
             } else {
-                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+                const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -530,8 +510,8 @@ export class OperationsFactory {
 
                 return operation;
             } else {
-                // TOP level interface
-                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+                // TOP level interface/union
+                const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -547,15 +527,13 @@ export class OperationsFactory {
                     children: concreteAggregationOperations,
                 });
 
-                this.hydrateAggregationOperation({
+                return this.hydrateAggregationOperation({
                     entity,
                     resolveTree,
                     context,
                     operation: compositeAggregationOp,
                     whereArgs: resolveTreeWhere,
                 });
-
-                return compositeAggregationOp;
             }
         }
     }
@@ -584,7 +562,7 @@ export class OperationsFactory {
             nodeWhere = resolveTreeWhere;
         }
 
-        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
+        const concreteEntities = getConcreteEntities(target, nodeWhere);
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
             const selection = new RelationshipSelection({
                 relationship,
@@ -772,7 +750,7 @@ export class OperationsFactory {
         target: UnionEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
     }): DeleteOperation[] {
-        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, deleteArg);
+        const concreteEntities = getConcreteEntities(target, deleteArg);
 
         return concreteEntities.flatMap((concreteEntity) => {
             return asArray(deleteArg[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {
