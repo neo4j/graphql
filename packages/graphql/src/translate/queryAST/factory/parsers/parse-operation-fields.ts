@@ -68,7 +68,7 @@ function parseOperationField(
 ): OperationFieldMatch {
     const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
     return {
-        isRead: field === rootTypeFieldNames.read,
+        isRead: field === rootTypeFieldNames.read || field === "_entities",
         isConnection: field === rootTypeFieldNames.connection,
         isAggregation: field === rootTypeFieldNames.aggregate,
         isCreate: field === rootTypeFieldNames.create,

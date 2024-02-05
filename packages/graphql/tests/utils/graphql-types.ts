@@ -97,12 +97,4 @@ export class UniqueType {
     public toString(): string {
         return this.name;
     }
-
-}
-
-/** Generates unique type
- * @deprecated use new UniqueType instead
- */
-export function generateUniqueType(baseName: string): UniqueType {
-    return new UniqueType(baseName);
 }

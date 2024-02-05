@@ -55,11 +55,6 @@ export function toNumber(value: Integer | number): number {
     return isNeoInt(value) ? value.toNumber() : value;
 }
 
-/** Joins all strings with given separator, ignoring empty or undefined statements */
-export function joinStrings(statements: string | Array<string | undefined>, separator = "\n"): string {
-    return filterTruthy(asArray(statements)).join(separator);
-}
-
 /** Makes sure input is an array, if not it turns into an array (empty array if input is null or undefined) */
 export function asArray<T>(raw: T | Array<T> | undefined | null): Array<T> {
     if (Array.isArray(raw)) return raw;
