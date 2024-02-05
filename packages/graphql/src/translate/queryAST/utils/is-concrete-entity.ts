@@ -29,6 +29,6 @@ export function assertIsConcreteEntity(
     entity?: EntityAdapter | RelationshipAdapter
 ): asserts entity is ConcreteEntityAdapter {
     if (!entity || !isConcreteEntity(entity)) {
-        throw new Error("Compile Error: Expected EntityAdapter to be a ConcreteEntityAdapter");
+        throw new Error("Transpile Error: Expected EntityAdapter to be a ConcreteEntityAdapter");
     }
 }
