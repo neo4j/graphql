@@ -67,6 +67,14 @@ export function filterTruthy<T>(arr: Array<T | null | undefined | void>): Array<
     return arr.filter((v): v is T => !!v);
 }
 
+/** Check if both arrays share at least one element */
+export function haveSharedElement(arr1: Array<any>, arr2: Array<any>): boolean {
+    for (const element of arr1) {
+        if (arr2.includes(element)) return true;
+    }
+    return false;
+}
+
 /** Removes duplicate elements of an array */
 export function removeDuplicates<T>(arr: T[]): T[] {
     return Array.from(new Set(arr));
