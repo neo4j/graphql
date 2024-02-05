@@ -30,7 +30,7 @@ import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adap
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { filterTruthy, isRecord, isString } from "../../../utils/utils";
+import { filterTruthy, isObject, isRecord, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import type { Field } from "../ast/fields/Field";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
@@ -60,7 +60,7 @@ import type { EntitySelection } from "../ast/selection/EntitySelection";
 import { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { NodeSelection } from "../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../ast/selection/RelationshipSelection";
-import { getConcreteEntitiesInOnArgumentOfWhereUnion } from "../utils/get-concrete-entities-in-on-argument-of-where";
+import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
 import { getConcreteWhere } from "../utils/get-concrete-where";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
@@ -348,7 +348,7 @@ export class OperationsFactory {
 
             const concreteEntities = isInterface
                 ? entity.concreteEntities
-                : getConcreteEntitiesInOnArgumentOfWhereUnion(entity, resolveTreeWhere);
+                : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
 
             const sharedFilters = isInterface
                 ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
@@ -442,9 +442,7 @@ export class OperationsFactory {
                     whereArgs: resolveTreeWhere,
                 });
             } else {
-                const concreteEntities = isUnionEntity(entity)
-                    ? getConcreteEntitiesInOnArgumentOfWhereUnion(entity, resolveTreeWhere)
-                    : entity.concreteEntities;
+                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -532,10 +530,8 @@ export class OperationsFactory {
 
                 return operation;
             } else {
-                // TOP level composite
-                const concreteEntities = isUnionEntity(entity)
-                    ? getConcreteEntitiesInOnArgumentOfWhereUnion(entity, resolveTreeWhere)
-                    : entity.concreteEntities;
+                // TOP level interface
+                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -581,10 +577,14 @@ export class OperationsFactory {
         const directed = Boolean(resolveTree.args.directed) ?? true;
         const resolveTreeWhere: Record<string, any> = this.getWhereArgs(resolveTree);
 
-        const concreteEntities = isUnionEntity(target)
-            ? getConcreteEntitiesInOnArgumentOfWhereUnion(target, resolveTreeWhere)
-            : target.concreteEntities;
+        let nodeWhere: Record<string, any>;
+        if (isInterfaceEntity(target)) {
+            nodeWhere = isObject(resolveTreeWhere) ? resolveTreeWhere.node : {};
+        } else {
+            nodeWhere = resolveTreeWhere;
+        }
 
+        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
             const selection = new RelationshipSelection({
                 relationship,
@@ -772,7 +772,7 @@ export class OperationsFactory {
         target: UnionEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
     }): DeleteOperation[] {
-        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhereUnion(target, deleteArg);
+        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, deleteArg);
 
         return concreteEntities.flatMap((concreteEntity) => {
             return asArray(deleteArg[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {

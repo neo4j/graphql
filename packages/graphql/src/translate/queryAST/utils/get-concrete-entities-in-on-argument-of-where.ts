@@ -18,13 +18,26 @@
  */
 
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { isUnionEntity } from "./is-union-entity";
 
 /**
  * Returns the concrete entities presents in the where,
  * if the where argument is not defined then returns all the concrete entities of the composite target.
  **/
-export function getConcreteEntitiesInOnArgumentOfWhereUnion(
+export function getConcreteEntitiesInOnArgumentOfWhere(
+    compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
+    whereArgs?: Record<string, any>
+): ConcreteEntityAdapter[] {
+    if (isUnionEntity(compositeTarget)) {
+        return getConcreteEntitiesInOnArgumentOfWhereUnion(compositeTarget, whereArgs);
+    } else {
+        return compositeTarget.concreteEntities;
+    }
+}
+
+function getConcreteEntitiesInOnArgumentOfWhereUnion(
     compositeTarget: UnionEntityAdapter,
     whereArgs?: Record<string, any>
 ): ConcreteEntityAdapter[] {
@@ -35,7 +48,7 @@ export function getConcreteEntitiesInOnArgumentOfWhereUnion(
 }
 
 function getMatchingConcreteEntity(
-    compositeTarget: UnionEntityAdapter,
+    compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
     whereArgs: Record<string, any>
 ): ConcreteEntityAdapter[] {
     const concreteEntities: ConcreteEntityAdapter[] = [];
