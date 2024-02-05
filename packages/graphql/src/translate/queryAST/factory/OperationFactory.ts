@@ -125,9 +125,12 @@ export class OperationsFactory {
                     assertIsConcreteEntity(entity);
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
-                    const varNameArg = entity && isConcreteEntity(entity) ? varName : undefined;
+                    if (!entity) {
+                        throw new Error("Entity is required for top level read operations");
+                    }
+                    const varNameArg = isConcreteEntity(entity) ? varName : undefined;
                     op = this.createReadOperation({
-                        entityOrRel: entity as EntityAdapter,
+                        entityOrRel: entity,
                         resolveTree,
                         context,
                         varName: varNameArg,
