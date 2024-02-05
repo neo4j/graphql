@@ -48,7 +48,7 @@ export function populateWhereParams({
     return parsed;
 }
 
-export function parseContextParamProperty(
+function parseContextParamProperty(
     value: string,
     context: Neo4jGraphQLTranslationContext
 ): string | Cypher.Property | Cypher.Param {

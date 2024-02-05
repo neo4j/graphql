@@ -72,7 +72,7 @@ export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = [
     "subscription",
 ] as const satisfies readonly LibraryDirectives[];
 
-export const OBJECT_DIRECTIVES = [
+const OBJECT_DIRECTIVES = [
     "authentication",
     "authorization",
     "subscriptionsAuthorization",
@@ -88,7 +88,7 @@ export const OBJECT_DIRECTIVES = [
 ] as const satisfies readonly LibraryDirectives[];
 export type ObjectDirective = ValueOf<typeof OBJECT_DIRECTIVES>;
 
-export const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const satisfies readonly LibraryDirectives[];
+const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const satisfies readonly LibraryDirectives[];
 export type InterfaceDirective = ValueOf<typeof INTERFACE_DIRECTIVES>;
 
 const UNION_DIRECTIVES = ["query", "plural"] as const satisfies readonly LibraryDirectives[];
