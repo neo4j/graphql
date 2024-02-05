@@ -65,11 +65,6 @@ export function withWhereInputType({
     features,
     composer,
     typeName = entityAdapter.operations.whereInputTypeName,
-    getConcreteEntityWhereInputType = (entityAdapter: ConcreteEntityAdapter) =>
-        entityAdapter.operations.whereInputTypeName,
-    interfaceOnTypeName = entityAdapter instanceof InterfaceEntityAdapter
-        ? entityAdapter.operations.whereOnImplementationsWhereInputTypeName
-        : undefined,
     returnUndefinedIfEmpty = false,
     alwaysAllowNesting,
 }: {
@@ -78,7 +73,6 @@ export function withWhereInputType({
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
-    getConcreteEntityWhereInputType?: (entityAdapter: ConcreteEntityAdapter) => string;
     interfaceOnTypeName?: string;
     returnUndefinedIfEmpty?: boolean;
     alwaysAllowNesting?: boolean;
