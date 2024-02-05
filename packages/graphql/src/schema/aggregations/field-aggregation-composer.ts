@@ -27,12 +27,6 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
-export enum FieldAggregationSchemaTypes {
-    field = "AggregationSelection",
-    node = "NodeAggregateSelection",
-    edge = "EdgeAggregateSelection",
-}
-
 export class FieldAggregationComposer {
     private aggregationTypesMapper: AggregationTypesMapper;
     private composer: SchemaComposer;

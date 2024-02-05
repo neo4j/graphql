@@ -45,16 +45,6 @@ export function getAliasedResolveTreeByFieldName({
     );
 }
 
-export function filterFieldsInSelection<T extends BaseField>({
-    fields,
-    selection,
-}: {
-    fields: T[];
-    selection: Record<string, ResolveTree>;
-}): T[] {
-    return fields.filter((field) => Object.values(selection).find((f) => f.name === field.fieldName));
-}
-
 /** Generates a field to be used in creating projections */
 export function generateResolveTree({
     name,
