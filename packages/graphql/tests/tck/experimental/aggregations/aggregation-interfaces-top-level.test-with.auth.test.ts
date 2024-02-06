@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Top level filter on aggregation interfaces with Auth", () => {
+describe("Top level aggregation interfaces with Auth", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -44,8 +44,14 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
                 runtime: Int!
             }
 
-            type Series implements Production {
+            type Series implements Production
+                @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "series_aggregator" } } }]) {
                 title: String!
+                    @authorization(
+                        filter: [
+                            { operations: [AGGREGATE], where: { jwt: { roles_INCLUDES: "series_title_aggregator" } } }
+                        ]
+                    )
                 cost: Float!
                 episodes: Int!
             }
@@ -54,10 +60,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
                 screenTime: Int!
             }
 
-            type Actor
-                @authorization(
-                    filter: [{ operations: [AGGREGATE], where: { jwt: { roles_INCLUDES: "actor_aggregator" } } }]
-                ) {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -71,7 +74,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
     test("top level count", async () => {
         const query = gql`
             {
-                productionsAggregate(where: { title: "The Matrix" }) {
+                productionsAggregate {
                     count
                 }
             }
@@ -88,25 +91,23 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
                     MATCH (this1:Series)
                     RETURN this1 AS node
                 }
-                WITH *
-                WHERE node.title = $param0
                 RETURN count(node) AS this2
             }
             RETURN { count: this2 }"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Matrix\\"
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("top level count and string fields", async () => {
         const query = gql`
             {
-                productionsAggregate(where: { title: "The Matrix" }) {
+                productionsAggregate {
                     count
+                    title {
+                        longest
+                        shortest
+                    }
                 }
             }
         `;
@@ -117,30 +118,45 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))
                     RETURN this1 AS node
                 }
-                WITH *
-                WHERE node.title = $param0
                 RETURN count(node) AS this2
             }
-            RETURN { count: this2 }"
+            CALL {
+                CALL {
+                    MATCH (this3:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
+                    RETURN this3 AS node
+                    UNION
+                    MATCH (this4:Series)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))
+                    RETURN this4 AS node
+                }
+                WITH node
+                ORDER BY size(node.title) DESC
+                WITH collect(node.title) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS this5
+            }
+            RETURN { count: this2, title: this5 }"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Matrix\\"
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("top level count and string fields with AND operation", async () => {
+    test("top level non interface count and string fields", async () => {
         const query = gql`
             {
-                productionsAggregate(where: { AND: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {
+                moviesAggregate {
                     count
+                    title {
+                        longest
+                        shortest
+                    }
                 }
             }
         `;
@@ -149,59 +165,27 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                CALL {
-                    MATCH (this0:Movie)
-                    RETURN this0 AS node
-                    UNION
-                    MATCH (this1:Series)
-                    RETURN this1 AS node
-                }
-                WITH *
-                WHERE (node.cost >= $param0 AND node.title = $param1)
-                RETURN count(node) AS this2
+                MATCH (this:Movie)
+                WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
+                RETURN count(this) AS var0
             }
-            RETURN { count: this2 }"
+            CALL {
+                MATCH (this:Movie)
+                WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var1
+            }
+            RETURN { count: var0, title: var1 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": \\"The Matrix\\"
-            }"
-        `);
-    });
-
-    test("top level count and string fields with OR operation", async () => {
-        const query = gql`
-            {
-                productionsAggregate(where: { OR: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {
-                    count
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                CALL {
-                    MATCH (this0:Movie)
-                    RETURN this0 AS node
-                    UNION
-                    MATCH (this1:Series)
-                    RETURN this1 AS node
-                }
-                WITH *
-                WHERE (node.cost >= $param0 OR node.title = $param1)
-                RETURN count(node) AS this2
-            }
-            RETURN { count: this2 }"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": 10,
-                \\"param1\\": \\"The Matrix\\"
+                \\"isAuthenticated\\": false,
+                \\"jwt\\": {},
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"movie_aggregator\\"
             }"
         `);
     });

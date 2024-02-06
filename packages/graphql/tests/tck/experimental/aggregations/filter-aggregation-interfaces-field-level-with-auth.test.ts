@@ -53,7 +53,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

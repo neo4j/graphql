@@ -74,7 +74,7 @@ describe("Field-level filter interface query fields with authorization", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
