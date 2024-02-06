@@ -230,8 +230,6 @@ function makeRelationshipToInterfaceTypeWhereType({
         features,
         typeName: interfaceEntity.operations.subscriptionWhereInputTypeName,
         interfaceOnTypeName: interfaceEntity.operations.implementationsSubscriptionWhereInputTypeName,
-        getConcreteEntityWhereInputType: (entityAdapter: ConcreteEntityAdapter) =>
-            entityAdapter.operations.subscriptionWhereInputTypeName,
         userDefinedFieldDirectives,
         returnUndefinedIfEmpty: true,
         alwaysAllowNesting: true,

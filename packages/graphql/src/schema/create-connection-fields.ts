@@ -45,12 +45,10 @@ import { graphqlDirectivesToCompose } from "./to-compose";
 
 function addConnectionSortField({
     connectionSortITC,
-    schemaComposer,
     relationshipAdapter,
     composeNodeArgs,
 }: {
     connectionSortITC: InputTypeComposer;
-    schemaComposer: SchemaComposer;
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition;
 }): InputTypeComposer | undefined {
@@ -243,7 +241,6 @@ export function createConnectionFields({
             );
             addConnectionSortField({
                 connectionSortITC,
-                schemaComposer,
                 relationshipAdapter: relationship,
                 composeNodeArgs,
             });
