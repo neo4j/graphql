@@ -261,8 +261,9 @@ export class FilterFactory {
     public createNodeFilters(entity: EntityAdapter, whereFields: Record<string, any>): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
+                const valueAsArray = asArray(value);
                 if (isLogicalOperator(key)) {
-                    const nestedFilters = asArray(value).flatMap((nestedWhere) => {
+                    const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
                         return this.createNodeFilters(entity, nestedWhere);
                     });
                     return new LogicalFilter({
@@ -278,9 +279,10 @@ export class FilterFactory {
                     relationship = entity.findRelationship(fieldName);
                 } else {
                     if (key === "typename_IN") {
-                        console.log(fieldName);
-                        const acceptedEntities = entity.concreteEntities.filter((ce) => {
-                            return asArray(value).some((v) => v === ce.name);
+                        const acceptedEntities = entity.concreteEntities.filter((concreteEntity) => {
+                            return valueAsArray.some(
+                                (typenameFilterValue) => typenameFilterValue === concreteEntity.name
+                            );
                         });
                         return new TypenameFilter(acceptedEntities);
                     }

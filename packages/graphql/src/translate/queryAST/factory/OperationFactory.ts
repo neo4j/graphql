@@ -75,8 +75,6 @@ import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
-const TOP_LEVEL_NODE_NAME = "this";
-
 export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
@@ -108,57 +106,47 @@ export class OperationsFactory {
             if (!context.fulltext) {
                 throw new Error("Failed to get context fulltext");
             }
-            const indexName = context.fulltext.indexName || context.fulltext.name;
+            const indexName = context.fulltext.indexName ?? context.fulltext.name;
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
             }
             assertIsConcreteEntity(entity);
-            const op = this.createFulltextOperation(entity, resolveTree, context);
-            op.nodeAlias = TOP_LEVEL_NODE_NAME;
-            return op;
+            return this.createFulltextOperation(entity, resolveTree, context);
         }
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
         switch (operationMatch) {
             case "READ": {
-                let op: ReadOperation;
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     assertIsConcreteEntity(entity);
-                    op = this.createFulltextOperation(entity, resolveTree, context);
-                } else {
-                    if (!entity) {
-                        throw new Error("Entity is required for top level read operations");
-                    }
-                    const varNameArg = isConcreteEntity(entity) ? varName : undefined;
-                    op = this.createReadOperation({
-                        entityOrRel: entity,
-                        resolveTree,
-                        context,
-                        varName: varNameArg,
-                        reference,
-                    }) as ReadOperation;
+                    return this.createFulltextOperation(entity, resolveTree, context);
                 }
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-
-                return op;
+                if (!entity) {
+                    throw new Error("Entity is required for top level read operations");
+                }
+                // For retro compatibility the old queries are using "this" as varName to define the top-level target, while the new Cypher uses auto-generated variables.
+                const varNameArg = isConcreteEntity(entity) ? varName : undefined;
+                return this.createReadOperation({
+                    entityOrRel: entity,
+                    resolveTree,
+                    context,
+                    varName: varNameArg,
+                    reference,
+                }) as ReadOperation;
             }
             case "CONNECTION": {
                 assertIsConcreteEntity(entity);
                 const topLevelConnectionResolveTree = this.normalizeResolveTreeForTopLevelConnection(resolveTree);
-                const op = this.createConnectionOperationAST({
+                return this.createConnectionOperationAST({
                     target: entity,
                     resolveTree: topLevelConnectionResolveTree,
                     context,
                 });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
             }
             case "AGGREGATE": {
                 if (!entity || isUnionEntity(entity)) {
                     throw new Error("Aggregate operations are not supported for Union types");
                 }
-                const op = this.createAggregationOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
+                return this.createAggregationOperation(entity, resolveTree, context);
             }
             case "CREATE": {
                 assertIsConcreteEntity(entity);
@@ -166,9 +154,7 @@ export class OperationsFactory {
             }
             case "UPDATE": {
                 assertIsConcreteEntity(entity);
-                const op = this.createUpdateOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
+                return this.createUpdateOperation(entity, resolveTree, context);
             }
             case "DELETE": {
                 assertIsConcreteEntity(entity);
@@ -971,7 +957,7 @@ export class OperationsFactory {
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
         if (context.fulltext) {
-            const indexName = context.fulltext.indexName || context.fulltext.name;
+            const indexName = context.fulltext.indexName ?? context.fulltext.name;
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
             }

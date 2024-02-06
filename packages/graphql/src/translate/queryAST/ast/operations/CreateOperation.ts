@@ -33,7 +33,6 @@ export class CreateOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
     constructor({ target }: { target: ConcreteEntityAdapter }) {
         super();

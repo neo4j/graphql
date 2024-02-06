@@ -154,7 +154,7 @@ describe("default max limit bypass warning", () => {
             additionalDefinitions,
             features: {},
         });
-        expect(warn).toHaveBeenCalledTimes(0);
+        expect(warn).not.toHaveBeenCalled();
     });
 
     test("max limit on concrete should trigger warning if no limit on interface", () => {
@@ -196,7 +196,7 @@ describe("default max limit bypass warning", () => {
             additionalDefinitions,
             features: {},
         });
-        expect(warn).toHaveBeenCalledTimes(0);
+        expect(warn).not.toHaveBeenCalled();
     });
 
     test("Max limit higher on interface than concrete should trigger warning", () => {
@@ -299,7 +299,7 @@ describe("default max limit bypass warning", () => {
             additionalDefinitions,
             features: {},
         });
-        expect(warn).toHaveBeenCalledTimes(0);
+        expect(warn).not.toHaveBeenCalled();
     });
 });
 
