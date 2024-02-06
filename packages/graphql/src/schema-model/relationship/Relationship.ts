@@ -47,9 +47,10 @@ export class Relationship {
     public readonly description?: string;
     public readonly annotations: Partial<Annotations>;
     public readonly propertiesTypeName: string | undefined;
-    public readonly firstDeclaredInTypeName: string | undefined;
+    public readonly firstDeclaredInTypeName: string | undefined; // the name of the Interface that declares this if this is an implementation (used in type names as prefix)
+    public readonly originalTarget?: Entity; // the original target entity of the RelationshipDeclaration if this is an implementation (useful for type narrowing scenarios)
+    private siblings?: string[]; // other Relationship that are implementations of the same RelationshipDeclaration as this
 
-    public readonly originalTarget?: Entity;
     constructor({
         name,
         type,
@@ -68,6 +69,7 @@ export class Relationship {
         propertiesTypeName,
         firstDeclaredInTypeName,
         originalTarget,
+        siblings,
     }: {
         name: string;
         type: string;
@@ -86,6 +88,7 @@ export class Relationship {
         propertiesTypeName?: string;
         firstDeclaredInTypeName?: string;
         originalTarget?: Entity;
+        siblings?: string[];
     }) {
         this.type = type;
         this.source = source;
@@ -106,6 +109,10 @@ export class Relationship {
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
+        }
+
+        if (siblings) {
+            this.setSiblings(siblings);
         }
     }
 
@@ -128,6 +135,7 @@ export class Relationship {
             propertiesTypeName: this.propertiesTypeName,
             firstDeclaredInTypeName: this.firstDeclaredInTypeName,
             originalTarget: this.originalTarget,
+            siblings: this.siblings,
         });
     }
 
@@ -140,6 +148,14 @@ export class Relationship {
 
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
+    }
+
+    public setSiblings(siblingPropertiesTypeNames: string[]) {
+        this.siblings = siblingPropertiesTypeNames;
+    }
+
+    public getSiblings(): string[] | undefined {
+        return this.siblings;
     }
 
     // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter

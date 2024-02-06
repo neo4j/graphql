@@ -57,6 +57,8 @@ export class RelationshipAdapter {
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
 
+    public readonly siblings?: string[];
+
     private _singular: string | undefined;
     private _plural: string | undefined;
 
@@ -112,6 +114,10 @@ export class RelationshipAdapter {
         this.propertiesTypeName = propertiesTypeName;
         this.firstDeclaredInTypeName = firstDeclaredInTypeName;
         this.rawOriginalTargetEntity = originalTarget;
+
+        if (relationship.getSiblings()) {
+            this.siblings = relationship.getSiblings();
+        }
     }
 
     public get operations(): RelationshipOperations {

@@ -294,6 +294,13 @@ function hydrateRelationshipDeclarations(
         );
         if (relationshipField) {
             entity.addRelationshipDeclaration(relationshipField);
+            const allImplementationsPropertiesTypeNames = relationshipField.relationshipImplementations
+                .map((impl) => impl.propertiesTypeName)
+                .filter((x) => Boolean(x)) as string[];
+
+            relationshipField.relationshipImplementations.forEach((impl) =>
+                impl.setSiblings(allImplementationsPropertiesTypeNames)
+            );
         }
     }
 }

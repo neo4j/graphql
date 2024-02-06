@@ -444,24 +444,9 @@ export class FilterFactory {
     }
 
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
-        const allPropertiesTypeNames: string[] = [];
-        if (relationship.firstDeclaredInTypeName) {
-            // TODO: when adding support for interfaces relationship will be a RelationshipDeclarationAdapter
-            // at that point we will have access to all possible propertiesTypeNames across all implementations of the relationship declaration
-            // (replace originalRelationshipDeclaration with relationship for that case)
-            const schema = this.queryASTFactory.schemaModel;
-            const originalRelationshipDeclaration = (
-                schema.getEntity(relationship.firstDeclaredInTypeName) as InterfaceEntity
-            ).relationshipDeclarations.get(relationship.name);
-            originalRelationshipDeclaration?.relationshipImplementations.forEach((r) => {
-                if (r.propertiesTypeName) {
-                    allPropertiesTypeNames.push(r.propertiesTypeName);
-                }
-            });
-        }
-
         // The type T in ConcreteEntity.relationshipConnection(where: {edge: T}) defines all possible propertiesTypeNames as well (bc the relationshipConnection field is inherited from the Interface)
         // that means users are able to filter the edge by a propertiesTypeName that the relationship does not know of
+        const allPropertiesTypeNames = relationship.siblings || [];
         if (Object.keys(where).some((k) => allPropertiesTypeNames.includes(k))) {
             if (relationship instanceof RelationshipAdapter && relationship.propertiesTypeName) {
                 // ignores all other propertiesTypeName and only generates filter for the applicable one
