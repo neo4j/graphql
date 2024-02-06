@@ -68,7 +68,6 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            experimental: true,
         });
     });
 

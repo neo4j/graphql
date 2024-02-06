@@ -65,7 +65,6 @@ describe("Interface aggregation filtering operations with auth", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
-            experimental: true,
         });
     });
 

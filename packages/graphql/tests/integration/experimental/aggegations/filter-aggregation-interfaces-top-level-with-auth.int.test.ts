@@ -121,7 +121,6 @@ describe("Top-level filter interface query fields with authorization", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            experimental: true,
             features: {
                 authorization: { key: secret },
             },
