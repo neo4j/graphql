@@ -17,23 +17,29 @@
  * limitations under the License.
  */
 
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+
+import { isConcreteEntity } from "./is-concrete-entity";
 import { isUnionEntity } from "./is-union-entity";
 
 /**
- * Returns the concrete entities presents in the where, for interface this implicit behavior was substituted by the typename filters therefore we return all the concrete entities,
+ * Returns the concrete entities presents in the where argument,
+ * for interface this implicit behavior was substituted by the typename filters therefore we return all the concrete entities,
  * if the where argument is not defined then returns all the concrete entities of the composite target.
+ * In case of concrete entities returns the entity itself.
  **/
-export function getConcreteEntities(
-    compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
-    whereArgs?: Record<string, any>
-): ConcreteEntityAdapter[] {
-    if (isUnionEntity(compositeTarget)) {
-        return getConcreteEntitiesInOnArgumentOfWhereUnion(compositeTarget, whereArgs);
+export function getConcreteEntities(target: EntityAdapter, whereArgs?: Record<string, any>): ConcreteEntityAdapter[] {
+    if (isConcreteEntity(target)) {
+        return [target];
     }
-    return compositeTarget.concreteEntities;
+    if (isUnionEntity(target)) {
+        return getConcreteEntitiesInOnArgumentOfWhereUnion(target, whereArgs);
+    }
+
+    return target.concreteEntities;
 }
 
 function getConcreteEntitiesInOnArgumentOfWhereUnion(
