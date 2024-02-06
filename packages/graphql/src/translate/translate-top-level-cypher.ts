@@ -68,6 +68,7 @@ export function translateTopLevelCypher({
         resolveTree,
         entityAdapter,
         context,
+        varName: "this",
     });
     const queryASTEnv = new QueryASTEnv();
     const targetNode = new Cypher.NamedNode("this");

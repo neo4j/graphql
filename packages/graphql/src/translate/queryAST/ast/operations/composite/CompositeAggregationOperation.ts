@@ -51,8 +51,6 @@ export class CompositeAggregationOperation extends Operation {
     private nodeMap = new Cypher.Map();
     private edgeMap = new Cypher.Map();
 
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
-
     constructor({
         compositeEntity,
         children,
@@ -91,12 +89,8 @@ export class CompositeAggregationOperation extends Operation {
         if (parentNode) {
             return this.transpileAggregationOperation(context);
         } else {
-            if (!this.nodeAlias) {
-                throw new Error("Node alias missing on top level composite aggregation");
-            }
             const newContext = new QueryASTContext({
-                // NOTE: hack for top level
-                target: new Cypher.NamedNode(this.nodeAlias),
+                target: new Cypher.Node(),
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
             const result = this.transpileAggregationOperation(newContext, false);

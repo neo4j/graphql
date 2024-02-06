@@ -52,8 +52,6 @@ export class AggregationOperation extends Operation {
     protected pagination: Pagination | undefined;
     protected sortFields: Sort[] = [];
 
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
-
     constructor({
         entity,
         directed = true,
@@ -191,7 +189,7 @@ export class AggregationOperation extends Operation {
             const relDirection = this.entity.getCypherDirection(this.directed);
             return parentContext.push({ relationship: relVar, target: targetNode, direction: relDirection });
         } else {
-            const targetNode = createNodeFromEntity(this.entity, parentContext.neo4jGraphQLContext, this.nodeAlias);
+            const targetNode = createNodeFromEntity(this.entity, parentContext.neo4jGraphQLContext);
             return new QueryASTContext({
                 target: targetNode,
                 neo4jGraphQLContext: parentContext.neo4jGraphQLContext,

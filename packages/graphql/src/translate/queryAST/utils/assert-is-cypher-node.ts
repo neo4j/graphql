@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 
 /** Checks if provided variable is a Cypher.Node instance */
-export function isCypherNode(variable: Cypher.Variable): variable is Cypher.Node {
+function isCypherNode(variable: Cypher.Variable): variable is Cypher.Node {
     return variable instanceof Cypher.Node;
 }
 /** Asserts the given variable is a Cypher.Node instance */

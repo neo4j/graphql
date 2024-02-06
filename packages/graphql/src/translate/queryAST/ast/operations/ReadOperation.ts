@@ -49,8 +49,6 @@ export class ReadOperation extends Operation {
     protected pagination: Pagination | undefined;
     protected sortFields: Sort[] = [];
 
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
-
     protected selection: EntitySelection;
 
     constructor({
@@ -262,12 +260,16 @@ export class ReadOperation extends Operation {
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const nonCypherFields = this.fields.filter((f) => !(f instanceof CypherAttributeField));
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         return wrapSubqueriesInCypherCalls(context, nonCypherFields, [context.target]);
     }
 
     protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         return wrapSubqueriesInCypherCalls(context, this.getCypherFields(), [context.target]);
     }
 
@@ -278,7 +280,9 @@ export class ReadOperation extends Operation {
     }
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const projectionFields = this.fields.map((f) => f.getProjectionField(context.target));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField(context));
 

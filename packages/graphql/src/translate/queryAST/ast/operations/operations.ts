@@ -28,13 +28,9 @@ export type OperationTranspileResult = {
 };
 
 export abstract class Operation extends QueryASTNode {
-    public nodeAlias: string | undefined;
-
     abstract transpile(context: QueryASTContext): OperationTranspileResult;
 }
 
 export abstract class MutationOperation extends Operation {
-    public nodeAlias: string | undefined;
-
     abstract transpile(context: QueryASTContext): OperationTranspileResult;
 }
