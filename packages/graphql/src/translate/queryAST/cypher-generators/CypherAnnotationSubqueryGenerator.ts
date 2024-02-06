@@ -23,7 +23,7 @@ import type { AttributeAdapter } from "../../../schema-model/attribute/model-ada
 import { QueryASTContext } from "../ast/QueryASTContext";
 import type { Field } from "../ast/fields/Field";
 import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
-import { assertIsCypherNode } from "../utils/is-cypher-node";
+import { assertIsCypherNode } from "../utils/assert-is-cypher-node";
 import { wrapSubqueryInCall } from "../utils/wrap-subquery-in-call";
 import { replaceArgumentsInStatement } from "../utils/replace-arguments-in-statement";
 
@@ -153,7 +153,9 @@ export class CypherAnnotationSubqueryGenerator {
 
     private getNestedFieldsSubquery(nestedFields: Field[] | undefined): Cypher.Clause | undefined {
         const target = this.returnVariable;
-        if (!nestedFields) return undefined;
+        if (!nestedFields) {
+            return;
+        }
         assertIsCypherNode(target);
 
         const nestedContext = new QueryASTContext({

@@ -123,15 +123,13 @@ export class OperationsFactory {
                 if (!entity) {
                     throw new Error("Entity is required for top level read operations");
                 }
-                // For retro compatibility the old queries are using "this" as varName to define the top-level target, while the new Cypher uses auto-generated variables.
-                const varNameArg = isConcreteEntity(entity) ? varName : undefined;
                 return this.createReadOperation({
                     entityOrRel: entity,
                     resolveTree,
                     context,
-                    varName: varNameArg,
+                    varName,
                     reference,
-                }) as ReadOperation;
+                });
             }
             case "CONNECTION": {
                 assertIsConcreteEntity(entity);

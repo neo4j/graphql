@@ -26,16 +26,15 @@ import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
-export function translateRead(
-    {
-        context,
-        entityAdapter,
-    }: {
-        context: Neo4jGraphQLTranslationContext;
-        entityAdapter: EntityAdapter;
-    },
-    varName = "this"
-): Cypher.CypherResult {
+export function translateRead({
+    context,
+    entityAdapter,
+    varName,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entityAdapter: EntityAdapter;
+    varName?: string;
+}): Cypher.CypherResult {
     const { resolveTree } = context;
     const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
     const operationsTree = operationsTreeFactory.createQueryAST({
