@@ -189,7 +189,7 @@ export class AggregationOperation extends Operation {
             const relDirection = this.entity.getCypherDirection(this.directed);
             return parentContext.push({ relationship: relVar, target: targetNode, direction: relDirection });
         } else {
-            const targetNode = createNodeFromEntity(this.entity, parentContext.neo4jGraphQLContext); // TODO: maybe change it to return Variable , , parentContext.returnVariable
+            const targetNode = createNodeFromEntity(this.entity, parentContext.neo4jGraphQLContext);
             return new QueryASTContext({
                 target: targetNode,
                 neo4jGraphQLContext: parentContext.neo4jGraphQLContext,
