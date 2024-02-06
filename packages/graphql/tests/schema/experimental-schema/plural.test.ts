@@ -55,7 +55,7 @@ describe("Plural option", () => {
 
             type AnimalAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             enum AnimalImplementation {
@@ -101,7 +101,7 @@ describe("Plural option", () => {
 
             type CatAggregateSelection {
               count: Int!
-              queenOf: StringAggregateSelectionNullable!
+              queenOf: StringAggregateSelection!
             }
 
             input CatCreateInput {
@@ -189,9 +189,9 @@ describe("Plural option", () => {
             }
 
             type DogAggregateSelection {
-              breed: StringAggregateSelectionNullable!
+              breed: StringAggregateSelection!
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input DogCreateInput {
@@ -308,7 +308,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

@@ -55,10 +55,10 @@ describe("200", () => {
             }
 
             type CategoryAggregateSelection {
-              categoryId: IDAggregateSelectionNonNullable!
+              categoryId: IDAggregateSelection!
               count: Int!
-              description: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              description: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input CategoryCreateInput {
@@ -161,7 +161,7 @@ describe("200", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -194,7 +194,7 @@ describe("200", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

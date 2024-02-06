@@ -29,45 +29,24 @@ describe("AggregationTypesMapper", () => {
         typesMapper = new AggregationTypesMapper(composer);
     });
 
-    test("returns the correct non nullable type", () => {
-        const aggregationType = typesMapper.getAggregationType({
-            fieldName: "String",
-            nullable: false,
-        });
-
-        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelectionNonNullable");
+    test("returns the correct type", () => {
+        const aggregationType = typesMapper.getAggregationType("String");
+        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelection");
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
     });
 
     test("do not duplicate types", () => {
-        const beforeType = composer.get("StringAggregateSelectionNonNullable");
+        const beforeType = composer.get("StringAggregateSelection");
         const typesMapper2 = new AggregationTypesMapper(composer);
-        const aggregationType = typesMapper2.getAggregationType({
-            fieldName: "String",
-            nullable: false,
-        });
+        const aggregationType = typesMapper2.getAggregationType("String");
 
-        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelectionNonNullable");
+        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelection");
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
         expect(beforeType).toEqual(aggregationType);
     });
 
-    test("returns the correct nullable type", () => {
-        const aggregationType = typesMapper.getAggregationType({
-            fieldName: "String",
-            nullable: true,
-        });
-
-        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelectionNullable");
-        expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
-    });
-
     test("returns undefined for invalid type", () => {
-        const aggregationType = typesMapper.getAggregationType({
-            fieldName: "this is a lovely typeeee",
-            nullable: true,
-        });
-
+        const aggregationType = typesMapper.getAggregationType("this is a lovely typeeee");
         expect(aggregationType).toBeUndefined();
     });
 });

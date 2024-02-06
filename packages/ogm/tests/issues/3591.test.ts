@@ -229,10 +229,10 @@ describe("issues/3591", () => {
             export type CompanyAggregateSelection = {
               __typename?: \\"CompanyAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              id: IdAggregateSelectionNonNullable;
-              field1: StringAggregateSelectionNullable;
-              field2: StringAggregateSelectionNullable;
-              field3: StringAggregateSelectionNullable;
+              id: IdAggregateSelection;
+              field1: StringAggregateSelection;
+              field2: StringAggregateSelection;
+              field3: StringAggregateSelection;
             };
 
             export type CompanyEdge = {
@@ -277,8 +277,8 @@ describe("issues/3591", () => {
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
             };
 
-            export type IdAggregateSelectionNonNullable = {
-              __typename?: \\"IDAggregateSelectionNonNullable\\";
+            export type IdAggregateSelection = {
+              __typename?: \\"IDAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
             };
@@ -300,7 +300,7 @@ describe("issues/3591", () => {
             export type RestaurantAggregateSelection = {
               __typename?: \\"RestaurantAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type RestaurantEdge = {
@@ -316,8 +316,8 @@ describe("issues/3591", () => {
               edges: Array<RestaurantEdge>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -403,7 +403,7 @@ describe("issues/3591", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              id: IdAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
             };
 
             export type UserCompanyCompanyAggregationSelection = {
@@ -414,10 +414,10 @@ describe("issues/3591", () => {
 
             export type UserCompanyCompanyNodeAggregateSelection = {
               __typename?: \\"UserCompanyCompanyNodeAggregateSelection\\";
-              id: IdAggregateSelectionNonNullable;
-              field1: StringAggregateSelectionNullable;
-              field2: StringAggregateSelectionNullable;
-              field3: StringAggregateSelectionNullable;
+              id: IdAggregateSelection;
+              field1: StringAggregateSelection;
+              field2: StringAggregateSelection;
+              field3: StringAggregateSelection;
             };
 
             export type UserCompanyConnection = {
@@ -460,7 +460,7 @@ describe("issues/3591", () => {
 
             export type UserRestaurantFavoriteRestaurantsNodeAggregateSelection = {
               __typename?: \\"UserRestaurantFavoriteRestaurantsNodeAggregateSelection\\";
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UsersConnection = {
@@ -1091,13 +1091,9 @@ describe("issues/3591", () => {
               favoriteRestaurantsConnection_SOME?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
             };
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              id?: IdAggregateInputNonNullable;
+              id?: boolean;
             }
 
             export declare class UserModel {
@@ -1144,20 +1140,12 @@ describe("issues/3591", () => {
               }): Promise<UserAggregateSelection>;
             }
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface CompanyAggregateSelectionInput {
               count?: boolean;
-              id?: IdAggregateInputNonNullable;
-              field1?: StringAggregateInputNullable;
-              field2?: StringAggregateInputNullable;
-              field3?: StringAggregateInputNullable;
+              id?: boolean;
+              field1?: boolean;
+              field2?: boolean;
+              field3?: boolean;
             }
 
             export declare class CompanyModel {
@@ -1201,17 +1189,9 @@ describe("issues/3591", () => {
               }): Promise<CompanyAggregateSelection>;
             }
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface RestaurantAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class RestaurantModel {

@@ -269,7 +269,7 @@ describe("Union Relationships Filtering", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -413,8 +413,8 @@ describe("Union Relationships Filtering", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectOrCreateWhere {
@@ -551,8 +551,8 @@ describe("Union Relationships Filtering", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectOrCreateWhere {
@@ -644,7 +644,7 @@ describe("Union Relationships Filtering", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

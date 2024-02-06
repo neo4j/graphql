@@ -68,7 +68,7 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -79,7 +79,7 @@ describe("Directive-preserve", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -230,7 +230,7 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -246,7 +246,7 @@ describe("Directive-preserve", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -281,9 +281,9 @@ describe("Directive-preserve", () => {
             }
 
             type GenreMovieMoviesNodeAggregateSelection {
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              imdbRating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             input GenreMoviesAggregateInput {
@@ -529,7 +529,7 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -547,9 +547,9 @@ describe("Directive-preserve", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              imdbRating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -586,7 +586,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieGenreGenresNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieGenresAggregateInput {
@@ -842,7 +842,7 @@ describe("Directive-preserve", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -1020,7 +1020,7 @@ describe("Directive-preserve", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -1065,11 +1065,11 @@ describe("Directive-preserve", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
+              role: StringAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -1161,7 +1161,7 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1183,11 +1183,11 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
+              role: StringAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1321,8 +1321,8 @@ describe("Directive-preserve", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1500,7 +1500,7 @@ describe("Directive-preserve", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -1583,11 +1583,11 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
+              role: StringAggregateSelection!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1721,8 +1721,8 @@ describe("Directive-preserve", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -1844,7 +1844,7 @@ describe("Directive-preserve", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -2025,7 +2025,7 @@ describe("Directive-preserve", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -2070,11 +2070,11 @@ describe("Directive-preserve", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
+              role: StringAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -2166,7 +2166,7 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -2188,11 +2188,11 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
+              role: StringAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -2326,8 +2326,8 @@ describe("Directive-preserve", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -2505,7 +2505,7 @@ describe("Directive-preserve", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -2588,11 +2588,11 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
+              role: StringAggregateSelection!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -2726,8 +2726,8 @@ describe("Directive-preserve", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -2849,7 +2849,7 @@ describe("Directive-preserve", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -2920,7 +2920,7 @@ describe("Directive-preserve", () => {
 
             type BlogAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input BlogConnectInput {
@@ -2964,7 +2964,7 @@ describe("Directive-preserve", () => {
             }
 
             type BlogPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNullable!
+              content: StringAggregateSelection!
             }
 
             input BlogPostsAggregateInput {
@@ -3213,7 +3213,7 @@ describe("Directive-preserve", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNullable!
+              content: StringAggregateSelection!
               count: Int!
             }
 
@@ -3299,7 +3299,7 @@ describe("Directive-preserve", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -3338,7 +3338,7 @@ describe("Directive-preserve", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {

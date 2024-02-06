@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -183,8 +183,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input GenreOnCreateInput {
@@ -390,7 +390,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type INodeAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
             }
 
             enum INodeImplementation {
@@ -439,8 +439,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type IProductAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input IProductConnectWhere {
@@ -548,8 +548,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -678,7 +678,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type MovieGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieGenreNodeAggregationWhereInput {
@@ -924,8 +924,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -1060,7 +1060,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type SeriesGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesGenreNodeAggregationWhereInput {
@@ -1262,7 +1262,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -1409,7 +1409,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -1468,8 +1468,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input GenreOnCreateInput {
@@ -1677,8 +1677,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type IProductAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input IProductConnectWhere {
@@ -1828,8 +1828,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1921,7 +1921,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type MovieGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieGenreNodeAggregationWhereInput {
@@ -2160,8 +2160,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -2259,7 +2259,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type SeriesGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesGenreNodeAggregationWhereInput {
@@ -2456,7 +2456,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -2602,7 +2602,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -2653,8 +2653,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input GenreOptions {
@@ -2854,8 +2854,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type IProductAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input IProductConnectWhere {
@@ -2961,8 +2961,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -3121,8 +3121,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -3247,7 +3247,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
