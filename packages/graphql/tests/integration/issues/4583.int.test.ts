@@ -280,4 +280,64 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             },
         });
     });
+
+    test("typename should work for connect operation, with logical operators", async () => {
+        const query = /* GraphQL */ `
+        mutation CreateActors {
+            ${Actor.operations.create}(
+              input: {
+                name: "My Actor"
+                actedIn: {
+                  connect: {
+                    edge: { screenTime: 10 }
+                    where: { node: { OR: [
+                        { title: "${movieTitle}", typename_IN: [${Movie.name}]},
+                        { AND: [ {typename_IN: [${Series.name}]}, { NOT: { title: "${sameTitle}"} }] }
+                    ] } }
+                  }
+                }
+              }
+            ) {
+              ${Actor.plural} {
+                name
+                actedIn {
+                    ... on ${Movie.name} {
+                        title
+                    }
+                    ... on ${Series.name} {
+                        title
+                    }
+                }
+              }
+            }
+          }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [Actor.operations.create]: {
+                [Actor.plural]: expect.toIncludeSameMembers([
+                    {
+                        name: "My Actor",
+                        actedIn: [
+                            {
+                                title: movieTitle,
+                            },
+                            {
+                                title: seriesTitle,
+                            },
+                        ],
+                    },
+                ]),
+            },
+        });
+    });
 });
