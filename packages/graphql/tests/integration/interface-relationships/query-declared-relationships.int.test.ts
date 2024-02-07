@@ -785,6 +785,7 @@ describe("interface with declared relationships", () => {
     });
 
     // update -> create -> edge
+    /* eslint-disable-next-line jest/no-disabled-tests */
     test.skip("update interface relationship, create edge", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
@@ -2038,6 +2039,7 @@ describe("interface implementing interface with declared relationships", () => {
         expect(gqlResult.errors?.[0]?.message).toInclude(`Cannot query field "actorsConnection" on type "Production"`);
     });
 
+    /* eslint-disable-next-line jest/no-disabled-tests */
     test.skip("WHERE?", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
@@ -5253,6 +5255,7 @@ describe("interface implementing interface with declared relationships - three l
 });
 
 // TODO: add validation rule
+/* eslint-disable-next-line jest/no-disabled-tests */
 describe.skip("interface implementing interface with declared relationships on three interfaces that do not implement eachother", () => {
     let driver: Driver;
     let neo4j: Neo4j;
@@ -7694,6 +7697,7 @@ describe("type narrowing - simple case", () => {
     });
 
     // TODO: translation layer does not seem to support connection filters on interfaces
+    /* eslint-disable-next-line jest/no-disabled-tests */
     test.skip("get narrowed connection field + filter on edge top level", async () => {
         const actorName = "actor1";
         const untrainedPersonName = "anyone";
@@ -7827,6 +7831,7 @@ describe("type narrowing - simple case", () => {
         ]);
     });
     // TODO: translation layer does not seem to support connection filters on interfaces
+    /* eslint-disable-next-line jest/no-disabled-tests */
     test.skip("get narrowed connection field + filter on node top level", async () => {
         const actorName = "actor1";
         const untrainedPersonName = "anyone";
@@ -8651,136 +8656,6 @@ describe("type narrowing - simple case", () => {
             },
         ]);
     });
-
-    // TODO: here, check that ActedIn wrapper is not needed anymore
-    test.skip("update interface relationship, update edge", async () => {
-        const actorName = "actor1";
-        const untrainedPersonName = "anyone";
-
-        const movieTitle = "movie1";
-        const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
-
-        const query = /* GraphQL */ `
-            mutation {
-                updateProductions(update: { actors: { update: { edge: { ActedIn: { screenTime: 0 } } } } }) {
-                    title
-                    actorsConnection {
-                        edges {
-                            node {
-                                name
-                                ... on ${Actor} {
-                                    moviesCnt
-                                }
-                                ... on ${UntrainedPerson} {
-                                    age
-                                }
-                            }
-                            properties {
-                                ... on ActedIn {
-                                    screenTime
-                                }
-                               ... on AppearsIn {
-                                    sceneNr
-                               }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        await session.run(
-            `
-                CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
-                CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
-                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr }]->(m2)
-                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr, screenTime: $seriesScreenTime }]->(:${AmatureProduction} { title: $amatureProductionTitle, episodeCount: $seriesEpisodes })
-            `,
-            {
-                actorName,
-                untrainedPersonName,
-                movieTitle,
-                movieTitle2,
-                movieRuntime,
-                movieScreenTime,
-                seriesEpisodes,
-                seriesScreenTime,
-                amatureProductionTitle,
-                sceneNr,
-            }
-        );
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data?.["productions"]).toIncludeSameMembers([
-            {
-                title: movieTitle,
-                actorsConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                name: actorName,
-                                moviesCnt: 1,
-                            },
-                            properties: {
-                                screenTime: 0,
-                            },
-                        },
-                    ]),
-                },
-            },
-            {
-                title: movieTitle2,
-                actorsConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                name: actorName,
-                                moviesCnt: 1,
-                            },
-                            properties: {
-                                screenTime: 0,
-                            },
-                        },
-                    ]),
-                },
-            },
-            {
-                title: amatureProductionTitle,
-                actorsConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                name: untrainedPersonName,
-                                age: 20,
-                            },
-                            properties: {
-                                sceneNr,
-                            },
-                        },
-                    ]),
-                },
-            },
-        ]);
-    });
 });
 
 describe("type narrowing nested connections", () => {
@@ -9394,6 +9269,7 @@ describe("type narrowing nested connections", () => {
 });
 
 // TODO: maybe combine with describe above bc there are multiple typedefs
+/* eslint-disable-next-line jest/no-disabled-tests */
 describe.skip("type narrowing - mutations setup", () => {
     let driver: Driver;
     let neo4j: Neo4j;
