@@ -67,7 +67,7 @@ describe("inheritance", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -148,11 +148,11 @@ describe("inheritance", () => {
             }
 
             type ActorPersonFriendsEdgeAggregateSelection {
-              since: IntAggregateSelectionNullable!
+              since: IntAggregateSelection!
             }
 
             type ActorPersonFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -270,7 +270,7 @@ describe("inheritance", () => {
               since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -299,7 +299,7 @@ describe("inheritance", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -494,7 +494,7 @@ describe("inheritance", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

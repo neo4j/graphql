@@ -91,7 +91,7 @@ describe("Query Direction", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -121,7 +121,7 @@ describe("Query Direction", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -298,7 +298,7 @@ describe("Query Direction", () => {
             }
 
             type UserUserFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserWhere {
@@ -421,7 +421,7 @@ describe("Query Direction", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -451,7 +451,7 @@ describe("Query Direction", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -628,7 +628,7 @@ describe("Query Direction", () => {
             }
 
             type UserUserFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserWhere {
@@ -751,7 +751,7 @@ describe("Query Direction", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -781,7 +781,7 @@ describe("Query Direction", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -958,7 +958,7 @@ describe("Query Direction", () => {
             }
 
             type UserUserFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserWhere {

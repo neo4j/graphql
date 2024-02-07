@@ -79,7 +79,7 @@ describe("String Comparators", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -165,7 +165,7 @@ describe("String Comparators", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -234,7 +234,7 @@ describe("String Comparators", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -316,7 +316,7 @@ describe("String Comparators", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -394,7 +394,7 @@ describe("String Comparators", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -478,7 +478,7 @@ describe("String Comparators", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -755,7 +755,7 @@ describe("String Comparators", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -791,11 +791,11 @@ describe("String Comparators", () => {
             }
 
             type ActorMovieActedInEdgeAggregateSelection {
-              screenTime: StringAggregateSelectionNullable!
+              screenTime: StringAggregateSelection!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorOptions {
@@ -920,11 +920,11 @@ describe("String Comparators", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: StringAggregateSelectionNullable!
+              screenTime: StringAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1095,7 +1095,7 @@ describe("String Comparators", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1238,7 +1238,7 @@ describe("String Comparators", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

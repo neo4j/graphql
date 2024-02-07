@@ -122,7 +122,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
               count: Int!
             }
 
@@ -300,7 +300,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostUserAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -348,7 +348,7 @@ describe("Apollo Federation", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
+            type StringAggregateSelection @shareable {
               longest: String
               shortest: String
             }
@@ -383,7 +383,7 @@ describe("Apollo Federation", () => {
 
             type UserAggregateSelection @shareable {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -427,7 +427,7 @@ describe("Apollo Federation", () => {
             }
 
             type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
             }
 
             input UserPostsAggregateInput {
@@ -735,7 +735,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
               count: Int!
             }
 
@@ -906,7 +906,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostUserAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -955,7 +955,7 @@ describe("Apollo Federation", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @federation__shareable {
+            type StringAggregateSelection @federation__shareable {
               longest: String
               shortest: String
             }
@@ -987,7 +987,7 @@ describe("Apollo Federation", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UserConnectWhere {
