@@ -2053,16 +2053,16 @@ describe("interface implementing interface with declared relationships", () => {
         const seriesEpisodes = faker.number.int({ max: 100000 });
         const seriesScreenTime = faker.number.int({ max: 100000 });
 
-        const query = `
-            query Actors {
-                ${Actor.plural}(where: { actedIn: { title: "${movieTitle}" } }) {
-                    name
-                    actedIn {
-                        title
-                    }
-                }
-            }
-        `;
+        // const query = `
+        //     query Actors {
+        //         ${Actor.plural}(where: { actedIn: { title: "${movieTitle}" } }) {
+        //             name
+        //             actedIn {
+        //                 title
+        //             }
+        //         }
+        //     }
+        // `;
         const queryC = `
             query Actors {
                 ${Actor.plural}(where: { actedInConnection: { node: { title: "${movieTitle}" } } }) {

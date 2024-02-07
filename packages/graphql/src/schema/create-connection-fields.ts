@@ -26,8 +26,8 @@ import type { ObjectFields } from "./get-obj-field-meta";
 
 /**
  * TODO [translation-layer-compatibility]
- * keeping this `relationshipFields` scaffold for backwards compatibility on translation layer
- * actual functional logic is in schemaModel.concreteEntities.forEach
+ * this file only contains old Relationship class construction
+ * safe to delete when no longer needed
  */
 export function createConnectionFields({
     entityAdapter,

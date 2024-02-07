@@ -242,16 +242,19 @@ function makeAugmentedSchema({
         if (entity instanceof InterfaceEntity) {
             const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
             const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
-            const connectionFields = generateInterfaceObjectType({
+            generateInterfaceObjectType({
                 composer,
                 interfaceEntityAdapter,
                 subgraph,
-                relationshipFields,
                 userDefinedInterfaceDirectives,
                 userDefinedFieldDirectivesForNode,
                 propagatedDirectivesForNode,
                 aggregationTypesMapper,
                 seenRelationshipPropertiesTypes,
+            });
+            const connectionFields = createConnectionFields({
+                entityAdapter: interfaceEntityAdapter,
+                relationshipFields,
             });
             relationships = [...relationships, ...connectionFields];
             return;
@@ -275,12 +278,11 @@ function makeAugmentedSchema({
             const userDefinedObjectDirectives = (userDefinedDirectivesForNode.get(entity.name) || []).concat(
                 propagatedDirectives
             );
-            const connectionFields = generateObjectType({
+            generateObjectType({
                 composer,
                 concreteEntityAdapter,
                 subgraph,
                 features,
-                relationshipFields,
                 userDefinedObjectDirectives,
                 userDefinedFieldDirectives,
                 propagatedDirectives,
@@ -289,6 +291,11 @@ function makeAugmentedSchema({
                 seenRelationshipPropertiesTypes,
                 userDefinedDirectivesForNode,
                 userDefinedFieldDirectivesForNode,
+            });
+
+            const connectionFields = createConnectionFields({
+                entityAdapter: concreteEntityAdapter,
+                relationshipFields,
             });
             relationships = [...relationships, ...connectionFields];
             return;
@@ -481,7 +488,6 @@ function generateObjectType({
     concreteEntityAdapter,
     features,
     subgraph,
-    relationshipFields,
     userDefinedFieldDirectives,
     userDefinedObjectDirectives,
     propagatedDirectives,
@@ -495,7 +501,6 @@ function generateObjectType({
     concreteEntityAdapter: ConcreteEntityAdapter;
     features?: Neo4jFeaturesSettings;
     subgraph?: Subgraph;
-    relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     userDefinedObjectDirectives: DirectiveNode[];
     propagatedDirectives: DirectiveNode[];
@@ -537,10 +542,6 @@ function generateObjectType({
         userDefinedFieldDirectivesForNode,
         features,
         seenRelationshipPropertiesTypes,
-    });
-    const connectionFields = createConnectionFields({
-        entityAdapter: concreteEntityAdapter,
-        relationshipFields,
     });
 
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
@@ -627,7 +628,6 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
-    return connectionFields;
 }
 
 function generateInterfaceObjectType({
@@ -635,7 +635,6 @@ function generateInterfaceObjectType({
     interfaceEntityAdapter,
     features,
     subgraph,
-    relationshipFields,
     userDefinedFieldDirectivesForNode,
     userDefinedInterfaceDirectives,
     propagatedDirectivesForNode,
@@ -646,7 +645,6 @@ function generateInterfaceObjectType({
     interfaceEntityAdapter: InterfaceEntityAdapter;
     features?: Neo4jFeaturesSettings;
     subgraph?: Subgraph;
-    relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     userDefinedInterfaceDirectives: DirectiveNode[];
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
@@ -685,11 +683,6 @@ function generateInterfaceObjectType({
         seenRelationshipPropertiesTypes,
     });
 
-    const connectionFields = createConnectionFields({
-        entityAdapter: interfaceEntityAdapter,
-        relationshipFields,
-    });
-
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
     if (interfaceEntityAdapter.isReadable) {
         composer.Query.addFields({
@@ -720,6 +713,4 @@ function generateInterfaceObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
-
-    return connectionFields;
 }
