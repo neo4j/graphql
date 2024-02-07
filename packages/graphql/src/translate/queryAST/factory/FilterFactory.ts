@@ -262,90 +262,13 @@ export class FilterFactory {
     }): ConnectionFilter {
         return new ConnectionFilter(options);
     }
-    /**
-     * By removing the _on field is possible to create a single filter to be applied to all the concrete entities.
-     * */
-    private createExperimentalInterfaceFilters(entity: InterfaceEntityAdapter, where: Record<string, any>): Filter[] {
-        const filters = filterTruthy(
-            Object.entries(where).flatMap(([key, value]): Filter | undefined => {
-                if (isLogicalOperator(key)) {
-                    const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                        return this.createExperimentalInterfaceFilters(entity, nestedWhere);
-                    });
-                    return new LogicalFilter({
-                        operation: key,
-                        filters: nestedFilters,
-                    });
-                }
-                if (key === "typename_IN") {
-                    const acceptedEntities = entity.concreteEntities.filter((ce) => {
-                        return asArray(value).some((v) => v === ce.name);
-                    });
-                    const typenameFilter = new TypenameFilter(acceptedEntities);
-                    return typenameFilter;
-                }
 
-                const { fieldName, operator, isNot } = parseWhereField(key);
-
-                const attr = entity.findAttribute(fieldName);
-
-                if (fieldName === "id" && !attr && !isUnionEntity(entity)) {
-                    const relayAttribute = entity.globalIdField;
-                    if (relayAttribute) {
-                        const relayIdData = fromGlobalId(value as string);
-                        if (relayIdData) {
-                            const { typeName, field } = relayIdData;
-                            let id = relayIdData.id;
-
-                            if (typeName !== entity.name || !field || !id) {
-                                throw new Error(`Cannot query Relay Id on "${entity.name}"`);
-                            }
-                            const idAttribute = entity.findAttribute(field);
-                            if (!idAttribute) throw new Error(`Attribute ${field} not found`);
-
-                            if (idAttribute.typeHelper.isNumeric()) {
-                                id = Number(id);
-                                if (Number.isNaN(id)) {
-                                    throw new Error("Can't parse non-numeric relay id");
-                                }
-                            }
-                            return this.createPropertyFilter({
-                                attribute: idAttribute,
-                                comparisonValue: id,
-                                isNot,
-                                operator,
-                            });
-                        }
-                    }
-                }
-
-                if (!attr) throw new Error(`Attribute ${fieldName} not found`);
-                return this.createPropertyFilter({
-                    attribute: attr,
-                    comparisonValue: value,
-                    isNot,
-                    operator,
-                });
-            })
-        );
-
-        return this.wrapMultipleFiltersInLogical(filters);
-    }
-
-    // TODO: remove _on implementation logic from this method when _on will be completely deprecated.
-    // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
-    public createNodeFilters(entity: EntityAdapter, where: Record<string, any>): Filter[] {
-        // if typename is allowed we can compute only the shared filter without recomputing the filters for each concrete entity
-        // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-        const typenameFilterAllowed = isInterfaceEntity(entity);
-        if (typenameFilterAllowed) {
-            return this.createExperimentalInterfaceFilters(entity, where);
-        }
-        const whereFields = where;
+    public createNodeFilters(entity: EntityAdapter, whereFields: Record<string, any>): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
+                const valueAsArray = asArray(value);
                 if (isLogicalOperator(key)) {
-                    const nestedFilters = asArray(value).flatMap((nestedWhere) => {
+                    const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
                         return this.createNodeFilters(entity, nestedWhere);
                     });
                     return new LogicalFilter({
@@ -359,6 +282,15 @@ export class FilterFactory {
                 let relationship: RelationshipAdapter | undefined;
                 if (isConcreteEntity(entity)) {
                     relationship = entity.findRelationship(fieldName);
+                } else {
+                    if (key === "typename_IN") {
+                        const acceptedEntities = entity.concreteEntities.filter((concreteEntity) => {
+                            return valueAsArray.some(
+                                (typenameFilterValue) => typenameFilterValue === concreteEntity.name
+                            );
+                        });
+                        return new TypenameFilter(acceptedEntities);
+                    }
                 }
 
                 if (isConnection) {

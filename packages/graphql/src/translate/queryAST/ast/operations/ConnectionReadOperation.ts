@@ -47,7 +47,6 @@ export class ConnectionReadOperation extends Operation {
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
     protected selection: EntitySelection;
 

@@ -29,13 +29,10 @@ import { DEPRECATED } from "../constants";
 import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
-import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { InputField } from "../types";
-import { DEPRECATE_NOT } from "./constants";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 
@@ -128,81 +125,6 @@ export function concreteEntityToCreateInputFields(
     }
 
     return createInputFields;
-}
-
-export function attributesToSubscriptionsWhereInputFields(
-    entityWithAttributes: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter
-): Record<string, InputField> {
-    return entityWithAttributes.subscriptionWhereFields.reduce((res, attribute) => {
-        if (!attribute.isFilterable()) {
-            return res;
-        }
-        const typeName =
-            entityWithAttributes instanceof RelationshipAdapter
-                ? entityWithAttributes.propertiesTypeName
-                : entityWithAttributes.name;
-        const fieldType = attribute.getInputTypeNames().where.pretty;
-
-        const ifArrayOfAnyTypeExceptBoolean = attribute.typeHelper.isList() && attribute.getTypeName() !== "Boolean";
-        const ifAnyTypeExceptArrayAndBoolean = !attribute.typeHelper.isList() && attribute.getTypeName() !== "Boolean";
-        const isOneOfNumberTypes =
-            ["Int", "Float", "BigInt"].includes(attribute.getTypeName()) && !attribute.typeHelper.isList();
-        const isOneOfStringTypes = ["String", "ID"].includes(attribute.getTypeName()) && !attribute.typeHelper.isList();
-        const isOneOfSpatialTypes = ["Point", "CartesianPoint"].includes(attribute.getTypeName());
-
-        let inputTypeName = attribute.getTypeName();
-        if (isOneOfSpatialTypes) {
-            inputTypeName = `${inputTypeName}Input`;
-        }
-        return {
-            ...res,
-            AND: `[${typeName}SubscriptionWhere!]`,
-            OR: `[${typeName}SubscriptionWhere!]`,
-            NOT: `${typeName}SubscriptionWhere`,
-            [attribute.name]: fieldType,
-            [`${attribute.name}_NOT`]: {
-                type: fieldType,
-                directives: [DEPRECATE_NOT],
-            },
-            ...(ifArrayOfAnyTypeExceptBoolean && {
-                [`${attribute.name}_INCLUDES`]: inputTypeName,
-                [`${attribute.name}_NOT_INCLUDES`]: {
-                    type: inputTypeName,
-                    directives: [DEPRECATE_NOT],
-                },
-            }),
-            ...(ifAnyTypeExceptArrayAndBoolean && {
-                [`${attribute.name}_IN`]: `[${inputTypeName}]`,
-                [`${attribute.name}_NOT_IN`]: {
-                    type: `[${inputTypeName}]`,
-                    directives: [DEPRECATE_NOT],
-                },
-            }),
-            ...(isOneOfNumberTypes && {
-                [`${attribute.name}_LT`]: fieldType,
-                [`${attribute.name}_LTE`]: fieldType,
-                [`${attribute.name}_GT`]: fieldType,
-                [`${attribute.name}_GTE`]: fieldType,
-            }),
-            ...(isOneOfStringTypes && {
-                [`${attribute.name}_STARTS_WITH`]: fieldType,
-                [`${attribute.name}_NOT_STARTS_WITH`]: {
-                    type: fieldType,
-                    directives: [DEPRECATE_NOT],
-                },
-                [`${attribute.name}_ENDS_WITH`]: fieldType,
-                [`${attribute.name}_NOT_ENDS_WITH`]: {
-                    type: fieldType,
-                    directives: [DEPRECATE_NOT],
-                },
-                [`${attribute.name}_CONTAINS`]: fieldType,
-                [`${attribute.name}_NOT_CONTAINS`]: {
-                    type: fieldType,
-                    directives: [DEPRECATE_NOT],
-                },
-            }),
-        };
-    }, {});
 }
 
 export function concreteEntityToUpdateInputFields(

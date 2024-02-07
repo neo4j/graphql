@@ -18,8 +18,7 @@
  */
 import type { DirectiveNode } from "graphql";
 import type { InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
-import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "../to-compose";
 
 export function withInterfaceType({

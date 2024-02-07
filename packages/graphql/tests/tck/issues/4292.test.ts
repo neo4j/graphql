@@ -193,7 +193,6 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 WITH *, count(this3) AS groupCount
                 OPTIONAL MATCH (this1)-[:MEMBER_OF]->(this4:Group)
                 WITH *, count(this4) AS groupCount
-                WITH *
                 CALL {
                     WITH this1
                     MATCH (this1)-[:MEMBER_OF]->(this5:Group)

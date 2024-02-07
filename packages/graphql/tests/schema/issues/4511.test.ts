@@ -664,6 +664,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProductionImplementation!]
             }
 
             input ProductionUpdateInput {
@@ -868,11 +869,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               episode: Int
               episode_GT: Int
               episode_GTE: Int
-              episode_IN: [Int]
+              episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
               episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episode_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -886,11 +887,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }

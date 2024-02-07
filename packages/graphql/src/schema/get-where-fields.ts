@@ -177,7 +177,7 @@ export function getWhereFieldsForAttributes({
     features,
 }: {
     attributes: AttributeAdapter[];
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features?: Neo4jFeaturesSettings;
 }): Record<
     string,
@@ -196,9 +196,9 @@ export function getWhereFieldsForAttributes({
 
     // Add the where fields for each attribute
     for (const field of attributes) {
-        const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
+        const userDefinedDirectivesOnField = userDefinedFieldDirectives?.get(field.name);
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
+            (userDefinedDirectivesOnField ?? []).filter((directive) => directive.name.value === DEPRECATED)
         );
 
         result[field.name] = {

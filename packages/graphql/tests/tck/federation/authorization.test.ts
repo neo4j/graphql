@@ -129,9 +129,8 @@ describe("Federation and authorization", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE this.id = $param0
             WITH *
-            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+            WHERE (this.id = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             RETURN this { .id, .name, .password } AS this"
         `);
 
