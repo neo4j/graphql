@@ -320,6 +320,17 @@ function getDefinitionNodeFromNamedNode(interfaceNamedNode: NamedTypeNode, defin
     return definitionCollection.interfaceTypes.get(interfaceName) as InterfaceTypeDefinitionNode;
 }
 
+/**
+ * Goes up the inheritance chain checking for the field to have the @relationshipDeclaration directive
+ * Finds the first interface that declares the field as a relationship
+ * Returns the name of the first interface and the target of the relationship declaration in that first interface
+ *
+ * @param definition Entity with relationship field (Starting point)
+ * @param fieldName Relationship field name (The one we look for first declaration for)
+ * @param definitionCollection
+ * @param schema
+ * @returns Info about the interface at the top of the chain, nullable because there might not be any
+ */
 function getFirstDeclaration(
     definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     fieldName: string,

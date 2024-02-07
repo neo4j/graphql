@@ -1316,7 +1316,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `);
     });
 
-    test.only("Simple type definitions implementing just one interface", async () => {
+    test("Simple type definitions implementing just one interface", async () => {
         const typeDefs = gql`
             interface IProduct {
                 id: String!

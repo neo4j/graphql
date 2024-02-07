@@ -18,7 +18,7 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import {
+import type {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,

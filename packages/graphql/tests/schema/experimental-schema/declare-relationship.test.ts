@@ -18,7 +18,6 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { NamedTypeNode, NonNullTypeNode, ObjectTypeDefinitionNode } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";

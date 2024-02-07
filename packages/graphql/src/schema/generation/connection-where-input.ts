@@ -191,7 +191,7 @@ function withRelationshipObjectType({
         fields: { cursor: new GraphQLNonNull(GraphQLString), node: `${relationshipAdapter.target.name}!` },
     });
 
-    // TODO: avoid checking for RelationshipAdapter somehow..
+    // TODO: RelationshipDeclarationAdapter is handled by doForRelationshipDeclaration - improve
     if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.hasAnyProperties) {
         relationshipObjectType.addFields({
             properties: composer.getOTC(relationshipAdapter.propertiesTypeName).NonNull,
