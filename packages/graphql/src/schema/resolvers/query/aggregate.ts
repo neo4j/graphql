@@ -25,11 +25,12 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import { isConcreteEntity } from "../../../translate/queryAST/utils/is-concrete-entity";
 
 export function aggregateResolver({
-    concreteEntityAdapter,
+    entityAdapter,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }) {
     async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info);
@@ -38,7 +39,7 @@ export function aggregateResolver({
 
         const { cypher, params } = translateAggregate({
             context: context as Neo4jGraphQLTranslationContext,
-            entityAdapter: concreteEntityAdapter,
+            entityAdapter: entityAdapter,
         });
 
         const executeResult = await execute({
@@ -53,14 +54,14 @@ export function aggregateResolver({
     }
 
     return {
-        type: `${concreteEntityAdapter.operations.aggregateTypeNames.selection}!`,
+        type: `${entityAdapter.operations.aggregateTypeNames.selection}!`,
         resolve,
         args: {
-            where: concreteEntityAdapter.operations.whereInputTypeName,
-            ...(concreteEntityAdapter.annotations.fulltext
+            where: entityAdapter.operations.whereInputTypeName,
+            ...(isConcreteEntity(entityAdapter) && entityAdapter.annotations.fulltext
                 ? {
                       fulltext: {
-                          type: concreteEntityAdapter.operations.fullTextInputTypeName,
+                          type: entityAdapter.operations.fullTextInputTypeName,
                           description:
                               "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
                       },

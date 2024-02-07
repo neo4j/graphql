@@ -374,7 +374,7 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isAggregable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                    concreteEntityAdapter,
+                    entityAdapter: concreteEntityAdapter,
                 }),
             });
             composer.Query.setFieldDirectives(
@@ -839,7 +839,7 @@ function addInterfaceAggregateSelectionStuff({
 
     composer.Query.addFields({
         [entityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-            concreteEntityAdapter: entityAdapter,
+            entityAdapter,
         }),
     });
     composer.Query.setFieldDirectives(
