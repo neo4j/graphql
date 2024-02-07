@@ -52,7 +52,7 @@ import type { NestedOperation, QueryDirection, RelationshipDirection } from "./r
 import { Relationship } from "./relationship/Relationship";
 import { isInArray } from "../utils/is-in-array";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
-import { Entity } from "./entity/Entity";
+import type { Entity } from "./entity/Entity";
 import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {

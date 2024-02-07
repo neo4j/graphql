@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DirectiveNode, GraphQLInt, GraphQLResolveInfo, GraphQLString } from "graphql";
+import { type DirectiveNode, GraphQLInt, type GraphQLResolveInfo, GraphQLString } from "graphql";
 import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { ConnectionQueryArgs } from "../../types";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { ConnectionQueryArgs } from "../../types";
 import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";

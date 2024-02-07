@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, GraphQLNonNull, GraphQLString } from "graphql";
+import { type DirectiveNode, GraphQLNonNull, GraphQLString } from "graphql";
 import type { Directive, InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
 import { ObjectTypeComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
@@ -27,7 +27,7 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { Neo4jFeaturesSettings } from "../../types";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { addDirectedArgument } from "../directed-argument";
 import {

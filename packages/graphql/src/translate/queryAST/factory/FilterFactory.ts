@@ -45,7 +45,6 @@ import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
-import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 import { RelationshipDeclarationAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 type AggregateWhereInput = {

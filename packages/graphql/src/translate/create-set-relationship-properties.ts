@@ -22,7 +22,7 @@ import type { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
-import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
