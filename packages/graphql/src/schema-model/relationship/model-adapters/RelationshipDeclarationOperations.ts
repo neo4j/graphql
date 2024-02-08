@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "../../../utils/upper-first";
 import type { RelationshipDeclarationAdapter } from "./RelationshipDeclarationAdapter";
 import { RelationshipBaseOperations } from "./RelationshipBaseOperations";
 
@@ -26,16 +25,12 @@ export class RelationshipDeclarationOperations extends RelationshipBaseOperation
         super(relationshipDeclaration);
     }
 
-    protected get prefixForTypename(): string {
-        return this.sourceName;
-    }
-
     protected get fieldInputPrefixForTypename(): string {
-        return this.sourceName;
+        return this.relationship.source.name;
     }
 
     protected get edgePrefix(): string {
-        return `${upperFirst(this.sourceName)}${upperFirst(this.name)}Edge`;
+        return `${this.prefixForTypename}Edge`;
     }
 
     public get relationshipPropertiesFieldTypename(): string {

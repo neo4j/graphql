@@ -18,7 +18,6 @@
  */
 
 import { isInterfaceEntity } from "../../../translate/queryAST/utils/is-interface-entity";
-import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./RelationshipAdapter";
 import { RelationshipBaseOperations } from "./RelationshipBaseOperations";
@@ -28,20 +27,12 @@ export class RelationshipOperations extends RelationshipBaseOperations<Relations
         super(relationship);
     }
 
-    protected get prefixForTypename(): string {
-        // if relationship field is inherited  by source
-        // (part of a implemented Interface, not necessarily annotated as rel)
-        // then return this.interface.name
-
-        return this.relationship.inheritedFrom || this.sourceName;
-    }
-
     protected get fieldInputPrefixForTypename(): string {
-        const isTargetInterface = isInterfaceEntity(this.target);
+        const isTargetInterface = isInterfaceEntity(this.relationship.target);
         if (isTargetInterface) {
-            return this.sourceName;
+            return this.relationship.source.name;
         }
-        return this.prefixForTypename;
+        return this.relationship.inheritedFrom || this.relationship.source.name;
     }
 
     protected get edgePrefix(): string {
@@ -49,15 +40,15 @@ export class RelationshipOperations extends RelationshipBaseOperations<Relations
     }
 
     public get subscriptionWhereInputTypeName(): string {
-        return `${this.sourceName}${upperFirst(this.name)}RelationshipSubscriptionWhere`;
+        return `${this.prefixForTypename}RelationshipSubscriptionWhere`;
     }
 
     public getToUnionSubscriptionWhereInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.sourceName}${upperFirst(this.name)}${ifUnionRelationshipTargetEntity.name}SubscriptionWhere`;
+        return `${this.prefixForTypename}${ifUnionRelationshipTargetEntity.name}SubscriptionWhere`;
     }
 
     public get subscriptionConnectedRelationshipTypeName(): string {
-        return `${this.sourceName}${upperFirst(this.name)}ConnectedRelationship`;
+        return `${this.prefixForTypename}ConnectedRelationship`;
     }
 
     public get edgeSubscriptionWhereInputTypeName(): string {
