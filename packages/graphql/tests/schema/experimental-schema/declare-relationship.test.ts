@@ -185,7 +185,7 @@ describe("Declare Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -230,11 +230,11 @@ describe("Declare Relationship", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -340,7 +340,7 @@ describe("Declare Relationship", () => {
 
             type EpisodeAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input EpisodeConnectInput {
@@ -517,8 +517,8 @@ describe("Declare Relationship", () => {
             }
 
             type EpisodeSeriesSeriesNodeAggregateSelection {
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input EpisodeSeriesUpdateConnectionInput {
@@ -573,7 +573,7 @@ describe("Declare Relationship", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -595,11 +595,11 @@ describe("Declare Relationship", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -723,8 +723,8 @@ describe("Declare Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -868,7 +868,7 @@ describe("Declare Relationship", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -959,11 +959,11 @@ describe("Declare Relationship", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              episodeNr: IntAggregateSelectionNonNullable!
+              episodeNr: IntAggregateSelection!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1087,8 +1087,8 @@ describe("Declare Relationship", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -1134,7 +1134,7 @@ describe("Declare Relationship", () => {
             }
 
             type SeriesEpisodeEpisodesNodeAggregateSelection {
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input SeriesEpisodesAggregateInput {
@@ -1497,7 +1497,7 @@ describe("Declare Relationship", () => {
 
             type ShowAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             enum ShowImplementation {
@@ -1611,7 +1611,7 @@ describe("Declare Relationship", () => {
               episodeNr_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

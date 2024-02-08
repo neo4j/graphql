@@ -190,8 +190,8 @@ describe("Declare Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              moviesCnt: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              moviesCnt: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -237,11 +237,11 @@ describe("Declare Relationship", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -466,8 +466,8 @@ describe("Declare Relationship", () => {
 
             type AmatureProductionAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input AmatureProductionConnectInput {
@@ -521,12 +521,12 @@ describe("Declare Relationship", () => {
             }
 
             type AmatureProductionUntrainedPersonActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type AmatureProductionUntrainedPersonActorsNodeAggregateSelection {
-              age: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              age: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input AmatureProductionUpdateInput {
@@ -678,7 +678,7 @@ describe("Declare Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -700,12 +700,12 @@ describe("Declare Relationship", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              moviesCnt: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              moviesCnt: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -854,8 +854,8 @@ describe("Declare Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -998,7 +998,7 @@ describe("Declare Relationship", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectWhere {
@@ -1157,7 +1157,7 @@ describe("Declare Relationship", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectInput {
@@ -1269,7 +1269,7 @@ describe("Declare Relationship", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -1356,9 +1356,9 @@ describe("Declare Relationship", () => {
             }
 
             type UntrainedPersonAggregateSelection {
-              age: IntAggregateSelectionNonNullable!
+              age: IntAggregateSelection!
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input UntrainedPersonConnectInput {
@@ -1404,11 +1404,11 @@ describe("Declare Relationship", () => {
             }
 
             type UntrainedPersonProductionActedInEdgeAggregateSelection {
-              sceneNr: IntAggregateSelectionNonNullable!
+              sceneNr: IntAggregateSelection!
             }
 
             type UntrainedPersonProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input UntrainedPersonRelationInput {
@@ -1751,8 +1751,8 @@ describe("Declare Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              moviesCnt: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              moviesCnt: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -1789,12 +1789,12 @@ describe("Declare Relationship", () => {
             }
 
             type ActorMovieActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorOptions {
@@ -2039,8 +2039,8 @@ describe("Declare Relationship", () => {
 
             type AmatureProductionAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input AmatureProductionConnectInput {
@@ -2098,12 +2098,12 @@ describe("Declare Relationship", () => {
             }
 
             type AmatureProductionUntrainedPersonActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type AmatureProductionUntrainedPersonActorsNodeAggregateSelection {
-              age: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              age: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input AmatureProductionUpdateInput {
@@ -2255,7 +2255,7 @@ describe("Declare Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -2277,12 +2277,12 @@ describe("Declare Relationship", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              moviesCnt: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              moviesCnt: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -2431,8 +2431,8 @@ describe("Declare Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -2646,7 +2646,7 @@ describe("Declare Relationship", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonDeleteInput {
@@ -2778,7 +2778,7 @@ describe("Declare Relationship", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionDeleteInput {
@@ -2872,7 +2872,7 @@ describe("Declare Relationship", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -3036,9 +3036,9 @@ describe("Declare Relationship", () => {
             }
 
             type UntrainedPersonAggregateSelection {
-              age: IntAggregateSelectionNonNullable!
+              age: IntAggregateSelection!
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             type UntrainedPersonAmatureProductionActedInAggregationSelection {
@@ -3048,12 +3048,12 @@ describe("Declare Relationship", () => {
             }
 
             type UntrainedPersonAmatureProductionActedInEdgeAggregateSelection {
-              sceneNr: IntAggregateSelectionNonNullable!
+              sceneNr: IntAggregateSelection!
             }
 
             type UntrainedPersonAmatureProductionActedInNodeAggregateSelection {
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input UntrainedPersonConnectInput {
@@ -3366,7 +3366,7 @@ describe("Declare Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -3411,11 +3411,11 @@ describe("Declare Relationship", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -3521,7 +3521,7 @@ describe("Declare Relationship", () => {
 
             type EpisodeAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input EpisodeConnectInput {
@@ -3698,8 +3698,8 @@ describe("Declare Relationship", () => {
             }
 
             type EpisodeSeriesSeriesNodeAggregateSelection {
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input EpisodeSeriesUpdateConnectionInput {
@@ -3754,7 +3754,7 @@ describe("Declare Relationship", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3776,11 +3776,11 @@ describe("Declare Relationship", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3904,8 +3904,8 @@ describe("Declare Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -4237,7 +4237,7 @@ describe("Declare Relationship", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectInput {
@@ -4368,11 +4368,11 @@ describe("Declare Relationship", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              episodeNr: IntAggregateSelectionNonNullable!
+              episodeNr: IntAggregateSelection!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -4496,8 +4496,8 @@ describe("Declare Relationship", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -4543,7 +4543,7 @@ describe("Declare Relationship", () => {
             }
 
             type SeriesEpisodeEpisodesNodeAggregateSelection {
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input SeriesEpisodesAggregateInput {
@@ -4810,7 +4810,7 @@ describe("Declare Relationship", () => {
               episodeNr_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
