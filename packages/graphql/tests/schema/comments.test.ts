@@ -91,7 +91,7 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -105,12 +105,12 @@ describe("Comments", () => {
               ROMANCE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -135,10 +135,10 @@ describe("Comments", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -313,7 +313,7 @@ describe("Comments", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectWhere {
@@ -399,7 +399,7 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -418,7 +418,7 @@ describe("Comments", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -537,7 +537,7 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -672,7 +672,7 @@ describe("Comments", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -845,7 +845,7 @@ describe("Comments", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -886,11 +886,11 @@ describe("Comments", () => {
                 }
 
                 type ActorProductionActedInEdgeAggregateSelection {
-                  screenTime: IntAggregateSelectionNonNullable!
+                  screenTime: IntAggregateSelection!
                 }
 
                 type ActorProductionActedInNodeAggregateSelection {
-                  title: StringAggregateSelectionNonNullable!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -982,11 +982,11 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
+                type IntAggregateSelection {
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
                 }
 
                 type Movie implements Production {
@@ -996,8 +996,8 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  runtime: IntAggregateSelectionNonNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  runtime: IntAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1090,7 +1090,7 @@ describe("Comments", () => {
 
                 type ProductionAggregateSelection {
                   count: Int!
-                  title: StringAggregateSelectionNonNullable!
+                  title: StringAggregateSelection!
                 }
 
                 input ProductionConnectWhere {
@@ -1105,11 +1105,6 @@ describe("Comments", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
                 }
 
                 input ProductionOptions {
@@ -1129,7 +1124,6 @@ describe("Comments", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   title: String
                 }
 
@@ -1171,8 +1165,8 @@ describe("Comments", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  episodes: IntAggregateSelectionNonNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  episodes: IntAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
@@ -1247,9 +1241,9 @@ describe("Comments", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelection {
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1337,7 +1331,7 @@ describe("Comments", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1395,7 +1389,7 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -1409,7 +1403,7 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {

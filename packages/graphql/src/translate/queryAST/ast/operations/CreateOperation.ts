@@ -23,8 +23,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "./ReadOperation";
-import type { OperationTranspileResult } from "./operations";
-import { MutationOperation } from "./operations";
+import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 /**
  * This is currently just a dummy tree node,
@@ -34,7 +33,6 @@ export class CreateOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
     constructor({ target }: { target: ConcreteEntityAdapter }) {
         super();
@@ -63,4 +61,3 @@ export class CreateOperation extends MutationOperation {
         });
     }
 }
-

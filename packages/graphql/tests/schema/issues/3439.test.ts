@@ -18,11 +18,11 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { validateSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import { validateSchema } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
     test("Type definitions implementing multiple interfaces", async () => {
@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -183,8 +183,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input GenreOnCreateInput {
@@ -201,7 +201,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductConnectFieldInput {
-              connect: IProductConnectInput
               where: IProductConnectWhere
             }
 
@@ -232,12 +231,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
-              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
             input GenreProductDisconnectFieldInput {
-              disconnect: IProductDisconnectInput
               where: GenreProductConnectionWhere
             }
 
@@ -322,11 +319,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -393,7 +390,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type INodeAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
             }
 
             enum INodeImplementation {
@@ -442,12 +439,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type IProductAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input IProductConnectInput {
-              _on: IProductImplementationsConnectInput
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input IProductConnectWhere {
@@ -459,14 +452,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDeleteInput {
-              _on: IProductImplementationsDeleteInput
-            }
-
-            input IProductDisconnectInput {
-              _on: IProductImplementationsDisconnectInput
-            }
-
             interface IProductEventPayload {
               id: String!
               name: String!
@@ -475,26 +460,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
-            }
-
-            input IProductImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
-            }
-
-            input IProductImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
-            }
-
-            input IProductImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
             }
 
             input IProductOptions {
@@ -521,27 +486,27 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             input IProductUpdateInput {
-              _on: IProductImplementationsUpdateInput
               id: String
               name: String
             }
@@ -583,8 +548,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -713,7 +678,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type MovieGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieGenreNodeAggregationWhereInput {
@@ -844,21 +809,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -959,8 +924,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -1095,7 +1060,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type SeriesGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesGenreNodeAggregationWhereInput {
@@ -1226,21 +1191,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -1297,9 +1262,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -1443,7 +1408,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -1502,8 +1467,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input GenreOnCreateInput {
@@ -1520,7 +1485,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductConnectFieldInput {
-              connect: IProductConnectInput
               where: IProductConnectWhere
             }
 
@@ -1551,12 +1515,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
-              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
             input GenreProductDisconnectFieldInput {
-              disconnect: IProductDisconnectInput
               where: GenreProductConnectionWhere
             }
 
@@ -1641,11 +1603,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -1714,12 +1676,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type IProductAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input IProductConnectInput {
-              _on: IProductImplementationsConnectInput
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input IProductConnectWhere {
@@ -1729,14 +1687,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductCreateInput {
               Movie: MovieCreateInput
               Series: SeriesCreateInput
-            }
-
-            input IProductDeleteInput {
-              _on: IProductImplementationsDeleteInput
-            }
-
-            input IProductDisconnectInput {
-              _on: IProductImplementationsDisconnectInput
             }
 
             interface IProductEventPayload {
@@ -1782,26 +1732,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series
             }
 
-            input IProductImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
-            }
-
-            input IProductImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
-            }
-
-            input IProductImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
-            }
-
-            input IProductImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input IProductOptions {
               limit: Int
               offset: Int
@@ -1826,27 +1756,27 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             input IProductUpdateInput {
-              _on: IProductImplementationsUpdateInput
               id: String
               name: String
             }
@@ -1888,8 +1818,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1990,7 +1920,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type MovieGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieGenreNodeAggregationWhereInput {
@@ -2116,21 +2046,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -2229,8 +2159,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -2337,7 +2267,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type SeriesGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesGenreNodeAggregationWhereInput {
@@ -2463,21 +2393,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -2534,9 +2464,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -2680,7 +2610,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -2731,8 +2661,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input GenreOptions {
@@ -2863,11 +2793,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -2932,8 +2862,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type IProductAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input IProductConnectWhere {
@@ -2953,11 +2883,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
             }
 
             input IProductOptions {
@@ -2984,27 +2909,27 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             input IProductUpdateInput {
-              _on: IProductImplementationsUpdateInput
               id: String
               name: String
             }
@@ -3044,8 +2969,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -3099,21 +3024,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -3204,8 +3129,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -3265,21 +3190,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
-              id_IN: [String]
+              id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -3330,9 +3255,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {

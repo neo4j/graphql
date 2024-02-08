@@ -23,7 +23,6 @@ import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-ut
 
 describe("https://github.com/neo4j/graphql/issues/2789", () => {
     let neoSchema: Neo4jGraphQL;
-
     const typeDefs = gql`
         type User @authorization(validate: [{ where: { node: { id: "Foo" } } }]) {
             id: ID

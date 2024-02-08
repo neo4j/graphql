@@ -143,12 +143,6 @@ export class AttributeAdapter {
         return this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar();
     }
 
-    isSubscriptionWhereField(): boolean {
-        return (
-            (this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar()) && !this.isCypher()
-        );
-    }
-
     isSubscriptionConnectedRelationshipField(): boolean {
         return (
             (this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar()) && !this.isCypher()
@@ -391,9 +385,8 @@ export class AttributeAdapter {
         };
     }
 
-    public getAggregateSelectionTypeName(nullable: boolean): string {
-        const nullableStr = nullable ? "Nullable" : "NonNullable";
-        return `${this.getFieldTypeName()}AggregateSelection${nullableStr}`;
+    public getAggregateSelectionTypeName(): string {
+        return `${this.getFieldTypeName()}AggregateSelection`;
     }
 }
 

@@ -23,20 +23,6 @@ import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./RelationshipAdapter";
 
-export type UpdateMutationArgumentNames = {
-    connect: string;
-    disconnect: string;
-    create: string;
-    update: string;
-    delete: string;
-    connectOrCreate: string;
-    where: string;
-};
-
-export type CreateMutationArgumentNames = {
-    input: string;
-};
-
 export class RelationshipOperations {
     private readonly relationship: RelationshipAdapter;
 

@@ -75,9 +75,9 @@ describe("Authorization", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -107,8 +107,8 @@ describe("Authorization", () => {
 
             type PostAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostAuthorAggregateInput {
@@ -285,8 +285,8 @@ describe("Authorization", () => {
             }
 
             type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -343,9 +343,9 @@ describe("Authorization", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -379,8 +379,8 @@ describe("Authorization", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -561,8 +561,8 @@ describe("Authorization", () => {
             }
 
             type UserUserPostsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserWhere {

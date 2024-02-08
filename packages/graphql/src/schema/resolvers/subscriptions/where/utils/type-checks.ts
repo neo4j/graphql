@@ -23,14 +23,6 @@ import type { RelationshipAdapter } from "../../../../../schema-model/relationsh
 import type { PrimitiveField } from "../../../../../types";
 import type { InterfaceSpecificType, InterfaceType, StandardType } from "../../types";
 
-export function isFloatType(fieldMeta: PrimitiveField | undefined) {
-    return fieldMeta?.typeMeta.name === "Float";
-}
-
-export function isStringType(fieldMeta: PrimitiveField | undefined) {
-    return fieldMeta?.typeMeta.name === "String";
-}
-
 function isIDType(fieldMeta: PrimitiveField | undefined) {
     return fieldMeta?.typeMeta.name === "ID";
 }

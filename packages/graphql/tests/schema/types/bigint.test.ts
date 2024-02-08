@@ -44,11 +44,11 @@ describe("Bigint", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
+            type BigIntAggregateSelection {
+              average: BigInt
+              max: BigInt
+              min: BigInt
+              sum: BigInt
             }
 
             type CreateFilesMutationResponse {
@@ -81,8 +81,8 @@ describe("Bigint", () => {
 
             type FileAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
-              size: BigIntAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              size: BigIntAggregateSelection!
             }
 
             input FileCreateInput {
@@ -177,9 +177,9 @@ describe("Bigint", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateFilesMutationResponse {

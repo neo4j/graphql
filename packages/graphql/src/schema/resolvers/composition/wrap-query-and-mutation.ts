@@ -21,17 +21,17 @@ import Debug from "debug";
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Node, Relationship } from "../../../classes";
+import { Executor } from "../../../classes/Executor";
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
-import { Executor } from "../../../classes/Executor";
-import { DEBUG_GRAPHQL } from "../../../constants";
-import type { AuthorizationContext, ContextFeatures, FulltextContext } from "../../../types";
-import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Neo4jGraphQLAuthorization } from "../../../classes/authorization/Neo4jGraphQLAuthorization";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import { getAuthorizationContext } from "./utils/get-authorization-context";
+import { DEBUG_GRAPHQL } from "../../../constants";
 import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
 import { debugObject } from "../../../debug/debug-object";
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
+import type { AuthorizationContext, ContextFeatures, FulltextContext } from "../../../types";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import { getAuthorizationContext } from "./utils/get-authorization-context";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -44,7 +44,6 @@ export type WrapResolverArguments = {
     dbInfo?: Neo4jDatabaseInfo;
     features: ContextFeatures;
     authorization?: Neo4jGraphQLAuthorization;
-    experimental: boolean;
 };
 
 /**
@@ -64,7 +63,6 @@ export interface Neo4jGraphQLComposedContext extends Neo4jGraphQLContext {
     subscriptionsEnabled: boolean;
     executor: Executor;
     authorization: AuthorizationContext;
-    experimental: boolean;
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     fulltext?: FulltextContext;
 }
@@ -81,7 +79,6 @@ export const wrapQueryAndMutation =
         dbInfo,
         authorization,
         features,
-        experimental,
     }: WrapResolverArguments) =>
     (next: GraphQLFieldResolver<any, Neo4jGraphQLComposedContext>) =>
     async (root, args, context: Neo4jGraphQLContext, info: GraphQLResolveInfo) => {
@@ -128,7 +125,6 @@ export const wrapQueryAndMutation =
             executor,
             neo4jDatabaseInfo,
             authorization: authorizationContext,
-            experimental,
             // Consider anything in here overrides
             ...context,
         };

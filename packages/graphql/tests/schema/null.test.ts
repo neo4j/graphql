@@ -67,9 +67,9 @@ describe("Null", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -81,23 +81,23 @@ describe("Null", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -117,12 +117,12 @@ describe("Null", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNonNullable!
-              averageRating: FloatAggregateSelectionNonNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -347,9 +347,9 @@ describe("Null", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

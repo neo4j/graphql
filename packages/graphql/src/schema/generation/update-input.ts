@@ -30,15 +30,15 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { concreteEntityToUpdateInputFields, withArrayOperators, withMathOperators } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
 import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
 import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
-import { makeImplementationsUpdateInput } from "./implementation-inputs";
 import { withCreateFieldInputType } from "./relation-input";
 import { makeConnectionWhereInputType } from "./where-input";
-import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -70,19 +70,18 @@ export function withUpdateInputType({
             ])
         );
     } else {
+        const hasNestedRelationships = entityAdapter.relationshipDeclarations.size > 0;
+        const hasFields = entityAdapter.updateInputFields.length > 0;
+        if (!hasNestedRelationships && !hasFields) {
+            ensureNonEmptyInput(composer, updateInputType);
+        }
+
         updateInputType.addFields(
             concreteEntityToUpdateInputFields(entityAdapter.updateInputFields, userDefinedFieldDirectives, [
                 withMathOperators(),
             ])
         );
-        const implementationsUpdateInputType = makeImplementationsUpdateInput({
-            interfaceEntityAdapter: entityAdapter,
-            composer,
-        });
-        updateInputType.addFields({ _on: implementationsUpdateInputType });
     }
-
-    // ensureNonEmptyInput(composer, updateInputType); - not for relationshipAdapter
     return updateInputType;
 }
 

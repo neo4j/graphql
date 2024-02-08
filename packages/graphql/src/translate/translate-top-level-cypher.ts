@@ -17,25 +17,32 @@
  * limitations under the License.
  */
 
-import createProjectionAndParams from "./create-projection-and-params";
-import type { CypherField } from "../types";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import { compileCypher } from "../utils/compile-cypher";
-import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import Debug from "debug";
+import { DEBUG_TRANSLATE } from "../constants";
+import type { Entity } from "../schema-model/entity/Entity";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
+import { UnionEntity } from "../schema-model/entity/UnionEntity";
+import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { CypherField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export function translateTopLevelCypher({
     context,
     field,
-    args,
     type,
-    statement,
 }: {
     context: Neo4jGraphQLTranslationContext;
     field: CypherField;
-    args: any;
-    statement: string;
+
     type: "Query" | "Mutation";
 }): Cypher.CypherResult {
     const operation = context.schemaModel.operations[type];
@@ -46,195 +53,51 @@ export function translateTopLevelCypher({
     if (!operationField) {
         throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
     }
+    const entity = context.schemaModel.entities.get(field.typeMeta.name);
+
     const annotation = operationField.annotations.authentication;
     if (annotation) {
         applyAuthentication({ context, annotation });
     }
-
     const { resolveTree } = context;
-    let params = args;
-    if (statement.includes("$jwt")) {
-        params.jwt = context.authorization.jwtParam.value;
-    }
-    const cypherStrs: string[] = [];
 
-    let projectionStr;
-    const projectionAuthStrs: Cypher.Predicate[] = [];
-    const projectionValidatePredicates: Cypher.Predicate[] = [];
+    // entity could be undefined as the field could be a scalar
+    const entityAdapter = entity && getEntityAdapter(entity);
 
-    const projectionSubqueries: Cypher.Clause[] = [];
+    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
+        resolveTree,
+        entityAdapter,
+        context,
+        varName: "this",
+    });
+    const queryASTEnv = new QueryASTEnv();
+    const targetNode = new Cypher.NamedNode("this");
+    const queryASTContext = new QueryASTContext({
+        target: targetNode,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+        returnVariable: targetNode,
+        shouldCollect: false,
+        shouldDistinct: false,
+    });
+    debug(queryAST.print());
+    const queryASTResult = queryAST.transpile(queryASTContext);
 
-    const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
-
-    if (referenceNode) {
-        const {
-            projection: str,
-            params: p,
-            subqueries,
-            subqueriesBeforeSort,
-            predicates,
-        } = createProjectionAndParams({
-            resolveTree,
-            node: referenceNode,
-            context,
-            varName: new Cypher.NamedNode(`this`),
-            cypherFieldAliasMap: {},
-        });
-        projectionStr = str;
-        projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
-        params = { ...params, ...p };
-
-        if (predicates.length) {
-            projectionValidatePredicates.push(...predicates);
-        }
-    }
-
-    const unionWhere: string[] = [];
-
-    const entity = context.schemaModel.entities.get(field.typeMeta.name);
-
-    if (entity?.isCompositeEntity()) {
-        const headStrs: Cypher.Clause[] = [];
-        const referencedNodes =
-            entity.concreteEntities
-                ?.map((u) => context.nodes.find((n) => n.name === u.name))
-                ?.filter((b) => b !== undefined)
-                ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
-
-        referencedNodes.forEach((node) => {
-            if (node) {
-                const labelsStatements = node.getLabels(context).map((label, index) => {
-                    const param = `${node.name}_labels${index}`;
-                    params[param] = label;
-                    return `$${param} IN labels(this)`;
-                });
-                unionWhere.push(`(${labelsStatements.join("AND")})`);
-
-                // TODO Migrate to CypherBuilder
-                const innerNodePartialProjection = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
-                if (!resolveTree.fieldsByTypeName[node.name]) {
-                    headStrs.push(
-                        new Cypher.Raw(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`)
-                    );
-                } else {
-                    const {
-                        projection: str,
-                        params: p,
-                        subqueries,
-                        predicates,
-                    } = createProjectionAndParams({
-                        resolveTree,
-                        node,
-                        context,
-                        varName: new Cypher.NamedNode("this"),
-                        cypherFieldAliasMap: {},
-                    });
-                    projectionSubqueries.push(...subqueries);
-                    params = { ...params, ...p };
-                    if (predicates.length) {
-                        projectionValidatePredicates.push(...predicates);
-                    }
-                    headStrs.push(
-                        new Cypher.Raw((env) => {
-                            return innerNodePartialProjection
-                                .concat(`| this { __resolveType: "${node.name}", `)
-                                .concat(compileCypher(str, env).replace("{", ""))
-                                .concat("]");
-                        })
-                    );
-                }
-            }
-        });
-
-        projectionStr = new Cypher.Raw(
-            (env) => `${headStrs.map((headStr) => compileCypher(headStr, env)).join(" + ")}`
-        );
-    }
-
-    // Null default argument values are not passed into the resolve tree therefore these are not being passed to
-    // `apocParams` below causing a runtime error when executing.
-    const nullArgumentValues = field.arguments.reduce(
-        (res, argument) => ({
-            ...res,
-            ...{ [argument.name.value]: null },
-        }),
-        {}
-    );
-
-    const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
-        (result: { params: { [key: string]: unknown } }, entry) => ({
-            params: { ...result.params, [entry[0]]: entry[1] },
-        }),
-        { params }
-    );
-
-    params = { ...params, ...apocParams.params };
-
-    if (type === "Query") {
-        const cypherStatement = createCypherDirectiveSubquery({
-            field,
-        });
-        cypherStrs.push(...cypherStatement);
-    } else {
-        const columnName = field.columnName;
-        cypherStrs.push(`
-            CALL {
-                ${statement}
-            }
-            WITH ${columnName} AS this
-        
-        `);
-    }
-
-    if (unionWhere.length) {
-        cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
-    }
-
-    const projectionSubquery = Cypher.concat(...projectionSubqueries);
-
-    return new Cypher.Raw((env) => {
-        const authPredicates: Cypher.Predicate[] = [];
-
-        if (projectionValidatePredicates.length) {
-            authPredicates.push(Cypher.and(...projectionValidatePredicates));
-        }
-
-        if (projectionAuthStrs.length) {
-            const validatePred = Cypher.apoc.util.validatePredicate(
-                Cypher.not(Cypher.and(...projectionAuthStrs)),
-                AUTH_FORBIDDEN_ERROR
-            );
-            authPredicates.push(validatePred);
-        }
-
-        if (authPredicates.length) {
-            cypherStrs.push(`WHERE ${compileCypher(Cypher.and(...authPredicates), env)}`);
-        }
-
-        const subqueriesStr = projectionSubquery ? `\n${compileCypher(projectionSubquery, env)}` : "";
-        if (subqueriesStr) cypherStrs.push(subqueriesStr);
-
-        if (field.isScalar || field.isEnum) {
-            cypherStrs.push(`RETURN this`);
-        } else if (entity?.isCompositeEntity()) {
-            cypherStrs.push(`RETURN head( ${projectionStr.getCypher(env)} ) AS this`);
-        } else {
-            cypherStrs.push(`RETURN this ${projectionStr.getCypher(env)} AS this`);
-        }
-        return [cypherStrs.join("\n"), params];
-    }).build();
+    const projectionStatements = queryASTResult.clauses.length
+        ? Cypher.concat(...queryASTResult.clauses)
+        : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
+    return projectionStatements.build();
 }
 
-function createCypherDirectiveSubquery({ field }: { field: CypherField }): string[] {
-    const cypherStrs: string[] = [];
-    cypherStrs.push("CALL {", field.statement, "}");
-
-    if (field.columnName) {
-        if (field.isScalar || field.isEnum) {
-            cypherStrs.push(`UNWIND ${field.columnName} as this`);
-        } else {
-            cypherStrs.push(`WITH ${field.columnName} as this`);
-        }
+function getEntityAdapter(entity: Entity): EntityAdapter {
+    if (entity instanceof UnionEntity) {
+        return new UnionEntityAdapter(entity);
     }
-    return cypherStrs;
+    if (entity instanceof InterfaceEntity) {
+        return new InterfaceEntityAdapter(entity);
+    }
+    if (entity.isConcreteEntity()) {
+        return new ConcreteEntityAdapter(entity);
+    }
+    throw new Error(`Error while trying to build Entity: ${entity.name}`);
 }

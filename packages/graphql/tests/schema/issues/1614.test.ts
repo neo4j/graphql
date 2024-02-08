@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMemberMovieMoviesNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input CrewMemberMoviesAggregateInput {
@@ -314,7 +314,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieConnectWhere {
@@ -406,9 +406,9 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateCrewMembersMutationResponse {

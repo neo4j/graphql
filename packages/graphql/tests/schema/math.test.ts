@@ -61,16 +61,16 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -80,8 +80,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -214,11 +214,11 @@ describe("Algebraic", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
+            type BigIntAggregateSelection {
+              average: BigInt
+              max: BigInt
+              min: BigInt
+              sum: BigInt
             }
 
             \\"\\"\\"
@@ -244,7 +244,7 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -256,8 +256,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: BigIntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: BigIntAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -409,14 +409,14 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -428,8 +428,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: FloatAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: FloatAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -602,7 +602,7 @@ describe("Algebraic", () => {
 
             type DirectorAggregateSelection {
               count: Int!
-              lastName: StringAggregateSelectionNonNullable!
+              lastName: StringAggregateSelection!
             }
 
             input DirectorConnectInput {
@@ -745,8 +745,8 @@ describe("Algebraic", () => {
             }
 
             type DirectorMovieDirectsNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input DirectorOptions {
@@ -825,16 +825,16 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -847,8 +847,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -992,7 +992,7 @@ describe("Algebraic", () => {
             }
 
             type MovieDirectorDirectedByNodeAggregateSelection {
-              lastName: StringAggregateSelectionNonNullable!
+              lastName: StringAggregateSelection!
             }
 
             input MovieDisconnectInput {
@@ -1102,9 +1102,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateDirectorsMutationResponse {
@@ -1183,16 +1183,16 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -1205,8 +1205,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1247,7 +1247,7 @@ describe("Algebraic", () => {
             }
 
             type MoviePersonWorkersNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieRelationInput {
@@ -1478,7 +1478,7 @@ describe("Algebraic", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -1522,7 +1522,7 @@ describe("Algebraic", () => {
             }
 
             type PersonProductionWorksInProductionNodeAggregateSelection {
-              viewers: IntAggregateSelectionNonNullable!
+              viewers: IntAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -1576,7 +1576,6 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionConnectFieldInput {
-              connect: ProductionConnectInput
               where: ProductionConnectWhere
             }
 
@@ -1603,12 +1602,10 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionDeleteFieldInput {
-              delete: ProductionDeleteInput
               where: PersonWorksInProductionConnectionWhere
             }
 
             input PersonWorksInProductionDisconnectFieldInput {
-              disconnect: ProductionDisconnectInput
               where: PersonWorksInProductionConnectionWhere
             }
 
@@ -1641,11 +1638,7 @@ describe("Algebraic", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              viewers: IntAggregateSelectionNonNullable!
-            }
-
-            input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
+              viewers: IntAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -1656,32 +1649,8 @@ describe("Algebraic", () => {
               Movie: MovieCreateInput
             }
 
-            input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
-            }
-
-            input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
-            }
-
             enum ProductionImplementation {
               Movie
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
             }
 
             input ProductionOptions {
@@ -1701,7 +1670,6 @@ describe("Algebraic", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               viewers: Int
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int
@@ -1741,9 +1709,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -1872,7 +1840,7 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -2044,7 +2012,7 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -2089,11 +2057,11 @@ describe("Algebraic", () => {
             }
 
             type MoviePersonActorsEdgeAggregateSelection {
-              pay: FloatAggregateSelectionNullable!
+              pay: FloatAggregateSelection!
             }
 
             type MoviePersonActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieRelationInput {
@@ -2351,7 +2319,7 @@ describe("Algebraic", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -2387,11 +2355,11 @@ describe("Algebraic", () => {
             }
 
             type PersonMovieActedInMoviesEdgeAggregateSelection {
-              pay: FloatAggregateSelectionNullable!
+              pay: FloatAggregateSelection!
             }
 
             type PersonMovieActedInMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input PersonOptions {
@@ -2481,9 +2449,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

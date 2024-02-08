@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg } from "../../types";
 import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
-import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { GraphQLWhereArg } from "../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import { QueryASTContext, QueryASTEnv } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
-import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 function createWherePredicate({
     factory,
@@ -73,7 +73,7 @@ export function createWhereNodePredicate({
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-    const factory = new QueryASTFactory(context.schemaModel, context.experimental);
+    const factory = new QueryASTFactory(context.schemaModel);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({
@@ -100,7 +100,7 @@ export function createWhereEdgePredicate({
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-    const factory = new QueryASTFactory(context.schemaModel, context.experimental);
+    const factory = new QueryASTFactory(context.schemaModel);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({

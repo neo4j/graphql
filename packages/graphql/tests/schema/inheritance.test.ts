@@ -67,7 +67,7 @@ describe("inheritance", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -148,11 +148,11 @@ describe("inheritance", () => {
             }
 
             type ActorPersonFriendsEdgeAggregateSelection {
-              since: IntAggregateSelectionNullable!
+              since: IntAggregateSelection!
             }
 
             type ActorPersonFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -270,7 +270,7 @@ describe("inheritance", () => {
               since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -291,7 +291,7 @@ describe("inheritance", () => {
               startCursor: String
             }
 
-            interface Person {
+            interface Person @customDirectiveInter {
               friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
@@ -299,11 +299,10 @@ describe("inheritance", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectInput {
-              _on: PersonImplementationsConnectInput
               friends: [PersonFriendsConnectFieldInput!]
             }
 
@@ -316,12 +315,10 @@ describe("inheritance", () => {
             }
 
             input PersonDeleteInput {
-              _on: PersonImplementationsDeleteInput
               friends: [PersonFriendsDeleteFieldInput!]
             }
 
             input PersonDisconnectInput {
-              _on: PersonImplementationsDisconnectInput
               friends: [PersonFriendsDisconnectFieldInput!]
             }
 
@@ -425,22 +422,6 @@ describe("inheritance", () => {
               Actor
             }
 
-            input PersonImplementationsConnectInput {
-              Actor: [ActorConnectInput!]
-            }
-
-            input PersonImplementationsDeleteInput {
-              Actor: [ActorDeleteInput!]
-            }
-
-            input PersonImplementationsDisconnectInput {
-              Actor: [ActorDisconnectInput!]
-            }
-
-            input PersonImplementationsUpdateInput {
-              Actor: ActorUpdateInput
-            }
-
             input PersonOptions {
               limit: Int
               offset: Int
@@ -458,7 +439,6 @@ describe("inheritance", () => {
             }
 
             input PersonUpdateInput {
-              _on: PersonImplementationsUpdateInput
               friends: [PersonFriendsUpdateFieldInput!]
               name: String
             }
@@ -514,7 +494,7 @@ describe("inheritance", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

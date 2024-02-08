@@ -18,7 +18,6 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { BaseField } from "../../types";
 import { removeDuplicates } from "../../utils/utils";
 
 /** Finds a resolve tree of selection based on field name */
@@ -43,16 +42,6 @@ export function getAliasedResolveTreeByFieldName({
     return Object.values(selection).find(
         (resolveTree) => resolveTree.name === fieldName && resolveTree.alias !== fieldName
     );
-}
-
-export function filterFieldsInSelection<T extends BaseField>({
-    fields,
-    selection,
-}: {
-    fields: T[];
-    selection: Record<string, ResolveTree>;
-}): T[] {
-    return fields.filter((field) => Object.values(selection).find((f) => f.name === field.fieldName));
 }
 
 /** Generates a field to be used in creating projections */

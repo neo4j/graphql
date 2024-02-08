@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import type { PredicateReturn } from "../../types";
-import type { AuthorizationOperation } from "../../types/authorization";
-import type { NodeMap } from "./types/node-map";
-import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { asArray } from "@graphql-tools/utils";
+import Cypher from "@neo4j/cypher-builder";
+import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
+import type { PredicateReturn } from "../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 import { filterTruthy } from "../../utils/utils";
-import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { QueryASTContext, QueryASTEnv } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
-import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
 import { isConcreteEntity } from "../queryAST/utils/is-concrete-entity";
+import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
+import type { NodeMap } from "./types/node-map";
 
 export function createAuthorizationAfterPredicate({
     context,
@@ -49,7 +49,7 @@ export function createAuthorizationAfterPredicate({
         if (!isConcreteEntity(entity)) {
             throw new Error("Expected authorization rule to be applied on a concrete entity");
         }
-        const factory = new QueryASTFactory(context.schemaModel, context.experimental);
+        const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -58,12 +58,13 @@ export function createAuthorizationAfterPredicate({
             neo4jGraphQLContext: context,
         });
 
-        const authorizationFilters = factory.authorizationFactory.createEntityAuthValidate(
+        const authorizationFilters = factory.authorizationFactory.createAuthValidateRule({
+            authAnnotation: entity.annotations.authorization,
             entity,
             operations,
             context,
-            "AFTER"
-        );
+            when: "AFTER",
+        });
         const nodeRawSubqueries = authorizationFilters?.getSubqueries(queryASTContext);
         const nodeSubqueries = filterTruthy(asArray(nodeRawSubqueries)).map((sq) => wrapSubqueryInCall(sq, matchNode));
         const nodePredicate = authorizationFilters?.getPredicate(queryASTContext);
@@ -109,7 +110,7 @@ export function createAuthorizationAfterPredicateField({
         if (!isConcreteEntity(entity)) {
             throw new Error("Expected authorization rule to be applied on a concrete entity");
         }
-        const factory = new QueryASTFactory(context.schemaModel, context.experimental);
+        const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -123,14 +124,14 @@ export function createAuthorizationAfterPredicateField({
             if (!attributeAdapter) {
                 throw new Error("Couldn't match attribute");
             }
-            const attributesFilters = factory.authorizationFactory.createAttributeAuthValidate(
-                attributeAdapter,
+            const attributesFilters = factory.authorizationFactory.createAuthValidateRule({
+                authAnnotation: attributeAdapter.annotations.authorization,
                 entity,
                 operations,
                 context,
-                "AFTER",
-                conditionForEvaluation
-            );
+                when: "AFTER",
+                conditionForEvaluation,
+            });
             if (attributesFilters) {
                 const fieldPredicate = attributesFilters.getPredicate(queryASTContext);
                 const fieldSelection = attributesFilters.getSelection(queryASTContext);

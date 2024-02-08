@@ -25,10 +25,10 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
-import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "../classes";
 
@@ -195,8 +195,6 @@ export interface TemporalField extends PrimitiveField {
 
 export type PointField = BaseField;
 
-export type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | CypherField;
-
 export type SortDirection = "ASC" | "DESC";
 
 export interface GraphQLSortArg {
@@ -248,19 +246,6 @@ export interface ConnectionWhereArg {
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
     NOT?: ConnectionWhereArg;
-}
-
-export interface InterfaceWhereArg {
-    _on?: GraphQLWhereArg[];
-    [k: string]: any;
-}
-
-/**
- * Whats returned when deleting nodes
- */
-export interface DeleteInfo {
-    nodesDeleted: number;
-    relationshipsDeleted: number;
 }
 
 export type TimeStampOperations = "CREATE" | "UPDATE";
@@ -443,11 +428,6 @@ export interface RemoteJWKS {
     options?: RemoteJWKSetOptions;
 }
 export type Key = string | RemoteJWKS;
-export type RequestLike = {
-    headers?: { authorization?: string; Authorization?: string };
-    rawHeaders?: Array<string>;
-    cookies?: { token?: string };
-};
 
 /** Options to enable extra capabilities on @neo4j/graphql API */
 export type Neo4jFeaturesSettings = {

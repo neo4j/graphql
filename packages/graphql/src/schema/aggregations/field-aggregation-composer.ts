@@ -28,12 +28,6 @@ import type { RelationshipDeclarationAdapter } from "../../schema-model/relation
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
-export enum FieldAggregationSchemaTypes {
-    field = "AggregationSelection",
-    node = "NodeAggregateSelection",
-    edge = "EdgeAggregateSelection",
-}
-
 export class FieldAggregationComposer {
     private aggregationTypesMapper: AggregationTypesMapper;
     private composer: SchemaComposer;
@@ -103,10 +97,7 @@ export class FieldAggregationComposer {
         entity: RelationshipAdapter | ConcreteEntityAdapter | InterfaceEntityAdapter
     ): Record<string, ObjectTypeComposer> {
         return entity.aggregableFields.reduce((res, field) => {
-            const objectTypeComposer = this.aggregationTypesMapper.getAggregationType({
-                fieldName: field.getTypeName(),
-                nullable: !field.typeHelper.isRequired(),
-            });
+            const objectTypeComposer = this.aggregationTypesMapper.getAggregationType(field.getTypeName());
 
             if (!objectTypeComposer) return res;
 

@@ -31,7 +31,6 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { overwrite } from "../create-relationship-fields/fields/overwrite";
-import { makeImplementationsConnectInput } from "./implementation-inputs";
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { withConnectWhereFieldInputType } from "./where-input";
 
@@ -45,18 +44,8 @@ export function withConnectInputType({
     if (entityAdapter instanceof ConcreteEntityAdapter) {
         return composer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
     }
-    const implementationsConnectInputType = makeImplementationsConnectInput({
-        interfaceEntityAdapter: entityAdapter,
-        composer,
-    });
 
-    if (!implementationsConnectInputType) {
-        return undefined;
-    }
-
-    const connectInputType = composer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
-    connectInputType.setField("_on", implementationsConnectInputType);
-    return connectInputType;
+    return composer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
 }
 
 export function augmentConnectInputTypeWithConnectFieldInput({
@@ -241,8 +230,11 @@ function makeConnectFieldInputTypeFields({
         }
     } else if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
         fields["where"] = withConnectWhereFieldInputType(relationshipAdapter.target, composer);
-        const connectInputType = withConnectInputType({ entityAdapter: relationshipAdapter.target, composer });
-        if (connectInputType) {
+        const connectTypename = relationshipAdapter.target.operations.connectInputTypeName;
+
+        const hasNestedRelationships = relationshipAdapter.target.relationshipDeclarations.size > 0;
+        if (composer.has(connectTypename) || hasNestedRelationships) {
+            const connectInputType = composer.getOrCreateITC(connectTypename);
             fields["connect"] = connectInputType;
         }
     } else {

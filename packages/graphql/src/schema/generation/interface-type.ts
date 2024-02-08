@@ -19,28 +19,18 @@
 import type { DirectiveNode } from "graphql";
 import type { InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import {
-    attributeAdapterToComposeFields,
-    graphqlDirectivesToCompose,
-    relationshipAdapterToComposeFields,
-} from "../to-compose";
+import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "../to-compose";
 
 export function withInterfaceType({
     interfaceEntityAdapter,
     userDefinedFieldDirectives,
     userDefinedInterfaceDirectives,
     composer,
-    config = {
-        includeRelationships: false,
-    },
 }: {
     interfaceEntityAdapter: InterfaceEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     userDefinedInterfaceDirectives: DirectiveNode[];
     composer: SchemaComposer;
-    config?: {
-        includeRelationships: boolean;
-    };
 }): InterfaceTypeComposer {
     // TODO: maybe create interfaceEntity.interfaceFields() method abstraction even if it retrieves all attributes?
     // can also take includeRelationships as argument
@@ -48,21 +38,10 @@ export function withInterfaceType({
         Array.from(interfaceEntityAdapter.attributes.values()),
         userDefinedFieldDirectives
     );
-    let fields = objectComposeFields;
-    if (config.includeRelationships) {
-        fields = {
-            ...fields,
-            ...relationshipAdapterToComposeFields(
-                Array.from(interfaceEntityAdapter.relationshipDeclarations.values()),
-                userDefinedFieldDirectives
-            ),
-        };
-    }
     const interfaceTypeName = interfaceEntityAdapter.name;
-    const composeInterface = composer.createInterfaceTC({
+    return composer.createInterfaceTC({
         name: interfaceTypeName,
-        fields: fields,
+        fields: objectComposeFields,
         directives: graphqlDirectivesToCompose(userDefinedInterfaceDirectives),
     });
-    return composeInterface;
 }

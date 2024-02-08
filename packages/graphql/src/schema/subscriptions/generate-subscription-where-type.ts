@@ -17,45 +17,30 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { DirectiveNode } from "graphql/index";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { attributesToSubscriptionsWhereInputFields } from "../to-compose";
+import type { Neo4jFeaturesSettings } from "../../types";
+import { withWhereInputType } from "../generation/where-input";
 
 const isEmptyObject = (obj: Record<string, unknown>) => !Object.keys(obj).length;
-
-export function generateSubscriptionWhereType(
-    entityAdapter: ConcreteEntityAdapter,
-    schemaComposer: SchemaComposer
-): InputTypeComposer | undefined {
-    if (schemaComposer.has(entityAdapter.operations.subscriptionWhereInputTypeName)) {
-        return schemaComposer.getITC(entityAdapter.operations.subscriptionWhereInputTypeName);
-    }
-    const whereFields = attributesToSubscriptionsWhereInputFields(entityAdapter);
-    if (isEmptyObject(whereFields)) {
-        return;
-    }
-    return schemaComposer.createInputTC({
-        name: entityAdapter.operations.subscriptionWhereInputTypeName,
-        fields: whereFields,
-    });
-}
 
 export function generateSubscriptionConnectionWhereType({
     entityAdapter,
     schemaComposer,
-    experimental,
+    features,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
+    features: Neo4jFeaturesSettings | undefined;
 }): { created: InputTypeComposer; deleted: InputTypeComposer } | undefined {
     const connectedRelationship = getRelationshipConnectionWhereTypes({
         entityAdapter,
         schemaComposer,
-        experimental,
+        features,
     });
     const isConnectedNodeTypeNotExcluded = schemaComposer.has(entityAdapter.operations.subscriptionWhereInputTypeName);
     if (!isConnectedNodeTypeNotExcluded && !connectedRelationship) {
@@ -94,18 +79,18 @@ export function generateSubscriptionConnectionWhereType({
 function getRelationshipConnectionWhereTypes({
     entityAdapter,
     schemaComposer,
-    experimental,
+    features,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const relationsFieldInputWhereTypeFields = Array.from(entityAdapter.relationships.values()).reduce(
         (acc, relationshipAdapter) => {
             const fields = makeNodeRelationFields({
                 relationshipAdapter,
                 schemaComposer,
-                experimental,
+                features,
             });
             if (!fields) {
                 return acc;
@@ -133,15 +118,24 @@ function getRelationshipConnectionWhereTypes({
 function makeNodeRelationFields({
     relationshipAdapter,
     schemaComposer,
-    experimental,
+    features,
+    userDefinedDirectivesForInterface,
 }: {
     relationshipAdapter: RelationshipAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
+    features: Neo4jFeaturesSettings | undefined;
+    userDefinedDirectivesForInterface?: Map<string, Map<string, DirectiveNode[]>>;
 }) {
-    const edgeType = makeRelationshipWhereType({
-        schemaComposer,
-        relationshipAdapter,
+    const edgeType = withWhereInputType({
+        entityAdapter: relationshipAdapter,
+        composer: schemaComposer,
+        features,
+        typeName: relationshipAdapter.operations.edgeSubscriptionWhereInputTypeName,
+        userDefinedFieldDirectives: relationshipAdapter.propertiesTypeName
+            ? userDefinedDirectivesForInterface?.[relationshipAdapter.propertiesTypeName]
+            : undefined,
+        returnUndefinedIfEmpty: true,
+        alwaysAllowNesting: true,
     });
 
     const unionNode = relationshipAdapter.target instanceof UnionEntityAdapter ? relationshipAdapter.target : undefined;
@@ -156,28 +150,11 @@ function makeNodeRelationFields({
             schemaComposer,
             interfaceEntity,
             edgeType,
-            experimental,
+            features,
+            userDefinedFieldDirectives: userDefinedDirectivesForInterface?.[interfaceEntity.name],
         });
     }
     return makeRelationshipToConcreteTypeWhereType({ relationshipAdapter, edgeType, schemaComposer });
-}
-
-function makeRelationshipWhereType({
-    schemaComposer,
-    relationshipAdapter,
-}: {
-    schemaComposer: SchemaComposer;
-    relationshipAdapter: RelationshipAdapter;
-}): InputTypeComposer | undefined {
-    const relationProperties = relationshipAdapter.attributes;
-    if (!relationProperties.size) {
-        return undefined;
-    }
-    const composeFields = attributesToSubscriptionsWhereInputFields(relationshipAdapter);
-    // TODO: POINT was missing???
-    return schemaComposer.getOrCreateITC(relationshipAdapter.operations.edgeSubscriptionWhereInputTypeName, (tc) =>
-        tc.addFields(composeFields)
-    );
 }
 
 function makeRelationshipToConcreteTypeWhereType({
@@ -238,23 +215,25 @@ function makeRelationshipToInterfaceTypeWhereType({
     schemaComposer,
     interfaceEntity,
     edgeType,
-    experimental,
+    features,
+    userDefinedFieldDirectives,
 }: {
     schemaComposer: SchemaComposer;
     interfaceEntity: InterfaceEntityAdapter;
     edgeType: InputTypeComposer | undefined;
-    experimental: boolean;
+    features: Neo4jFeaturesSettings | undefined;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): { node?: InputTypeComposer; edge?: InputTypeComposer } | undefined {
-    let interfaceNodeType: InputTypeComposer | undefined = undefined;
-
-    const interfaceFields: InputTypeComposerFieldConfigMapDefinition =
-        attributesToSubscriptionsWhereInputFields(interfaceEntity);
-    if (!isEmptyObject(interfaceFields)) {
-        interfaceNodeType = schemaComposer.getOrCreateITC(
-            interfaceEntity.operations.subscriptionWhereInputTypeName,
-            (tc) => tc.addFields(interfaceFields)
-        );
-    }
+    const interfaceNodeType = withWhereInputType({
+        entityAdapter: interfaceEntity,
+        composer: schemaComposer,
+        features,
+        typeName: interfaceEntity.operations.subscriptionWhereInputTypeName,
+        interfaceOnTypeName: interfaceEntity.operations.implementationsSubscriptionWhereInputTypeName,
+        userDefinedFieldDirectives,
+        returnUndefinedIfEmpty: true,
+        alwaysAllowNesting: true,
+    });
     if (!interfaceNodeType && !edgeType) {
         return;
     }

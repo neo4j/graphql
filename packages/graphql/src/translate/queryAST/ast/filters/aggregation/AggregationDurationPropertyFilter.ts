@@ -23,15 +23,7 @@ import type { AggregationLogicalOperator } from "../../../factory/parsers/parse-
 
 export class AggregationDurationFilter extends AggregationPropertyFilter {
     protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {
-        if (!this.aggregationOperator) {
-            return this.createDurationOperation({
-                operator: this.logicalOperator,
-                property: expr,
-                param: new Cypher.Param(this.comparisonValue),
-            });
-        }
-
-        return this.createBaseOperation({
+        return this.createDurationOperation({
             operator: this.logicalOperator,
             property: expr,
             param: new Cypher.Param(this.comparisonValue),

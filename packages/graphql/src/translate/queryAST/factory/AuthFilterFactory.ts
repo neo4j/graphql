@@ -24,7 +24,7 @@ import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-a
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLWhereArg } from "../../../types";
-import type { AuthorizationOperation } from "../../../types/authorization";
+import type { AuthorizationOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";

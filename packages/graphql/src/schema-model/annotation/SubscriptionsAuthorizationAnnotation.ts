@@ -21,7 +21,6 @@ import type { GraphQLWhereArg } from "../../types";
 import type { Annotation } from "./Annotation";
 import type { ValueOf } from "../../utils/value-of";
 
-export const SubscriptionsAuthorizationAnnotationArguments = ["filter"] as const;
 
 export const SubscriptionsAuthorizationFilterEventRule = [
     "CREATED",

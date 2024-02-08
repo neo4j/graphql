@@ -42,7 +42,7 @@ describe("Union Relationships Filtering", () => {
           }
       `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -269,7 +269,7 @@ describe("Union Relationships Filtering", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -413,8 +413,8 @@ describe("Union Relationships Filtering", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectOrCreateWhere {
@@ -551,8 +551,8 @@ describe("Union Relationships Filtering", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectOrCreateWhere {
@@ -644,9 +644,9 @@ describe("Union Relationships Filtering", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

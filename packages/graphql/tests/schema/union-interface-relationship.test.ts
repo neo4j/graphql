@@ -127,8 +127,8 @@ describe("Union Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -173,12 +173,12 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              imdbId: IntAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -560,9 +560,9 @@ describe("Union Interface Relationships", () => {
 
             type InfluencerAggregateSelection {
               count: Int!
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
-              url: StringAggregateSelectionNonNullable!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
+              url: StringAggregateSelection!
             }
 
             input InfluencerCreateInput {
@@ -642,14 +642,7 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -676,12 +669,12 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              id: IntAggregateSelectionNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -879,8 +872,8 @@ describe("Union Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              imdbId: IntAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1134,16 +1127,15 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieReviewerReviewersEdgeAggregateSelection {
-              score: IntAggregateSelectionNonNullable!
+              score: IntAggregateSelection!
             }
 
             type MovieReviewerReviewersNodeAggregateSelection {
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             input MovieReviewersConnectFieldInput {
-              connect: ReviewerConnectInput
               edge: ReviewCreateInput!
               where: ReviewerConnectWhere
             }
@@ -1175,12 +1167,10 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieReviewersDeleteFieldInput {
-              delete: ReviewerDeleteInput
               where: MovieReviewersConnectionWhere
             }
 
             input MovieReviewersDisconnectFieldInput {
-              disconnect: ReviewerDisconnectInput
               where: MovieReviewersConnectionWhere
             }
 
@@ -1377,10 +1367,10 @@ describe("Union Interface Relationships", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNullable!
-              name: StringAggregateSelectionNonNullable!
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -1427,12 +1417,12 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonMovieMoviesEdgeAggregateSelection {
-              score: IntAggregateSelectionNonNullable!
+              score: IntAggregateSelection!
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              imdbId: IntAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -1814,12 +1804,8 @@ describe("Union Interface Relationships", () => {
 
             type ReviewerAggregateSelection {
               count: Int!
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
-            }
-
-            input ReviewerConnectInput {
-              _on: ReviewerImplementationsConnectInput
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             input ReviewerConnectWhere {
@@ -1831,34 +1817,9 @@ describe("Union Interface Relationships", () => {
               Person: PersonCreateInput
             }
 
-            input ReviewerDeleteInput {
-              _on: ReviewerImplementationsDeleteInput
-            }
-
-            input ReviewerDisconnectInput {
-              _on: ReviewerImplementationsDisconnectInput
-            }
-
             enum ReviewerImplementation {
               Influencer
               Person
-            }
-
-            input ReviewerImplementationsConnectInput {
-              Person: [PersonConnectInput!]
-            }
-
-            input ReviewerImplementationsDeleteInput {
-              Person: [PersonDeleteInput!]
-            }
-
-            input ReviewerImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
-            }
-
-            input ReviewerImplementationsUpdateInput {
-              Influencer: InfluencerUpdateInput
-              Person: PersonUpdateInput
             }
 
             input ReviewerOptions {
@@ -1879,7 +1840,6 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerUpdateInput {
-              _on: ReviewerImplementationsUpdateInput
               reputation: Int
               reputation_DECREMENT: Int
               reputation_INCREMENT: Int
@@ -1919,9 +1879,9 @@ describe("Union Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

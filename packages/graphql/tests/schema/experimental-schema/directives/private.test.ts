@@ -68,7 +68,7 @@ describe("@private directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -103,7 +103,7 @@ describe("@private directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -131,8 +131,8 @@ describe("@private directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              private: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              private: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -151,7 +151,7 @@ describe("@private directive", () => {
 
             type UserInterfaceAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             enum UserInterfaceImplementation {
@@ -264,190 +264,190 @@ describe("@private directive", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-                      "schema {
-                        query: Query
-                        mutation: Mutation
-                      }
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-                      \\"\\"\\"
-                      Information about the number of nodes and relationships created during a create mutation
-                      \\"\\"\\"
-                      type CreateInfo {
-                        bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                        nodesCreated: Int!
-                        relationshipsCreated: Int!
-                      }
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-                      type CreateUsersMutationResponse {
-                        info: CreateInfo!
-                        users: [User!]!
-                      }
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-                      \\"\\"\\"
-                      Information about the number of nodes and relationships deleted during a delete mutation
-                      \\"\\"\\"
-                      type DeleteInfo {
-                        bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                        nodesDeleted: Int!
-                        relationshipsDeleted: Int!
-                      }
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-                      type IDAggregateSelectionNullable {
-                        longest: ID
-                        shortest: ID
-                      }
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
+            }
 
-                      type Mutation {
-                        createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-                        deleteUsers(where: UserWhere): DeleteInfo!
-                        updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-                      }
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-                      \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                      type PageInfo {
-                        endCursor: String
-                        hasNextPage: Boolean!
-                        hasPreviousPage: Boolean!
-                        startCursor: String
-                      }
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-                      type Query {
-                        userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
-                        userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
-                        users(options: UserOptions, where: UserWhere): [User!]!
-                        usersAggregate(where: UserWhere): UserAggregateSelection!
-                        usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
-                      }
+            type Query {
+              userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
+              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+            }
 
-                      \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                      enum SortDirection {
-                        \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                        ASC
-                        \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                        DESC
-                      }
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-                      \\"\\"\\"
-                      Information about the number of nodes and relationships created and deleted during an update mutation
-                      \\"\\"\\"
-                      type UpdateInfo {
-                        bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                        nodesCreated: Int!
-                        nodesDeleted: Int!
-                        relationshipsCreated: Int!
-                        relationshipsDeleted: Int!
-                      }
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-                      type UpdateUsersMutationResponse {
-                        info: UpdateInfo!
-                        users: [User!]!
-                      }
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-                      type User implements UserInterface {
-                        id: ID
-                      }
+            type User implements UserInterface {
+              id: ID
+            }
 
-                      type UserAggregateSelection {
-                        count: Int!
-                        id: IDAggregateSelectionNullable!
-                      }
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
 
-                      input UserCreateInput {
-                        id: ID
-                      }
+            input UserCreateInput {
+              id: ID
+            }
 
-                      type UserEdge {
-                        cursor: String!
-                        node: User!
-                      }
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
 
-                      interface UserInterface {
-                        id: ID
-                      }
+            interface UserInterface {
+              id: ID
+            }
 
-                      type UserInterfaceAggregateSelection {
-                        count: Int!
-                        id: IDAggregateSelectionNullable!
-                      }
+            type UserInterfaceAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
 
-                      enum UserInterfaceImplementation {
-                        User
-                      }
+            enum UserInterfaceImplementation {
+              User
+            }
 
-                      input UserInterfaceOptions {
-                        limit: Int
-                        offset: Int
-                        \\"\\"\\"
-                        Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
-                        \\"\\"\\"
-                        sort: [UserInterfaceSort]
-                      }
+            input UserInterfaceOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserInterfaceSort]
+            }
 
-                      \\"\\"\\"
-                      Fields to sort UserInterfaces by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserInterfaceSort object.
-                      \\"\\"\\"
-                      input UserInterfaceSort {
-                        id: SortDirection
-                      }
+            \\"\\"\\"
+            Fields to sort UserInterfaces by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserInterfaceSort object.
+            \\"\\"\\"
+            input UserInterfaceSort {
+              id: SortDirection
+            }
 
-                      input UserInterfaceWhere {
-                        AND: [UserInterfaceWhere!]
-                        NOT: UserInterfaceWhere
-                        OR: [UserInterfaceWhere!]
-                        id: ID
-                        id_CONTAINS: ID
-                        id_ENDS_WITH: ID
-                        id_IN: [ID]
-                        id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_STARTS_WITH: ID
-                        typename_IN: [UserInterfaceImplementation!]
-                      }
+            input UserInterfaceWhere {
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              typename_IN: [UserInterfaceImplementation!]
+            }
 
-                      input UserOptions {
-                        limit: Int
-                        offset: Int
-                        \\"\\"\\"
-                        Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-                        \\"\\"\\"
-                        sort: [UserSort!]
-                      }
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-                      \\"\\"\\"
-                      Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-                      \\"\\"\\"
-                      input UserSort {
-                        id: SortDirection
-                      }
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              id: SortDirection
+            }
 
-                      input UserUpdateInput {
-                        id: ID
-                      }
+            input UserUpdateInput {
+              id: ID
+            }
 
-                      input UserWhere {
-                        AND: [UserWhere!]
-                        NOT: UserWhere
-                        OR: [UserWhere!]
-                        id: ID
-                        id_CONTAINS: ID
-                        id_ENDS_WITH: ID
-                        id_IN: [ID]
-                        id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_STARTS_WITH: ID
-                      }
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+            }
 
-                      type UsersConnection {
-                        edges: [UserEdge!]!
-                        pageInfo: PageInfo!
-                        totalCount: Int!
-                      }"
-              `);
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
     });
 });

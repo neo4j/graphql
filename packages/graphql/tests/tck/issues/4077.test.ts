@@ -171,7 +171,6 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                 MATCH (this)-[this1:VIDEO_HAS_PREVIEW_CLIP]->(this2:PreviewClip)
                 OPTIONAL MATCH (this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this3:Video)
                 WITH *, count(this3) AS clippedFromCount
-                WITH *
                 CALL {
                     WITH this2
                     MATCH (this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this4:Video)

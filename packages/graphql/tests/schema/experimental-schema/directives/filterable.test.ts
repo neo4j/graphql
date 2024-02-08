@@ -927,8 +927,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -985,7 +985,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -1135,21 +1135,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -1277,8 +1277,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -1443,7 +1443,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -1661,12 +1661,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -1745,8 +1740,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -1803,7 +1798,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -1995,21 +1990,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -2137,8 +2132,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -2303,7 +2298,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -2521,12 +2516,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -2605,8 +2595,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -2663,7 +2653,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -2845,21 +2835,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -2987,8 +2977,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -3153,7 +3143,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -3343,12 +3333,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -3430,8 +3415,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -3488,7 +3473,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -3680,21 +3665,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -3822,8 +3807,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -3900,7 +3885,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -4117,12 +4102,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -4203,8 +4183,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -4261,7 +4241,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -4453,21 +4433,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -4595,8 +4575,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -4761,7 +4741,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -4979,12 +4959,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -5065,8 +5040,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -5123,7 +5098,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -5315,21 +5290,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -5457,8 +5432,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -5623,7 +5598,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -5813,12 +5788,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -5899,8 +5869,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -5957,7 +5927,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -6149,21 +6119,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -6291,8 +6261,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -6369,7 +6339,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -6586,12 +6556,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -6677,8 +6642,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -6731,7 +6696,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -6923,21 +6888,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -7060,7 +7025,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -7091,12 +7055,10 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -7129,7 +7091,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -7193,7 +7155,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviePersonActorsNodeAggregateSelection {
-                      username: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -7334,11 +7296,7 @@ describe("@filterable directive", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      username: StringAggregateSelectionNonNullable!
-                    }
-
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -7349,36 +7307,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -7401,20 +7335,20 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
@@ -7454,12 +7388,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -7545,8 +7474,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -7599,7 +7528,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -7791,21 +7720,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -7928,7 +7857,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -7959,12 +7887,10 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -7997,7 +7923,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -8061,7 +7987,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviePersonActorsNodeAggregateSelection {
-                      username: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -8202,11 +8128,7 @@ describe("@filterable directive", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      username: StringAggregateSelectionNonNullable!
-                    }
-
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -8217,36 +8139,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -8269,20 +8167,20 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
@@ -8322,12 +8220,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -8413,8 +8306,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -8467,7 +8360,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -8659,21 +8552,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -8796,7 +8689,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -8827,12 +8719,10 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -8865,7 +8755,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -8929,7 +8819,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviePersonActorsNodeAggregateSelection {
-                      username: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -9070,11 +8960,7 @@ describe("@filterable directive", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      username: StringAggregateSelectionNonNullable!
-                    }
-
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -9085,36 +8971,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -9137,20 +8999,20 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
@@ -9190,12 +9052,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -9285,8 +9142,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -9343,7 +9200,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -9535,21 +9392,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -9638,8 +9495,8 @@ describe("@filterable directive", () => {
 
                     type AppearanceAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input AppearanceConnectInput {
@@ -9696,7 +9553,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input AppearanceMoviesAggregateInput {
@@ -9888,21 +9745,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -10183,7 +10040,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -10422,12 +10279,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -10527,8 +10379,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -10585,7 +10437,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -10777,21 +10629,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -10880,8 +10732,8 @@ describe("@filterable directive", () => {
 
                     type AppearanceAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input AppearanceConnectInput {
@@ -10938,7 +10790,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input AppearanceMoviesAggregateInput {
@@ -11130,21 +10982,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -11425,7 +11277,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -11664,12 +11516,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -11769,8 +11616,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -11827,7 +11674,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -12019,21 +11866,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -12122,8 +11969,8 @@ describe("@filterable directive", () => {
 
                     type AppearanceAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input AppearanceConnectInput {
@@ -12180,7 +12027,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input AppearanceMoviesAggregateInput {
@@ -12372,21 +12219,21 @@ describe("@filterable directive", () => {
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
-                      password_IN: [String]
+                      password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
-                      username_IN: [String]
+                      username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
@@ -12667,7 +12514,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -12906,12 +12753,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }

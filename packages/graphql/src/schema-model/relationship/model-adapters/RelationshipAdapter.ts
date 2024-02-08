@@ -301,10 +301,6 @@ export class RelationshipAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
     }
 
-    public get subscriptionWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
-    }
-
     public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) =>
             attribute.isSubscriptionConnectedRelationshipField()

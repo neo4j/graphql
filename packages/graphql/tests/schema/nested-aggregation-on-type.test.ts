@@ -278,7 +278,7 @@ describe("nested aggregation on interface", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -310,13 +310,13 @@ describe("nested aggregation on interface", () => {
             }
 
             type ActorMovieActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorOptions {
@@ -423,18 +423,18 @@ describe("nested aggregation on interface", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -444,10 +444,10 @@ describe("nested aggregation on interface", () => {
             }
 
             type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectWhere {
@@ -567,9 +567,9 @@ describe("nested aggregation on interface", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

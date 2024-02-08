@@ -349,8 +349,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             type ActorEdge {
@@ -413,7 +413,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             type MovieEdge {
@@ -485,12 +485,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable @shareable {
+            type StringAggregateSelection @shareable {
               longest: String
               shortest: String
             }
@@ -572,8 +567,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -615,21 +610,21 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_STARTS_WITH: String
             }
@@ -720,7 +715,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -836,12 +831,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable @shareable {
+            type StringAggregateSelection @shareable {
               longest: String
               shortest: String
             }

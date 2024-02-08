@@ -69,7 +69,6 @@ describe("interface relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            experimental: false,
         });
     });
 
@@ -217,81 +216,6 @@ describe("interface relationships", () => {
                 deleteActors: {
                     nodesDeleted: 3,
                     relationshipsDeleted: 3,
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should nested delete through interface relationship fields using _on to delete from particular type", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-
-        const query = `
-            mutation DeleteActorAndMovie($name1: String, $name2: String, $title: String) {
-                deleteActors(
-                    where: { name: $name1 }
-                    delete: {
-                        actedIn: {
-                            where: { node: { title: $title } }
-                            delete: { _on: { Movie: { actors: { where: { node: { name: $name2 } } } } } }
-                        }
-                    }
-                ) {
-                    nodesDeleted
-                    relationshipsDeleted
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN]-(:Actor { name: $actorName2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $movieTitle })<-[:ACTED_IN]-(:Actor { name: $actorName2 })
-            `,
-                {
-                    actorName1,
-                    actorName2,
-                    movieTitle,
-                    movieRuntime,
-                    movieScreenTime,
-                    seriesScreenTime,
-                }
-            );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { name1: actorName1, name2: actorName2, title: movieTitle },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                deleteActors: {
-                    nodesDeleted: 4,
-                    relationshipsDeleted: 4,
                 },
             });
         } finally {

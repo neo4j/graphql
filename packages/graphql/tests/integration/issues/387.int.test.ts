@@ -17,104 +17,58 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import { type Driver } from "neo4j-driver";
+import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let name: string;
+    let url: string;
+    let typeDefs: DocumentNode;
+
+    const Place = new UniqueType("Place");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-    });
 
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("should return custom scalars from custom Cypher fields", async () => {
-        const session = await neo4j.getSession();
-
-        const name = generate({
+        name = generate({
             charset: "alphabetic",
         });
-        const url = generate({
+        url = generate({
             charset: "alphabetic",
         });
+        typeDefs = gql`
+        scalar URL
 
-        const typeDefs = gql`
-            scalar URL
-
-            type Place {
-                name: String
-                url: URL
-                    @cypher(
-                        statement: """
-                        return '${url}' as res
-                        """,
-                        columnName: "res"
-                    )
-                url_array: [URL]
-                    @cypher(
-                        statement: """
-                        return ['${url}', '${url}'] as res
-                        """,
-                        columnName: "res"
-                    )
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const query = `
-            {
-                places(where: { name: "${name}" }) {
-                    name
-                    url
-                    url_array
-                }
-            }
-        `;
-
-        try {
-            await session.run(`CREATE (:Place { name: "${name}" })`);
-
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
-
-            expect(result.errors).toBeFalsy();
-
-            expect(result.data as any).toEqual({
-                places: [
-                    {
-                        name,
-                        url,
-                        url_array: [url, url],
-                    },
-                ],
-            });
-        } finally {
-            await session.close();
+        type ${Place} {
+            name: String
+            url: URL
+                @cypher(
+                    statement: """
+                    return '${url}' as res
+                    """,
+                    columnName: "res"
+                )
+            url_array: [URL]
+                @cypher(
+                    statement: """
+                    return ['${url}', '${url}'] as res
+                    """,
+                    columnName: "res"
+                )
         }
-    });
 
-    test("should return custom scalars from root custom Cypher fields", async () => {
-        const url = generate({
-            charset: "alphabetic",
-        });
 
-        const typeDefs = gql`
-            scalar URL
-
-            type Query {
+        type Query {
                 url: URL
                     @cypher(
                         statement: """
@@ -130,8 +84,58 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                         columnName: "x"
                     )
             }
+    `;
+        const session = await neo4j.getSession();
+        try {
+            await session.run(`CREATE (:${Place.name} { name: "${name}" })`);
+        } finally {
+            await session.close();
+        }
+    });
+
+    afterAll(async () => {
+        const session = await neo4j.getSession();
+        try {
+            await cleanNodes(session, [Place]);
+        } finally {
+            await session.close();
+        }
+        await driver.close();
+    });
+
+    test("should return custom scalars from custom Cypher fields", async () => {
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const query = `
+            {
+                ${Place.plural}(where: { name: "${name}" }) {
+                    name
+                    url
+                    url_array
+                }
+            }
         `;
 
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data as any).toEqual({
+            [Place.plural]: [
+                {
+                    name,
+                    url,
+                    url_array: [url, url],
+                },
+            ],
+        });
+    });
+
+    test("should return custom scalars from root custom Cypher fields", async () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `

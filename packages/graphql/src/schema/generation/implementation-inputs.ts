@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 
@@ -128,18 +129,22 @@ export function makeImplementationsUpdateInput({
 export function makeImplementationsWhereInput({
     interfaceEntityAdapter,
     composer,
+    getConcreteEntityWhereInputType,
+    onTypeName,
 }: {
     interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
+    getConcreteEntityWhereInputType: (entityAdapter: ConcreteEntityAdapter) => string;
+    onTypeName: string;
 }): InputTypeComposer {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
         fields[entityAdapter.name] = {
-            type: entityAdapter.operations.whereInputTypeName,
+            type: getConcreteEntityWhereInputType(entityAdapter),
         };
     }
     const implementationsWhereType = composer.createInputTC({
-        name: interfaceEntityAdapter.operations.whereOnImplementationsWhereInputTypeName,
+        name: onTypeName,
         fields,
     });
     ensureNonEmptyInput(composer, implementationsWhereType);

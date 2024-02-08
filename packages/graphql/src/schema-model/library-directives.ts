@@ -16,21 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Annotations } from "./annotation/Annotation";
+import { annotationsParsers } from "./annotation/Annotation";
 import type { DEPRECATED } from "../constants";
 import { SHAREABLE } from "../constants";
 import type { ValueOf } from "../utils/value-of";
-import type { Annotations } from "./annotation/Annotation";
 
 const additionalDirectives = [
     "alias",
     "relationship",
-    "node",
-    "declareRelationship",
     "relationshipProperties",
+    "declareRelationship",
+    "node",
     SHAREABLE,
 ] as const;
 
 type LibraryDirectives = keyof Annotations | ValueOf<typeof additionalDirectives> | typeof DEPRECATED;
+export const LIBRARY_DIRECTIVES = [
+    ...(Object.keys(annotationsParsers) as Array<keyof Annotations>)
+        // fields from the @key directive is intentionally excluded as it is not in use by our schema model
+        .filter((key) => key !== "key"),
+    ...additionalDirectives,
+] as const satisfies readonly LibraryDirectives[];
 
 export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
@@ -65,7 +72,7 @@ export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = [
     "subscription",
 ] as const satisfies readonly LibraryDirectives[];
 
-export const OBJECT_DIRECTIVES = [
+const OBJECT_DIRECTIVES = [
     "authentication",
     "authorization",
     "subscriptionsAuthorization",
@@ -81,7 +88,7 @@ export const OBJECT_DIRECTIVES = [
 ] as const satisfies readonly LibraryDirectives[];
 export type ObjectDirective = ValueOf<typeof OBJECT_DIRECTIVES>;
 
-export const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const satisfies readonly LibraryDirectives[];
+const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const satisfies readonly LibraryDirectives[];
 export type InterfaceDirective = ValueOf<typeof INTERFACE_DIRECTIVES>;
 
 const UNION_DIRECTIVES = ["query", "plural"] as const satisfies readonly LibraryDirectives[];

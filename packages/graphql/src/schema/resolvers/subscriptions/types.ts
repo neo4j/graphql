@@ -17,16 +17,7 @@
  * limitations under the License.
  */
 
-import type { JWTPayload } from "jose";
-
 export type SubscriptionEventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
-
-export type SubscriptionConnectionContext = {
-    connectionParams?: {
-        authorization?: string;
-    };
-    jwt?: JWTPayload;
-};
 
 export type StandardType = Record<string, Record<string, unknown>>;
 export type UnionType = Record<string, StandardType>;

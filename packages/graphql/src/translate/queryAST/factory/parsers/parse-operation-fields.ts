@@ -17,41 +17,101 @@
  * limitations under the License.
  */
 
+import type { Neo4jGraphQLSchemaModel } from "../../../../schema-model/Neo4jGraphQLSchemaModel";
+import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import { isUnionEntity } from "../../utils/is-union-entity";
 
-export type OperationFieldMatch = {
-    isRead: boolean;
-    isConnection: boolean;
-    isAggregation: boolean;
-    isCreate: boolean;
-    isUpdate: boolean;
-    isDelete: boolean;
-};
+export type TopLevelOperationFieldMatch =
+    | "READ"
+    | "CONNECTION"
+    | "AGGREGATE"
+    | "CREATE"
+    | "UPDATE"
+    | "DELETE"
+    | "CUSTOM_CYPHER";
 
-export function parseOperationField(field: string, entityAdapter: ConcreteEntityAdapter): OperationFieldMatch {
-    const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
-    return {
-        isRead: field === rootTypeFieldNames.read,
-        isConnection: field === rootTypeFieldNames.connection,
-        isAggregation: field === rootTypeFieldNames.aggregate,
-        isCreate: field === rootTypeFieldNames.create,
-        isUpdate: field === rootTypeFieldNames.update,
-        isDelete: field === rootTypeFieldNames.delete,
-    };
+export function parseTopLevelOperationField(
+    field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter?: EntityAdapter
+): TopLevelOperationFieldMatch {
+    if (!entityAdapter) {
+        return "CUSTOM_CYPHER";
+    }
+    if (isInterfaceEntity(entityAdapter)) {
+        return parseInterfaceOperationField(field, schemaModel, entityAdapter);
+    }
+    if (isUnionEntity(entityAdapter)) {
+        return parseUnionOperationField(field, schemaModel, entityAdapter);
+    }
+
+    return parseOperationField(field, schemaModel, entityAdapter);
 }
 
-export function parseInterfaceOperationField(
+function parseOperationField(
     field: string,
-    entityAdapter: InterfaceEntityAdapter
-): OperationFieldMatch {
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter: ConcreteEntityAdapter
+): TopLevelOperationFieldMatch {
     const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
-    return {
-        isRead: field === rootTypeFieldNames.read,
-        isConnection: false, //connection not supported as interface top-level operation
-        isAggregation: field === rootTypeFieldNames.aggregate,
-        isCreate: field === rootTypeFieldNames.create,
-        isUpdate: field === rootTypeFieldNames.update,
-        isDelete: false, //delete not supported as interface top-level operation
-    };
+    if (schemaModel.operations.Query?.findAttribute(field) || schemaModel.operations.Mutation?.findAttribute(field)) {
+        return "CUSTOM_CYPHER";
+    }
+    switch (field) {
+        case "_entities":
+        case rootTypeFieldNames.read:
+            return "READ";
+        case rootTypeFieldNames.connection:
+            return "CONNECTION";
+        case rootTypeFieldNames.aggregate:
+            return "AGGREGATE";
+        case rootTypeFieldNames.create:
+            return "CREATE";
+        case rootTypeFieldNames.update:
+            return "UPDATE";
+        case rootTypeFieldNames.delete:
+            return "DELETE";
+        default:
+            throw new Error(`Interface does not support this operation: ${field}`);
+    }
+}
+
+function parseInterfaceOperationField(
+    field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter: InterfaceEntityAdapter
+): TopLevelOperationFieldMatch {
+    const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
+    if (schemaModel.operations.Query?.findAttribute(field) || schemaModel.operations.Mutation?.findAttribute(field)) {
+        return "CUSTOM_CYPHER";
+    }
+    switch (field) {
+        case rootTypeFieldNames.read:
+            return "READ";
+        case rootTypeFieldNames.aggregate:
+            return "AGGREGATE";
+        default:
+            throw new Error(`Interface does not support this operation: ${field}`);
+    }
+}
+
+function parseUnionOperationField(
+    field: string,
+    schemaModel: Neo4jGraphQLSchemaModel,
+    entityAdapter: UnionEntityAdapter
+): TopLevelOperationFieldMatch {
+    const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
+    if (schemaModel.operations.Query?.findAttribute(field) || schemaModel.operations.Mutation?.findAttribute(field)) {
+        return "CUSTOM_CYPHER";
+    }
+    switch (field) {
+        case rootTypeFieldNames.read:
+            return "READ";
+        default:
+            throw new Error(`Union does not support this operation: ${field}`);
+    }
 }

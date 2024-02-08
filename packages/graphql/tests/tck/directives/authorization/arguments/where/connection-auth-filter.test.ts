@@ -199,7 +199,6 @@ describe("Connection auth filter", () => {
                     OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
                     WITH *, count(this3) AS creatorCount
                     WITH *
-                    WITH *
                     WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
                     WITH this2 { .content } AS this2
                     RETURN collect(this2) AS var4
@@ -396,7 +395,6 @@ describe("Connection auth filter", () => {
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
                     OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
                     WITH *, count(this3) AS creatorCount
-                    WITH *
                     WITH *
                     WHERE (this2.content = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
                     WITH this2 { .content } AS this2

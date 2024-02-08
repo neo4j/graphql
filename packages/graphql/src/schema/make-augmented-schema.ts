@@ -55,6 +55,7 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
 import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
+import { SHAREABLE } from "../constants";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
@@ -68,6 +69,7 @@ import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/Con
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { filterTruthy } from "../utils/utils";
 import { createConnectionFields } from "./create-connection-fields";
@@ -77,6 +79,7 @@ import { deprecationMap } from "./deprecation-map";
 import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
+import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
 import { withInterfaceType } from "./generation/interface-type";
 import { getRelationshipPropertiesTypeDescription, withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
@@ -88,9 +91,6 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
-import { SHAREABLE } from "../constants";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -102,14 +102,12 @@ function makeAugmentedSchema({
     userCustomResolvers,
     subgraph,
     schemaModel,
-    experimental,
 }: {
     document: DocumentNode;
     features?: Neo4jFeaturesSettings;
     userCustomResolvers?: IResolvers | Array<IResolvers>;
     subgraph?: Subgraph;
     schemaModel: Neo4jGraphQLSchemaModel;
-    experimental: boolean;
 }): {
     nodes: Node[];
     relationships: Relationship[];
@@ -266,19 +264,18 @@ function makeAugmentedSchema({
     interfaceRelationships.forEach((interfaceRelationship) => {
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
         const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
-        const updatedRelationships = doForInterfacesThatAreTargetOfARelationship({
+        const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(interfaceEntity.name) || [];
+        const connectionFields = generateInterfaceObjectType({
             composer,
             interfaceEntityAdapter,
             subgraph,
-            relationships,
             relationshipFields,
             userDefinedFieldDirectivesForNode,
+            userDefinedInterfaceDirectives,
             propagatedDirectivesForNode,
             aggregationTypesMapper,
         });
-        if (updatedRelationships) {
-            relationships = updatedRelationships;
-        }
+        relationships = [...relationships, ...connectionFields];
         seenInterfaces.add(interfaceRelationship.name.value);
     });
 
@@ -453,52 +450,19 @@ function makeAugmentedSchema({
             return;
         }
         if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
-            const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(entity.name) as Map<
-                string,
-                DirectiveNode[]
-            >;
-            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
-            const propagatedDirectives = propagatedDirectivesForNode.get(entity.name) || [];
             const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
-            withInterfaceType({
+            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            generateInterfaceObjectType({
+                composer,
                 interfaceEntityAdapter,
-                userDefinedFieldDirectives,
+                subgraph,
+                relationshipFields,
                 userDefinedInterfaceDirectives,
-                composer,
-                config: {
-                    includeRelationships: true,
-                },
+                userDefinedFieldDirectivesForNode,
+                propagatedDirectivesForNode,
+                aggregationTypesMapper,
             });
-            // TODO: mirror everything on interfaces target of relationships
-            withWhereInputType({
-                entityAdapter: interfaceEntityAdapter,
-                userDefinedFieldDirectives,
-                features,
-                composer,
-            });
-            withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
-            if (interfaceEntityAdapter.isReadable) {
-                composer.Query.addFields({
-                    [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                        entityAdapter: interfaceEntityAdapter,
-                    }),
-                });
-                composer.Query.setFieldDirectives(
-                    interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-                    graphqlDirectivesToCompose(propagatedDirectives)
-                );
-            }
-            if (interfaceEntityAdapter.isAggregable) {
-                addInterfaceAggregateSelectionStuff({
-                    entityAdapter: interfaceEntityAdapter,
-                    aggregationTypesMapper,
-                    propagatedDirectives,
-                    composer,
-                });
-            }
-            return;
         }
-        return;
     });
 
     if (features?.subscriptions && nodes.length) {
@@ -508,7 +472,7 @@ function makeAugmentedSchema({
             schemaModel,
             userDefinedFieldDirectivesForNode,
             generateRelationshipTypes: !isCDCEngine,
-            experimental,
+            features,
         });
     }
 
@@ -773,14 +737,14 @@ function doForRelationshipPropertiesType({
     withCreateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
 }
 
-function doForInterfacesThatAreTargetOfARelationship({
+function generateInterfaceObjectType({
     composer,
     interfaceEntityAdapter,
     features,
     subgraph,
-    relationships,
     relationshipFields,
     userDefinedFieldDirectivesForNode,
+    userDefinedInterfaceDirectives,
     propagatedDirectivesForNode,
     aggregationTypesMapper,
 }: {
@@ -788,9 +752,9 @@ function doForInterfacesThatAreTargetOfARelationship({
     interfaceEntityAdapter: InterfaceEntityAdapter;
     features?: Neo4jFeaturesSettings;
     subgraph?: Subgraph;
-    relationships: Relationship[];
     relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+    userDefinedInterfaceDirectives: DirectiveNode[];
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
     aggregationTypesMapper: AggregationTypesMapper;
 }) {
@@ -811,7 +775,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     const composeInterface = withInterfaceType({
         interfaceEntityAdapter,
         userDefinedFieldDirectives,
-        userDefinedInterfaceDirectives: [],
+        userDefinedInterfaceDirectives,
         composer,
     });
     createRelationshipFields({
@@ -821,16 +785,14 @@ function doForInterfacesThatAreTargetOfARelationship({
         subgraph,
         userDefinedFieldDirectives,
     });
-    relationships = [
-        ...relationships,
-        ...createConnectionFields({
-            entityAdapter: interfaceEntityAdapter,
-            schemaComposer: composer,
-            composeNode: composeInterface,
-            userDefinedFieldDirectives,
-            relationshipFields,
-        }),
-    ];
+
+    const connectionFields = createConnectionFields({
+        entityAdapter: interfaceEntityAdapter,
+        schemaComposer: composer,
+        composeNode: composeInterface,
+        userDefinedFieldDirectives,
+        relationshipFields,
+    });
 
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
     if (interfaceEntityAdapter.isReadable) {
@@ -854,7 +816,7 @@ function doForInterfacesThatAreTargetOfARelationship({
         );
     }
 
-    return relationships;
+    return connectionFields;
 }
 
 function addInterfaceAggregateSelectionStuff({

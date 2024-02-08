@@ -56,9 +56,9 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              dob: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              dob: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectOrCreateWhere {
@@ -186,9 +186,9 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -200,9 +200,9 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -219,9 +219,9 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              dob: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              dob: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -367,8 +367,8 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -543,9 +543,9 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

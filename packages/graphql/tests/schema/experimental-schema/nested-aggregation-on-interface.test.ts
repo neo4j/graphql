@@ -150,7 +150,7 @@ describe("nested aggregation on interface", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -191,12 +191,12 @@ describe("nested aggregation on interface", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -288,18 +288,18 @@ describe("nested aggregation on interface", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -309,10 +309,10 @@ describe("nested aggregation on interface", () => {
             }
 
             type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -420,9 +420,9 @@ describe("nested aggregation on interface", () => {
             }
 
             type ProductionAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -437,11 +437,6 @@ describe("nested aggregation on interface", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
             }
 
             input ProductionOptions {
@@ -462,7 +457,6 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               cost: Float
               cost_ADD: Float
               cost_DIVIDE: Float
@@ -517,10 +511,10 @@ describe("nested aggregation on interface", () => {
             }
 
             type SeriesAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -610,9 +604,9 @@ describe("nested aggregation on interface", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -789,7 +783,7 @@ describe("nested aggregation on interface", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -912,18 +906,18 @@ describe("nested aggregation on interface", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -933,10 +927,10 @@ describe("nested aggregation on interface", () => {
             }
 
             type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -1044,9 +1038,9 @@ describe("nested aggregation on interface", () => {
             }
 
             type ProductionAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -1061,11 +1055,6 @@ describe("nested aggregation on interface", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
             }
 
             input ProductionOptions {
@@ -1086,7 +1075,6 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               cost: Float
               cost_ADD: Float
               cost_DIVIDE: Float
@@ -1141,10 +1129,10 @@ describe("nested aggregation on interface", () => {
             }
 
             type SeriesAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -1234,9 +1222,9 @@ describe("nested aggregation on interface", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

@@ -65,7 +65,7 @@ describe("Subscriptions", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -120,11 +120,11 @@ describe("Subscriptions", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -198,19 +198,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -233,7 +233,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -359,10 +359,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -630,9 +630,9 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -755,9 +755,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -1026,19 +1026,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1131,10 +1131,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1514,19 +1514,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1679,10 +1679,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1988,9 +1988,9 @@ describe("Subscriptions", () => {
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -2299,9 +2299,9 @@ describe("Subscriptions", () => {
             }
 
             type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -2638,11 +2638,11 @@ describe("Subscriptions", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActedInUpdateInput {
@@ -2720,9 +2720,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -2991,26 +2991,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3033,7 +3026,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3158,10 +3151,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3504,7 +3497,7 @@ describe("Subscriptions", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -3559,11 +3552,11 @@ describe("Subscriptions", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
@@ -3637,19 +3630,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3672,7 +3665,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3790,10 +3783,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3961,9 +3954,9 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -4032,8 +4025,8 @@ describe("Subscriptions", () => {
 
             type AgreementAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input AgreementConnectInput {
@@ -4301,11 +4294,11 @@ describe("Subscriptions", () => {
               id: Int
               id_GT: Int
               id_GTE: Int
-              id_IN: [Int]
+              id_IN: [Int!]
               id_LT: Int
               id_LTE: Int
               id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -4339,8 +4332,8 @@ describe("Subscriptions", () => {
             }
 
             type AgreementUserOwnerNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input AgreementWhere {
@@ -4409,11 +4402,11 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Mutation {
@@ -4447,12 +4440,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -4488,8 +4476,8 @@ describe("Subscriptions", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserConnectWhere {
@@ -4545,11 +4533,11 @@ describe("Subscriptions", () => {
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_STARTS_WITH: String
             }
@@ -4677,19 +4665,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -4842,10 +4830,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -5151,9 +5139,9 @@ describe("Subscriptions", () => {
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -5448,9 +5436,9 @@ describe("Subscriptions", () => {
             }
 
             type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -5760,7 +5748,6 @@ describe("Subscriptions", () => {
             }
 
             input CreatureConnectInput {
-              _on: CreatureImplementationsConnectInput
               movies: CreatureMoviesConnectFieldInput
             }
 
@@ -5773,33 +5760,15 @@ describe("Subscriptions", () => {
             }
 
             input CreatureDeleteInput {
-              _on: CreatureImplementationsDeleteInput
               movies: CreatureMoviesDeleteFieldInput
             }
 
             input CreatureDisconnectInput {
-              _on: CreatureImplementationsDisconnectInput
               movies: CreatureMoviesDisconnectFieldInput
             }
 
             enum CreatureImplementation {
               Person
-            }
-
-            input CreatureImplementationsConnectInput {
-              Person: [PersonConnectInput!]
-            }
-
-            input CreatureImplementationsDeleteInput {
-              Person: [PersonDeleteInput!]
-            }
-
-            input CreatureImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
-            }
-
-            input CreatureImplementationsUpdateInput {
-              Person: PersonUpdateInput
             }
 
             input CreatureMoviesConnectFieldInput {
@@ -5863,7 +5832,6 @@ describe("Subscriptions", () => {
             }
 
             input CreatureUpdateInput {
-              _on: CreatureImplementationsUpdateInput
               movies: CreatureMoviesUpdateFieldInput
             }
 
@@ -5893,16 +5861,16 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -5915,8 +5883,8 @@ describe("Subscriptions", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -6171,7 +6139,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -6233,11 +6201,10 @@ describe("Subscriptions", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
               director: ProductionDirectorConnectFieldInput
             }
 
@@ -6251,7 +6218,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
               director: ProductionDirectorDeleteFieldInput
             }
 
@@ -6307,7 +6273,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               director: ProductionDirectorDisconnectFieldInput
             }
 
@@ -6318,26 +6283,6 @@ describe("Subscriptions", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
             }
 
             input ProductionOptions {
@@ -6370,10 +6315,10 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProductionImplementation!]
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               director: ProductionDirectorUpdateFieldInput
               id: ID
             }
@@ -6424,9 +6369,9 @@ describe("Subscriptions", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episode: IntAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -6575,11 +6520,11 @@ describe("Subscriptions", () => {
               episode: Int
               episode_GT: Int
               episode_GTE: Int
-              episode_IN: [Int]
+              episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
               episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episode_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6593,11 +6538,11 @@ describe("Subscriptions", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
@@ -6662,9 +6607,9 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {

@@ -207,7 +207,7 @@ describe("Arrays Methods", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -242,8 +242,8 @@ describe("Arrays Methods", () => {
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              averageRating: FloatAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorOptions {
@@ -350,16 +350,16 @@ describe("Arrays Methods", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -377,7 +377,7 @@ describe("Arrays Methods", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -505,9 +505,9 @@ describe("Arrays Methods", () => {
             }
 
             type MovieAggregateSelection {
-              averageRating: FloatAggregateSelectionNonNullable!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -669,7 +669,7 @@ describe("Arrays Methods", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

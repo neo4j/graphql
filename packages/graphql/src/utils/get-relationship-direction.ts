@@ -21,14 +21,8 @@ import { Neo4jGraphQLError } from "../classes/Error";
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationField } from "../types";
 
-export type DirectionString = "-" | "->" | "<-";
-export type QueryRelationshipDirection = "IN" | "OUT" | "undirected";
-export type CypherRelationshipDirection = "left" | "right" | "undirected";
-
-type DirectionResult = {
-    inStr: DirectionString;
-    outStr: DirectionString;
-};
+type QueryRelationshipDirection = "IN" | "OUT" | "undirected";
+type CypherRelationshipDirection = "left" | "right" | "undirected";
 
 export function getCypherRelationshipDirection(
     relationField: RelationField,
@@ -45,7 +39,7 @@ export function getCypherRelationshipDirection(
     }
 }
 
-export function getRelationshipDirection(
+function getRelationshipDirection(
     relationField: RelationField,
     fieldArgs: { directed?: boolean }
 ): QueryRelationshipDirection {
@@ -73,33 +67,6 @@ export function getRelationshipDirection(
                 throw new Error("Invalid direction in 'UNDIRECTED_ONLY' relationship");
             }
             return undirectedValue;
-        default:
-            throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
-    }
-}
-
-export function getRelationshipDirectionStr(
-    relationField: RelationField,
-    fieldArgs: { directed?: boolean }
-): DirectionResult {
-    const direction = getRelationshipDirection(relationField, fieldArgs);
-
-    switch (direction) {
-        case "IN":
-            return {
-                inStr: "<-",
-                outStr: "-",
-            };
-        case "OUT":
-            return {
-                inStr: "-",
-                outStr: "->",
-            };
-        case "undirected":
-            return {
-                inStr: "-",
-                outStr: "-",
-            };
         default:
             throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
     }
