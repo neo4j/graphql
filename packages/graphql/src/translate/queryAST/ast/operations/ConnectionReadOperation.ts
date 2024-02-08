@@ -229,9 +229,8 @@ export class ConnectionReadOperation extends Operation {
                 __id: Cypher.id(context.target),
             });
         }
-        const targetNodeName = this.target.name;
         nodeProjectionMap.set({
-            __resolveType: new Cypher.Literal(targetNodeName),
+            __resolveType: new Cypher.Literal(this.target.name),
         });
 
         const edgeProjectionMap = new Cypher.Map();

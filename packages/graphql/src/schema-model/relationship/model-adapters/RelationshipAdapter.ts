@@ -34,6 +34,7 @@ import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapt
 import { plural, singular } from "../../utils/string-manipulation";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { RelationshipOperations } from "./RelationshipOperations";
+import { Memoize } from "typescript-memoize";
 
 export class RelationshipAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
@@ -44,7 +45,6 @@ export class RelationshipAdapter {
     private rawEntity: Entity;
     private rawOriginalTargetEntity?: Entity;
     private _target: EntityAdapter | undefined;
-    private _originalTarget: EntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: Set<NestedOperation>;
@@ -194,6 +194,7 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
+    @Memoize()
     public get target(): EntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
@@ -208,22 +209,21 @@ export class RelationshipAdapter {
         }
         return this._target;
     }
+
+    @Memoize()
     public get originalTarget(): EntityAdapter | undefined {
         if (!this.rawOriginalTargetEntity) {
             return;
         }
-        if (!this._originalTarget) {
-            if (this.rawOriginalTargetEntity instanceof ConcreteEntity) {
-                this._originalTarget = new ConcreteEntityAdapter(this.rawOriginalTargetEntity);
-            } else if (this.rawOriginalTargetEntity instanceof InterfaceEntity) {
-                this._originalTarget = new InterfaceEntityAdapter(this.rawOriginalTargetEntity);
-            } else if (this.rawOriginalTargetEntity instanceof UnionEntity) {
-                this._originalTarget = new UnionEntityAdapter(this.rawOriginalTargetEntity);
-            } else {
-                throw new Error("invalid original target entity type");
-            }
+        if (this.rawOriginalTargetEntity instanceof ConcreteEntity) {
+            return new ConcreteEntityAdapter(this.rawOriginalTargetEntity);
+        } else if (this.rawOriginalTargetEntity instanceof InterfaceEntity) {
+            return new InterfaceEntityAdapter(this.rawOriginalTargetEntity);
+        } else if (this.rawOriginalTargetEntity instanceof UnionEntity) {
+            return new UnionEntityAdapter(this.rawOriginalTargetEntity);
+        } else {
+            throw new Error("invalid original target entity type");
         }
-        return this._originalTarget;
     }
 
     public isReadable(): boolean {

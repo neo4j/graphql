@@ -228,7 +228,7 @@ export function createRelationshipFields({
         );
 
         const relationshipFieldsOpts: {
-            relationshipAdapter: any;
+            relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
             composer: SchemaComposer<any>;
             composeNode: ObjectTypeComposer<any, any> | InterfaceTypeComposer<any, any>;
             userDefinedFieldDirectives: Map<string, DirectiveNode[]>;

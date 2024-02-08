@@ -24,12 +24,6 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-/*
-    TODO - lets reuse this function for setting either node or rel properties.
-           This was not reused due to the large differences between node fields
-           - and relationship fields.
-*/
-
 function createSetRelationshipProperties({
     properties,
     varName,
@@ -40,7 +34,7 @@ function createSetRelationshipProperties({
     callbackBucket,
     parameterPrefix,
 }: {
-    properties: Record<string, unknown>;
+    properties: Record<string, Record<string, unknown>>;
     varName: string;
     withVars: string[];
     relationship: Relationship;
@@ -52,9 +46,7 @@ function createSetRelationshipProperties({
     // setting properties on the edge of an Interface relationship
     // the input can contain other properties than the one applicable for this concrete entity relationship field
     if (Object.keys(properties).find((k) => relationshipAdapter?.siblings?.includes(k))) {
-        const applicableProperties = properties[relationship.properties as string] as
-            | Record<string, unknown>
-            | undefined;
+        const applicableProperties = properties[relationship.properties as string];
         if (applicableProperties) {
             return createSetRelationshipPropertiesForProperties({
                 properties: applicableProperties,
@@ -79,6 +71,11 @@ function createSetRelationshipProperties({
     });
 }
 
+/*
+    TODO - lets reuse this function for setting either node or rel properties.
+           This was not reused due to the large differences between node fields
+           - and relationship fields.
+*/
 function createSetRelationshipPropertiesForProperties({
     properties,
     varName,
