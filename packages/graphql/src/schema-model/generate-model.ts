@@ -54,7 +54,6 @@ import { isInArray } from "../utils/is-in-array";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
 import type { Entity } from "./entity/Entity";
 import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
-import { assert } from "console";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -343,35 +342,37 @@ function getFirstDeclaration(
     if (!definition || !definition.interfaces) {
         return {};
     }
-    const { inheritedInterfaceWithDeclaredField, declaredFieldTypeName } = definition.interfaces.reduce<{
-        inheritedInterfaceWithDeclaredField?: NamedTypeNode;
-        declaredFieldTypeName?: string;
-    }>((acc, interfaceNamedNode) => {
+    let inheritedInterfaceWithDeclaredField: NamedTypeNode | undefined;
+    let declaredFieldTypeName: string | undefined;
+    for (const interfaceNamedNode of definition.interfaces) {
         const interfaceDef = getDefinitionNodeFromNamedNode(interfaceNamedNode, definitionCollection);
         const declaredRelationshipField = getFieldDeclaredAsRelationship(interfaceDef, fieldName);
         if (declaredRelationshipField) {
-            return {
-                inheritedInterfaceWithDeclaredField: interfaceNamedNode,
-                declaredFieldTypeName: getInnerTypeName(declaredRelationshipField.type),
-            };
+            inheritedInterfaceWithDeclaredField = interfaceNamedNode;
+            declaredFieldTypeName = getInnerTypeName(declaredRelationshipField.type);
         }
-        return acc;
-    }, {});
+    }
+
     if (!inheritedInterfaceWithDeclaredField) {
+        // definition declares it first
         return {};
     }
 
+    // found implemented interface that declares it
     const currentInChain = {
         originalTarget: schema.getEntity(declaredFieldTypeName || ""),
-        firstDeclaredInTypeName: inheritedInterfaceWithDeclaredField?.name.value,
+        firstDeclaredInTypeName: inheritedInterfaceWithDeclaredField.name.value,
     };
 
+    // attempt to go up in chain
     const interfaceDef = getDefinitionNodeFromNamedNode(inheritedInterfaceWithDeclaredField, definitionCollection);
     const prevInChain = getFirstDeclaration(interfaceDef, fieldName, definitionCollection, schema);
     if (prevInChain.firstDeclaredInTypeName) {
+        // found interface that declares it up in chain
         return prevInChain;
     }
 
+    // this interface declares it first
     return currentInChain;
 }
 
