@@ -98,7 +98,7 @@ export function verifyRelationshipArgumentValue(
 
             if (relationshipPropertiesInterface.length > 0) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. @relationship.properties must be applied to an interface. Note, since version 5.0.0, the @relationshipProperties directive must be applied to a type and not an interface.`,
+                    `@relationship.properties invalid. The @relationshipProperties directive must be applied to a type and not an interface, a breaking change introduced in version 5.0.0.`,
                     ["properties"]
                 );
             }
