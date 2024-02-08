@@ -343,7 +343,7 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: BookAuthorEdgeAggregationWhereInput
+              edge: WroteAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
             }
 
@@ -405,37 +405,6 @@ describe("Unions", () => {
             input BookAuthorDisconnectFieldInput {
               disconnect: AuthorDisconnectInput
               where: BookAuthorConnectionWhere
-            }
-
-            input BookAuthorEdgeAggregationWhereInput {
-              AND: [BookAuthorEdgeAggregationWhereInput!]
-              NOT: BookAuthorEdgeAggregationWhereInput
-              OR: [BookAuthorEdgeAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
             }
 
             input BookAuthorFieldInput {
@@ -667,7 +636,7 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: JournalAuthorEdgeAggregationWhereInput
+              edge: WroteAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
             }
 
@@ -729,37 +698,6 @@ describe("Unions", () => {
             input JournalAuthorDisconnectFieldInput {
               disconnect: AuthorDisconnectInput
               where: JournalAuthorConnectionWhere
-            }
-
-            input JournalAuthorEdgeAggregationWhereInput {
-              AND: [JournalAuthorEdgeAggregationWhereInput!]
-              NOT: JournalAuthorEdgeAggregationWhereInput
-              OR: [JournalAuthorEdgeAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
             }
 
             input JournalAuthorFieldInput {
@@ -1023,6 +961,37 @@ describe("Unions", () => {
             \\"\\"\\"
             type Wrote {
               words: Int!
+            }
+
+            input WroteAggregationWhereInput {
+              AND: [WroteAggregationWhereInput!]
+              NOT: WroteAggregationWhereInput
+              OR: [WroteAggregationWhereInput!]
+              words_AVERAGE_EQUAL: Float
+              words_AVERAGE_GT: Float
+              words_AVERAGE_GTE: Float
+              words_AVERAGE_LT: Float
+              words_AVERAGE_LTE: Float
+              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_MAX_EQUAL: Int
+              words_MAX_GT: Int
+              words_MAX_GTE: Int
+              words_MAX_LT: Int
+              words_MAX_LTE: Int
+              words_MIN_EQUAL: Int
+              words_MIN_GT: Int
+              words_MIN_GTE: Int
+              words_MIN_LT: Int
+              words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input WroteCreateInput {

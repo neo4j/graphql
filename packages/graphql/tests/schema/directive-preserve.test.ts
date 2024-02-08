@@ -919,6 +919,47 @@ describe("Directive-preserve", () => {
               role: String!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              role_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_LENGTH_EQUAL: Float
+              role_AVERAGE_LENGTH_GT: Float
+              role_AVERAGE_LENGTH_GTE: Float
+              role_AVERAGE_LENGTH_LT: Float
+              role_AVERAGE_LENGTH_LTE: Float
+              role_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_LENGTH_EQUAL: Int
+              role_LONGEST_LENGTH_GT: Int
+              role_LONGEST_LENGTH_GTE: Int
+              role_LONGEST_LENGTH_LT: Int
+              role_LONGEST_LENGTH_LTE: Int
+              role_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_LENGTH_EQUAL: Int
+              role_SHORTEST_LENGTH_GT: Int
+              role_SHORTEST_LENGTH_GTE: Int
+              role_SHORTEST_LENGTH_LT: Int
+              role_SHORTEST_LENGTH_LTE: Int
+              role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
             input ActedInCreateInput {
               role: String!
             }
@@ -1199,7 +1240,7 @@ describe("Directive-preserve", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -1216,47 +1257,6 @@ describe("Directive-preserve", () => {
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              role_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LENGTH_EQUAL: Float
-              role_AVERAGE_LENGTH_GT: Float
-              role_AVERAGE_LENGTH_GTE: Float
-              role_AVERAGE_LENGTH_LT: Float
-              role_AVERAGE_LENGTH_LTE: Float
-              role_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LENGTH_EQUAL: Int
-              role_LONGEST_LENGTH_GT: Int
-              role_LONGEST_LENGTH_GTE: Int
-              role_LONGEST_LENGTH_LT: Int
-              role_LONGEST_LENGTH_LTE: Int
-              role_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LENGTH_EQUAL: Int
-              role_SHORTEST_LENGTH_GT: Int
-              role_SHORTEST_LENGTH_GTE: Int
-              role_SHORTEST_LENGTH_LT: Int
-              role_SHORTEST_LENGTH_LTE: Int
-              role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input MovieActorsFieldInput {
@@ -1599,7 +1599,7 @@ describe("Directive-preserve", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: SeriesActorsNodeAggregationWhereInput
             }
 
@@ -1616,47 +1616,6 @@ describe("Directive-preserve", () => {
             input SeriesActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input SeriesActorsEdgeAggregationWhereInput {
-              AND: [SeriesActorsEdgeAggregationWhereInput!]
-              NOT: SeriesActorsEdgeAggregationWhereInput
-              OR: [SeriesActorsEdgeAggregationWhereInput!]
-              role_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LENGTH_EQUAL: Float
-              role_AVERAGE_LENGTH_GT: Float
-              role_AVERAGE_LENGTH_GTE: Float
-              role_AVERAGE_LENGTH_LT: Float
-              role_AVERAGE_LENGTH_LTE: Float
-              role_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LENGTH_EQUAL: Int
-              role_LONGEST_LENGTH_GT: Int
-              role_LONGEST_LENGTH_GTE: Int
-              role_LONGEST_LENGTH_LT: Int
-              role_LONGEST_LENGTH_LTE: Int
-              role_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LENGTH_EQUAL: Int
-              role_SHORTEST_LENGTH_GT: Int
-              role_SHORTEST_LENGTH_GTE: Int
-              role_SHORTEST_LENGTH_LT: Int
-              role_SHORTEST_LENGTH_LTE: Int
-              role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input SeriesActorsFieldInput {
@@ -1922,6 +1881,47 @@ describe("Directive-preserve", () => {
             \\"\\"\\"
             type ActedIn {
               role: String!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              role_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_LENGTH_EQUAL: Float
+              role_AVERAGE_LENGTH_GT: Float
+              role_AVERAGE_LENGTH_GTE: Float
+              role_AVERAGE_LENGTH_LT: Float
+              role_AVERAGE_LENGTH_LTE: Float
+              role_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_LENGTH_EQUAL: Int
+              role_LONGEST_LENGTH_GT: Int
+              role_LONGEST_LENGTH_GTE: Int
+              role_LONGEST_LENGTH_LT: Int
+              role_LONGEST_LENGTH_LTE: Int
+              role_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              role_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_LENGTH_EQUAL: Int
+              role_SHORTEST_LENGTH_GT: Int
+              role_SHORTEST_LENGTH_GTE: Int
+              role_SHORTEST_LENGTH_LT: Int
+              role_SHORTEST_LENGTH_LTE: Int
+              role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input ActedInCreateInput {
@@ -2204,7 +2204,7 @@ describe("Directive-preserve", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -2221,47 +2221,6 @@ describe("Directive-preserve", () => {
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              role_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LENGTH_EQUAL: Float
-              role_AVERAGE_LENGTH_GT: Float
-              role_AVERAGE_LENGTH_GTE: Float
-              role_AVERAGE_LENGTH_LT: Float
-              role_AVERAGE_LENGTH_LTE: Float
-              role_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LENGTH_EQUAL: Int
-              role_LONGEST_LENGTH_GT: Int
-              role_LONGEST_LENGTH_GTE: Int
-              role_LONGEST_LENGTH_LT: Int
-              role_LONGEST_LENGTH_LTE: Int
-              role_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LENGTH_EQUAL: Int
-              role_SHORTEST_LENGTH_GT: Int
-              role_SHORTEST_LENGTH_GTE: Int
-              role_SHORTEST_LENGTH_LT: Int
-              role_SHORTEST_LENGTH_LTE: Int
-              role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input MovieActorsFieldInput {
@@ -2604,7 +2563,7 @@ describe("Directive-preserve", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: SeriesActorsNodeAggregationWhereInput
             }
 
@@ -2621,47 +2580,6 @@ describe("Directive-preserve", () => {
             input SeriesActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input SeriesActorsEdgeAggregationWhereInput {
-              AND: [SeriesActorsEdgeAggregationWhereInput!]
-              NOT: SeriesActorsEdgeAggregationWhereInput
-              OR: [SeriesActorsEdgeAggregationWhereInput!]
-              role_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LENGTH_EQUAL: Float
-              role_AVERAGE_LENGTH_GT: Float
-              role_AVERAGE_LENGTH_GTE: Float
-              role_AVERAGE_LENGTH_LT: Float
-              role_AVERAGE_LENGTH_LTE: Float
-              role_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LENGTH_EQUAL: Int
-              role_LONGEST_LENGTH_GT: Int
-              role_LONGEST_LENGTH_GTE: Int
-              role_LONGEST_LENGTH_LT: Int
-              role_LONGEST_LENGTH_LTE: Int
-              role_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              role_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LENGTH_EQUAL: Int
-              role_SHORTEST_LENGTH_GT: Int
-              role_SHORTEST_LENGTH_GTE: Int
-              role_SHORTEST_LENGTH_LT: Int
-              role_SHORTEST_LENGTH_LTE: Int
-              role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input SeriesActorsFieldInput {

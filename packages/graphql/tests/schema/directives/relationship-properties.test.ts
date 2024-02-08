@@ -61,6 +61,37 @@ describe("Relationship-properties", () => {
               startDate: Date!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
             input ActedInCreateInput {
               leadRole: Boolean!
               screenTime: Int!
@@ -166,7 +197,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: ActorMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -214,37 +245,6 @@ describe("Relationship-properties", () => {
             input ActorMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesEdgeAggregationWhereInput {
-              AND: [ActorMoviesEdgeAggregationWhereInput!]
-              NOT: ActorMoviesEdgeAggregationWhereInput
-              OR: [ActorMoviesEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input ActorMoviesFieldInput {
@@ -457,7 +457,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -505,37 +505,6 @@ describe("Relationship-properties", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsFieldInput {
@@ -811,6 +780,53 @@ describe("Relationship-properties", () => {
               timestamp: DateTime!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+              timestamp_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_MAX_EQUAL: DateTime
+              timestamp_MAX_GT: DateTime
+              timestamp_MAX_GTE: DateTime
+              timestamp_MAX_LT: DateTime
+              timestamp_MAX_LTE: DateTime
+              timestamp_MIN_EQUAL: DateTime
+              timestamp_MIN_GT: DateTime
+              timestamp_MIN_GTE: DateTime
+              timestamp_MIN_LT: DateTime
+              timestamp_MIN_LTE: DateTime
+            }
+
             input ActedInCreateInput {
               screenTime: Int!
             }
@@ -922,7 +938,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: ActorMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -970,53 +986,6 @@ describe("Relationship-properties", () => {
             input ActorMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesEdgeAggregationWhereInput {
-              AND: [ActorMoviesEdgeAggregationWhereInput!]
-              NOT: ActorMoviesEdgeAggregationWhereInput
-              OR: [ActorMoviesEdgeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
-              timestamp_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_MAX_EQUAL: DateTime
-              timestamp_MAX_GT: DateTime
-              timestamp_MAX_GTE: DateTime
-              timestamp_MAX_LT: DateTime
-              timestamp_MAX_LTE: DateTime
-              timestamp_MIN_EQUAL: DateTime
-              timestamp_MIN_GT: DateTime
-              timestamp_MIN_GTE: DateTime
-              timestamp_MIN_LT: DateTime
-              timestamp_MIN_LTE: DateTime
             }
 
             input ActorMoviesFieldInput {
@@ -1241,7 +1210,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -1289,53 +1258,6 @@ describe("Relationship-properties", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
-              timestamp_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_MAX_EQUAL: DateTime
-              timestamp_MAX_GT: DateTime
-              timestamp_MAX_GTE: DateTime
-              timestamp_MAX_LT: DateTime
-              timestamp_MAX_LTE: DateTime
-              timestamp_MIN_EQUAL: DateTime
-              timestamp_MIN_GT: DateTime
-              timestamp_MIN_GTE: DateTime
-              timestamp_MIN_LT: DateTime
-              timestamp_MIN_LTE: DateTime
             }
 
             input MovieActorsFieldInput {
@@ -1609,6 +1531,28 @@ describe("Relationship-properties", () => {
               timestamp: DateTime!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              timestamp_MAX_EQUAL: DateTime
+              timestamp_MAX_GT: DateTime
+              timestamp_MAX_GTE: DateTime
+              timestamp_MAX_LT: DateTime
+              timestamp_MAX_LTE: DateTime
+              timestamp_MIN_EQUAL: DateTime
+              timestamp_MIN_GT: DateTime
+              timestamp_MIN_GTE: DateTime
+              timestamp_MIN_LT: DateTime
+              timestamp_MIN_LTE: DateTime
+            }
+
             input ActedInSort {
               id: SortDirection
               timestamp: SortDirection
@@ -1700,7 +1644,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: ActorMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -1746,28 +1690,6 @@ describe("Relationship-properties", () => {
             input ActorMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesEdgeAggregationWhereInput {
-              AND: [ActorMoviesEdgeAggregationWhereInput!]
-              NOT: ActorMoviesEdgeAggregationWhereInput
-              OR: [ActorMoviesEdgeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_MAX_EQUAL: DateTime
-              timestamp_MAX_GT: DateTime
-              timestamp_MAX_GTE: DateTime
-              timestamp_MAX_LT: DateTime
-              timestamp_MAX_LTE: DateTime
-              timestamp_MIN_EQUAL: DateTime
-              timestamp_MIN_GT: DateTime
-              timestamp_MIN_GTE: DateTime
-              timestamp_MIN_LT: DateTime
-              timestamp_MIN_LTE: DateTime
             }
 
             input ActorMoviesFieldInput {
@@ -1983,7 +1905,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -2029,28 +1951,6 @@ describe("Relationship-properties", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              timestamp_MAX_EQUAL: DateTime
-              timestamp_MAX_GT: DateTime
-              timestamp_MAX_GTE: DateTime
-              timestamp_MAX_LT: DateTime
-              timestamp_MAX_LTE: DateTime
-              timestamp_MIN_EQUAL: DateTime
-              timestamp_MIN_GT: DateTime
-              timestamp_MIN_GTE: DateTime
-              timestamp_MIN_LT: DateTime
-              timestamp_MIN_LTE: DateTime
             }
 
             input MovieActorsFieldInput {
