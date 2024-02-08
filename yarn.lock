@@ -3734,7 +3734,7 @@ __metadata:
     neo4j-driver: "npm:5.17.0"
     node-polyfill-webpack-plugin: "npm:3.0.0"
     parse5: "npm:7.1.2"
-    postcss: "npm:8.4.34"
+    postcss: "npm:8.4.35"
     postcss-loader: "npm:8.1.0"
     prettier: "npm:3.0.0"
     process: "npm:0.11.10"
@@ -21837,14 +21837,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.34":
-  version: 8.4.34
-  resolution: "postcss@npm:8.4.34"
+"postcss@npm:8.4.35":
+  version: 8.4.35
+  resolution: "postcss@npm:8.4.35"
   dependencies:
     nanoid: "npm:^3.3.7"
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.0.2"
-  checksum: 10c0/4d6f072cdfdc1ced16b4336263d830f8b4397fc47b9b382e02f6448fda9386d881aa9d27fbe0dd124f59c76f3a5da4f360919d25dfc818eca50b48f042af35a8
+  checksum: 10c0/e8dd04e48001eb5857abc9475365bf08f4e508ddf9bc0b8525449a95d190f10d025acebc5b56ac2e94b3c7146790e4ae78989bb9633cb7ee20d1cc9b7dc909b2
   languageName: node
   linkType: hard
 
