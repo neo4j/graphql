@@ -32,7 +32,6 @@ export function getConcreteWhere(
     }
     if (isUnionEntity(compositeTarget)) {
         return whereArgs[concreteTarget.name] ?? {};
-    } else {
-        return whereArgs;
     }
+    return whereArgs;
 }

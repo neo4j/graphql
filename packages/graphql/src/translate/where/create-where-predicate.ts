@@ -25,6 +25,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-t
 import { QueryASTContext, QueryASTEnv } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
+import type { Filter } from "../queryAST/ast/filters/Filter";
+import { isInterfaceEntity } from "../queryAST/utils/is-interface-entity";
 
 function createWherePredicate({
     factory,
@@ -42,10 +44,15 @@ function createWherePredicate({
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-    const filters =
-        entityOrRel instanceof RelationshipAdapter
-            ? factory.filterFactory.createEdgeFilters(entityOrRel, whereInput)
-            : factory.filterFactory.createNodeFilters(entityOrRel, whereInput);
+    const filters: Filter[] = [];
+    if (entityOrRel instanceof RelationshipAdapter) {
+        filters.push(...factory.filterFactory.createEdgeFilters(entityOrRel, whereInput));
+    } else {
+        if (isInterfaceEntity(entityOrRel)) {
+            throw new Error("Interface filter to be implemented");
+        }
+        filters.push(...factory.filterFactory.createNodeFilters(entityOrRel, whereInput));
+    }
 
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
     const predicates = filters.map((f) => f.getPredicate(queryASTContext));

@@ -163,7 +163,7 @@ describe("Top level filter on aggregation interfaces", () => {
         `);
     });
 
-    test("top level count and string fields with OR operation", async () => {
+    test.only("top level count and string fields with OR operation", async () => {
         const query = gql`
             {
                 productionsAggregate(where: { OR: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {

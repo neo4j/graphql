@@ -57,6 +57,10 @@ export class InterfaceEntityAdapter {
         return this.attributes.get(name);
     }
 
+    public findRelationshipDeclarations(name: string): RelationshipDeclarationAdapter | undefined {
+        return this.relationshipDeclarations.get(name);
+    }
+
     get globalIdField(): AttributeAdapter | undefined {
         return undefined;
     }

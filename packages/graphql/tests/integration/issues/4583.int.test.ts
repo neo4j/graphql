@@ -91,7 +91,6 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 screenTime: Int!
             }
 
-
             type StarredIn @relationshipProperties {
                 episodeNr: Int!
             }
