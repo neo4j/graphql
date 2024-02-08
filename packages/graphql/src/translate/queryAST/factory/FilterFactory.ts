@@ -151,7 +151,11 @@ export class FilterFactory {
                 }
                 if (connectionWhereField.fieldName === "node") {
                     if (partialOf && isInterfaceEntity(partialOf) && isConcreteEntity(entity)) {
-                        return this.createInterfaceNodeFilters(partialOf, entity, value);
+                        return this.createInterfaceNodeFilters({
+                            entity: partialOf,
+                            targetEntity: entity,
+                            whereFields: value,
+                        });
                         //throw new Error("FOUND >> Interface filter to be implemented");
                     }
                     return this.createNodeFilters(entity, value);
@@ -280,17 +284,21 @@ export class FilterFactory {
         return new ConnectionFilter(options);
     }
 
-    public createInterfaceNodeFilters(
-        entity: InterfaceEntityAdapter,
-        targetEntity: ConcreteEntityAdapter,
-        whereFields: Record<string, any>
-    ): Filter[] {
+    public createInterfaceNodeFilters({
+        entity,
+        targetEntity,
+        whereFields,
+    }: {
+        entity: InterfaceEntityAdapter;
+        targetEntity?: ConcreteEntityAdapter;
+        whereFields: Record<string, any>;
+    }): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
                 const valueAsArray = asArray(value);
                 if (isLogicalOperator(key)) {
                     const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
-                        return this.createInterfaceNodeFilters(entity, targetEntity, nestedWhere);
+                        return this.createInterfaceNodeFilters({ entity, targetEntity, whereFields: nestedWhere });
                     });
                     return new LogicalFilter({
                         operation: key,
@@ -306,7 +314,7 @@ export class FilterFactory {
 
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
                 const relationshipDeclaration = entity.findRelationshipDeclarations(fieldName);
-                if (relationshipDeclaration) {
+                if (targetEntity && relationshipDeclaration) {
                     const relationship = relationshipDeclaration.relationshipImplementations.find(
                         (r) => r.source.name === targetEntity.name
                     );

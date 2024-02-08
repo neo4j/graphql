@@ -1159,7 +1159,11 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         if (partialOf && isInterfaceEntity(partialOf)) {
-            const filters = this.filterFactory.createInterfaceNodeFilters(partialOf, entity, whereArgs);
+            const filters = this.filterFactory.createInterfaceNodeFilters({
+                entity: partialOf,
+                targetEntity: entity,
+                whereFields: whereArgs,
+            });
             operation.addFilters(...filters);
         } else {
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
@@ -1262,14 +1266,16 @@ export class OperationsFactory {
                 context,
             });
             if (isInterfaceEntity(entity)) {
-                throw new Error("Interface filter to be implemented");
+                const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
+                operation.addFilters(...filters);
+            } else {
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                operation.addFilters(...filters);
             }
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
 
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
-            operation.addFilters(...filters);
             operation.addAuthFilters(...authFilters);
         } else {
             const rawProjectionFields = {
@@ -1282,12 +1288,15 @@ export class OperationsFactory {
                 operations: ["AGGREGATE"],
                 context,
             });
+
             if (isInterfaceEntity(entity)) {
-                throw new Error("Interface filter to be implemented");
+                const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
+                operation.addFilters(...filters);
+            } else {
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                operation.addFilters(...filters);
             }
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
             operation.setFields(fields);
-            operation.addFilters(...filters);
             operation.addAuthFilters(...authFilters);
         }
 
