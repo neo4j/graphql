@@ -383,8 +383,11 @@ export class FilterFactory {
                 // ignores all other propertiesTypeName and only generates filter for the applicable one
                 return this.createEdgeFilters(relationship, where[relationship.propertiesTypeName] || {});
             }
+            // For interface filters relationship argument would be of type RelationshipDeclarationAdapter
+            // in which case, all possible propertiesTypeNames should be translated
+            // example implementation below - remove if not needed
+            /*
             if (relationship instanceof RelationshipDeclarationAdapter) {
-                // apply all filters for all possible propertiesTypeNames
                 const nestedFilters = allPropertiesTypeNames.flatMap((key) => {
                     return this.createEdgeFilters(relationship, where[key] || {});
                 });
@@ -395,6 +398,7 @@ export class FilterFactory {
                     }),
                 ]);
             }
+            */
         }
         const filterASTs = Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
