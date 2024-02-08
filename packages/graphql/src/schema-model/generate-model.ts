@@ -54,6 +54,7 @@ import { isInArray } from "../utils/is-in-array";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
 import type { Entity } from "./entity/Entity";
 import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
+import { assert } from "console";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -294,19 +295,18 @@ function hydrateRelationshipDeclarations(
         );
         if (relationshipField) {
             entity.addRelationshipDeclaration(relationshipField);
-            const allImplementationsPropertiesTypeNames = relationshipField.relationshipImplementations
-                .map((impl) => impl.propertiesTypeName)
-                .filter((x) => Boolean(x)) as string[];
-
-            relationshipField.relationshipImplementations.forEach((impl) =>
-                impl.setSiblings(allImplementationsPropertiesTypeNames)
+            const allImplementationsPropertiesTypeNames = filterTruthy(
+                relationshipField.relationshipImplementations.map((impl) => impl.propertiesTypeName)
             );
+            for (const impl of relationshipField.relationshipImplementations) {
+                impl.setSiblings(allImplementationsPropertiesTypeNames);
+            }
         }
     }
 }
 
 function getFieldDeclaredAsRelationship(
-    interfaceDef: InterfaceTypeDefinitionNode,
+    interfaceDef: InterfaceTypeDefinitionNode | undefined,
     fieldName: string
 ): FieldDefinitionNode | undefined {
     const fields = interfaceDef?.fields || [];
@@ -315,9 +315,12 @@ function getFieldDeclaredAsRelationship(
             field.name.value === fieldName && field.directives?.some((d) => d.name.value === "declareRelationship")
     );
 }
-function getDefinitionNodeFromNamedNode(interfaceNamedNode: NamedTypeNode, definitionCollection: DefinitionCollection) {
+function getDefinitionNodeFromNamedNode(
+    interfaceNamedNode: NamedTypeNode,
+    definitionCollection: DefinitionCollection
+): InterfaceTypeDefinitionNode | undefined {
     const interfaceName = interfaceNamedNode.name.value;
-    return definitionCollection.interfaceTypes.get(interfaceName) as InterfaceTypeDefinitionNode;
+    return definitionCollection.interfaceTypes.get(interfaceName);
 }
 
 /**
@@ -332,31 +335,28 @@ function getDefinitionNodeFromNamedNode(interfaceNamedNode: NamedTypeNode, defin
  * @returns Info about the interface at the top of the chain, nullable because there might not be any
  */
 function getFirstDeclaration(
-    definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined,
     fieldName: string,
     definitionCollection: DefinitionCollection,
     schema: Neo4jGraphQLSchemaModel
 ): { originalTarget?: Entity; firstDeclaredInTypeName?: string } {
-    if (!definition.interfaces) {
+    if (!definition || !definition.interfaces) {
         return {};
     }
-    const { inheritedInterfaceWithDeclaredField, declaredFieldTypeName } = definition.interfaces.reduce(
-        (acc, interfaceNamedNode) => {
-            const interfaceDef = getDefinitionNodeFromNamedNode(interfaceNamedNode, definitionCollection);
-            const declaredRelationshipField = getFieldDeclaredAsRelationship(interfaceDef, fieldName);
-            if (declaredRelationshipField) {
-                return {
-                    inheritedInterfaceWithDeclaredField: interfaceNamedNode,
-                    declaredFieldTypeName: getInnerTypeName(declaredRelationshipField.type),
-                };
-            }
-            return acc;
-        },
-        {} as {
-            inheritedInterfaceWithDeclaredField: NamedTypeNode | undefined;
-            declaredFieldTypeName: string | undefined;
+    const { inheritedInterfaceWithDeclaredField, declaredFieldTypeName } = definition.interfaces.reduce<{
+        inheritedInterfaceWithDeclaredField?: NamedTypeNode;
+        declaredFieldTypeName?: string;
+    }>((acc, interfaceNamedNode) => {
+        const interfaceDef = getDefinitionNodeFromNamedNode(interfaceNamedNode, definitionCollection);
+        const declaredRelationshipField = getFieldDeclaredAsRelationship(interfaceDef, fieldName);
+        if (declaredRelationshipField) {
+            return {
+                inheritedInterfaceWithDeclaredField: interfaceNamedNode,
+                declaredFieldTypeName: getInnerTypeName(declaredRelationshipField.type),
+            };
         }
-    );
+        return acc;
+    }, {});
     if (!inheritedInterfaceWithDeclaredField) {
         return {};
     }
