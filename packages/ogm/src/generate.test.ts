@@ -167,8 +167,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -198,7 +198,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserEdge = {
@@ -255,13 +255,9 @@ describe("generate", () => {
               NOT?: InputMaybe<UserWhere>;
             };
 
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class UserModel {
@@ -464,8 +460,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -495,7 +491,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserEdge = {
@@ -585,13 +581,9 @@ describe("generate", () => {
               NOT?: InputMaybe<UserWhere>;
             };
 
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class UserModel {
@@ -789,8 +781,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -820,7 +812,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserEdge = {
@@ -877,13 +869,9 @@ describe("generate", () => {
               NOT?: InputMaybe<UserWhere>;
             };
 
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class UserModel {
@@ -1124,8 +1112,8 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
             };
 
-            export type IntAggregateSelectionNonNullable = {
-              __typename?: \\"IntAggregateSelectionNonNullable\\";
+            export type IntAggregateSelection = {
+              __typename?: \\"IntAggregateSelection\\";
               max?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
               min?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
               average?: Maybe<Scalars[\\"Float\\"][\\"output\\"]>;
@@ -1176,7 +1164,7 @@ describe("generate", () => {
             export type MovieAggregateSelection = {
               __typename?: \\"MovieAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              title: StringAggregateSelectionNonNullable;
+              title: StringAggregateSelection;
             };
 
             export type MovieEdge = {
@@ -1194,12 +1182,12 @@ describe("generate", () => {
 
             export type MoviePersonActorsEdgeAggregateSelection = {
               __typename?: \\"MoviePersonActorsEdgeAggregateSelection\\";
-              screenTime: IntAggregateSelectionNonNullable;
+              screenTime: IntAggregateSelection;
             };
 
             export type MoviePersonActorsNodeAggregateSelection = {
               __typename?: \\"MoviePersonActorsNodeAggregateSelection\\";
-              name: StringAggregateSelectionNonNullable;
+              name: StringAggregateSelection;
             };
 
             export type MoviesConnection = {
@@ -1233,7 +1221,7 @@ describe("generate", () => {
             export type PersonAggregateSelection = {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNonNullable;
+              name: StringAggregateSelection;
             };
 
             export type PersonEdge = {
@@ -1242,8 +1230,8 @@ describe("generate", () => {
               node: Person;
             };
 
-            export type StringAggregateSelectionNonNullable = {
-              __typename?: \\"StringAggregateSelectionNonNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -1596,13 +1584,9 @@ describe("generate", () => {
               NOT?: InputMaybe<PersonWhere>;
             };
 
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface MovieAggregateSelectionInput {
               count?: boolean;
-              title?: StringAggregateInputNonNullable;
+              title?: boolean;
             }
 
             export declare class MovieModel {
@@ -1649,13 +1633,9 @@ describe("generate", () => {
               }): Promise<MovieAggregateSelection>;
             }
 
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface PersonAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNonNullable;
+              name?: boolean;
             }
 
             export declare class PersonModel {
@@ -1956,8 +1936,8 @@ describe("generate", () => {
             export type FaqAggregateSelection = {
               __typename?: \\"FAQAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              id: IdAggregateSelectionNonNullable;
-              name: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              name: StringAggregateSelection;
             };
 
             export type FaqEdge = {
@@ -2019,9 +1999,9 @@ describe("generate", () => {
             export type FaqEntryAggregateSelection = {
               __typename?: \\"FAQEntryAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              id: IdAggregateSelectionNonNullable;
-              title: StringAggregateSelectionNonNullable;
-              body: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              title: StringAggregateSelection;
+              body: StringAggregateSelection;
             };
 
             export type FaqEntryEdge = {
@@ -2039,13 +2019,13 @@ describe("generate", () => {
 
             export type FaqEntryFaqInFaQsEdgeAggregateSelection = {
               __typename?: \\"FAQEntryFAQInFAQsEdgeAggregateSelection\\";
-              position: IntAggregateSelectionNullable;
+              position: IntAggregateSelection;
             };
 
             export type FaqEntryFaqInFaQsNodeAggregateSelection = {
               __typename?: \\"FAQEntryFAQInFAQsNodeAggregateSelection\\";
-              id: IdAggregateSelectionNonNullable;
-              name: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              name: StringAggregateSelection;
             };
 
             /**
@@ -2081,14 +2061,14 @@ describe("generate", () => {
 
             export type FaqfaqEntryEntriesEdgeAggregateSelection = {
               __typename?: \\"FAQFAQEntryEntriesEdgeAggregateSelection\\";
-              position: IntAggregateSelectionNullable;
+              position: IntAggregateSelection;
             };
 
             export type FaqfaqEntryEntriesNodeAggregateSelection = {
               __typename?: \\"FAQFAQEntryEntriesNodeAggregateSelection\\";
-              id: IdAggregateSelectionNonNullable;
-              title: StringAggregateSelectionNonNullable;
-              body: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              title: StringAggregateSelection;
+              body: StringAggregateSelection;
             };
 
             export type FaqsConnection = {
@@ -2098,14 +2078,14 @@ describe("generate", () => {
               edges: Array<FaqEdge>;
             };
 
-            export type IdAggregateSelectionNonNullable = {
-              __typename?: \\"IDAggregateSelectionNonNullable\\";
+            export type IdAggregateSelection = {
+              __typename?: \\"IDAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
             };
 
-            export type IntAggregateSelectionNullable = {
-              __typename?: \\"IntAggregateSelectionNullable\\";
+            export type IntAggregateSelection = {
+              __typename?: \\"IntAggregateSelection\\";
               max?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
               min?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
               average?: Maybe<Scalars[\\"Float\\"][\\"output\\"]>;
@@ -2121,8 +2101,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNonNullable = {
-              __typename?: \\"StringAggregateSelectionNonNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -2867,18 +2847,10 @@ describe("generate", () => {
               entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
             };
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface FAQAggregateSelectionInput {
               count?: boolean;
-              id?: IdAggregateInputNonNullable;
-              name?: StringAggregateInputNonNullable;
+              id?: boolean;
+              name?: boolean;
             }
 
             export declare class FAQModel {
@@ -2925,19 +2897,11 @@ describe("generate", () => {
               }): Promise<FaqAggregateSelection>;
             }
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface FAQEntryAggregateSelectionInput {
               count?: boolean;
-              id?: IdAggregateInputNonNullable;
-              title?: StringAggregateInputNonNullable;
-              body?: StringAggregateInputNonNullable;
+              id?: boolean;
+              title?: boolean;
+              body?: boolean;
             }
 
             export declare class FAQEntryModel {

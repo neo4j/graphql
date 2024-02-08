@@ -39,18 +39,21 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
         const typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
+                release: DateTime!
                 actors: [${Actor}!]! @declareRelationship
             }
 
             type ${Movie} implements Show {
                 title: String!
                 runtime: Int
+                release: DateTime!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type ${Series} implements Show {
                 title: String!
                 episodes: Int
+                release: DateTime!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
@@ -73,25 +76,25 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             await session.run(
                 `
                 // Create Movies
-                CREATE (m1:${Movie} { title: "The Movie One", cost: 10000000, runtime: 120 })
-                CREATE (m2:${Movie} { title: "The Movie Two", cost: 20000000, runtime: 90 })
-                CREATE (m3:${Movie} { title: "The Movie Three", cost: 12000000, runtime: 70 })
-                
+                CREATE (m1:${Movie} { title: "The Movie One", cost: 10000000, runtime: 120, release: dateTime('2007-08-31T16:47+00:00') })
+                CREATE (m2:${Movie} { title: "The Movie Two", cost: 20000000, runtime: 90, release: dateTime('2009-08-31T16:47+00:00') })
+                CREATE (m3:${Movie} { title: "The Movie Three", cost: 12000000, runtime: 70, release: dateTime('2010-08-31T16:47+00:00') })
+
                 // Create Series
-                CREATE (s1:${Series} { title: "The Series One", cost: 10000000, episodes: 10 })
-                CREATE (s2:${Series} { title: "The Series Two", cost: 20000000, episodes: 20 })
-                CREATE (s3:${Series} { title: "The Series Three", cost: 20000000, episodes: 15 })
-                
+                CREATE (s1:${Series} { title: "The Series One", cost: 10000000, episodes: 10, release: dateTime('2011-08-31T16:47+00:00') })
+                CREATE (s2:${Series} { title: "The Series Two", cost: 20000000, episodes: 20, release: dateTime('2012-08-31T16:47+00:00') })
+                CREATE (s3:${Series} { title: "The Series Three", cost: 20000000, episodes: 15, release: dateTime('2013-08-31T16:47+00:00') })
+
                 // Create Actors
                 CREATE (a1:${Actor} { name: "Actor One" })
                 CREATE (a2:${Actor} { name: "Actor Two" })
-                
+
                 // Associate Actor 1 with Movies and Series
                 CREATE (a1)-[:ACTED_IN { screenTime: 100 }]->(m1)
                 CREATE (a1)-[:ACTED_IN { screenTime: 82 }]->(s1)
                 CREATE (a1)-[:ACTED_IN { screenTime: 20 }]->(m3)
                 CREATE (a1)-[:ACTED_IN { screenTime: 22 }]->(s3)
-                
+
                 // Associate Actor 2 with Movies and Series
                 CREATE (a2)-[:ACTED_IN { screenTime: 240 }]->(m2)
                 CREATE (a2)-[:ACTED_IN { screenTime: 728 }]->(s2)
@@ -124,6 +127,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
                     title {
                         longest
                     }
+                    release {
+                        min
+                    }
                 }
             }
         `;
@@ -138,6 +144,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             showsAggregate: {
                 title: {
                     longest: null,
+                },
+                release: {
+                    min: null,
                 },
             },
         });

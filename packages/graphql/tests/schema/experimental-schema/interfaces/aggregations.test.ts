@@ -68,14 +68,14 @@ describe("Interface Top Level Aggregations", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -89,10 +89,10 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -194,9 +194,9 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             type ProductionAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             enum ProductionImplementation {
@@ -261,7 +261,7 @@ describe("Interface Top Level Aggregations", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -430,7 +430,7 @@ describe("Interface Top Level Aggregations", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -471,12 +471,12 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -568,14 +568,14 @@ describe("Interface Top Level Aggregations", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -589,10 +589,10 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -700,9 +700,9 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             type ProductionAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -791,10 +791,10 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             type SeriesAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -884,7 +884,7 @@ describe("Interface Top Level Aggregations", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

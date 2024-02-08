@@ -61,8 +61,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookAggregateSelection {
               count: Int!
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
             }
 
             input BookConnectInput {
@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_ENAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNonNullable!
+              value: StringAggregateSelection!
             }
 
             input BookTitle_ENBookAggregateInput {
@@ -162,8 +162,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_ENBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
             }
 
             input BookTitle_ENBookConnectFieldInput {
@@ -387,7 +387,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_SVAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNonNullable!
+              value: StringAggregateSelection!
             }
 
             input BookTitle_SVBookAggregateInput {
@@ -408,8 +408,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_SVBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
             }
 
             input BookTitle_SVBookConnectFieldInput {
@@ -882,7 +882,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

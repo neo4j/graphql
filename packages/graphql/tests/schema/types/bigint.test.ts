@@ -44,7 +44,7 @@ describe("Bigint", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNonNullable {
+            type BigIntAggregateSelection {
               average: BigInt
               max: BigInt
               min: BigInt
@@ -81,8 +81,8 @@ describe("Bigint", () => {
 
             type FileAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
-              size: BigIntAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              size: BigIntAggregateSelection!
             }
 
             input FileCreateInput {
@@ -177,7 +177,7 @@ describe("Bigint", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
