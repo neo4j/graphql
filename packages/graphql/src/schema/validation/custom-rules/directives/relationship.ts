@@ -90,6 +90,19 @@ export function verifyRelationshipArgumentValue(
                 throw new Error("Missing data: Enums, Interfaces, Unions.");
             }
 
+            const relationshipPropertiesInterface = extra.interfaces.filter(
+                (i) =>
+                    i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
+                    i.kind === Kind.INTERFACE_TYPE_DEFINITION
+            );
+
+            if (relationshipPropertiesInterface.length > 0) {
+                throw new DocumentValidationError(
+                    `@relationship.properties invalid. @relationship.properties must be applied to an interface. Note, since version 5.0.0, the @relationshipProperties directive must be applied to a type and not an interface.`,
+                    ["properties"]
+                );
+            }
+
             const relationshipPropertiesType = extra.objects.filter(
                 (i) =>
                     i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
