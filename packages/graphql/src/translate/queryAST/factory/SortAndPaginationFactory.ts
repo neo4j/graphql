@@ -106,7 +106,6 @@ export class SortAndPaginationFactory {
 
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) {
-                console.log("BANG", entity.name);
                 throw new Error(`no filter attribute ${fieldName}`);
             }
             if (attribute.annotations.cypher) {
