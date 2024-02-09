@@ -18,7 +18,7 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql, type Source } from "graphql";
+import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src/classes";
