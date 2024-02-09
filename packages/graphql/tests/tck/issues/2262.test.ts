@@ -93,11 +93,11 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
                             WITH edge.node AS this3, edge.relationship AS this2
                             WITH *
                             ORDER BY this3.uuid DESC
-                            RETURN collect({ node: { uuid: this3.uuid } }) AS var4
+                            RETURN collect({ node: { uuid: this3.uuid, __resolveType: \\"Component\\" } }) AS var4
                         }
                         RETURN { edges: var4, totalCount: totalCount } AS var5
                     }
-                    RETURN collect({ node: { uuid: this1.uuid, componentInputsConnection: var5 } }) AS var6
+                    RETURN collect({ node: { uuid: this1.uuid, componentInputsConnection: var5, __resolveType: \\"Process\\" } }) AS var6
                 }
                 RETURN { edges: var6, totalCount: totalCount } AS var7
             }

@@ -63,45 +63,6 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
     }));
 }
 
-export function relationshipAdapterToComposeFields(
-    objectFields: (RelationshipAdapter | RelationshipDeclarationAdapter)[],
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>
-): Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> {
-    const composeFields: Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {};
-    for (const field of objectFields) {
-        if (field.isReadable() === false) {
-            continue;
-        }
-
-        const relationshipFields = [
-            {
-                typeName: field.operations.getTargetTypePrettyName(),
-                fieldName: field.name,
-            },
-            {
-                typeName: `${field.operations.connectionFieldTypename}!`, // TODO: Move Adapter so we aren't manually adding the !
-                fieldName: field.operations.connectionFieldName,
-            },
-        ];
-        for (const { typeName, fieldName } of relationshipFields) {
-            const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
-                type: typeName,
-                args: graphqlArgsToCompose(field.args),
-                description: field.description,
-            };
-
-            const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
-            if (userDefinedDirectivesOnField) {
-                newField.directives = graphqlDirectivesToCompose(userDefinedDirectivesOnField);
-            }
-
-            composeFields[fieldName] = newField;
-        }
-    }
-
-    return composeFields;
-}
-
 export function attributeAdapterToComposeFields(
     objectFields: AttributeAdapter[],
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>

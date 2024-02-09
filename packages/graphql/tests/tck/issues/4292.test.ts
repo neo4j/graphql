@@ -233,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this13, edge.relationship AS this12
-                        RETURN collect({ properties: { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __resolveType: \\"Person\\", __id: id(this13) } }) AS var25
+                        RETURN collect({ properties: { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __id: id(this13), __resolveType: \\"Person\\" } }) AS var25
                     }
                     RETURN { edges: var25, totalCount: totalCount } AS var26
                 }

@@ -1694,39 +1694,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            type IProductGenreConnection {
-              edges: [IProductGenreRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input IProductGenreConnectionSort {
-              node: GenreSort
-            }
-
-            input IProductGenreConnectionWhere {
-              AND: [IProductGenreConnectionWhere!]
-              NOT: IProductGenreConnectionWhere
-              OR: [IProductGenreConnectionWhere!]
-              node: GenreWhere
-              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input IProductGenreDeleteFieldInput {
-              delete: GenreDeleteInput
-              where: IProductGenreConnectionWhere
-            }
-
-            input IProductGenreDisconnectFieldInput {
-              disconnect: GenreDisconnectInput
-              where: IProductGenreConnectionWhere
-            }
-
-            type IProductGenreRelationship {
-              cursor: String!
-              node: Genre!
-            }
-
             enum IProductImplementation {
               Movie
               Series
@@ -1811,7 +1778,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Movie implements IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
-              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
+              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               id: String!
               name: String!
             }
@@ -1847,7 +1814,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieDeleteInput {
-              genre: IProductGenreDeleteFieldInput
+              genre: MovieGenreDeleteFieldInput
             }
 
             type MovieDeletedEvent {
@@ -1857,7 +1824,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
+              genre: MovieGenreDisconnectFieldInput
             }
 
             type MovieEdge {
@@ -1904,8 +1871,36 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: GenreEventPayload!
             }
 
+            type MovieGenreConnection {
+              edges: [MovieGenreRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input MovieGenreConnectionSort {
+              node: GenreSort
+            }
+
+            input MovieGenreConnectionWhere {
+              AND: [MovieGenreConnectionWhere!]
+              NOT: MovieGenreConnectionWhere
+              OR: [MovieGenreConnectionWhere!]
+              node: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
             input MovieGenreCreateFieldInput {
               node: GenreCreateInput!
+            }
+
+            input MovieGenreDeleteFieldInput {
+              delete: GenreDeleteInput
+              where: MovieGenreConnectionWhere
+            }
+
+            input MovieGenreDisconnectFieldInput {
+              disconnect: GenreDisconnectInput
+              where: MovieGenreConnectionWhere
             }
 
             input MovieGenreFieldInput {
@@ -1964,6 +1959,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            type MovieGenreRelationship {
+              cursor: String!
+              node: Genre!
+            }
+
             input MovieGenreRelationshipSubscriptionWhere {
               node: GenreSubscriptionWhere
             }
@@ -1976,10 +1976,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               connect: MovieGenreConnectFieldInput
               connectOrCreate: MovieGenreConnectOrCreateFieldInput
               create: MovieGenreCreateFieldInput
-              delete: IProductGenreDeleteFieldInput
-              disconnect: IProductGenreDisconnectFieldInput
+              delete: MovieGenreDeleteFieldInput
+              disconnect: MovieGenreDisconnectFieldInput
               update: MovieGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: MovieGenreConnectionWhere
             }
 
             input MovieOptions {
@@ -2084,8 +2084,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               OR: [MovieWhere!]
               genre: GenreWhere
               genreAggregate: MovieGenreAggregateInput
-              genreConnection: IProductGenreConnectionWhere
-              genreConnection_NOT: IProductGenreConnectionWhere
+              genreConnection: MovieGenreConnectionWhere
+              genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
               id: String
               id_CONTAINS: String
@@ -2152,7 +2152,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Series implements IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
-              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
+              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesGenreConnectionSort!], where: SeriesGenreConnectionWhere): SeriesGenreConnection!
               id: String!
               name: String!
             }
@@ -2194,7 +2194,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesDeleteInput {
-              genre: IProductGenreDeleteFieldInput
+              genre: SeriesGenreDeleteFieldInput
             }
 
             type SeriesDeletedEvent {
@@ -2204,7 +2204,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
+              genre: SeriesGenreDisconnectFieldInput
             }
 
             type SeriesEdge {
@@ -2251,8 +2251,36 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: GenreEventPayload!
             }
 
+            type SeriesGenreConnection {
+              edges: [SeriesGenreRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesGenreConnectionSort {
+              node: GenreSort
+            }
+
+            input SeriesGenreConnectionWhere {
+              AND: [SeriesGenreConnectionWhere!]
+              NOT: SeriesGenreConnectionWhere
+              OR: [SeriesGenreConnectionWhere!]
+              node: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
             input SeriesGenreCreateFieldInput {
               node: GenreCreateInput!
+            }
+
+            input SeriesGenreDeleteFieldInput {
+              delete: GenreDeleteInput
+              where: SeriesGenreConnectionWhere
+            }
+
+            input SeriesGenreDisconnectFieldInput {
+              disconnect: GenreDisconnectInput
+              where: SeriesGenreConnectionWhere
             }
 
             input SeriesGenreFieldInput {
@@ -2311,6 +2339,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            type SeriesGenreRelationship {
+              cursor: String!
+              node: Genre!
+            }
+
             input SeriesGenreRelationshipSubscriptionWhere {
               node: GenreSubscriptionWhere
             }
@@ -2323,10 +2356,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               connect: SeriesGenreConnectFieldInput
               connectOrCreate: SeriesGenreConnectOrCreateFieldInput
               create: SeriesGenreCreateFieldInput
-              delete: IProductGenreDeleteFieldInput
-              disconnect: IProductGenreDisconnectFieldInput
+              delete: SeriesGenreDeleteFieldInput
+              disconnect: SeriesGenreDisconnectFieldInput
               update: SeriesGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: SeriesGenreConnectionWhere
             }
 
             input SeriesOptions {
@@ -2431,8 +2464,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               OR: [SeriesWhere!]
               genre: GenreWhere
               genreAggregate: SeriesGenreAggregateInput
-              genreConnection: IProductGenreConnectionWhere
-              genreConnection_NOT: IProductGenreConnectionWhere
+              genreConnection: SeriesGenreConnectionWhere
+              genreConnection_NOT: SeriesGenreConnectionWhere
               genre_NOT: GenreWhere
               id: String
               id_CONTAINS: String
@@ -2515,32 +2548,47 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `);
     });
 
-    test("Example 3", async () => {
+    test("Simple type definitions implementing just one interface - relationship to union type", async () => {
         const typeDefs = gql`
             interface IProduct {
                 id: String!
 
                 name: String!
-                genre: Genre!
+                genre: UGenre! @declareRelationship
             }
 
             type Movie implements IProduct {
                 id: String!
 
                 name: String!
-                genre: Genre! #@relationship(type: "HAS_GENRE", direction: OUT)
+                genre: UGenre! @relationship(type: "HAS_GENRE", direction: OUT, properties: "MovieProps")
             }
 
             type Series implements IProduct {
                 id: String!
 
                 name: String!
-                genre: Genre! #@relationship(type: "HAS_GENRE", direction: OUT)
+                genre: UGenre! @relationship(type: "HAS_GENRE", direction: OUT, properties: "SeriesProps")
             }
+
+            type MovieProps @relationshipProperties {
+                year: Int!
+            }
+
+            type SeriesProps @relationshipProperties {
+                episodes: Int
+            }
+
+            union UGenre = Genre | Rating
 
             type Genre {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
+            }
+
+            type Rating {
+                number: Int! @unique
+                product: [IProduct!]! @relationship(type: "HAS_RATING", direction: IN)
             }
         `;
 
@@ -2579,6 +2627,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               movies: [Movie!]!
             }
 
+            type CreateRatingsMutationResponse {
+              info: CreateInfo!
+              ratings: [Rating!]!
+            }
+
             type CreateSeriesMutationResponse {
               info: CreateInfo!
               series: [Series!]!
@@ -2615,6 +2668,14 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input GenreConnectInput {
               product: [GenreProductConnectFieldInput!]
+            }
+
+            input GenreConnectOrCreateWhere {
+              node: GenreUniqueWhere!
+            }
+
+            input GenreConnectWhere {
+              node: GenreWhere!
             }
 
             type GenreConnectedRelationships {
@@ -2665,6 +2726,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
+            input GenreOnCreateInput {
+              name: String!
+            }
+
             input GenreOptions {
               limit: Int
               offset: Int
@@ -2675,6 +2740,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductConnectFieldInput {
+              connect: IProductConnectInput
               where: IProductConnectWhere
             }
 
@@ -2705,10 +2771,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
+              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
             input GenreProductDisconnectFieldInput {
+              disconnect: IProductDisconnectInput
               where: GenreProductConnectionWhere
             }
 
@@ -2802,6 +2870,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            input GenreUniqueWhere {
+              name: String
+            }
+
             input GenreUpdateInput {
               name: String
               product: [GenreProductUpdateFieldInput!]
@@ -2855,7 +2927,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             interface IProduct {
-              genre: Genre!
+              genre(options: QueryOptions, where: UGenreWhere): UGenre!
+              genreConnection(after: String, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               name: String!
             }
@@ -2864,6 +2937,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               count: Int!
               id: StringAggregateSelection!
               name: StringAggregateSelection!
+            }
+
+            input IProductConnectInput {
+              genre: IProductGenreConnectInput
             }
 
             input IProductConnectWhere {
@@ -2875,9 +2952,224 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
+            input IProductDeleteInput {
+              genre: IProductGenreDeleteInput
+            }
+
+            input IProductDisconnectInput {
+              genre: IProductGenreDisconnectInput
+            }
+
             interface IProductEventPayload {
               id: String!
               name: String!
+            }
+
+            input IProductGenreConnectInput {
+              Genre: IProductGenreGenreConnectFieldInput
+              Rating: IProductGenreRatingConnectFieldInput
+            }
+
+            type IProductGenreConnection {
+              edges: [IProductGenreRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input IProductGenreConnectionSort {
+              edge: IProductGenreEdgeSort
+            }
+
+            input IProductGenreConnectionWhere {
+              Genre: IProductGenreGenreConnectionWhere
+              Rating: IProductGenreRatingConnectionWhere
+            }
+
+            input IProductGenreDeleteInput {
+              Genre: IProductGenreGenreDeleteFieldInput
+              Rating: IProductGenreRatingDeleteFieldInput
+            }
+
+            input IProductGenreDisconnectInput {
+              Genre: IProductGenreGenreDisconnectFieldInput
+              Rating: IProductGenreRatingDisconnectFieldInput
+            }
+
+            input IProductGenreEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              MovieProps: MoviePropsCreateInput!
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              SeriesProps: SeriesPropsCreateInput
+            }
+
+            input IProductGenreEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              MovieProps: MoviePropsSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              SeriesProps: SeriesPropsSort
+            }
+
+            input IProductGenreEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              MovieProps: MoviePropsUpdateInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              SeriesProps: SeriesPropsUpdateInput
+            }
+
+            input IProductGenreEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              MovieProps: MoviePropsWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              SeriesProps: SeriesPropsWhere
+            }
+
+            input IProductGenreGenreConnectFieldInput {
+              connect: GenreConnectInput
+              edge: IProductGenreEdgeCreateInput!
+              where: GenreConnectWhere
+            }
+
+            input IProductGenreGenreConnectOrCreateFieldInput {
+              onCreate: IProductGenreGenreConnectOrCreateFieldInputOnCreate!
+              where: GenreConnectOrCreateWhere!
+            }
+
+            input IProductGenreGenreConnectOrCreateFieldInputOnCreate {
+              edge: IProductGenreEdgeCreateInput!
+              node: GenreOnCreateInput!
+            }
+
+            input IProductGenreGenreConnectionWhere {
+              AND: [IProductGenreGenreConnectionWhere!]
+              NOT: IProductGenreGenreConnectionWhere
+              OR: [IProductGenreGenreConnectionWhere!]
+              edge: IProductGenreEdgeWhere
+              edge_NOT: IProductGenreEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input IProductGenreGenreCreateFieldInput {
+              edge: IProductGenreEdgeCreateInput!
+              node: GenreCreateInput!
+            }
+
+            input IProductGenreGenreDeleteFieldInput {
+              delete: GenreDeleteInput
+              where: IProductGenreGenreConnectionWhere
+            }
+
+            input IProductGenreGenreDisconnectFieldInput {
+              disconnect: GenreDisconnectInput
+              where: IProductGenreGenreConnectionWhere
+            }
+
+            input IProductGenreGenreUpdateConnectionInput {
+              edge: IProductGenreEdgeUpdateInput
+              node: GenreUpdateInput
+            }
+
+            input IProductGenreGenreUpdateFieldInput {
+              connect: IProductGenreGenreConnectFieldInput
+              connectOrCreate: IProductGenreGenreConnectOrCreateFieldInput
+              create: IProductGenreGenreCreateFieldInput
+              delete: IProductGenreGenreDeleteFieldInput
+              disconnect: IProductGenreGenreDisconnectFieldInput
+              update: IProductGenreGenreUpdateConnectionInput
+              where: IProductGenreGenreConnectionWhere
+            }
+
+            input IProductGenreRatingConnectFieldInput {
+              connect: RatingConnectInput
+              edge: IProductGenreEdgeCreateInput!
+              where: RatingConnectWhere
+            }
+
+            input IProductGenreRatingConnectOrCreateFieldInput {
+              onCreate: IProductGenreRatingConnectOrCreateFieldInputOnCreate!
+              where: RatingConnectOrCreateWhere!
+            }
+
+            input IProductGenreRatingConnectOrCreateFieldInputOnCreate {
+              edge: IProductGenreEdgeCreateInput!
+              node: RatingOnCreateInput!
+            }
+
+            input IProductGenreRatingConnectionWhere {
+              AND: [IProductGenreRatingConnectionWhere!]
+              NOT: IProductGenreRatingConnectionWhere
+              OR: [IProductGenreRatingConnectionWhere!]
+              edge: IProductGenreEdgeWhere
+              edge_NOT: IProductGenreEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: RatingWhere
+              node_NOT: RatingWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input IProductGenreRatingCreateFieldInput {
+              edge: IProductGenreEdgeCreateInput!
+              node: RatingCreateInput!
+            }
+
+            input IProductGenreRatingDeleteFieldInput {
+              delete: RatingDeleteInput
+              where: IProductGenreRatingConnectionWhere
+            }
+
+            input IProductGenreRatingDisconnectFieldInput {
+              disconnect: RatingDisconnectInput
+              where: IProductGenreRatingConnectionWhere
+            }
+
+            input IProductGenreRatingUpdateConnectionInput {
+              edge: IProductGenreEdgeUpdateInput
+              node: RatingUpdateInput
+            }
+
+            input IProductGenreRatingUpdateFieldInput {
+              connect: IProductGenreRatingConnectFieldInput
+              connectOrCreate: IProductGenreRatingConnectOrCreateFieldInput
+              create: IProductGenreRatingCreateFieldInput
+              delete: IProductGenreRatingDeleteFieldInput
+              disconnect: IProductGenreRatingDisconnectFieldInput
+              update: IProductGenreRatingUpdateConnectionInput
+              where: IProductGenreRatingConnectionWhere
+            }
+
+            type IProductGenreRelationship {
+              cursor: String!
+              node: UGenre!
+              properties: IProductGenreRelationshipProperties!
+            }
+
+            union IProductGenreRelationshipProperties = MovieProps | SeriesProps
+
+            input IProductGenreUpdateInput {
+              Genre: IProductGenreGenreUpdateFieldInput
+              Rating: IProductGenreRatingUpdateFieldInput
             }
 
             enum IProductImplementation {
@@ -2930,6 +3222,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductUpdateInput {
+              genre: IProductGenreUpdateInput
               id: String
               name: String
             }
@@ -2938,6 +3231,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductWhere!]
               NOT: IProductWhere
               OR: [IProductWhere!]
+              genre: UGenreWhere
+              genreConnection: IProductGenreConnectionWhere
+              genreConnection_NOT: IProductGenreConnectionWhere
+              genre_NOT: UGenreWhere
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -2961,8 +3258,16 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               typename_IN: [IProductImplementation!]
             }
 
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
             type Movie implements IProduct {
-              genre: Genre!
+              genre(directed: Boolean = true, options: QueryOptions, where: UGenreWhere): UGenre!
+              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               name: String!
             }
@@ -2973,7 +3278,20 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
+            input MovieConnectInput {
+              genre: MovieGenreConnectInput
+            }
+
+            input MovieConnectOrCreateInput {
+              genre: MovieGenreConnectOrCreateInput
+            }
+
+            type MovieConnectedRelationships {
+              genre: MovieGenreConnectedRelationship
+            }
+
             input MovieCreateInput {
+              genre: MovieGenreCreateInput
               id: String!
               name: String!
             }
@@ -2984,10 +3302,18 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               timestamp: Float!
             }
 
+            input MovieDeleteInput {
+              genre: MovieGenreDeleteInput
+            }
+
             type MovieDeletedEvent {
               deletedMovie: MovieEventPayload!
               event: EventType!
               timestamp: Float!
+            }
+
+            input MovieDisconnectInput {
+              genre: MovieGenreDisconnectInput
             }
 
             type MovieEdge {
@@ -3000,6 +3326,145 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
+            input MovieGenreConnectInput {
+              Genre: MovieGenreGenreConnectFieldInput
+              Rating: MovieGenreRatingConnectFieldInput
+            }
+
+            input MovieGenreConnectOrCreateInput {
+              Genre: MovieGenreGenreConnectOrCreateFieldInput
+              Rating: MovieGenreRatingConnectOrCreateFieldInput
+            }
+
+            type MovieGenreConnectedRelationship {
+              node: UGenreEventPayload!
+              year: Int!
+            }
+
+            input MovieGenreCreateFieldInput {
+              Genre: MovieGenreGenreCreateFieldInput
+              Rating: MovieGenreRatingCreateFieldInput
+            }
+
+            input MovieGenreCreateInput {
+              Genre: MovieGenreGenreFieldInput
+              Rating: MovieGenreRatingFieldInput
+            }
+
+            input MovieGenreDeleteInput {
+              Genre: IProductGenreGenreDeleteFieldInput
+              Rating: IProductGenreRatingDeleteFieldInput
+            }
+
+            input MovieGenreDisconnectInput {
+              Genre: IProductGenreGenreDisconnectFieldInput
+              Rating: IProductGenreRatingDisconnectFieldInput
+            }
+
+            input MovieGenreGenreConnectFieldInput {
+              connect: GenreConnectInput
+              edge: MoviePropsCreateInput!
+              where: GenreConnectWhere
+            }
+
+            input MovieGenreGenreConnectOrCreateFieldInput {
+              onCreate: MovieGenreGenreConnectOrCreateFieldInputOnCreate!
+              where: GenreConnectOrCreateWhere!
+            }
+
+            input MovieGenreGenreConnectOrCreateFieldInputOnCreate {
+              edge: MoviePropsCreateInput!
+              node: GenreOnCreateInput!
+            }
+
+            input MovieGenreGenreCreateFieldInput {
+              edge: MoviePropsCreateInput!
+              node: GenreCreateInput!
+            }
+
+            input MovieGenreGenreFieldInput {
+              connect: MovieGenreGenreConnectFieldInput
+              connectOrCreate: MovieGenreGenreConnectOrCreateFieldInput
+              create: MovieGenreGenreCreateFieldInput
+            }
+
+            input MovieGenreGenreSubscriptionWhere {
+              edge: MoviePropsSubscriptionWhere
+              node: GenreSubscriptionWhere
+            }
+
+            input MovieGenreGenreUpdateConnectionInput {
+              edge: MoviePropsUpdateInput
+              node: GenreUpdateInput
+            }
+
+            input MovieGenreGenreUpdateFieldInput {
+              connect: MovieGenreGenreConnectFieldInput
+              connectOrCreate: MovieGenreGenreConnectOrCreateFieldInput
+              create: MovieGenreGenreCreateFieldInput
+              delete: IProductGenreGenreDeleteFieldInput
+              disconnect: IProductGenreGenreDisconnectFieldInput
+              update: MovieGenreGenreUpdateConnectionInput
+              where: IProductGenreGenreConnectionWhere
+            }
+
+            input MovieGenreRatingConnectFieldInput {
+              connect: RatingConnectInput
+              edge: MoviePropsCreateInput!
+              where: RatingConnectWhere
+            }
+
+            input MovieGenreRatingConnectOrCreateFieldInput {
+              onCreate: MovieGenreRatingConnectOrCreateFieldInputOnCreate!
+              where: RatingConnectOrCreateWhere!
+            }
+
+            input MovieGenreRatingConnectOrCreateFieldInputOnCreate {
+              edge: MoviePropsCreateInput!
+              node: RatingOnCreateInput!
+            }
+
+            input MovieGenreRatingCreateFieldInput {
+              edge: MoviePropsCreateInput!
+              node: RatingCreateInput!
+            }
+
+            input MovieGenreRatingFieldInput {
+              connect: MovieGenreRatingConnectFieldInput
+              connectOrCreate: MovieGenreRatingConnectOrCreateFieldInput
+              create: MovieGenreRatingCreateFieldInput
+            }
+
+            input MovieGenreRatingSubscriptionWhere {
+              edge: MoviePropsSubscriptionWhere
+              node: RatingSubscriptionWhere
+            }
+
+            input MovieGenreRatingUpdateConnectionInput {
+              edge: MoviePropsUpdateInput
+              node: RatingUpdateInput
+            }
+
+            input MovieGenreRatingUpdateFieldInput {
+              connect: MovieGenreRatingConnectFieldInput
+              connectOrCreate: MovieGenreRatingConnectOrCreateFieldInput
+              create: MovieGenreRatingCreateFieldInput
+              delete: IProductGenreRatingDeleteFieldInput
+              disconnect: IProductGenreRatingDisconnectFieldInput
+              update: MovieGenreRatingUpdateConnectionInput
+              where: IProductGenreRatingConnectionWhere
+            }
+
+            input MovieGenreRelationshipSubscriptionWhere {
+              Genre: MovieGenreGenreSubscriptionWhere
+              Rating: MovieGenreRatingSubscriptionWhere
+            }
+
+            input MovieGenreUpdateInput {
+              Genre: MovieGenreGenreUpdateFieldInput
+              Rating: MovieGenreRatingUpdateFieldInput
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -3007,6 +3472,96 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.genre
+            \\"\\"\\"
+            type MovieProps {
+              year: Int!
+            }
+
+            input MoviePropsCreateInput {
+              year: Int!
+            }
+
+            input MoviePropsSort {
+              year: SortDirection
+            }
+
+            input MoviePropsSubscriptionWhere {
+              AND: [MoviePropsSubscriptionWhere!]
+              NOT: MoviePropsSubscriptionWhere
+              OR: [MoviePropsSubscriptionWhere!]
+              year: Int
+              year_GT: Int
+              year_GTE: Int
+              year_IN: [Int!]
+              year_LT: Int
+              year_LTE: Int
+              year_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              year_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input MoviePropsUpdateInput {
+              year: Int
+              year_DECREMENT: Int
+              year_INCREMENT: Int
+            }
+
+            input MoviePropsWhere {
+              AND: [MoviePropsWhere!]
+              NOT: MoviePropsWhere
+              OR: [MoviePropsWhere!]
+              year: Int
+              year_GT: Int
+              year_GTE: Int
+              year_IN: [Int!]
+              year_LT: Int
+              year_LTE: Int
+              year_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              year_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input MovieRelationInput {
+              genre: MovieGenreCreateFieldInput
+            }
+
+            type MovieRelationshipCreatedEvent {
+              createdRelationship: MovieConnectedRelationships!
+              event: EventType!
+              movie: MovieEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input MovieRelationshipCreatedSubscriptionWhere {
+              AND: [MovieRelationshipCreatedSubscriptionWhere!]
+              NOT: MovieRelationshipCreatedSubscriptionWhere
+              OR: [MovieRelationshipCreatedSubscriptionWhere!]
+              createdRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
+            }
+
+            type MovieRelationshipDeletedEvent {
+              deletedRelationship: MovieConnectedRelationships!
+              event: EventType!
+              movie: MovieEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input MovieRelationshipDeletedSubscriptionWhere {
+              AND: [MovieRelationshipDeletedSubscriptionWhere!]
+              NOT: MovieRelationshipDeletedSubscriptionWhere
+              OR: [MovieRelationshipDeletedSubscriptionWhere!]
+              deletedRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
+            }
+
+            input MovieRelationshipsSubscriptionWhere {
+              genre: MovieGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -3044,6 +3599,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieUpdateInput {
+              genre: MovieGenreUpdateInput
               id: String
               name: String
             }
@@ -3059,6 +3615,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              genre: UGenreWhere
+              genreConnection: IProductGenreConnectionWhere
+              genreConnection_NOT: IProductGenreConnectionWhere
+              genre_NOT: UGenreWhere
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -3090,13 +3650,16 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Mutation {
               createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createRatings(input: [RatingCreateInput!]!): CreateRatingsMutationResponse!
               createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
               deleteGenres(delete: GenreDeleteInput, where: GenreWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              deleteSeries(where: SeriesWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deleteRatings(delete: RatingDeleteInput, where: RatingWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
               updateGenres(connect: GenreConnectInput, create: GenreRelationInput, delete: GenreDeleteInput, disconnect: GenreDisconnectInput, update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateMovies(connect: MovieConnectInput, connectOrCreate: MovieConnectOrCreateInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateRatings(connect: RatingConnectInput, create: RatingRelationInput, delete: RatingDeleteInput, disconnect: RatingDisconnectInput, update: RatingUpdateInput, where: RatingWhere): UpdateRatingsMutationResponse!
+              updateSeries(connect: SeriesConnectInput, connectOrCreate: SeriesConnectOrCreateInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -3116,13 +3679,294 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              ratings(options: RatingOptions, where: RatingWhere): [Rating!]!
+              ratingsAggregate(where: RatingWhere): RatingAggregateSelection!
+              ratingsConnection(after: String, first: Int, sort: [RatingSort], where: RatingWhere): RatingsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              uGenres(options: QueryOptions, where: UGenreWhere): [UGenre!]!
+            }
+
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            type Rating {
+              number: Int!
+              product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              productAggregate(directed: Boolean = true, where: IProductWhere): RatingIProductProductAggregationSelection
+              productConnection(after: String, directed: Boolean = true, first: Int, sort: [RatingProductConnectionSort!], where: RatingProductConnectionWhere): RatingProductConnection!
+            }
+
+            type RatingAggregateSelection {
+              count: Int!
+              number: IntAggregateSelection!
+            }
+
+            input RatingConnectInput {
+              product: [RatingProductConnectFieldInput!]
+            }
+
+            input RatingConnectOrCreateWhere {
+              node: RatingUniqueWhere!
+            }
+
+            input RatingConnectWhere {
+              node: RatingWhere!
+            }
+
+            type RatingConnectedRelationships {
+              product: RatingProductConnectedRelationship
+            }
+
+            input RatingCreateInput {
+              number: Int!
+              product: RatingProductFieldInput
+            }
+
+            type RatingCreatedEvent {
+              createdRating: RatingEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input RatingDeleteInput {
+              product: [RatingProductDeleteFieldInput!]
+            }
+
+            type RatingDeletedEvent {
+              deletedRating: RatingEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input RatingDisconnectInput {
+              product: [RatingProductDisconnectFieldInput!]
+            }
+
+            type RatingEdge {
+              cursor: String!
+              node: Rating!
+            }
+
+            type RatingEventPayload {
+              number: Int!
+            }
+
+            type RatingIProductProductAggregationSelection {
+              count: Int!
+              node: RatingIProductProductNodeAggregateSelection
+            }
+
+            type RatingIProductProductNodeAggregateSelection {
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
+            input RatingOnCreateInput {
+              number: Int!
+            }
+
+            input RatingOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more RatingSort objects to sort Ratings by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [RatingSort!]
+            }
+
+            input RatingProductConnectFieldInput {
+              connect: IProductConnectInput
+              where: IProductConnectWhere
+            }
+
+            type RatingProductConnectedRelationship {
+              node: IProductEventPayload!
+            }
+
+            type RatingProductConnection {
+              edges: [RatingProductRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input RatingProductConnectionSort {
+              node: IProductSort
+            }
+
+            input RatingProductConnectionWhere {
+              AND: [RatingProductConnectionWhere!]
+              NOT: RatingProductConnectionWhere
+              OR: [RatingProductConnectionWhere!]
+              node: IProductWhere
+              node_NOT: IProductWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input RatingProductCreateFieldInput {
+              node: IProductCreateInput!
+            }
+
+            input RatingProductDeleteFieldInput {
+              delete: IProductDeleteInput
+              where: RatingProductConnectionWhere
+            }
+
+            input RatingProductDisconnectFieldInput {
+              disconnect: IProductDisconnectInput
+              where: RatingProductConnectionWhere
+            }
+
+            input RatingProductFieldInput {
+              connect: [RatingProductConnectFieldInput!]
+              create: [RatingProductCreateFieldInput!]
+            }
+
+            type RatingProductRelationship {
+              cursor: String!
+              node: IProduct!
+            }
+
+            input RatingProductRelationshipSubscriptionWhere {
+              node: IProductSubscriptionWhere
+            }
+
+            input RatingProductUpdateConnectionInput {
+              node: IProductUpdateInput
+            }
+
+            input RatingProductUpdateFieldInput {
+              connect: [RatingProductConnectFieldInput!]
+              create: [RatingProductCreateFieldInput!]
+              delete: [RatingProductDeleteFieldInput!]
+              disconnect: [RatingProductDisconnectFieldInput!]
+              update: RatingProductUpdateConnectionInput
+              where: RatingProductConnectionWhere
+            }
+
+            input RatingRelationInput {
+              product: [RatingProductCreateFieldInput!]
+            }
+
+            type RatingRelationshipCreatedEvent {
+              createdRelationship: RatingConnectedRelationships!
+              event: EventType!
+              rating: RatingEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input RatingRelationshipCreatedSubscriptionWhere {
+              AND: [RatingRelationshipCreatedSubscriptionWhere!]
+              NOT: RatingRelationshipCreatedSubscriptionWhere
+              OR: [RatingRelationshipCreatedSubscriptionWhere!]
+              createdRelationship: RatingRelationshipsSubscriptionWhere
+              rating: RatingSubscriptionWhere
+            }
+
+            type RatingRelationshipDeletedEvent {
+              deletedRelationship: RatingConnectedRelationships!
+              event: EventType!
+              rating: RatingEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input RatingRelationshipDeletedSubscriptionWhere {
+              AND: [RatingRelationshipDeletedSubscriptionWhere!]
+              NOT: RatingRelationshipDeletedSubscriptionWhere
+              OR: [RatingRelationshipDeletedSubscriptionWhere!]
+              deletedRelationship: RatingRelationshipsSubscriptionWhere
+              rating: RatingSubscriptionWhere
+            }
+
+            input RatingRelationshipsSubscriptionWhere {
+              product: RatingProductRelationshipSubscriptionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Ratings by. The order in which sorts are applied is not guaranteed when specifying many fields in one RatingSort object.
+            \\"\\"\\"
+            input RatingSort {
+              number: SortDirection
+            }
+
+            input RatingSubscriptionWhere {
+              AND: [RatingSubscriptionWhere!]
+              NOT: RatingSubscriptionWhere
+              OR: [RatingSubscriptionWhere!]
+              number: Int
+              number_GT: Int
+              number_GTE: Int
+              number_IN: [Int!]
+              number_LT: Int
+              number_LTE: Int
+              number_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              number_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input RatingUniqueWhere {
+              number: Int
+            }
+
+            input RatingUpdateInput {
+              number: Int
+              number_DECREMENT: Int
+              number_INCREMENT: Int
+              product: [RatingProductUpdateFieldInput!]
+            }
+
+            type RatingUpdatedEvent {
+              event: EventType!
+              previousState: RatingEventPayload!
+              timestamp: Float!
+              updatedRating: RatingEventPayload!
+            }
+
+            input RatingWhere {
+              AND: [RatingWhere!]
+              NOT: RatingWhere
+              OR: [RatingWhere!]
+              number: Int
+              number_GT: Int
+              number_GTE: Int
+              number_IN: [Int!]
+              number_LT: Int
+              number_LTE: Int
+              number_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              number_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              productConnection: RatingProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Ratings where all of the related RatingProductConnections match this filter
+              \\"\\"\\"
+              productConnection_ALL: RatingProductConnectionWhere
+              \\"\\"\\"
+              Return Ratings where none of the related RatingProductConnections match this filter
+              \\"\\"\\"
+              productConnection_NONE: RatingProductConnectionWhere
+              productConnection_NOT: RatingProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Ratings where one of the related RatingProductConnections match this filter
+              \\"\\"\\"
+              productConnection_SINGLE: RatingProductConnectionWhere
+              \\"\\"\\"
+              Return Ratings where some of the related RatingProductConnections match this filter
+              \\"\\"\\"
+              productConnection_SOME: RatingProductConnectionWhere
+            }
+
+            type RatingsConnection {
+              edges: [RatingEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Series implements IProduct {
-              genre: Genre!
+              genre(directed: Boolean = true, options: QueryOptions, where: UGenreWhere): UGenre!
+              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               name: String!
             }
@@ -3133,6 +3977,18 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
+            input SeriesConnectInput {
+              genre: SeriesGenreConnectInput
+            }
+
+            input SeriesConnectOrCreateInput {
+              genre: SeriesGenreConnectOrCreateInput
+            }
+
+            type SeriesConnectedRelationships {
+              genre: SeriesGenreConnectedRelationship
+            }
+
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -3140,6 +3996,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesCreateInput {
+              genre: SeriesGenreCreateInput
               id: String!
               name: String!
             }
@@ -3150,10 +4007,18 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               timestamp: Float!
             }
 
+            input SeriesDeleteInput {
+              genre: SeriesGenreDeleteInput
+            }
+
             type SeriesDeletedEvent {
               deletedSeries: SeriesEventPayload!
               event: EventType!
               timestamp: Float!
+            }
+
+            input SeriesDisconnectInput {
+              genre: SeriesGenreDisconnectInput
             }
 
             type SeriesEdge {
@@ -3166,6 +4031,145 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
+            input SeriesGenreConnectInput {
+              Genre: SeriesGenreGenreConnectFieldInput
+              Rating: SeriesGenreRatingConnectFieldInput
+            }
+
+            input SeriesGenreConnectOrCreateInput {
+              Genre: SeriesGenreGenreConnectOrCreateFieldInput
+              Rating: SeriesGenreRatingConnectOrCreateFieldInput
+            }
+
+            type SeriesGenreConnectedRelationship {
+              episodes: Int
+              node: UGenreEventPayload!
+            }
+
+            input SeriesGenreCreateFieldInput {
+              Genre: SeriesGenreGenreCreateFieldInput
+              Rating: SeriesGenreRatingCreateFieldInput
+            }
+
+            input SeriesGenreCreateInput {
+              Genre: SeriesGenreGenreFieldInput
+              Rating: SeriesGenreRatingFieldInput
+            }
+
+            input SeriesGenreDeleteInput {
+              Genre: IProductGenreGenreDeleteFieldInput
+              Rating: IProductGenreRatingDeleteFieldInput
+            }
+
+            input SeriesGenreDisconnectInput {
+              Genre: IProductGenreGenreDisconnectFieldInput
+              Rating: IProductGenreRatingDisconnectFieldInput
+            }
+
+            input SeriesGenreGenreConnectFieldInput {
+              connect: GenreConnectInput
+              edge: SeriesPropsCreateInput
+              where: GenreConnectWhere
+            }
+
+            input SeriesGenreGenreConnectOrCreateFieldInput {
+              onCreate: SeriesGenreGenreConnectOrCreateFieldInputOnCreate!
+              where: GenreConnectOrCreateWhere!
+            }
+
+            input SeriesGenreGenreConnectOrCreateFieldInputOnCreate {
+              edge: SeriesPropsCreateInput
+              node: GenreOnCreateInput!
+            }
+
+            input SeriesGenreGenreCreateFieldInput {
+              edge: SeriesPropsCreateInput
+              node: GenreCreateInput!
+            }
+
+            input SeriesGenreGenreFieldInput {
+              connect: SeriesGenreGenreConnectFieldInput
+              connectOrCreate: SeriesGenreGenreConnectOrCreateFieldInput
+              create: SeriesGenreGenreCreateFieldInput
+            }
+
+            input SeriesGenreGenreSubscriptionWhere {
+              edge: SeriesPropsSubscriptionWhere
+              node: GenreSubscriptionWhere
+            }
+
+            input SeriesGenreGenreUpdateConnectionInput {
+              edge: SeriesPropsUpdateInput
+              node: GenreUpdateInput
+            }
+
+            input SeriesGenreGenreUpdateFieldInput {
+              connect: SeriesGenreGenreConnectFieldInput
+              connectOrCreate: SeriesGenreGenreConnectOrCreateFieldInput
+              create: SeriesGenreGenreCreateFieldInput
+              delete: IProductGenreGenreDeleteFieldInput
+              disconnect: IProductGenreGenreDisconnectFieldInput
+              update: SeriesGenreGenreUpdateConnectionInput
+              where: IProductGenreGenreConnectionWhere
+            }
+
+            input SeriesGenreRatingConnectFieldInput {
+              connect: RatingConnectInput
+              edge: SeriesPropsCreateInput
+              where: RatingConnectWhere
+            }
+
+            input SeriesGenreRatingConnectOrCreateFieldInput {
+              onCreate: SeriesGenreRatingConnectOrCreateFieldInputOnCreate!
+              where: RatingConnectOrCreateWhere!
+            }
+
+            input SeriesGenreRatingConnectOrCreateFieldInputOnCreate {
+              edge: SeriesPropsCreateInput
+              node: RatingOnCreateInput!
+            }
+
+            input SeriesGenreRatingCreateFieldInput {
+              edge: SeriesPropsCreateInput
+              node: RatingCreateInput!
+            }
+
+            input SeriesGenreRatingFieldInput {
+              connect: SeriesGenreRatingConnectFieldInput
+              connectOrCreate: SeriesGenreRatingConnectOrCreateFieldInput
+              create: SeriesGenreRatingCreateFieldInput
+            }
+
+            input SeriesGenreRatingSubscriptionWhere {
+              edge: SeriesPropsSubscriptionWhere
+              node: RatingSubscriptionWhere
+            }
+
+            input SeriesGenreRatingUpdateConnectionInput {
+              edge: SeriesPropsUpdateInput
+              node: RatingUpdateInput
+            }
+
+            input SeriesGenreRatingUpdateFieldInput {
+              connect: SeriesGenreRatingConnectFieldInput
+              connectOrCreate: SeriesGenreRatingConnectOrCreateFieldInput
+              create: SeriesGenreRatingCreateFieldInput
+              delete: IProductGenreRatingDeleteFieldInput
+              disconnect: IProductGenreRatingDisconnectFieldInput
+              update: SeriesGenreRatingUpdateConnectionInput
+              where: IProductGenreRatingConnectionWhere
+            }
+
+            input SeriesGenreRelationshipSubscriptionWhere {
+              Genre: SeriesGenreGenreSubscriptionWhere
+              Rating: SeriesGenreRatingSubscriptionWhere
+            }
+
+            input SeriesGenreUpdateInput {
+              Genre: SeriesGenreGenreUpdateFieldInput
+              Rating: SeriesGenreRatingUpdateFieldInput
+            }
+
             input SeriesOptions {
               limit: Int
               offset: Int
@@ -3173,6 +4177,96 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Series.genre
+            \\"\\"\\"
+            type SeriesProps {
+              episodes: Int
+            }
+
+            input SeriesPropsCreateInput {
+              episodes: Int
+            }
+
+            input SeriesPropsSort {
+              episodes: SortDirection
+            }
+
+            input SeriesPropsSubscriptionWhere {
+              AND: [SeriesPropsSubscriptionWhere!]
+              NOT: SeriesPropsSubscriptionWhere
+              OR: [SeriesPropsSubscriptionWhere!]
+              episodes: Int
+              episodes_GT: Int
+              episodes_GTE: Int
+              episodes_IN: [Int]
+              episodes_LT: Int
+              episodes_LTE: Int
+              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodes_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input SeriesPropsUpdateInput {
+              episodes: Int
+              episodes_DECREMENT: Int
+              episodes_INCREMENT: Int
+            }
+
+            input SeriesPropsWhere {
+              AND: [SeriesPropsWhere!]
+              NOT: SeriesPropsWhere
+              OR: [SeriesPropsWhere!]
+              episodes: Int
+              episodes_GT: Int
+              episodes_GTE: Int
+              episodes_IN: [Int]
+              episodes_LT: Int
+              episodes_LTE: Int
+              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodes_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input SeriesRelationInput {
+              genre: SeriesGenreCreateFieldInput
+            }
+
+            type SeriesRelationshipCreatedEvent {
+              createdRelationship: SeriesConnectedRelationships!
+              event: EventType!
+              relationshipFieldName: String!
+              series: SeriesEventPayload!
+              timestamp: Float!
+            }
+
+            input SeriesRelationshipCreatedSubscriptionWhere {
+              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
+              NOT: SeriesRelationshipCreatedSubscriptionWhere
+              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
+              createdRelationship: SeriesRelationshipsSubscriptionWhere
+              series: SeriesSubscriptionWhere
+            }
+
+            type SeriesRelationshipDeletedEvent {
+              deletedRelationship: SeriesConnectedRelationships!
+              event: EventType!
+              relationshipFieldName: String!
+              series: SeriesEventPayload!
+              timestamp: Float!
+            }
+
+            input SeriesRelationshipDeletedSubscriptionWhere {
+              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
+              NOT: SeriesRelationshipDeletedSubscriptionWhere
+              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
+              deletedRelationship: SeriesRelationshipsSubscriptionWhere
+              series: SeriesSubscriptionWhere
+            }
+
+            input SeriesRelationshipsSubscriptionWhere {
+              genre: SeriesGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -3210,6 +4304,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesUpdateInput {
+              genre: SeriesGenreUpdateInput
               id: String
               name: String
             }
@@ -3225,6 +4320,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              genre: UGenreWhere
+              genreConnection: IProductGenreConnectionWhere
+              genreConnection_NOT: IProductGenreConnectionWhere
+              genre_NOT: UGenreWhere
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -3268,10 +4367,28 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreUpdated(where: GenreSubscriptionWhere): GenreUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
+              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+              ratingCreated(where: RatingSubscriptionWhere): RatingCreatedEvent!
+              ratingDeleted(where: RatingSubscriptionWhere): RatingDeletedEvent!
+              ratingRelationshipCreated(where: RatingRelationshipCreatedSubscriptionWhere): RatingRelationshipCreatedEvent!
+              ratingRelationshipDeleted(where: RatingRelationshipDeletedSubscriptionWhere): RatingRelationshipDeletedEvent!
+              ratingUpdated(where: RatingSubscriptionWhere): RatingUpdatedEvent!
               seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
               seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
+              seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
+              seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
+            }
+
+            union UGenre = Genre | Rating
+
+            union UGenreEventPayload = GenreEventPayload | RatingEventPayload
+
+            input UGenreWhere {
+              Genre: GenreWhere
+              Rating: RatingWhere
             }
 
             type UpdateGenresMutationResponse {
@@ -3293,6 +4410,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type UpdateRatingsMutationResponse {
+              info: UpdateInfo!
+              ratings: [Rating!]!
             }
 
             type UpdateSeriesMutationResponse {
@@ -5321,7 +6443,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductGenreConnectionSort {
-              edge: SeriesPropsSort
+              edge: IProductGenreEdgeSort
             }
 
             input IProductGenreConnectionWhere {
@@ -5350,6 +6472,19 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               * Series
               \\"\\"\\"
               SeriesProps: SeriesPropsCreateInput
+            }
+
+            input IProductGenreEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              MovieProps: MoviePropsSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              SeriesProps: SeriesPropsSort
             }
 
             input IProductGenreEdgeUpdateInput {
@@ -5815,6 +6950,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input MoviePropsCreateInput {
               year: Int!
+            }
+
+            input MoviePropsSort {
+              year: SortDirection
             }
 
             input MoviePropsSubscriptionWhere {

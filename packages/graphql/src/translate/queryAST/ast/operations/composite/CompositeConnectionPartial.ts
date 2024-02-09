@@ -97,6 +97,10 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         });
 
         if (propertiesProjectionMap.size) {
+            if (this.relationship?.propertiesTypeName) {
+                // should be true if getting here but just in case..
+                propertiesProjectionMap.set("__resolveType", new Cypher.Literal(this.relationship.propertiesTypeName));
+            }
             edgeProjectionMap.set("properties", propertiesProjectionMap);
         }
         edgeProjectionMap.set("node", nodeProjectionMap);

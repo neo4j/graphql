@@ -31,7 +31,7 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
-import { makeConnectionWhereInputType } from "./where-input";
+import { withConnectionWhereInputType } from "./connection-where-input";
 
 export function withDeleteInputType({
     entityAdapter,
@@ -235,7 +235,7 @@ function makeDeleteFieldInputTypeFields({
         if (!ifUnionMemberEntity) {
             throw new Error("Member Entity required.");
         }
-        fields["where"] = makeConnectionWhereInputType({
+        fields["where"] = withConnectionWhereInputType({
             relationshipAdapter,
             memberEntity: ifUnionMemberEntity,
             composer,

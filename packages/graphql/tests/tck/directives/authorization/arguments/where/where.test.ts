@@ -226,7 +226,7 @@ describe("Cypher Auth Where", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { content: this1.content } }) AS var3
+                    RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4
             }
@@ -284,7 +284,7 @@ describe("Cypher Auth Where", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { content: this1.content } }) AS var3
+                    RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4
             }

@@ -44,7 +44,7 @@ export class RelationshipDeclarationOperations {
     }
 
     public get prefixForTypename(): string {
-        return this.relationshipDeclaration.source.name;
+        return this.relationshipDeclaration.firstDeclaredInTypeName || this.relationshipDeclaration.source.name;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -72,18 +72,8 @@ export class RelationshipDeclarationOperations {
         }`;
     }
 
-    public getConnectionUnionWhereInputTypename(concreteEntityAdapter: ConcreteEntityAdapter): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
-            concreteEntityAdapter.name
-        }ConnectionWhere`;
-    }
-
     public get connectionSortInputTypename(): string {
         return `${this.connectionFieldTypename}Sort`;
-    }
-
-    public get connectionWhereInputTypename(): string {
-        return `${this.connectionFieldTypename}Where`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
