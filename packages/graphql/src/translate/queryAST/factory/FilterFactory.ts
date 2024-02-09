@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { options } from "yargs";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -78,8 +79,7 @@ export class FilterFactory {
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
     ): Filter[] {
         // TODO: figure out how to handle optimization with typename filters
-        /*       if (isInterfaceEntity(relationship.target)) {
-            // Optimization for interface entities, create a single connection filter for all the concrete entities, when no _on is specified.
+        if (isInterfaceEntity(relationship.target) && this.isLabelOptimizationForInterfacePossible(where, relationship.target)) {
             const connectionFilter = this.createConnectionFilterTreeNode({
                 relationship: relationship,
                 target: relationship.target,
@@ -88,9 +88,10 @@ export class FilterFactory {
             });
             const filters = this.createConnectionPredicates({ rel: relationship, entity: relationship.target, where });
             connectionFilter.addFilters(filters);
-            return [connectionFilter];
-        } else { */
-        const filteredEntities = getConcreteEntities(relationship.target, where); //this.filterConcreteEntities(relationship.target, where);
+            return asArray(connectionFilter);
+        }
+
+        const filteredEntities = getConcreteEntities(relationship.target, where);
         const connectionFilters: ConnectionFilter[] = [];
         let partialOf: InterfaceEntityAdapter | undefined;
         if (isInterfaceEntity(relationship.target)) {
@@ -114,9 +115,7 @@ export class FilterFactory {
             connectionFilter.addFilters(filters);
             connectionFilters.push(connectionFilter);
         }
-        const logical = this.wrapMultipleFiltersInLogical(connectionFilters, "OR");
-        return logical;
-        //}
+        return this.wrapMultipleFiltersInLogical(connectionFilters, "OR");
     }
 
     public createConnectionPredicates({
@@ -157,7 +156,11 @@ export class FilterFactory {
                             targetEntity: entity,
                             whereFields: value,
                         });
-                        //throw new Error("FOUND >> Interface filter to be implemented");
+                    } else if (isInterfaceEntity(entity)) {
+                        return this.createInterfaceNodeFilters({
+                            entity,
+                            whereFields: value,
+                        });
                     }
                     return this.createNodeFilters(entity, value);
                 }
@@ -638,5 +641,28 @@ export class FilterFactory {
             operation,
             filters,
         });
+    }
+
+    // Identify if it's possible to achieve MATCH (n)-[r]->(m) WHERE m:Movie Or m:Series rather than MATCH (n)-[r]->(m:Movie) Or MATCH (n)-[r]->(m:Series)
+    // When filters contains a nested relationship filter this is no longer achievable as the relationship definition is not shared between each concrete entities.
+    private isLabelOptimizationForInterfacePossible(
+        where: ConnectionWhereArg,
+        entity: InterfaceEntityAdapter
+    ): boolean {
+        if (where.node) {
+            const doesContainsFieldsNotOptimizable = Object.keys(where.node).some((field) => {
+                const { fieldName, isAggregate, isConnection } = parseWhereField(field);
+                if (isAggregate || isConnection) {
+                    return true;
+                }
+                const relationshipDeclaration = entity.findRelationshipDeclarations(fieldName);
+                if (relationshipDeclaration) {
+                    return true;
+                }
+                return false;
+            });
+            return !doesContainsFieldsNotOptimizable;
+        }
+        return true;
     }
 }

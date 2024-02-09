@@ -238,7 +238,7 @@ describe("Interface filtering on authorization rules", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (size([(this)-[this1:ACTED_IN]->(this0:Movie) WHERE ($param1 IS NOT NULL AND this0.title = $param1) | 1]) > 0 OR size([(this)-[this3:ACTED_IN]->(this2:Series) WHERE ($param2 IS NOT NULL AND this2.title = $param2) | 1]) > 0) AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0) WHERE (($param1 IS NOT NULL AND this0.title = $param1) AND (this0:Movie OR this0:Series)) | 1]) > 0 AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .name } AS this"
         `);
 
@@ -246,11 +246,10 @@ describe("Interface filtering on authorization rules", () => {
             "{
                 \\"isAuthenticated\\": true,
                 \\"param1\\": \\"The Matrix\\",
-                \\"param2\\": \\"The Matrix\\",
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
-                \\"param4\\": \\"admin\\"
+                \\"param3\\": \\"admin\\"
             }"
         `);
     });
