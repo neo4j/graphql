@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { asArray, type IResolvers } from "@graphql-tools/utils";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -30,7 +31,7 @@ import type {
     TypeNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { GraphQLSchema, Kind, extendSchema, specifiedDirectives, validateSchema } from "graphql";
+import { extendSchema, GraphQLSchema, Kind, specifiedDirectives, validateSchema } from "graphql";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import pluralize from "pluralize";
 import * as directives from "../../graphql/directives";
@@ -63,6 +64,7 @@ import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
+import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-fields-without-resolver";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
 
@@ -179,6 +181,7 @@ function runValidationRulesOnFilteredDocument({
     schema,
     document,
     extra,
+    userCustomResolvers,
     features,
 }: {
     schema: GraphQLSchema;
@@ -189,6 +192,7 @@ function runValidationRulesOnFilteredDocument({
         unions?: UnionTypeDefinitionNode[];
         objects?: ObjectTypeDefinitionNode[];
     };
+    userCustomResolvers?: IResolvers | Array<IResolvers>;
     features: Neo4jFeaturesSettings | undefined;
 }) {
     const errors = validateSDL(
@@ -211,6 +215,9 @@ function runValidationRulesOnFilteredDocument({
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
+            WarnObjectFieldsWithoutResolver({
+                customResolvers: asArray(userCustomResolvers ?? []),
+            }),
         ],
         schema
     );
@@ -224,6 +231,7 @@ function validateDocument({
     document,
     features,
     additionalDefinitions,
+    userCustomResolvers,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
@@ -235,6 +243,7 @@ function validateDocument({
         unions?: UnionTypeDefinitionNode[];
         objects?: ObjectTypeDefinitionNode[];
     };
+    userCustomResolvers?: IResolvers | Array<IResolvers>;
 }): void {
     const filteredDocument = filterDocument(document);
     const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
@@ -262,6 +271,7 @@ function validateDocument({
         schema: schemaToExtend,
         document: filteredDocument,
         extra,
+        userCustomResolvers,
         features,
     });
 
