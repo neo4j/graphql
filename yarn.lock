@@ -3676,7 +3676,7 @@ __metadata:
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
     libnpmsearch: "npm:7.0.1"
-    npm-run-all2: "npm:5.0.2"
+    npm-run-all2: "npm:6.1.2"
     pluralize: "npm:8.0.0"
     prettier: "npm:^2.7.1"
     randomstring: "npm:1.3.0"
@@ -3809,7 +3809,7 @@ __metadata:
     libnpmsearch: "npm:7.0.1"
     mock-jwks: "npm:1.0.10"
     nock: "npm:13.5.1"
-    npm-run-all2: "npm:5.0.2"
+    npm-run-all2: "npm:6.1.2"
     pluralize: "npm:^8.0.0"
     randomstring: "npm:1.3.0"
     rimraf: "npm:5.0.5"
@@ -3849,7 +3849,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/package-tests@workspace:packages/package-tests"
   dependencies:
-    npm-run-all2: "npm:5.0.2"
+    npm-run-all2: "npm:6.1.2"
     rimraf: "npm:5.0.5"
     upper-case-first: "npm:^2.0.2"
   languageName: unknown
@@ -17778,6 +17778,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-parse-even-better-errors@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "json-parse-even-better-errors@npm:3.0.1"
+  checksum: 10c0/bc40600b14231dff1ff911d269c7ed89fbf3dbedf25cad3f47c10ff9cbb998ce03921372a17f27f3c7cfed76e679bc6c02a7b4cb2604b0ba68cd51ed16899492
+  languageName: node
+  linkType: hard
+
 "json-schema-traverse@npm:^0.4.1":
   version: 0.4.1
   resolution: "json-schema-traverse@npm:0.4.1"
@@ -19331,7 +19338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:9.0.3, minimatch@npm:^9.0.1":
+"minimatch@npm:9.0.3, minimatch@npm:^9.0.0, minimatch@npm:^9.0.1":
   version: 9.0.3
   resolution: "minimatch@npm:9.0.3"
   dependencies:
@@ -20071,7 +20078,7 @@ __metadata:
     jest: "npm:29.7.0"
     lint-staged: "npm:15.2.2"
     neo4j-driver: "npm:5.17.0"
-    npm-run-all2: "npm:5.0.2"
+    npm-run-all2: "npm:6.1.2"
     prettier: "npm:2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.1.2"
@@ -20451,6 +20458,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"npm-normalize-package-bin@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "npm-normalize-package-bin@npm:3.0.1"
+  checksum: 10c0/f1831a7f12622840e1375c785c3dab7b1d82dd521211c17ee5e9610cd1a34d8b232d3fdeebf50c170eddcb321d2c644bf73dbe35545da7d588c6b3fa488db0a5
+  languageName: node
+  linkType: hard
+
 "npm-package-arg@npm:^11.0.0":
   version: 11.0.1
   resolution: "npm-package-arg@npm:11.0.1"
@@ -20478,22 +20492,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-run-all2@npm:5.0.2":
-  version: 5.0.2
-  resolution: "npm-run-all2@npm:5.0.2"
+"npm-run-all2@npm:6.1.2":
+  version: 6.1.2
+  resolution: "npm-run-all2@npm:6.1.2"
   dependencies:
-    ansi-styles: "npm:^5.0.0"
+    ansi-styles: "npm:^6.2.1"
     cross-spawn: "npm:^7.0.3"
     memorystream: "npm:^0.3.1"
-    minimatch: "npm:^3.0.4"
-    pidtree: "npm:^0.5.0"
-    read-pkg: "npm:^5.2.0"
-    shell-quote: "npm:^1.6.1"
+    minimatch: "npm:^9.0.0"
+    pidtree: "npm:^0.6.0"
+    read-package-json-fast: "npm:^3.0.2"
+    shell-quote: "npm:^1.7.3"
   bin:
     npm-run-all: bin/npm-run-all/index.js
+    npm-run-all2: bin/npm-run-all/index.js
     run-p: bin/run-p/index.js
     run-s: bin/run-s/index.js
-  checksum: 10c0/72de78d3f3bbfe940d644bd1c97cd54189651758175df55507eb8a5475f0e6978a036d8cd6e4a4585c913c1c6ab1a76b0ce9a653c2beeabff69a98b5eac09afe
+  checksum: 10c0/3cab02d23757f23e391037ea9a78732037c9c5d05d29f344d6fac330523aea45f84d472c2702dd5c048f23560e9954ed1f16c6090bb817a73db13842c67c17c0
   languageName: node
   linkType: hard
 
@@ -21426,21 +21441,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pidtree@npm:0.6.0":
+"pidtree@npm:0.6.0, pidtree@npm:^0.6.0":
   version: 0.6.0
   resolution: "pidtree@npm:0.6.0"
   bin:
     pidtree: bin/pidtree.js
   checksum: 10c0/0829ec4e9209e230f74ebf4265f5ccc9ebfb488334b525cb13f86ff801dca44b362c41252cd43ae4d7653a10a5c6ab3be39d2c79064d6895e0d78dc50a5ed6e9
-  languageName: node
-  linkType: hard
-
-"pidtree@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "pidtree@npm:0.5.0"
-  bin:
-    pidtree: bin/pidtree.js
-  checksum: 10c0/4004b1c7429d02be941ad7ca2eac3bd93afa5cd59119633113013a33de52d76887de09a06a81943475bc1de3efe0a639515a5fee314f5ba074e6d849499e4b4f
   languageName: node
   linkType: hard
 
@@ -22806,6 +22812,16 @@ __metadata:
   dependencies:
     readable-stream: "npm:^2.0.2"
   checksum: 10c0/eafd8029bf5a4854fbdee815f6f9d915eb38b590e6daf17ba0fdc3ef929fe8a425b40b67e021a29b4e576519e48aafafbe82e8cd21284a7f18f17f207f2d9581
+  languageName: node
+  linkType: hard
+
+"read-package-json-fast@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "read-package-json-fast@npm:3.0.2"
+  dependencies:
+    json-parse-even-better-errors: "npm:^3.0.0"
+    npm-normalize-package-bin: "npm:^3.0.0"
+  checksum: 10c0/37787e075f0260a92be0428687d9020eecad7ece3bda37461c2219e50d1ec183ab6ba1d9ada193691435dfe119a42c8a5b5b5463f08c8ddbc3d330800b265318
   languageName: node
   linkType: hard
 
