@@ -2552,7 +2552,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
             });
 
-            test("@relationship no relationshipProperties interface found", () => {
+            test("@relationship no relationshipProperties type found", () => {
                 const doc = gql`
                     type User {
                         name: String
@@ -2579,7 +2579,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
-            test("@relationship no relationshipProperties interface found extension", () => {
+            test("@relationship no relationshipProperties type found extension", () => {
                 const doc = gql`
                     type User {
                         name: String
@@ -2608,7 +2608,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
-            test("@relationship relationshipProperties interface not annotated with @relationshipProperties", () => {
+            test("@relationship relationshipProperties type not annotated with @relationshipProperties", () => {
                 const relationshipProperties = gql`
                     type Poster {
                         createdAt: String
@@ -3749,7 +3749,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Directive @relationship is not supported on fields of the Person type."
+                "Invalid directive usage: Directive @relationship is not supported on fields of interface types (Person). Since version 5.0.0, interface fields can only have @declareRelationship. Please add the @relationship directive to the fields in all types which implement it."
             );
             expect(errors[0]).toHaveProperty("path", ["Person", "actor", "@relationship"]);
         });
