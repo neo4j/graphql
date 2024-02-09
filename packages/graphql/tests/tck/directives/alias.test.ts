@@ -115,7 +115,7 @@ describe("Cypher alias directive", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { character: this0.characterPropInDb, screenTime: this0.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: this1.title, rating: this1.ratingPropInDb } }) AS var2
+                    RETURN collect({ properties: { character: this0.characterPropInDb, screenTime: this0.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: this1.title, rating: this1.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -208,7 +208,7 @@ describe("Cypher alias directive", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this12, edge.relationship AS create_this11
-                    RETURN collect({ properties: { character: create_this11.characterPropInDb, screenTime: create_this11.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: create_this12.title, rating: create_this12.ratingPropInDb } }) AS create_var13
+                    RETURN collect({ properties: { character: create_this11.characterPropInDb, screenTime: create_this11.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: create_this12.title, rating: create_this12.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS create_var13
                 }
                 RETURN { edges: create_var13, totalCount: totalCount } AS create_var14
             }

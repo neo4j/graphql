@@ -184,7 +184,7 @@ describe("typename_IN with auth", () => {
                         WITH var5
                         RETURN collect(var5) AS var5
                     }
-                    RETURN collect({ node: { actedIn: var5 } }) AS var10
+                    RETURN collect({ node: { actedIn: var5, __resolveType: \\"Actor\\" } }) AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS this"
             `);
@@ -320,7 +320,7 @@ describe("typename_IN with auth", () => {
                         WITH var5
                         RETURN collect(var5) AS var5
                     }
-                    RETURN collect({ node: { actedIn: var5 } }) AS var10
+                    RETURN collect({ node: { actedIn: var5, __resolveType: \\"Actor\\" } }) AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS this"
             `);

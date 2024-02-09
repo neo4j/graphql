@@ -34,6 +34,7 @@ import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapt
 import { plural, singular } from "../../utils/string-manipulation";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { RelationshipOperations } from "./RelationshipOperations";
+import { Memoize } from "typescript-memoize";
 
 export class RelationshipAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
@@ -42,6 +43,7 @@ export class RelationshipAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly source: EntityAdapter;
     private rawEntity: Entity;
+    private rawOriginalTargetEntity?: Entity;
     private _target: EntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
@@ -50,10 +52,12 @@ export class RelationshipAdapter {
     public readonly isNullable: boolean;
     public readonly description?: string;
     public readonly propertiesTypeName: string | undefined;
-    public readonly inheritedFrom: string | undefined;
+    public readonly firstDeclaredInTypeName: string | undefined;
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
+
+    public readonly siblings?: string[];
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -78,7 +82,8 @@ export class RelationshipAdapter {
             description,
             annotations,
             propertiesTypeName,
-            inheritedFrom,
+            firstDeclaredInTypeName,
+            originalTarget,
         } = relationship;
         this.name = name;
         this.type = type;
@@ -107,7 +112,12 @@ export class RelationshipAdapter {
         this.description = description;
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
+        this.rawOriginalTargetEntity = originalTarget;
+
+        if (relationship.getSiblings()) {
+            this.siblings = relationship.getSiblings();
+        }
     }
 
     public get operations(): RelationshipOperations {
@@ -184,6 +194,7 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
+    @Memoize()
     public get target(): EntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
@@ -197,6 +208,22 @@ export class RelationshipAdapter {
             }
         }
         return this._target;
+    }
+
+    @Memoize()
+    public get originalTarget(): EntityAdapter | undefined {
+        if (!this.rawOriginalTargetEntity) {
+            return;
+        }
+        if (this.rawOriginalTargetEntity instanceof ConcreteEntity) {
+            return new ConcreteEntityAdapter(this.rawOriginalTargetEntity);
+        } else if (this.rawOriginalTargetEntity instanceof InterfaceEntity) {
+            return new InterfaceEntityAdapter(this.rawOriginalTargetEntity);
+        } else if (this.rawOriginalTargetEntity instanceof UnionEntity) {
+            return new UnionEntityAdapter(this.rawOriginalTargetEntity);
+        } else {
+            throw new Error("invalid original target entity type");
+        }
     }
 
     public isReadable(): boolean {

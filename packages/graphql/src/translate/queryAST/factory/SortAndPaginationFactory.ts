@@ -22,8 +22,8 @@ import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { FulltextScoreSort } from "../ast/sort/FulltextScoreSort";
@@ -72,12 +72,27 @@ export class SortAndPaginationFactory {
     }
 
     private createPropertySort(
-        optionArg: GraphQLSortArg,
+        optionArg: GraphQLSortArg | NestedGraphQLSortArg,
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter,
         scoreVariable?: Cypher.Variable
     ): Sort[] {
         if (isUnionEntity(entity)) {
             return [];
+        }
+
+        if (
+            entity instanceof RelationshipAdapter &&
+            entity.propertiesTypeName &&
+            Object.keys(optionArg).some((k) => (entity.siblings || []).includes(k))
+        ) {
+            if (!optionArg[entity.propertiesTypeName]) {
+                return [];
+            }
+            return this.createPropertySort(
+                optionArg[entity.propertiesTypeName] as GraphQLSortArg,
+                entity,
+                scoreVariable
+            );
         }
 
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
@@ -90,7 +105,9 @@ export class SortAndPaginationFactory {
             }
 
             const attribute = entity.findAttribute(fieldName);
-            if (!attribute) throw new Error(`no filter attribute ${fieldName}`);
+            if (!attribute) {
+                throw new Error(`no filter attribute ${fieldName}`);
+            }
             if (attribute.annotations.cypher) {
                 return new CypherPropertySort({
                     direction: sortDir,

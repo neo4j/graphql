@@ -109,7 +109,7 @@ describe("Relationship Properties Create Cypher", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this9, edge.relationship AS create_this8
-                    RETURN collect({ properties: { screenTime: create_this8.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this9.name } }) AS create_var10
+                    RETURN collect({ properties: { screenTime: create_this8.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this9.name, __resolveType: \\"Actor\\" } }) AS create_var10
                 }
                 RETURN { edges: create_var10, totalCount: totalCount } AS create_var11
             }

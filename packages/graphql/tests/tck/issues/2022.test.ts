@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                     WITH this8 { .name, dbId: this8.id } AS this8
                     RETURN head(collect(this8)) AS var9
                 }
-                RETURN collect({ node: { dbId: this0.id, title: this0.title, auction: var6, owner: var9 } }) AS var10
+                RETURN collect({ node: { dbId: this0.id, title: this0.title, auction: var6, owner: var9, __resolveType: \\"ArtPiece\\" } }) AS var10
             }
             RETURN { edges: var10, totalCount: totalCount } AS this"
         `);

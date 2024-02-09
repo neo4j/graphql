@@ -118,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
-            [Brand.plural]: expect.arrayContaining([
+            [Brand.plural]: expect.toIncludeSameMembers([
                 {
                     name: "brand1",
                     services: [

@@ -30,8 +30,6 @@ import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { InputField } from "../types";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
@@ -61,45 +59,6 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
         ),
         name: directive.name.value,
     }));
-}
-
-export function relationshipAdapterToComposeFields(
-    objectFields: (RelationshipAdapter | RelationshipDeclarationAdapter)[],
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>
-): Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> {
-    const composeFields: Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {};
-    for (const field of objectFields) {
-        if (field.isReadable() === false) {
-            continue;
-        }
-
-        const relationshipFields = [
-            {
-                typeName: field.operations.getTargetTypePrettyName(),
-                fieldName: field.name,
-            },
-            {
-                typeName: `${field.operations.connectionFieldTypename}!`, // TODO: Move Adapter so we aren't manually adding the !
-                fieldName: field.operations.connectionFieldName,
-            },
-        ];
-        for (const { typeName, fieldName } of relationshipFields) {
-            const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
-                type: typeName,
-                args: graphqlArgsToCompose(field.args),
-                description: field.description,
-            };
-
-            const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
-            if (userDefinedDirectivesOnField) {
-                newField.directives = graphqlDirectivesToCompose(userDefinedDirectivesOnField);
-            }
-
-            composeFields[fieldName] = newField;
-        }
-    }
-
-    return composeFields;
 }
 
 export function attributeAdapterToComposeFields(

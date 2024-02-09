@@ -1694,39 +1694,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            type IProductGenreConnection {
-              edges: [IProductGenreRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input IProductGenreConnectionSort {
-              node: GenreSort
-            }
-
-            input IProductGenreConnectionWhere {
-              AND: [IProductGenreConnectionWhere!]
-              NOT: IProductGenreConnectionWhere
-              OR: [IProductGenreConnectionWhere!]
-              node: GenreWhere
-              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input IProductGenreDeleteFieldInput {
-              delete: GenreDeleteInput
-              where: IProductGenreConnectionWhere
-            }
-
-            input IProductGenreDisconnectFieldInput {
-              disconnect: GenreDisconnectInput
-              where: IProductGenreConnectionWhere
-            }
-
-            type IProductGenreRelationship {
-              cursor: String!
-              node: Genre!
-            }
-
             enum IProductImplementation {
               Movie
               Series
@@ -1811,7 +1778,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Movie implements IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
-              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
+              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               id: String!
               name: String!
             }
@@ -1847,7 +1814,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieDeleteInput {
-              genre: IProductGenreDeleteFieldInput
+              genre: MovieGenreDeleteFieldInput
             }
 
             type MovieDeletedEvent {
@@ -1857,7 +1824,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
+              genre: MovieGenreDisconnectFieldInput
             }
 
             type MovieEdge {
@@ -1904,8 +1871,36 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: GenreEventPayload!
             }
 
+            type MovieGenreConnection {
+              edges: [MovieGenreRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input MovieGenreConnectionSort {
+              node: GenreSort
+            }
+
+            input MovieGenreConnectionWhere {
+              AND: [MovieGenreConnectionWhere!]
+              NOT: MovieGenreConnectionWhere
+              OR: [MovieGenreConnectionWhere!]
+              node: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
             input MovieGenreCreateFieldInput {
               node: GenreCreateInput!
+            }
+
+            input MovieGenreDeleteFieldInput {
+              delete: GenreDeleteInput
+              where: MovieGenreConnectionWhere
+            }
+
+            input MovieGenreDisconnectFieldInput {
+              disconnect: GenreDisconnectInput
+              where: MovieGenreConnectionWhere
             }
 
             input MovieGenreFieldInput {
@@ -1964,6 +1959,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            type MovieGenreRelationship {
+              cursor: String!
+              node: Genre!
+            }
+
             input MovieGenreRelationshipSubscriptionWhere {
               node: GenreSubscriptionWhere
             }
@@ -1976,10 +1976,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               connect: MovieGenreConnectFieldInput
               connectOrCreate: MovieGenreConnectOrCreateFieldInput
               create: MovieGenreCreateFieldInput
-              delete: IProductGenreDeleteFieldInput
-              disconnect: IProductGenreDisconnectFieldInput
+              delete: MovieGenreDeleteFieldInput
+              disconnect: MovieGenreDisconnectFieldInput
               update: MovieGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: MovieGenreConnectionWhere
             }
 
             input MovieOptions {
@@ -2084,8 +2084,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               OR: [MovieWhere!]
               genre: GenreWhere
               genreAggregate: MovieGenreAggregateInput
-              genreConnection: IProductGenreConnectionWhere
-              genreConnection_NOT: IProductGenreConnectionWhere
+              genreConnection: MovieGenreConnectionWhere
+              genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
               id: String
               id_CONTAINS: String
@@ -2152,7 +2152,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Series implements IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
-              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
+              genreConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesGenreConnectionSort!], where: SeriesGenreConnectionWhere): SeriesGenreConnection!
               id: String!
               name: String!
             }
@@ -2194,7 +2194,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesDeleteInput {
-              genre: IProductGenreDeleteFieldInput
+              genre: SeriesGenreDeleteFieldInput
             }
 
             type SeriesDeletedEvent {
@@ -2204,7 +2204,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
+              genre: SeriesGenreDisconnectFieldInput
             }
 
             type SeriesEdge {
@@ -2251,8 +2251,36 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: GenreEventPayload!
             }
 
+            type SeriesGenreConnection {
+              edges: [SeriesGenreRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesGenreConnectionSort {
+              node: GenreSort
+            }
+
+            input SeriesGenreConnectionWhere {
+              AND: [SeriesGenreConnectionWhere!]
+              NOT: SeriesGenreConnectionWhere
+              OR: [SeriesGenreConnectionWhere!]
+              node: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
             input SeriesGenreCreateFieldInput {
               node: GenreCreateInput!
+            }
+
+            input SeriesGenreDeleteFieldInput {
+              delete: GenreDeleteInput
+              where: SeriesGenreConnectionWhere
+            }
+
+            input SeriesGenreDisconnectFieldInput {
+              disconnect: GenreDisconnectInput
+              where: SeriesGenreConnectionWhere
             }
 
             input SeriesGenreFieldInput {
@@ -2311,6 +2339,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            type SeriesGenreRelationship {
+              cursor: String!
+              node: Genre!
+            }
+
             input SeriesGenreRelationshipSubscriptionWhere {
               node: GenreSubscriptionWhere
             }
@@ -2323,10 +2356,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               connect: SeriesGenreConnectFieldInput
               connectOrCreate: SeriesGenreConnectOrCreateFieldInput
               create: SeriesGenreCreateFieldInput
-              delete: IProductGenreDeleteFieldInput
-              disconnect: IProductGenreDisconnectFieldInput
+              delete: SeriesGenreDeleteFieldInput
+              disconnect: SeriesGenreDisconnectFieldInput
               update: SeriesGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: SeriesGenreConnectionWhere
             }
 
             input SeriesOptions {
@@ -2431,8 +2464,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               OR: [SeriesWhere!]
               genre: GenreWhere
               genreAggregate: SeriesGenreAggregateInput
-              genreConnection: IProductGenreConnectionWhere
-              genreConnection_NOT: IProductGenreConnectionWhere
+              genreConnection: SeriesGenreConnectionWhere
+              genreConnection_NOT: SeriesGenreConnectionWhere
               genre_NOT: GenreWhere
               id: String
               id_CONTAINS: String
@@ -2484,793 +2517,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
               seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
               seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
-              seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
-            }
-
-            type UpdateGenresMutationResponse {
-              genres: [Genre!]!
-              info: UpdateInfo!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }
-
-            type UpdateSeriesMutationResponse {
-              info: UpdateInfo!
-              series: [Series!]!
-            }"
-        `);
-    });
-
-    test("Example 3", async () => {
-        const typeDefs = gql`
-            interface IProduct {
-                id: String!
-
-                name: String!
-                genre: Genre!
-            }
-
-            type Movie implements IProduct {
-                id: String!
-
-                name: String!
-                genre: Genre! #@relationship(type: "HAS_GENRE", direction: OUT)
-            }
-
-            type Series implements IProduct {
-                id: String!
-
-                name: String!
-                genre: Genre! #@relationship(type: "HAS_GENRE", direction: OUT)
-            }
-
-            type Genre {
-                name: String! @unique
-                product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
-            }
-        `;
-
-        const subscriptionsEngine = new TestSubscriptionsEngine();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
-
-        const schema = await neoSchema.getSchema();
-        const errors = validateSchema(schema);
-        expect(errors).toHaveLength(0);
-
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-              subscription: Subscription
-            }
-
-            type CreateGenresMutationResponse {
-              genres: [Genre!]!
-              info: CreateInfo!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
-
-            type CreateSeriesMutationResponse {
-              info: CreateInfo!
-              series: [Series!]!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
-            type Genre {
-              name: String!
-              product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
-              productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
-              productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
-            input GenreConnectInput {
-              product: [GenreProductConnectFieldInput!]
-            }
-
-            type GenreConnectedRelationships {
-              product: GenreProductConnectedRelationship
-            }
-
-            input GenreCreateInput {
-              name: String!
-              product: GenreProductFieldInput
-            }
-
-            type GenreCreatedEvent {
-              createdGenre: GenreEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input GenreDeleteInput {
-              product: [GenreProductDeleteFieldInput!]
-            }
-
-            type GenreDeletedEvent {
-              deletedGenre: GenreEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input GenreDisconnectInput {
-              product: [GenreProductDisconnectFieldInput!]
-            }
-
-            type GenreEdge {
-              cursor: String!
-              node: Genre!
-            }
-
-            type GenreEventPayload {
-              name: String!
-            }
-
-            type GenreIProductProductAggregationSelection {
-              count: Int!
-              node: GenreIProductProductNodeAggregateSelection
-            }
-
-            type GenreIProductProductNodeAggregateSelection {
-              id: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            input GenreOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [GenreSort!]
-            }
-
-            input GenreProductConnectFieldInput {
-              where: IProductConnectWhere
-            }
-
-            type GenreProductConnectedRelationship {
-              node: IProductEventPayload!
-            }
-
-            type GenreProductConnection {
-              edges: [GenreProductRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input GenreProductConnectionSort {
-              node: IProductSort
-            }
-
-            input GenreProductConnectionWhere {
-              AND: [GenreProductConnectionWhere!]
-              NOT: GenreProductConnectionWhere
-              OR: [GenreProductConnectionWhere!]
-              node: IProductWhere
-              node_NOT: IProductWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input GenreProductCreateFieldInput {
-              node: IProductCreateInput!
-            }
-
-            input GenreProductDeleteFieldInput {
-              where: GenreProductConnectionWhere
-            }
-
-            input GenreProductDisconnectFieldInput {
-              where: GenreProductConnectionWhere
-            }
-
-            input GenreProductFieldInput {
-              connect: [GenreProductConnectFieldInput!]
-              create: [GenreProductCreateFieldInput!]
-            }
-
-            type GenreProductRelationship {
-              cursor: String!
-              node: IProduct!
-            }
-
-            input GenreProductRelationshipSubscriptionWhere {
-              node: IProductSubscriptionWhere
-            }
-
-            input GenreProductUpdateConnectionInput {
-              node: IProductUpdateInput
-            }
-
-            input GenreProductUpdateFieldInput {
-              connect: [GenreProductConnectFieldInput!]
-              create: [GenreProductCreateFieldInput!]
-              delete: [GenreProductDeleteFieldInput!]
-              disconnect: [GenreProductDisconnectFieldInput!]
-              update: GenreProductUpdateConnectionInput
-              where: GenreProductConnectionWhere
-            }
-
-            input GenreRelationInput {
-              product: [GenreProductCreateFieldInput!]
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
-            }
-
-            \\"\\"\\"
-            Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
-            \\"\\"\\"
-            input GenreSort {
-              name: SortDirection
-            }
-
-            input GenreSubscriptionWhere {
-              AND: [GenreSubscriptionWhere!]
-              NOT: GenreSubscriptionWhere
-              OR: [GenreSubscriptionWhere!]
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
-            input GenreUpdateInput {
-              name: String
-              product: [GenreProductUpdateFieldInput!]
-            }
-
-            type GenreUpdatedEvent {
-              event: EventType!
-              previousState: GenreEventPayload!
-              timestamp: Float!
-              updatedGenre: GenreEventPayload!
-            }
-
-            input GenreWhere {
-              AND: [GenreWhere!]
-              NOT: GenreWhere
-              OR: [GenreWhere!]
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-              productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
-              \\"\\"\\"
-              Return Genres where all of the related GenreProductConnections match this filter
-              \\"\\"\\"
-              productConnection_ALL: GenreProductConnectionWhere
-              \\"\\"\\"
-              Return Genres where none of the related GenreProductConnections match this filter
-              \\"\\"\\"
-              productConnection_NONE: GenreProductConnectionWhere
-              productConnection_NOT: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_NONE\` instead.\\")
-              \\"\\"\\"
-              Return Genres where one of the related GenreProductConnections match this filter
-              \\"\\"\\"
-              productConnection_SINGLE: GenreProductConnectionWhere
-              \\"\\"\\"
-              Return Genres where some of the related GenreProductConnections match this filter
-              \\"\\"\\"
-              productConnection_SOME: GenreProductConnectionWhere
-            }
-
-            type GenresConnection {
-              edges: [GenreEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            interface IProduct {
-              genre: Genre!
-              id: String!
-              name: String!
-            }
-
-            type IProductAggregateSelection {
-              count: Int!
-              id: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            input IProductConnectWhere {
-              node: IProductWhere!
-            }
-
-            input IProductCreateInput {
-              Movie: MovieCreateInput
-              Series: SeriesCreateInput
-            }
-
-            interface IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
-            enum IProductImplementation {
-              Movie
-              Series
-            }
-
-            input IProductOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more IProductSort objects to sort IProducts by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [IProductSort]
-            }
-
-            \\"\\"\\"
-            Fields to sort IProducts by. The order in which sorts are applied is not guaranteed when specifying many fields in one IProductSort object.
-            \\"\\"\\"
-            input IProductSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input IProductSubscriptionWhere {
-              AND: [IProductSubscriptionWhere!]
-              NOT: IProductSubscriptionWhere
-              OR: [IProductSubscriptionWhere!]
-              id: String
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_IN: [String!]
-              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: String
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-              typename_IN: [IProductImplementation!]
-            }
-
-            input IProductUpdateInput {
-              id: String
-              name: String
-            }
-
-            input IProductWhere {
-              AND: [IProductWhere!]
-              NOT: IProductWhere
-              OR: [IProductWhere!]
-              id: String
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_IN: [String!]
-              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: String
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-              typename_IN: [IProductImplementation!]
-            }
-
-            type Movie implements IProduct {
-              genre: Genre!
-              id: String!
-              name: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            input MovieCreateInput {
-              id: String!
-              name: String!
-            }
-
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
-            type MovieEventPayload implements IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              id: String
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_IN: [String!]
-              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: String
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
-            input MovieUpdateInput {
-              id: String
-              name: String
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              id: String
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_IN: [String!]
-              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: String
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Mutation {
-              createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
-              deleteGenres(delete: GenreDeleteInput, where: GenreWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              deleteSeries(where: SeriesWhere): DeleteInfo!
-              updateGenres(connect: GenreConnectInput, create: GenreRelationInput, delete: GenreDeleteInput, disconnect: GenreDisconnectInput, update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
-              iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
-            }
-
-            type Series implements IProduct {
-              genre: Genre!
-              id: String!
-              name: String!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              id: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            type SeriesConnection {
-              edges: [SeriesEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input SeriesCreateInput {
-              id: String!
-              name: String!
-            }
-
-            type SeriesCreatedEvent {
-              createdSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type SeriesDeletedEvent {
-              deletedSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type SeriesEdge {
-              cursor: String!
-              node: Series!
-            }
-
-            type SeriesEventPayload implements IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
-            input SeriesOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [SeriesSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
-            \\"\\"\\"
-            input SeriesSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input SeriesSubscriptionWhere {
-              AND: [SeriesSubscriptionWhere!]
-              NOT: SeriesSubscriptionWhere
-              OR: [SeriesSubscriptionWhere!]
-              id: String
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_IN: [String!]
-              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: String
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
-            input SeriesUpdateInput {
-              id: String
-              name: String
-            }
-
-            type SeriesUpdatedEvent {
-              event: EventType!
-              previousState: SeriesEventPayload!
-              timestamp: Float!
-              updatedSeries: SeriesEventPayload!
-            }
-
-            input SeriesWhere {
-              AND: [SeriesWhere!]
-              NOT: SeriesWhere
-              OR: [SeriesWhere!]
-              id: String
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_IN: [String!]
-              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: String
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
-            }
-
-            type Subscription {
-              genreCreated(where: GenreSubscriptionWhere): GenreCreatedEvent!
-              genreDeleted(where: GenreSubscriptionWhere): GenreDeletedEvent!
-              genreRelationshipCreated(where: GenreRelationshipCreatedSubscriptionWhere): GenreRelationshipCreatedEvent!
-              genreRelationshipDeleted(where: GenreRelationshipDeletedSubscriptionWhere): GenreRelationshipDeletedEvent!
-              genreUpdated(where: GenreSubscriptionWhere): GenreUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-              seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
-              seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 
@@ -5321,7 +4567,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductGenreConnectionSort {
-              edge: SeriesPropsSort
+              edge: IProductGenreEdgeSort
             }
 
             input IProductGenreConnectionWhere {
@@ -5350,6 +4596,19 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               * Series
               \\"\\"\\"
               SeriesProps: SeriesPropsCreateInput
+            }
+
+            input IProductGenreEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              MovieProps: MoviePropsSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              SeriesProps: SeriesPropsSort
             }
 
             input IProductGenreEdgeUpdateInput {
@@ -5815,6 +5074,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input MoviePropsCreateInput {
               year: Int!
+            }
+
+            input MoviePropsSort {
+              year: SortDirection
             }
 
             input MoviePropsSubscriptionWhere {

@@ -72,7 +72,7 @@ describe("Connections Alias", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS var2
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -126,7 +126,7 @@ describe("Connections Alias", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -140,7 +140,7 @@ describe("Connections Alias", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this5, edge.relationship AS this4
-                    RETURN collect({ properties: { screenTime: this4.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this5.name } }) AS var6
+                    RETURN collect({ properties: { screenTime: this4.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this5.name, __resolveType: \\"Actor\\" } }) AS var6
                 }
                 RETURN { edges: var6, totalCount: totalCount } AS var7
             }

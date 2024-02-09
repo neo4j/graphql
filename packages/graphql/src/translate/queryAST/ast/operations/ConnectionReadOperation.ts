@@ -225,12 +225,13 @@ export class ConnectionReadOperation extends Operation {
     private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
         const nodeProjectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
         if (nodeProjectionMap.size === 0) {
-            const targetNodeName = this.target.name;
             nodeProjectionMap.set({
-                __resolveType: new Cypher.Literal(targetNodeName),
                 __id: Cypher.id(context.target),
             });
         }
+        nodeProjectionMap.set({
+            __resolveType: new Cypher.Literal(this.target.name),
+        });
 
         const edgeProjectionMap = new Cypher.Map();
 

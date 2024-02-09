@@ -85,7 +85,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { startDate: this0.startDate, endDateTime: apoc.date.convertFormat(toString(this0.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), __resolveType: \\"ActedIn\\" }, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { startDate: this0.startDate, endDateTime: apoc.date.convertFormat(toString(this0.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
