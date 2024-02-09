@@ -51,7 +51,7 @@
     "devDependencies": {
         "@apollo/gateway": "2.7.1",
         "@apollo/server": "4.10.0",
-        "@faker-js/faker": "8.4.0",
+        "@faker-js/faker": "8.4.1",
         "@types/deep-equal": "1.0.4",
         "@types/is-uuid": "1.0.2",
         "@types/jest": "29.5.12",
