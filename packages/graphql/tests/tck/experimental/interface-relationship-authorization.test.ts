@@ -22,7 +22,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
 
-describe("Interface filtering operations", () => {
+describe("Interface filtering on authorization rules", () => {
     let baseTypes: string;
     let neoSchema: Neo4jGraphQL;
     const secret = "secret";
@@ -122,8 +122,7 @@ describe("Interface filtering operations", () => {
                 \\"param1\\": \\"The Office\\",
                 \\"param2\\": \\"The Office 2\\",
                 \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
+                    \\"roles\\": []
                 },
                 \\"param4\\": \\"admin\\"
             }"
@@ -190,10 +189,12 @@ describe("Interface filtering operations", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": false,
+                \\"isAuthenticated\\": true,
                 \\"param1\\": \\"The Office\\",
                 \\"param2\\": \\"The Office 2\\",
-                \\"jwt\\": {},
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
                 \\"param4\\": \\"admin\\"
             }"
         `);
