@@ -79,7 +79,10 @@ export class FilterFactory {
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
     ): Filter[] {
         // TODO: figure out how to handle optimization with typename filters
-        if (isInterfaceEntity(relationship.target) && this.isLabelOptimizationForInterfacePossible(where, relationship.target)) {
+        if (
+            isInterfaceEntity(relationship.target) &&
+            this.isLabelOptimizationForInterfacePossible(where, relationship.target)
+        ) {
             const connectionFilter = this.createConnectionFilterTreeNode({
                 relationship: relationship,
                 target: relationship.target,
@@ -645,6 +648,7 @@ export class FilterFactory {
 
     // Identify if it's possible to achieve MATCH (n)-[r]->(m) WHERE m:Movie Or m:Series rather than MATCH (n)-[r]->(m:Movie) Or MATCH (n)-[r]->(m:Series)
     // When filters contains a nested relationship filter this is no longer achievable as the relationship definition is not shared between each concrete entities.
+    // For context check TCK test packages/graphql/tests/tck/issues/2709.test.ts --> "should not use a node label so it covers all nodes implementing the interface for connection rel".
     private isLabelOptimizationForInterfacePossible(
         where: ConnectionWhereArg,
         entity: InterfaceEntityAdapter
