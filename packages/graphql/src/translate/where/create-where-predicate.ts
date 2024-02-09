@@ -27,6 +27,7 @@ import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
 import type { Filter } from "../queryAST/ast/filters/Filter";
 import { isInterfaceEntity } from "../queryAST/utils/is-interface-entity";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 function createWherePredicate({
     factory,
@@ -34,12 +35,14 @@ function createWherePredicate({
     entityOrRel,
     whereInput,
     targetElement,
+    targetEntity,
 }: {
     factory: QueryASTFactory;
     queryASTContext: QueryASTContext;
     entityOrRel: EntityAdapter | RelationshipAdapter;
     whereInput: GraphQLWhereArg;
     targetElement: Cypher.Node | Cypher.Relationship;
+    targetEntity?: ConcreteEntityAdapter; // It's required for interface entities to be passed in
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
@@ -47,10 +50,15 @@ function createWherePredicate({
     const filters: Filter[] = [];
     if (entityOrRel instanceof RelationshipAdapter) {
         filters.push(...factory.filterFactory.createEdgeFilters(entityOrRel, whereInput));
+    } else if (isInterfaceEntity(entityOrRel)) {
+        filters.push(
+            ...factory.filterFactory.createInterfaceNodeFilters({
+                entity: entityOrRel,
+                targetEntity,
+                whereFields: whereInput,
+            })
+        );
     } else {
-        if (isInterfaceEntity(entityOrRel)) {
-            throw new Error("Interface filter to be implemented");
-        }
         filters.push(...factory.filterFactory.createNodeFilters(entityOrRel, whereInput));
     }
 
@@ -71,11 +79,13 @@ export function createWhereNodePredicate({
     whereInput,
     context,
     entity,
+    targetEntity,
 }: {
     targetElement: Cypher.Node;
     whereInput: GraphQLWhereArg;
     context: Neo4jGraphQLTranslationContext;
     entity: EntityAdapter;
+    targetEntity?: ConcreteEntityAdapter;
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
@@ -88,7 +98,7 @@ export function createWhereNodePredicate({
         env: queryASTEnv,
         neo4jGraphQLContext: context,
     });
-    return createWherePredicate({ factory, queryASTContext, entityOrRel: entity, whereInput, targetElement });
+    return createWherePredicate({ factory, queryASTContext, entityOrRel: entity, whereInput, targetElement, targetEntity });
 }
 
 export function createWhereEdgePredicate({

@@ -76,7 +76,7 @@ export class FilterFactory {
         relationship: RelationshipAdapter,
         where: ConnectionWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): ConnectionFilter[] {
+    ): Filter[] {
         // TODO: figure out how to handle optimization with typename filters
         /*       if (isInterfaceEntity(relationship.target)) {
             // Optimization for interface entities, create a single connection filter for all the concrete entities, when no _on is specified.
@@ -114,7 +114,8 @@ export class FilterFactory {
             connectionFilter.addFilters(filters);
             connectionFilters.push(connectionFilter);
         }
-        return connectionFilters;
+        const logical = this.wrapMultipleFiltersInLogical(connectionFilters, "OR");
+        return logical;
         //}
     }
 
@@ -477,7 +478,7 @@ export class FilterFactory {
     }
 
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
-        const filterASTs = Object.entries(where).map(([key, value]): Filter => {
+        const filterASTs = Object.entries(where).map(([key, value]): Filter | undefined => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {
                     return this.createEdgeFilters(relationship, nestedWhere);
@@ -489,7 +490,16 @@ export class FilterFactory {
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
             const attribute = relationship.findAttribute(fieldName);
-            if (!attribute) throw new Error(`no filter attribute ${key}`);
+            if (!attribute) {
+                if (fieldName === relationship.propertiesTypeName) {
+                    return this.wrapMultipleFiltersInLogical(this.createEdgeFilters(relationship, value))[0];
+                }
+                return;
+                // TODO:
+                // For simplicity this error is silenced as in the current API the same level is used for both primitive filters than wrapped type in case of interfaces as: ActedIn AND StarredIn.
+                // A syntax error will be thrown in this case anyway.
+                // throw new Error(`no filter attribute ${key}`);
+            }
 
             return this.createPropertyFilter({
                 attribute,
