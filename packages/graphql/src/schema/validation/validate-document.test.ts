@@ -6555,3 +6555,68 @@ describe("validation 2.0", () => {
         });
     });
 });
+
+// Validations that must be added
+/* eslint-disable-next-line jest/no-disabled-tests */
+describe.skip("TODO", () => {
+    // TODO: add validation rule such that this is not possible
+    // interface Production implements Thing & Show & WatchableThing
+    // breaks everything,
+    // eg. actorConnection result would be ThingActorsConnection or WatchableThingActorsConnection? technically needs to be both bc interface implements both Thing and WatchableThing
+
+    test("type cannot implement a relationship declared in two interface chains", () => {
+        // type Movie implements:
+        // chain 1: Thing - Show - Production
+        // chain 2: WatchableThing
+        const doc = gql`
+            interface Thing {
+                title: String!
+                actors: [Actor!]! @declareRelationship
+            }
+
+            interface WatchableThing {
+                title: String!
+                actors: [Actor!]! @declareRelationship
+            }
+
+            interface Show implements Thing {
+                title: String!
+                actors: [Actor!]! @declareRelationship
+            }
+
+            interface Production implements Thing & Show & WatchableThing {
+                title: String!
+                actors: [Actor!]!
+            }
+
+            type Movie implements WatchableThing & Production & Show & Thing {
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type Series implements WatchableThing & Production & Show & Thing {
+                title: String!
+                episodeCount: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "StarredIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+
+            type StarredIn @relationshipProperties {
+                episodeNr: Int!
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+            "Type cannot implement a relationship declared in more than one interface chain!"
+        );
+    });
+});
