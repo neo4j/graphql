@@ -3781,12 +3781,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Relationship properties when source node is of type:
               * Movie
               \\"\\"\\"
-              MovieProps: MovieGenreEdgeAggregationWhereInput
+              MovieProps: MoviePropsAggregationWhereInput
               \\"\\"\\"
               Relationship properties when source node is of type:
               * Series
               \\"\\"\\"
-              SeriesProps: SeriesGenreEdgeAggregationWhereInput
+              SeriesProps: SeriesPropsAggregationWhereInput
             }
 
             input IProductGenreEdgeCreateInput {
@@ -4070,7 +4070,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieGenreEdgeAggregationWhereInput
+              edge: MoviePropsAggregationWhereInput
               node: MovieGenreNodeAggregationWhereInput
             }
 
@@ -4102,37 +4102,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input MovieGenreCreateFieldInput {
               edge: MoviePropsCreateInput!
               node: GenreCreateInput!
-            }
-
-            input MovieGenreEdgeAggregationWhereInput {
-              AND: [MovieGenreEdgeAggregationWhereInput!]
-              NOT: MovieGenreEdgeAggregationWhereInput
-              OR: [MovieGenreEdgeAggregationWhereInput!]
-              year_AVERAGE_EQUAL: Float
-              year_AVERAGE_GT: Float
-              year_AVERAGE_GTE: Float
-              year_AVERAGE_LT: Float
-              year_AVERAGE_LTE: Float
-              year_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              year_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              year_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              year_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              year_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              year_MAX_EQUAL: Int
-              year_MAX_GT: Int
-              year_MAX_GTE: Int
-              year_MAX_LT: Int
-              year_MAX_LTE: Int
-              year_MIN_EQUAL: Int
-              year_MIN_GT: Int
-              year_MIN_GTE: Int
-              year_MIN_LT: Int
-              year_MIN_LTE: Int
-              year_SUM_EQUAL: Int
-              year_SUM_GT: Int
-              year_SUM_GTE: Int
-              year_SUM_LT: Int
-              year_SUM_LTE: Int
             }
 
             input MovieGenreFieldInput {
@@ -4231,6 +4200,37 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             \\"\\"\\"
             type MovieProps {
               year: Int!
+            }
+
+            input MoviePropsAggregationWhereInput {
+              AND: [MoviePropsAggregationWhereInput!]
+              NOT: MoviePropsAggregationWhereInput
+              OR: [MoviePropsAggregationWhereInput!]
+              year_AVERAGE_EQUAL: Float
+              year_AVERAGE_GT: Float
+              year_AVERAGE_GTE: Float
+              year_AVERAGE_LT: Float
+              year_AVERAGE_LTE: Float
+              year_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_MAX_EQUAL: Int
+              year_MAX_GT: Int
+              year_MAX_GTE: Int
+              year_MAX_LT: Int
+              year_MAX_LTE: Int
+              year_MIN_EQUAL: Int
+              year_MIN_GT: Int
+              year_MIN_GTE: Int
+              year_MIN_LT: Int
+              year_MIN_LTE: Int
+              year_SUM_EQUAL: Int
+              year_SUM_GT: Int
+              year_SUM_GTE: Int
+              year_SUM_LT: Int
+              year_SUM_LTE: Int
             }
 
             input MoviePropsCreateInput {
@@ -4510,7 +4510,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesGenreEdgeAggregationWhereInput
+              edge: SeriesPropsAggregationWhereInput
               node: SeriesGenreNodeAggregationWhereInput
             }
 
@@ -4542,37 +4542,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input SeriesGenreCreateFieldInput {
               edge: SeriesPropsCreateInput
               node: GenreCreateInput!
-            }
-
-            input SeriesGenreEdgeAggregationWhereInput {
-              AND: [SeriesGenreEdgeAggregationWhereInput!]
-              NOT: SeriesGenreEdgeAggregationWhereInput
-              OR: [SeriesGenreEdgeAggregationWhereInput!]
-              episodes_AVERAGE_EQUAL: Float
-              episodes_AVERAGE_GT: Float
-              episodes_AVERAGE_GTE: Float
-              episodes_AVERAGE_LT: Float
-              episodes_AVERAGE_LTE: Float
-              episodes_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodes_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodes_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodes_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodes_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodes_MAX_EQUAL: Int
-              episodes_MAX_GT: Int
-              episodes_MAX_GTE: Int
-              episodes_MAX_LT: Int
-              episodes_MAX_LTE: Int
-              episodes_MIN_EQUAL: Int
-              episodes_MIN_GT: Int
-              episodes_MIN_GTE: Int
-              episodes_MIN_LT: Int
-              episodes_MIN_LTE: Int
-              episodes_SUM_EQUAL: Int
-              episodes_SUM_GT: Int
-              episodes_SUM_GTE: Int
-              episodes_SUM_LT: Int
-              episodes_SUM_LTE: Int
             }
 
             input SeriesGenreFieldInput {
@@ -4671,6 +4640,37 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             \\"\\"\\"
             type SeriesProps {
               episodes: Int
+            }
+
+            input SeriesPropsAggregationWhereInput {
+              AND: [SeriesPropsAggregationWhereInput!]
+              NOT: SeriesPropsAggregationWhereInput
+              OR: [SeriesPropsAggregationWhereInput!]
+              episodes_AVERAGE_EQUAL: Float
+              episodes_AVERAGE_GT: Float
+              episodes_AVERAGE_GTE: Float
+              episodes_AVERAGE_LT: Float
+              episodes_AVERAGE_LTE: Float
+              episodes_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodes_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodes_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodes_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodes_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodes_MAX_EQUAL: Int
+              episodes_MAX_GT: Int
+              episodes_MAX_GTE: Int
+              episodes_MAX_LT: Int
+              episodes_MAX_LTE: Int
+              episodes_MIN_EQUAL: Int
+              episodes_MIN_GT: Int
+              episodes_MIN_GTE: Int
+              episodes_MIN_LT: Int
+              episodes_MIN_LTE: Int
+              episodes_SUM_EQUAL: Int
+              episodes_SUM_GT: Int
+              episodes_SUM_GTE: Int
+              episodes_SUM_LT: Int
+              episodes_SUM_LTE: Int
             }
 
             input SeriesPropsCreateInput {
