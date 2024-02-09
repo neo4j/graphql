@@ -129,20 +129,19 @@ export class RelationshipOperations {
     }
 
     public getConnectOrCreateInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}ConnectOrCreateInput`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}ConnectOrCreateInput`;
     }
 
     public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
-        // TODO: ???? need to make this concrete type specific???
         if (isUnionEntity(this.relationship.target)) {
             if (!concreteTargetEntityAdapter) {
                 throw new Error("missing concreteTargetEntityAdapter");
             }
-            return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
+            return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
                 concreteTargetEntityAdapter.name
             }ConnectOrCreateFieldInput`;
         }
-        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}ConnectOrCreateFieldInput`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}ConnectOrCreateFieldInput`;
     }
 
     public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
