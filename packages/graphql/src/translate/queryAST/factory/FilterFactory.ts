@@ -337,7 +337,6 @@ export class FilterFactory {
                 if (!attr) {
                     throw new Error(`Attribute ${fieldName} not found`);
                 }
-                // TODO: do interface relationship/connection filters/
                 return this.createPropertyFilter({
                     attribute: attr,
                     comparisonValue: value,

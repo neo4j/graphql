@@ -1,5 +1,3 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable jest/no-disabled-tests */
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -258,7 +256,7 @@ describe("interface with declared relationships", () => {
         ]);
     });
 
-    test.skip("should read connection and return interface relationship fields", async () => {
+    test("should read connection and return interface relationship fields", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
 
@@ -273,29 +271,13 @@ describe("interface with declared relationships", () => {
         const episodeNr = faker.number.int({ max: 100000 });
 
         const query = /* GraphQL */ `
-            query Productions {
+            query production {
                 productions {
                     title
                     actorsConnection {
                         edges {
                             node {
                                 name
-                                actedInConnection {
-                                    edges {
-                                        node {
-                                            title
-                                            ... on ${Movie} {
-                                                runtime
-                                            }
-                                            ... on ${Series} {
-                                                episodeCount
-                                            }
-                                        }
-                                        #properties {
-                                        #    screenTime
-                                        #}
-                                    }
-                                }
                             }
                             properties {
                                 ... on ActedIn {
@@ -344,164 +326,374 @@ describe("interface with declared relationships", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle,
+                    actorsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                        ],
+                    },
+                }),
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                            {
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                        ]),
+                    },
+                }),
+                expect.objectContaining({
+                    title: seriesTitle,
+                    actorsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    episodeNr,
+                                },
+                            },
+                        ],
+                    },
+                }),
+            ])
+        );
+    });
 
-        expect(gqlResult.data?.["productions"]).toIncludeSameMembers([
+    test("should filter using relationship filters", async () => {
+        const actorName = "actor1";
+        const actorName2 = "actor2";
+
+        const movieTitle = "movie1";
+        const movieTitle2 = "movie2";
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = "series1";
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const episodeNr = faker.number.int({ max: 100000 });
+
+        const query = /* GraphQL */ `
+            query production {
+                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${Actor} { name: $actorName })
+                CREATE (a2:${Actor} { name: $actorName2 })
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
+            `,
             {
-                title: movieTitle,
-                actorsConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                name: actorName,
-                                actedInConnection: {
-                                    edges: expect.toIncludeSameMembers([
-                                        {
-                                            node: {
-                                                title: movieTitle,
-                                                runtime: movieRuntime,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                title: movieTitle2,
-                                                runtime: movieRuntime,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                title: seriesTitle,
-                                                episodeCount: seriesEpisodes,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                    ]),
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+                episodeNr,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
                                 },
                             },
-                            properties: {
-                                screenTime: movieScreenTime,
+                            {
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
                             },
-                        },
-                    ]),
-                },
-            },
+                        ]),
+                    },
+                }),
+            ])
+        );
+    });
+
+    test("should filter using connection filters", async () => {
+        const actorName = "actor1";
+        const actorName2 = "actor2";
+
+        const movieTitle = "movie1";
+        const movieTitle2 = "movie2";
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = "series1";
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const episodeNr = faker.number.int({ max: 100000 });
+
+        const query = /* GraphQL */ `
+            query production {
+                productions(where: { actorsConnection_SOME: { node: { name: "${actorName2}" } } }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${Actor} { name: $actorName })
+                CREATE (a2:${Actor} { name: $actorName2 })
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
+            `,
             {
-                title: movieTitle2,
-                actorsConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                name: actorName,
-                                actedInConnection: {
-                                    edges: expect.toIncludeSameMembers([
-                                        {
-                                            node: {
-                                                title: movieTitle,
-                                                runtime: movieRuntime,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                title: movieTitle2,
-                                                runtime: movieRuntime,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                title: seriesTitle,
-                                                episodeCount: seriesEpisodes,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                    ]),
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+                episodeNr,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
                                 },
                             },
-                            properties: {
-                                screenTime: movieScreenTime,
-                            },
-                        },
-                        {
-                            node: {
-                                name: actorName2,
-                                actedInConnection: {
-                                    edges: expect.toIncludeSameMembers([
-                                        {
-                                            node: { title: movieTitle2, runtime: movieRuntime },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                    ]),
+                            {
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
                                 },
                             },
-                            properties: {
-                                screenTime: movieScreenTime,
-                            },
-                        },
-                    ]),
-                },
-            },
+                        ]),
+                    },
+                }),
+            ])
+        );
+    });
+
+    test("should filter using connection filters + typename_IN + logical", async () => {
+        const actorName = "actor1";
+        const actorName2 = "actor2";
+
+        const movieTitle = "movie1";
+        const movieTitle2 = "movie2";
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = "series1";
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const episodeNr = faker.number.int({ max: 100000 });
+
+        const query = /* GraphQL */ `
+            query production {
+                productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name: "${actorName2}" }  }}] }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${Actor} { name: $actorName })
+                CREATE (a2:${Actor} { name: $actorName2 })
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
+            `,
             {
-                title: seriesTitle,
-                actorsConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                name: actorName,
-                                actedInConnection: {
-                                    edges: expect.toIncludeSameMembers([
-                                        {
-                                            node: {
-                                                title: movieTitle,
-                                                runtime: movieRuntime,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                title: movieTitle2,
-                                                runtime: movieRuntime,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                title: seriesTitle,
-                                                episodeCount: seriesEpisodes,
-                                            },
-                                            properties: {
-                                                screenTime: movieScreenTime,
-                                            },
-                                        },
-                                    ]),
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+                episodeNr,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
                                 },
                             },
-                            properties: {
-                                episodeNr,
+                            {
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
                             },
-                        },
-                    ]),
-                },
-            },
-        ]);
+                        ]),
+                    },
+                }),
+                expect.objectContaining({
+                    title: seriesTitle,
+                    actorsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    episodeNr,
+                                },
+                            },
+                        ],
+                    },
+                }),
+            ])
+        );
     });
 });
