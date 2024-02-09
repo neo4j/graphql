@@ -504,9 +504,7 @@ describe("interface with declared relationships", () => {
     });
 
     // actorsConnection -> sort -> edge
-    // FIXME
-    /* eslint-disable-next-line jest/no-disabled-tests */
-    test.skip("should read connection and return interface relationship fields sorted", async () => {
+    test("should read connection and return interface relationship fields sorted", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
 
@@ -530,6 +528,150 @@ describe("interface with declared relationships", () => {
                     actorsConnection(
                         sort: [{ edge: { ActedIn: { screenTime: ASC }, StarredIn: { episodeNr: DESC } } }]
                     ) {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${Actor} { name: $actorName })
+                CREATE (a2:${Actor} { name: $actorName2 })
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime2 }]->(m2)
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
+                CREATE (s:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
+                CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr, screenTime: $movieScreenTime3 }]->(s)
+                CREATE (a2)-[:ACTED_IN { episodeNr: $episodeNr2, screenTime: $movieScreenTime2 }]->(s)
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                movieScreenTime2,
+                movieScreenTime3,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+                episodeNr,
+                episodeNr2,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data?.["productions"]).toIncludeSameMembers([
+            {
+                title: movieTitle,
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                name: actorName,
+                            },
+                            properties: {
+                                screenTime: movieScreenTime,
+                            },
+                        },
+                    ]),
+                },
+            },
+            {
+                title: movieTitle2,
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                name: actorName2,
+                            },
+                            properties: {
+                                screenTime: movieScreenTime,
+                            },
+                        },
+                        {
+                            node: {
+                                name: actorName,
+                            },
+                            properties: {
+                                screenTime: movieScreenTime2,
+                            },
+                        },
+                    ]),
+                },
+            },
+            {
+                title: seriesTitle,
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                name: actorName2,
+                            },
+                            properties: {
+                                episodeNr: episodeNr2,
+                            },
+                        },
+                        {
+                            node: {
+                                name: actorName,
+                            },
+                            properties: {
+                                episodeNr: episodeNr,
+                            },
+                        },
+                    ]),
+                },
+            },
+        ]);
+    });
+
+    test("should read connection and return interface relationship fields sorted - only one edge specified in sort", async () => {
+        const actorName = "actor1";
+        const actorName2 = "actor2";
+
+        const movieTitle = "movie1";
+        const movieTitle2 = "movie2";
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = 1;
+        const movieScreenTime2 = 2;
+        const movieScreenTime3 = 3;
+
+        const seriesTitle = "series1";
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const episodeNr = 10;
+        const episodeNr2 = 11;
+
+        const query = /* GraphQL */ `
+            query Productions {
+                productions {
+                    title
+                    actorsConnection(sort: [{ edge: { StarredIn: { episodeNr: DESC } } }]) {
                         edges {
                             node {
                                 name

@@ -45,7 +45,6 @@ import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
-import { RelationshipDeclarationAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 type AggregateWhereInput = {
     count: number;
@@ -378,27 +377,13 @@ export class FilterFactory {
         // The type T in ConcreteEntity.relationshipConnection(where: {edge: T}) defines all possible propertiesTypeNames as well (bc the relationshipConnection field is inherited from the Interface)
         // that means users are able to filter the edge by a propertiesTypeName that the relationship does not know of
         const allPropertiesTypeNames = relationship.siblings || [];
-        if (Object.keys(where).some((k) => allPropertiesTypeNames.includes(k))) {
-            if (relationship instanceof RelationshipAdapter && relationship.propertiesTypeName) {
-                // ignores all other propertiesTypeName and only generates filter for the applicable one
-                return this.createEdgeFilters(relationship, where[relationship.propertiesTypeName] || {});
-            }
-            // For interface filters relationship argument would be of type RelationshipDeclarationAdapter
-            // in which case, all possible propertiesTypeNames should be translated
-            // example implementation below - remove if not needed
-            /*
-            if (relationship instanceof RelationshipDeclarationAdapter) {
-                const nestedFilters = allPropertiesTypeNames.flatMap((key) => {
-                    return this.createEdgeFilters(relationship, where[key] || {});
-                });
-                return this.wrapMultipleFiltersInLogical([
-                    new LogicalFilter({
-                        operation: "OR",
-                        filters: nestedFilters,
-                    }),
-                ]);
-            }
-            */
+        if (
+            relationship instanceof RelationshipAdapter &&
+            relationship.propertiesTypeName &&
+            Object.keys(where).some((k) => allPropertiesTypeNames.includes(k))
+        ) {
+            // ignores all other propertiesTypeName and only generates filter for the applicable one
+            return this.createEdgeFilters(relationship, where[relationship.propertiesTypeName] || {});
         }
         const filterASTs = Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
@@ -412,7 +397,9 @@ export class FilterFactory {
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
             const attribute = relationship.findAttribute(fieldName);
-            if (!attribute) throw new Error(`no filter attribute ${key}`);
+            if (!attribute) {
+                throw new Error(`no filter attribute ${key}`);
+            }
 
             return this.createPropertyFilter({
                 attribute,
