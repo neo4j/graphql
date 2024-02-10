@@ -13517,12 +13517,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-simple-import-sort@npm:10.0.0":
-  version: 10.0.0
-  resolution: "eslint-plugin-simple-import-sort@npm:10.0.0"
+"eslint-plugin-simple-import-sort@npm:11.0.0":
+  version: 11.0.0
+  resolution: "eslint-plugin-simple-import-sort@npm:11.0.0"
   peerDependencies:
     eslint: ">=5.0.0"
-  checksum: 10c0/1ae0814d23816d51d010cfbc5ee0a0dde8d825a3093876b2e8219a0562d53f4d4794508551e503ebe2ea98904cb35204dbe54dfbf9d7fc8b8e3ea25c52aa68ac
+  checksum: 10c0/25f561019a69b2e4c37cfb5f838a6f987f9f57faafc4640272711e05dda49e41196d3d54d35bab6e21c126458f31ff7411c2142944a0ff38dac0da7661b43b96
   languageName: node
   linkType: hard
 
@@ -20072,7 +20072,7 @@ __metadata:
     eslint-plugin-jest: "npm:27.6.3"
     eslint-plugin-jsx-a11y: "npm:6.8.0"
     eslint-plugin-react: "npm:7.33.2"
-    eslint-plugin-simple-import-sort: "npm:10.0.0"
+    eslint-plugin-simple-import-sort: "npm:11.0.0"
     graphql: "npm:16.8.1"
     husky: "npm:8.0.3"
     jest: "npm:29.7.0"
