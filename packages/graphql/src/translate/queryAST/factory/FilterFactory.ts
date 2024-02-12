@@ -649,7 +649,7 @@ export class FilterFactory {
         entity: InterfaceEntityAdapter
     ): boolean {
         if (where.node) {
-            const doesContainsFieldsNotOptimizable = Object.keys(where.node).some((field) => {
+            const containsUnoptimizableFields = Object.keys(where.node).some((field) => {
                 const { fieldName, isAggregate, isConnection } = parseWhereField(field);
                 if (isAggregate || isConnection) {
                     return true;
@@ -660,7 +660,7 @@ export class FilterFactory {
                 }
                 return false;
             });
-            return !doesContainsFieldsNotOptimizable;
+            return !containsUnoptimizableFields;
         }
         return true;
     }
