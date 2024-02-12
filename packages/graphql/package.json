@@ -65,7 +65,7 @@
         "dedent": "1.5.1",
         "graphql-middleware": "6.1.35",
         "graphql-tag": "2.12.6",
-        "graphql-ws": "5.14.3",
+        "graphql-ws": "5.15.0",
         "is-uuid": "1.0.2",
         "jest": "29.7.0",
         "jest-extended": "4.0.2",
