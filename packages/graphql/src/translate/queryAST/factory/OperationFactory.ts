@@ -1265,34 +1265,30 @@ export class OperationsFactory {
             const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
-            const authFilters = this.authorizationFactory.getAuthFilters({
-                entity,
-                operations: ["AGGREGATE"],
-                context,
-            });
             if (isInterfaceEntity(entity)) {
                 const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
                 operation.addFilters(...filters);
             } else {
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
+                const authFilters = this.authorizationFactory.getAuthFilters({
+                    entity,
+                    operations: ["AGGREGATE"],
+                    context,
+                });
+
+                operation.addAuthFilters(...authFilters);
             }
 
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
-            operation.addAuthFilters(...authFilters);
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
             };
 
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields);
-            const authFilters = this.authorizationFactory.getAuthFilters({
-                entity,
-                operations: ["AGGREGATE"],
-                context,
-            });
 
             if (isInterfaceEntity(entity)) {
                 const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
@@ -1300,9 +1296,15 @@ export class OperationsFactory {
             } else {
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
+                const authFilters = this.authorizationFactory.getAuthFilters({
+                    entity,
+                    operations: ["AGGREGATE"],
+                    context,
+                });
+
+                operation.addAuthFilters(...authFilters);
             }
             operation.setFields(fields);
-            operation.addAuthFilters(...authFilters);
         }
 
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);

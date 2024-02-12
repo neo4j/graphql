@@ -39,7 +39,6 @@ import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamProper
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import { FilterFactory } from "./FilterFactory";
 import { parseWhereField } from "./parsers/parse-where-field";
-import { isInterfaceEntity } from "../utils/is-interface-entity";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -49,7 +48,7 @@ export class AuthFilterFactory extends FilterFactory {
         context,
         populatedWhere,
     }: {
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        entity: ConcreteEntityAdapter;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
         populatedWhere: GraphQLWhereArg;
@@ -74,9 +73,6 @@ export class AuthFilterFactory extends FilterFactory {
             }
 
             if (key === "node") {
-                if (isInterfaceEntity(entity)) {
-                    throw new Error("Interface filter to be implemented");
-                }
                 return this.createNodeFilters(entity, value);
             } else if (key === "jwt") {
                 return this.createJWTFilters(context.authorization.jwtParam, value, context);
