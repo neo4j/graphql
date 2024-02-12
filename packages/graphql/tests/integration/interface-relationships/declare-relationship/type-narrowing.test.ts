@@ -598,9 +598,7 @@ describe("type narrowing - simple case", () => {
         ]);
     });
 
-    // TODO: translation layer does not seem to support connection filters on interfaces
-    /* eslint-disable-next-line jest/no-disabled-tests */
-    test.skip("get narrowed connection field + filter on edge top level", async () => {
+    test("get narrowed connection field + filter on edge top level", async () => {
         const actorName = "actor1";
         const untrainedPersonName = "anyone";
 
@@ -649,10 +647,10 @@ describe("type narrowing - simple case", () => {
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
                 CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (m3:${AmatureProduction} { title: $amatureProductionTitle, episodeCount: $seriesEpisodes })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr }]->(m2)
-                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr, screenTime: $seriesScreenTime }]->(:${AmatureProduction} { title: $amatureProductionTitle, episodeCount: $seriesEpisodes })
+                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr, screenTime: $seriesScreenTime }]->(m3)
             `,
             {
                 actorName,
@@ -677,64 +675,54 @@ describe("type narrowing - simple case", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect(gqlResult.data?.["people"]).toIncludeSameMembers([
-            {
-                name: actorName,
-                moviesCnt: 1,
-                actedInConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                title: movieTitle,
-                                runtime: movieRuntime,
+        expect(gqlResult.data?.["people"]).toEqual(
+            expect.arrayContaining([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    title: movieTitle2,
+                                    runtime: movieRuntime,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
                             },
-                            properties: {
-                                screenTime: movieScreenTime,
+                            {
+                                node: {
+                                    title: movieTitle,
+                                    runtime: movieRuntime,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
                             },
-                        },
-                        {
-                            node: {
-                                title: movieTitle2,
-                                runtime: movieRuntime,
-                            },
-                            properties: {
-                                screenTime: movieScreenTime,
-                            },
-                        },
-                    ]),
+                        ]),
+                    },
                 },
-            },
-            {
-                name: untrainedPersonName,
-                age: 20,
-                actedInConnection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                title: amatureProductionTitle,
-                                episodeCount: seriesEpisodes,
+                {
+                    name: untrainedPersonName,
+                    actedInConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    title: amatureProductionTitle,
+                                    episodeCount: seriesEpisodes,
+                                },
+                                properties: {
+                                    sceneNr,
+                                },
                             },
-                            properties: {
-                                sceneNr,
-                            },
-                        },
-                        {
-                            node: {
-                                title: movieTitle2,
-                                runtime: movieRuntime,
-                            },
-                            properties: {
-                                screenTime: movieScreenTime,
-                            },
-                        },
-                    ]),
+                        ]),
+                    },
                 },
-            },
-        ]);
+            ])
+        );
     });
-    // TODO: translation layer does not seem to support connection filters on interfaces
-    /* eslint-disable-next-line jest/no-disabled-tests */
-    test.skip("get narrowed connection field + filter on node top level", async () => {
+
+    test("get narrowed connection field + filter on node top level", async () => {
         const actorName = "actor1";
         const untrainedPersonName = "anyone";
 
@@ -750,7 +738,7 @@ describe("type narrowing - simple case", () => {
 
         const query = /* GraphQL */ `
             query People {
-                people(where: { actedInConnection: { node: { title: "${movieTitle}" } } }) {
+                people(where: { actedInConnection_SOME: { node: { OR: [ { title: "${movieTitle}" }, { title: "${amatureProductionTitle}" }] } } }) {
                     name
                     actedInConnection {
                         edges {
@@ -785,7 +773,6 @@ describe("type narrowing - simple case", () => {
                 CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr }]->(m2)
                 CREATE (up)-[:ACTED_IN { sceneNr: $sceneNr, screenTime: $seriesScreenTime }]->(:${AmatureProduction} { title: $amatureProductionTitle, episodeCount: $seriesEpisodes })
             `,
             {
@@ -811,12 +798,11 @@ describe("type narrowing - simple case", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect(gqlResult.data?.["people"]).toIncludeSameMembers([
+        expect(gqlResult.data?.["people"]).toEqual([
             {
                 name: actorName,
-                moviesCnt: 1,
                 actedInConnection: {
-                    edges: expect.toIncludeSameMembers([
+                    edges: expect.arrayContaining([
                         {
                             node: {
                                 title: movieTitle,
@@ -840,25 +826,15 @@ describe("type narrowing - simple case", () => {
             },
             {
                 name: untrainedPersonName,
-                age: 20,
                 actedInConnection: {
-                    edges: expect.toIncludeSameMembers([
+                    edges: expect.arrayContaining([
                         {
                             node: {
                                 title: amatureProductionTitle,
                                 episodeCount: seriesEpisodes,
                             },
                             properties: {
-                                sceneNr,
-                            },
-                        },
-                        {
-                            node: {
-                                title: movieTitle2,
-                                runtime: movieRuntime,
-                            },
-                            properties: {
-                                screenTime: movieScreenTime,
+                                sceneNr: sceneNr,
                             },
                         },
                     ]),
