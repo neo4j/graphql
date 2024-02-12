@@ -24,6 +24,7 @@ import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -74,7 +75,6 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -708,6 +708,7 @@ export class OperationsFactory {
                 target: concreteEntity,
                 args: deleteArg,
                 context,
+                partialOf: target,
             });
         });
     }
@@ -783,11 +784,13 @@ export class OperationsFactory {
         target,
         args,
         context,
+        partialOf,
     }: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter;
         args: Record<string, any>;
         context: Neo4jGraphQLTranslationContext;
+        partialOf?: InterfaceEntityAdapter;
     }): DeleteOperation[] {
         const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
 
@@ -803,7 +806,16 @@ export class OperationsFactory {
             optional: true,
             targetOverride: target,
         });
-        const nodeFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
+        let nodeFilters: Filter[];
+        if (partialOf && isInterfaceEntity(partialOf)) {
+            nodeFilters = this.filterFactory.createInterfaceNodeFilters({
+                entity: partialOf,
+                targetEntity: target,
+                whereFields: whereArg.node,
+            });
+        } else {
+            nodeFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
+        }
         const edgeFilters = this.filterFactory.createEdgeFilters(relationship, whereArg.edge);
 
         const filters = [...nodeFilters, ...edgeFilters];

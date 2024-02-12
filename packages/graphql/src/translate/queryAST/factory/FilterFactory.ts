@@ -355,11 +355,10 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
-    public createNodeFilters(entity: EntityAdapter, whereFields: Record<string, any>): Filter[] {
-        if (isInterfaceEntity(entity)) {
-            throw new Error("Cannot query interface entity directly");
-            //return this.createInterfaceNodeFilters(entity, whereFields);
-        }
+    public createNodeFilters(
+        entity: ConcreteEntityAdapter | UnionEntityAdapter,
+        whereFields: Record<string, any>
+    ): Filter[] {
         if (isUnionEntity(entity)) {
             return [];
         }
