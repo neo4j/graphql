@@ -74,9 +74,9 @@ describe("@default directive", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -88,19 +88,19 @@ describe("@default directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -143,7 +143,7 @@ describe("@default directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -178,13 +178,13 @@ describe("@default directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-              numberOfFriends: IntAggregateSelectionNonNullable!
-              rating: FloatAggregateSelectionNonNullable!
-              toBeOverridden: StringAggregateSelectionNonNullable!
-              verifiedDate: DateTimeAggregateSelectionNonNullable!
+              fromInterface: StringAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              numberOfFriends: IntAggregateSelection!
+              rating: FloatAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
+              verifiedDate: DateTimeAggregateSelection!
             }
 
             input UserCreateInput {
@@ -211,8 +211,8 @@ describe("@default directive", () => {
 
             type UserInterfaceAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelectionNonNullable!
-              toBeOverridden: StringAggregateSelectionNonNullable!
+              fromInterface: StringAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
             }
 
             enum UserInterfaceImplementation {

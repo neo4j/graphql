@@ -90,29 +90,42 @@ export function verifyRelationshipArgumentValue(
                 throw new Error("Missing data: Enums, Interfaces, Unions.");
             }
 
-            const relationshipPropertiesInterface = extra.objects.filter(
+            const relationshipPropertiesInterface = extra.interfaces.filter(
+                (i) =>
+                    i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
+                    i.kind === Kind.INTERFACE_TYPE_DEFINITION
+            );
+
+            if (relationshipPropertiesInterface.length > 0) {
+                throw new DocumentValidationError(
+                    `@relationship.properties invalid. The @relationshipProperties directive must be applied to a type and not an interface, a breaking change introduced in version 5.0.0.`,
+                    ["properties"]
+                );
+            }
+
+            const relationshipPropertiesType = extra.objects.filter(
                 (i) =>
                     i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
                     i.kind === Kind.OBJECT_TYPE_DEFINITION
             );
 
-            if (relationshipPropertiesInterface.length > 1) {
+            if (relationshipPropertiesType.length > 1) {
                 throw new DocumentValidationError(
                     `@relationship.properties invalid. Cannot have more than 1 type represent the relationship properties.`,
                     ["properties"]
                 );
             }
-            if (!relationshipPropertiesInterface.length) {
+            if (!relationshipPropertiesType.length) {
                 throw new DocumentValidationError(
                     `@relationship.properties invalid. Cannot find type to represent the relationship properties: ${propertiesValue}.`,
                     ["properties"]
                 );
             }
-            const isRelationshipPropertiesInterfaceAnnotated = relationshipPropertiesInterface[0]?.directives?.some(
+            const isRelationshipPropertiesTypeAnnotated = relationshipPropertiesType[0]?.directives?.some(
                 (d) => d.name.value === "relationshipProperties"
             );
 
-            if (!isRelationshipPropertiesInterfaceAnnotated) {
+            if (!isRelationshipPropertiesTypeAnnotated) {
                 throw new DocumentValidationError(
                     `@relationship.properties invalid. Properties type ${propertiesValue} must use directive \`@relationshipProperties\`.`,
                     ["properties"]

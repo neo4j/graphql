@@ -210,12 +210,12 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               UPDATE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -232,8 +232,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -488,7 +488,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -550,7 +550,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input ProductionConnectInput {
@@ -718,9 +718,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episode: IntAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -956,7 +956,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

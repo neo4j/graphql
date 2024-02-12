@@ -117,6 +117,35 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }"
         `);
     });
+
+    test("should not use a node label so it covers all nodes implementing the interface for connection rel (inside logical)", async () => {
+        const query = gql`
+            query {
+                movies(
+                    where: { distributionConnection_SOME: { node: { OR: [{ name: "test4" }, { name: "test1" }] } } }
+                ) {
+                    title
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Film)
+            WHERE EXISTS {
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1)
+                WHERE ((this1.name = $param0 OR this1.name = $param1) AND (this1:Dishney OR this1:Prime OR this1:Netflix))
+            }
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test4\\",
+                \\"param1\\": \\"test1\\"
+            }"
+        `);
+    });
 });
 
 describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {

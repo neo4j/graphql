@@ -146,10 +146,7 @@ export class FieldFactory {
                     const attribute = entity.findAttribute(field.name);
                     if (!attribute) throw new Error(`Attribute ${field.name} not found`);
 
-                    const aggregateFields =
-                        field.fieldsByTypeName[attribute.getAggregateSelectionTypeName(false)] ||
-                        field.fieldsByTypeName[attribute.getAggregateSelectionTypeName(true)] ||
-                        {};
+                    const aggregateFields = field.fieldsByTypeName[attribute.getAggregateSelectionTypeName()] || {};
 
                     const aggregationProjection = Object.values(aggregateFields).reduce((acc, f) => {
                         acc[f.name] = f.alias;

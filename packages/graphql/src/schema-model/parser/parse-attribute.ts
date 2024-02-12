@@ -137,15 +137,15 @@ function isUnion(definitionCollection: DefinitionCollection, name: string): bool
     return definitionCollection.unionTypes.has(name);
 }
 
-function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
+export function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
     return definitionCollection.enumTypes.has(name);
 }
 
-function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
+export function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.scalarTypes.has(name);
 }
 
-function isObject(definitionCollection, name: string) {
+export function isObject(definitionCollection, name: string) {
     return definitionCollection.nodes.has(name);
 }
 
@@ -161,11 +161,11 @@ function isCartesianPoint(value): boolean {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.CartesianPoint;
 }
 
-function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
+export function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
     return Object.values<string>(Neo4jGraphQLSpatialType).includes(value);
 }
 
-function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
+export function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
     return isGraphQLBuiltInScalar(value) || isNeo4jGraphQLNumberType(value) || isNeo4jGraphQLTemporalType(value);
 }
 

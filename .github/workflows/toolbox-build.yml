@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version: lts/*
       - name: Install dependencies
@@ -31,7 +31,7 @@ jobs:
           echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox
       - name: Archive Toolbox build
-        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           name: graphqltoolbox
           path: packages/graphql-toolbox/dist

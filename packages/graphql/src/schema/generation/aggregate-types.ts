@@ -72,10 +72,7 @@ function makeAggregableFields({
     const aggregableFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};
     const aggregableAttributes = entityAdapter.aggregableFields;
     for (const attribute of aggregableAttributes) {
-        const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-            fieldName: attribute.getTypeName(),
-            nullable: !attribute.typeHelper.isRequired(),
-        });
+        const objectTypeComposer = aggregationTypesMapper.getAggregationType(attribute.getTypeName());
         if (objectTypeComposer) {
             aggregableFields[attribute.name] = objectTypeComposer.NonNull;
         }

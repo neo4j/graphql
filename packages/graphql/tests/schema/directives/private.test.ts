@@ -68,7 +68,7 @@ describe("@private directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -125,7 +125,7 @@ describe("@private directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input UserCreateInput {
@@ -143,7 +143,7 @@ describe("@private directive", () => {
 
             type UserInterfaceAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             enum UserInterfaceImplementation {
@@ -272,7 +272,7 @@ describe("@private directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -307,7 +307,7 @@ describe("@private directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -335,8 +335,8 @@ describe("@private directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              private: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              private: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -355,7 +355,7 @@ describe("@private directive", () => {
 
             type UserInterfaceAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             enum UserInterfaceImplementation {

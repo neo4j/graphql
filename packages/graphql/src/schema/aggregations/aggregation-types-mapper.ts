@@ -23,43 +23,22 @@ import { idResolver } from "../resolvers/field/id";
 import { numericalResolver } from "../resolvers/field/numerical";
 
 export class AggregationTypesMapper {
-    private requiredAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
-    private nullableAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
+    private readonly aggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
 
-    private subgraph: Subgraph | undefined;
+    private readonly subgraph: Subgraph | undefined;
 
     constructor(composer: SchemaComposer, subgraph?: Subgraph) {
         this.subgraph = subgraph;
-        this.requiredAggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes({
-            composer,
-            nullable: false,
-        });
-        this.nullableAggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes({
-            composer,
-            nullable: true,
-        });
+        this.aggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes(composer);
     }
 
-    public getAggregationType({
-        fieldName,
-        nullable,
-    }: {
-        fieldName: string;
-        nullable: boolean;
-    }): ObjectTypeComposer<unknown, unknown> | undefined {
-        if (nullable) {
-            return this.nullableAggregationSelectionTypes[fieldName];
-        }
-        return this.requiredAggregationSelectionTypes[fieldName];
+    public getAggregationType(typeName: string): ObjectTypeComposer<unknown, unknown> | undefined {
+        return this.aggregationSelectionTypes[typeName];
     }
 
-    private getOrCreateAggregationSelectionTypes({
-        composer,
-        nullable,
-    }: {
-        composer: SchemaComposer;
-        nullable: boolean;
-    }): Record<string, ObjectTypeComposer<unknown, unknown>> {
+    private getOrCreateAggregationSelectionTypes(
+        composer: SchemaComposer
+    ): Record<string, ObjectTypeComposer<unknown, unknown>> {
         const composeInt = {
             type: "Int",
             resolve: numericalResolver,
@@ -141,8 +120,7 @@ export class AggregationTypesMapper {
         const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
             Record<string, ObjectTypeComposer<unknown, unknown>>
         >((res, { name, fields, directives }) => {
-            const type = this.createType({ composer, nullable, name, fields, directives });
-            res[name] = type;
+            res[name] = this.createType({ composer, name, fields, directives });
             return res;
         }, {});
 
@@ -151,29 +129,20 @@ export class AggregationTypesMapper {
 
     private createType({
         composer,
-        nullable,
         name,
         fields,
         directives = [],
     }: {
         composer: SchemaComposer;
-        nullable: boolean;
         name: string;
         fields?: Record<string, any>;
         directives?: string[];
     }): ObjectTypeComposer<any, any> {
-        const typeName = this.makeNullable(name, nullable);
-        const nullableStr = nullable ? "Nullable" : "NonNullable";
-
-        return composer.getOrCreateOTC(`${name}AggregateSelection${nullableStr}`, (tc) => {
-            tc.addFields(fields ?? { min: typeName, max: typeName });
+        return composer.getOrCreateOTC(`${name}AggregateSelection`, (tc) => {
+            tc.addFields(fields ?? { min: name, max: name });
             for (const directive of directives) {
                 tc.setDirectiveByName(directive);
             }
         });
-    }
-
-    private makeNullable(typeStr: string, isNullable: boolean) {
-        return `${typeStr}${isNullable ? "" : "!"}`;
     }
 }

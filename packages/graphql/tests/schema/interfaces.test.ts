@@ -77,7 +77,7 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -93,7 +93,7 @@ describe("Interfaces", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -128,7 +128,7 @@ describe("Interfaces", () => {
             }
 
             type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieMoviesAggregateInput {
@@ -190,7 +190,7 @@ describe("Interfaces", () => {
 
             type MovieNodeAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             enum MovieNodeImplementation {
@@ -492,7 +492,7 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -508,7 +508,7 @@ describe("Interfaces", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -543,7 +543,7 @@ describe("Interfaces", () => {
             }
 
             type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieMoviesAggregateInput {
@@ -605,7 +605,7 @@ describe("Interfaces", () => {
 
             type MovieNodeAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             enum MovieNodeImplementation {

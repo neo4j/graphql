@@ -58,7 +58,10 @@ type AggregateWhereInput = {
 };
 
 export class FilterFactory {
-    constructor(_queryASTFactory: QueryASTFactory) {}
+    private queryASTFactory: QueryASTFactory;
+    constructor(queryASTFactory: QueryASTFactory) {
+        this.queryASTFactory = queryASTFactory;
+    }
 
     /**
      * Get all the entities explicitly required by the where "on" object. If it's a concrete entity it will return itself.

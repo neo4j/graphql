@@ -53,7 +53,7 @@ describe("connect or create with id", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -88,8 +88,8 @@ describe("connect or create with id", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -322,7 +322,7 @@ describe("connect or create with id", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -334,8 +334,8 @@ describe("connect or create with id", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectOrCreateWhere {
@@ -450,7 +450,7 @@ describe("connect or create with id", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -524,9 +524,9 @@ describe("connect or create with id", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -538,7 +538,7 @@ describe("connect or create with id", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -570,10 +570,10 @@ describe("connect or create with id", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
               count: Int!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PostConnectInput {
@@ -786,8 +786,8 @@ describe("connect or create with id", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -852,7 +852,7 @@ describe("connect or create with id", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -888,8 +888,8 @@ describe("connect or create with id", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -945,9 +945,9 @@ describe("connect or create with id", () => {
             }
 
             type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input UserPostsAggregateInput {

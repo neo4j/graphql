@@ -31,11 +31,7 @@ export class RelationshipOperations {
     }
 
     public get prefixForTypename(): string {
-        // if relationship field is inherited  by source
-        // (part of a implemented Interface, not necessarily annotated as rel)
-        // then return this.interface.name
-
-        return this.relationship.inheritedFrom || this.relationship.source.name;
+        return this.relationship.firstDeclaredInTypeName || this.relationship.source.name;
     }
 
     public get fieldInputPrefixForTypename(): string {
@@ -67,18 +63,8 @@ export class RelationshipOperations {
         return `${this.relationship.target.name}${this.relationship.isNullable === false ? "!" : ""}`;
     }
 
-    public getConnectionUnionWhereInputTypename(concreteEntityAdapter: ConcreteEntityAdapter): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
-            concreteEntityAdapter.name
-        }ConnectionWhere`;
-    }
-
     public get connectionSortInputTypename(): string {
         return `${this.connectionFieldTypename}Sort`;
-    }
-
-    public get connectionWhereInputTypename(): string {
-        return `${this.connectionFieldTypename}Where`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -129,20 +115,19 @@ export class RelationshipOperations {
     }
 
     public getConnectOrCreateInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}ConnectOrCreateInput`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}ConnectOrCreateInput`;
     }
 
     public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
-        // TODO: ???? need to make this concrete type specific???
         if (isUnionEntity(this.relationship.target)) {
             if (!concreteTargetEntityAdapter) {
                 throw new Error("missing concreteTargetEntityAdapter");
             }
-            return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
+            return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
                 concreteTargetEntityAdapter.name
             }ConnectOrCreateFieldInput`;
         }
-        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}ConnectOrCreateFieldInput`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}ConnectOrCreateFieldInput`;
     }
 
     public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {

@@ -40,6 +40,8 @@ export class RelationshipDeclaration {
 
     public readonly relationshipImplementations: Relationship[];
 
+    public readonly firstDeclaredInTypeName: string | undefined;
+
     constructor({
         name,
         args,
@@ -52,6 +54,7 @@ export class RelationshipDeclaration {
         description,
         annotations = {},
         relationshipImplementations,
+        firstDeclaredInTypeName,
     }: {
         name: string;
         args: Argument[];
@@ -64,6 +67,7 @@ export class RelationshipDeclaration {
         description?: string;
         annotations?: Partial<Annotations>;
         relationshipImplementations: Relationship[];
+        firstDeclaredInTypeName?: string;
     }) {
         this.name = name;
         this.source = source;
@@ -76,6 +80,7 @@ export class RelationshipDeclaration {
         this.description = description;
         this.annotations = annotations;
         this.relationshipImplementations = relationshipImplementations;
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
     }
 
     public clone(): RelationshipDeclaration {
@@ -91,6 +96,7 @@ export class RelationshipDeclaration {
             description: this.description,
             annotations: this.annotations,
             relationshipImplementations: this.relationshipImplementations,
+            firstDeclaredInTypeName: this.firstDeclaredInTypeName,
         });
     }
 }

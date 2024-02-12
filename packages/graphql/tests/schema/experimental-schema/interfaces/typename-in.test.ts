@@ -121,7 +121,7 @@ describe("typename_IN", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -161,8 +161,8 @@ describe("typename_IN", () => {
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -254,14 +254,14 @@ describe("typename_IN", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -275,10 +275,10 @@ describe("typename_IN", () => {
             }
 
             type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -386,9 +386,9 @@ describe("typename_IN", () => {
             }
 
             type ProductionAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -477,10 +477,10 @@ describe("typename_IN", () => {
             }
 
             type SeriesAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
+              cost: FloatAggregateSelection!
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -570,7 +570,7 @@ describe("typename_IN", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

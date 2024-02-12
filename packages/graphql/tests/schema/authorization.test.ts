@@ -75,7 +75,7 @@ describe("Authorization", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -107,8 +107,8 @@ describe("Authorization", () => {
 
             type PostAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostAuthorAggregateInput {
@@ -285,8 +285,8 @@ describe("Authorization", () => {
             }
 
             type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -343,7 +343,7 @@ describe("Authorization", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -379,8 +379,8 @@ describe("Authorization", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -561,8 +561,8 @@ describe("Authorization", () => {
             }
 
             type UserUserPostsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserWhere {

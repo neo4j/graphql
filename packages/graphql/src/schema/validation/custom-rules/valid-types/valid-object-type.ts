@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+import type { ASTVisitor, InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function ValidObjectType(context: SDLValidationContext): ASTVisitor {

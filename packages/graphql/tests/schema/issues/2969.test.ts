@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
               count: Int!
             }
 
@@ -282,8 +282,8 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -330,7 +330,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -366,8 +366,8 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -412,7 +412,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
+              content: StringAggregateSelection!
             }
 
             input UserPostsAggregateInput {

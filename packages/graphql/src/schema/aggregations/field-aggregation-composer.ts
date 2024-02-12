@@ -97,10 +97,7 @@ export class FieldAggregationComposer {
         entity: RelationshipAdapter | ConcreteEntityAdapter | InterfaceEntityAdapter
     ): Record<string, ObjectTypeComposer> {
         return entity.aggregableFields.reduce((res, field) => {
-            const objectTypeComposer = this.aggregationTypesMapper.getAggregationType({
-                fieldName: field.getTypeName(),
-                nullable: !field.typeHelper.isRequired(),
-            });
+            const objectTypeComposer = this.aggregationTypesMapper.getAggregationType(field.getTypeName());
 
             if (!objectTypeComposer) return res;
 

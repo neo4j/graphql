@@ -101,9 +101,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -168,10 +168,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-              updatedAt: DateTimeAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              updatedAt: DateTimeAggregateSelection!
             }
 
             input ResourceConnectInput {
@@ -385,8 +385,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceEntityAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             enum ResourceEntityImplementation {
@@ -479,10 +479,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceResourceContainedByNodeAggregateSelection {
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-              updatedAt: DateTimeAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              updatedAt: DateTimeAggregateSelection!
             }
 
             \\"\\"\\"
@@ -620,7 +620,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

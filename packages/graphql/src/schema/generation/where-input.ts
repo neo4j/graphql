@@ -32,10 +32,12 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType } from "./aggregate-types";
-import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
+import {
+    augmentWhereInputTypeWithConnectionFields,
+    augmentWhereInputTypeWithRelationshipFields,
+} from "./augment-where-input";
 
 function isEmptyObject(obj: Record<string, unknown>): boolean {
     return !Object.keys(obj).length;
@@ -157,16 +159,23 @@ export function withSourceWhereInputType({
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
-    if (relationshipTarget instanceof InterfaceEntityAdapter) {
-        throw new Error("Unexpected interface target");
-    }
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
+    // TODO: relationship simple filters were not supported on Interface target, only connection filters
+    // when implementing translation, simply remove this if-case
+    if (relationshipTarget instanceof InterfaceEntityAdapter) {
+        const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+        whereInput.addFields(connectionFields);
+        return whereInput;
+    }
     const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
     whereInput.addFields(fields);
 
+    const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+    whereInput.addFields(connectionFields);
+
     // TODO: Current unions are not supported as relationship targets beyond the above fields
-    if (relationshipTarget instanceof UnionEntityAdapter) {
+    if (relationshipTarget instanceof UnionEntityAdapter || relationshipTarget instanceof InterfaceEntityAdapter) {
         return;
     }
 
@@ -186,47 +195,6 @@ export function withSourceWhereInputType({
     }
 
     return whereInput;
-}
-
-// TODO: make another one of these for non-union ConnectionWhereInputType
-export function makeConnectionWhereInputType({
-    relationshipAdapter,
-    memberEntity,
-    composer,
-}: {
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    memberEntity: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposer {
-    const typeName = relationshipAdapter.operations.getConnectionWhereTypename(memberEntity);
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-    const connectionWhereInputType = composer.createInputTC({
-        name: typeName,
-        fields: {
-            node: memberEntity.operations.whereInputTypeName,
-            node_NOT: {
-                type: memberEntity.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        },
-    });
-    connectionWhereInputType.addFields({
-        AND: connectionWhereInputType.NonNull.List,
-        OR: connectionWhereInputType.NonNull.List,
-        NOT: connectionWhereInputType,
-    });
-    if (relationshipAdapter.hasAnyProperties) {
-        connectionWhereInputType.addFields({
-            edge: relationshipAdapter.operations.whereInputTypeName,
-            edge_NOT: {
-                type: relationshipAdapter.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        });
-    }
-    return connectionWhereInputType;
 }
 
 export function withConnectWhereFieldInputType(

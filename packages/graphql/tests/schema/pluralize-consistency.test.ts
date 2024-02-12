@@ -105,7 +105,7 @@ describe("Pluralize consistency", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -149,7 +149,7 @@ describe("Pluralize consistency", () => {
 
             type super_friendAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input super_friendConnectWhere {
@@ -210,7 +210,7 @@ describe("Pluralize consistency", () => {
 
             type super_userAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input super_userConnectInput {
@@ -433,7 +433,7 @@ describe("Pluralize consistency", () => {
             }
 
             type super_usersuper_friendMy_friendNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }"
         `);
     });

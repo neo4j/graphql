@@ -84,7 +84,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS update_this1, edge.relationship AS update_this0
-                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name } }) AS update_var2
+                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
                 }
                 RETURN { edges: update_var2, totalCount: totalCount } AS update_var3
             }

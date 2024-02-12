@@ -65,7 +65,7 @@ describe("Subscriptions", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -198,19 +198,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -233,7 +233,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -359,10 +359,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -630,7 +630,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -755,9 +755,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -1026,19 +1026,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1131,10 +1131,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1514,19 +1514,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1679,10 +1679,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1988,9 +1988,9 @@ describe("Subscriptions", () => {
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -2299,9 +2299,9 @@ describe("Subscriptions", () => {
             }
 
             type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -2720,9 +2720,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -2991,26 +2991,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3033,7 +3026,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3158,10 +3151,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3504,7 +3497,7 @@ describe("Subscriptions", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -3637,19 +3630,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3672,7 +3665,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3790,10 +3783,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3961,7 +3954,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -4032,8 +4025,8 @@ describe("Subscriptions", () => {
 
             type AgreementAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input AgreementConnectInput {
@@ -4339,8 +4332,8 @@ describe("Subscriptions", () => {
             }
 
             type AgreementUserOwnerNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input AgreementWhere {
@@ -4409,7 +4402,7 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -4447,12 +4440,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String
-              shortest: String
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -4488,8 +4476,8 @@ describe("Subscriptions", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserConnectWhere {
@@ -4677,19 +4665,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -4842,10 +4830,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -5151,9 +5139,9 @@ describe("Subscriptions", () => {
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -5448,9 +5436,9 @@ describe("Subscriptions", () => {
             }
 
             type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -5873,12 +5861,12 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -5895,8 +5883,8 @@ describe("Subscriptions", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -6151,7 +6139,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -6213,7 +6201,7 @@ describe("Subscriptions", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input ProductionConnectInput {
@@ -6381,9 +6369,9 @@ describe("Subscriptions", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episode: IntAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -6619,7 +6607,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

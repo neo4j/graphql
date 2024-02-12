@@ -60,7 +60,7 @@ describe("Undirected connections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { __resolveType: \\"User\\", __id: id(this1) } }) AS var2
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

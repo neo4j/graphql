@@ -117,7 +117,7 @@ describe("3817", () => {
               id_STARTS_WITH: String
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -151,7 +151,7 @@ describe("3817", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -350,11 +350,11 @@ describe("3817", () => {
             }
 
             type PersonPersonFriendsEdgeAggregateSelection {
-              id: StringAggregateSelectionNullable!
+              id: StringAggregateSelection!
             }
 
             type PersonPersonFriendsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -435,7 +435,7 @@ describe("3817", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

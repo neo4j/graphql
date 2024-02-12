@@ -185,7 +185,7 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -198,11 +198,11 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregateSelection {
-                  callback1: StringAggregateSelectionNonNullable!
-                  callback2: StringAggregateSelectionNonNullable!
-                  callback3: StringAggregateSelectionNonNullable!
+                  callback1: StringAggregateSelection!
+                  callback2: StringAggregateSelection!
+                  callback3: StringAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -317,7 +317,7 @@ describe("@populatedBy tests", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -398,12 +398,12 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
 
-                type IntAggregateSelectionNonNullable {
+                type IntAggregateSelection {
                   average: Float
                   max: Int
                   min: Int
@@ -418,11 +418,11 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregateSelection {
-                  callback1: IntAggregateSelectionNonNullable!
-                  callback2: IntAggregateSelectionNonNullable!
-                  callback3: IntAggregateSelectionNonNullable!
+                  callback1: IntAggregateSelection!
+                  callback2: IntAggregateSelection!
+                  callback3: IntAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -762,7 +762,7 @@ describe("@populatedBy tests", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNonNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -820,12 +820,7 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -839,7 +834,7 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -871,14 +866,14 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
-                  callback1: StringAggregateSelectionNonNullable!
-                  callback2: StringAggregateSelectionNonNullable!
-                  callback3: StringAggregateSelectionNonNullable!
-                  id: IDAggregateSelectionNonNullable!
+                  callback1: StringAggregateSelection!
+                  callback2: StringAggregateSelection!
+                  callback3: StringAggregateSelection!
+                  id: IDAggregateSelection!
                 }
 
                 type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {
@@ -1263,7 +1258,7 @@ describe("@populatedBy tests", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1369,7 +1364,7 @@ describe("@populatedBy tests", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNonNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1427,17 +1422,12 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
 
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type IntAggregateSelectionNonNullable {
+                type IntAggregateSelection {
                   average: Float
                   max: Int
                   min: Int
@@ -1453,7 +1443,7 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -1485,14 +1475,14 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
-                  callback1: IntAggregateSelectionNonNullable!
-                  callback2: IntAggregateSelectionNonNullable!
-                  callback3: IntAggregateSelectionNonNullable!
-                  id: IDAggregateSelectionNonNullable!
+                  callback1: IntAggregateSelection!
+                  callback2: IntAggregateSelection!
+                  callback3: IntAggregateSelection!
+                  id: IDAggregateSelection!
                 }
 
                 type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {

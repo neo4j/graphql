@@ -322,9 +322,9 @@ describe("Alias", () => {
             }
 
             type ActorAggregateSelection {
-              city: StringAggregateSelectionNullable!
+              city: StringAggregateSelection!
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -357,13 +357,13 @@ describe("Alias", () => {
             }
 
             type ActorMovieActedInEdgeAggregateSelection {
-              character: StringAggregateSelectionNonNullable!
-              screenTime: IntAggregateSelectionNullable!
+              character: StringAggregateSelection!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              rating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorOptions {
@@ -482,14 +482,14 @@ describe("Alias", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -503,8 +503,8 @@ describe("Alias", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              rating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectWhere {
@@ -611,12 +611,7 @@ describe("Alias", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String
-              shortest: String
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

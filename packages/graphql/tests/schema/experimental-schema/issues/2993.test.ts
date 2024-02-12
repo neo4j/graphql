@@ -67,9 +67,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -137,8 +137,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type ProfileAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              userName: StringAggregateSelection!
             }
 
             input ProfileConnectWhere {
@@ -218,7 +218,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -249,8 +249,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              userName: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -353,12 +353,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserProfileFollowingEdgeAggregateSelection {
-              since: DateTimeAggregateSelectionNonNullable!
+              since: DateTimeAggregateSelection!
             }
 
             type UserProfileFollowingNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              userName: StringAggregateSelection!
             }
 
             input UserRelationInput {
@@ -473,9 +473,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -517,7 +517,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -543,8 +543,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type ProfileAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              userName: StringAggregateSelection!
             }
 
             input ProfileConnectWhere {
@@ -623,7 +623,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -654,8 +654,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              userName: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -758,12 +758,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserProfileFollowingEdgeAggregateSelection {
-              since: DateTimeAggregateSelectionNonNullable!
+              since: DateTimeAggregateSelection!
             }
 
             type UserProfileFollowingNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              userName: StringAggregateSelection!
             }
 
             input UserRelationInput {

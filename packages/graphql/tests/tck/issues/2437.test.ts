@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     LIMIT $param2
-                    RETURN collect({ node: { uuid: this1.uuid } }) AS var2
+                    RETURN collect({ node: { uuid: this1.uuid, __resolveType: \\"Valuation\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

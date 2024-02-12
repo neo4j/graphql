@@ -77,7 +77,7 @@ describe("@customResolver directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -112,12 +112,7 @@ describe("@customResolver directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String
-              shortest: String
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -148,9 +143,9 @@ describe("@customResolver directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -170,7 +165,7 @@ describe("@customResolver directive", () => {
 
             type UserInterfaceAggregateSelection {
               count: Int!
-              customResolver: StringAggregateSelectionNullable!
+              customResolver: StringAggregateSelection!
             }
 
             enum UserInterfaceImplementation {
