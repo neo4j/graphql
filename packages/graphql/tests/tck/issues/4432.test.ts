@@ -76,12 +76,12 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:HasChildren]->(this1:Image)
-                    WITH { properties: { order: this0.order }, node: { __resolveType: \\"Image\\", __id: id(this1), id: this1.id } } AS edge
+                    WITH { properties: { order: this0.order, __resolveType: \\"InventoryChildRelation\\" }, node: { __resolveType: \\"Image\\", __id: id(this1), id: this1.id } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:HasChildren]->(this3:Video)
-                    WITH { properties: { order: this2.order }, node: { __resolveType: \\"Video\\", __id: id(this3), id: this3.id } } AS edge
+                    WITH { properties: { order: this2.order, __resolveType: \\"InventoryChildRelation\\" }, node: { __resolveType: \\"Video\\", __id: id(this3), id: this3.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

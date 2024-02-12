@@ -32,7 +32,7 @@ export class RelationshipOperations extends RelationshipBaseOperations<Relations
         if (isTargetInterface) {
             return this.relationship.source.name;
         }
-        return this.relationship.inheritedFrom || this.relationship.source.name;
+        return this.relationship.firstDeclaredInTypeName || this.relationship.source.name;
     }
 
     protected get edgePrefix(): string {

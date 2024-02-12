@@ -130,7 +130,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -218,7 +218,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -333,7 +333,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }

@@ -137,9 +137,10 @@ function withAggregationWhereInputType({
     entityAdapter: ConcreteEntityAdapter | RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
-    const aggregationInputName = relationshipAdapter.operations.getAggregationWhereInputTypeName(
-        entityAdapter instanceof ConcreteEntityAdapter ? `Node` : `Edge`
-    );
+    const aggregationInputName =
+        entityAdapter instanceof ConcreteEntityAdapter
+            ? relationshipAdapter.operations.nodeAggregationWhereInputTypeName
+            : relationshipAdapter.operations.edgeAggregationWhereInputTypeName;
     if (composer.has(aggregationInputName)) {
         return composer.getITC(aggregationInputName);
     }

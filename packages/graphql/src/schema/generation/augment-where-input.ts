@@ -106,7 +106,7 @@ export function augmentWhereInputTypeWithConnectionFields(
 ): InputTypeComposerFieldConfigMapDefinition {
     const filters = relationshipAdapter.listFiltersModel?.connectionFilters;
     return augmentWhereInputType({
-        whereType: relationshipAdapter.operations.connectionWhereInputTypename,
+        whereType: relationshipAdapter.operations.getConnectionWhereTypename(),
         fieldName: relationshipAdapter.operations.connectionFieldName,
         filters,
         relationshipAdapter,

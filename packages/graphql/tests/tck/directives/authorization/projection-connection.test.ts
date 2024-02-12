@@ -94,7 +94,7 @@ describe("Cypher Auth Projection On Connections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { content: this1.content } }) AS var3
+                    RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4
             }
@@ -167,11 +167,11 @@ describe("Cypher Auth Projection On Connections", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this4, edge.relationship AS this3
-                            RETURN collect({ node: { name: this4.name } }) AS var5
+                            RETURN collect({ node: { name: this4.name, __resolveType: \\"User\\" } }) AS var5
                         }
                         RETURN { edges: var5, totalCount: totalCount } AS var6
                     }
-                    RETURN collect({ node: { content: this1.content, creatorConnection: var6 } }) AS var7
+                    RETURN collect({ node: { content: this1.content, creatorConnection: var6, __resolveType: \\"Post\\" } }) AS var7
                 }
                 RETURN { edges: var7, totalCount: totalCount } AS var8
             }
@@ -270,11 +270,11 @@ describe("Cypher Auth Projection On top-level connections", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { content: this2.content } }) AS var4
+                        RETURN collect({ node: { content: this2.content, __resolveType: \\"Post\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                RETURN collect({ node: { name: this0.name, postsConnection: var5 } }) AS var6
+                RETURN collect({ node: { name: this0.name, postsConnection: var5, __resolveType: \\"User\\" } }) AS var6
             }
             RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
@@ -354,15 +354,15 @@ describe("Cypher Auth Projection On top-level connections", () => {
                                 WITH edges
                                 UNWIND edges AS edge
                                 WITH edge.node AS this5, edge.relationship AS this4
-                                RETURN collect({ node: { name: this5.name } }) AS var6
+                                RETURN collect({ node: { name: this5.name, __resolveType: \\"User\\" } }) AS var6
                             }
                             RETURN { edges: var6, totalCount: totalCount } AS var7
                         }
-                        RETURN collect({ node: { content: this2.content, creatorConnection: var7 } }) AS var8
+                        RETURN collect({ node: { content: this2.content, creatorConnection: var7, __resolveType: \\"Post\\" } }) AS var8
                     }
                     RETURN { edges: var8, totalCount: totalCount } AS var9
                 }
-                RETURN collect({ node: { name: this0.name, postsConnection: var9 } }) AS var10
+                RETURN collect({ node: { name: this0.name, postsConnection: var9, __resolveType: \\"User\\" } }) AS var10
             }
             RETURN { edges: var10, totalCount: totalCount } AS this"
         `);

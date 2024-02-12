@@ -545,6 +545,72 @@ describe("Connect Or Create", () => {
               screentime: Int!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              characterName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_LENGTH_EQUAL: Float
+              characterName_AVERAGE_LENGTH_GT: Float
+              characterName_AVERAGE_LENGTH_GTE: Float
+              characterName_AVERAGE_LENGTH_LT: Float
+              characterName_AVERAGE_LENGTH_LTE: Float
+              characterName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_LENGTH_EQUAL: Int
+              characterName_LONGEST_LENGTH_GT: Int
+              characterName_LONGEST_LENGTH_GTE: Int
+              characterName_LONGEST_LENGTH_LT: Int
+              characterName_LONGEST_LENGTH_LTE: Int
+              characterName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_LENGTH_EQUAL: Int
+              characterName_SHORTEST_LENGTH_GT: Int
+              characterName_SHORTEST_LENGTH_GTE: Int
+              characterName_SHORTEST_LENGTH_LT: Int
+              characterName_SHORTEST_LENGTH_LTE: Int
+              characterName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              screentime_AVERAGE_EQUAL: Float
+              screentime_AVERAGE_GT: Float
+              screentime_AVERAGE_GTE: Float
+              screentime_AVERAGE_LT: Float
+              screentime_AVERAGE_LTE: Float
+              screentime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_MAX_EQUAL: Int
+              screentime_MAX_GT: Int
+              screentime_MAX_GTE: Int
+              screentime_MAX_LT: Int
+              screentime_MAX_LTE: Int
+              screentime_MIN_EQUAL: Int
+              screentime_MIN_GT: Int
+              screentime_MIN_GTE: Int
+              screentime_MIN_LT: Int
+              screentime_MIN_LTE: Int
+              screentime_SUM_EQUAL: Int
+              screentime_SUM_GT: Int
+              screentime_SUM_GTE: Int
+              screentime_SUM_LT: Int
+              screentime_SUM_LTE: Int
+            }
+
             input ActedInCreateInput {
               characterName: String
               screentime: Int!
@@ -649,7 +715,7 @@ describe("Connect Or Create", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: ActorMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -704,72 +770,6 @@ describe("Connect Or Create", () => {
 
             input ActorMoviesDisconnectFieldInput {
               where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesEdgeAggregationWhereInput {
-              AND: [ActorMoviesEdgeAggregationWhereInput!]
-              NOT: ActorMoviesEdgeAggregationWhereInput
-              OR: [ActorMoviesEdgeAggregationWhereInput!]
-              characterName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_AVERAGE_LENGTH_EQUAL: Float
-              characterName_AVERAGE_LENGTH_GT: Float
-              characterName_AVERAGE_LENGTH_GTE: Float
-              characterName_AVERAGE_LENGTH_LT: Float
-              characterName_AVERAGE_LENGTH_LTE: Float
-              characterName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              characterName_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              characterName_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              characterName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_LONGEST_LENGTH_EQUAL: Int
-              characterName_LONGEST_LENGTH_GT: Int
-              characterName_LONGEST_LENGTH_GTE: Int
-              characterName_LONGEST_LENGTH_LT: Int
-              characterName_LONGEST_LENGTH_LTE: Int
-              characterName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              characterName_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              characterName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_SHORTEST_LENGTH_EQUAL: Int
-              characterName_SHORTEST_LENGTH_GT: Int
-              characterName_SHORTEST_LENGTH_GTE: Int
-              characterName_SHORTEST_LENGTH_LT: Int
-              characterName_SHORTEST_LENGTH_LTE: Int
-              characterName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              characterName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              screentime_AVERAGE_EQUAL: Float
-              screentime_AVERAGE_GT: Float
-              screentime_AVERAGE_GTE: Float
-              screentime_AVERAGE_LT: Float
-              screentime_AVERAGE_LTE: Float
-              screentime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screentime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screentime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screentime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screentime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screentime_MAX_EQUAL: Int
-              screentime_MAX_GT: Int
-              screentime_MAX_GTE: Int
-              screentime_MAX_LT: Int
-              screentime_MAX_LTE: Int
-              screentime_MIN_EQUAL: Int
-              screentime_MIN_GT: Int
-              screentime_MIN_GTE: Int
-              screentime_MIN_LT: Int
-              screentime_MIN_LTE: Int
-              screentime_SUM_EQUAL: Int
-              screentime_SUM_GT: Int
-              screentime_SUM_GTE: Int
-              screentime_SUM_LT: Int
-              screentime_SUM_LTE: Int
             }
 
             input ActorMoviesFieldInput {

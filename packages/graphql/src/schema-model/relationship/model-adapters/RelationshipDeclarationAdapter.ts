@@ -34,6 +34,7 @@ import type { RelationshipDeclaration } from "../RelationshipDeclaration";
 import { RelationshipDeclarationOperations } from "./RelationshipDeclarationOperations";
 import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import { RelationshipAdapter } from "./RelationshipAdapter";
+import type { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 
 export class RelationshipDeclarationAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
@@ -49,6 +50,8 @@ export class RelationshipDeclarationAdapter {
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
     public readonly relationshipImplementations: RelationshipAdapter[];
+
+    public readonly firstDeclaredInTypeName: string | undefined;
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -68,6 +71,7 @@ export class RelationshipDeclarationAdapter {
             isNullable,
             description,
             annotations,
+            firstDeclaredInTypeName,
         } = relationshipDeclaration;
         this.name = name;
         this.args = args;
@@ -94,6 +98,7 @@ export class RelationshipDeclarationAdapter {
         this.relationshipImplementations = relationshipDeclaration.relationshipImplementations.map(
             (r) => new RelationshipAdapter(r)
         );
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
     }
 
     public get listFiltersModel(): ListFiltersAdapter | undefined {
@@ -141,6 +146,15 @@ export class RelationshipDeclarationAdapter {
             }
         }
         return this._target;
+    }
+
+    public get nonGeneratedProperties(): AttributeAdapter[] {
+        return this.relationshipImplementations.flatMap((impl) =>
+            Array.from(impl.attributes.values()).filter((attribute) => attribute.isNonGeneratedField())
+        );
+    }
+    public get hasNonNullNonGeneratedProperties(): boolean {
+        return this.nonGeneratedProperties.some((property) => property.typeHelper.isRequired());
     }
 
     public get hasAnyProperties(): boolean {

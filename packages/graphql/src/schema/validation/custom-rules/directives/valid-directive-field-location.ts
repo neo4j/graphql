@@ -131,10 +131,17 @@ function noDirectivesAllowedAtLocation({
         (d) => d.name === directiveNode.name.value
     );
     if (directiveAtInvalidLocation) {
-        throw new DocumentValidationError(
-            `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of the ${parentDef.name.value} type.`,
-            [`@${directiveNode.name.value}`]
-        );
+        if (directiveAtInvalidLocation.name === "relationship" && parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of interface types (${parentDef.name.value}). Since version 5.0.0, interface fields can only have @declareRelationship. Please add the @relationship directive to the fields in all types which implement it.`,
+                [`@${directiveNode.name.value}`]
+            );
+        } else {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of the ${parentDef.name.value} type.`,
+                [`@${directiveNode.name.value}`]
+            );
+        }
     }
 }
 

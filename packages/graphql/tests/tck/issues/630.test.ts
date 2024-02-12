@@ -87,7 +87,7 @@ describe("Cypher directive", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this2) } }) AS var3
+                        RETURN collect({ node: { __id: id(this2), __resolveType: \\"Actor\\" } }) AS var3
                     }
                     RETURN { edges: var3, totalCount: totalCount } AS var4
                 }

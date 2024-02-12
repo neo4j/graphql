@@ -57,7 +57,10 @@ type AggregateWhereInput = {
 };
 
 export class FilterFactory {
-    constructor(_queryASTFactory: QueryASTFactory) {}
+    private queryASTFactory: QueryASTFactory;
+    constructor(queryASTFactory: QueryASTFactory) {
+        this.queryASTFactory = queryASTFactory;
+    }
 
     /**
      * Get all the entities explicitly required by the where "on" object. If it's a concrete entity it will return itself.
@@ -371,6 +374,17 @@ export class FilterFactory {
     }
 
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
+        // The type T in ConcreteEntity.relationshipConnection(where: {edge: T}) defines all possible propertiesTypeNames as well (bc the relationshipConnection field is inherited from the Interface)
+        // that means users are able to filter the edge by a propertiesTypeName that the relationship does not know of
+        const allPropertiesTypeNames = relationship.siblings || [];
+        if (
+            relationship instanceof RelationshipAdapter &&
+            relationship.propertiesTypeName &&
+            Object.keys(where).some((k) => allPropertiesTypeNames.includes(k))
+        ) {
+            // ignores all other propertiesTypeName and only generates filter for the applicable one
+            return this.createEdgeFilters(relationship, where[relationship.propertiesTypeName] || {});
+        }
         const filterASTs = Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {
@@ -383,7 +397,9 @@ export class FilterFactory {
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
             const attribute = relationship.findAttribute(fieldName);
-            if (!attribute) throw new Error(`no filter attribute ${key}`);
+            if (!attribute) {
+                throw new Error(`no filter attribute ${key}`);
+            }
 
             return this.createPropertyFilter({
                 attribute,

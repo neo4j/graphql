@@ -107,11 +107,11 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this7, edge.relationship AS this6
-                            RETURN collect({ node: { fullName: this7.fullName } }) AS var8
+                            RETURN collect({ node: { fullName: this7.fullName, __resolveType: \\"NameDetails\\" } }) AS var8
                         }
                         RETURN { edges: var8, totalCount: totalCount } AS var9
                     }
-                    RETURN collect({ node: { nameDetailsConnection: var9 } }) AS var10
+                    RETURN collect({ node: { nameDetailsConnection: var9, __resolveType: \\"MasterData\\" } }) AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS var11
             }
@@ -238,15 +238,15 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                                     WITH edges
                                     UNWIND edges AS edge
                                     WITH edge.node AS this11, edge.relationship AS this10
-                                    RETURN collect({ node: { fullName: this11.fullName } }) AS var12
+                                    RETURN collect({ node: { fullName: this11.fullName, __resolveType: \\"NameDetails\\" } }) AS var12
                                 }
                                 RETURN { edges: var12, totalCount: totalCount } AS var13
                             }
-                            RETURN collect({ node: { nameDetailsConnection: var13 } }) AS var14
+                            RETURN collect({ node: { nameDetailsConnection: var13, __resolveType: \\"MasterData\\" } }) AS var14
                         }
                         RETURN { edges: var14, totalCount: totalCount } AS var15
                     }
-                    RETURN collect({ node: { architectureConnection: var15 } }) AS var16
+                    RETURN collect({ node: { architectureConnection: var15, __resolveType: \\"Series\\" } }) AS var16
                 }
                 RETURN { edges: var16, totalCount: totalCount } AS var17
             }

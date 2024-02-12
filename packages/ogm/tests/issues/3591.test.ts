@@ -356,9 +356,9 @@ describe("issues/3591", () => {
               id: Scalars[\\"ID\\"][\\"output\\"];
               companyAggregate?: Maybe<UserCompanyCompanyAggregationSelection>;
               company: Array<Company>;
+              companyConnection: UserCompanyConnection;
               favoriteRestaurantsAggregate?: Maybe<UserRestaurantFavoriteRestaurantsAggregationSelection>;
               favoriteRestaurants: Array<Restaurant>;
-              companyConnection: UserCompanyConnection;
               favoriteRestaurantsConnection: UserFavoriteRestaurantsConnection;
             };
 
@@ -373,6 +373,14 @@ describe("issues/3591", () => {
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
+            export type UserCompanyConnectionArgs = {
+              where?: InputMaybe<UserCompanyConnectionWhere>;
+              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserCompanyConnectionSort>>;
+            };
+
             export type UserFavoriteRestaurantsAggregateArgs = {
               where?: InputMaybe<RestaurantWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
@@ -382,14 +390,6 @@ describe("issues/3591", () => {
               where?: InputMaybe<RestaurantWhere>;
               options?: InputMaybe<RestaurantOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-            };
-
-            export type UserCompanyConnectionArgs = {
-              where?: InputMaybe<UserCompanyConnectionWhere>;
-              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-              sort?: InputMaybe<Array<UserCompanyConnectionSort>>;
             };
 
             export type UserFavoriteRestaurantsConnectionArgs = {
@@ -635,8 +635,8 @@ describe("issues/3591", () => {
             };
 
             export type UserCompanyConnectionWhere = {
-              OR?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               AND?: InputMaybe<Array<UserCompanyConnectionWhere>>;
+              OR?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               NOT?: InputMaybe<UserCompanyConnectionWhere>;
               node?: InputMaybe<CompanyWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -895,8 +895,8 @@ describe("issues/3591", () => {
             };
 
             export type UserFavoriteRestaurantsConnectionWhere = {
-              OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               AND?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
+              OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               node?: InputMaybe<RestaurantWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -1051,6 +1051,18 @@ describe("issues/3591", () => {
               company_SINGLE?: InputMaybe<CompanyWhere>;
               /** Return Users where some of the related Companies match this filter */
               company_SOME?: InputMaybe<CompanyWhere>;
+              /** @deprecated Use \`companyConnection_SOME\` instead. */
+              companyConnection?: InputMaybe<UserCompanyConnectionWhere>;
+              /** @deprecated Use \`companyConnection_NONE\` instead. */
+              companyConnection_NOT?: InputMaybe<UserCompanyConnectionWhere>;
+              /** Return Users where all of the related UserCompanyConnections match this filter */
+              companyConnection_ALL?: InputMaybe<UserCompanyConnectionWhere>;
+              /** Return Users where none of the related UserCompanyConnections match this filter */
+              companyConnection_NONE?: InputMaybe<UserCompanyConnectionWhere>;
+              /** Return Users where one of the related UserCompanyConnections match this filter */
+              companyConnection_SINGLE?: InputMaybe<UserCompanyConnectionWhere>;
+              /** Return Users where some of the related UserCompanyConnections match this filter */
+              companyConnection_SOME?: InputMaybe<UserCompanyConnectionWhere>;
               companyAggregate?: InputMaybe<UserCompanyAggregateInput>;
               /** @deprecated Use \`favoriteRestaurants_SOME\` instead. */
               favoriteRestaurants?: InputMaybe<RestaurantWhere>;
@@ -1064,19 +1076,6 @@ describe("issues/3591", () => {
               favoriteRestaurants_SINGLE?: InputMaybe<RestaurantWhere>;
               /** Return Users where some of the related Restaurants match this filter */
               favoriteRestaurants_SOME?: InputMaybe<RestaurantWhere>;
-              favoriteRestaurantsAggregate?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
-              /** @deprecated Use \`companyConnection_SOME\` instead. */
-              companyConnection?: InputMaybe<UserCompanyConnectionWhere>;
-              /** @deprecated Use \`companyConnection_NONE\` instead. */
-              companyConnection_NOT?: InputMaybe<UserCompanyConnectionWhere>;
-              /** Return Users where all of the related UserCompanyConnections match this filter */
-              companyConnection_ALL?: InputMaybe<UserCompanyConnectionWhere>;
-              /** Return Users where none of the related UserCompanyConnections match this filter */
-              companyConnection_NONE?: InputMaybe<UserCompanyConnectionWhere>;
-              /** Return Users where one of the related UserCompanyConnections match this filter */
-              companyConnection_SINGLE?: InputMaybe<UserCompanyConnectionWhere>;
-              /** Return Users where some of the related UserCompanyConnections match this filter */
-              companyConnection_SOME?: InputMaybe<UserCompanyConnectionWhere>;
               /** @deprecated Use \`favoriteRestaurantsConnection_SOME\` instead. */
               favoriteRestaurantsConnection?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               /** @deprecated Use \`favoriteRestaurantsConnection_NONE\` instead. */
@@ -1089,6 +1088,7 @@ describe("issues/3591", () => {
               favoriteRestaurantsConnection_SINGLE?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               /** Return Users where some of the related UserFavoriteRestaurantsConnections match this filter */
               favoriteRestaurantsConnection_SOME?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              favoriteRestaurantsAggregate?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
             };
 
             export interface UserAggregateSelectionInput {

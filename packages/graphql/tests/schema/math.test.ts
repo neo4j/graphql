@@ -1773,6 +1773,37 @@ describe("Algebraic", () => {
               roles: [String!]
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              pay_AVERAGE_EQUAL: Float
+              pay_AVERAGE_GT: Float
+              pay_AVERAGE_GTE: Float
+              pay_AVERAGE_LT: Float
+              pay_AVERAGE_LTE: Float
+              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_MAX_EQUAL: Float
+              pay_MAX_GT: Float
+              pay_MAX_GTE: Float
+              pay_MAX_LT: Float
+              pay_MAX_LTE: Float
+              pay_MIN_EQUAL: Float
+              pay_MIN_GT: Float
+              pay_MIN_GTE: Float
+              pay_MIN_LT: Float
+              pay_MIN_LTE: Float
+              pay_SUM_EQUAL: Float
+              pay_SUM_GT: Float
+              pay_SUM_GTE: Float
+              pay_SUM_LT: Float
+              pay_SUM_LTE: Float
+            }
+
             input ActedInCreateInput {
               pay: Float
               roles: [String!]
@@ -1863,7 +1894,7 @@ describe("Algebraic", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -1911,37 +1942,6 @@ describe("Algebraic", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: PersonDisconnectInput
               where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              pay_AVERAGE_EQUAL: Float
-              pay_AVERAGE_GT: Float
-              pay_AVERAGE_GTE: Float
-              pay_AVERAGE_LT: Float
-              pay_AVERAGE_LTE: Float
-              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_MAX_EQUAL: Float
-              pay_MAX_GT: Float
-              pay_MAX_GTE: Float
-              pay_MAX_LT: Float
-              pay_MAX_LTE: Float
-              pay_MIN_EQUAL: Float
-              pay_MIN_GT: Float
-              pay_MIN_GTE: Float
-              pay_MIN_LT: Float
-              pay_MIN_LTE: Float
-              pay_SUM_EQUAL: Float
-              pay_SUM_GT: Float
-              pay_SUM_GTE: Float
-              pay_SUM_LT: Float
-              pay_SUM_LTE: Float
             }
 
             input MovieActorsFieldInput {
@@ -2170,7 +2170,7 @@ describe("Algebraic", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: PersonActedInMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: PersonActedInMoviesNodeAggregationWhereInput
             }
 
@@ -2218,37 +2218,6 @@ describe("Algebraic", () => {
             input PersonActedInMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: PersonActedInMoviesConnectionWhere
-            }
-
-            input PersonActedInMoviesEdgeAggregationWhereInput {
-              AND: [PersonActedInMoviesEdgeAggregationWhereInput!]
-              NOT: PersonActedInMoviesEdgeAggregationWhereInput
-              OR: [PersonActedInMoviesEdgeAggregationWhereInput!]
-              pay_AVERAGE_EQUAL: Float
-              pay_AVERAGE_GT: Float
-              pay_AVERAGE_GTE: Float
-              pay_AVERAGE_LT: Float
-              pay_AVERAGE_LTE: Float
-              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_MAX_EQUAL: Float
-              pay_MAX_GT: Float
-              pay_MAX_GTE: Float
-              pay_MAX_LT: Float
-              pay_MAX_LTE: Float
-              pay_MIN_EQUAL: Float
-              pay_MIN_GT: Float
-              pay_MIN_GTE: Float
-              pay_MIN_LT: Float
-              pay_MIN_LTE: Float
-              pay_SUM_EQUAL: Float
-              pay_SUM_GT: Float
-              pay_SUM_GTE: Float
-              pay_SUM_LT: Float
-              pay_SUM_LTE: Float
             }
 
             input PersonActedInMoviesFieldInput {

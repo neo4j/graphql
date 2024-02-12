@@ -21,7 +21,7 @@ import type { ConcreteEntityAdapter } from "../../entity/model-adapters/Concrete
 import { upperFirst } from "../../../utils/upper-first";
 import { isUnionEntity } from "../../../translate/queryAST/utils/is-union-entity";
 import type { RelationshipDeclarationAdapter } from "./RelationshipDeclarationAdapter";
-import { RelationshipAdapter } from "./RelationshipAdapter";
+import type { RelationshipAdapter } from "./RelationshipAdapter";
 
 export abstract class RelationshipBaseOperations<T extends RelationshipAdapter | RelationshipDeclarationAdapter> {
     protected constructor(protected readonly relationship: T) {}
@@ -31,17 +31,12 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
     }
 
     protected get prefixForTypenameWithInheritance(): string {
-        let prefix = this.relationship.source.name;
-        if (this.relationship instanceof RelationshipAdapter && this.relationship.inheritedFrom) {
-            // if relationship field is inherited  by source
-            // (part of an implemented Interface, not necessarily annotated as rel)
-            // then return this.interface.name
-            prefix = this.relationship.inheritedFrom;
-        }
-        return prefix + upperFirst(this.relationship.name);
+        const prefix = this.relationship.firstDeclaredInTypeName || this.relationship.source.name;
+        return `${prefix}${upperFirst(this.relationship.name)}`;
     }
 
     protected abstract get fieldInputPrefixForTypename(): string;
+
     protected abstract get edgePrefix(): string;
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -111,7 +106,7 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
     }
 
     public getConnectOrCreateInputTypeName(): string {
-        return `${this.prefixForTypenameWithInheritance}ConnectOrCreateInput`;
+        return `${this.prefixForTypename}ConnectOrCreateInput`;
     }
 
     public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
@@ -119,9 +114,9 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
             if (!concreteTargetEntityAdapter) {
                 throw new Error("missing concreteTargetEntityAdapter");
             }
-            return `${this.prefixForTypenameWithInheritance}${concreteTargetEntityAdapter.name}ConnectOrCreateFieldInput`;
+            return `${this.prefixForTypename}${concreteTargetEntityAdapter.name}ConnectOrCreateFieldInput`;
         }
-        return `${this.prefixForTypenameWithInheritance}ConnectOrCreateFieldInput`;
+        return `${this.prefixForTypename}ConnectOrCreateFieldInput`;
     }
 
     public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
@@ -148,8 +143,8 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
         return `${this.relationship.name}Aggregate`;
     }
 
-    public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
-        return `${this.prefixForTypename}${isA}AggregationWhereInput`;
+    public get nodeAggregationWhereInputTypeName(): string {
+        return `${this.prefixForTypename}NodeAggregationWhereInput`;
     }
 
     public get unionConnectInputTypeName(): string {
@@ -199,6 +194,10 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
 
     public get sortInputTypeName(): string {
         return `${this.edgePrefix}Sort`;
+    }
+
+    public get edgeAggregationWhereInputTypeName(): string {
+        return `${this.edgePrefix}AggregationWhereInput`;
     }
 
     public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {

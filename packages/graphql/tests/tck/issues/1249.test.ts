@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ properties: { supplierMaterialNumber: this2.supplierMaterialNumber, __resolveType: \\"RelationMaterialSupplier\\" }, node: { supplierId: this3.supplierId } }) AS var4
+                        RETURN collect({ properties: { supplierMaterialNumber: this2.supplierMaterialNumber, __resolveType: \\"RelationMaterialSupplier\\" }, node: { supplierId: this3.supplierId, __resolveType: \\"Supplier\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }

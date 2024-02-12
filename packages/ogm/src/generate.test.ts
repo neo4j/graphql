@@ -1259,6 +1259,42 @@ describe("generate", () => {
               people: Array<Person>;
             };
 
+            export type ActedInAggregationWhereInput = {
+              AND?: InputMaybe<Array<ActedInAggregationWhereInput>>;
+              OR?: InputMaybe<Array<ActedInAggregationWhereInput>>;
+              NOT?: InputMaybe<ActedInAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+            };
+
             export type ActedInCreateInput = {
               screenTime: Scalars[\\"Int\\"][\\"input\\"];
             };
@@ -1299,7 +1335,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<MovieActorsAggregateInput>>;
               NOT?: InputMaybe<MovieActorsAggregateInput>;
               node?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
-              edge?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
+              edge?: InputMaybe<ActedInAggregationWhereInput>;
             };
 
             export type MovieActorsConnectFieldInput = {
@@ -1315,8 +1351,8 @@ describe("generate", () => {
             };
 
             export type MovieActorsConnectionWhere = {
-              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
               node?: InputMaybe<PersonWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -1337,42 +1373,6 @@ describe("generate", () => {
 
             export type MovieActorsDisconnectFieldInput = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
-            };
-
-            export type MovieActorsEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type MovieActorsFieldInput = {
@@ -1524,7 +1524,6 @@ describe("generate", () => {
               actors_SINGLE?: InputMaybe<PersonWhere>;
               /** Return Movies where some of the related People match this filter */
               actors_SOME?: InputMaybe<PersonWhere>;
-              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               /** @deprecated Use \`actorsConnection_NONE\` instead. */
@@ -1537,6 +1536,7 @@ describe("generate", () => {
               actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
               /** Return Movies where some of the related MovieActorsConnections match this filter */
               actorsConnection_SOME?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
             };
 
             export type PersonConnectWhere = {
@@ -2170,7 +2170,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntriesAggregateInput>>;
               NOT?: InputMaybe<FaqEntriesAggregateInput>;
               node?: InputMaybe<FaqEntriesNodeAggregationWhereInput>;
-              edge?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
+              edge?: InputMaybe<FaqEntryInFaqAggregationWhereInput>;
             };
 
             export type FaqEntriesConnectFieldInput = {
@@ -2187,8 +2187,8 @@ describe("generate", () => {
             };
 
             export type FaqEntriesConnectionWhere = {
-              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               AND?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               node?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -2221,42 +2221,6 @@ describe("generate", () => {
             export type FaqEntriesDisconnectFieldInput = {
               where?: InputMaybe<FaqEntriesConnectionWhere>;
               disconnect?: InputMaybe<FaqEntryDisconnectInput>;
-            };
-
-            export type FaqEntriesEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FaqEntriesEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FaqEntriesEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type FaqEntriesFieldInput = {
@@ -2428,6 +2392,42 @@ describe("generate", () => {
               inFAQs?: InputMaybe<Array<FaqEntryInFaQsDisconnectFieldInput>>;
             };
 
+            export type FaqEntryInFaqAggregationWhereInput = {
+              AND?: InputMaybe<Array<FaqEntryInFaqAggregationWhereInput>>;
+              OR?: InputMaybe<Array<FaqEntryInFaqAggregationWhereInput>>;
+              NOT?: InputMaybe<FaqEntryInFaqAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+            };
+
             export type FaqEntryInFaqCreateInput = {
               position?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
@@ -2442,7 +2442,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntryInFaQsAggregateInput>>;
               NOT?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               node?: InputMaybe<FaqEntryInFaQsNodeAggregationWhereInput>;
-              edge?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
+              edge?: InputMaybe<FaqEntryInFaqAggregationWhereInput>;
             };
 
             export type FaqEntryInFaQsConnectFieldInput = {
@@ -2459,8 +2459,8 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaQsConnectionWhere = {
-              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               AND?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               node?: InputMaybe<FaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -2493,42 +2493,6 @@ describe("generate", () => {
             export type FaqEntryInFaQsDisconnectFieldInput = {
               where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               disconnect?: InputMaybe<FaqDisconnectInput>;
-            };
-
-            export type FaqEntryInFaQsEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FaqEntryInFaQsEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FaqEntryInFaQsEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type FaqEntryInFaQsFieldInput = {
@@ -2735,7 +2699,6 @@ describe("generate", () => {
               inFAQs_SINGLE?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where some of the related FAQS match this filter */
               inFAQs_SOME?: InputMaybe<FaqWhere>;
-              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               /** @deprecated Use \`inFAQsConnection_SOME\` instead. */
               inFAQsConnection?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** @deprecated Use \`inFAQsConnection_NONE\` instead. */
@@ -2748,6 +2711,7 @@ describe("generate", () => {
               inFAQsConnection_SINGLE?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where some of the related FAQEntryInFAQsConnections match this filter */
               inFAQsConnection_SOME?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
+              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
             };
 
             export type FaqOnCreateInput = {
@@ -2832,7 +2796,6 @@ describe("generate", () => {
               entries_SINGLE?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where some of the related FAQEntries match this filter */
               entries_SOME?: InputMaybe<FaqEntryWhere>;
-              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
               /** @deprecated Use \`entriesConnection_SOME\` instead. */
               entriesConnection?: InputMaybe<FaqEntriesConnectionWhere>;
               /** @deprecated Use \`entriesConnection_NONE\` instead. */
@@ -2845,6 +2808,7 @@ describe("generate", () => {
               entriesConnection_SINGLE?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where some of the related FAQEntriesConnections match this filter */
               entriesConnection_SOME?: InputMaybe<FaqEntriesConnectionWhere>;
+              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
             };
 
             export interface FAQAggregateSelectionInput {

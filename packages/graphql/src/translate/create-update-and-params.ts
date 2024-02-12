@@ -272,18 +272,25 @@ export default function createUpdateAndParams({
                         }
 
                         if (update.update.edge) {
+                            const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
+                            const relationshipAdapter = entity
+                                ? entity.findRelationship(relationField.fieldName)
+                                : undefined;
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
                                 withVars: withVars,
                                 relationship,
+                                relationshipAdapter,
                                 callbackBucket,
                                 operation: "UPDATE",
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
-                            innerUpdate.push(setProperties);
+                            if (setProperties) {
+                                innerUpdate.push(setProperties);
+                            }
                         }
 
                         if (update.update.node) {
@@ -414,18 +421,25 @@ export default function createUpdateAndParams({
                             );
 
                             if (create.edge) {
+                                const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
+                                const relationshipAdapter = entity
+                                    ? entity.findRelationship(relationField.fieldName)
+                                    : undefined;
                                 const setA = createSetRelationshipProperties({
                                     properties: create.edge,
                                     varName: propertiesName,
                                     withVars,
                                     relationship,
+                                    relationshipAdapter,
                                     callbackBucket,
                                     operation: "CREATE",
                                     parameterPrefix: `${parameterPrefix}.${key}${
                                         relationField.union ? `.${refNode.name}` : ""
                                     }[${index}].create[${i}].edge`,
                                 });
-                                subquery.push(setA);
+                                if (setA) {
+                                    subquery.push(setA);
+                                }
                             }
 
                             subquery.push(
