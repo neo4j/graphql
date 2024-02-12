@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4j from "../../neo4j";
 
@@ -35,6 +36,19 @@ describe("interface filters of declared relationships", () => {
     let Series: UniqueType;
     let Actor: UniqueType;
     let Episode: UniqueType;
+
+    let actorName;
+    let actorName2;
+
+    let movieTitle;
+    let movieTitle2;
+    let movieRuntime;
+    let movieScreenTime;
+
+    let seriesTitle;
+    let seriesEpisodes;
+    let seriesScreenTime;
+    let episodeNr;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -90,63 +104,18 @@ describe("interface filters of declared relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-    });
+        actorName = "actor1";
+        actorName2 = "actor2";
 
-    afterEach(async () => {
-        await session.run(
-            `
-                MATCH(a:${Movie})
-                MATCH(b:${Series})
-                MATCH(c:${Actor})
+        movieTitle = "movie1";
+        movieTitle2 = "movie2";
+        movieRuntime = faker.number.int({ max: 100000 });
+        movieScreenTime = faker.number.int({ max: 100000 });
 
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-            `
-        );
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("should filter using relationship filters", async () => {
-        const actorName = "actor1";
-        const actorName2 = "actor2";
-
-        const movieTitle = "movie1";
-        const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
-
-        const query = /* GraphQL */ `
-            query production {
-                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
-                    title
-                    actorsConnection {
-                        edges {
-                            node {
-                                name
-                            }
-                            properties {
-                                ... on ActedIn {
-                                    screenTime
-                                }
-                                ... on StarredIn {
-                                    episodeNr
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
+        seriesTitle = "series1";
+        seriesEpisodes = faker.number.int({ max: 100000 });
+        seriesScreenTime = faker.number.int({ max: 100000 });
+        episodeNr = faker.number.int({ max: 100000 });
 
         await session.run(
             `
@@ -172,6 +141,40 @@ describe("interface filters of declared relationships", () => {
                 episodeNr,
             }
         );
+    });
+
+    afterEach(async () => {
+        await cleanNodes(session, [Movie, Series, Actor, Episode]);
+        await session.close();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should filter using relationship filters", async () => {
+        const query = /* GraphQL */ `
+            query production {
+                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
@@ -211,19 +214,6 @@ describe("interface filters of declared relationships", () => {
     });
 
     test("should filter using connection filters", async () => {
-        const actorName = "actor1";
-        const actorName2 = "actor2";
-
-        const movieTitle = "movie1";
-        const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
-
         const query = /* GraphQL */ `
             query production {
                 productions(where: { actorsConnection_SOME: { node: { name: "${actorName2}" } } }) {
@@ -246,31 +236,6 @@ describe("interface filters of declared relationships", () => {
                 }
             }
         `;
-
-        await session.run(
-            `
-                CREATE (a:${Actor} { name: $actorName })
-                CREATE (a2:${Actor} { name: $actorName2 })
-                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
-            `,
-            {
-                actorName,
-                actorName2,
-                movieTitle,
-                movieTitle2,
-                movieRuntime,
-                movieScreenTime,
-                seriesTitle,
-                seriesEpisodes,
-                seriesScreenTime,
-                episodeNr,
-            }
-        );
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
@@ -310,19 +275,6 @@ describe("interface filters of declared relationships", () => {
     });
 
     test("should filter using connection filters + typename_IN + logical", async () => {
-        const actorName = "actor1";
-        const actorName2 = "actor2";
-
-        const movieTitle = "movie1";
-        const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
-
         const query = /* GraphQL */ `
             query production {
                 productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name: "${actorName2}" }  }}] }) {
@@ -345,31 +297,6 @@ describe("interface filters of declared relationships", () => {
                 }
             }
         `;
-
-        await session.run(
-            `
-                CREATE (a:${Actor} { name: $actorName })
-                CREATE (a2:${Actor} { name: $actorName2 })
-                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
-            `,
-            {
-                actorName,
-                actorName2,
-                movieTitle,
-                movieTitle2,
-                movieRuntime,
-                movieScreenTime,
-                seriesTitle,
-                seriesEpisodes,
-                seriesScreenTime,
-                episodeNr,
-            }
-        );
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
