@@ -311,13 +311,6 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            /*  // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
-            // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-            const sharedFilters = isInterfaceEntity(entity)
-                ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
-                : undefined;
-            */
-
             const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 // Duplicate from normal read
@@ -708,17 +701,13 @@ export class OperationsFactory {
         target: InterfaceEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
     }): DeleteOperation[] {
-        // const { whereArg } = this.parseDeleteArgs(deleteArg, true);
-
-        //const sharedFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
-
+    
         return target.concreteEntities.flatMap((concreteEntity) => {
             return this.createNestedDeleteOperation({
                 relationship,
                 target: concreteEntity,
                 args: deleteArg,
                 context,
-                //  sharedFilters,
             });
         });
     }
@@ -794,13 +783,12 @@ export class OperationsFactory {
         target,
         args,
         context,
-    }: // sharedFilters,
+    }:
     {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter;
         args: Record<string, any>;
         context: Neo4jGraphQLTranslationContext;
-        // sharedFilters?: Filter[];
     }): DeleteOperation[] {
         const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
 

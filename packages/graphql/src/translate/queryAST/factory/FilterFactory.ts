@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { options } from "yargs";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -42,7 +41,6 @@ import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
-//import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
@@ -78,7 +76,6 @@ export class FilterFactory {
         where: ConnectionWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
     ): Filter[] {
-        // TODO: figure out how to handle optimization with typename filters
         if (
             isInterfaceEntity(relationship.target) &&
             this.isLabelOptimizationForInterfacePossible(where, relationship.target)
@@ -500,10 +497,6 @@ export class FilterFactory {
                     return this.wrapMultipleFiltersInLogical(this.createEdgeFilters(relationship, value))[0];
                 }
                 return;
-                // TODO:
-                // For simplicity this error is silenced as in the current API the same level is used for both primitive filters than wrapped type in case of interfaces as: ActedIn AND StarredIn.
-                // A syntax error will be thrown in this case anyway.
-                // throw new Error(`no filter attribute ${key}`);
             }
 
             return this.createPropertyFilter({
@@ -646,8 +639,8 @@ export class FilterFactory {
         });
     }
 
-    // Identify if it's possible to achieve MATCH (n)-[r]->(m) WHERE m:Movie Or m:Series rather than MATCH (n)-[r]->(m:Movie) Or MATCH (n)-[r]->(m:Series)
-    // When filters contains a nested relationship filter this is no longer achievable as the relationship definition is not shared between each concrete entities.
+    // This method identifies if it's possible to achieve MATCH (n)-[r]->(m) WHERE m:Movie Or m:Series rather than MATCH (n)-[r]->(m:Movie) Or MATCH (n)-[r]->(m:Series)
+    // When filters contain a nested relationship filter this is no longer achievable as the relationship definition is not shared between each concrete entity.
     // For context check TCK test packages/graphql/tests/tck/issues/2709.test.ts --> "should not use a node label so it covers all nodes implementing the interface for connection rel".
     private isLabelOptimizationForInterfacePossible(
         where: ConnectionWhereArg,
