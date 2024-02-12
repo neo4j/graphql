@@ -30,8 +30,6 @@ import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { InputField } from "../types";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";

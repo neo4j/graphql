@@ -158,8 +158,8 @@ export class RelationshipOperations {
         return `${this.relationship.name}Aggregate`;
     }
 
-    public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
-        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${isA}AggregationWhereInput`;
+    public get nodeAggregationWhereInputTypeName(): string {
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}NodeAggregationWhereInput`;
     }
 
     public get subscriptionWhereInputTypeName(): string {
@@ -227,6 +227,10 @@ export class RelationshipOperations {
     }
     public get sortInputTypeName(): string {
         return `${this.relationship.propertiesTypeName}Sort`;
+    }
+
+    public get edgeAggregationWhereInputTypeName(): string {
+        return `${this.relationship.propertiesTypeName}AggregationWhereInput`;
     }
 
     public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {

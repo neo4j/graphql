@@ -38,6 +38,37 @@ describe("nested aggregation on interface", () => {
               screenTime: Int!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
             input ActedInCreateInput {
               screenTime: Int!
             }
@@ -82,7 +113,7 @@ describe("nested aggregation on interface", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: ActorActedInEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: ActorActedInNodeAggregationWhereInput
             }
 
@@ -127,37 +158,6 @@ describe("nested aggregation on interface", () => {
 
             input ActorActedInDisconnectFieldInput {
               where: ActorActedInConnectionWhere
-            }
-
-            input ActorActedInEdgeAggregationWhereInput {
-              AND: [ActorActedInEdgeAggregationWhereInput!]
-              NOT: ActorActedInEdgeAggregationWhereInput
-              OR: [ActorActedInEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input ActorActedInFieldInput {

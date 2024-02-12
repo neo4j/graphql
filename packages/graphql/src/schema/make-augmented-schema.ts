@@ -81,7 +81,7 @@ import { withCreateInputType } from "./generation/create-input";
 import { withInterfaceType } from "./generation/interface-type";
 import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
-import { withOptionsInputType, withSortInputType } from "./generation/sort-and-options-input";
+import { withOptionsInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
@@ -175,10 +175,7 @@ function makeAugmentedSchema({
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
 
-    const { interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
-        interfaceTypes,
-        interfaceRelationshipNames
-    );
+    const { filteredInterfaceTypes } = filterInterfaceTypes(interfaceTypes, interfaceRelationshipNames);
 
     const relationshipProperties: ObjectTypeDefinitionNode[] = objectTypes.filter((objectType) => {
         return relationshipPropertyInterfaceNames.has(objectType.name.value);

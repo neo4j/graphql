@@ -648,6 +648,37 @@ describe("Interface Relationships", () => {
               screenTime: Int!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
             input ActedInCreateInput {
               screenTime: Int!
             }
@@ -1178,7 +1209,7 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -1195,37 +1226,6 @@ describe("Interface Relationships", () => {
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsFieldInput {
@@ -1499,7 +1499,7 @@ describe("Interface Relationships", () => {
               * Movie
               * Series
               \\"\\"\\"
-              ActedIn: SeriesActorsEdgeAggregationWhereInput
+              ActedIn: ActedInAggregationWhereInput
             }
 
             input ProductionActorsEdgeCreateInput {
@@ -1750,7 +1750,7 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: SeriesActorsNodeAggregationWhereInput
             }
 
@@ -1767,37 +1767,6 @@ describe("Interface Relationships", () => {
             input SeriesActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input SeriesActorsEdgeAggregationWhereInput {
-              AND: [SeriesActorsEdgeAggregationWhereInput!]
-              NOT: SeriesActorsEdgeAggregationWhereInput
-              OR: [SeriesActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input SeriesActorsFieldInput {
@@ -2234,6 +2203,37 @@ describe("Interface Relationships", () => {
               screenTime: Int!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
             input ActedInCreateInput {
               screenTime: Int!
             }
@@ -2764,7 +2764,7 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -2781,37 +2781,6 @@ describe("Interface Relationships", () => {
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsFieldInput {
@@ -3084,12 +3053,12 @@ describe("Interface Relationships", () => {
               Relationship properties when source node is of type:
               * Movie
               \\"\\"\\"
-              ActedIn: MovieActorsEdgeAggregationWhereInput
+              ActedIn: ActedInAggregationWhereInput
               \\"\\"\\"
               Relationship properties when source node is of type:
               * Series
               \\"\\"\\"
-              StarredIn: SeriesActorsEdgeAggregationWhereInput
+              StarredIn: StarredInAggregationWhereInput
             }
 
             input ProductionActorsEdgeCreateInput {
@@ -3356,7 +3325,7 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesActorsEdgeAggregationWhereInput
+              edge: StarredInAggregationWhereInput
               node: SeriesActorsNodeAggregationWhereInput
             }
 
@@ -3373,37 +3342,6 @@ describe("Interface Relationships", () => {
             input SeriesActorsCreateFieldInput {
               edge: StarredInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input SeriesActorsEdgeAggregationWhereInput {
-              AND: [SeriesActorsEdgeAggregationWhereInput!]
-              NOT: SeriesActorsEdgeAggregationWhereInput
-              OR: [SeriesActorsEdgeAggregationWhereInput!]
-              seasons_AVERAGE_EQUAL: Float
-              seasons_AVERAGE_GT: Float
-              seasons_AVERAGE_GTE: Float
-              seasons_AVERAGE_LT: Float
-              seasons_AVERAGE_LTE: Float
-              seasons_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              seasons_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              seasons_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              seasons_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              seasons_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              seasons_MAX_EQUAL: Int
-              seasons_MAX_GT: Int
-              seasons_MAX_GTE: Int
-              seasons_MAX_LT: Int
-              seasons_MAX_LTE: Int
-              seasons_MIN_EQUAL: Int
-              seasons_MIN_GT: Int
-              seasons_MIN_GTE: Int
-              seasons_MIN_LT: Int
-              seasons_MIN_LTE: Int
-              seasons_SUM_EQUAL: Int
-              seasons_SUM_GT: Int
-              seasons_SUM_GTE: Int
-              seasons_SUM_LT: Int
-              seasons_SUM_LTE: Int
             }
 
             input SeriesActorsFieldInput {
@@ -3752,6 +3690,37 @@ describe("Interface Relationships", () => {
             \\"\\"\\"
             type StarredIn {
               seasons: Int!
+            }
+
+            input StarredInAggregationWhereInput {
+              AND: [StarredInAggregationWhereInput!]
+              NOT: StarredInAggregationWhereInput
+              OR: [StarredInAggregationWhereInput!]
+              seasons_AVERAGE_EQUAL: Float
+              seasons_AVERAGE_GT: Float
+              seasons_AVERAGE_GTE: Float
+              seasons_AVERAGE_LT: Float
+              seasons_AVERAGE_LTE: Float
+              seasons_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_MAX_EQUAL: Int
+              seasons_MAX_GT: Int
+              seasons_MAX_GTE: Int
+              seasons_MAX_LT: Int
+              seasons_MAX_LTE: Int
+              seasons_MIN_EQUAL: Int
+              seasons_MIN_GT: Int
+              seasons_MIN_GTE: Int
+              seasons_MIN_LT: Int
+              seasons_MIN_LTE: Int
+              seasons_SUM_EQUAL: Int
+              seasons_SUM_GT: Int
+              seasons_SUM_GTE: Int
+              seasons_SUM_LT: Int
+              seasons_SUM_LTE: Int
             }
 
             input StarredInCreateInput {
@@ -8309,6 +8278,37 @@ describe("Interface Relationships", () => {
               screenTime: Int!
             }
 
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
             input ActedInCreateInput {
               screenTime: Int!
             }
@@ -8592,7 +8592,7 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -8609,37 +8609,6 @@ describe("Interface Relationships", () => {
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsFieldInput {
@@ -8934,7 +8903,7 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesActorsEdgeAggregationWhereInput
+              edge: StarredInAggregationWhereInput
               node: SeriesActorsNodeAggregationWhereInput
             }
 
@@ -8951,37 +8920,6 @@ describe("Interface Relationships", () => {
             input SeriesActorsCreateFieldInput {
               edge: StarredInCreateInput!
               node: ActorCreateInput!
-            }
-
-            input SeriesActorsEdgeAggregationWhereInput {
-              AND: [SeriesActorsEdgeAggregationWhereInput!]
-              NOT: SeriesActorsEdgeAggregationWhereInput
-              OR: [SeriesActorsEdgeAggregationWhereInput!]
-              episodeNr_AVERAGE_EQUAL: Float
-              episodeNr_AVERAGE_GT: Float
-              episodeNr_AVERAGE_GTE: Float
-              episodeNr_AVERAGE_LT: Float
-              episodeNr_AVERAGE_LTE: Float
-              episodeNr_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodeNr_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodeNr_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodeNr_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodeNr_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              episodeNr_MAX_EQUAL: Int
-              episodeNr_MAX_GT: Int
-              episodeNr_MAX_GTE: Int
-              episodeNr_MAX_LT: Int
-              episodeNr_MAX_LTE: Int
-              episodeNr_MIN_EQUAL: Int
-              episodeNr_MIN_GT: Int
-              episodeNr_MIN_GTE: Int
-              episodeNr_MIN_LT: Int
-              episodeNr_MIN_LTE: Int
-              episodeNr_SUM_EQUAL: Int
-              episodeNr_SUM_GT: Int
-              episodeNr_SUM_GTE: Int
-              episodeNr_SUM_LT: Int
-              episodeNr_SUM_LTE: Int
             }
 
             input SeriesActorsFieldInput {
@@ -9231,12 +9169,12 @@ describe("Interface Relationships", () => {
               Relationship properties when source node is of type:
               * Movie
               \\"\\"\\"
-              ActedIn: MovieActorsEdgeAggregationWhereInput
+              ActedIn: ActedInAggregationWhereInput
               \\"\\"\\"
               Relationship properties when source node is of type:
               * Series
               \\"\\"\\"
-              StarredIn: SeriesActorsEdgeAggregationWhereInput
+              StarredIn: StarredInAggregationWhereInput
             }
 
             input ShowActorsEdgeCreateInput {
@@ -9466,6 +9404,37 @@ describe("Interface Relationships", () => {
             \\"\\"\\"
             type StarredIn {
               episodeNr: Int!
+            }
+
+            input StarredInAggregationWhereInput {
+              AND: [StarredInAggregationWhereInput!]
+              NOT: StarredInAggregationWhereInput
+              OR: [StarredInAggregationWhereInput!]
+              episodeNr_AVERAGE_EQUAL: Float
+              episodeNr_AVERAGE_GT: Float
+              episodeNr_AVERAGE_GTE: Float
+              episodeNr_AVERAGE_LT: Float
+              episodeNr_AVERAGE_LTE: Float
+              episodeNr_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_MAX_EQUAL: Int
+              episodeNr_MAX_GT: Int
+              episodeNr_MAX_GTE: Int
+              episodeNr_MAX_LT: Int
+              episodeNr_MAX_LTE: Int
+              episodeNr_MIN_EQUAL: Int
+              episodeNr_MIN_GT: Int
+              episodeNr_MIN_GTE: Int
+              episodeNr_MIN_LT: Int
+              episodeNr_MIN_LTE: Int
+              episodeNr_SUM_EQUAL: Int
+              episodeNr_SUM_GT: Int
+              episodeNr_SUM_GTE: Int
+              episodeNr_SUM_LT: Int
+              episodeNr_SUM_LTE: Int
             }
 
             input StarredInCreateInput {

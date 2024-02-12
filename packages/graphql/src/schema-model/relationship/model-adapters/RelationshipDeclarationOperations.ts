@@ -167,10 +167,10 @@ export class RelationshipDeclarationOperations {
         return `${this.relationshipDeclaration.name}Aggregate`;
     }
 
-    public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
+    public get nodeAggregationWhereInputTypeName(): string {
         return `${this.relationshipDeclaration.source.name}${upperFirst(
             this.relationshipDeclaration.name
-        )}${isA}AggregationWhereInput`;
+        )}NodeAggregationWhereInput`;
     }
 
     // TODO: subscriptions?
@@ -263,6 +263,12 @@ export class RelationshipDeclarationOperations {
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
             this.relationshipDeclaration.name
         )}EdgeSort`;
+    }
+
+    public get edgeAggregationWhereInputTypeName(): string {
+        return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
+            this.relationshipDeclaration.name
+        )}EdgeAggregationWhereInput`;
     }
 
     public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {

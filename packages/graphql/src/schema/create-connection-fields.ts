@@ -19,9 +19,9 @@
 
 import { Relationship } from "../classes";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { ObjectFields } from "./get-obj-field-meta";
 
 /**
