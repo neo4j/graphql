@@ -123,7 +123,7 @@ describe("Union relationship filtering operations", () => {
             WHERE (EXISTS {
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
                 WHERE this0.title CONTAINS $param0
-            } AND EXISTS {
+            } OR EXISTS {
                 MATCH (this)-[:ACTED_IN]->(this1:Series)
                 WHERE this1.title ENDS WITH $param1
             })

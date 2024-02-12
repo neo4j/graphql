@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
 import { createBearerToken } from "../utils/create-bearer-token";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4j from "./neo4j";
 
 describe("unions", () => {
     let driver: Driver;
@@ -110,6 +110,7 @@ describe("unions", () => {
             await session.close();
         }
     });
+
     test("should read and return unions", async () => {
         const session = await neo4j.getSession();
 
@@ -250,6 +251,98 @@ describe("unions", () => {
             expect((gqlResult.data as any)[MovieType.plural][0]).toEqual({
                 search: [{ __typename: GenreType.name, name: genreName1 }],
             });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should be filtered by relationship filters targeting union entities", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            union Search = ${MovieType} | ${GenreType}
+
+            type ${GenreType} {
+                name: String
+            }
+
+            type ${MovieType} {
+                title: String
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const movieTitle2 = generate({
+            charset: "alphabetic",
+        });
+
+        const movieTitle3 = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName1 = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName2 = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                ${MovieType.plural}( where: { 
+                        search_SOME: { 
+                            ${MovieType}: { title: "${movieTitle}" }, 
+                            ${GenreType}: { name: "${genreName2}" } 
+                        } 
+                    }) {
+                        title
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:${MovieType} {title: "${movieTitle}"})
+                CREATE (m2:${MovieType} {title: "${movieTitle2}"})
+                CREATE (m3:${MovieType} {title: "${movieTitle3}"})
+                CREATE (g1:${GenreType} {name: "${genreName1}"})
+                CREATE (g2:${GenreType} {name: "${genreName2}"})
+                CREATE (m)-[:SEARCH]->(m)
+                CREATE (m)-[:SEARCH]->(g1)
+                CREATE (m2)-[:SEARCH]->(g2)
+                CREATE (m3)-[:SEARCH]->(m2)
+                CREATE (m3)-[:SEARCH]->(g1)
+            `);
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValues(),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data?.[MovieType.plural]).toEqual(
+                expect.arrayContaining([
+                    {
+                        title: movieTitle,
+                    },
+                    {
+                        title: movieTitle2,
+                    },
+                ])
+            );
+
+            expect(gqlResult.data?.[MovieType.plural]).toHaveLength(2);
         } finally {
             await session.close();
         }

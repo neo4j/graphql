@@ -63,22 +63,11 @@ export class FilterFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    /**
-     * Get all the entities explicitly required by the where "on" object. If it's a concrete entity it will return itself.
-     **/
-    private filterConcreteEntities(entity: EntityAdapter, where: ConnectionWhereArg): ConcreteEntityAdapter[] {
-        if (isConcreteEntity(entity)) {
-            return [entity];
-        }
-        const nodeOnWhere = isInterfaceEntity(entity) ? {} : where;
-        return entity.concreteEntities.filter((ce) => Object.keys(nodeOnWhere).some((key) => key === ce.name));
-    }
-
     public createConnectionFilter(
         relationship: RelationshipAdapter,
         where: ConnectionWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): Filter[] {
+    ): Filter {
         if (
             isInterfaceEntity(relationship.target) &&
             this.isLabelOptimizationForInterfacePossible(where, relationship.target)
@@ -91,7 +80,7 @@ export class FilterFactory {
             });
             const filters = this.createConnectionPredicates({ rel: relationship, entity: relationship.target, where });
             connectionFilter.addFilters(filters);
-            return asArray(connectionFilter);
+            return connectionFilter;
         }
 
         const filteredEntities = getConcreteEntities(relationship.target, where);
@@ -118,7 +107,7 @@ export class FilterFactory {
             connectionFilter.addFilters(filters);
             connectionFilters.push(connectionFilter);
         }
-        return this.wrapMultipleFiltersInLogical(connectionFilters, "OR");
+        return new LogicalFilter({ operation: "OR", filters: connectionFilters });
     }
 
     public createConnectionPredicates({
@@ -218,16 +207,12 @@ export class FilterFactory {
         relationship: RelationshipAdapter,
         where: GraphQLWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): RelationshipFilter[] {
+    ): Filter {
         /**
-         * The logic below can be confusing, but it's to handle the following cases:
-         * 1. where: { actors: null } -> in this case we want to return an Exists filter as showed by tests packages/graphql/tests/tck/null.test.ts
-         * 2. where: {} -> in this case we want to not apply any filter, as showed by tests packages/graphql/tests/tck/issues/402.test.ts
+         * The logic below can be confusing, but it's to handle the following case
+         * where: { actors: null } -> in this case we want to return an Exists filter as showed by tests packages/graphql/tests/tck/null.test.ts
          **/
         const isNull = where === null;
-        if (!isNull && Object.keys(where).length === 0) {
-            return [];
-        }
         // this is because if isNull is true we want to wrap the Exist subclause in a NOT, but if isNull is true and isNot is true they negate each other
         const isNot = isNull ? !filterOps.isNot : filterOps.isNot;
 
@@ -247,9 +232,9 @@ export class FilterFactory {
                 relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
             }
 
-            return [relationshipFilter];
+            return relationshipFilter;
         } else {
-            const filteredEntities = this.filterConcreteEntities(relationship.target, where);
+            const filteredEntities = getConcreteEntities(relationship.target, where);
             const relationshipFilters: RelationshipFilter[] = [];
             for (const concreteEntity of filteredEntities) {
                 const relationshipFilter = this.createRelationshipFilterTreeNode({
@@ -267,7 +252,7 @@ export class FilterFactory {
 
                 relationshipFilters.push(relationshipFilter);
             }
-            return relationshipFilters;
+            return new LogicalFilter({ operation: "OR", filters: relationshipFilters });
         }
     }
 
@@ -425,7 +410,7 @@ export class FilterFactory {
         isNot: boolean;
         isConnection: boolean;
         isAggregate: boolean;
-    }): Filter | Filter[] {
+    }): Filter | Filter[] | undefined {
         if (isAggregate) {
             return this.createAggregationFilter(relationship, value as AggregateWhereInput);
         }
@@ -433,16 +418,16 @@ export class FilterFactory {
             throw new Error(`Invalid operator ${operator} for relationship`);
         }
         if (isConnection) {
-            const connectionFilters = this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
+            return this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
                 isNot,
                 operator,
             });
-            // TODO: remove cast
-            return this.wrapMultipleFiltersInLogical(connectionFilters)[0] as unknown as [
-                LogicalFilter | ConnectionFilter
-            ];
         }
-        // TODO: check why relationship were not wrapped in a LogicalFilter but connection filters were
+
+        // where: {} -> in this case we want to not apply any filter, as showed by tests packages/graphql/tests/tck/issues/402.test.ts
+        if (value !== null && Object.keys(value).length === 0) {
+            return;
+        }
         return this.createRelationshipFilter(relationship, value as GraphQLWhereArg, {
             isNot,
             operator,
