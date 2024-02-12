@@ -19,14 +19,14 @@
 
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import gql from "graphql-tag";
-import { Neo4jGraphQL } from "../../../src";
-import Neo4j from "../../integration/neo4j";
-import { UniqueType } from "../../utils/graphql-types";
+import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4j from "../../neo4j";
 
-describe("https://github.com/neo4j/graphql/issues/4583", () => {
+describe("interface filters of declared relationships", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
@@ -49,7 +49,6 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
     let seriesEpisodes;
     let seriesScreenTime;
     let episodeNr;
-    let sameTitle;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -91,6 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 screenTime: Int!
             }
 
+
             type StarredIn @relationshipProperties {
                 episodeNr: Int!
             }
@@ -104,7 +104,6 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-
         actorName = "actor1";
         actorName2 = "actor2";
 
@@ -117,7 +116,6 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         seriesEpisodes = faker.number.int({ max: 100000 });
         seriesScreenTime = faker.number.int({ max: 100000 });
         episodeNr = faker.number.int({ max: 100000 });
-        sameTitle = "sameTitle";
 
         await session.run(
             `
@@ -128,8 +126,6 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
                 CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (m3:${Movie} { title: $sameTitle, runtime:100 })
-                CREATE (s3:${Series} { title: $sameTitle, episodeCount: 20})
                 CREATE (a)-[:ACTED_IN { episodeNr: $episodeNr }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
             `,
             {
@@ -143,7 +139,6 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 seriesEpisodes,
                 seriesScreenTime,
                 episodeNr,
-                sameTitle,
             }
         );
     });
@@ -157,91 +152,28 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         await driver.close();
     });
 
-    test("typename should work for connect operation", async () => {
+    test("should filter using relationship filters", async () => {
         const query = /* GraphQL */ `
-        mutation CreateActors {
-            ${Actor.operations.create}(
-              input: {
-                name: "My Actor"
-                actedIn: {
-                  connect: {
-                    edge: { screenTime: 10 }
-                    where: { node: { title: "${movieTitle}", typename_IN: [${Movie.name}] } }
-                  }
-                }
-              }
-            ) {
-              ${Actor.plural} {
-                name
-                actedIn {
-                    ... on ${Movie.name} {
-                        title
-                    }
-                }
-              }
-            }
-          }
-        `;
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [Actor.operations.create]: {
-                [Actor.plural]: expect.toIncludeSameMembers([
-                    {
-                        name: "My Actor",
-                        actedIn: [
-                            {
-                                title: movieTitle,
-                            },
-                        ],
-                    },
-                ]),
-            },
-        });
-    });
-
-    test("typename should work for nested connect operation", async () => {
-        const query = /* GraphQL */ `
-        mutation CreateActors {
-            ${Movie.operations.create}(
-              input: {
-                title: "My Movie"
-                runtime: 120
-                actors: {
-                  connect: {
-                    edge: { screenTime: 10 }
-                    where: { node: { name: "${actorName2}" } }
-                    connect: {
-                        actedIn: {
-                            edge: { screenTime: 25 }
-                            where: { node: { title: "${sameTitle}", typename_IN: [${Movie.name}]} }
-                        }
-                    }
-                  }
-                }
-              }
-            ) {
-              ${Movie.plural} {
-                title
-                actors {
-                    name
-                    actedIn {
-                        ... on ${Movie.name} {
-                            title
+            query production {
+                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
                         }
                     }
                 }
-              }
             }
-          }
         `;
 
         const gqlResult = await graphql({
@@ -252,64 +184,57 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.create]: {
-                [Movie.plural]: expect.toIncludeSameMembers([
-                    {
-                        title: "My Movie",
-                        actors: [
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
                             {
-                                name: actorName2,
-                                actedIn: expect.toIncludeSameMembers([
-                                    {
-                                        title: "My Movie",
-                                    },
-                                    {
-                                        title: sameTitle,
-                                    },
-                                    {
-                                        title: movieTitle2,
-                                    },
-                                ]),
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
                             },
-                        ],
+                            {
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                        ]),
                     },
-                ]),
-            },
-        });
+                }),
+            ])
+        );
     });
 
-    test("typename should work for connect operation, with logical operators", async () => {
+    test("should filter using connection filters", async () => {
         const query = /* GraphQL */ `
-        mutation CreateActors {
-            ${Actor.operations.create}(
-              input: {
-                name: "My Actor"
-                actedIn: {
-                  connect: {
-                    edge: { screenTime: 10 }
-                    where: { node: { OR: [
-                        { title: "${movieTitle}", typename_IN: [${Movie.name}]},
-                        { AND: [ {typename_IN: [${Series.name}]}, { NOT: { title: "${sameTitle}"} }] }
-                    ] } }
-                  }
-                }
-              }
-            ) {
-              ${Actor.plural} {
-                name
-                actedIn {
-                    ... on ${Movie.name} {
-                        title
-                    }
-                    ... on ${Series.name} {
-                        title
+            query production {
+                productions(where: { actorsConnection_SOME: { node: { name: "${actorName2}" } } }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
                     }
                 }
-              }
             }
-          }
         `;
 
         const gqlResult = await graphql({
@@ -320,23 +245,108 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [Actor.operations.create]: {
-                [Actor.plural]: expect.toIncludeSameMembers([
-                    {
-                        name: "My Actor",
-                        actedIn: [
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
                             {
-                                title: movieTitle,
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
                             },
                             {
-                                title: seriesTitle,
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                        ]),
+                    },
+                }),
+            ])
+        );
+    });
+
+    test("should filter using connection filters + typename_IN + logical", async () => {
+        const query = /* GraphQL */ `
+            query production {
+                productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name: "${actorName2}" }  }}] }) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                ... on ActedIn {
+                                    screenTime
+                                }
+                                ... on StarredIn {
+                                    episodeNr
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {},
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.productions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    title: movieTitle2,
+                    actorsConnection: {
+                        edges: expect.arrayContaining([
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                            {
+                                node: {
+                                    name: actorName2,
+                                },
+                                properties: {
+                                    screenTime: movieScreenTime,
+                                },
+                            },
+                        ]),
+                    },
+                }),
+                expect.objectContaining({
+                    title: seriesTitle,
+                    actorsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    name: actorName,
+                                },
+                                properties: {
+                                    episodeNr,
+                                },
                             },
                         ],
                     },
-                ]),
-            },
-        });
+                }),
+            ])
+        );
     });
 });

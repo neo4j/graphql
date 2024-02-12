@@ -26,7 +26,6 @@ import type {
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
 import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
@@ -36,7 +35,7 @@ import { filterTruthy } from "../../../utils/utils";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 
 type AuthParams = {
-    entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    entity: ConcreteEntityAdapter;
     operations: AuthorizationOperation[];
     context: Neo4jGraphQLTranslationContext;
 };

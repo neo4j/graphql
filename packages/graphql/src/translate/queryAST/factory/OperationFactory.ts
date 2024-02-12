@@ -17,20 +17,21 @@
  * limitations under the License.
  */
 
-import { asArray, mergeDeep } from "@graphql-tools/utils";
+import { mergeDeep } from "@graphql-tools/utils";
 import * as Cypher from "@neo4j/cypher-builder";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { filterTruthy, isObject, isRecord, isString } from "../../../utils/utils";
+import { asArray, filterTruthy, isObject, isRecord, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import type { Field } from "../ast/fields/Field";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
@@ -74,7 +75,6 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -312,16 +312,7 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
-            // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-            const isInterface = isInterfaceEntity(entity);
-
             const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
-
-            const sharedFilters = isInterface
-                ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
-                : undefined;
-
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 // Duplicate from normal read
                 let selection: EntitySelection;
@@ -346,14 +337,13 @@ export class OperationsFactory {
                 });
 
                 const whereArgs = getConcreteWhere(entity, concreteEntity, resolveTreeWhere);
-
                 return this.hydrateReadOperation({
                     operation: readPartial,
                     entity: concreteEntity,
                     resolveTree,
                     context,
                     whereArgs: whereArgs,
-                    sharedFilters,
+                    partialOf: entity,
                 });
             });
 
@@ -712,17 +702,13 @@ export class OperationsFactory {
         target: InterfaceEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
     }): DeleteOperation[] {
-        const { whereArg } = this.parseDeleteArgs(deleteArg, true);
-        // TODO: Remove branch condition with the 5.0 release
-        const sharedFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
-        const concreteEntities = target.concreteEntities;
-        return concreteEntities.flatMap((concreteEntity) => {
+        return target.concreteEntities.flatMap((concreteEntity) => {
             return this.createNestedDeleteOperation({
                 relationship,
                 target: concreteEntity,
                 args: deleteArg,
                 context,
-                sharedFilters,
+                partialOf: target,
             });
         });
     }
@@ -741,7 +727,7 @@ export class OperationsFactory {
         const concreteEntities = getConcreteEntities(target, deleteArg);
 
         return concreteEntities.flatMap((concreteEntity) => {
-            return asArray(deleteArg[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {
+            return asArray(deleteArg[concreteEntity.name]).flatMap((concreteArgs) => {
                 return this.createNestedDeleteOperation({
                     relationship,
                     target: concreteEntity,
@@ -798,13 +784,13 @@ export class OperationsFactory {
         target,
         args,
         context,
-        sharedFilters,
+        partialOf,
     }: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter;
         args: Record<string, any>;
         context: Neo4jGraphQLTranslationContext;
-        sharedFilters?: Filter[];
+        partialOf?: InterfaceEntityAdapter;
     }): DeleteOperation[] {
         const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
 
@@ -820,7 +806,16 @@ export class OperationsFactory {
             optional: true,
             targetOverride: target,
         });
-        const nodeFilters = sharedFilters ?? this.filterFactory.createNodeFilters(target, whereArg.node);
+        let nodeFilters: Filter[];
+        if (partialOf && isInterfaceEntity(partialOf)) {
+            nodeFilters = this.filterFactory.createInterfaceNodeFilters({
+                entity: partialOf,
+                targetEntity: target,
+                whereFields: whereArg.node,
+            });
+        } else {
+            nodeFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
+        }
         const edgeFilters = this.filterFactory.createEdgeFilters(relationship, whereArg.edge);
 
         const filters = [...nodeFilters, ...edgeFilters];
@@ -1146,7 +1141,7 @@ export class OperationsFactory {
         context,
         sortArgs,
         fieldsByTypeName,
-        sharedFilters,
+        partialOf,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
@@ -1154,7 +1149,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
         sortArgs?: Record<string, any>;
         fieldsByTypeName: FieldsByTypeName;
-        sharedFilters?: Filter[];
+        partialOf?: UnionEntityAdapter | InterfaceEntityAdapter;
     }): T {
         const concreteProjectionFields = { ...fieldsByTypeName[entity.name] };
         // Get the abstract types of the interface
@@ -1168,7 +1163,17 @@ export class OperationsFactory {
         ]);
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
-        const filters = sharedFilters ? sharedFilters : this.filterFactory.createNodeFilters(entity, whereArgs);
+        if (partialOf && isInterfaceEntity(partialOf)) {
+            const filters = this.filterFactory.createInterfaceNodeFilters({
+                entity: partialOf,
+                targetEntity: entity,
+                whereFields: whereArgs,
+            });
+            operation.addFilters(...filters);
+        } else {
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+            operation.addFilters(...filters);
+        }
 
         const authFilters = this.authorizationFactory.getAuthFilters({
             entity,
@@ -1178,7 +1183,7 @@ export class OperationsFactory {
         });
 
         operation.setFields(fields);
-        operation.addFilters(...filters);
+
         operation.addAuthFilters(...authFilters);
 
         if (sortArgs) {
@@ -1203,14 +1208,14 @@ export class OperationsFactory {
         resolveTree,
         context,
         whereArgs,
-        sharedFilters,
+        partialOf,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any> | Filter[];
-        sharedFilters?: Filter[];
+        partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
         return this.hydrateOperation({
             entity,
@@ -1219,7 +1224,7 @@ export class OperationsFactory {
             whereArgs,
             fieldsByTypeName: resolveTree.fieldsByTypeName,
             sortArgs: (resolveTree.args.options as Record<string, any>) || {},
-            sharedFilters,
+            partialOf,
         });
     }
 
@@ -1260,33 +1265,46 @@ export class OperationsFactory {
             const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
-            const authFilters = this.authorizationFactory.getAuthFilters({
-                entity,
-                operations: ["AGGREGATE"],
-                context,
-            });
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+            if (isInterfaceEntity(entity)) {
+                const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
+                operation.addFilters(...filters);
+            } else {
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                operation.addFilters(...filters);
+                const authFilters = this.authorizationFactory.getAuthFilters({
+                    entity,
+                    operations: ["AGGREGATE"],
+                    context,
+                });
+
+                operation.addAuthFilters(...authFilters);
+            }
 
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
-            operation.addFilters(...filters);
-            operation.addAuthFilters(...authFilters);
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
             };
 
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields);
-            const authFilters = this.authorizationFactory.getAuthFilters({
-                entity,
-                operations: ["AGGREGATE"],
-                context,
-            });
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+
+            if (isInterfaceEntity(entity)) {
+                const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
+                operation.addFilters(...filters);
+            } else {
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                operation.addFilters(...filters);
+                const authFilters = this.authorizationFactory.getAuthFilters({
+                    entity,
+                    operations: ["AGGREGATE"],
+                    context,
+                });
+
+                operation.addAuthFilters(...authFilters);
+            }
             operation.setFields(fields);
-            operation.addFilters(...filters);
-            operation.addAuthFilters(...authFilters);
         }
 
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
