@@ -18,9 +18,9 @@
  */
 
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
-import { ImplementingTypeOperations } from "./ImplementingTypeOperations";
+import { ImplementingEntityOperations } from "./ImplementingEntityOperations";
 
-export class InterfaceEntityOperations extends ImplementingTypeOperations<InterfaceEntityAdapter> {
+export class InterfaceEntityOperations extends ImplementingEntityOperations<InterfaceEntityAdapter> {
     constructor(interfaceEntityAdapter: InterfaceEntityAdapter) {
         super(interfaceEntityAdapter);
     }

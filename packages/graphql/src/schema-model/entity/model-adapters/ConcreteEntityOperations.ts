@@ -19,8 +19,8 @@
 
 import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
-import type { RootTypeFieldNames as ImplementingTypeRootTypeFieldNames } from "./ImplementingTypeOperations";
-import { ImplementingTypeOperations } from "./ImplementingTypeOperations";
+import type { RootTypeFieldNames as ImplementingTypeRootTypeFieldNames } from "./ImplementingEntityOperations";
+import { ImplementingEntityOperations } from "./ImplementingEntityOperations";
 
 type RootTypeFieldNames = ImplementingTypeRootTypeFieldNames & {
     connection: string;
@@ -39,7 +39,7 @@ type FulltextTypeNames = {
     sort: string;
 };
 
-export class ConcreteEntityOperations extends ImplementingTypeOperations<ConcreteEntityAdapter> {
+export class ConcreteEntityOperations extends ImplementingEntityOperations<ConcreteEntityAdapter> {
     constructor(concreteEntityAdapter: ConcreteEntityAdapter) {
         super(concreteEntityAdapter);
     }

@@ -61,7 +61,7 @@ export type CreateMutationArgumentNames = {
     input: string;
 };
 
-export class ImplementingTypeOperations<T extends InterfaceEntityAdapter | ConcreteEntityAdapter> {
+export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | ConcreteEntityAdapter> {
     protected readonly pascalCasePlural: string;
     protected readonly pascalCaseSingular: string;
 
