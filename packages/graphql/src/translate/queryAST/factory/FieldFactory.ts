@@ -187,7 +187,7 @@ export class FieldFactory {
         fieldName: string;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): AttributeField | undefined {
+    }): AttributeField | OperationField | undefined {
         if (["cursor", "node"].includes(fieldName)) {
             return;
         }
@@ -247,7 +247,7 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         cypherAnnotation: CypherAnnotation;
-    }): CypherAttributeField {
+    }): CypherAttributeField | OperationField {
         const typeName = attribute.typeHelper.isList() ? (attribute.type as ListType).ofType.name : attribute.type.name;
         const rawFields = field.fieldsByTypeName[typeName];
         let cypherProjection: Record<string, string> | undefined;
@@ -268,7 +268,8 @@ export class FieldFactory {
                 if (!concreteEntity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
-                const nestedFields = this.createFields(concreteEntity, rawFields, context);
+                return this.createCypherOperationField(concreteEntity, field, context, attribute);
+                /*   const nestedFields = this.createFields(concreteEntity, rawFields, context);
                 return new CypherAttributeField({
                     attribute,
                     alias: field.alias,
@@ -276,7 +277,7 @@ export class FieldFactory {
                     nestedFields,
                     rawArguments: field.args,
                     extraParams,
-                });
+                }); */
             }
             if (attribute.typeHelper.isAbstract()) {
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
@@ -349,6 +350,25 @@ export class FieldFactory {
 
         return new OperationField({
             operation: connectionOp,
+            alias: field.alias,
+        });
+    }
+
+    private createCypherOperationField(
+        target: EntityAdapter,
+        field: ResolveTree,
+        context: Neo4jGraphQLTranslationContext,
+        cypherAttributeField: AttributeAdapter
+    ): OperationField {
+        const cypherOp = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
+            resolveTree: field,
+            context,
+            entity: target,
+            cypherAttributeField,
+        });
+
+        return new OperationField({
+            operation: cypherOp,
             alias: field.alias,
         });
     }

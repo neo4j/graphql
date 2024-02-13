@@ -165,7 +165,7 @@ export class OperationsFactory {
                 });
             }
             case "CUSTOM_CYPHER": {
-                return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
+                return this.createTopLevelCustomCypherOperation({ entity, resolveTree, context, varName });
             }
         }
     }
@@ -886,7 +886,65 @@ export class OperationsFactory {
         return updateOp;
     }
 
-    private createCustomCypherOperation({
+    public createCustomCypherOperation({
+        resolveTree,
+        context,
+        entity,
+        varName,
+        cypherAttributeField,
+    }: {
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        entity?: EntityAdapter;
+        varName?: string;
+        cypherAttributeField: AttributeAdapter;
+    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+   
+        if (!entity) {
+            const selection = new CustomCypherSelection({
+                operationField: cypherAttributeField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+            return new CypherScalarOperation(selection);
+        }
+        if (isConcreteEntity(entity)) {
+            const selection = new CustomCypherSelection({
+                operationField: cypherAttributeField,
+                target: entity,
+                alias: varName,
+                rawArguments: resolveTree.args,
+            });
+            const customCypher = new CypherOperation({ target: entity, selection });
+            return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+        }
+        const selection = new CustomCypherSelection({
+            operationField: cypherAttributeField,
+            target: entity,
+            alias: varName,
+            rawArguments: resolveTree.args,
+        });
+
+        const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
+            const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
+            const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
+            // The Typename filter here is required to access concrete entities from a Cypher Union selection.
+            // It would be probably more ergonomic to pass the label filter with the selection,
+            // although is currently not possible to do so with Cypher.Builder
+            partial.addFilters(new TypenameFilter([concreteEntity]));
+            return this.hydrateReadOperation({
+                entity: concreteEntity,
+                operation: partial,
+                resolveTree,
+                context,
+                whereArgs: {},
+            });
+        });
+        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
+    }
+
+    private createTopLevelCustomCypherOperation({
         resolveTree,
         context,
         entity,

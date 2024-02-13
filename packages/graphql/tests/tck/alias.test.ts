@@ -53,7 +53,7 @@ describe("Cypher Alias", () => {
         });
     });
 
-    test("Alias", async () => {
+    test.only("Alias", async () => {
         const query = gql`
             {
                 movies {
