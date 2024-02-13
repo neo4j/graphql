@@ -68,7 +68,7 @@ describe("Field-level filter interface query fields with authorization", () => {
                 ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
+            type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series-reader" } } }]) {
                 title: String!
                 cost: Float!
                 episodes: Int!
@@ -179,9 +179,7 @@ describe("Field-level filter interface query fields with authorization", () => {
         const token = createBearerToken(secret, { roles: [] });
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeDefined();
-        expect(
-            (queryResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))
-        ).toBeTruthy();
+        expect((queryResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
         expect(queryResult.data).toBeNull();
     });
 });

@@ -20,11 +20,13 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Top level filter on aggregation interfaces with Auth", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
+    const secret = "secret";
 
     beforeAll(() => {
         typeDefs = gql`
@@ -65,6 +67,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -77,19 +80,21 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
                     RETURN this1 AS node
                 }
                 WITH *
-                WHERE node.title = $param0
+                WHERE node.title = $param3
                 RETURN count(node) AS this2
             }
             RETURN { count: this2 }"
@@ -97,7 +102,12 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -111,19 +121,21 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
                     RETURN this1 AS node
                 }
                 WITH *
-                WHERE node.title = $param0
+                WHERE node.title = $param3
                 RETURN count(node) AS this2
             }
             RETURN { count: this2 }"
@@ -131,7 +143,12 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -145,19 +162,21 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
                     RETURN this1 AS node
                 }
                 WITH *
-                WHERE (node.cost >= $param0 AND node.title = $param1)
+                WHERE (node.cost >= $param3 AND node.title = $param4)
                 RETURN count(node) AS this2
             }
             RETURN { count: this2 }"
@@ -165,8 +184,13 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": \\"The Matrix\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": 10,
+                \\"param4\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -180,19 +204,21 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
                     RETURN this1 AS node
                 }
                 WITH *
-                WHERE (node.cost >= $param0 OR node.title = $param1)
+                WHERE (node.cost >= $param3 OR node.title = $param4)
                 RETURN count(node) AS this2
             }
             RETURN { count: this2 }"
@@ -200,8 +226,13 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": \\"The Matrix\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": 10,
+                \\"param4\\": \\"The Matrix\\"
             }"
         `);
     });

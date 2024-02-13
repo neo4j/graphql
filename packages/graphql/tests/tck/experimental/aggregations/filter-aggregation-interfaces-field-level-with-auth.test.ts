@@ -20,11 +20,13 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Field Level Aggregations with Auth", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
+    const secret = "secret";
 
     beforeAll(() => {
         typeDefs = gql`
@@ -68,6 +70,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -82,7 +85,8 @@ describe("Interface Field Level Aggregations with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
@@ -91,6 +95,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
@@ -98,7 +103,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this3 AS node, this2 AS edge
                 }
                 WITH *
-                WHERE node.title = $param0
+                WHERE node.title = $param3
                 RETURN count(node) AS this4
             }
             RETURN this { actedInAggregate: { count: this4 } } AS this"
@@ -106,7 +111,12 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -135,7 +145,8 @@ describe("Interface Field Level Aggregations with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
@@ -144,6 +155,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
@@ -151,7 +163,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this3 AS node, this2 AS edge
                 }
                 WITH *
-                WHERE node.title STARTS WITH $param0
+                WHERE node.title STARTS WITH $param3
                 RETURN count(node) AS this4
             }
             CALL {
@@ -159,6 +171,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))
                     RETURN this6 AS node, this5 AS edge
                     UNION
                     WITH this
@@ -166,7 +179,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this8 AS node, this7 AS edge
                 }
                 WITH *
-                WHERE node.title STARTS WITH $param1
+                WHERE node.title STARTS WITH $param5
                 WITH node
                 ORDER BY size(node.title) DESC
                 WITH collect(node.title) AS list
@@ -177,6 +190,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this10:ACTED_IN]->(this11:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))
                     RETURN this11 AS node, this10 AS edge
                     UNION
                     WITH this
@@ -184,7 +198,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this13 AS node, this12 AS edge
                 }
                 WITH *
-                WHERE node.title STARTS WITH $param2
+                WHERE node.title STARTS WITH $param7
                 RETURN { min: min(edge.screenTime), max: max(edge.screenTime) } AS this14
             }
             RETURN this { .name, actedInAggregate: { count: this4, node: { title: this9 }, edge: { screenTime: this14 } } } AS this"
@@ -192,9 +206,16 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The\\",
-                \\"param1\\": \\"The\\",
-                \\"param2\\": \\"The\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"The\\",
+                \\"param4\\": \\"movie_aggregator\\",
+                \\"param5\\": \\"The\\",
+                \\"param6\\": \\"movie_aggregator\\",
+                \\"param7\\": \\"The\\"
             }"
         `);
     });
@@ -223,7 +244,8 @@ describe("Interface Field Level Aggregations with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
@@ -232,6 +254,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
@@ -239,7 +262,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this3 AS node, this2 AS edge
                 }
                 WITH *
-                WHERE (node.title STARTS WITH $param0 OR node.title STARTS WITH $param1)
+                WHERE (node.title STARTS WITH $param3 OR node.title STARTS WITH $param4)
                 RETURN count(node) AS this4
             }
             CALL {
@@ -247,6 +270,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))
                     RETURN this6 AS node, this5 AS edge
                     UNION
                     WITH this
@@ -254,7 +278,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this8 AS node, this7 AS edge
                 }
                 WITH *
-                WHERE (node.title STARTS WITH $param2 OR node.title STARTS WITH $param3)
+                WHERE (node.title STARTS WITH $param6 OR node.title STARTS WITH $param7)
                 WITH node
                 ORDER BY size(node.title) DESC
                 WITH collect(node.title) AS list
@@ -265,6 +289,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this10:ACTED_IN]->(this11:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles))
                     RETURN this11 AS node, this10 AS edge
                     UNION
                     WITH this
@@ -272,7 +297,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     RETURN this13 AS node, this12 AS edge
                 }
                 WITH *
-                WHERE (node.title STARTS WITH $param4 OR node.title STARTS WITH $param5)
+                WHERE (node.title STARTS WITH $param9 OR node.title STARTS WITH $param10)
                 RETURN { min: min(edge.screenTime), max: max(edge.screenTime) } AS this14
             }
             RETURN this { .name, actedInAggregate: { count: this4, node: { title: this9 }, edge: { screenTime: this14 } } } AS this"
@@ -280,12 +305,19 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The\\",
-                \\"param1\\": \\"A\\",
-                \\"param2\\": \\"The\\",
-                \\"param3\\": \\"A\\",
-                \\"param4\\": \\"The\\",
-                \\"param5\\": \\"A\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"The\\",
+                \\"param4\\": \\"A\\",
+                \\"param5\\": \\"movie_aggregator\\",
+                \\"param6\\": \\"The\\",
+                \\"param7\\": \\"A\\",
+                \\"param8\\": \\"movie_aggregator\\",
+                \\"param9\\": \\"The\\",
+                \\"param10\\": \\"A\\"
             }"
         `);
     });

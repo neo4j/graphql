@@ -20,11 +20,13 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Top level aggregation interfaces with Auth", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
+    const secret = "secret";
 
     beforeAll(() => {
         typeDefs = gql`
@@ -68,6 +70,7 @@ describe("Top level aggregation interfaces with Auth", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -80,15 +83,18 @@ describe("Top level aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles))
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
                     RETURN this1 AS node
                 }
                 RETURN count(node) AS this2
@@ -96,7 +102,16 @@ describe("Top level aggregation interfaces with Auth", () => {
             RETURN { count: this2 }"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"series_aggregator\\"
+            }"
+        `);
     });
 
     test("top level count and string fields", async () => {
@@ -112,7 +127,8 @@ describe("Top level aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -122,7 +138,7 @@ describe("Top level aggregation interfaces with Auth", () => {
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
-                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
                     RETURN this1 AS node
                 }
                 RETURN count(node) AS this2
@@ -130,7 +146,7 @@ describe("Top level aggregation interfaces with Auth", () => {
             CALL {
                 CALL {
                     MATCH (this3:Movie)
-                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))
                     RETURN this3 AS node
                     UNION
                     MATCH (this4:Series)
@@ -145,7 +161,18 @@ describe("Top level aggregation interfaces with Auth", () => {
             RETURN { count: this2, title: this5 }"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param2\\": \\"movie_aggregator\\",
+                \\"param3\\": \\"series_aggregator\\",
+                \\"param4\\": \\"movie_aggregator\\",
+                \\"param5\\": \\"series_aggregator\\"
+            }"
+        `);
     });
 
     test("top level non interface count and string fields", async () => {
@@ -161,7 +188,8 @@ describe("Top level aggregation interfaces with Auth", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -182,8 +210,10 @@ describe("Top level aggregation interfaces with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": false,
-                \\"jwt\\": {},
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
                 \\"param2\\": \\"movie_aggregator\\",
                 \\"param3\\": \\"movie_aggregator\\"
             }"

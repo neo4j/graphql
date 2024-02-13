@@ -17,13 +17,17 @@
  * limitations under the License.
  */
 
+import type { GraphQLError } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4j from "../../neo4j";
 
-describe("Interface Field Level Aggregations", () => {
+describe("Interface Field Level Aggregations with authorization", () => {
+    const secret = "the-secret";
+
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
@@ -41,19 +45,23 @@ describe("Interface Field Level Aggregations", () => {
         driver = await neo4j.getDriver();
 
         typeDefs = /* GraphQL */ `
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             interface ${Production} {
                 title: String!
                 cost: Float!
             }
 
-            type ${Movie} implements ${Production} {
+            type ${Movie} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
                 title: String!
                 cost: Float!
                 runtime: Int!
                 ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements ${Production} {
+            type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series-reader" } } }]) {
                 title: String!
                 cost: Float!
                 episodes: Int!
@@ -69,7 +77,13 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: { key: secret },
+            },
+        });
         session = await neo4j.getSession();
 
         await session.run(`
@@ -117,10 +131,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -142,6 +157,29 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
+    test("Count with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        count
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
@@ -157,10 +195,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -187,6 +226,33 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
+    test("Min with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        node {
+                            cost {
+                                min
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
@@ -202,10 +268,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -232,6 +299,33 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
+    test("Max with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        node {
+                            cost {
+                                max
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     test("Sum", async () => {
         const query = /* GraphQL */ `
             {
@@ -247,10 +341,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -277,6 +372,33 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
+    test("Sum with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        node {
+                            cost {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     test("Multiple aggregations", async () => {
         const query = /* GraphQL */ `
             {
@@ -296,10 +418,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -334,6 +457,37 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
+    test("Multiple aggregations with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        count
+                        node {
+                            cost {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     // Edge aggregation
     test("Edge Count", async () => {
         const query = /* GraphQL */ `
@@ -346,10 +500,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -368,6 +523,29 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
+    test("Edge Count with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        count
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     test("Edge screenTime", async () => {
         const query = /* GraphQL */ `
             {
@@ -383,10 +561,11 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -411,5 +590,32 @@ describe("Interface Field Level Aggregations", () => {
                 },
             },
         ]);
+    });
+
+    test("Edge screenTime with no roles should fail", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
     });
 });

@@ -26,7 +26,7 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4j from "../../neo4j";
 
-describe("Top-level filter interface query fields with authorization", () => {
+describe("Top-level interface query fields with authorization", () => {
     const secret = "the-secret";
 
     let schema: GraphQLSchema;
@@ -34,9 +34,7 @@ describe("Top-level filter interface query fields with authorization", () => {
     let driver: Driver;
     let typeDefs: string;
 
-    const Production = new UniqueType("Production");
     const Movie = new UniqueType("Movie");
-    const Actor = new UniqueType("Actor");
     const Series = new UniqueType("Series");
 
     async function graphqlQuery(query: string, token: string) {
@@ -56,31 +54,21 @@ describe("Top-level filter interface query fields with authorization", () => {
                 roles: [String!]!
             }
 
-            interface ${Production} {
+            interface Production {
                 title: String!
                 cost: Float!
             }
 
-            type ${Movie} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
+            type ${Movie} implements Production @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
                 title: String!
                 cost: Float!
-                runtime: Int!
-                ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                runtime: Int
             }
 
-            type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
+            type ${Series} implements Production {
                 title: String!
                 cost: Float!
-                episodes: Int!
-            }
-
-            type ActedIn @relationshipProperties {
-                screenTime: Int!
-            }
-
-            type ${Actor} {
-                name: String!
-                actedIn: [${Production}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                episodes: Int
             }
         `;
 
@@ -88,31 +76,11 @@ describe("Top-level filter interface query fields with authorization", () => {
 
         try {
             await session.run(`
-            // Create Movies
-            CREATE (m1:${Movie} { title: "The Movie One", cost: 10000000, runtime: 120 })
-            CREATE (m2:${Movie} { title: "The Movie Two", cost: 20000000, runtime: 90 })
-            CREATE (m3:${Movie} { title: "The Movie Three", cost: 12000000, runtime: 70 })
+            CREATE(m1:${Movie} {title: "The Matrix", cost: 10})
+            CREATE(m2:${Movie} {title: "The Matrix is a very interesting movie: The Documentary", cost: 20})
             
-            // Create Series
-            CREATE (s1:${Series} { title: "The Series One", cost: 10000000, episodes: 10 })
-            CREATE (s2:${Series} { title: "The Series Two", cost: 20000000, episodes: 20 })
-            CREATE (s3:${Series} { title: "The Series Three", cost: 20000000, episodes: 15 })
-            
-            // Create Actors
-            CREATE (a1:${Actor} { name: "Actor One" })
-            CREATE (a2:${Actor} { name: "Actor Two" })
-            
-            // Associate Actor 1 with Movies and Series
-            CREATE (a1)-[:ACTED_IN { screenTime: 100 }]->(m1)
-            CREATE (a1)-[:ACTED_IN { screenTime: 82 }]->(s1)
-            CREATE (a1)-[:ACTED_IN { screenTime: 20 }]->(m3)
-            CREATE (a1)-[:ACTED_IN { screenTime: 22 }]->(s3)
-            
-            // Associate Actor 2 with Movies and Series
-            CREATE (a2)-[:ACTED_IN { screenTime: 240 }]->(m2)
-            CREATE (a2)-[:ACTED_IN { screenTime: 728 }]->(s2)
-            CREATE (a2)-[:ACTED_IN { screenTime: 728 }]->(m3)
-            CREATE (a2)-[:ACTED_IN { screenTime: 88 }]->(s3)
+            CREATE(s1:${Series} {title: "The Show", cost: 1})
+            CREATE(s2:${Series} {title: "The Show 2", cost: 2})
         `);
         } finally {
             await session.close();
@@ -135,29 +103,88 @@ describe("Top-level filter interface query fields with authorization", () => {
         await driver.close();
     });
 
-    test("aggregation with auth should succeed", async () => {
-        const query = /* GraphQL */ `
+    test("top level count and string fields", async () => {
+        const query = `
             query {
-                ${Production.operations.aggregate} (where: { title_STARTS_WITH: "The" }) {
+                productionsAggregate {
+                    count
                     title {
                         longest
+                        shortest
                     }
                 }
             }
         `;
 
-        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
+        const token = createBearerToken(secret, { roles: ["movies-reader"] });
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
-        expect((queryResult as any).data[Production.operations.aggregate]["title"]["longest"]).toBe("The Series Three");
+        expect(queryResult.data).toEqual({
+            productionsAggregate: {
+                count: 4,
+                title: {
+                    longest: "The Matrix is a very interesting movie: The Documentary",
+                    shortest: "The Show",
+                },
+            },
+        });
     });
 
-    test("aggregation with auth should fail", async () => {
-        const query = /* GraphQL */ `
+    test("top level count and string fields with no roles should fail", async () => {
+        const query = `
             query {
-                ${Production.operations.aggregate} (where: { title_STARTS_WITH: "The" }) {
+                productionsAggregate {
+                    count
                     title {
                         longest
+                        shortest
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: [] });
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeDefined();
+        expect((queryResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(queryResult.data).toBeNull();
+    });
+
+    test("top level number fields", async () => {
+        const query = `
+            query {
+                productionsAggregate {
+                    cost {
+                        max
+                        min
+                        average
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: ["movies-reader"] });
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            productionsAggregate: {
+                cost: {
+                    min: 1,
+                    max: 20,
+                    average: 8.25,
+                },
+            },
+        });
+    });
+
+    test("top level number fields with no roles should fail", async () => {
+        const query = `
+            query {
+                productionsAggregate {
+                    cost {
+                        max
+                        min
+                        average
                     }
                 }
             }
