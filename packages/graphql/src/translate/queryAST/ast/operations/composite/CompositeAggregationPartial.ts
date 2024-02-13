@@ -24,12 +24,14 @@ import { createNodeFromEntity, createRelationshipFromEntity } from "../../../uti
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { QueryASTNode } from "../../QueryASTNode";
+import type { AuthorizationFilters } from "../../filters/authorization-filters/AuthorizationFilters";
 
 export class CompositeAggregationPartial extends QueryASTNode {
     public readonly entity?: RelationshipAdapter;
     public readonly target: ConcreteEntityAdapter;
     protected directed: boolean;
     protected attachedTo: "node" | "relationship";
+    protected authFilters: AuthorizationFilters[] = [];
 
     constructor({
         target,
@@ -53,8 +55,14 @@ export class CompositeAggregationPartial extends QueryASTNode {
         return [];
     }
 
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
+    }
+
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!context.target) throw new Error("No parent node found!");
+        if (!context.target) {
+            throw new Error("No parent node found!");
+        }
 
         let pattern: Cypher.Pattern;
         const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
@@ -75,6 +83,11 @@ export class CompositeAggregationPartial extends QueryASTNode {
 
             const matchClause = new Cypher.Match(pattern);
 
+            const filterPredicates = Cypher.and(...this.authFilters.map((filter) => filter.getPredicate(context)));
+            if (filterPredicates) {
+                matchClause.where(filterPredicates);
+            }
+
             const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 
             return [
@@ -87,6 +100,11 @@ export class CompositeAggregationPartial extends QueryASTNode {
         } else {
             pattern = new Cypher.Pattern(targetNode);
             const matchClause = new Cypher.Match(pattern);
+
+            const filterPredicates = Cypher.and(...this.authFilters.map((filter) => filter.getPredicate(context)));
+            if (filterPredicates) {
+                matchClause.where(filterPredicates);
+            }
 
             const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 

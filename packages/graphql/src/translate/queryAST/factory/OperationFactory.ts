@@ -409,6 +409,17 @@ export class OperationsFactory {
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
 
+                    const parsedProjectionFields = this.getParsedProjectionFields(concreteEntity, resolveTree);
+
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        attributes: this.getSelectedAttributes(concreteEntity, parsedProjectionFields.fields),
+                        context,
+                    });
+
+                    aggregationPartial.addAuthFilters(...authFilters);
+
                     return aggregationPartial;
                 });
 
@@ -450,14 +461,10 @@ export class OperationsFactory {
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
                 });
-                //TODO: use a hydrate method here
-                const rawProjectionFields = {
-                    ...resolveTree.fieldsByTypeName[entity.operations.getAggregationFieldTypename()],
-                };
 
-                const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-                const projectionFields = parsedProjectionFields.fields;
-                const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+                const parsedProjectionFields = this.getParsedProjectionFields(entity, resolveTree);
+
+                const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
 
                 operation.setFields(fields);
 
@@ -465,7 +472,7 @@ export class OperationsFactory {
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
-                    attributes: this.getSelectedAttributes(entity, projectionFields),
+                    attributes: this.getSelectedAttributes(entity, parsedProjectionFields.fields),
                     context,
                 });
 
@@ -497,6 +504,17 @@ export class OperationsFactory {
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
 
+                    const parsedProjectionFields = this.getParsedProjectionFields(concreteEntity, resolveTree);
+
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        attributes: this.getSelectedAttributes(concreteEntity, parsedProjectionFields.fields),
+                        context,
+                    });
+
+                    aggregationPartial.addAuthFilters(...authFilters);
+
                     return aggregationPartial;
                 });
 
@@ -514,6 +532,21 @@ export class OperationsFactory {
                 });
             }
         }
+    }
+
+    private getParsedProjectionFields(
+        adapter: RelationshipAdapter | ConcreteEntityAdapter,
+        resolveTree: ResolveTree
+    ): {
+        node: ResolveTree | undefined;
+        edge: ResolveTree | undefined;
+        fields: Record<string, ResolveTree>;
+    } {
+        const rawProjectionFields = {
+            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+        };
+
+        return this.splitConnectionFields(rawProjectionFields);
     }
 
     public createCompositeConnectionOperationAST({
@@ -1244,11 +1277,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
     }): T {
         if (relationship) {
-            const rawProjectionFields = {
-                ...resolveTree.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()],
-            };
-            const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-            const projectionFields = parsedProjectionFields.fields;
+            const parsedProjectionFields = this.getParsedProjectionFields(relationship, resolveTree);
 
             const edgeRawFields = {
                 ...parsedProjectionFields.edge?.fieldsByTypeName[
@@ -1262,7 +1291,7 @@ export class OperationsFactory {
                 ],
             };
 
-            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+            const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
             if (isInterfaceEntity(entity)) {
