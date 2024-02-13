@@ -138,7 +138,7 @@ describe("Top level aggregation interfaces with Auth", () => {
                     RETURN this0 AS node
                     UNION
                     MATCH (this1:Series)
-                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
+                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)) AND ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)))
                     RETURN this1 AS node
                 }
                 RETURN count(node) AS this2
@@ -146,11 +146,11 @@ describe("Top level aggregation interfaces with Auth", () => {
             CALL {
                 CALL {
                     MATCH (this3:Movie)
-                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))
+                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))
                     RETURN this3 AS node
                     UNION
                     MATCH (this4:Series)
-                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))
+                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)) AND ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)))
                     RETURN this4 AS node
                 }
                 WITH node
@@ -169,8 +169,10 @@ describe("Top level aggregation interfaces with Auth", () => {
                 },
                 \\"param2\\": \\"movie_aggregator\\",
                 \\"param3\\": \\"series_aggregator\\",
-                \\"param4\\": \\"movie_aggregator\\",
-                \\"param5\\": \\"series_aggregator\\"
+                \\"param4\\": \\"series_title_aggregator\\",
+                \\"param5\\": \\"movie_aggregator\\",
+                \\"param6\\": \\"series_aggregator\\",
+                \\"param7\\": \\"series_title_aggregator\\"
             }"
         `);
     });

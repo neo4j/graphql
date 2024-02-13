@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { filterTruthy } from "../../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
@@ -52,7 +53,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
     }
 
     public getChildren(): QueryASTNode[] {
-        return [];
+        return filterTruthy([...this.authFilters]);
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {

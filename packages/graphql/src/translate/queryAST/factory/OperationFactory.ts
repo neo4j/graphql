@@ -402,14 +402,14 @@ export class OperationsFactory {
             } else {
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
+                const parsedProjectionFields = this.getParsedProjectionFields(entity, resolveTree);
+
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
                         target: concreteEntity,
                         entity: entityOrRel,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
-
-                    const parsedProjectionFields = this.getParsedProjectionFields(concreteEntity, resolveTree);
 
                     const authFilters = this.authorizationFactory.getAuthFilters({
                         entity: concreteEntity,
@@ -498,13 +498,13 @@ export class OperationsFactory {
                 // TOP level interface/union
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
+                const parsedProjectionFields = this.getParsedProjectionFields(entity, resolveTree);
+
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
                         target: concreteEntity,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
-
-                    const parsedProjectionFields = this.getParsedProjectionFields(concreteEntity, resolveTree);
 
                     const authFilters = this.authorizationFactory.getAuthFilters({
                         entity: concreteEntity,
@@ -535,7 +535,7 @@ export class OperationsFactory {
     }
 
     private getParsedProjectionFields(
-        adapter: RelationshipAdapter | ConcreteEntityAdapter,
+        adapter: InterfaceEntityAdapter | RelationshipAdapter | ConcreteEntityAdapter,
         resolveTree: ResolveTree
     ): {
         node: ResolveTree | undefined;
