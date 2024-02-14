@@ -26,7 +26,7 @@ import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
-describe("relationship issue", () => {
+describe("https://github.com/neo4j/graphql/issues/4704", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;

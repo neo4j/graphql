@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("interface relationship bug", () => {
+describe("https://github.com/neo4j/graphql/issues/4704", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -66,7 +66,7 @@ describe("interface relationship bug", () => {
         });
     });
 
-    test("When connection ALL operator filter is used, the predicate should be true across all the concrete entities", async () => {
+    test("Connection ALL operator should be true for all the shows implementations", async () => {
         const query = gql`
             {
                 actors(
@@ -149,7 +149,7 @@ describe("interface relationship bug", () => {
         `);
     });
 
-    test("When connection SINGLE operator filter is used, the predicate should be true exactly once for all the concrete entities", async () => {
+    test("Connection SINGLE operator should be true exactly for one shows implementations", async () => {
         const query = gql`
             {
                 actors(
@@ -198,7 +198,7 @@ describe("interface relationship bug", () => {
         `);
     });
 
-    test("When connection NONE operator filter is used, the predicate should be false for all the concrete entities", async () => {
+    test("Connection NONE operator should be true for all the shows implementations", async () => {
         const query = gql`
             {
                 actors(
