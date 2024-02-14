@@ -16,7 +16,7 @@
         "neo4j-driver": "^5.8.0"
     },
     "devDependencies": {
-        "@apollo/federation-subgraph-compatibility": "2.1.0",
+        "@apollo/federation-subgraph-compatibility": "2.2.0",
         "fork-ts-checker-webpack-plugin": "9.0.2",
         "ts-loader": "9.5.1",
         "tsconfig-paths-webpack-plugin": "4.1.0",

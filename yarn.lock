@@ -139,11 +139,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility-tests@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@apollo/federation-subgraph-compatibility-tests@npm:2.1.0"
+"@apollo/federation-subgraph-compatibility-tests@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@apollo/federation-subgraph-compatibility-tests@npm:2.2.0"
   dependencies:
-    "@apollo/rover": "npm:^0.21.0"
+    "@apollo/rover": "npm:^0.22.0"
     debug: "npm:^4.3.4"
     execa: "npm:^5.1.1"
     graphql: "npm:^16.8.0"
@@ -152,20 +152,20 @@ __metadata:
     mustache: "npm:^4.2.0"
     pm2: "npm:^5.3.0"
     ts-jest: "npm:^29.1.1"
-  checksum: 10c0/1eac043b15673ca5e94a9e8b28586fdbffebb240c4b4bcfccfa86895332bd36b527d729c626c66f542c30d3af359b1da1c43677cabf5432a9bc4fe784370d9a1
+  checksum: 10c0/d76d0c2bf31f584f9868d5b8af1281bd4e6be3770bed2796f1a268e2efb18e49d56fb2c21adfb3c1035553fa099cbf064911d8bc4f1bcc0df81a8eefbd15436a
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@apollo/federation-subgraph-compatibility@npm:2.1.0"
+"@apollo/federation-subgraph-compatibility@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@apollo/federation-subgraph-compatibility@npm:2.2.0"
   dependencies:
-    "@apollo/federation-subgraph-compatibility-tests": "npm:2.1.0"
+    "@apollo/federation-subgraph-compatibility-tests": "npm:2.2.0"
     commander: "npm:^11.0.0"
     debug: "npm:^4.3.4"
   bin:
     fedtest: dist/compatibilityTestCommand.js
-  checksum: 10c0/9cc8db2cda1e375111edb73734eaa1593348a20f8ecd8df196418e6adfbb185a0e510b73dec63b7efbc4b1df8e1a42adc5c1b1eb818170f4008ce2913ae7cb1e
+  checksum: 10c0/39367fca1d9d65540f53dcf17a7b61ccb7167bae0da660f178be4e5a0c9f036ac18f5ed67612fb3890729deabc3428a99978fbc183a2351d181af9c7f594a289
   languageName: node
   linkType: hard
 
@@ -250,9 +250,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/rover@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@apollo/rover@npm:0.21.0"
+"@apollo/rover@npm:^0.22.0":
+  version: 0.22.0
+  resolution: "@apollo/rover@npm:0.22.0"
   dependencies:
     axios-proxy-builder: "npm:^0.1.1"
     binary-install: "npm:^1.0.6"
@@ -260,7 +260,7 @@ __metadata:
     detect-libc: "npm:^2.0.0"
   bin:
     rover: run.js
-  checksum: 10c0/190dab51da24c5df7253a7d907a65d684683e9a88b9f486976a0f5de5ef4c1522c14d8c80aaedf5764357cc5ec08c05aa310b690ab2a52cb02e3a4328d954210
+  checksum: 10c0/b4d50c89aa5e8c10a81a258ff4a2b3ceb556b1b1f4eccf9618698d645e10a8d50ce87ca5248a847e4d6c82219163076c030dc50bcfde8a7551693413edaa9ad9
   languageName: node
   linkType: hard
 
@@ -8965,7 +8965,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "apollo-federation-subgraph-compatibility@workspace:packages/apollo-federation-subgraph-compatibility"
   dependencies:
-    "@apollo/federation-subgraph-compatibility": "npm:2.1.0"
+    "@apollo/federation-subgraph-compatibility": "npm:2.2.0"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
     "@neo4j/graphql": "npm:^4.4.5"
