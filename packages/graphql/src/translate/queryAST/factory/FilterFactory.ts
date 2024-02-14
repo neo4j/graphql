@@ -420,7 +420,7 @@ export class FilterFactory {
         if (operator && !isRelationshipOperator(operator)) {
             throw new Error(`Invalid operator ${operator} for relationship`);
         }
-        const logicalOp = isInterfaceEntity(relationship.target) ? "OR" : "AND";
+        const logicalOp = this.getLogicalOperatorForRelatedNodeFilters(relationship.target, operator);
         if (isConnection) {
             const connectionFilters = this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
                 isNot,
@@ -433,6 +433,21 @@ export class FilterFactory {
             operator,
         });
         return this.wrapMultipleFiltersInLogical(relationshipFilters, logicalOp);
+    }
+
+    private getLogicalOperatorForRelatedNodeFilters(
+        target: EntityAdapter,
+        operator: "SOME" | "ALL" | "SINGLE" | "NONE" = "SOME"
+    ): "AND" | "OR" | "XOR" {
+        if (isInterfaceEntity(target)) {
+            if (operator === "SOME") {
+                return "OR";
+            }
+            if (operator === "SINGLE") {
+                return "XOR";
+            }
+        }
+        return "AND";
     }
 
     private createRelayIdPropertyFilter(
@@ -468,7 +483,7 @@ export class FilterFactory {
     }
 
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
-        const filterASTs = Object.entries(where).map(([key, value]): Filter | undefined => {
+        const filterASTs = Object.entries(where).flatMap(([key, value]): Filter | Filter[] | undefined => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {
                     return this.createEdgeFilters(relationship, nestedWhere);
@@ -482,7 +497,7 @@ export class FilterFactory {
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) {
                 if (fieldName === relationship.propertiesTypeName) {
-                    return this.wrapMultipleFiltersInLogical(this.createEdgeFilters(relationship, value))[0];
+                    return this.createEdgeFilters(relationship, value);
                 }
                 return;
             }
@@ -595,7 +610,7 @@ export class FilterFactory {
     /** Returns an array of 0 or 1 elements with the filters wrapped using a logical operator if needed */
     private wrapMultipleFiltersInLogical<F extends Filter>(
         filters: F[],
-        logicalOp: "AND" | "OR" = "AND"
+        logicalOp: "AND" | "OR" | "XOR" = "AND"
     ): [F | LogicalFilter] | [] {
         if (filters.length > 1) {
             return [
