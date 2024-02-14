@@ -462,10 +462,12 @@ export class OperationsFactory {
                 operation.setFields(fields);
 
                 const whereArgs = this.getWhereArgs(resolveTree);
+
+                const attributes = this.getSelectedAttributes(entity, projectionFields);
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
-                    attributes: this.getSelectedAttributes(entity, projectionFields),
+                    attributes,
                     context,
                 });
 
@@ -1271,10 +1273,14 @@ export class OperationsFactory {
             } else {
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
+
+                const attributes = this.getSelectedAttributes(entity, nodeRawFields);
+
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
                     context,
+                    attributes,
                 });
 
                 operation.addAuthFilters(...authFilters);
@@ -1301,7 +1307,6 @@ export class OperationsFactory {
                     operations: ["AGGREGATE"],
                     context,
                 });
-
                 operation.addAuthFilters(...authFilters);
             }
             operation.setFields(fields);
