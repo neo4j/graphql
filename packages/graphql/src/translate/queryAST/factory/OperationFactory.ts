@@ -402,12 +402,33 @@ export class OperationsFactory {
             } else {
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
+                console.log("Here");
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
                         target: concreteEntity,
                         entity: entityOrRel,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
+
+                    const rawProjectionFields = {
+                        ...resolveTree.fieldsByTypeName[entityOrRel.operations.getAggregationFieldTypename()],
+                    };
+                    const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
+
+                    const nodeRawFields = {
+                        ...parsedProjectionFields.node?.fieldsByTypeName[
+                            entityOrRel.operations.getAggregationFieldTypename("node")
+                        ],
+                    };
+
+                    const attributes = this.getSelectedAttributes(concreteEntity, nodeRawFields);
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        context,
+                        attributes,
+                    });
+                    aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;
                 });
