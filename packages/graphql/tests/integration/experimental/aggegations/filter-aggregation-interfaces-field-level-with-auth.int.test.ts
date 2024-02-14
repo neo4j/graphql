@@ -69,7 +69,7 @@ describe("Field-level filter interface query fields with authorization", () => {
             }
 
             type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series-reader" } } }]) {
-                title: String!
+                title: String! @authorization(validate: [{ operations: [AGGREGATE] where: { jwt: { roles_INCLUDES: "series-title-reader" } } }])
                 cost: Float!
                 episodes: Int!
             }
@@ -151,7 +151,7 @@ describe("Field-level filter interface query fields with authorization", () => {
             }
         `;
 
-        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader", "series-title-reader"] });
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect((queryResult as any).data[Actor.plural]).toIncludeSameMembers([
@@ -160,7 +160,30 @@ describe("Field-level filter interface query fields with authorization", () => {
         ]);
     });
 
-    test("field level filter aggregation with auth should fail", async () => {
+    test("field level filter aggregation with missing role should fail", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Actor.plural} {
+                    actedInAggregate(where: { title_STARTS_WITH: "The" }) {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
+                    }
+                    name,
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeDefined();
+        expect((queryResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(queryResult.data).toBeNull();
+    });
+
+    test("field level filter aggregation with no roles should fail", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
