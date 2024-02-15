@@ -107,7 +107,8 @@ export class FilterFactory {
             connectionFilter.addFilters(filters);
             connectionFilters.push(connectionFilter);
         }
-        return connectionFilters;
+        const logicalOp = this.getLogicalOperatorForRelatedNodeFilters(relationship.target, filterOps.operator);
+        return this.wrapMultipleFiltersInLogical(connectionFilters, logicalOp);
     }
 
     public createConnectionPredicates({
@@ -207,7 +208,7 @@ export class FilterFactory {
         relationship: RelationshipAdapter,
         where: GraphQLWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): RelationshipFilter[] {
+    ): Filter[] {
         /**
          * The logic below can be confusing, but it's to handle the following cases:
          * 1. where: { actors: null } -> in this case we want to return an Exists filter as showed by tests packages/graphql/tests/tck/null.test.ts
@@ -256,7 +257,8 @@ export class FilterFactory {
 
             relationshipFilters.push(relationshipFilter);
         }
-        return relationshipFilters;
+        const logicalOp = this.getLogicalOperatorForRelatedNodeFilters(relationship.target, filterOps.operator);
+        return this.wrapMultipleFiltersInLogical(relationshipFilters, logicalOp);
     }
 
     // This allows to override this creation in AuthorizationFilterFactory
@@ -420,19 +422,16 @@ export class FilterFactory {
         if (operator && !isRelationshipOperator(operator)) {
             throw new Error(`Invalid operator ${operator} for relationship`);
         }
-        const logicalOp = this.getLogicalOperatorForRelatedNodeFilters(relationship.target, operator);
         if (isConnection) {
-            const connectionFilters = this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
+            return this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
                 isNot,
                 operator,
             });
-            return this.wrapMultipleFiltersInLogical(connectionFilters, logicalOp);
         }
-        const relationshipFilters = this.createRelationshipFilter(relationship, value as GraphQLWhereArg, {
+        return this.createRelationshipFilter(relationship, value as GraphQLWhereArg, {
             isNot,
             operator,
         });
-        return this.wrapMultipleFiltersInLogical(relationshipFilters, logicalOp);
     }
 
     private getLogicalOperatorForRelatedNodeFilters(
