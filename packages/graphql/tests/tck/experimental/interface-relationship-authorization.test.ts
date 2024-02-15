@@ -19,8 +19,8 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Interface filtering on authorization rules", () => {
     let baseTypes: string;
@@ -250,6 +250,60 @@ describe("Interface filtering on authorization rules", () => {
                     \\"roles\\": []
                 },
                 \\"param3\\": \\"admin\\"
+            }"
+        `);
+    });
+
+    test("Connection operator filter SINGLE should be applied exactly once", async () => {
+        const typeDefsStr =
+            baseTypes +
+            /* GraphQL */ `
+                extend type Actor
+                    @authorization(
+                        validate: [
+                            {
+                                when: [BEFORE]
+                                operations: [READ]
+                                where: {
+                                    node: {
+                                        actedInConnection_SINGLE: {
+                                            node: { actorsConnection_SINGLE: { node: { name: "Keanu Reeves" } } }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    )
+            `;
+        const typeDefs = gql(typeDefsStr);
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+        });
+        const query = gql`
+            {
+                actors {
+                    name
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (single(this1 IN [(this)-[this3:ACTED_IN]->(this1:Movie) WHERE single(this0 IN [(this1)<-[this2:ACTED_IN]-(this0:Actor) WHERE ($param1 IS NOT NULL AND this0.name = $param1) | 1] WHERE true) | 1] WHERE true) XOR single(this5 IN [(this)-[this7:ACTED_IN]->(this5:Series) WHERE single(this4 IN [(this5)<-[this6:STARRED_IN]-(this4:Actor) WHERE ($param2 IS NOT NULL AND this4.name = $param2) | 1] WHERE true) | 1] WHERE true))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"Keanu Reeves\\",
+                \\"param2\\": \\"Keanu Reeves\\"
             }"
         `);
     });

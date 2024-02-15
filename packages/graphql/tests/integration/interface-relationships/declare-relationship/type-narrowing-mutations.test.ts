@@ -226,8 +226,6 @@ describe("type narrowing - mutations setup", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        console.log(">", JSON.stringify(gqlResult.data?.[Actor.operations.update]));
-
         expect((gqlResult.data?.[Actor.operations.update] as Record<string, any>)?.[Actor.plural]).toIncludeSameMembers(
             [
                 {
