@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
 import type {
     AuthorizationAnnotation,
     AuthorizationOperation,
@@ -24,15 +25,14 @@ import type {
     ValidateWhen,
 } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { filterTruthy } from "../../../utils/utils";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
 import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { AuthorizationRuleFilter } from "../ast/filters/authorization-filters/AuthorizationRuleFilter";
-import type { AuthFilterFactory } from "./AuthFilterFactory";
-import { filterTruthy } from "../../../utils/utils";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
+import type { AuthFilterFactory } from "./AuthFilterFactory";
 
 type AuthParams = {
     entity: ConcreteEntityAdapter;
@@ -98,7 +98,9 @@ export class AuthorizationFactory {
 
     public createAuthFilterRule({ authAnnotation, ...params }: AuthFilterParams): AuthorizationFilters | undefined {
         const whereFilters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
-        if (!whereFilters.length) return;
+        if (!whereFilters.length) {
+            return;
+        }
         return new AuthorizationFilters({ validationFilters: [], whereFilters });
     }
 
@@ -110,7 +112,9 @@ export class AuthorizationFactory {
     }: AuthValidateParams): AuthorizationFilters | undefined {
         const rules = authAnnotation?.validate?.filter((rule) => rule.when.includes(when));
         const validationFilters = this.createAuthRuleFilter(params, rules ?? []);
-        if (!validationFilters.length) return;
+        if (!validationFilters.length) {
+            return;
+        }
         return new AuthorizationFilters({ validationFilters, whereFilters: [], conditionForEvaluation });
     }
 
@@ -131,5 +135,3 @@ export class AuthorizationFactory {
             });
     }
 }
-
-
