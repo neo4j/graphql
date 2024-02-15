@@ -165,7 +165,7 @@ export class OperationsFactory {
                 });
             }
             case "CUSTOM_CYPHER": {
-                return this.createTopLevelCustomCypherOperation({ entity, resolveTree, context, varName });
+                return this.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
             }
         }
     }
@@ -890,40 +890,38 @@ export class OperationsFactory {
         resolveTree,
         context,
         entity,
-        varName,
         cypherAttributeField,
+        cypherArguments = {},
     }: {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
-        varName?: string;
         cypherAttributeField: AttributeAdapter;
+        cypherArguments?: Record<string, any>;
     }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
-   
         if (!entity) {
             const selection = new CustomCypherSelection({
                 operationField: cypherAttributeField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
+
+                rawArguments: cypherArguments,
+                isNested: true, // TODO: Improve it
             });
             return new CypherScalarOperation(selection);
         }
         if (isConcreteEntity(entity)) {
             const selection = new CustomCypherSelection({
                 operationField: cypherAttributeField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
+
+                rawArguments: cypherArguments,
+                isNested: true,
             });
-            const customCypher = new CypherOperation({ target: entity, selection });
+            const customCypher = new CypherOperation({ attribute: cypherAttributeField, target: entity, selection });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
         const selection = new CustomCypherSelection({
             operationField: cypherAttributeField,
-            target: entity,
-            alias: varName,
-            rawArguments: resolveTree.args,
+            rawArguments: cypherArguments,
+            isNested: true,
         });
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
@@ -948,12 +946,10 @@ export class OperationsFactory {
         resolveTree,
         context,
         entity,
-        varName,
     }: {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
-        varName?: string;
     }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
         const operationAttribute =
             context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
@@ -966,27 +962,26 @@ export class OperationsFactory {
         if (!entity) {
             const selection = new CustomCypherSelection({
                 operationField,
-                target: entity,
-                alias: varName,
+
                 rawArguments: resolveTree.args,
+                isNested: false,
             });
             return new CypherScalarOperation(selection);
         }
         if (isConcreteEntity(entity)) {
             const selection = new CustomCypherSelection({
                 operationField,
-                target: entity,
-                alias: varName,
+
                 rawArguments: resolveTree.args,
+                isNested: false,
             });
-            const customCypher = new CypherOperation({ target: entity, selection });
+            const customCypher = new CypherOperation({ attribute: operationField, target: entity, selection });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
         const selection = new CustomCypherSelection({
             operationField,
-            target: entity,
-            alias: varName,
             rawArguments: resolveTree.args,
+            isNested: false,
         });
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {

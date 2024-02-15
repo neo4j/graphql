@@ -103,7 +103,9 @@ export class ReadOperation extends Operation {
         returnVariable: Cypher.Variable,
         isArray: boolean
     ): Cypher.Return {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
         const projection = this.getProjectionMap(context);
 
         let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);

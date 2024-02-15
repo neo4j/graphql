@@ -263,12 +263,28 @@ export class FieldFactory {
                 return acc;
             }, {});
 
-            if (attribute.typeHelper.isObject()) {
+            if (attribute.typeHelper.isScalar()) {
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
                 if (!concreteEntity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
-                return this.createCypherOperationField(concreteEntity, field, context, attribute);
+                const nestedFields = this.createFields(concreteEntity, rawFields, context);
+                return new CypherAttributeField({
+                    attribute,
+                    alias: field.alias,
+                    projection: cypherProjection,
+                    nestedFields,
+                    rawArguments: field.args,
+                    extraParams,
+                });
+            } else if (attribute.typeHelper.isObject()) {
+                const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
+                if (!concreteEntity) {
+                    throw new Error(`Entity ${typeName} not found`);
+                }
+                const cypherArguments = { ...field.args };
+                field.args = {};
+                return this.createCypherOperationField(concreteEntity, field, context, attribute, cypherArguments);
                 /*   const nestedFields = this.createFields(concreteEntity, rawFields, context);
                 return new CypherAttributeField({
                     attribute,
@@ -358,13 +374,15 @@ export class FieldFactory {
         target: EntityAdapter,
         field: ResolveTree,
         context: Neo4jGraphQLTranslationContext,
-        cypherAttributeField: AttributeAdapter
+        cypherAttributeField: AttributeAdapter,
+        cypherArguments?: Record<string, any>
     ): OperationField {
         const cypherOp = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
             resolveTree: field,
             context,
             entity: target,
             cypherAttributeField,
+            cypherArguments,
         });
 
         return new OperationField({

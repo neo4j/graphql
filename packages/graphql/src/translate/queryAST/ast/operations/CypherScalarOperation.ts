@@ -19,9 +19,9 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { Operation, type OperationTranspileResult } from "./operations";
-import type { QueryASTNode } from "../QueryASTNode";
 
 /**
  * This operation is used to return top-level @cypher fields that returns a scalar value.
@@ -38,12 +38,10 @@ export class CypherScalarOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
-        const { selection: matchClause } = this.selection.apply(context);
-        const clauses: Cypher.Clause[] = [matchClause];
-
-        clauses.push(new Cypher.Return(context.returnVariable));
+        const { selection: matchClause, nestedContext } = this.selection.apply(context);
+        const clause = Cypher.concat(matchClause, new Cypher.Return([nestedContext.returnVariable, context.returnVariable]));
         return {
-            clauses,
+            clauses: [clause],
             projectionExpr: context.returnVariable,
         };
     }
