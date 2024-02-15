@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Batch Create, Interface", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Person {
                 id: ID!
                 name: String
@@ -68,7 +67,7 @@ describe("Batch Create, Interface", () => {
     });
 
     test("no nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
@@ -116,7 +115,7 @@ describe("Batch Create, Interface", () => {
     });
 
     test("nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -266,7 +265,7 @@ describe("Batch Create, Interface", () => {
     });
 
     test("heterogeneous batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [

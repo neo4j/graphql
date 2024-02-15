@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/847", () => {
     test("should be able to query multiple interface relations", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             interface Entity {
                 id: String!
             }
@@ -50,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 interactions {
                     id

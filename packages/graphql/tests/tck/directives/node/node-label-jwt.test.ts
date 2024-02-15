@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -25,11 +24,11 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Label in Node directive", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor @node(labels: ["Actor", "$jwt.personlabel"]) {
                 name: String
                 age: Int
@@ -50,7 +49,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Select Movie with label Film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -70,7 +69,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Select Movie with label Film from Actors with additionalLabels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors(where: { age_GT: 10 }) {
                     name
@@ -109,7 +108,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Create Movie with label Film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: { title: "Titanic" }) {
                     movies {

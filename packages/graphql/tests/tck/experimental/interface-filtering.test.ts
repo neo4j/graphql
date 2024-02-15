@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Interface filtering operations", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeEach(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
                 actors: [Actor!]! @declareRelationship
@@ -67,7 +66,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Logical operator filter (top level)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 shows(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
                     title
@@ -104,7 +103,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Logical operator filter (nested field)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 actors {
                     actedIn(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
@@ -150,7 +149,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Relationship operator filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(where: { actors_SOME: { name: "Keanu Reeves" } }) {
                     title
@@ -191,7 +190,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Relationship operator filter + typename_IN", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(where: { typename_IN: [Movie], actors_SOME: { name: "Keanu Reeves" } }) {
                     title
@@ -232,7 +231,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Relationship operator filter + typename_IN + logical", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(where: { OR: [{ typename_IN: [Movie] }, { actors_SOME: { name: "Keanu Reeves" } }] }) {
                     title
@@ -273,7 +272,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(where: { actorsConnection_SOME: { node: { name: "Keanu Reeves" } } }) {
                     title
@@ -314,7 +313,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator filter + typename_IN", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(where: { typename_IN: [Movie], actorsConnection_SOME: { node: { name: "Keanu Reeves" } } }) {
                     title
@@ -355,7 +354,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator filter + typename_IN + logical", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(
                     where: {
@@ -400,7 +399,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator edge filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(where: { actorsConnection_SOME: { edge: { ActedIn: { screenTime: 100 } } } }) {
                     title
@@ -439,7 +438,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator edge filter + node filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(
                     where: {
@@ -491,7 +490,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator node filter + logical", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 shows(
                     where: {
@@ -540,7 +539,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Relationship operator filter + typename_IN + logical (nested field)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedIn(
@@ -599,7 +598,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection operator filter + typename_IN + logical (nested field)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedIn(
@@ -658,7 +657,7 @@ describe("Interface filtering operations", () => {
     });
 
     test("Connection nested operator filter + typename_IN + logical (nested field)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {

@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String
             }
@@ -48,7 +47,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
     });
 
     test("AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(
                     where: { likesAggregate: { edge: { AND: [{ someFloat_EQUAL: 10 }, { someFloat_EQUAL: 11 }] } } }
@@ -81,7 +80,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
     });
 
     test("OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { OR: [{ someFloat_EQUAL: 10 }, { someFloat_EQUAL: 11 }] } } }) {
                     content
@@ -112,7 +111,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
     });
 
     test("NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { NOT: { someFloat_EQUAL: 10 } } } }) {
                     content
@@ -142,7 +141,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
     });
 
     test("OR NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(
                     where: {

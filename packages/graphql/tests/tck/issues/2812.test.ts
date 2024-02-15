@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2812", () => {
     const secret = "secret";
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type JWT @jwt {
             roles: [String!]!
         }
@@ -56,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
     });
 
     test("auth fields partially included in the input", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -166,7 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
     });
 
     test("auth fields always included in the input", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -280,7 +279,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
     });
 
     test("auth fields not included in the input", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [

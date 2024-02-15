@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Field Level Aggregations with Auth", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     const secret = "secret";
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -76,7 +75,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -123,7 +122,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
     // Count with where actor name equals "Keanu Reeves"
     test("Count with where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(where: { name: "Keanu Reeves" }) {
                     actedInAggregate {
@@ -171,7 +170,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Min", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -221,7 +220,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -271,7 +270,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Count and Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -339,7 +338,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Longest", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -394,7 +393,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
 
     // Test nested longest on title from movies -> actors -> movies
     test("Longest nested", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     actors {
@@ -459,7 +458,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Edge sum", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -509,7 +508,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Edge and node sum with count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {

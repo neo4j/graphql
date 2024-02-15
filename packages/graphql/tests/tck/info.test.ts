@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 
 describe("info", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
             }
@@ -45,7 +44,7 @@ describe("info", () => {
     });
 
     test("should return info from a create mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ title: "title", actors: { create: [{ node: { name: "Keanu" } }] } }]) {
                     info {
@@ -104,7 +103,7 @@ describe("info", () => {
     });
 
     test("should return info from a delete mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { id: "123" }) {
                     bookmark
@@ -128,7 +127,7 @@ describe("info", () => {
     });
 
     test("should return info from an update mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "123" }) {
                     info {

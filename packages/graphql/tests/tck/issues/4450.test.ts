@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors(where: { sceneConnection_SOME: { edge: { cut: true }, node: { location: { city: "test" } } } }) {
                     name

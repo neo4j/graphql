@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -49,7 +48,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () =>
     });
 
     test("Equality", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -99,7 +98,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () =>
     });
 
     test("Inequality", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title

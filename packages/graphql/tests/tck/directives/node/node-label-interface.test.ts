@@ -17,16 +17,15 @@
  * limitations under the License.
  */
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Node directive with interface", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Search {
                 name: String
             }
@@ -48,7 +47,7 @@ describe("Node directive with interface", () => {
     });
 
     test("Read Interface", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title: "some title" }) {
                     search(where: { name: "Horror" }, options: { offset: 1, limit: 10 }) {

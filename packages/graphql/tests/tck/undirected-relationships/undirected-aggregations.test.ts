@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Undirected Aggregations", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     test("query with undirected aggregation", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
@@ -37,7 +36,7 @@ describe("Undirected Aggregations", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query Users {
                 users {
                     friendsAggregate(directed: false) {

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
@@ -26,7 +25,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     test("union types with auth and connection-where", async () => {
         const secret = "secret";
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -69,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             features: { authorization: { key: secret } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
                 drives(where: { current: true }) {
                     current

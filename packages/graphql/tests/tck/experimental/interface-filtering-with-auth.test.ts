@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Interface filtering operations with auth", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeEach(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -86,7 +85,7 @@ describe("Interface filtering operations with auth", () => {
     });
 
     test("Logical operator filter (top level)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 shows(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
                     title
@@ -130,7 +129,7 @@ describe("Interface filtering operations with auth", () => {
     });
 
     test("Logical operator filter on relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 actors {
                     actedIn(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
@@ -183,7 +182,7 @@ describe("Interface filtering operations with auth", () => {
     });
 
     test("Reading cost should not require authorization", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 actors {
                     actedIn(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
@@ -232,7 +231,7 @@ describe("Interface filtering operations with auth", () => {
     });
 
     test("Reading episodes should require authorization", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 actors {
                     actedIn(where: { title: "The Office" }) {

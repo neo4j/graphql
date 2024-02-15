@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/3905", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Query {
                 paths: pathList!
                     @cypher(
@@ -55,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/3905", () => {
     });
 
     test("custom Cypher query executes and translates as expected", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 paths {
                     paths {

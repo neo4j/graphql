@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -25,11 +24,11 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/3929", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User @authorization(filter: [{ where: { node: { id: "$jwt.uid" } } }]) {
                 id: ID! @unique
                 email: String!
@@ -64,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
     });
 
     test("should not add an authorization check for connects coming from create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation UpdateGroups($where: GroupWhere, $delete: GroupDeleteInput) {
                 updateGroups(where: $where, delete: $delete) {
                     info {

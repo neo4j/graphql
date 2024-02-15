@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update update", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 actors: [Actor!]! @declareRelationship
@@ -61,7 +60,7 @@ describe("Interface Relationships - Update update", () => {
     });
 
     test("Update update an interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     update: {
@@ -137,7 +136,7 @@ describe("Interface Relationships - Update update", () => {
     });
 
     test("Update update an interface relationship with nested update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     update: {

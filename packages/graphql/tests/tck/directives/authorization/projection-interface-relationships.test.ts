@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Auth projections for interface relationship fields", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -67,7 +66,7 @@ describe("Auth projections for interface relationship fields", () => {
     });
 
     test("Simple Interface Relationship Query for protected type", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedIn {

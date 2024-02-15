@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "../utils/tck-test-utils";
 
@@ -30,7 +29,7 @@ describe("Cypher coalesce()", () => {
         unsetTestEnvVars(undefined);
     });
     test("Simple coalesce", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             interface UserInterface {
                 fromInterface: String!
                 toBeOverridden: String!
@@ -58,7 +57,7 @@ describe("Cypher coalesce()", () => {
             },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query (
                 $id: ID
                 $name: String
@@ -119,7 +118,7 @@ describe("Cypher coalesce()", () => {
     });
 
     test("Coalesce with enum in match", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             enum Status {
                 ACTIVE
                 INACTIVE
@@ -141,7 +140,7 @@ describe("Cypher coalesce()", () => {
             },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { status: ACTIVE }) {
                     id
@@ -166,7 +165,7 @@ describe("Cypher coalesce()", () => {
     });
 
     test("Coalesce with enum in projection", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             enum Status {
                 ACTIVE
                 INACTIVE
@@ -192,7 +191,7 @@ describe("Cypher coalesce()", () => {
             },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Actors {
                 actors {
                     moviesConnection(where: { node: { status: ACTIVE } }) {
@@ -236,7 +235,7 @@ describe("Cypher coalesce()", () => {
     });
 
     test("Coalesce with enum list in projection", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             enum Status {
                 ACTIVE
                 INACTIVE
@@ -255,7 +254,7 @@ describe("Cypher coalesce()", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Actors {
                 actors {
                     moviesConnection(where: { node: { statuses: [ACTIVE, INACTIVE] } }) {

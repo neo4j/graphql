@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("QueryDirection in relationships connection", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     test("query with directed and undirected relationships with a DEFAULT_UNDIRECTED", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
                 friends: [User!]!
@@ -38,7 +37,7 @@ describe("QueryDirection in relationships connection", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query FriendsAggregate {
                 users {
                     friendsConnection {
@@ -72,7 +71,7 @@ describe("QueryDirection in relationships connection", () => {
     });
 
     test("query connection with a DIRECTED_ONLY relationship", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
@@ -82,7 +81,7 @@ describe("QueryDirection in relationships connection", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query FriendsAggregate {
                 users {
                     friendsConnection {
@@ -115,7 +114,7 @@ describe("QueryDirection in relationships connection", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
     test("query with a UNDIRECTED_ONLY relationship", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
@@ -125,7 +124,7 @@ describe("QueryDirection in relationships connection", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query FriendsAggregate {
                 users {
                     friendsConnection {

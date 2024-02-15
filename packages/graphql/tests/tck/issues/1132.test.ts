@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     test("Auth CONNECT rules checked against correct property", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Source
                 @authorization(
                     validate: [
@@ -45,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateSources(connect: { targets: { where: { node: { id: 1 } } } }) {
                     sources {
@@ -98,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
     });
 
     test("Auth DISCONNECT rules checked against correct property", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Source
                 @authorization(
                     validate: [
@@ -119,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateSources(disconnect: { targets: { where: { node: { id: 1 } } } }) {
                     sources {
