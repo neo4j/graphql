@@ -402,7 +402,13 @@ export class OperationsFactory {
             } else {
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
-                const parsedProjectionFields = this.getParsedProjectionFields(entity, resolveTree);
+                const parsedProjectionFields = this.getParsedProjectionFields(entityOrRel, resolveTree);
+
+                const nodeRawFields = {
+                    ...parsedProjectionFields.node?.fieldsByTypeName[
+                        entityOrRel.operations.getAggregationFieldTypename("node")
+                    ],
+                };
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -411,13 +417,13 @@ export class OperationsFactory {
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
 
+                    const attributes = this.getSelectedAttributes(concreteEntity, nodeRawFields);
                     const authFilters = this.authorizationFactory.getAuthFilters({
                         entity: concreteEntity,
                         operations: ["AGGREGATE"],
-                        attributes: this.getSelectedAttributes(concreteEntity, parsedProjectionFields.fields),
                         context,
+                        attributes,
                     });
-
                     aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;
@@ -1300,9 +1306,13 @@ export class OperationsFactory {
             } else {
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
+
+                const attributes = this.getSelectedAttributes(entity, nodeRawFields);
+
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
+                    attributes,
                     context,
                 });
 

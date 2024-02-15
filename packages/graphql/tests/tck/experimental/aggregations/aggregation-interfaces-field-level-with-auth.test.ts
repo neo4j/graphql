@@ -368,7 +368,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))
+                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)) AND ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)))
                     RETURN this3 AS node, this2 AS edge
                 }
                 WITH node
@@ -386,7 +386,8 @@ describe("Interface Field Level Aggregations with Auth", () => {
                     \\"roles\\": []
                 },
                 \\"param2\\": \\"movie_aggregator\\",
-                \\"param3\\": \\"series_aggregator\\"
+                \\"param3\\": \\"series_aggregator\\",
+                \\"param4\\": \\"series_title_aggregator\\"
             }"
         `);
     });
@@ -429,7 +430,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
                         UNION
                         WITH this1
                         MATCH (this1)-[this4:ACTED_IN]->(this5:Series)
-                        WHERE ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))
+                        WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)) AND ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)))
                         RETURN this5 AS node, this4 AS edge
                     }
                     WITH node
@@ -451,7 +452,8 @@ describe("Interface Field Level Aggregations with Auth", () => {
                 },
                 \\"param2\\": \\"movie_aggregator\\",
                 \\"param3\\": \\"movie_aggregator\\",
-                \\"param4\\": \\"series_aggregator\\"
+                \\"param4\\": \\"series_aggregator\\",
+                \\"param5\\": \\"series_title_aggregator\\"
             }"
         `);
     });
