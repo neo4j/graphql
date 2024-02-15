@@ -101,12 +101,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
             ];
         } else {
             pattern = new Cypher.Pattern(targetNode);
-            const matchClause = new Cypher.Match(pattern);
-
-            const filterPredicates = Cypher.and(...this.authFilters.map((filter) => filter.getPredicate(context)));
-            if (filterPredicates) {
-                matchClause.where(filterPredicates);
-            }
+            const matchClause = new Cypher.Match(pattern).where(Cypher.and(...authFilters));
 
             const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 
