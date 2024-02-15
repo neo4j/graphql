@@ -402,7 +402,7 @@ export class OperationsFactory {
             } else {
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
-                const parsedProjectionFields = this.getParsedProjectionFields(entityOrRel, resolveTree);
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entityOrRel, resolveTree);
 
                 const nodeRawFields = {
                     ...parsedProjectionFields.node?.fieldsByTypeName[
@@ -468,7 +468,7 @@ export class OperationsFactory {
                     selection,
                 });
 
-                const parsedProjectionFields = this.getParsedProjectionFields(entity, resolveTree);
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
 
                 const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
 
@@ -504,7 +504,7 @@ export class OperationsFactory {
                 // TOP level interface/union
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
-                const parsedProjectionFields = this.getParsedProjectionFields(entity, resolveTree);
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -540,7 +540,7 @@ export class OperationsFactory {
         }
     }
 
-    private getParsedProjectionFields(
+    private getAggregationParsedProjectionFields(
         adapter: InterfaceEntityAdapter | RelationshipAdapter | ConcreteEntityAdapter,
         resolveTree: ResolveTree
     ): {
@@ -1283,7 +1283,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
     }): T {
         if (relationship) {
-            const parsedProjectionFields = this.getParsedProjectionFields(relationship, resolveTree);
+            const parsedProjectionFields = this.getAggregationParsedProjectionFields(relationship, resolveTree);
 
             const edgeRawFields = {
                 ...parsedProjectionFields.edge?.fieldsByTypeName[
