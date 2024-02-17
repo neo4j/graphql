@@ -3752,7 +3752,7 @@ __metadata:
     typescript: "npm:5.1.6"
     webpack: "npm:5.90.2"
     webpack-cli: "npm:5.1.4"
-    webpack-dev-server: "npm:5.0.1"
+    webpack-dev-server: "npm:5.0.2"
     webpack-notifier: "npm:1.15.0"
     zustand: "npm:4.5.0"
   languageName: unknown
@@ -26896,9 +26896,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:5.0.1":
-  version: 5.0.1
-  resolution: "webpack-dev-server@npm:5.0.1"
+"webpack-dev-server@npm:5.0.2":
+  version: 5.0.2
+  resolution: "webpack-dev-server@npm:5.0.2"
   dependencies:
     "@types/bonjour": "npm:^3.5.13"
     "@types/connect-history-api-fallback": "npm:^1.5.4"
@@ -26939,7 +26939,7 @@ __metadata:
       optional: true
   bin:
     webpack-dev-server: bin/webpack-dev-server.js
-  checksum: 10c0/35eff5c834a0034225ab4e04b37d80ffad3b4d8d2bf4092f4a4937996a5335e7b7797ebfd38c28d13bd22d2d6515ad6e4a4d653af9e6fedfc4a10d8349fd5b4d
+  checksum: 10c0/89fc40d7a66403b7c9071523981314965368a44cae7ac05d3cac2b63e4f6c21379734a7d8614390b7c6baafa9f3433caaff53df8f49c08317d32a4d1cbb07f59
   languageName: node
   linkType: hard
 
