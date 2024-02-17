@@ -75,7 +75,7 @@
         "koa-router": "12.0.1",
         "libnpmsearch": "7.0.1",
         "mock-jwks": "1.0.10",
-        "nock": "13.5.1",
+        "nock": "13.5.3",
         "npm-run-all2": "6.1.2",
         "randomstring": "1.3.0",
         "rimraf": "5.0.5",
