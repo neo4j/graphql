@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations Float", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 actorCount: Float!
             }
@@ -39,7 +38,7 @@ describe("Cypher Aggregations Float", () => {
     });
 
     test("Min", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     actorCount {
@@ -63,7 +62,7 @@ describe("Cypher Aggregations Float", () => {
     });
 
     test("Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     actorCount {
@@ -87,7 +86,7 @@ describe("Cypher Aggregations Float", () => {
     });
 
     test("Average", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     actorCount {
@@ -111,7 +110,7 @@ describe("Cypher Aggregations Float", () => {
     });
 
     test("Sum", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     actorCount {
@@ -135,7 +134,7 @@ describe("Cypher Aggregations Float", () => {
     });
 
     test("Min, Max, Sum and Average", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     actorCount {
@@ -162,7 +161,7 @@ describe("Cypher Aggregations Float", () => {
     });
 
     test("Min, Max, Sum and Average with count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     count

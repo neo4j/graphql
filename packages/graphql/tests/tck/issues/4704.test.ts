@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4704", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeEach(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
                 actors: [Actor!]! @declareRelationship
@@ -67,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
     });
 
     test("Connection ALL operator should be true for all the shows implementations", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -150,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
     });
 
     test("Connection SINGLE operator should be true exactly for one shows implementations", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -199,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
     });
 
     test("Connection NONE operator should be true for all the shows implementations", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {

@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Top level filter on aggregation interfaces with Auth", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     const secret = "secret";
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -72,7 +71,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
     });
 
     test("top level count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 productionsAggregate(where: { title: "The Matrix" }) {
                     count
@@ -113,7 +112,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
     });
 
     test("top level count and string fields", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 productionsAggregate(where: { title: "The Matrix" }) {
                     count
@@ -154,7 +153,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
     });
 
     test("top level count and string fields with AND operation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 productionsAggregate(where: { AND: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {
                     count
@@ -196,7 +195,7 @@ describe("Top level filter on aggregation interfaces with Auth", () => {
     });
 
     test("top level count and string fields with OR operation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 productionsAggregate(where: { OR: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {
                     count

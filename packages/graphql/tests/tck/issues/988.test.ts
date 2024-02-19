@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/988", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Series {
                 name: String
                 current: Boolean!
@@ -57,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     });
 
     test("where with multiple filters and params", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query getSeriesWithRelationFilters($where: SeriesWhere = { current: true }) {
                 series(where: $where) {
                     name

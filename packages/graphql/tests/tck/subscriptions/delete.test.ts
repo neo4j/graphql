@@ -17,20 +17,19 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on delete", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -51,7 +50,7 @@ describe("Subscriptions metadata on delete", () => {
     });
 
     test("Simple delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { id: "1" }) {
                     nodesDeleted
@@ -92,7 +91,7 @@ describe("Subscriptions metadata on delete", () => {
     });
 
     test("Nested delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { id: "1" }, delete: { actors: { where: { node: { name: "1" } } } }) {
                     nodesDeleted
@@ -155,7 +154,7 @@ describe("Subscriptions metadata on delete", () => {
         `);
     });
     test("Triple Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(
                     where: { id: 123 }

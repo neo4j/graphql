@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
 
     test("should sort by aliased field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query listProducts {
                 products(options: { sort: { partNumber: DESC } }) {
                     id
@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
 
     test("should sort by aliased field in relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query listProducts {
                 employees {
                     products(options: { sort: { partNumber: DESC } }) {
@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
     describe("Connection sort", () => {
         test("should sort by aliased field in connection", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query listProducts {
                     productsConnection(sort: { partNumber: DESC }) {
                         edges {
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         });
 
         test("should sort by aliased field in nested connection", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query listProducts {
                     employees {
                         productsConnection(sort: { node: { partNumber: DESC } }) {

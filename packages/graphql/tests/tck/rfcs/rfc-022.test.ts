@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("tck/rfs/022 subquery projection", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     describe("no auth", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 type Movie {
                     title: String!
                     released: Int
@@ -54,7 +53,7 @@ describe("tck/rfs/022 subquery projection", () => {
         });
 
         test("Nested query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query Query {
                     movies(where: { released: 1999 }) {
                         title
@@ -92,7 +91,7 @@ describe("tck/rfs/022 subquery projection", () => {
         });
 
         test("Double nested query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query Query {
                     movies(where: { released: 1999 }) {
                         title
@@ -142,7 +141,7 @@ describe("tck/rfs/022 subquery projection", () => {
 
     describe("With auth", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 type JWT @jwt {
                     roles: [String!]!
                 }
@@ -176,7 +175,7 @@ describe("tck/rfs/022 subquery projection", () => {
         });
 
         test("Nested query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query Query {
                     movies(where: { released: 1999 }) {
                         title

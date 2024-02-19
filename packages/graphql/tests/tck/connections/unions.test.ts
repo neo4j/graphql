@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Unions", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             union Publication = Book | Journal
 
             type Author {
@@ -56,7 +55,7 @@ describe("Cypher -> Connections -> Unions", () => {
     });
 
     test("Projecting union node and relationship properties with no arguments", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -107,7 +106,7 @@ describe("Cypher -> Connections -> Unions", () => {
     });
 
     test("Projecting union node and relationship properties with where argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -170,7 +169,7 @@ describe("Cypher -> Connections -> Unions", () => {
     });
 
     test("Projecting union node and relationship properties with where relationship argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -236,7 +235,7 @@ describe("Cypher -> Connections -> Unions", () => {
     });
 
     test("Projecting union node and relationship properties with where node and relationship argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -307,7 +306,7 @@ describe("Cypher -> Connections -> Unions", () => {
     });
 
     test("Projecting union node and relationship properties with sort argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name

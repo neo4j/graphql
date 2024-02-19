@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4095", () => {
     const secret = "sssh!";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        const typeDefsStr = `
+        typeDefs = /* GraphQL */ `
             type User {
                 id: ID! @unique
             }
@@ -47,7 +45,6 @@ describe("https://github.com/neo4j/graphql/issues/4095", () => {
             }
             extend schema @authentication
         `;
-        typeDefs = gql(typeDefsStr);
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -60,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/4095", () => {
     });
 
     test("query with nested aggregate count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Family {
                 families {
                     id

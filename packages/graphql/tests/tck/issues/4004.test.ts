@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4004", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Episode {
                 id: ID!
             }
@@ -51,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
     });
 
     test("should query allEpisodes with argument named as options", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 series {
                     allEpisodes(options: [2]) {

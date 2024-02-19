@@ -17,18 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("@customResolver directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     describe("Require fields on same type", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 type User {
                     firstName: String!
                     lastName: String!
@@ -49,7 +48,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not fetch required fields if @customResolver field is not selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         firstName
@@ -68,7 +67,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when all required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         firstName
@@ -89,7 +88,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when some required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         firstName
@@ -109,7 +108,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when no required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         fullName
@@ -130,7 +129,7 @@ describe("@customResolver directive", () => {
 
     describe("No required fields", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 type User {
                     firstName: String!
                     lastName: String!
@@ -151,7 +150,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when other fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         firstName
@@ -171,7 +170,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when no other fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         fullName
@@ -192,7 +191,7 @@ describe("@customResolver directive", () => {
 
     describe("Require fields on nested types", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 type City {
                     name: String!
                     population: Int
@@ -226,7 +225,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when all required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         firstName
@@ -265,7 +264,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not fetch required fields if @customResolver field is not selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         firstName
@@ -284,7 +283,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when some required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         lastName
@@ -321,7 +320,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when no required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     users {
                         fullName
@@ -354,7 +353,7 @@ describe("@customResolver directive", () => {
 
     describe("Require fields on nested unions", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 union Publication = Book | Journal
 
                 type Author {
@@ -390,7 +389,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when all required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         name
@@ -434,7 +433,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not fetch required fields if @customResolver field is not selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         name
@@ -453,7 +452,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when some required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         publicationsWithAuthor
@@ -493,7 +492,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when no required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         publicationsWithAuthor
@@ -530,7 +529,7 @@ describe("@customResolver directive", () => {
 
     describe("Require fields on nested interfaces", () => {
         beforeAll(() => {
-            typeDefs = gql`
+            typeDefs = /* GraphQL */ `
                 interface Publication {
                     publicationYear: Int!
                 }
@@ -570,7 +569,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when all required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         name
@@ -615,7 +614,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not fetch required fields if @customResolver field is not selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         name
@@ -634,7 +633,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when some required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         publicationsWithAuthor
@@ -674,7 +673,7 @@ describe("@customResolver directive", () => {
         });
 
         test("should not over fetch when no required fields are manually selected", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     authors {
                         publicationsWithAuthor

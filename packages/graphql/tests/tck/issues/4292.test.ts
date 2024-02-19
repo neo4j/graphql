@@ -156,7 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Groups {
                 groups(where: { id: "family_id_1" }) {
                     id

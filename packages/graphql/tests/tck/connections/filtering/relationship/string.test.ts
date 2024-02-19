@@ -18,7 +18,6 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import {
     formatCypher,
@@ -29,11 +28,11 @@ import {
 } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -67,7 +66,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         unsetTestEnvVars(undefined);
     });
     test("CONTAINS", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -114,7 +113,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     });
 
     test("NOT_CONTAINS", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -161,7 +160,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     });
 
     test("STARTS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -208,7 +207,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     });
 
     test("NOT_STARTS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -255,7 +254,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     });
 
     test("ENDS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -302,7 +301,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     });
 
     test("NOT_ENDS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -349,7 +348,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     });
 
     test("MATCHES", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title

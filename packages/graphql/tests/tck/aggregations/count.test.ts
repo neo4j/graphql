@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations Count", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
             }
@@ -39,7 +38,7 @@ describe("Cypher Aggregations Count", () => {
     });
 
     test("Simple Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     count
@@ -61,7 +60,7 @@ describe("Cypher Aggregations Count", () => {
     });
 
     test("Count with WHERE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate(where: { title: "some-title" }) {
                     count

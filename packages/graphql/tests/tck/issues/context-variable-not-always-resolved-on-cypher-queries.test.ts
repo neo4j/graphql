@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Expr
             @node(labels: ["Exprlabel", "$context.tenant", "Resource"])
             @mutation(operations: [])
@@ -69,7 +68,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     });
 
     test("should apply dynamic label with filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 exprs(
                     where: { realizationOf: { hasResourceType: { iri: "http://data.somesite.com/crown/test-id" } } }
@@ -112,7 +111,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     });
 
     test("should apply dynamic label with filter when queried an union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 exprs(
                     where: { realizationOf: { hasResourceType: { iri: "http://data.somesite.com/crown/test-id" } } }
@@ -176,7 +175,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     });
 
     test("should apply dynamic label with filter when queried an interface", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 exprs(
                     where: { realizationOf: { hasResourceType: { iri: "http://data.somesite.com/crown/test-id" } } }

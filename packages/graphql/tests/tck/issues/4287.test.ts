@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4287", () => {
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Actor {
             name: String
             actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
@@ -46,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
     test("filter by logical operator on interface connection", async () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedInConnection(

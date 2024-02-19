@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations Many", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID!
                 title: String!
@@ -42,7 +41,7 @@ describe("Cypher Aggregations Many", () => {
     });
 
     test("Min", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     id {

@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Additional Labels", () => {
     test("simple match with single fulltext property and static additionalLabels", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @node(labels: ["Movie", "AnotherLabel"]) {
@@ -36,7 +35,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
@@ -62,7 +61,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
     });
 
     test("simple match with single fulltext property and jwt additionalLabels", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @node(labels: ["Movie", "$jwt.label"]) {
@@ -79,7 +78,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             features: { authorization: { key: secret } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title

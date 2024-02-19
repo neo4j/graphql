@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2871", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type FirstLevel {
             id: ID! @id @unique
             secondLevel: SecondLevel! @relationship(type: "HAS_SECOND_LEVEL", direction: OUT)
@@ -50,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     });
 
     test("should be able to filter by SOME nested within single relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 firstLevels(where: { secondLevel: { thirdLevel_SOME: { id: "3" } } }) {
                     id
@@ -81,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     });
 
     test("should be able to filter by ALL nested within single relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 firstLevels(where: { secondLevel: { thirdLevel_ALL: { id: "5" } } }) {
                     id
@@ -115,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     });
 
     test("should not match if SOME second level relationships meet nested predicates", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 firstLevels(where: { secondLevel: { thirdLevel_NONE: { id: "25" } } }) {
                     id

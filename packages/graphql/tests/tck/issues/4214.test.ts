@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
@@ -26,7 +25,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
     const secret = "sssh!";
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type JWT @jwt {
             id: ID!
             email: String!
@@ -130,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
     });
 
     test("should include checks for auth jwt param is not null", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation SaveItems {
                 createTransactionItems(
                     input: {

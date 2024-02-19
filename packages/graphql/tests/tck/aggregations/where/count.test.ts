@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where with count", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
             }
@@ -44,7 +43,7 @@ describe("Cypher Aggregations where with count", () => {
     });
 
     test("Equality Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { count: 10 } }) {
                     content
@@ -77,7 +76,7 @@ describe("Cypher Aggregations where with count", () => {
     });
 
     test("LT Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { count_LT: 10 } }) {
                     content
@@ -110,7 +109,7 @@ describe("Cypher Aggregations where with count", () => {
     });
 
     test("LTE Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { count_LTE: 10 } }) {
                     content
@@ -143,7 +142,7 @@ describe("Cypher Aggregations where with count", () => {
     });
 
     test("GT Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { count_GT: 10 } }) {
                     content
@@ -176,7 +175,7 @@ describe("Cypher Aggregations where with count", () => {
     });
 
     test("GTE Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { count_GTE: 10 } }) {
                     content

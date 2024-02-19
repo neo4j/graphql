@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
@@ -76,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
     });
 
     test("query nested custom cypher with columnName", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -119,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
     });
 
     test("query nested custom cypher without columnName", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name

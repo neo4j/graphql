@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../../src";
 import { createBearerToken } from "../../../../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../../../../utils/tck-test-utils";
 
 describe("@auth allow on specific interface implementation", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Content {
                 id: ID
                 content: String
@@ -77,7 +76,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("read allow protected interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -133,7 +132,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Read Two Relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users(where: { id: "1" }) {
                     id
@@ -205,7 +204,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Nested Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, update: { content: { update: { node: { id: "new-id" } } } }) {
                     users {
@@ -316,7 +315,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Nested Delete Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(where: { id: "user-id" }, delete: { content: { where: { node: { id: "post-id" } } } }) {
                     nodesDeleted
@@ -378,7 +377,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Disconnect Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, disconnect: { content: { where: { node: { id: "post-id" } } } }) {
                     users {
@@ -460,7 +459,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Connect node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, connect: { content: { where: { node: { id: "post-id" } } } }) {
                     users {

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
@@ -28,7 +27,7 @@ describe("Interface filtering on authorization rules", () => {
     const secret = "secret";
 
     beforeAll(() => {
-        baseTypes = `
+        baseTypes = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String]
                 groups: [String]
@@ -68,7 +67,7 @@ describe("Interface filtering on authorization rules", () => {
     });
 
     test("Logical operator filter (top level)", async () => {
-        const typeDefsStr =
+        const typeDefs =
             baseTypes +
             /* GraphQL */ `
                 extend type Movie
@@ -85,12 +84,11 @@ describe("Interface filtering on authorization rules", () => {
                         ]
                     )
             `;
-        const typeDefs = gql(typeDefsStr);
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 shows {
                     title
@@ -130,7 +128,7 @@ describe("Interface filtering on authorization rules", () => {
     });
 
     test("Logical operator filter (nested field)", async () => {
-        const typeDefsStr =
+        const typeDefs =
             baseTypes +
             /* GraphQL */ `
                 extend type Movie
@@ -147,13 +145,12 @@ describe("Interface filtering on authorization rules", () => {
                         ]
                     )
             `;
-        const typeDefs = gql(typeDefsStr);
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query actedInWhere {
                 actors {
                     actedIn {
@@ -201,7 +198,7 @@ describe("Interface filtering on authorization rules", () => {
     });
 
     test("Connection operator filter", async () => {
-        const typeDefsStr =
+        const typeDefs =
             baseTypes +
             /* GraphQL */ `
                 extend type Actor
@@ -218,13 +215,12 @@ describe("Interface filtering on authorization rules", () => {
                         ]
                     )
             `;
-        const typeDefs = gql(typeDefsStr);
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name
@@ -255,7 +251,7 @@ describe("Interface filtering on authorization rules", () => {
     });
 
     test("Connection operator filter SINGLE should be applied exactly once", async () => {
-        const typeDefsStr =
+        const typeDefs =
             baseTypes +
             /* GraphQL */ `
                 extend type Actor
@@ -275,13 +271,12 @@ describe("Interface filtering on authorization rules", () => {
                         ]
                     )
             `;
-        const typeDefs = gql(typeDefsStr);
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name

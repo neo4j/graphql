@@ -17,18 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, GraphQLArgs } from "graphql";
+import type { GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
 import type { IncomingMessage } from "http";
 import type { Neo4jGraphQL } from "../../../../src";
 import { Neo4jDatabaseInfo } from "../../../../src/classes/Neo4jDatabaseInfo";
 import { DriverBuilder } from "../../../utils/builders/driver-builder";
-import { getQuerySource } from "../../../utils/get-query-source";
 
 // TODO: improve this so only `graphql(graphqlArgs)` is tested
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
-    query: DocumentNode,
+    query: string,
     options?: {
         req?: IncomingMessage;
         variableValues?: Record<string, any>;
@@ -49,7 +48,7 @@ export async function translateQuery(
 
     const graphqlArgs: GraphQLArgs = {
         schema: await neoSchema.getSchema(),
-        source: getQuerySource(query),
+        source: query,
         contextValue,
     };
     if (options?.variableValues) {

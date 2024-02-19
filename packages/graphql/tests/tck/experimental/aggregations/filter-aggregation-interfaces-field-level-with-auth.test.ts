@@ -18,18 +18,17 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Field Level Aggregations with Auth", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     const secret = "secret";
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -75,7 +74,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Count with where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate(where: { title: "The Matrix" }) {
@@ -122,7 +121,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Count with where and string aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate(where: { title_STARTS_WITH: "The" }) {
@@ -221,7 +220,7 @@ describe("Interface Field Level Aggregations with Auth", () => {
     });
 
     test("Count with OR operator and string aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate(where: { OR: [{ title_STARTS_WITH: "The" }, { title_STARTS_WITH: "A" }] }) {
