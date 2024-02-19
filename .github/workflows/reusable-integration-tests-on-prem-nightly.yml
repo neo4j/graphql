@@ -41,12 +41,12 @@ jobs:
         node: ["lts/*", "latest"]
         packages:
           [
-            { package: "ogm", shard: 1/1 },
-            { package: "introspector", shard: 1/1 },
-            { package: "graphql", shard: 1/4 },
-            { package: "graphql", shard: 2/4 },
-            { package: "graphql", shard: 3/4 },
-            { package: "graphql", shard: 4/4 },
+            { package: "ogm", shard: 1/1, simple: 1 },
+            { package: "introspector", shard: 1/1, simple: 2 },
+            { package: "graphql", shard: 1/4, simple: 3 },
+            { package: "graphql", shard: 2/4, simple: 4 },
+            { package: "graphql", shard: 3/4, simple: 5 },
+            { package: "graphql", shard: 4/4, simple: 6 },
           ]
         graphql-version:
           - "^15.0.0"
@@ -111,7 +111,7 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
-          name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.packages.shard }}
+          name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.packages.simple }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly/
       - name: Stop Neo4j container
         if: always()

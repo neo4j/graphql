@@ -15,12 +15,12 @@ jobs:
       matrix:
         packages:
           [
-            { package: "ogm", shard: 1/1 },
-            { package: "introspector", shard: 1/1 },
-            { package: "graphql", shard: 1/4 },
-            { package: "graphql", shard: 2/4 },
-            { package: "graphql", shard: 3/4 },
-            { package: "graphql", shard: 4/4 },
+            { package: "ogm", shard: 1/1, simple: 1 },
+            { package: "introspector", shard: 1/1, simple: 2 },
+            { package: "graphql", shard: 1/4, simple: 3 }, 
+            { package: "graphql", shard: 2/4, simple: 4 },
+            { package: "graphql", shard: 3/4, simple: 5 },
+            { package: "graphql", shard: 4/4, simple: 6 },
           ]
         neo4j-version:
           #   - 4.4-community
