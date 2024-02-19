@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
 import { createBearerToken } from "../../../../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../../../../utils/tck-test-utils";

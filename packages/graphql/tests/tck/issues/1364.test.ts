@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 
