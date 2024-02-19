@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Duration", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 duration: Duration
@@ -40,7 +39,7 @@ describe("Cypher Duration", () => {
     });
 
     test("Simple Read", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { duration: "P1Y" }) {
                     duration
@@ -75,7 +74,7 @@ describe("Cypher Duration", () => {
     });
 
     test("GTE Read", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { duration_GTE: "P3Y4M" }) {
                     duration
@@ -110,7 +109,7 @@ describe("Cypher Duration", () => {
     });
 
     test("Simple Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ duration: "P2Y" }]) {
                     movies {
@@ -158,7 +157,7 @@ describe("Cypher Duration", () => {
     });
 
     test("Simple Update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { duration: "P4D" }) {
                     movies {

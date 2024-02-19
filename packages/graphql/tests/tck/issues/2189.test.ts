@@ -19,7 +19,6 @@
 
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
-import { gql } from "graphql-tag";
 
 describe("https://github.com/neo4j/graphql/issues/2189", () => {
     let neoSchema: Neo4jGraphQL;
@@ -59,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
     });
 
     test("Mutation followed by query with Cypher field should return 2 nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createTestItems(
                     input: [
@@ -151,7 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
     });
 
     test("Mutation followed by query without Cypher field should return 2 nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createTestItems(
                     input: [
@@ -243,7 +242,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
     });
 
     test("Mutation with Cypher relationship in projection should return 2 nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createTestItems(
                     input: [
@@ -372,7 +371,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
     });
 
     test("Mutation without Cypher relationship in projection should return 2 nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createTestItems(
                     input: [

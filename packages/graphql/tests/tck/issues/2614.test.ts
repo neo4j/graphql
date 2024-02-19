@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -60,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
     });
 
     test("should use the provided node directive label in the call subquery", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query GetProductionsMovie {
                 actors {
                     actedIn(where: { title: "Test Movie" }) {

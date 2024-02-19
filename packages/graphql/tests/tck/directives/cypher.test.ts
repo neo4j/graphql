@@ -23,11 +23,11 @@ import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 year: Int
@@ -120,7 +120,7 @@ describe("Cypher directive", () => {
     });
 
     test("Simple directive", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -154,7 +154,7 @@ describe("Cypher directive", () => {
     });
 
     test("Simple directive (primitive)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     randomNumber
@@ -183,7 +183,7 @@ describe("Cypher directive", () => {
     });
 
     test("LIMIT happens before custom Cypher if not sorting on the custom Cypher field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(options: { limit: 10 }) {
                     randomNumber
@@ -221,7 +221,7 @@ describe("Cypher directive", () => {
     });
 
     test("LIMIT happens after custom Cypher if sorting on the custom Cypher field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(options: { limit: 10, sort: [{ randomNumber: ASC }] }) {
                     randomNumber
@@ -260,7 +260,7 @@ describe("Cypher directive", () => {
     });
 
     test("Nested directive", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -313,7 +313,7 @@ describe("Cypher directive", () => {
     });
 
     test("Super Nested directive", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -397,7 +397,7 @@ describe("Cypher directive", () => {
     });
 
     test("Nested directive with params", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -450,7 +450,7 @@ describe("Cypher directive", () => {
     });
 
     test("Union directive", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     movieOrTVShow(title: "some title") {
@@ -547,7 +547,7 @@ describe("Cypher directive", () => {
     });
 
     test("Union directive - querying only __typename", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     movieOrTVShow(title: "some title") {
@@ -615,7 +615,7 @@ describe("Cypher directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     customMovies(title: "The Matrix") {
                         title
@@ -677,7 +677,7 @@ describe("Cypher directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     customMovies(title: "The Matrix") {
                         title
@@ -736,7 +736,7 @@ describe("Cypher directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies {
                         custom(title: "The Matrix") {

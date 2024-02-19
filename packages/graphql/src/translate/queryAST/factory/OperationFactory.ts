@@ -402,12 +402,29 @@ export class OperationsFactory {
             } else {
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entityOrRel, resolveTree);
+
+                const nodeRawFields = {
+                    ...parsedProjectionFields.node?.fieldsByTypeName[
+                        entityOrRel.operations.getAggregationFieldTypename("node")
+                    ],
+                };
+
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
                         target: concreteEntity,
                         entity: entityOrRel,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
+
+                    const attributes = this.getSelectedAttributes(concreteEntity, nodeRawFields);
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        context,
+                        attributes,
+                    });
+                    aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;
                 });
@@ -450,14 +467,10 @@ export class OperationsFactory {
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
                 });
-                //TODO: use a hydrate method here
-                const rawProjectionFields = {
-                    ...resolveTree.fieldsByTypeName[entity.operations.getAggregationFieldTypename()],
-                };
 
-                const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-                const projectionFields = parsedProjectionFields.fields;
-                const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
+
+                const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
 
                 operation.setFields(fields);
 
@@ -465,7 +478,7 @@ export class OperationsFactory {
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
-                    attributes: this.getSelectedAttributes(entity, projectionFields),
+                    attributes: this.getSelectedAttributes(entity, parsedProjectionFields.fields),
                     context,
                 });
 
@@ -491,11 +504,22 @@ export class OperationsFactory {
                 // TOP level interface/union
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
+
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
                         target: concreteEntity,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
+
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        attributes: this.getSelectedAttributes(concreteEntity, parsedProjectionFields.fields),
+                        context,
+                    });
+
+                    aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;
                 });
@@ -514,6 +538,21 @@ export class OperationsFactory {
                 });
             }
         }
+    }
+
+    private getAggregationParsedProjectionFields(
+        adapter: InterfaceEntityAdapter | RelationshipAdapter | ConcreteEntityAdapter,
+        resolveTree: ResolveTree
+    ): {
+        node: ResolveTree | undefined;
+        edge: ResolveTree | undefined;
+        fields: Record<string, ResolveTree>;
+    } {
+        const rawProjectionFields = {
+            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+        };
+
+        return this.splitConnectionFields(rawProjectionFields);
     }
 
     public createCompositeConnectionOperationAST({
@@ -1305,11 +1344,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
     }): T {
         if (relationship) {
-            const rawProjectionFields = {
-                ...resolveTree.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()],
-            };
-            const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-            const projectionFields = parsedProjectionFields.fields;
+            const parsedProjectionFields = this.getAggregationParsedProjectionFields(relationship, resolveTree);
 
             const edgeRawFields = {
                 ...parsedProjectionFields.edge?.fieldsByTypeName[
@@ -1323,7 +1358,7 @@ export class OperationsFactory {
                 ],
             };
 
-            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+            const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
             if (isInterfaceEntity(entity)) {
@@ -1332,9 +1367,13 @@ export class OperationsFactory {
             } else {
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
+
+                const attributes = this.getSelectedAttributes(entity, nodeRawFields);
+
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
+                    attributes,
                     context,
                 });
 

@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies(title: String): [Movie]
@@ -53,7 +52,7 @@ describe("Cypher directive", () => {
     });
 
     test("Nested Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     movies {

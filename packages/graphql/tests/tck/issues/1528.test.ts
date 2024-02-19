@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1528", () => {
     test("order in connections with custom cypher", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -52,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 genres {
                     moviesConnection(sort: [{ node: { actorsCount: DESC } }]) {

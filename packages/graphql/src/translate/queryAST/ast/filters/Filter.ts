@@ -41,7 +41,7 @@ export type WhereOperator =
 
 export type FilterOperator = WhereOperator | "EQ";
 
-export type LogicalOperators = "NOT" | "AND" | "OR";
+export type LogicalOperators = "NOT" | "AND" | "OR" | "XOR";
 
 const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
 

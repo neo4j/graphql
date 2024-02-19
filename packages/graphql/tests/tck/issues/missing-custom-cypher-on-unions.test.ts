@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Missing custom Cypher on unions", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Fragment
             @node(labels: ["Fragment", "$context.tenant", "Resource"])
             @mutation(operations: [])
@@ -121,7 +120,7 @@ describe("Missing custom Cypher on unions", () => {
     });
 
     test("should include checks for auth jwt param is not null", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query browseHierarchicalComponents($hierarchicalRootId: ID!, $choNodeIris: [ID!]!) {
                 hierarchicalComponents(where: { isContained: { iri: $hierarchicalRootId }, iri_IN: $choNodeIris }) {
                     #...hierarchicalComponentFields

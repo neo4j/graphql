@@ -20,16 +20,19 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { filterTruthy } from "../../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { QueryASTNode } from "../../QueryASTNode";
+import type { AuthorizationFilters } from "../../filters/authorization-filters/AuthorizationFilters";
 
 export class CompositeAggregationPartial extends QueryASTNode {
     public readonly entity?: RelationshipAdapter;
     public readonly target: ConcreteEntityAdapter;
     protected directed: boolean;
     protected attachedTo: "node" | "relationship";
+    protected authFilters: AuthorizationFilters[] = [];
 
     constructor({
         target,
@@ -50,15 +53,27 @@ export class CompositeAggregationPartial extends QueryASTNode {
     }
 
     public getChildren(): QueryASTNode[] {
-        return [];
+        return this.authFilters;
+    }
+
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
+    }
+
+    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!context.target) throw new Error("No parent node found!");
+        if (!context.target) {
+            throw new Error("No parent node found!");
+        }
 
         let pattern: Cypher.Pattern;
         const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         let target: Cypher.Node | Cypher.Relationship = targetNode;
+
+        const authFilterPredicates = this.getAuthFilterPredicate(context);
 
         if (this.entity instanceof RelationshipAdapter) {
             const relVar = createRelationshipFromEntity(this.entity);
@@ -73,7 +88,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
                 .withDirection(relDirection)
                 .to(targetNode);
 
-            const matchClause = new Cypher.Match(pattern);
+            const matchClause = new Cypher.Match(pattern).where(Cypher.and(...authFilterPredicates));
 
             const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 
@@ -86,7 +101,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
             ];
         } else {
             pattern = new Cypher.Pattern(targetNode);
-            const matchClause = new Cypher.Match(pattern);
+            const matchClause = new Cypher.Match(pattern).where(Cypher.and(...authFilterPredicates));
 
             const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 

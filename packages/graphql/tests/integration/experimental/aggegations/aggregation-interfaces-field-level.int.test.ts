@@ -69,7 +69,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         session = await neo4j.getSession();
 
         await session.run(`

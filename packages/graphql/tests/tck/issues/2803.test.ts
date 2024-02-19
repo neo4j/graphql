@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2803", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Movie {
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             released: Int!
@@ -48,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate within double nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(where: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } }) {
                     name
@@ -111,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find aggregations at all levels within double nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -187,7 +186,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate within triple nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { actors_SOME: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 2 } } } } }) {
                     released
@@ -257,7 +256,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find aggregations at all levels within within triple nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(
                     where: {
@@ -356,7 +355,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate within double nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -425,7 +424,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find aggregations at all levels within double nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -504,7 +503,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate within triple nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(
                     where: {
@@ -584,7 +583,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find aggregations at all levels within within triple nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(
                     where: {
@@ -687,7 +686,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate with connection nested in relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: { movies_SOME: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } } } }
@@ -752,7 +751,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate with relationship nested in connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: { moviesConnection_SOME: { node: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } } }
@@ -817,7 +816,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find movies aggregate with triple nested mix of relations and connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(
                     where: {
@@ -879,7 +878,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should find edge aggregations at all levels within double nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -936,7 +935,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to filter by edge properties and aggregations in nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -997,7 +996,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to filter by node properties, edge properties and aggregations in nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -1057,7 +1056,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to filter by node properties and aggregations in nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(where: { movies_ALL: { actors_SOME: { name: "a name", moviesAggregate: { count_GT: 1 } } } }) {
                     name
@@ -1129,7 +1128,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to use logical OR operators with aggregations in nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -1207,7 +1206,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to use logical AND operators with aggregations in nested relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(
                     where: {
@@ -1285,7 +1284,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to filter update mutations by node properties, edge properties and aggregations in nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     where: {
@@ -1352,7 +1351,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     test("should be able to filter delete mutations by node properties, edge properties and aggregations in nested connections", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: {

@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Delete - interface", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Episode {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
@@ -80,7 +79,7 @@ describe("Cypher Delete - interface", () => {
     });
 
     test("Simple Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(where: { name: "Keanu" }) {
                     nodesDeleted
@@ -104,7 +103,7 @@ describe("Cypher Delete - interface", () => {
     });
 
     test("Single Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(where: { name: "Keanu" }, delete: { actedIn: { where: { node: { title: "Matrix" } } } }) {
                     nodesDeleted
@@ -154,7 +153,7 @@ describe("Cypher Delete - interface", () => {
     });
 
     test("Single Nested Delete, + typename filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }
@@ -207,7 +206,7 @@ describe("Cypher Delete - interface", () => {
     });
 
     test("Single Nested Delete, deleting multiple", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }
@@ -264,7 +263,7 @@ describe("Cypher Delete - interface", () => {
     });
 
     test("Double Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }

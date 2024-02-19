@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Math operators", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Wife {
                 marriageLength: Int
             }
@@ -63,7 +62,7 @@ describe("Math operators", () => {
     });
 
     test("Simple Int increment", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { viewers_INCREMENT: 3 }) {
                     movies {
@@ -100,7 +99,7 @@ describe("Math operators", () => {
     });
 
     test("Simple Float multiply", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { revenue_MULTIPLY: 3 }) {
                     movies {
@@ -134,7 +133,7 @@ describe("Math operators", () => {
     });
 
     test("Nested Int increment", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(update: { actedIn: [{ update: { node: { viewers_INCREMENT: 10 } } }] }) {
                     actors {
@@ -186,7 +185,7 @@ describe("Math operators", () => {
     });
 
     test("Increment on relationship property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation Mutation {
                 updateActors(update: { actedIn: [{ update: { edge: { pay_ADD: 100 } } }] }) {
                     actors {
@@ -269,7 +268,7 @@ describe("Math operators", () => {
     });
 
     test("Increment on interface property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(update: { marriedWith: { update: { node: { marriageLength_INCREMENT: 1 } } } }) {
                     actors {

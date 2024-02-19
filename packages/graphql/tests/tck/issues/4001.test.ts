@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4001", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             input Pagination {
                 limit: Int = 20
                 offset: Int = 0
@@ -57,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
     });
 
     test("resolve @cypher field with custom input types", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 series {
                     allEpisodes(options: { limit: 10, offset: 0 }) {
@@ -103,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
     });
 
     test("resolve @cypher field with custom input types argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($option: Pagination) {
                 series {
                     allEpisodes(options: $option) {
@@ -156,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
     });
 
     test("resolve @cypher field with custom input types default", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 series {
                     allEpisodes(options: {}) {

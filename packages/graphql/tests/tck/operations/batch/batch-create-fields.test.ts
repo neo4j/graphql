@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Batch Create, Scalar types", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 id: ID! @id @unique
                 name: String
@@ -61,7 +60,7 @@ describe("Batch Create, Scalar types", () => {
     });
 
     test("no nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -133,7 +132,7 @@ describe("Batch Create, Scalar types", () => {
     });
 
     test("1 to 1 cardinality", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -274,7 +273,7 @@ describe("Batch Create, Scalar types", () => {
     });
 
     test("nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -390,7 +389,7 @@ describe("Batch Create, Scalar types", () => {
     });
 
     test("heterogeneous batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [

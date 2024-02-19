@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/832", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Entity {
                 id: String!
             }
@@ -56,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should produce Cypher which doesn't create duplicate nodes, only selecting created nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createInteractions(
                     input: [
@@ -286,7 +285,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should produce Cypher correctly creates one interaction", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createInteractions(
                     input: [
@@ -416,7 +415,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should produce Cypher correctly creates second interaction", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createInteractions(
                     input: [
@@ -546,7 +545,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should produce Cypher which doesn't create duplicate nodes, selecting related nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createInteractions(
                     input: [
@@ -846,7 +845,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("simplest reproduction", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createInteractions(
                     input: [

@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Label in Node directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor @node(labels: ["Person"]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -46,7 +45,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Select Movie with label Film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -65,7 +64,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Select movie and actor with custom labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -93,7 +92,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Select movie and actor with custom labels using Relay connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -132,7 +131,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Create Movie with label Film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }]) {
                     movies {
@@ -169,7 +168,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Create Movie and relation with custom labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -243,7 +242,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Update Movie with label film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, update: { id: "2" }) {
                     movies {
@@ -272,7 +271,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Update nested actors with custom label", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -334,7 +333,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Update connection in Movie with label film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, connect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
                     movies {
@@ -381,7 +380,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Update disconnect in Movie with label film", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
                     movies {
@@ -438,7 +437,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Delete Movie with custom label", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { id: "123" }) {
                     nodesDeleted
@@ -462,7 +461,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Delete Movies and actors with custom labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { id: 123 }, delete: { actors: { where: { node: { name: "Actor to delete" } } } }) {
                     nodesDeleted
@@ -500,7 +499,7 @@ describe("Label in Node directive", () => {
     });
 
     test("Admin Deletes Post", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { actors: { name: "tom" } }) {
                     nodesDeleted

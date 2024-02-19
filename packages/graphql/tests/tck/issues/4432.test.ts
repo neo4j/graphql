@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 inventories {
                     id

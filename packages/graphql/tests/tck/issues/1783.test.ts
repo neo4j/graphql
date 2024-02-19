@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1783", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Series {
                 id: ID! @unique
                 current: Boolean!
@@ -57,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
     });
 
     test("should add parameters with implicit and", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($where: SeriesWhere, $connectionWhere: RelationPropsWhere) {
                 series(where: $where) {
                     id

@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Root Connection Query tests", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 title: String
@@ -46,7 +45,7 @@ describe("Root Connection Query tests", () => {
     });
 
     test("Simple selection, Movie by title", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(where: { title: "River Runs Through It, A" }) {
                     totalCount
@@ -83,7 +82,7 @@ describe("Root Connection Query tests", () => {
     });
 
     test("should apply limit and sort before return", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(first: 20, sort: [{ title: ASC }]) {
                     edges {
@@ -122,7 +121,7 @@ describe("Root Connection Query tests", () => {
         `);
     });
     test("should apply limit, sort, and filter correctly when all three are used", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(first: 20, where: { title_CONTAINS: "Matrix" }, sort: [{ title: ASC }]) {
                     edges {
@@ -162,7 +161,7 @@ describe("Root Connection Query tests", () => {
         `);
     });
     test("should correctly place any connection strings", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(first: 20, sort: [{ title: ASC }]) {
                     edges {

@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/487", () => {
     test("related fields should resolve on custom queries (union)", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Author {
                 id: ID!
             }
@@ -62,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 getThings {
                     __typename
@@ -131,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
     });
 
     test("related fields should resolve on custom queries (interface)", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Author {
                 id: ID!
             }
@@ -172,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 getThings {
                     __typename

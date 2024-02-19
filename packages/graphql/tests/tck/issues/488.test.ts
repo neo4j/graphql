@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/488", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Journalist {
                 name: String!
                 keywords: [Keyword!]! @relationship(type: "HAS_KEYWORD", direction: OUT)
@@ -57,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
     });
 
     test("Should replicate issue and return correct cypher", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 journalists(where: { keywordsConnection: { Emoji: { node: { type: "Smile" } } } }) {
                     name
@@ -111,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
     });
 
     test("Should replicate issue and return correct cypher (using not)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 journalists(where: { keywordsConnection_NOT: { Emoji: { node: { type: "Smile" } } } }) {
                     name

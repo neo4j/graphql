@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher DateTime", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 datetime: DateTime
@@ -40,7 +39,7 @@ describe("Cypher DateTime", () => {
     });
 
     test("Simple Read", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { datetime: "1970-01-01T00:00:00.000Z" }) {
                     datetime
@@ -73,7 +72,7 @@ describe("Cypher DateTime", () => {
     });
 
     test("Simple Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ datetime: "1970-01-01T00:00:00.000Z" }]) {
                     movies {
@@ -119,7 +118,7 @@ describe("Cypher DateTime", () => {
     });
 
     test("Simple Update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { datetime: "1970-01-01T00:00:00.000Z" }) {
                     movies {

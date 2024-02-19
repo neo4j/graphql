@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -49,7 +48,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
     });
 
     test("Update a relationship property on a relationship between two specified nodes (update -> update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "Forrest Gump" }
@@ -113,7 +112,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
     });
 
     test("Update properties on both the relationship and end node in a nested update (update -> update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "Forrest Gump" }

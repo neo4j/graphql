@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("#288", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type USER {
                 USERID: String
                 COMPANYID: String
@@ -45,7 +44,7 @@ describe("#288", () => {
     });
 
     test("Can create a USER and COMPANYID is populated", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createUsers(input: { USERID: "userid", COMPANYID: "companyid" }) {
                     users {
@@ -85,7 +84,7 @@ describe("#288", () => {
     });
 
     test("Can update a USER and COMPANYID is populated", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
                     users {

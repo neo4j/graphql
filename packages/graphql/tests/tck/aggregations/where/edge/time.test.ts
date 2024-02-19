@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with Time", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String
             }
@@ -49,7 +48,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_EQUAL: "12:00:00" } } }) {
                     content
@@ -85,7 +84,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTimeAlias_EQUAL: "12:00:00" } } }) {
                     content
@@ -121,7 +120,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_GT: "12:00:00" } } }) {
                     content
@@ -157,7 +156,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_GTE: "12:00:00" } } }) {
                     content
@@ -193,7 +192,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_LT: "12:00:00" } } }) {
                     content
@@ -229,7 +228,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_LTE: "12:00:00" } } }) {
                     content
@@ -265,7 +264,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MIN_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MIN_EQUAL: "12:00:00" } } }) {
                     content
@@ -301,7 +300,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MIN_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MIN_GT: "12:00:00" } } }) {
                     content
@@ -337,7 +336,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MIN_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MIN_GTE: "12:00:00" } } }) {
                     content
@@ -373,7 +372,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MIN_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MIN_LT: "12:00:00" } } }) {
                     content
@@ -409,7 +408,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MIN_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MIN_LTE: "12:00:00" } } }) {
                     content
@@ -445,7 +444,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MAX_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MAX_EQUAL: "12:00:00" } } }) {
                     content
@@ -481,7 +480,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MAX_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MAX_GT: "12:00:00" } } }) {
                     content
@@ -517,7 +516,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MAX_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MAX_GTE: "12:00:00" } } }) {
                     content
@@ -553,7 +552,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MAX_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MAX_LT: "12:00:00" } } }) {
                     content
@@ -589,7 +588,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     });
 
     test("MAX_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someTime_MAX_LTE: "12:00:00" } } }) {
                     content

@@ -18,16 +18,15 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1221", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     test("should apply where filter for deep relations, two relations deep", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Series {
                 id: ID! @unique
                 current: Boolean!
@@ -54,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 series(
                     where: {
@@ -129,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     });
 
     test("should apply where filter for deep relations, three relations deep", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Main {
                 id: ID! @unique
                 current: Boolean!
@@ -162,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 mains(
                     where: {

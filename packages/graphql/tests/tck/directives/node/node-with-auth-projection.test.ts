@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -25,11 +24,11 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Cypher Auth Projection On Connections", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Post @node(labels: ["Comment"]) {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
@@ -53,7 +52,7 @@ describe("Cypher Auth Projection On Connections", () => {
     });
 
     test("One connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     name

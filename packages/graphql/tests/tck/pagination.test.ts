@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 
 describe("Cypher pagination tests", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 title: String
@@ -40,7 +39,7 @@ describe("Cypher pagination tests", () => {
     });
 
     test("Skipping", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(options: { offset: 1 }) {
                     title
@@ -68,7 +67,7 @@ describe("Cypher pagination tests", () => {
     });
 
     test("Limit", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(options: { limit: 1 }) {
                     title
@@ -96,7 +95,7 @@ describe("Cypher pagination tests", () => {
     });
 
     test("Skip + Limit", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(options: { limit: 1, offset: 2 }) {
                     title
@@ -129,7 +128,7 @@ describe("Cypher pagination tests", () => {
     });
 
     test("Skip + Limit as variables", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($offset: Int, $limit: Int) {
                 movies(options: { limit: $limit, offset: $offset }) {
                     title
@@ -164,7 +163,7 @@ describe("Cypher pagination tests", () => {
     });
 
     test("Skip + Limit with other variables", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($offset: Int, $limit: Int, $title: String) {
                 movies(options: { limit: $limit, offset: $offset }, where: { title: $title }) {
                     title

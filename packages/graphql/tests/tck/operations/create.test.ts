@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Create", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -45,7 +44,7 @@ describe("Cypher Create", () => {
     });
 
     test("Simple Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }]) {
                     movies {
@@ -82,7 +81,7 @@ describe("Cypher Create", () => {
     });
 
     test("Simple Multi Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
@@ -122,7 +121,7 @@ describe("Cypher Create", () => {
     });
 
     test("Two Level Nested create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -196,7 +195,7 @@ describe("Cypher Create", () => {
     });
 
     test("Three Level Nested create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -309,7 +308,7 @@ describe("Cypher Create", () => {
     });
 
     test("Simple create and connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: 1, actors: { connect: [{ where: { node: { name: "Dan" } } }] } }]) {
                     movies {
@@ -362,7 +361,7 @@ describe("Cypher Create", () => {
     });
 
     test("Simple create -> relationship field -> connection(where)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createActors(input: { name: "Dan", movies: { connect: { where: { node: { id: 1 } } } } }) {
                     actors {

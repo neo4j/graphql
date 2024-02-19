@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
         });
 
         test("should have check in correct place following update and connect", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 mutation UpdateMovieWithConnectAndUpdate {
                     updateMovies(
                         where: { name: "TestMovie1" }

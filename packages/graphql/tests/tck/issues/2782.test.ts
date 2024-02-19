@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2782", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Product {
             id: ID!
             name: String
@@ -51,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
     });
 
     test("should  correctly set nested disconnect parameters", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateProducts(
                     update: {

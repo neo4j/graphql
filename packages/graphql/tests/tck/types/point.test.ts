@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Points", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type PointContainer {
                 id: String
                 point: Point
@@ -40,7 +39,7 @@ describe("Cypher Points", () => {
     });
 
     test("Simple Point query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 pointContainers(where: { point: { longitude: 1.0, latitude: 2.0 } }) {
                     point {
@@ -74,7 +73,7 @@ describe("Cypher Points", () => {
     });
 
     test("Simple Point NOT query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 pointContainers(where: { point_NOT: { longitude: 1.0, latitude: 2.0 } }) {
                     point {
@@ -107,7 +106,7 @@ describe("Cypher Points", () => {
     });
 
     test("Simple Point IN query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 pointContainers(where: { point_IN: [{ longitude: 1.0, latitude: 2.0 }] }) {
                     point {
@@ -143,7 +142,7 @@ describe("Cypher Points", () => {
     });
 
     test("Simple Point NOT IN query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 pointContainers(where: { point_NOT_IN: [{ longitude: 1.0, latitude: 2.0 }] }) {
                     point {
@@ -180,7 +179,7 @@ describe("Cypher Points", () => {
 
     describe("tests using describe or point.describe", () => {
         test("Simple Point LT query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     pointContainers(where: { point_LT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
                         point {
@@ -216,7 +215,7 @@ describe("Cypher Points", () => {
         });
 
         test("Simple Point LTE query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     pointContainers(where: { point_LTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
                         point {
@@ -252,7 +251,7 @@ describe("Cypher Points", () => {
         });
 
         test("Simple Point GT query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     pointContainers(where: { point_GT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
                         point {
@@ -288,7 +287,7 @@ describe("Cypher Points", () => {
         });
 
         test("Simple Point GTE query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     pointContainers(where: { point_GTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
                         point {
@@ -324,7 +323,7 @@ describe("Cypher Points", () => {
         });
 
         test("Simple Point DISTANCE query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     pointContainers(
                         where: { point_DISTANCE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }
@@ -363,7 +362,7 @@ describe("Cypher Points", () => {
     });
 
     test("Simple Point create mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createPointContainers(input: { point: { longitude: 1.0, latitude: 2.0 } }) {
                     pointContainers {
@@ -410,7 +409,7 @@ describe("Cypher Points", () => {
     });
 
     test("Simple Point update mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updatePointContainers(where: { id: "id" }, update: { point: { longitude: 1.0, latitude: 2.0 } }) {
                     pointContainers {

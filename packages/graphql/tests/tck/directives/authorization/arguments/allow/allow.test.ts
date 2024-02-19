@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -25,11 +24,11 @@ import { createBearerToken } from "../../../../../utils/create-bearer-token";
 
 describe("Cypher Auth Allow", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Comment {
                 id: ID
                 content: String
@@ -104,7 +103,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Read Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -138,7 +137,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Read Node & Protected Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     password
@@ -172,7 +171,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Read Relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -219,7 +218,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Read Relationship & Protected Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts {
                     creator {
@@ -265,7 +264,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Read Two Relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users(where: { id: "1" }) {
                     id
@@ -327,7 +326,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "old-id" }, update: { id: "new-id" }) {
                     users {
@@ -369,7 +368,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Update Node Property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "id-01" }, update: { password: "new-password" }) {
                     users {
@@ -413,7 +412,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Nested Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updatePosts(where: { id: "post-id" }, update: { creator: { update: { node: { id: "new-id" } } } }) {
                     posts {
@@ -474,7 +473,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Nested Update Property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updatePosts(
                     where: { id: "post-id" }
@@ -540,7 +539,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Delete Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(where: { id: "user-id" }) {
                     nodesDeleted
@@ -574,7 +573,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Nested Delete Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(where: { id: "user-id" }, delete: { posts: { where: { node: { id: "post-id" } } } }) {
                     nodesDeleted
@@ -624,7 +623,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Disconnect Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, disconnect: { posts: { where: { node: { id: "post-id" } } } }) {
                     users {
@@ -696,7 +695,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Nested Disconnect Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateComments(
                     where: { id: "comment-id" }
@@ -811,7 +810,7 @@ describe("Cypher Auth Allow", () => {
     });
 
     test("Connect Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, connect: { posts: { where: { node: { id: "post-id" } } } }) {
                     users {

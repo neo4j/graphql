@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Node directive with additionalLabels", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor @node(labels: ["Actor", "Person"]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -46,7 +45,7 @@ describe("Node directive with additionalLabels", () => {
     });
 
     test("Select Movie with additional labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -65,7 +64,7 @@ describe("Node directive with additionalLabels", () => {
     });
 
     test("Select movie and actor with additional labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -93,7 +92,7 @@ describe("Node directive with additionalLabels", () => {
     });
 
     test("Create Movie and relation with additional labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -167,7 +166,7 @@ describe("Node directive with additionalLabels", () => {
     });
 
     test("Delete Movie with additional additionalLabels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteMovies(where: { id: "123" }) {
                     nodesDeleted
@@ -191,7 +190,7 @@ describe("Node directive with additionalLabels", () => {
     });
 
     test("Update Movie with additional labels", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, update: { id: "2" }) {
                     movies {
