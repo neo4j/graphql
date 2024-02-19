@@ -93,11 +93,22 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     }
                     WITH *
                     ORDER BY this2 DESC
-                    RETURN collect({ node: { title: this1.title, actorsCount: this2, __resolveType: \\"Movie\\" } }) AS var3
+                    CALL {
+                        WITH this1
+                        CALL {
+                            WITH this1
+                            WITH this1 AS this
+                            MATCH (this)<-[:ACTED_IN]-(ac:Person)
+                            RETURN count(ac) as res
+                        }
+                        WITH res AS this3
+                        RETURN this3 AS var4
+                    }
+                    RETURN collect({ node: { title: this1.title, actorsCount: var4, __resolveType: \\"Movie\\" } }) AS var5
                 }
-                RETURN { edges: var3, totalCount: totalCount } AS var4
+                RETURN { edges: var5, totalCount: totalCount } AS var6
             }
-            RETURN this { moviesConnection: var4 } AS this"
+            RETURN this { moviesConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

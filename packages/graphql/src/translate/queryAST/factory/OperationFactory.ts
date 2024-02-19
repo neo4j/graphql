@@ -906,7 +906,7 @@ export class OperationsFactory {
                 rawArguments: cypherArguments,
                 isNested: true, // TODO: Improve it
             });
-            return new CypherScalarOperation(selection);
+            return new CypherScalarOperation(selection, cypherAttributeField, true);
         }
         if (isConcreteEntity(entity)) {
             const selection = new CustomCypherSelection({
@@ -966,7 +966,7 @@ export class OperationsFactory {
                 rawArguments: resolveTree.args,
                 isNested: false,
             });
-            return new CypherScalarOperation(selection);
+            return new CypherScalarOperation(selection, operationField, false);
         }
         if (isConcreteEntity(entity)) {
             const selection = new CustomCypherSelection({
