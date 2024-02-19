@@ -316,14 +316,6 @@ export class FieldFactory {
             cypherAttributeField: attribute,
             cypherArguments,
         });
-        /*  return new CypherAttributeField({
-            attribute,
-            alias: field.alias,
-            projection: cypherProjection,
-            nestedFields: undefined,
-            rawArguments: field.args,
-            extraParams,
-        }); */
     }
 
     private createConnectionOperation(

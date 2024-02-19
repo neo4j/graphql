@@ -91,8 +91,8 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                     WITH this AS this
                     return '' + '' as result
                 }
-                UNWIND result AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH result AS this0
+                RETURN this0 AS var1
             }
             CALL {
                 WITH this
@@ -101,8 +101,8 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                     WITH this AS this
                     return '' + '' as result
                 }
-                UNWIND result AS this1
-                RETURN head(collect(this1)) AS this1
+                WITH result AS this2
+                RETURN this2 AS var3
             }
             CALL {
                 WITH this
@@ -111,8 +111,9 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                     WITH this AS this
                     return ['' + ''] as result
                 }
-                UNWIND result AS this2
-                RETURN collect(this2) AS this2
+                UNWIND result AS var4
+                WITH var4 AS this5
+                RETURN collect(this5) AS var6
             }
             CALL {
                 WITH this
@@ -121,10 +122,11 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                     WITH this AS this
                     return ['' + ''] as result
                 }
-                UNWIND result AS this3
-                RETURN collect(this3) AS this3
+                UNWIND result AS var7
+                WITH var7 AS this8
+                RETURN collect(this8) AS var9
             }
-            RETURN this { url_works: this0, url_fails: this1, url_array_works: this2, url_array_fails: this3 } AS this"
+            RETURN this { url_works: var1, url_fails: var3, url_array_works: var6, url_array_fails: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

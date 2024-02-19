@@ -30,11 +30,13 @@ import { Operation, type OperationTranspileResult } from "./operations";
 export class CypherScalarOperation extends Operation {
     private selection: EntitySelection;
     private cypherAttributeField: AttributeAdapter;
+    private isNested: boolean;
 
-    constructor(selection: EntitySelection, cypherAttributeField: AttributeAdapter) {
+    constructor(selection: EntitySelection, cypherAttributeField: AttributeAdapter, isNested: boolean) {
         super();
         this.selection = selection;
         this.cypherAttributeField = cypherAttributeField;
+        this.isNested = isNested;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -44,7 +46,7 @@ export class CypherScalarOperation extends Operation {
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
         const { selection: matchClause, nestedContext } = this.selection.apply(context);
         let retProj;
-        if (this.cypherAttributeField.typeHelper.isList()) {
+        if (this.isNested && this.cypherAttributeField.typeHelper.isList()) {
             retProj = [Cypher.collect(nestedContext.returnVariable), context.returnVariable];
         } else {
             retProj = [nestedContext.returnVariable, context.returnVariable];

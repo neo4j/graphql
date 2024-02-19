@@ -32,7 +32,7 @@ export class CustomCypherSelection extends EntitySelection {
     private operationField: AttributeAdapter;
     private rawArguments: Record<string, any>;
     private cypherAnnotation: CypherAnnotation;
-    private isNested: boolean; // TODO: temporary check, figure out a better way to handle this
+    private isNested: boolean;
 
     constructor({
         operationField,
