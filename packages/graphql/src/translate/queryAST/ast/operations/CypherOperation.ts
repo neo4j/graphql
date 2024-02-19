@@ -61,8 +61,6 @@ export class CypherOperation extends ReadOperation {
             ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
             : [];
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
-        //const ret = this.getProjectionClause(nestedContext, context.returnVariable, this.attribute.typeHelper.isList());
-        //const ret = this.getProjectionClause(nestedContext, nestedContext.returnVariable, this.attribute.typeHelper.isList());
         const clause = Cypher.concat(matchClause, fieldSubqueries, ...authClauses, ret);
         return {
             clauses: [clause],

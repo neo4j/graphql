@@ -35,7 +35,7 @@ import { AggregationAttributeField } from "../ast/fields/aggregation-fields/Aggr
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
-import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
+import type { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
 import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -263,37 +263,20 @@ export class FieldFactory {
                 return acc;
             }, {});
 
-            if (attribute.typeHelper.isScalar()) {
-                const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
-                if (!concreteEntity) {
-                    throw new Error(`Entity ${typeName} not found`);
-                }
-                const nestedFields = this.createFields(concreteEntity, rawFields, context);
-                return new CypherAttributeField({
-                    attribute,
-                    alias: field.alias,
-                    projection: cypherProjection,
-                    nestedFields,
-                    rawArguments: field.args,
-                    extraParams,
-                });
-            } else if (attribute.typeHelper.isObject()) {
+            if (attribute.typeHelper.isObject()) {
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
                 if (!concreteEntity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
                 const cypherArguments = { ...field.args };
                 field.args = {};
-                return this.createCypherOperationField(concreteEntity, field, context, attribute, cypherArguments);
-                /*   const nestedFields = this.createFields(concreteEntity, rawFields, context);
-                return new CypherAttributeField({
-                    attribute,
-                    alias: field.alias,
-                    projection: cypherProjection,
-                    nestedFields,
-                    rawArguments: field.args,
-                    extraParams,
-                }); */
+                return this.createCypherOperationField({
+                    target: concreteEntity,
+                    field,
+                    context,
+                    cypherAttributeField: attribute,
+                    cypherArguments,
+                });
             }
             if (attribute.typeHelper.isAbstract()) {
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
@@ -325,14 +308,22 @@ export class FieldFactory {
                 });
             }
         }
-        return new CypherAttributeField({
+        const cypherArguments = { ...field.args };
+        field.args = {};
+        return this.createCypherOperationField({
+            field,
+            context,
+            cypherAttributeField: attribute,
+            cypherArguments,
+        });
+        /*  return new CypherAttributeField({
             attribute,
             alias: field.alias,
             projection: cypherProjection,
             nestedFields: undefined,
             rawArguments: field.args,
             extraParams,
-        });
+        }); */
     }
 
     private createConnectionOperation(
@@ -370,13 +361,19 @@ export class FieldFactory {
         });
     }
 
-    private createCypherOperationField(
-        target: EntityAdapter,
-        field: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        cypherAttributeField: AttributeAdapter,
-        cypherArguments?: Record<string, any>
-    ): OperationField {
+    private createCypherOperationField({
+        target,
+        field,
+        context,
+        cypherAttributeField,
+        cypherArguments,
+    }: {
+        target?: ConcreteEntityAdapter;
+        field: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        cypherAttributeField: AttributeAdapter;
+        cypherArguments?: Record<string, any>;
+    }): OperationField {
         const cypherOp = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
             resolveTree: field,
             context,

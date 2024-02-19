@@ -73,8 +73,9 @@ describe("https://github.com/neo4j/graphql/issues/3905", () => {
                 WITH [[{entity_id:1, other_entity_id: 2}],[{entity_id: 2, other_entity_id:3},{entity_id:3, other_entity_id: 4}]] as paths
                 RETURN {paths: paths} as result
             }
-            WITH result AS this
-            RETURN this { .paths } AS this"
+            WITH result AS this0
+            WITH this0 { .paths } AS this0
+            RETURN this0 AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

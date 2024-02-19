@@ -74,9 +74,10 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
                     RETURN episode as n LIMIT $param0[0]
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

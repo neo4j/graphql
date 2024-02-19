@@ -328,15 +328,16 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     LIMIT 1
                 }
                 WITH t AS create_this8
-                RETURN head(collect(create_this8 { .bool, .str, .int, .uuid })) AS create_this8
+                WITH create_this8 { .bool, .str, .int, .uuid } AS create_this8
+                RETURN head(collect(create_this8)) AS create_var9
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)<-[create_this9:TEST_RELATIONSHIP]-(create_this10:Test_Feedback)
-                WITH create_this10 { .uuid, .int, .str, .bool } AS create_this10
-                RETURN head(collect(create_this10)) AS create_var11
+                MATCH (create_this1)<-[create_this10:TEST_RELATIONSHIP]-(create_this11:Test_Feedback)
+                WITH create_this11 { .uuid, .int, .str, .bool } AS create_this11
+                RETURN head(collect(create_this11)) AS create_var12
             }
-            RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedbackCypher: create_this8, feedback: create_var11 }) AS data"
+            RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedbackCypher: create_var9, feedback: create_var12 }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

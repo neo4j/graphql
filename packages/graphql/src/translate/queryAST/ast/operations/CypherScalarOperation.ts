@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { EntitySelection } from "../selection/EntitySelection";
@@ -28,9 +29,12 @@ import { Operation, type OperationTranspileResult } from "./operations";
  **/
 export class CypherScalarOperation extends Operation {
     private selection: EntitySelection;
-    constructor(selection: EntitySelection) {
+    private cypherAttributeField: AttributeAdapter;
+
+    constructor(selection: EntitySelection, cypherAttributeField: AttributeAdapter) {
         super();
         this.selection = selection;
+        this.cypherAttributeField = cypherAttributeField;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -39,7 +43,15 @@ export class CypherScalarOperation extends Operation {
 
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
         const { selection: matchClause, nestedContext } = this.selection.apply(context);
-        const clause = Cypher.concat(matchClause, new Cypher.Return([nestedContext.returnVariable, context.returnVariable]));
+        let retProj;
+        if (this.cypherAttributeField.typeHelper.isList()) {
+            retProj = [Cypher.collect(nestedContext.returnVariable), context.returnVariable];
+        } else {
+            retProj = [nestedContext.returnVariable, context.returnVariable];
+        }
+        const ret = new Cypher.Return(retProj);
+        const clause = Cypher.concat(matchClause, ret);
+
         return {
             clauses: [clause],
             projectionExpr: context.returnVariable,
