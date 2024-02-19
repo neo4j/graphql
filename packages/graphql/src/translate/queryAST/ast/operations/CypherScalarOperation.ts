@@ -25,7 +25,7 @@ import type { EntitySelection } from "../selection/EntitySelection";
 import { Operation, type OperationTranspileResult } from "./operations";
 
 /**
- * This operation is used to return top-level @cypher fields that returns a scalar value.
+ * This operation is used to return top-level and nested @cypher fields that returns a scalar value.
  **/
 export class CypherScalarOperation extends Operation {
     private selection: EntitySelection;
@@ -46,6 +46,7 @@ export class CypherScalarOperation extends Operation {
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
         const { selection: matchClause, nestedContext } = this.selection.apply(context);
         let retProj;
+
         if (this.isNested && this.cypherAttributeField.typeHelper.isList()) {
             retProj = [Cypher.collect(nestedContext.returnVariable), context.returnVariable];
         } else {

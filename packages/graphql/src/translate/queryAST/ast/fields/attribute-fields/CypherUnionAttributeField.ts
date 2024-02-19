@@ -92,4 +92,8 @@ export class CypherUnionAttributeField extends CypherAttributeField {
 
         return [subquery];
     }
+
+    public isCypherField(): boolean {
+        return true;
+    }
 }

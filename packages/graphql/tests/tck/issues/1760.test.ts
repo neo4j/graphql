@@ -142,13 +142,9 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH this AS this
                     MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res
                 }
-                UNWIND res AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH res AS this0
+                RETURN this0 AS var1
             }
-            WITH *
-            ORDER BY this0 ASC
-            SKIP $param4
-            LIMIT $param5
             CALL {
                 WITH this
                 CALL {
@@ -156,9 +152,13 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH this AS this
                     MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res
                 }
-                WITH res AS this1
-                RETURN this1 AS var2
+                UNWIND res AS this2
+                RETURN head(collect(this2)) AS this2
             }
+            WITH *
+            ORDER BY this2 ASC
+            SKIP $param4
+            LIMIT $param5
             CALL {
                 WITH this
                 MATCH (this)-[this3:HAS_NAME]->(this4:NameDetails)
@@ -215,7 +215,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 }
                 RETURN { edges: var17, totalCount: totalCount } AS var18
             }
-            RETURN this { relatedId: this0, nameDetailsConnection: var6, marketsConnection: var14, baseObjectConnection: var18 } AS this"
+            RETURN this { relatedId: this2, nameDetailsConnection: var6, marketsConnection: var14, baseObjectConnection: var18 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -214,11 +214,9 @@ describe("Cypher sort tests", () => {
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
                 }
-                UNWIND result AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH result AS this0
+                RETURN this0 AS var1
             }
-            WITH *
-            ORDER BY this0 DESC
             CALL {
                 WITH this
                 CALL {
@@ -227,10 +225,12 @@ describe("Cypher sort tests", () => {
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
                 }
-                WITH result AS this1
-                RETURN this1 AS var2
+                UNWIND result AS this2
+                RETURN head(collect(this2)) AS this2
             }
-            RETURN this { totalGenres: this0 } AS this"
+            WITH *
+            ORDER BY this2 DESC
+            RETURN this { totalGenres: this2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

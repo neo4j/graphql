@@ -18,12 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { Field } from "../Field";
-import type { QueryASTContext } from "../../QueryASTContext";
 import { CypherAnnotationSubqueryGenerator } from "../../../cypher-generators/CypherAnnotationSubqueryGenerator";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { Field } from "../Field";
+import { AttributeField } from "./AttributeField";
 
 // Should Cypher be an operation?
 // TODO: Top Level Cypher are currently operations, deprecate this in favor of the operation approach.
@@ -82,5 +82,9 @@ export class CypherAttributeField extends AttributeField {
         });
 
         return [subquery];
+    }
+
+    public isCypherField(): boolean {
+        return true;
     }
 }

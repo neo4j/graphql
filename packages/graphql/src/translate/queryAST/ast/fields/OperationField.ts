@@ -20,11 +20,13 @@
 import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import { CypherOperation } from "../operations/CypherOperation";
+import { CypherScalarOperation } from "../operations/CypherScalarOperation";
 import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
 
 export class OperationField extends Field {
-    private operation: Operation;
+    public operation: Operation;
 
     private projectionExpr: Cypher.Expr | undefined;
 
@@ -49,5 +51,9 @@ export class OperationField extends Field {
         const result = this.operation.transpile(subqueryContext);
         this.projectionExpr = result.projectionExpr;
         return result.clauses;
+    }
+
+    public isCypherField(): boolean {
+        return this.operation instanceof CypherOperation || this.operation instanceof CypherScalarOperation;
     }
 }

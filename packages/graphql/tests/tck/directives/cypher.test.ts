@@ -240,12 +240,9 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH res AS this0
+                RETURN this0 AS var1
             }
-            WITH *
-            ORDER BY this0 ASC
-            LIMIT $param0
             CALL {
                 WITH this
                 CALL {
@@ -253,10 +250,13 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                WITH res AS this1
-                RETURN this1 AS var2
+                UNWIND res AS this2
+                RETURN head(collect(this2)) AS this2
             }
-            RETURN this { randomNumber: this0 } AS this"
+            WITH *
+            ORDER BY this2 ASC
+            LIMIT $param0
+            RETURN this { randomNumber: this2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
