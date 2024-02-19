@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4405", () => {
     test("authorization should work when the filter value is an array", async () => {

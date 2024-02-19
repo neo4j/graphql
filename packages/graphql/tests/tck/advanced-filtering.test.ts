@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "./utils/tck-test-utils";
 
 describe("Cypher Advanced Filtering", () => {
     let typeDefs: string;
