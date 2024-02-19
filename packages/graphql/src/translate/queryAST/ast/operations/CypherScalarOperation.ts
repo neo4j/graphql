@@ -29,7 +29,7 @@ import { Operation, type OperationTranspileResult } from "./operations";
  **/
 export class CypherScalarOperation extends Operation {
     private selection: EntitySelection;
-    private cypherAttributeField: AttributeAdapter;
+    public cypherAttributeField: AttributeAdapter;
     private isNested: boolean;
 
     constructor(selection: EntitySelection, cypherAttributeField: AttributeAdapter, isNested: boolean) {
@@ -53,6 +53,9 @@ export class CypherScalarOperation extends Operation {
             retProj = [nestedContext.returnVariable, context.returnVariable];
         }
         const ret = new Cypher.Return(retProj);
+        const scope = context.getTargetScope();
+
+        scope.set(this.cypherAttributeField.name, context.returnVariable);
         const clause = Cypher.concat(matchClause, ret);
 
         return {

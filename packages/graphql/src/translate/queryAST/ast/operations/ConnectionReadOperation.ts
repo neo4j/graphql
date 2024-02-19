@@ -26,6 +26,7 @@ import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls"
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Field } from "../fields/Field";
+import { OperationField } from "../fields/OperationField";
 import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
@@ -33,6 +34,8 @@ import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort, SortField } from "../sort/Sort";
+import type { CypherOperation } from "./CypherOperation";
+import type { CypherScalarOperation } from "./CypherScalarOperation";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
@@ -351,11 +354,20 @@ export class ConnectionReadOperation extends Operation {
 
         const preAndPostFields = this.nodeFields.reduce<Record<"Pre" | "Post", Field[]>>(
             (acc, nodeField) => {
+                if (nodeField instanceof OperationField && nodeField.isCypherField()) {
+                    const cypherFieldName = (nodeField.operation as CypherOperation | CypherScalarOperation)
+                        .cypherAttributeField.name;
+                    if (cypherSortFieldsFlagMap[cypherFieldName]) {
+                        acc.Pre.push(nodeField);
+                        return acc;
+                    }
+                }
                 if (nodeField instanceof CypherAttributeField && cypherSortFieldsFlagMap[nodeField.getFieldName()]) {
                     acc.Pre.push(nodeField);
-                } else {
-                    acc.Post.push(nodeField);
+                    return acc;
                 }
+
+                acc.Post.push(nodeField);
                 return acc;
             },
             { Pre: [], Post: [] }

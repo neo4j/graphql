@@ -904,7 +904,7 @@ export class OperationsFactory {
                 operationField: cypherAttributeField,
 
                 rawArguments: cypherArguments,
-                isNested: true, // TODO: Improve it
+                isNested: true,
             });
             return new CypherScalarOperation(selection, cypherAttributeField, true);
         }
@@ -915,7 +915,11 @@ export class OperationsFactory {
                 rawArguments: cypherArguments,
                 isNested: true,
             });
-            const customCypher = new CypherOperation({ attribute: cypherAttributeField, target: entity, selection });
+            const customCypher = new CypherOperation({
+                cypherAttributeField: cypherAttributeField,
+                target: entity,
+                selection,
+            });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
         const selection = new CustomCypherSelection({
@@ -975,7 +979,11 @@ export class OperationsFactory {
                 rawArguments: resolveTree.args,
                 isNested: false,
             });
-            const customCypher = new CypherOperation({ attribute: operationField, target: entity, selection });
+            const customCypher = new CypherOperation({
+                cypherAttributeField: operationField,
+                target: entity,
+                selection,
+            });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
         const selection = new CustomCypherSelection({

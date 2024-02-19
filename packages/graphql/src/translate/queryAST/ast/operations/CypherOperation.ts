@@ -27,23 +27,23 @@ import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
 export class CypherOperation extends ReadOperation {
-    private attribute: AttributeAdapter;
+    public cypherAttributeField: AttributeAdapter;
 
     constructor({
-        attribute,
+        cypherAttributeField,
         target,
         relationship,
         directed,
         selection,
     }: {
-        attribute: AttributeAdapter;
+        cypherAttributeField: AttributeAdapter;
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         directed?: boolean;
         selection: EntitySelection;
     }) {
         super({ target, relationship, directed, selection });
-        this.attribute = attribute;
+        this.cypherAttributeField = cypherAttributeField;
     }
 
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
@@ -60,6 +60,9 @@ export class CypherOperation extends ReadOperation {
         const authClauses = authPredicates.length
             ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
             : [];
+        const scope = context.getTargetScope();
+
+        scope.set(this.cypherAttributeField.name, context.returnVariable);
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
         const clause = Cypher.concat(matchClause, fieldSubqueries, ...authClauses, ret);
         return {
@@ -77,7 +80,7 @@ export class CypherOperation extends ReadOperation {
         } else {
             aggregationExpr = context.target;
         }
-        if (context.shouldCollect && !this.attribute.typeHelper.isList()) {
+        if (context.shouldCollect && !this.cypherAttributeField.typeHelper.isList()) {
             aggregationExpr = Cypher.head(aggregationExpr);
         }
         const withClause = new Cypher.With([projection, context.target]);

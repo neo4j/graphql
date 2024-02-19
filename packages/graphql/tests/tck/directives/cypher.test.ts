@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
     let typeDefs: DocumentNode;
@@ -243,20 +243,10 @@ describe("Cypher directive", () => {
                 WITH res AS this0
                 RETURN this0 AS var1
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    WITH this AS this
-                    RETURN rand() as res
-                }
-                UNWIND res AS this2
-                RETURN head(collect(this2)) AS this2
-            }
             WITH *
-            ORDER BY this2 ASC
+            ORDER BY var1 ASC
             LIMIT $param0
-            RETURN this { randomNumber: this2 } AS this"
+            RETURN this { randomNumber: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

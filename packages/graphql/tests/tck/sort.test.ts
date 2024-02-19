@@ -217,20 +217,9 @@ describe("Cypher sort tests", () => {
                 WITH result AS this0
                 RETURN this0 AS var1
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    WITH this AS this
-                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                    RETURN count(DISTINCT genre) as result
-                }
-                UNWIND result AS this2
-                RETURN head(collect(this2)) AS this2
-            }
             WITH *
-            ORDER BY this2 DESC
-            RETURN this { totalGenres: this2 } AS this"
+            ORDER BY var1 DESC
+            RETURN this { totalGenres: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -386,22 +375,11 @@ describe("Cypher sort tests", () => {
                     WITH result AS this2
                     RETURN this2 AS var3
                 }
-                CALL {
-                    WITH this1
-                    CALL {
-                        WITH this1
-                        WITH this1 AS this
-                        MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-                        RETURN count(DISTINCT movie) as result
-                    }
-                    UNWIND result AS this4
-                    RETURN head(collect(this4)) AS this4
-                }
-                WITH this1 { .name, totalMovies: this4 } AS this1
-                ORDER BY this4 ASC
-                RETURN collect(this1) AS var5
+                WITH this1 { .name, totalMovies: var3 } AS this1
+                ORDER BY var3 ASC
+                RETURN collect(this1) AS var4
             }
-            RETURN this { genres: var5 } AS this"
+            RETURN this { genres: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
