@@ -263,21 +263,7 @@ export class FieldFactory {
                 return acc;
             }, {});
 
-            if (attribute.typeHelper.isScalar()) {
-                const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
-                if (!concreteEntity) {
-                    throw new Error(`Entity ${typeName} not found`);
-                }
-                const nestedFields = this.createFields(concreteEntity, rawFields, context);
-                return new CypherAttributeField({
-                    attribute,
-                    alias: field.alias,
-                    projection: cypherProjection,
-                    nestedFields,
-                    rawArguments: field.args,
-                    extraParams,
-                });
-            } else if (attribute.typeHelper.isObject()) {
+            if (attribute.typeHelper.isObject()) {
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
                 if (!concreteEntity) {
                     throw new Error(`Entity ${typeName} not found`);
@@ -285,17 +271,7 @@ export class FieldFactory {
                 const cypherArguments = { ...field.args };
                 field.args = {};
                 return this.createCypherOperationField(concreteEntity, field, context, attribute, cypherArguments);
-                /*   const nestedFields = this.createFields(concreteEntity, rawFields, context);
-                return new CypherAttributeField({
-                    attribute,
-                    alias: field.alias,
-                    projection: cypherProjection,
-                    nestedFields,
-                    rawArguments: field.args,
-                    extraParams,
-                }); */
-            }
-            if (attribute.typeHelper.isAbstract()) {
+            } else if (attribute.typeHelper.isAbstract()) {
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities
                 if (!targetEntity || !targetEntity.isCompositeEntity()) {

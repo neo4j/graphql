@@ -121,24 +121,25 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 WITH records AS this0
                 CALL {
                     WITH this0
+                    MATCH (this0)-[this1:BUSSED_ON]->(this2:TimeGraph)
+                    WITH this2 { .date } AS this2
+                    RETURN head(collect(this2)) AS var3
+                }
+                CALL {
+                    WITH this0
                     CALL {
                         WITH this0
                         WITH this0 AS this
                         MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                         RETURN COUNT(member) > 0 AS markedAttendance
                     }
-                    UNWIND markedAttendance AS this1
-                    RETURN head(collect(this1)) AS this1
+                    UNWIND markedAttendance AS this4
+                    RETURN head(collect(this4)) AS this4
                 }
-                CALL {
-                    WITH this0
-                    MATCH (this0)-[this2:BUSSED_ON]->(this3:TimeGraph)
-                    WITH this3 { .date } AS this3
-                    RETURN head(collect(this3)) AS var4
-                }
-                RETURN collect(this0 { .id, .attendance, markedAttendance: this1, serviceDate: var4 }) AS this0
+                WITH this0 { .id, .attendance, markedAttendance: this4, serviceDate: var3 } AS this0
+                RETURN collect(this0) AS var5
             }
-            RETURN this { .id, .name, bussing: this0 } AS this"
+            RETURN this { .id, .name, bussing: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

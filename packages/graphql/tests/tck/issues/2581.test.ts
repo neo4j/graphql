@@ -110,9 +110,10 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     UNWIND result AS this1
                     RETURN head(collect(this1)) AS this1
                 }
-                RETURN head(collect(this0 { .name, .year, soldCopies: this1 })) AS this0
+                WITH this0 { .name, .year, soldCopies: this1 } AS this0
+                RETURN head(collect(this0)) AS var2
             }
-            RETURN this { .name, mostRecentBook: this0 } AS this"
+            RETURN this { .name, mostRecentBook: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -153,9 +154,10 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     UNWIND result AS this1
                     RETURN head(collect(this1)) AS this1
                 }
-                RETURN head(collect(this0 { .name, .year, soldCopiesWithoutColumnName: this1 })) AS this0
+                WITH this0 { .name, .year, soldCopiesWithoutColumnName: this1 } AS this0
+                RETURN head(collect(this0)) AS var2
             }
-            RETURN this { .name, mostRecentBook: this0 } AS this"
+            RETURN this { .name, mostRecentBook: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

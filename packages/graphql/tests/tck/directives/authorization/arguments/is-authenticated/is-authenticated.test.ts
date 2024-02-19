@@ -140,9 +140,10 @@ describe("Cypher Auth isAuthenticated", () => {
                     MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
                 }
                 WITH h AS this0
-                RETURN collect(this0 { .url }) AS this0
+                WITH this0 { .url } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { history: this0 } AS this"
+            RETURN this { history: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
