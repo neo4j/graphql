@@ -10,26 +10,35 @@ on:
         type: boolean
 
 jobs:
-  integration-tests:
+  integration-tests:- Remove codecov from the repo
+- Upgrade husky (merge it)
+- 
     strategy:
       matrix:
         packages:
           [
-            { package: "ogm", shard: 1/1, simple: 1 },
-            { package: "introspector", shard: 1/1, simple: 2 },
-            { package: "graphql", shard: 1/4, simple: 3 }, 
-            { package: "graphql", shard: 2/4, simple: 4 },
-            { package: "graphql", shard: 3/4, simple: 5 },
-            { package: "graphql", shard: 4/4, simple: 6 },
+            { package: "ogm", shard: 1/1, coverage_name: 1 },
+            { package: "introspector", shard: 1/1, coverage_name: 2 },
+            { package: "graphql", shard: 1/4, coverage_name: 3 }, 
+            { package: "graphql", shard: 2/4, coverage_name: 4 },
+            { package: "graphql", shard: 3/4, coverage_name: 5 },
+            { package: "graphql", shard: 4/4, coverage_name: 6 },
           ]
         neo4j-version:
           #   - 4.4-community
           - 4.4-enterprise
           #   - 5-community
           - 5-enterprise
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
+        graphql-version: [
+          {
+            version: "^15.0.0",
+            coverage_path: 15
+          },
+          {
+            package: "^16.0.0",
+            coverage_path: 16
+          }
+        ]
 
     runs-on: ubuntu-latest
 
@@ -67,8 +76,8 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
-          name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.packages.simple }}
-          path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}/
+          name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.packages.coverage_name }}
+          path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_name }}/
 
   merge-integration-tests-results:
     runs-on: ubuntu-latest
