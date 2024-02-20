@@ -64,7 +64,7 @@ jobs:
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
-          mv coverage coverage-${{ matrix.neo4j-version }}
+          mv coverage coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}
         working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
