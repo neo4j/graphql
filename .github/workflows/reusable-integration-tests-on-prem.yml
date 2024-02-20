@@ -35,7 +35,7 @@ jobs:
             coverage_path: 15
           },
           {
-            package: "^16.0.0",
+            version: "^16.0.0",
             coverage_path: 16
           }
         ]
