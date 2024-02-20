@@ -74,7 +74,7 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
-          name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}
+          name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}/
 
   merge-integration-tests-results:
