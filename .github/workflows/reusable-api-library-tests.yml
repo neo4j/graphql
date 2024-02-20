@@ -63,7 +63,7 @@ jobs:
           NEO_USER: neo4j
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
+        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -95,7 +95,7 @@ jobs:
         run: yarn --cwd packages/graphql run test e2e --coverage
       - if: ${{ env.CODECOV_TOKEN != '' }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
+        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -117,7 +117,7 @@ jobs:
         run: yarn --cwd packages/graphql run test:schema --coverage
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
+        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
