@@ -10,9 +10,7 @@ on:
         type: boolean
 
 jobs:
-  integration-tests:- Remove codecov from the repo
-- Upgrade husky (merge it)
-- 
+  integration-tests:
     strategy:
       matrix:
         packages:
