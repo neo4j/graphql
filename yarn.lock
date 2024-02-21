@@ -3673,7 +3673,6 @@ __metadata:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.11.19"
     camelcase: "npm:6.3.0"
-    graphql-tag: "npm:2.12.6"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
     libnpmsearch: "npm:7.0.1"

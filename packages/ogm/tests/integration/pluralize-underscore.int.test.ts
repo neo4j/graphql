@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { OGM } from "../../src";
@@ -27,7 +26,7 @@ import neo4j from "./neo4j";
 describe("pluralize with underscore", () => {
     const taskType = new UniqueType("super_task");
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type ${taskType.name} {
             string: String
         }
