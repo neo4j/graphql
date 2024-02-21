@@ -1759,9 +1759,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-javascript@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@codemirror/lang-javascript@npm:6.2.1"
+"@codemirror/lang-javascript@npm:6.2.2":
+  version: 6.2.2
+  resolution: "@codemirror/lang-javascript@npm:6.2.2"
   dependencies:
     "@codemirror/autocomplete": "npm:^6.0.0"
     "@codemirror/language": "npm:^6.6.0"
@@ -1770,7 +1770,7 @@ __metadata:
     "@codemirror/view": "npm:^6.17.0"
     "@lezer/common": "npm:^1.0.0"
     "@lezer/javascript": "npm:^1.0.0"
-  checksum: 10c0/f95afe0930d97c28b897426007dd75b38ddf086ac83776ed7fdb41cad1647876dcc3da6ed1e240de18e8a91196c2686b85d2efdf6913c211a3216aaf53842ffd
+  checksum: 10c0/348969167fa5f18e8ec7e3614d408a95a54514f5625afcc680377d58a53d0f4ea412dcaeee65f0965e7d96f358d513b5c2744641b21ee5d0d976905b33715e48
   languageName: node
   linkType: hard
 
@@ -3696,7 +3696,7 @@ __metadata:
   dependencies:
     "@codemirror/autocomplete": "npm:6.12.0"
     "@codemirror/commands": "npm:6.3.3"
-    "@codemirror/lang-javascript": "npm:6.2.1"
+    "@codemirror/lang-javascript": "npm:6.2.2"
     "@codemirror/language": "npm:6.10.1"
     "@dnd-kit/core": "npm:6.1.0"
     "@dnd-kit/modifiers": "npm:7.0.0"
