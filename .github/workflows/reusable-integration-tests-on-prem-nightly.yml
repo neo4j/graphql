@@ -105,7 +105,7 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+        run: yarn up --exact graphql@${{ matrix.graphql-version.version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
