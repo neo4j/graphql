@@ -8,6 +8,7 @@ on:
         required: false
         default: false
         type: boolean
+    secrets:
       AWS_ACCESS_KEY_ID:
         required: true
         description: "AWS Access Key ID"
@@ -104,7 +105,7 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+        run: yarn up --exact graphql@${{ matrix.graphql-version.version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
