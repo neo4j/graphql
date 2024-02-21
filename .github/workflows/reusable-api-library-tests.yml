@@ -3,18 +3,11 @@ name: "@neo4j/graphql specific tests"
 on:
   workflow_call:
     inputs:
-      disable-code-cov-upload:
-        description: "Whether or not to upload the test coverage to CodeCov"
+      disable-coverage-archival:
+        description: "Whether or not to archive the test coverage"
         required: false
         default: false
         type: boolean
-    secrets:
-      CODECOV_TOKEN:
-        description: "API token for Codecov, if it is available in the current context"
-        required: false
-
-env:
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   tck-tests:
@@ -61,14 +54,6 @@ jobs:
         env:
           VERIFY_TCK: true
           NEO_USER: neo4j
-      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
-        name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,tck
-          fail_ci_if_error: true
 
   e2e-tests:
     runs-on: ubuntu-latest
@@ -93,14 +78,6 @@ jobs:
         run: yarn
       - name: Run E2E tests
         run: yarn --cwd packages/graphql run test e2e --coverage
-      - if: ${{ env.CODECOV_TOKEN != '' }}
-        name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,e2e
-          fail_ci_if_error: true
 
   schema-tests:
     runs-on: ubuntu-latest
@@ -115,15 +92,7 @@ jobs:
         run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
-      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
-        name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,schema
-          fail_ci_if_error: true
-      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
+      - if: ${{ !inputs.disable-coverage-archival }}
         name: Archive coverage report
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:

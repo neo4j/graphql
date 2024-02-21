@@ -3,18 +3,11 @@ name: "Unit tests"
 on:
   workflow_call:
     inputs:
-      disable-code-cov-upload:
-        description: "Whether or not to upload the test coverage to CodeCov"
+      disable-coverage-archival:
+        description: "Whether or not to archive the test coverage"
         required: false
         default: false
         type: boolean
-    secrets:
-      CODECOV_TOKEN:
-        required: false
-        description: "API token for Codecov, if it is available in the current context"
-
-env:
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   unit-tests:
@@ -39,15 +32,7 @@ jobs:
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
-      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.package == 'graphql' }}
-        name: Upload coverage to Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.package }}/coverage/
-          flags: ${{ matrix.package }},unit
-          fail_ci_if_error: true
-      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.package == 'graphql' }}
+      - if: ${{ !inputs.disable-coverage-archival && matrix.package == 'graphql' }}
         name: Archive coverage report
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
