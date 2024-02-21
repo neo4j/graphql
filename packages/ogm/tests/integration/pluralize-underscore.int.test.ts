@@ -61,7 +61,7 @@ describe("pluralize with underscore", () => {
             charset: "alphabetic",
         });
 
-        const result = await Task?.create({ input: [{ string: testString }] });
+        const result = await Task.create({ input: [{ string: testString }] });
         expect(result[taskType.plural]).toEqual([{ string: testString }]);
 
         const reFind = await session.run(
