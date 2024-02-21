@@ -8,6 +8,7 @@ on:
         required: false
         default: false
         type: boolean
+    secrets:
       AWS_ACCESS_KEY_ID:
         required: true
         description: "AWS Access Key ID"
