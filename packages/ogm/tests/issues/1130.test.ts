@@ -41,10 +41,10 @@ describe("issues/1130", () => {
             driver: {},
         });
 
-        const generated = (await generate({
+        const generated = await generate({
             ogm,
             noWrite: true,
-        })) as string;
+        });
 
         expect(generated).toContain(`export interface SICIndustryAggregateSelectionInput`);
     });

@@ -73,7 +73,7 @@ describe("pluralize with underscore", () => {
             { str: testString }
         );
 
-        expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ string: testString });
+        expect(reFind.records[0].toObject().m.properties).toMatchObject({ string: testString });
     });
 
     test("should find super_task", async () => {

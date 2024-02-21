@@ -20,7 +20,6 @@
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import type { Model } from "../../src";
 import { OGM } from "../../src";
 import { cleanNodes } from "../utils/clean-nodes";
 import { UniqueType } from "../utils/utils";
@@ -266,7 +265,7 @@ describe("OGM", () => {
                     { id }
                 );
 
-                expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
+                expect(reFind.records[0].toObject().m.properties).toMatchObject({ id });
             } finally {
                 await session.close();
             }
@@ -444,7 +443,7 @@ describe("OGM", () => {
             `;
 
             const neo4jResult = await session.run(cypher, { id: product.id });
-            const neo4jProduct = (neo4jResult.records[0].toObject() as any).product;
+            const neo4jProduct = neo4jResult.records[0].toObject().product;
 
             expect(neo4jProduct.id).toMatch(product.id);
             expect(neo4jProduct.name).toMatch(product.name);
@@ -851,7 +850,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = ogm.model("User");
 
             await ogm.init();
 
@@ -985,7 +984,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const Book = ogm.model("Book") as unknown as Model;
+            const Book = ogm.model("Book");
 
             await ogm.init();
 
@@ -1032,7 +1031,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = ogm.model("User");
 
             await ogm.init();
 

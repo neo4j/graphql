@@ -78,8 +78,8 @@ describe("Neo4j native types used with OGM", () => {
 
         expect(result[TestType.plural]).toEqual([
             {
-                date: new Date((date as unknown as Neo4jDate).toString()).toISOString().split("T")[0],
-                dateTime: new Date((dateTime as unknown as DateTime).toString()).toISOString(),
+                date: new Date(date.toString()).toISOString().split("T")[0],
+                dateTime: new Date(dateTime.toString()).toISOString(),
                 duration: duration.toString(),
                 localDateTime: localDateTime.toString(),
                 localTime: localTime.toString(),
