@@ -227,10 +227,10 @@ describe("issues/635", () => {
             driver: {},
         });
 
-        const generated = (await generate({
+        const generated = await generate({
             ogm,
             noWrite: true,
-        })) as string;
+        });
 
         expect(generated).not.toContain(`export interface CompanyClockSettingsAggregateInput`);
         expect(generated).toContain(`export interface CompanyClockSettingsAggregateSelectionInput`);

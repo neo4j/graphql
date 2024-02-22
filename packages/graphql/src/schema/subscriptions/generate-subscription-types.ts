@@ -35,6 +35,7 @@ import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subsc
 import { attributeAdapterToComposeFields } from "../to-compose";
 import { getConnectedTypes, hasProperties } from "./generate-subscription-connection-types";
 import { generateSubscriptionConnectionWhereType } from "./generate-subscription-where-type";
+import type { SubscriptionEvents } from "../../classes/Node";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -60,19 +61,18 @@ export function generateSubscriptionTypes({
         if (!userDefinedFieldDirectives) {
             throw new Error("fix user directives for object types in subscriptions.");
         }
-        const eventPayloadType = schemaComposer.createObjectTC({
+        acc[entityAdapter.name] = schemaComposer.createObjectTC({
             name: entityAdapter.operations.subscriptionEventPayloadTypeName,
             fields: attributeAdapterToComposeFields(
                 entityAdapter.subscriptionEventPayloadFields,
                 userDefinedFieldDirectives
             ),
         });
-        acc[entityAdapter.name] = eventPayloadType;
         return acc;
     }, {});
 
-    allNodes.forEach((entityAdapter) =>
-        withWhereInputType({
+    function generateSubscriptionWhere(entityAdapter: ConcreteEntityAdapter) {
+        return withWhereInputType({
             entityAdapter,
             composer: schemaComposer,
             typeName: entityAdapter.operations.subscriptionWhereInputTypeName,
@@ -80,92 +80,37 @@ export function generateSubscriptionTypes({
             userDefinedFieldDirectives: userDefinedFieldDirectivesForNode[entityAdapter.name],
             returnUndefinedIfEmpty: true,
             alwaysAllowNesting: true,
-        })
-    );
+        });
+    }
+
+    allNodes.forEach((entityAdapter) => generateSubscriptionWhere(entityAdapter));
 
     const nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>> = new Map();
     const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
     nodesWithSubscriptionOperation.forEach((entityAdapter) => {
         const eventPayload = nodeNameToEventPayloadTypes[entityAdapter.name] as ObjectTypeComposer;
-        const where = withWhereInputType({
-            entityAdapter,
-            composer: schemaComposer,
-            typeName: entityAdapter.operations.subscriptionWhereInputTypeName,
-            features,
-            userDefinedFieldDirectives: userDefinedFieldDirectivesForNode[entityAdapter.name],
-            returnUndefinedIfEmpty: true,
-            alwaysAllowNesting: true,
-        });
+        const where = generateSubscriptionWhere(entityAdapter);
 
-        const nodeCreatedEvent = schemaComposer.createObjectTC({
-            name: entityAdapter.operations.subscriptionEventTypeNames.create,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("CREATE")?.value,
+        const createField = <T extends SubscriptionsEvent>(type: keyof SubscriptionEvents) =>
+            schemaComposer.createObjectTC({
+                name: entityAdapter.operations.subscriptionEventTypeNames[type],
+                fields: {
+                    event: {
+                        type: eventTypeEnum.NonNull,
+                        resolve: () => EventType.getValue(type.toUpperCase())?.value,
+                    },
+                    timestamp: {
+                        type: new GraphQLNonNull(GraphQLFloat),
+                        resolve: (source: T) => source.timestamp,
+                    },
                 },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
+            });
 
-        const nodeUpdatedEvent = schemaComposer.createObjectTC({
-            name: entityAdapter.operations.subscriptionEventTypeNames.update,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("UPDATE")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const nodeDeletedEvent = schemaComposer.createObjectTC({
-            name: entityAdapter.operations.subscriptionEventTypeNames.delete,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("DELETE")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const relationshipCreatedEvent = schemaComposer.createObjectTC({
-            name: entityAdapter.operations.subscriptionEventTypeNames.create_relationship,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("CREATE_RELATIONSHIP")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const relationshipDeletedEvent = schemaComposer.createObjectTC({
-            name: entityAdapter.operations.subscriptionEventTypeNames.delete_relationship,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("DELETE_RELATIONSHIP")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
+        const nodeCreatedEvent = createField<NodeSubscriptionsEvent>("create");
+        const nodeUpdatedEvent = createField<NodeSubscriptionsEvent>("update");
+        const nodeDeletedEvent = createField<NodeSubscriptionsEvent>("delete");
+        const relationshipCreatedEvent = createField<RelationshipSubscriptionsEvent>("create_relationship");
+        const relationshipDeletedEvent = createField<RelationshipSubscriptionsEvent>("delete_relationship");
 
         const connectedTypes = getConnectedTypes({
             entityAdapter,
@@ -183,39 +128,39 @@ export function generateSubscriptionTypes({
             nodeCreatedEvent.addFields({
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.create]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.new,
+                    resolve: (source) => source.properties.new,
                 },
             });
 
             nodeUpdatedEvent.addFields({
                 previousState: {
                     type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.old,
+                    resolve: (source) => source.properties.old,
                 },
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.update]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.new,
+                    resolve: (source) => source.properties.new,
                 },
             });
 
             nodeDeletedEvent.addFields({
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.delete]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.old,
+                    resolve: (source) => source.properties.old,
                 },
             });
 
             relationshipCreatedEvent.addFields({
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.create_relationship]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                    resolve: (source) => {
                         return getRelationshipEventDataForNode(source, entityAdapter, nodeToRelationFieldMap)
                             .properties;
                     },
                 },
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                    resolve: (source) => {
                         return getRelationshipField({
                             entityAdapter,
                             relationshipName: source.relationshipName,
@@ -228,14 +173,14 @@ export function generateSubscriptionTypes({
             relationshipDeletedEvent.addFields({
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.delete_relationship]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                    resolve: (source) => {
                         return getRelationshipEventDataForNode(source, entityAdapter, nodeToRelationFieldMap)
                             .properties;
                     },
                 },
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                    resolve: (source) => {
                         return getRelationshipField({
                             entityAdapter,
                             relationshipName: source.relationshipName,

@@ -1,5 +1,25 @@
 # @neo4j/graphql
 
+## 4.4.6
+
+### Patch Changes
+
+-   [#4508](https://github.com/neo4j/graphql/pull/4508) [`fab9ea9`](https://github.com/neo4j/graphql/commit/fab9ea9a092df885bb1a600f1d549d48d4159899) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix inconsistency described by the issue https://github.com/neo4j/graphql/issues/4536
+
+-   [#4509](https://github.com/neo4j/graphql/pull/4509) [`fb62636`](https://github.com/neo4j/graphql/commit/fb626361de99c8f8c882018e82dfe12fe891c9c8) Thanks [@Andy2003](https://github.com/Andy2003)! - Fixes the missing takeover of custom directives for interfaces
+
+-   [#4513](https://github.com/neo4j/graphql/pull/4513) [`38b1eae`](https://github.com/neo4j/graphql/commit/38b1eaef357a1ba4dfa31f48832d10af0628b378) Thanks [@Andy2003](https://github.com/Andy2003)! - [Bugfix] Fixed a bug where the sort field for a connection of an interface is not created even though it has sortable fields
+
+-   [#4515](https://github.com/neo4j/graphql/pull/4515) [`916c37e`](https://github.com/neo4j/graphql/commit/916c37eac96fda54e7d0c33384c0039fc1f989cd) Thanks [@Andy2003](https://github.com/Andy2003)! - fix: #4514 augment interfaces the same way no matter if they are used as the target of a relationship or not
+
+-   [#4621](https://github.com/neo4j/graphql/pull/4621) [`b8a640e`](https://github.com/neo4j/graphql/commit/b8a640e63dd8f1b5b34385a9512aa44fe76eeb95) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed a bug, where it was not possible to resolve interface fields for top-level cypher operations.
+
+-   [#4744](https://github.com/neo4j/graphql/pull/4744) [`46c38d0`](https://github.com/neo4j/graphql/commit/46c38d0e6c907cca22ff2d872dda75f48804c6a4) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Export the Neo4jGraphQLCallback type
+
+-   [#4512](https://github.com/neo4j/graphql/pull/4512) [`92f653f`](https://github.com/neo4j/graphql/commit/92f653f8ce6fb7fcadb5c10ed1f51049d29712bc) Thanks [@Andy2003](https://github.com/Andy2003)! - Harmonize the generation of SubscriptionWhere- & Where- input-types, so they reuse the same logic
+
+-   [#4573](https://github.com/neo4j/graphql/pull/4573) [`7e129da`](https://github.com/neo4j/graphql/commit/7e129da51f6d69a054252d6376697d0db6a3163b) Thanks [@Andy2003](https://github.com/Andy2003)! - fix:#2697 fix aggregation filter for duration
+
 ## 4.4.5
 
 ### Patch Changes

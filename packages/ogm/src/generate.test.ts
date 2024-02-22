@@ -1708,7 +1708,7 @@ describe("generate", () => {
     });
 
     test("https://github.com/neo4j/graphql/issues/3539", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type FAQ {
                 id: ID! @id @unique
                 activated: Boolean!
