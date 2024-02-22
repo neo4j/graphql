@@ -21,16 +21,16 @@ import type { GraphQLError, GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 
 describe("Top-level filter interface query fields with authorization", () => {
     const secret = "the-secret";
 
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
     let typeDefs: string;
 
@@ -48,7 +48,7 @@ describe("Top-level filter interface query fields with authorization", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = /* GraphQL */ `
@@ -130,7 +130,7 @@ describe("Top-level filter interface query fields with authorization", () => {
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [Movie, Series]);
+        await cleanNodesUsingSession(session, [Movie, Series]);
         await session.close();
         await driver.close();
     });

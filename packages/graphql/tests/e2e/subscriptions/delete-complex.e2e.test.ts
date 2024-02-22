@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
@@ -119,7 +119,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
         await wsClient2.close();
 
         const session = driver.session();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
         await driver.close();

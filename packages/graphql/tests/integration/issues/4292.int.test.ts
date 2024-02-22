@@ -20,13 +20,13 @@
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
     const User = new UniqueType("User");
     const Group = new UniqueType("Group");
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     const Contributor = new UniqueType("Contributor");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
@@ -197,7 +197,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [User.name, Group.name, Person.name, Admin.name, Contributor.name]);
+            await cleanNodesUsingSession(session, [User.name, Group.name, Person.name, Admin.name, Contributor.name]);
         } finally {
             await session.close();
         }

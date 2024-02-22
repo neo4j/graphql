@@ -23,13 +23,13 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src";
-import { cleanNodes } from "../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../utils/clean-nodes";
 import { UniqueType } from "../utils/graphql-types";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 
 describe("delete union relationships", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
@@ -56,7 +56,7 @@ describe("delete union relationships", () => {
     let nestedMovieActorScreenTime: number;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
             type ${episodeType.name} {
@@ -169,7 +169,7 @@ describe("delete union relationships", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [episodeType, movieType, seriesType, actorType]);
+        await cleanNodesUsingSession(session, [episodeType, movieType, seriesType, actorType]);
         await session.close();
     });
 

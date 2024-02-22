@@ -21,14 +21,14 @@ import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { getErrorAsync } from "../../utils/get-error";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Throw error if missing @relationshipProperties", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

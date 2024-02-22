@@ -23,19 +23,19 @@ import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import type { EventMeta } from "../../../src/types";
 
 describe("Subscriptions Single Instance Plugin", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let plugin: Neo4jGraphQLSubscriptionsDefaultEngine;
 
     const typeMovie = new UniqueType("Movie");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         plugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = gql`

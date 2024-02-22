@@ -20,16 +20,16 @@
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import { cleanNodes } from "../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 import { gql } from "graphql-tag";
 
 describe("Mass Delete", () => {
     let driver: Driver;
     let session: Session;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
 
     let typeDefs: DocumentNode;
@@ -37,7 +37,7 @@ describe("Mass Delete", () => {
     let movieType: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -78,7 +78,7 @@ describe("Mass Delete", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [movieType, personType]);
+        await cleanNodesUsingSession(session, [movieType, personType]);
         await session.close();
     });
 

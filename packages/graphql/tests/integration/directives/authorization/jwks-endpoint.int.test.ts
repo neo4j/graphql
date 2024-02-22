@@ -27,17 +27,17 @@ import Koa from "koa";
 import Router from "koa-router";
 import jwt from "koa-jwt";
 import jwksRsa from "jwks-rsa";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("auth/jwks-endpoint", () => {
     let jwksMock: JWKSMock;
     let server: any;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

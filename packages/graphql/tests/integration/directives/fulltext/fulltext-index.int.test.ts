@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { gql } from "graphql-tag";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { delay } from "../../../../src/utils/utils";
@@ -28,12 +28,12 @@ import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupporte
 
 describe("@fulltext directive - indexes constraints", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         databaseName = generate({ readable: true, charset: "alphabetic" });

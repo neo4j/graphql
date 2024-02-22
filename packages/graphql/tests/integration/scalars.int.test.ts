@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { graphql, GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
 
@@ -53,10 +53,10 @@ const GraphQLUpperCaseString = new GraphQLScalarType({
 
 describe("scalars", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

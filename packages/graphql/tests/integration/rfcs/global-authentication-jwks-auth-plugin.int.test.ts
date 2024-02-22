@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import type { JWKSMock } from "mock-jwks";
 import createJWKSMock from "mock-jwks";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
@@ -29,7 +29,7 @@ import { UniqueType } from "../../utils/graphql-types";
 describe("Global authentication - Authorization JWKS plugin", () => {
     let jwksMock: JWKSMock;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const testMovie = new UniqueType("Movie");
 
@@ -49,7 +49,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
     `;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

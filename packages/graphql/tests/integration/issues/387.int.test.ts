@@ -22,14 +22,14 @@ import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let name: string;
     let url: string;
     let typeDefs: DocumentNode;
@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
     const Place = new UniqueType("Place");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         name = generate({
@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Place]);
+            await cleanNodesUsingSession(session, [Place]);
         } finally {
             await session.close();
         }

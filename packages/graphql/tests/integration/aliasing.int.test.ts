@@ -21,14 +21,14 @@ import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("Aliasing", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let schema: GraphQLSchema;
 
     const typeDefs = `
@@ -44,7 +44,7 @@ describe("Aliasing", () => {
     const boxOffice = 465.3;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs });
