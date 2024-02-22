@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
+import type { Neo4jGraphQLContext } from "@neo4j/graphql/src";
+import type { Driver, Session } from "neo4j-driver";
 import { OGM } from "../../src";
 import neo4j from "../integration/neo4j";
-import type { Driver, Session } from "neo4j-driver";
-import type { Neo4jGraphQLContext } from "@neo4j/graphql/src";
 import { UniqueType } from "../utils/utils";
 
 describe("https://github.com/neo4j/graphql/issues/3773", () => {
@@ -50,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/3773", () => {
     });
 
     test("should re-create issue and return types without throwing", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${EventType} {
                 name: String!
                 userAttending: Boolean!

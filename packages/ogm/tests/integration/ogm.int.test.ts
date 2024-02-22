@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import type { Model } from "../../src";
 import { OGM } from "../../src";
 import { cleanNodes } from "../utils/clean-nodes";
 import { UniqueType } from "../utils/utils";
@@ -63,7 +61,7 @@ describe("OGM", () => {
     test("should specify the database via OGM construction", async () => {
         const session = driver.session();
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${typeMovie} {
                 id: ID!
             }
@@ -81,7 +79,7 @@ describe("OGM", () => {
     test("should filter the document and remove directives such as authentication", async () => {
         const session = driver.session();
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${typeMovie} @authentication {
                 id: ID
             }
@@ -117,7 +115,7 @@ describe("OGM", () => {
         test("find a single node", async () => {
             const session = driver.session();
 
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     id: ID
                 }
@@ -151,7 +149,7 @@ describe("OGM", () => {
         test("should find and limit", async () => {
             const session = driver.session();
 
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     id: ID
                 }
@@ -187,7 +185,7 @@ describe("OGM", () => {
         test("should find and populate relationship using custom selectionSet", async () => {
             const session = driver.session();
 
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${typeGenre} {
                     id: ID
                 }
@@ -237,7 +235,7 @@ describe("OGM", () => {
         test("should create a single node", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     id: ID
                 }
@@ -266,7 +264,7 @@ describe("OGM", () => {
                     { id }
                 );
 
-                expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
+                expect(reFind.records[0].toObject().m.properties).toMatchObject({ id });
             } finally {
                 await session.close();
             }
@@ -444,7 +442,7 @@ describe("OGM", () => {
             `;
 
             const neo4jResult = await session.run(cypher, { id: product.id });
-            const neo4jProduct = (neo4jResult.records[0].toObject() as any).product;
+            const neo4jProduct = neo4jResult.records[0].toObject().product;
 
             expect(neo4jProduct.id).toMatch(product.id);
             expect(neo4jProduct.name).toMatch(product.name);
@@ -765,7 +763,7 @@ describe("OGM", () => {
         test("should delete a single node", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     id: ID
                     name: String
@@ -798,7 +796,7 @@ describe("OGM", () => {
         test("should delete movie and nested genre", async () => {
             const session = driver.session();
 
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     id: ID
                     ${typeGenre.plural}: [${typeGenre}!]! @relationship(type: "IN_GENRE", direction: OUT)
@@ -843,7 +841,7 @@ describe("OGM", () => {
         test("should allow the use of private fields in the OGM", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type User {
                     id: ID
                     password: String @private
@@ -851,7 +849,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = ogm.model("User");
 
             await ogm.init();
 
@@ -878,7 +876,7 @@ describe("OGM", () => {
         test("should return aggregated count on its own", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     testId: ID
                     title: String
@@ -922,7 +920,7 @@ describe("OGM", () => {
         test("should return aggregated fields", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type ${typeMovie} {
                     testId: ID
                     title: String
@@ -977,7 +975,7 @@ describe("OGM", () => {
         test("should create constraints with `assertIndexesAndConstraints` method", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Book {
                     isbn: String! @unique
                     title: String
@@ -985,7 +983,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const Book = ogm.model("Book") as unknown as Model;
+            const Book = ogm.model("Book");
 
             await ogm.init();
 
@@ -1024,7 +1022,7 @@ describe("OGM", () => {
         test("should allow the use of types requiring authentication in the OGM", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type User @authentication {
                     id: ID
                     password: String
@@ -1032,7 +1030,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = ogm.model("User");
 
             await ogm.init();
 

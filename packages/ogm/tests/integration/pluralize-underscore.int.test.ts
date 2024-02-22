@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { OGM } from "../../src";
@@ -27,7 +26,7 @@ import neo4j from "./neo4j";
 describe("pluralize with underscore", () => {
     const taskType = new UniqueType("super_task");
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type ${taskType.name} {
             string: String
         }
@@ -62,7 +61,7 @@ describe("pluralize with underscore", () => {
             charset: "alphabetic",
         });
 
-        const result = await Task?.create({ input: [{ string: testString }] });
+        const result = await Task.create({ input: [{ string: testString }] });
         expect(result[taskType.plural]).toEqual([{ string: testString }]);
 
         const reFind = await session.run(
@@ -73,7 +72,7 @@ describe("pluralize with underscore", () => {
             { str: testString }
         );
 
-        expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ string: testString });
+        expect(reFind.records[0].toObject().m.properties).toMatchObject({ string: testString });
     });
 
     test("should find super_task", async () => {
