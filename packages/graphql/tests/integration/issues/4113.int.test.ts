@@ -19,14 +19,14 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/4113", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
 
     let neoSchema: Neo4jGraphQL;
@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
     const TransactionItem = new UniqueType("TransactionItem");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = /* GraphQL */ `
@@ -244,7 +244,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
 
 describe("replicates the test for relationship to interface so that multiple refNodes are target", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
 
     let neoSchema: Neo4jGraphQL;
@@ -256,7 +256,7 @@ describe("replicates the test for relationship to interface so that multiple ref
     const TransactionItem2 = new UniqueType("TransactionItem2");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = /* GraphQL */ `

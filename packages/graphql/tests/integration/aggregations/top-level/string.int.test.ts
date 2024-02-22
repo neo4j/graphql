@@ -22,11 +22,11 @@ import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 
 describe("aggregations-top_level-string", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let typeMovie: UniqueType;
     let session: Session;
 
@@ -39,7 +39,7 @@ describe("aggregations-top_level-string", () => {
     );
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

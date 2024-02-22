@@ -20,14 +20,14 @@
 import { graphql } from "graphql";
 import type { Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3009", () => {
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
 
     beforeAll(() => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
     });
 
     beforeEach(async () => {

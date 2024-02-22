@@ -24,17 +24,17 @@ import { int } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     const largestSafeSigned32BitInteger = Number(2 ** 31 - 1);
     const largestSafeSigned64BitBigInt = BigInt(2 ** 63 - 1).toString();
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

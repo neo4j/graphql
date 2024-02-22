@@ -20,12 +20,12 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/190", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     const typeDefs = gql`
         type User {
             client_id: String
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     `;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const session = await neo4j.getSession();
 

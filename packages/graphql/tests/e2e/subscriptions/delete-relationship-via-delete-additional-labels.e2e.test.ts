@@ -25,7 +25,7 @@ import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Delete Subscriptions when only nodes are targeted - when nodes employ @node directive to configure db label and additionalLabels", () => {
@@ -116,7 +116,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
         await wsClient2.close();
 
         const session = driver.session();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeFilm, typeSeries, typeProduction]);
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeFilm, typeSeries, typeProduction]);
 
         await server.close();
         await driver.close();

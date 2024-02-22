@@ -19,13 +19,13 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/3912", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
 
     let neoSchema: Neo4jGraphQL;
@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/3912", () => {
     const Event = new UniqueType("Event");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = /* GraphQL */ `

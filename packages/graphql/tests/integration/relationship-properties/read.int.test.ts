@@ -24,14 +24,14 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import { runCypher } from "../../utils/run-cypher";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - read", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
@@ -44,7 +44,7 @@ describe("Relationship properties - read", () => {
     const actorD = `d${generate({ charset: "alphabetic" })}`;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -85,7 +85,7 @@ describe("Relationship properties - read", () => {
 
     afterEach(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [typeMovie, typeActor]);
+        await cleanNodesUsingSession(session, [typeMovie, typeActor]);
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {

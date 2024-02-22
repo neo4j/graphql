@@ -22,14 +22,14 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("connect-or-create with @id", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let typeDefs: DocumentNode;
 
@@ -39,7 +39,7 @@ describe("connect-or-create with @id", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = gql`

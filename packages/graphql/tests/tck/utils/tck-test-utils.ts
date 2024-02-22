@@ -23,7 +23,7 @@ import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import Neo4j from "../../integration/neo4j";
+import Neo4jHelper from "../../integration/neo4j";
 
 export function setTestEnvVars(envVars: string | undefined): void {
     if (envVars) {
@@ -108,7 +108,7 @@ export async function translateQuery(
     const [cypher, params] = driverBuilder.runFunction.calls[0] as [string, Record<string, any>];
 
     if (process.env.VERIFY_TCK) {
-        const neo4j = new Neo4j();
+        const neo4j = new Neo4jHelper();
         const session = await neo4j.getSession();
         try {
             await session.run(`EXPLAIN ${cypher}`, params);

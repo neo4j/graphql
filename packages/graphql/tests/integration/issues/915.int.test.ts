@@ -23,7 +23,7 @@ import { generate } from "randomstring";
 import type { ValueNode } from "graphql";
 import { graphql, GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
@@ -79,12 +79,12 @@ const PositiveInt = new GraphQLScalarType({
 
 describe("https://github.com/neo4j/graphql/issues/915", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         databaseName = generate({ readable: true, charset: "alphabetic" });

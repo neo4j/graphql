@@ -21,15 +21,15 @@ import { graphql } from "graphql/index";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("https://github.com/neo4j/graphql/issues/4520", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
 
     const Movie = new UniqueType("Movie");
@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
     const Actor = new UniqueType("Actor");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = /* GraphQL */ `
             interface Production {
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Movie, Serie, FxEngineer, Actor]);
+            await cleanNodesUsingSession(session, [Movie, Serie, FxEngineer, Actor]);
         } finally {
             await session.close();
         }

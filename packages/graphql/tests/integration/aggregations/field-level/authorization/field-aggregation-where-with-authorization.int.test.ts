@@ -19,7 +19,7 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../../../neo4j";
+import Neo4jHelper from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
 import { createBearerToken } from "../../../../utils/create-bearer-token";
@@ -28,7 +28,7 @@ describe(`Field Level Authorization Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
     let token: string;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");
@@ -50,7 +50,7 @@ describe(`Field Level Authorization Where Requests`, () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         session = await neo4j.getSession();
 
