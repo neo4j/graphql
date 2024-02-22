@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
@@ -100,7 +100,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
+            await cleanNodes(driver, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -347,7 +347,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
+            await cleanNodes(driver, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -1413,7 +1413,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
+            await cleanNodes(driver, [typeActor, typeMovie]);
             await session.close();
         });
 

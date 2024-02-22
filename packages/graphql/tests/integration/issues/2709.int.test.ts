@@ -20,7 +20,7 @@
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Netflix, Dishney]);
+        await cleanNodes(driver, [Movie, Netflix, Dishney]);
         await session.close();
     });
 
@@ -287,7 +287,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Netflix, Dishney, Publisher]);
+        await cleanNodes(driver, [Movie, Netflix, Dishney, Publisher]);
         await session.close();
     });
 

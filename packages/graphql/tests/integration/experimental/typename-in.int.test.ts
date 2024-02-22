@@ -21,7 +21,7 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
@@ -104,7 +104,7 @@ describe("typename_IN", () => {
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie, Series, Cartoon]);
+        await cleanNodes(driver, [Movie, Series, Cartoon]);
         await session.close();
         await driver.close();
     });

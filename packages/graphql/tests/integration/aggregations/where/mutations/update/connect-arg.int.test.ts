@@ -20,7 +20,7 @@
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../../../utils/clean-nodes";
+import { cleanNodes } from "../../../../../utils/clean-nodes";
 import { UniqueType } from "../../../../../utils/graphql-types";
 import Neo4jHelper from "../../../../neo4j";
 
@@ -89,7 +89,7 @@ describe("Connect using aggregate where", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
+        await cleanNodes(driver, [userType, postType]);
         await session.close();
     });
 
@@ -425,7 +425,7 @@ describe("Connect UNIONs using aggregate where", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType, specialUserType]);
+        await cleanNodes(driver, [userType, postType, specialUserType]);
         await session.close();
     });
 

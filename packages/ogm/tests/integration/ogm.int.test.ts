@@ -54,7 +54,7 @@ describe("OGM", () => {
 
     afterEach(async () => {
         const session = driver.session();
-        await cleanNodes(session, [typeMovie, typeActor, typeGenre, typeProduct, typeSize, typeColor, typePhoto]);
+        await cleanNodes(driver, [typeMovie, typeActor, typeGenre, typeProduct, typeSize, typeColor, typePhoto]);
         await session.close();
     });
 

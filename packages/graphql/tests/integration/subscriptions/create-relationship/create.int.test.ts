@@ -21,7 +21,7 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
 
@@ -107,7 +107,7 @@ describe("Subscriptions connect with create", () => {
 
     afterEach(async () => {
         const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodes(driver, [typeActor, typeMovie, typePerson, typeInfluencer]);
         await session.close();
     });
 

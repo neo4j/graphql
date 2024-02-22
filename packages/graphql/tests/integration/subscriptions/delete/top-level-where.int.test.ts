@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
 
 describe("Delete using top level aggregate where - subscriptions enabled", () => {
@@ -92,7 +92,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
+        await cleanNodes(driver, [userType, postType]);
         await session.close();
     });
 

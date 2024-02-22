@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 import { runCypher } from "../../../utils/run-cypher";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { createBearerToken } from "../../../utils/create-bearer-token";
+import Neo4jHelper from "../../neo4j";
 
 describe("auth/roles", () => {
     let driver: Driver;
@@ -65,8 +65,7 @@ describe("auth/roles", () => {
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [typeProduct, typeUser]);
+        await cleanNodes(driver, [typeProduct, typeUser]);
     });
 
     describe("read", () => {

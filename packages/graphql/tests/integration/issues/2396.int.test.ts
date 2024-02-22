@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
     let driver: Driver;
@@ -722,7 +722,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     afterAll(async () => {
-        await cleanNodesUsingSession(session, [PostalCode, Address, Mandate, Valuation, Estate]);
+        await cleanNodes(driver, [PostalCode, Address, Mandate, Valuation, Estate]);
         await session.close();
         await driver.close();
     });

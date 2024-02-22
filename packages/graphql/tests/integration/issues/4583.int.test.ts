@@ -20,11 +20,11 @@
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import gql from "graphql-tag";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import Neo4jHelper from "../../integration/neo4j";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import type { Driver, Session } from "neo4j-driver";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/4583", () => {
     let driver: Driver;
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Series, Actor, Episode]);
+        await cleanNodes(driver, [Movie, Series, Actor, Episode]);
         await session.close();
     });
 

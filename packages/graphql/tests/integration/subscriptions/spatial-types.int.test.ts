@@ -23,9 +23,9 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
+import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("Subscriptions to spatial types", () => {
@@ -60,7 +60,7 @@ describe("Subscriptions to spatial types", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [typeMovie]);
+        await cleanNodes(driver, [typeMovie]);
         await session.close();
         await driver.close();
     });

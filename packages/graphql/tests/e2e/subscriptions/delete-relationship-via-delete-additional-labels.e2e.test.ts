@@ -20,13 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { WebSocketTestClient } from "../setup/ws-client";
 
 describe("Delete Subscriptions when only nodes are targeted - when nodes employ @node directive to configure db label and additionalLabels", () => {
     let neo4j: Neo4j;
@@ -115,8 +115,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
         await wsClient.close();
         await wsClient2.close();
 
-        const session = driver.session();
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeFilm, typeSeries, typeProduction]);
+        await cleanNodes(driver, [typeActor, typeMovie, typePerson, typeFilm, typeSeries, typeProduction]);
 
         await server.close();
         await driver.close();

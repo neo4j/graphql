@@ -20,7 +20,7 @@
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [User, Person]);
+        await cleanNodes(driver, [User, Person]);
         await session.close();
     });
 

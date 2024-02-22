@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -64,7 +64,7 @@ describe("@alias directive", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [typeMovie, typeActor]);
+        await cleanNodes(driver, [typeMovie, typeActor]);
         await session.close();
     });
 

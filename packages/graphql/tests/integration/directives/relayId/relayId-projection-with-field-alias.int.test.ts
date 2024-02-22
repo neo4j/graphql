@@ -20,12 +20,12 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
-import { toGlobalId } from "../../../../src/utils/global-ids";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { generate } from "randomstring";
+import { Neo4jGraphQL } from "../../../../src";
+import { toGlobalId } from "../../../../src/utils/global-ids";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 // used to confirm the issue: https://github.com/neo4j/graphql/issues/4158
 describe("RelayId projection with GraphQL field alias", () => {
@@ -94,7 +94,7 @@ describe("RelayId projection with GraphQL field alias", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Genre, Actor]);
+        await cleanNodes(driver, [Movie, Genre, Actor]);
         await session.close();
     });
 

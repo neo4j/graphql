@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { graphql } from "graphql";
-import { UniqueType } from "../../utils/graphql-types";
 import gql from "graphql-tag";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { Driver } from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4223", () => {
     let driver: Driver;
@@ -175,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
 
     afterEach(async () => {
         const session = driver.session();
-        await cleanNodesUsingSession(session, [User, Tenant, Settings, OpeningDay, OpeningHoursInterval, MyWorkspace]);
+        await cleanNodes(driver, [User, Tenant, Settings, OpeningDay, OpeningHoursInterval, MyWorkspace]);
         await session.close();
     });
 

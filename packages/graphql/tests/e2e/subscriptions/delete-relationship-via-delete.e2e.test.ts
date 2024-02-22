@@ -22,7 +22,7 @@ import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { delay } from "../../../src/utils/utils";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
@@ -118,8 +118,7 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
         await wsClient.close();
         await wsClient2.close();
 
-        const session = driver.session();
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodes(driver, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
         await driver.close();

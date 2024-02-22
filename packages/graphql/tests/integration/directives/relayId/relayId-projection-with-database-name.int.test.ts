@@ -20,12 +20,12 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
-import { toGlobalId } from "../../../../src/utils/global-ids";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { generate } from "randomstring";
+import { Neo4jGraphQL } from "../../../../src";
+import { toGlobalId } from "../../../../src/utils/global-ids";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("RelayId projection with different database name", () => {
     let schema: GraphQLSchema;
@@ -93,7 +93,7 @@ describe("RelayId projection with different database name", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Genre, Actor]);
+        await cleanNodes(driver, [Movie, Genre, Actor]);
         await session.close();
     });
 

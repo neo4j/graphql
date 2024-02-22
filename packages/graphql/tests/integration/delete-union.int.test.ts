@@ -23,7 +23,7 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src";
-import { cleanNodesUsingSession } from "../utils/clean-nodes";
+import { cleanNodes } from "../utils/clean-nodes";
 import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
@@ -169,7 +169,7 @@ describe("delete union relationships", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [episodeType, movieType, seriesType, actorType]);
+        await cleanNodes(driver, [episodeType, movieType, seriesType, actorType]);
         await session.close();
     });
 

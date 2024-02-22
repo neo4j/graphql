@@ -21,7 +21,7 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
@@ -111,7 +111,7 @@ describe("Union filtering", () => {
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie, Series, Actor]);
+        await cleanNodes(driver, [Movie, Series, Actor]);
         await session.close();
         await driver.close();
     });

@@ -22,7 +22,7 @@ import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
@@ -746,8 +746,7 @@ describe("Subscription authentication", () => {
 
         afterEach(async () => {
             await wsClient.close();
-            const session = driver.session();
-            await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+            await cleanNodes(driver, [typeActor, typeMovie, typePerson, typeInfluencer]);
             await server.close();
         });
 
@@ -5036,8 +5035,7 @@ describe("Subscription authentication", () => {
 
         afterEach(async () => {
             await wsClient.close();
-            const session = driver.session();
-            await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+            await cleanNodes(driver, [typeActor, typeMovie, typePerson, typeInfluencer]);
             await server.close();
         });
 

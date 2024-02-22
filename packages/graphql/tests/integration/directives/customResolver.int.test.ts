@@ -23,7 +23,7 @@ import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
@@ -386,7 +386,7 @@ describe("Related Fields", () => {
     afterEach(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodesUsingSession(session, [Publication, Author, Book, Journal, User, Address, City, State]);
+            await cleanNodes(driver, [Publication, Author, Book, Journal, User, Address, City, State]);
         } finally {
             await session.close();
         }
