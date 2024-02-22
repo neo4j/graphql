@@ -23,6 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { graphql } from "graphql";
 import { UniqueType } from "../../utils/graphql-types";
 import gql from "graphql-tag";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/4429", () => {
     let driver: Driver;
@@ -169,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
 
     afterEach(async () => {
         const session = driver.session();
-        await session.run(` match (n) detach delete n`);
+        await cleanNodes(session, [User, Tenant, Settings, OpeningDay, OpeningHoursInterval]);
         await session.close();
     });
 
