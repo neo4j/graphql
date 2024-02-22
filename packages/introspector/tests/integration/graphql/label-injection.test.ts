@@ -34,7 +34,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
         try {
-            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
+            await cSession.executeWrite((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
         } catch (e) {
             if (e instanceof Error) {
                 if (
@@ -69,7 +69,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         if (MULTIDB_SUPPORT) {
             const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
             try {
-                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+                await cSession.executeWrite((tx) => tx.run(`DROP DATABASE ${dbName}`));
             } catch (e) {
                 // ignore
             }
@@ -85,7 +85,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         }
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run("CREATE (a:Wurst) -[:```MATCH (n) DETACH DELETE n //`] -> (:Salat)")
         );
         const bm = wSession.lastBookmark();

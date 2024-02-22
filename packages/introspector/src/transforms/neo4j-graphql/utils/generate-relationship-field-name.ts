@@ -25,9 +25,10 @@ export default function inferRelationshipFieldName(
     relType: string,
     fromType: string,
     toType: string,
-    direction: Direction
+    direction: Direction,
+    sanitizeRelType: (relType: string) => string = (relType) => relType.replace(/[\s/()\\`]/g, "")
 ): string {
-    const sanitizedRelType = relType.replaceAll(/[\s/()\\`]/g, "");
+    const sanitizedRelType = sanitizeRelType(relType);
     if (direction === "OUT") {
         return camelcase(sanitizedRelType + pluralize(toType));
     }

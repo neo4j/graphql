@@ -27,6 +27,6 @@
         "neo4j-driver": "^5.8.0"
     },
     "dependencies": {
-        "@neo4j/graphql": "link:../../.."
+        "@neo4j/graphql": "file:../../.."
     }
 }
