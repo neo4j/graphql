@@ -21,8 +21,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky",
         "changeset-version-dev": "changeset version --since dev && yarn",
-        "release": "yarn build && changeset publish",
-        "changeset-version-5.0.0": "changeset version --since 5.0.0 && yarn"
+        "release": "yarn build && changeset publish"
     },
     "devDependencies": {
         "@tsconfig/node16": "1.0.4",
