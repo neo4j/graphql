@@ -53,7 +53,7 @@ export class OperationField extends Field {
         return result.clauses;
     }
 
-    public isCypherField(): boolean {
+    public isCypherField(): this is this & { operation: CypherOperation | CypherScalarOperation } {
         return this.operation instanceof CypherOperation || this.operation instanceof CypherScalarOperation;
     }
 }

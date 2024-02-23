@@ -938,22 +938,15 @@ export class OperationsFactory {
         cypherAttributeField: AttributeAdapter;
         cypherArguments?: Record<string, any>;
     }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+        const selection = new CustomCypherSelection({
+            operationField: cypherAttributeField,
+            rawArguments: cypherArguments,
+            isNested: true,
+        });
         if (!entity) {
-            const selection = new CustomCypherSelection({
-                operationField: cypherAttributeField,
-
-                rawArguments: cypherArguments,
-                isNested: true,
-            });
             return new CypherScalarOperation(selection, cypherAttributeField, true);
         }
         if (isConcreteEntity(entity)) {
-            const selection = new CustomCypherSelection({
-                operationField: cypherAttributeField,
-
-                rawArguments: cypherArguments,
-                isNested: true,
-            });
             const customCypher = new CypherOperation({
                 cypherAttributeField: cypherAttributeField,
                 target: entity,
@@ -961,11 +954,6 @@ export class OperationsFactory {
             });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
-        const selection = new CustomCypherSelection({
-            operationField: cypherAttributeField,
-            rawArguments: cypherArguments,
-            isNested: true,
-        });
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
             const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
@@ -973,6 +961,7 @@ export class OperationsFactory {
             // The Typename filter here is required to access concrete entities from a Cypher Union selection.
             // It would be probably more ergonomic to pass the label filter with the selection,
             // although is currently not possible to do so with Cypher.Builder
+            // https://github.com/neo4j/cypher-builder/issues/300
             partial.addFilters(new TypenameFilter([concreteEntity]));
             return this.hydrateReadOperation({
                 entity: concreteEntity,
@@ -1001,23 +990,17 @@ export class OperationsFactory {
         if (!operationAttribute) {
             throw new Error(`Failed to collect information about the operation field with name: ${resolveTree.name}`);
         }
-        const operationField = new AttributeAdapter(operationAttribute);
-        if (!entity) {
-            const selection = new CustomCypherSelection({
-                operationField,
 
-                rawArguments: resolveTree.args,
-                isNested: false,
-            });
+        const operationField = new AttributeAdapter(operationAttribute);
+        const selection = new CustomCypherSelection({
+            operationField,
+            rawArguments: resolveTree.args,
+            isNested: false,
+        });
+        if (!entity) {
             return new CypherScalarOperation(selection, operationField, false);
         }
         if (isConcreteEntity(entity)) {
-            const selection = new CustomCypherSelection({
-                operationField,
-
-                rawArguments: resolveTree.args,
-                isNested: false,
-            });
             const customCypher = new CypherOperation({
                 cypherAttributeField: operationField,
                 target: entity,
@@ -1025,11 +1008,6 @@ export class OperationsFactory {
             });
             return this.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
-        const selection = new CustomCypherSelection({
-            operationField,
-            rawArguments: resolveTree.args,
-            isNested: false,
-        });
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
             const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
@@ -1037,6 +1015,7 @@ export class OperationsFactory {
             // The Typename filter here is required to access concrete entities from a Cypher Union selection.
             // It would be probably more ergonomic to pass the label filter with the selection,
             // although is currently not possible to do so with Cypher.Builder
+            // https://github.com/neo4j/cypher-builder/issues/300
             partial.addFilters(new TypenameFilter([concreteEntity]));
             return this.hydrateReadOperation({
                 entity: concreteEntity,

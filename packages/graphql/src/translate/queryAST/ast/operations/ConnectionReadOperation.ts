@@ -34,8 +34,6 @@ import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort, SortField } from "../sort/Sort";
-import type { CypherOperation } from "./CypherOperation";
-import type { CypherScalarOperation } from "./CypherScalarOperation";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
@@ -355,8 +353,7 @@ export class ConnectionReadOperation extends Operation {
         const preAndPostFields = this.nodeFields.reduce<Record<"Pre" | "Post", Field[]>>(
             (acc, nodeField) => {
                 if (nodeField instanceof OperationField && nodeField.isCypherField()) {
-                    const cypherFieldName = (nodeField.operation as CypherOperation | CypherScalarOperation)
-                        .cypherAttributeField.name;
+                    const cypherFieldName = nodeField.operation.cypherAttributeField.name;
                     if (cypherSortFieldsFlagMap[cypherFieldName]) {
                         acc.Pre.push(nodeField);
                         return acc;
