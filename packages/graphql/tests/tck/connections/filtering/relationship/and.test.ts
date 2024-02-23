@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -38,7 +36,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
                 screenTime: Int!
             }
@@ -50,14 +48,16 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
     });
 
     test("AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
                     actorsConnection(where: { edge: { AND: [{ role_ENDS_WITH: "Gump" }, { screenTime_LT: 60 }] } }) {
                         edges {
-                            role
-                            screenTime
+                            properties {
+                                role
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -81,7 +81,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ role: this0.role, screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { role: this0.role, screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -100,14 +100,16 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
     });
 
     test("NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
                     actorsConnection(where: { edge: { NOT: { role_ENDS_WITH: "Gump" } } }) {
                         edges {
-                            role
-                            screenTime
+                            properties {
+                                role
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -131,7 +133,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ role: this0.role, screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { role: this0.role, screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("#324", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Person {
                 identifier: ID!
                 car: Car! @relationship(type: "CAR", direction: OUT)
@@ -56,7 +54,7 @@ describe("#324", () => {
     });
 
     test("Should have correct variables in apoc.do.when", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation updatePeople($where: PersonWhere, $update: PersonUpdateInput) {
                 updatePeople(where: $where, update: $update) {
                     people {

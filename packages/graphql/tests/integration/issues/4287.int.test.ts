@@ -21,13 +21,13 @@ import { graphql } from "graphql";
 import gql from "graphql-tag";
 import { type Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4287", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
 
     const Actor = new UniqueType("Actor");
@@ -35,14 +35,14 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
     const Series = new UniqueType("Series");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
             type ${Actor} {
                 name: String
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
             }
-            interface actedIn @relationshipProperties {
+            type actedIn @relationshipProperties {
                 role: String
             }
             interface Production {
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Movie, Actor, Series]);
+            await cleanNodesUsingSession(session, [Movie, Actor, Series]);
         } finally {
             await session.close();
         }

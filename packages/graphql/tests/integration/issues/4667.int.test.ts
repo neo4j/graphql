@@ -18,7 +18,7 @@
  */
 
 import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
+import { type Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
@@ -28,7 +28,6 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
-    let session: Session;
 
     let MyThing: UniqueType;
     let MyStuff: UniqueType;
@@ -39,11 +38,10 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
     });
 
     beforeEach(async () => {
-        session = await neo4j.getSession();
-
         MyThing = new UniqueType("MyThing");
         MyStuff = new UniqueType("MyStuff");
 
+        const session = await neo4j.getSession();
         try {
             await session.run(`
             CREATE (:${MyThing} {id: "A"})-[:THE_STUFF]->(b1:${MyStuff} {id: "C"})
@@ -55,8 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
     });
 
     afterEach(async () => {
-        session = await neo4j.getSession();
-        await cleanNodes(session, [MyThing, MyStuff]);
+        await cleanNodes(driver, [MyThing, MyStuff]);
     });
 
     afterAll(async () => {
@@ -65,11 +62,6 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
 
     test("when passed null as argument of a relationship filter should check that a relationship does not exists", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${MyThing} {
-                id: ID! @id
-                stuff: ${MyStuff} @relationship(type: "THE_STUFF", direction: OUT)
-            }
-
             type ${MyThing} {
                 id: ID! @id
                 stuff: ${MyStuff} @relationship(type: "THE_STUFF", direction: OUT)

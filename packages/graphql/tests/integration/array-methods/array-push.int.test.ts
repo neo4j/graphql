@@ -25,15 +25,15 @@ import { generate } from "randomstring";
 
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("array-push", () => {
     let driver: Driver;
     let session: Session;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -270,11 +270,11 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-        });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValues(),
+            });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -352,12 +352,12 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { inputValue },
-        });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValues(),
+                variableValues: { inputValue },
+            });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -433,12 +433,12 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { inputValue },
-        });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValues(),
+                variableValues: { inputValue },
+            });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -592,7 +592,7 @@ describe("array-push", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -623,7 +623,9 @@ describe("array-push", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -676,7 +678,7 @@ describe("array-push", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 locations: [Point]
             }
         `;
@@ -707,10 +709,12 @@ describe("array-push", () => {
                         }
                         actedInConnection {
                             edges {
-                                locations {
-                                    latitude
-                                    longitude
-                                    height
+                               properties {
+                                    locations {
+                                        latitude
+                                        longitude
+                                        height
+                                    }
                                 }
                             }
                         }
@@ -742,7 +746,7 @@ describe("array-push", () => {
                 {
                     name: "Keanu",
                     actedIn: [{ title: "The Matrix" }],
-                    actedInConnection: { edges: [{ locations: [point] }] },
+                    actedInConnection: { edges: [{ properties: { locations: [point] } }] },
                 },
             ])
         );

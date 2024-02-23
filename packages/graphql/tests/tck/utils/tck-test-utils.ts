@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, GraphQLArgs } from "graphql";
+import type { GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
 import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
-import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import Neo4j from "../../integration/neo4j";
+import Neo4jHelper from "../../integration/neo4j";
 
 export function setTestEnvVars(envVars: string | undefined): void {
     if (envVars) {
@@ -54,7 +53,7 @@ export function formatParams(params: Record<string, any>): string {
 
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
-    query: DocumentNode,
+    query: string,
     options?: {
         token?: string;
         variableValues?: Record<string, any>;
@@ -80,7 +79,7 @@ export async function translateQuery(
 
     const graphqlArgs: GraphQLArgs = {
         schema: await (options?.subgraph ? neoSchema.getSubgraphSchema() : neoSchema.getSchema()),
-        source: getQuerySource(query),
+        source: query,
         contextValue,
     };
     if (options?.variableValues) {
@@ -109,7 +108,7 @@ export async function translateQuery(
     const [cypher, params] = driverBuilder.runFunction.calls[0] as [string, Record<string, any>];
 
     if (process.env.VERIFY_TCK) {
-        const neo4j = new Neo4j();
+        const neo4j = new Neo4jHelper();
         const session = await neo4j.getSession();
         try {
             await session.run(`EXPLAIN ${cypher}`, params);

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with ID", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
             }
@@ -37,7 +35,7 @@ describe("Cypher Aggregations where edge with ID", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Liked")
             }
 
-            interface Liked @relationshipProperties {
+            type Liked @relationshipProperties {
                 id: ID
                 someIdAlias: ID @alias(property: "_someIdAlias")
             }
@@ -49,7 +47,7 @@ describe("Cypher Aggregations where edge with ID", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { id_EQUAL: "10" } } }) {
                     content
@@ -79,7 +77,7 @@ describe("Cypher Aggregations where edge with ID", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someIdAlias_EQUAL: "10" } } }) {
                     content

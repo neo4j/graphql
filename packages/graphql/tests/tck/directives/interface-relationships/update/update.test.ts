@@ -17,35 +17,33 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update update", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
                 episodes: Int!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -61,7 +59,7 @@ describe("Interface Relationships - Update update", () => {
     });
 
     test("Update update an interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     update: {
@@ -137,7 +135,7 @@ describe("Interface Relationships - Update update", () => {
     });
 
     test("Update update an interface relationship with nested update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     update: {
@@ -214,222 +212,6 @@ describe("Interface Relationships - Update update", () => {
                                     },
                                     \\"update\\": {
                                         \\"node\\": {
-                                            \\"actors\\": [
-                                                {
-                                                    \\"update\\": {
-                                                        \\"node\\": {
-                                                            \\"name\\": \\"New Actor Name\\"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
-    test("Update update an interface relationship with nested update using _on to only update one implementation", async () => {
-        const query = gql`
-            mutation {
-                updateActors(
-                    update: {
-                        actedIn: {
-                            where: { node: { title: "Old Title" } }
-                            update: {
-                                node: { _on: { Movie: { actors: { update: { node: { name: "New Actor Name" } } } } } }
-                            }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WITH this
-            CALL {
-            	 WITH this
-            WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	WITH this, this_actedIn0
-            	CALL {
-            		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
-            		SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
-            		RETURN count(*) AS update_this_actedIn0_actors0
-            	}
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL {
-            	 WITH this
-            	WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Series
-            }
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
-                \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"New Actor Name\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
-                                        }
-                                    },
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"_on\\": {
-                                                \\"Movie\\": {
-                                                    \\"actors\\": [
-                                                        {
-                                                            \\"update\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": \\"New Actor Name\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
-    test("Update update an interface relationship with nested update using _on to override update", async () => {
-        const query = gql`
-            mutation {
-                updateActors(
-                    update: {
-                        actedIn: {
-                            where: { node: { title: "Old Title" } }
-                            update: {
-                                node: {
-                                    actors: { update: { node: { name: "New Actor Name" } } }
-                                    _on: { Movie: { actors: { update: { node: { name: "Different Actor Name" } } } } }
-                                }
-                            }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WITH this
-            CALL {
-            	 WITH this
-            WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	WITH this, this_actedIn0
-            	CALL {
-            		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
-            		SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
-            		RETURN count(*) AS update_this_actedIn0_actors0
-            	}
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL {
-            	 WITH this
-            	WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	WITH this, this_actedIn0
-            	CALL {
-            		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
-            		SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            		RETURN count(*) AS update_this_actedIn0_actors0
-            	}
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Series
-            }
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
-                \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"Different Actor Name\\",
-                \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
-                                        }
-                                    },
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"_on\\": {
-                                                \\"Movie\\": {
-                                                    \\"actors\\": [
-                                                        {
-                                                            \\"update\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": \\"Different Actor Name\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            },
                                             \\"actors\\": [
                                                 {
                                                     \\"update\\": {

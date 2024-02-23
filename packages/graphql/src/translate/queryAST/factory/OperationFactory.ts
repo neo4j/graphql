@@ -17,43 +17,53 @@
  * limitations under the License.
  */
 
-import { asArray, mergeDeep } from "@graphql-tools/utils";
+import { mergeDeep } from "@graphql-tools/utils";
 import * as Cypher from "@neo4j/cypher-builder";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../../../schema-model/entity/InterfaceEntity";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { filterTruthy, isObject, isRecord, isString } from "../../../utils/utils";
+import { asArray, filterTruthy, isObject, isRecord, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import type { Field } from "../ast/fields/Field";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { Filter } from "../ast/filters/Filter";
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
+import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { CreateOperation } from "../ast/operations/CreateOperation";
+import { CypherOperation } from "../ast/operations/CypherOperation";
+import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
+import { DeleteOperation } from "../ast/operations/DeleteOperation";
 import type { FulltextOptions } from "../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../ast/operations/FulltextOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
+import { UpdateOperation } from "../ast/operations/UpdateOperation";
 import { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import { CompositeAggregationPartial } from "../ast/operations/composite/CompositeAggregationPartial";
 import { CompositeConnectionPartial } from "../ast/operations/composite/CompositeConnectionPartial";
 import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
+import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import type { Operation } from "../ast/operations/operations";
+import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import type { EntitySelection } from "../ast/selection/EntitySelection";
 import { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { NodeSelection } from "../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../ast/selection/RelationshipSelection";
-import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
+import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { getConcreteWhere } from "../utils/get-concrete-where";
-import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { assertIsConcreteEntity, isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { AuthorizationFactory } from "./AuthorizationFactory";
@@ -65,30 +75,18 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { DeleteOperation } from "../ast/operations/DeleteOperation";
-import { UpdateOperation } from "../ast/operations/UpdateOperation";
-import { CypherOperation } from "../ast/operations/CypherOperation";
-import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
-import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
-import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
-import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
-
-const TOP_LEVEL_NODE_NAME = "this";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
-    private experimental: boolean;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.filterFactory = queryASTFactory.filterFactory;
         this.fieldFactory = queryASTFactory.fieldFactory;
         this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
         this.authorizationFactory = queryASTFactory.authorizationFactory;
-        this.experimental = queryASTFactory.experimental;
     }
 
     public createTopLevelOperation({
@@ -104,101 +102,72 @@ export class OperationsFactory {
         varName?: string;
         reference?: any;
     }): Operation {
-        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
-        if (!entity && operationMatch.isCustomCypher) {
-            return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-        }
-        // entity could be undefined only in case of custom fields.
-        if (!entity) {
-            throw new Error("Transpilation error: Entity for custom cypher operation not found");
-        }
-
-        if (isConcreteEntity(entity)) {
-            // Handles deprecated top level fulltext
-            if (context.resolveTree.args.phrase) {
-                if (!context.fulltext) {
-                    throw new Error("Failed to get context fulltext");
-                }
-                const indexName = context.fulltext.indexName || context.fulltext.name;
-                if (indexName === undefined) {
-                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-                }
-
-                const op = this.createFulltextOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
+        // Handles deprecated top level fulltext
+        if (context.resolveTree.args.phrase) {
+            if (!context.fulltext) {
+                throw new Error("Failed to get context fulltext");
             }
-
-            if (operationMatch.isCreate) {
+            const indexName = context.fulltext.indexName ?? context.fulltext.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            assertIsConcreteEntity(entity);
+            return this.createFulltextOperation(entity, resolveTree, context);
+        }
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
+        switch (operationMatch) {
+            case "READ": {
+                if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    assertIsConcreteEntity(entity);
+                    return this.createFulltextOperation(entity, resolveTree, context);
+                }
+                if (!entity) {
+                    throw new Error("Entity is required for top level read operations");
+                }
+                return this.createReadOperation({
+                    entityOrRel: entity,
+                    resolveTree,
+                    context,
+                    varName,
+                    reference,
+                });
+            }
+            case "CONNECTION": {
+                assertIsConcreteEntity(entity);
+                const topLevelConnectionResolveTree = this.normalizeResolveTreeForTopLevelConnection(resolveTree);
+                return this.createConnectionOperationAST({
+                    target: entity,
+                    resolveTree: topLevelConnectionResolveTree,
+                    context,
+                });
+            }
+            case "AGGREGATE": {
+                if (!entity || isUnionEntity(entity)) {
+                    throw new Error("Aggregate operations are not supported for Union types");
+                }
+                return this.createAggregationOperation(entity, resolveTree, context);
+            }
+            case "CREATE": {
+                assertIsConcreteEntity(entity);
                 return this.createCreateOperation(entity, resolveTree, context);
-            } else if (operationMatch.isUpdate) {
-                const op = this.createUpdateOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            } else if (operationMatch.isCustomCypher) {
-                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            } else if (operationMatch.isDelete) {
+            }
+            case "UPDATE": {
+                assertIsConcreteEntity(entity);
+                return this.createUpdateOperation(entity, resolveTree, context);
+            }
+            case "DELETE": {
+                assertIsConcreteEntity(entity);
                 return this.createTopLevelDeleteOperation({
                     entity,
                     resolveTree,
                     context,
                     varName,
                 });
-            } else if (operationMatch.isRead) {
-                let op: ReadOperation;
-                if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
-                    op = this.createFulltextOperation(entity, resolveTree, context);
-                } else {
-                    op = this.createReadOperation({
-                        entityOrRel: entity,
-                        resolveTree,
-                        context,
-                        varName,
-                        reference,
-                    }) as ReadOperation;
-                }
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            } else if (operationMatch.isConnection) {
-                const topLevelConnectionResolveTree = this.normalizeResolveTreeForTopLevelConnection(resolveTree);
-                const op = this.createConnectionOperationAST({
-                    target: entity,
-                    resolveTree: topLevelConnectionResolveTree,
-                    context,
-                });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            } else if (operationMatch.isAggregation) {
-                const op = this.createAggregationOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
             }
-            throw new Error(`Operation: ${resolveTree.name} is not yet supported by the QueryAST`);
-        }
-
-        if (isInterfaceEntity(entity)) {
-            if (operationMatch.isAggregation) {
-                const op = this.createAggregationOperation(entity, resolveTree, context);
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            }
-            if (operationMatch.isCustomCypher) {
-                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
+            case "CUSTOM_CYPHER": {
+                return this.createCustomCypherOperation({ entity, resolveTree, context, varName });
             }
         }
-
-        if (isUnionEntity(entity)) {
-            if (operationMatch.isCustomCypher) {
-                const op = this.createCustomCypherOperation({ entity, resolveTree, context, varName });
-                op.nodeAlias = TOP_LEVEL_NODE_NAME;
-                return op;
-            }
-        }
-        return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
 
     public createFulltextOperation(
@@ -343,18 +312,7 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
-            // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-            const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
-
-            const concreteEntities = typenameFilterAllowed
-                ? entity.concreteEntities
-                : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
-
-            const sharedFilters = typenameFilterAllowed
-                ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
-                : undefined;
-
+            const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 // Duplicate from normal read
                 let selection: EntitySelection;
@@ -379,14 +337,13 @@ export class OperationsFactory {
                 });
 
                 const whereArgs = getConcreteWhere(entity, concreteEntity, resolveTreeWhere);
-
                 return this.hydrateReadOperation({
                     operation: readPartial,
                     entity: concreteEntity,
                     resolveTree,
                     context,
                     whereArgs: whereArgs,
-                    sharedFilters,
+                    partialOf: entity,
                 });
             });
 
@@ -443,7 +400,15 @@ export class OperationsFactory {
                     whereArgs: resolveTreeWhere,
                 });
             } else {
-                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+                const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
+
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entityOrRel, resolveTree);
+
+                const nodeRawFields = {
+                    ...parsedProjectionFields.node?.fieldsByTypeName[
+                        entityOrRel.operations.getAggregationFieldTypename("node")
+                    ],
+                };
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
@@ -451,6 +416,15 @@ export class OperationsFactory {
                         entity: entityOrRel,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
+
+                    const attributes = this.getSelectedAttributes(concreteEntity, nodeRawFields);
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        context,
+                        attributes,
+                    });
+                    aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;
                 });
@@ -493,14 +467,10 @@ export class OperationsFactory {
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
                 });
-                //TODO: use a hydrate method here
-                const rawProjectionFields = {
-                    ...resolveTree.fieldsByTypeName[entity.operations.getAggregationFieldTypename()],
-                };
 
-                const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-                const projectionFields = parsedProjectionFields.fields;
-                const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
+
+                const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
 
                 operation.setFields(fields);
 
@@ -508,7 +478,7 @@ export class OperationsFactory {
                 const authFilters = this.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
-                    attributes: this.getSelectedAttributes(entity, projectionFields),
+                    attributes: this.getSelectedAttributes(entity, parsedProjectionFields.fields),
                     context,
                 });
 
@@ -531,14 +501,25 @@ export class OperationsFactory {
 
                 return operation;
             } else {
-                // TOP level interface
-                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+                // TOP level interface/union
+                const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
+
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
 
                 const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const aggregationPartial = new CompositeAggregationPartial({
                         target: concreteEntity,
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
+
+                    const authFilters = this.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        attributes: this.getSelectedAttributes(concreteEntity, parsedProjectionFields.fields),
+                        context,
+                    });
+
+                    aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;
                 });
@@ -548,17 +529,30 @@ export class OperationsFactory {
                     children: concreteAggregationOperations,
                 });
 
-                this.hydrateAggregationOperation({
+                return this.hydrateAggregationOperation({
                     entity,
                     resolveTree,
                     context,
                     operation: compositeAggregationOp,
                     whereArgs: resolveTreeWhere,
                 });
-
-                return compositeAggregationOp;
             }
         }
+    }
+
+    private getAggregationParsedProjectionFields(
+        adapter: InterfaceEntityAdapter | RelationshipAdapter | ConcreteEntityAdapter,
+        resolveTree: ResolveTree
+    ): {
+        node: ResolveTree | undefined;
+        edge: ResolveTree | undefined;
+        fields: Record<string, ResolveTree>;
+    } {
+        const rawProjectionFields = {
+            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+        };
+
+        return this.splitConnectionFields(rawProjectionFields);
     }
 
     public createCompositeConnectionOperationAST({
@@ -585,7 +579,7 @@ export class OperationsFactory {
             nodeWhere = resolveTreeWhere;
         }
 
-        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
+        const concreteEntities = getConcreteEntities(target, nodeWhere);
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
             const selection = new RelationshipSelection({
                 relationship,
@@ -747,21 +741,13 @@ export class OperationsFactory {
         target: InterfaceEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
     }): DeleteOperation[] {
-        const { whereArg } = this.parseDeleteArgs(deleteArg, true);
-        // TODO: Remove branch condition with the 5.0 release
-        const sharedFilters = this.experimental
-            ? this.filterFactory.createNodeFilters(target, whereArg.node)
-            : undefined;
-        const concreteEntities = this.experimental
-            ? target.concreteEntities
-            : getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
-        return concreteEntities.flatMap((concreteEntity) => {
+        return target.concreteEntities.flatMap((concreteEntity) => {
             return this.createNestedDeleteOperation({
                 relationship,
                 target: concreteEntity,
                 args: deleteArg,
                 context,
-                sharedFilters,
+                partialOf: target,
             });
         });
     }
@@ -777,10 +763,10 @@ export class OperationsFactory {
         target: UnionEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
     }): DeleteOperation[] {
-        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, deleteArg);
+        const concreteEntities = getConcreteEntities(target, deleteArg);
 
         return concreteEntities.flatMap((concreteEntity) => {
-            return asArray(deleteArg[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {
+            return asArray(deleteArg[concreteEntity.name]).flatMap((concreteArgs) => {
                 return this.createNestedDeleteOperation({
                     relationship,
                     target: concreteEntity,
@@ -799,16 +785,6 @@ export class OperationsFactory {
         return filterTruthy(
             Object.entries(deleteArg).flatMap(([key, valueArr]) => {
                 return asArray(valueArr).flatMap((value) => {
-                    if (key === "_on") {
-                        const concreteDeleteArg = value[source.name];
-                        if (!concreteDeleteArg) {
-                            return;
-                        }
-
-                        return asArray(concreteDeleteArg).flatMap((v) => {
-                            return this.createNestedDeleteOperations(v, source, context);
-                        });
-                    }
                     const relationship = source.findRelationship(key);
                     if (!relationship) {
                         throw new Error(`Failed to find relationship ${key}`);
@@ -847,13 +823,13 @@ export class OperationsFactory {
         target,
         args,
         context,
-        sharedFilters,
+        partialOf,
     }: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter;
         args: Record<string, any>;
         context: Neo4jGraphQLTranslationContext;
-        sharedFilters?: Filter[];
+        partialOf?: InterfaceEntityAdapter;
     }): DeleteOperation[] {
         const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
 
@@ -869,7 +845,16 @@ export class OperationsFactory {
             optional: true,
             targetOverride: target,
         });
-        const nodeFilters = sharedFilters ?? this.filterFactory.createNodeFilters(target, whereArg.node);
+        let nodeFilters: Filter[];
+        if (partialOf && isInterfaceEntity(partialOf)) {
+            nodeFilters = this.filterFactory.createInterfaceNodeFilters({
+                entity: partialOf,
+                targetEntity: target,
+                whereFields: whereArg.node,
+            });
+        } else {
+            nodeFilters = this.filterFactory.createNodeFilters(target, whereArg.node);
+        }
         const edgeFilters = this.filterFactory.createEdgeFilters(relationship, whereArg.edge);
 
         const filters = [...nodeFilters, ...edgeFilters];
@@ -1005,7 +990,7 @@ export class OperationsFactory {
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
         if (context.fulltext) {
-            const indexName = context.fulltext.indexName || context.fulltext.name;
+            const indexName = context.fulltext.indexName ?? context.fulltext.name;
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
             }
@@ -1114,6 +1099,7 @@ export class OperationsFactory {
         );
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
+        const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
 
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
@@ -1121,13 +1107,24 @@ export class OperationsFactory {
             operation,
         });
         const isTopLevel = !relationship;
-        const resolveTreeNodeFieldsTypesNames = isTopLevel ? [target.name] : [target.name, relationship.target.name];
+        const resolveTreeNodeFieldsTypesNames = isTopLevel
+            ? [target.name]
+            : [
+                  target.name,
+                  relationship.target.name,
+                  ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+              ];
 
         const resolveTreeNodeFields = getFieldsByTypeName(nodeFieldsRaw, resolveTreeNodeFieldsTypesNames);
         const nodeFields = this.fieldFactory.createFields(target, resolveTreeNodeFields, context);
-        const edgeFields = isTopLevel
-            ? []
-            : this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
+
+        let edgeFields: Field[] = [];
+        if (!isTopLevel && relationship.propertiesTypeName) {
+            const resolveTreePropertiesFields = getFieldsByTypeName(propertiesFieldsRaw, [
+                relationship.propertiesTypeName,
+            ]);
+            edgeFields = this.fieldFactory.createFields(relationship, resolveTreePropertiesFields, context);
+        }
 
         const authFilters = this.authorizationFactory.getAuthFilters({
             entity: target,
@@ -1183,7 +1180,7 @@ export class OperationsFactory {
         context,
         sortArgs,
         fieldsByTypeName,
-        sharedFilters,
+        partialOf,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
@@ -1191,7 +1188,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
         sortArgs?: Record<string, any>;
         fieldsByTypeName: FieldsByTypeName;
-        sharedFilters?: Filter[];
+        partialOf?: UnionEntityAdapter | InterfaceEntityAdapter;
     }): T {
         const concreteProjectionFields = { ...fieldsByTypeName[entity.name] };
         // Get the abstract types of the interface
@@ -1205,7 +1202,17 @@ export class OperationsFactory {
         ]);
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
-        const filters = sharedFilters ? sharedFilters : this.filterFactory.createNodeFilters(entity, whereArgs);
+        if (partialOf && isInterfaceEntity(partialOf)) {
+            const filters = this.filterFactory.createInterfaceNodeFilters({
+                entity: partialOf,
+                targetEntity: entity,
+                whereFields: whereArgs,
+            });
+            operation.addFilters(...filters);
+        } else {
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+            operation.addFilters(...filters);
+        }
 
         const authFilters = this.authorizationFactory.getAuthFilters({
             entity,
@@ -1215,7 +1222,7 @@ export class OperationsFactory {
         });
 
         operation.setFields(fields);
-        operation.addFilters(...filters);
+
         operation.addAuthFilters(...authFilters);
 
         if (sortArgs) {
@@ -1240,14 +1247,14 @@ export class OperationsFactory {
         resolveTree,
         context,
         whereArgs,
-        sharedFilters,
+        partialOf,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any> | Filter[];
-        sharedFilters?: Filter[];
+        partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
         return this.hydrateOperation({
             entity,
@@ -1256,7 +1263,7 @@ export class OperationsFactory {
             whereArgs,
             fieldsByTypeName: resolveTree.fieldsByTypeName,
             sortArgs: (resolveTree.args.options as Record<string, any>) || {},
-            sharedFilters,
+            partialOf,
         });
     }
 
@@ -1276,11 +1283,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
     }): T {
         if (relationship) {
-            const rawProjectionFields = {
-                ...resolveTree.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()],
-            };
-            const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-            const projectionFields = parsedProjectionFields.fields;
+            const parsedProjectionFields = this.getAggregationParsedProjectionFields(relationship, resolveTree);
 
             const edgeRawFields = {
                 ...parsedProjectionFields.edge?.fieldsByTypeName[
@@ -1294,36 +1297,53 @@ export class OperationsFactory {
                 ],
             };
 
-            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+            const fields = this.fieldFactory.createAggregationFields(entity, parsedProjectionFields.fields);
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
-            const authFilters = this.authorizationFactory.getAuthFilters({
-                entity,
-                operations: ["AGGREGATE"],
-                context,
-            });
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+            if (isInterfaceEntity(entity)) {
+                const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
+                operation.addFilters(...filters);
+            } else {
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                operation.addFilters(...filters);
+
+                const attributes = this.getSelectedAttributes(entity, nodeRawFields);
+
+                const authFilters = this.authorizationFactory.getAuthFilters({
+                    entity,
+                    operations: ["AGGREGATE"],
+                    attributes,
+                    context,
+                });
+
+                operation.addAuthFilters(...authFilters);
+            }
 
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
-            operation.addFilters(...filters);
-            operation.addAuthFilters(...authFilters);
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
             };
 
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields);
-            const authFilters = this.authorizationFactory.getAuthFilters({
-                entity,
-                operations: ["AGGREGATE"],
-                context,
-            });
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+
+            if (isInterfaceEntity(entity)) {
+                const filters = this.filterFactory.createInterfaceNodeFilters({ entity, whereFields: whereArgs });
+                operation.addFilters(...filters);
+            } else {
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                operation.addFilters(...filters);
+                const authFilters = this.authorizationFactory.getAuthFilters({
+                    entity,
+                    operations: ["AGGREGATE"],
+                    context,
+                });
+
+                operation.addAuthFilters(...authFilters);
+            }
             operation.setFields(fields);
-            operation.addFilters(...filters);
-            operation.addAuthFilters(...authFilters);
         }
 
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);

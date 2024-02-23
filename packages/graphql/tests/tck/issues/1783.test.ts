@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1783", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Series {
                 id: ID! @unique
                 current: Boolean!
@@ -40,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 fullName: String!
             }
 
-            interface RelationProps @relationshipProperties {
+            type RelationProps @relationshipProperties {
                 current: Boolean!
             }
 
@@ -57,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
     });
 
     test("should add parameters with implicit and", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($where: SeriesWhere, $connectionWhere: RelationPropsWhere) {
                 series(where: $where) {
                     id
@@ -132,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this7, edge.relationship AS this6
-                    RETURN collect({ node: { fullName: this7.fullName } }) AS var8
+                    RETURN collect({ node: { fullName: this7.fullName, __resolveType: \\"NameDetails\\" } }) AS var8
                 }
                 RETURN { edges: var8, totalCount: totalCount } AS var9
             }
@@ -156,11 +154,11 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this13, edge.relationship AS this12
-                            RETURN collect({ node: { fullName: this13.fullName } }) AS var14
+                            RETURN collect({ node: { fullName: this13.fullName, __resolveType: \\"NameDetails\\" } }) AS var14
                         }
                         RETURN { edges: var14, totalCount: totalCount } AS var15
                     }
-                    RETURN collect({ node: { nameDetailsConnection: var15 } }) AS var16
+                    RETURN collect({ node: { nameDetailsConnection: var15, __resolveType: \\"MasterData\\" } }) AS var16
                 }
                 RETURN { edges: var16, totalCount: totalCount } AS var17
             }

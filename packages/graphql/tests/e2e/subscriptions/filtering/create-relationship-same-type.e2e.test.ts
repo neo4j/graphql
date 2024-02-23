@@ -23,7 +23,7 @@ import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { delay } from "../../../../src/utils/utils";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
@@ -68,7 +68,7 @@ describe.each([
                 knownBy: [${typePerson}!]! @relationship(type: "KNOWN_BY", direction: IN, properties: "Knows")
             }
 
-            interface Knows @relationshipProperties {
+            type Knows @relationshipProperties {
                 year: Int!
             }
             
@@ -76,7 +76,7 @@ describe.each([
                 title: String!
                 references: [${typeArticle}!]! @relationship(type: "REFERENCES", direction: OUT, properties: "Reference")
             }
-            interface Reference @relationshipProperties {
+            type Reference @relationshipProperties {
                 year: Int!
                 edition: Int!
             }
@@ -110,7 +110,7 @@ describe.each([
         await wsClient2.close();
         subscriptionEngine.close();
         const session = driver.session();
-        await cleanNodes(session, [typePerson, typeArticle]);
+        await cleanNodesUsingSession(session, [typePerson, typeArticle]);
 
         await server.close();
         await driver.close();

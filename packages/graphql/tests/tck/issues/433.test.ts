@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("#413", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             # Cannot use 'type Node'
             type Movie {
                 title: String
@@ -45,7 +43,7 @@ describe("#413", () => {
     });
 
     test("Should not add where keyword if empty where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -73,7 +71,7 @@ describe("#413", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { name: this1.name } }) AS var2
+                    RETURN collect({ node: { name: this1.name, __resolveType: \\"Person\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

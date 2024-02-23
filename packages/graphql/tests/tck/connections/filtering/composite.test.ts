@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Composite", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -39,7 +37,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -50,7 +48,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -61,7 +59,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -87,7 +87,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -112,7 +112,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -123,7 +123,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -149,7 +151,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -174,7 +176,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite OR (edge and node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -187,7 +189,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -213,7 +217,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -238,7 +242,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite NOT with nested OR (edge and node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -253,7 +257,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -279,7 +285,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -304,7 +310,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite NOT with complex nested filters", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -324,7 +330,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -350,7 +358,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

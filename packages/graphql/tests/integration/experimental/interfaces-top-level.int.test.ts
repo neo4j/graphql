@@ -21,16 +21,16 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Top-level interface query fields", () => {
     const secret = "the-secret";
 
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
     let typeDefs: string;
 
@@ -48,7 +48,7 @@ describe("Top-level interface query fields", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = `
@@ -106,14 +106,18 @@ describe("Top-level interface query fields", () => {
                     key: secret,
                 },
             },
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [SomeNodeType, OtherNodeType, MyImplementationType, MyOtherImplementationType]);
+        await cleanNodesUsingSession(session, [
+            SomeNodeType,
+            OtherNodeType,
+            MyImplementationType,
+            MyOtherImplementationType,
+        ]);
         await session.close();
         await driver.close();
     });
@@ -305,7 +309,6 @@ describe("Top-level interface query fields", () => {
                         key: secret,
                     },
                 },
-                experimental: true,
             });
             schema = await neoGraphql.getSchema();
         });
@@ -442,7 +445,6 @@ describe("Top-level interface query fields", () => {
                         key: secret,
                     },
                 },
-                experimental: true,
             });
             schema = await neoGraphql.getSchema();
         });
@@ -552,7 +554,6 @@ describe("Top-level interface query fields", () => {
                         key: secret,
                     },
                 },
-                experimental: true,
             });
             schema = await neoGraphql.getSchema();
         });
@@ -579,7 +580,7 @@ describe("Top-level interface query fields", () => {
             expect(queryResult.errors).toHaveLength(1);
             expect(queryResult.errors?.[0]).toHaveProperty(
                 "message",
-                'Cannot query field "myInterfaces" on type "Query".'
+                'Cannot query field "myInterfaces" on type "Query". Did you mean "myOtherInterfaces"?'
             );
         });
     });

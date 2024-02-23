@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Relationship Properties Create Cypher", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -38,7 +36,7 @@ describe("Relationship Properties Create Cypher", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -49,7 +47,7 @@ describe("Relationship Properties Create Cypher", () => {
     });
 
     test("Create movie with a relationship that has properties", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -63,7 +61,9 @@ describe("Relationship Properties Create Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -107,7 +107,7 @@ describe("Relationship Properties Create Cypher", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this9, edge.relationship AS create_this8
-                    RETURN collect({ screenTime: create_this8.screenTime, node: { name: create_this9.name } }) AS create_var10
+                    RETURN collect({ properties: { screenTime: create_this8.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this9.name, __resolveType: \\"Actor\\" } }) AS create_var10
                 }
                 RETURN { edges: create_var10, totalCount: totalCount } AS create_var11
             }

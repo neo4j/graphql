@@ -21,14 +21,14 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/582", () => {
     let driver: Driver;
     let type: UniqueType;
     let typeDefs: string;
     let query: string;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
         type = new UniqueType("Entity");
@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                 type: String!
             }
 
-            interface Edge @relationshipProperties {
+            type Edge @relationshipProperties {
                 type: String!
             }
         `;
@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
             }
         `;
 
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const session = await neo4j.getSession();
 

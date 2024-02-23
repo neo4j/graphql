@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1348", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Product {
                 productTitle: String!
                 releatsTo: [Product!]!
@@ -65,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
     });
 
     test("should also return node with no relationship in result set", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 programmeItems {
                     productTitle
@@ -110,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
     });
 
     test("should return node with no relationship (edge) in result set, as Relay connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 programmeItems {
                     productTitle

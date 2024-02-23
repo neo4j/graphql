@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Algebraic", () => {
@@ -61,16 +61,16 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -80,8 +80,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -214,11 +214,11 @@ describe("Algebraic", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
+            type BigIntAggregateSelection {
+              average: BigInt
+              max: BigInt
+              min: BigInt
+              sum: BigInt
             }
 
             \\"\\"\\"
@@ -244,7 +244,7 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -256,8 +256,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: BigIntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: BigIntAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -409,14 +409,14 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -428,8 +428,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: FloatAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: FloatAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -602,7 +602,7 @@ describe("Algebraic", () => {
 
             type DirectorAggregateSelection {
               count: Int!
-              lastName: StringAggregateSelectionNonNullable!
+              lastName: StringAggregateSelection!
             }
 
             input DirectorConnectInput {
@@ -745,8 +745,8 @@ describe("Algebraic", () => {
             }
 
             type DirectorMovieDirectsNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input DirectorOptions {
@@ -825,16 +825,16 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -847,8 +847,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -992,7 +992,7 @@ describe("Algebraic", () => {
             }
 
             type MovieDirectorDirectedByNodeAggregateSelection {
-              lastName: StringAggregateSelectionNonNullable!
+              lastName: StringAggregateSelection!
             }
 
             input MovieDisconnectInput {
@@ -1102,9 +1102,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateDirectorsMutationResponse {
@@ -1183,16 +1183,16 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -1205,8 +1205,8 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              viewers: IntAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1247,7 +1247,7 @@ describe("Algebraic", () => {
             }
 
             type MoviePersonWorkersNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieRelationInput {
@@ -1472,12 +1472,13 @@ describe("Algebraic", () => {
             type Person {
               name: String!
               worksInProduction(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              worksInProductionAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionWorksInProductionAggregationSelection
               worksInProductionConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
             }
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -1513,6 +1514,15 @@ describe("Algebraic", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
+            }
+
+            type PersonProductionWorksInProductionAggregationSelection {
+              count: Int!
+              node: PersonProductionWorksInProductionNodeAggregateSelection
+            }
+
+            type PersonProductionWorksInProductionNodeAggregateSelection {
+              viewers: IntAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -1566,7 +1576,6 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionConnectFieldInput {
-              connect: ProductionConnectInput
               where: ProductionConnectWhere
             }
 
@@ -1593,12 +1602,10 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionDeleteFieldInput {
-              delete: ProductionDeleteInput
               where: PersonWorksInProductionConnectionWhere
             }
 
             input PersonWorksInProductionDisconnectFieldInput {
-              disconnect: ProductionDisconnectInput
               where: PersonWorksInProductionConnectionWhere
             }
 
@@ -1629,8 +1636,9 @@ describe("Algebraic", () => {
               viewers: Int!
             }
 
-            input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
+            type ProductionAggregateSelection {
+              count: Int!
+              viewers: IntAggregateSelection!
             }
 
             input ProductionConnectWhere {
@@ -1641,32 +1649,8 @@ describe("Algebraic", () => {
               Movie: MovieCreateInput
             }
 
-            input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
-            }
-
-            input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
+            enum ProductionImplementation {
+              Movie
             }
 
             input ProductionOptions {
@@ -1686,14 +1670,16 @@ describe("Algebraic", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               viewers: Int
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              typename_IN: [ProductionImplementation!]
               viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
@@ -1711,6 +1697,8 @@ describe("Algebraic", () => {
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1721,9 +1709,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -1761,7 +1749,7 @@ describe("Algebraic", () => {
                 actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roles: [String!]
                 pay: Float
             }
@@ -1775,9 +1763,45 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Person.actedInMovies
+            * Movie.actors
+            \\"\\"\\"
+            type ActedIn {
               pay: Float
               roles: [String!]
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              pay_AVERAGE_EQUAL: Float
+              pay_AVERAGE_GT: Float
+              pay_AVERAGE_GTE: Float
+              pay_AVERAGE_LT: Float
+              pay_AVERAGE_LTE: Float
+              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              pay_MAX_EQUAL: Float
+              pay_MAX_GT: Float
+              pay_MAX_GTE: Float
+              pay_MAX_LT: Float
+              pay_MAX_LTE: Float
+              pay_MIN_EQUAL: Float
+              pay_MIN_GT: Float
+              pay_MIN_GTE: Float
+              pay_MIN_LT: Float
+              pay_MIN_LTE: Float
+              pay_SUM_EQUAL: Float
+              pay_SUM_GT: Float
+              pay_SUM_GTE: Float
+              pay_SUM_LT: Float
+              pay_SUM_LTE: Float
             }
 
             input ActedInCreateInput {
@@ -1847,7 +1871,7 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -1870,7 +1894,7 @@ describe("Algebraic", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -1920,37 +1944,6 @@ describe("Algebraic", () => {
               where: MovieActorsConnectionWhere
             }
 
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              pay_AVERAGE_EQUAL: Float
-              pay_AVERAGE_GT: Float
-              pay_AVERAGE_GTE: Float
-              pay_AVERAGE_LT: Float
-              pay_AVERAGE_LTE: Float
-              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_MAX_EQUAL: Float
-              pay_MAX_GT: Float
-              pay_MAX_GTE: Float
-              pay_MAX_LT: Float
-              pay_MAX_LTE: Float
-              pay_MIN_EQUAL: Float
-              pay_MIN_GT: Float
-              pay_MIN_GTE: Float
-              pay_MIN_LT: Float
-              pay_MIN_LTE: Float
-              pay_SUM_EQUAL: Float
-              pay_SUM_GT: Float
-              pay_SUM_GTE: Float
-              pay_SUM_LT: Float
-              pay_SUM_LTE: Float
-            }
-
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
@@ -1997,11 +1990,10 @@ describe("Algebraic", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Person!
-              pay: Float
-              roles: [String!]
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -2020,7 +2012,7 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -2065,11 +2057,11 @@ describe("Algebraic", () => {
             }
 
             type MoviePersonActorsEdgeAggregateSelection {
-              pay: FloatAggregateSelectionNullable!
+              pay: FloatAggregateSelection!
             }
 
             type MoviePersonActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieRelationInput {
@@ -2178,7 +2170,7 @@ describe("Algebraic", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: PersonActedInMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: PersonActedInMoviesNodeAggregationWhereInput
             }
 
@@ -2228,37 +2220,6 @@ describe("Algebraic", () => {
               where: PersonActedInMoviesConnectionWhere
             }
 
-            input PersonActedInMoviesEdgeAggregationWhereInput {
-              AND: [PersonActedInMoviesEdgeAggregationWhereInput!]
-              NOT: PersonActedInMoviesEdgeAggregationWhereInput
-              OR: [PersonActedInMoviesEdgeAggregationWhereInput!]
-              pay_AVERAGE_EQUAL: Float
-              pay_AVERAGE_GT: Float
-              pay_AVERAGE_GTE: Float
-              pay_AVERAGE_LT: Float
-              pay_AVERAGE_LTE: Float
-              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_MAX_EQUAL: Float
-              pay_MAX_GT: Float
-              pay_MAX_GTE: Float
-              pay_MAX_LT: Float
-              pay_MAX_LTE: Float
-              pay_MIN_EQUAL: Float
-              pay_MIN_GT: Float
-              pay_MIN_GTE: Float
-              pay_MIN_LT: Float
-              pay_MIN_LTE: Float
-              pay_SUM_EQUAL: Float
-              pay_SUM_GT: Float
-              pay_SUM_GTE: Float
-              pay_SUM_LT: Float
-              pay_SUM_LTE: Float
-            }
-
             input PersonActedInMoviesFieldInput {
               connect: [PersonActedInMoviesConnectFieldInput!]
               create: [PersonActedInMoviesCreateFieldInput!]
@@ -2305,11 +2266,10 @@ describe("Algebraic", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type PersonActedInMoviesRelationship implements ActedIn {
+            type PersonActedInMoviesRelationship {
               cursor: String!
               node: Movie!
-              pay: Float
-              roles: [String!]
+              properties: ActedIn!
             }
 
             input PersonActedInMoviesUpdateConnectionInput {
@@ -2328,7 +2288,7 @@ describe("Algebraic", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -2364,11 +2324,11 @@ describe("Algebraic", () => {
             }
 
             type PersonMovieActedInMoviesEdgeAggregateSelection {
-              pay: FloatAggregateSelectionNullable!
+              pay: FloatAggregateSelection!
             }
 
             type PersonMovieActedInMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input PersonOptions {
@@ -2458,9 +2418,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

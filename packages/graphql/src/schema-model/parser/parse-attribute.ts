@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
+import type { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import { aliasDirective } from "../../graphql/directives";
 import { Argument } from "../argument/Argument";
@@ -61,20 +61,17 @@ export function parseAttributeArguments(
 
 export function parseAttribute(
     field: FieldDefinitionNode,
-    inheritedField: FieldDefinitionNode[] | undefined,
     definitionCollection: DefinitionCollection,
     definitionFields?: ReadonlyArray<FieldDefinitionNode>
 ): Attribute {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
-    const inheritedDirectives = inheritedField?.flatMap((f) => f.directives || []) || [];
-
-    const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
+    const annotations = parseAnnotations(field.directives || []);
 
     annotations.customResolver?.parseRequire(definitionCollection.document, definitionFields);
 
-    const databaseName = getDatabaseName(field, inheritedField);
+    const databaseName = getDatabaseName(field);
     return new Attribute({
         name,
         annotations,
@@ -85,25 +82,10 @@ export function parseAttribute(
     });
 }
 
-function getDatabaseName(
-    fieldDefinitionNode: FieldDefinitionNode,
-    inheritedFields: FieldDefinitionNode[] | undefined
-): string | undefined {
+function getDatabaseName(fieldDefinitionNode: FieldDefinitionNode): string | undefined {
     const aliasUsage = findDirective(fieldDefinitionNode.directives, aliasDirective.name);
     if (aliasUsage) {
         const { property } = parseArguments<{ property: string }>(aliasDirective, aliasUsage);
-        return property;
-    }
-    const inheritedAliasUsage = inheritedFields?.reduce<DirectiveNode | undefined>((aliasUsage, field) => {
-        // TODO: takes the first one
-        // multiple interfaces can have this annotation - must constrain this flexibility by design
-        if (!aliasUsage) {
-            aliasUsage = findDirective(field.directives, aliasDirective.name);
-        }
-        return aliasUsage;
-    }, undefined);
-    if (inheritedAliasUsage) {
-        const { property } = parseArguments<{ property: string }>(aliasDirective, inheritedAliasUsage);
         return property;
     }
 }
@@ -155,15 +137,15 @@ function isUnion(definitionCollection: DefinitionCollection, name: string): bool
     return definitionCollection.unionTypes.has(name);
 }
 
-function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
+export function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
     return definitionCollection.enumTypes.has(name);
 }
 
-function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
+export function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.scalarTypes.has(name);
 }
 
-function isObject(definitionCollection, name: string) {
+export function isObject(definitionCollection, name: string) {
     return definitionCollection.nodes.has(name);
 }
 
@@ -179,11 +161,11 @@ function isCartesianPoint(value): boolean {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.CartesianPoint;
 }
 
-function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
+export function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
     return Object.values<string>(Neo4jGraphQLSpatialType).includes(value);
 }
 
-function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
+export function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
     return isGraphQLBuiltInScalar(value) || isNeo4jGraphQLNumberType(value) || isNeo4jGraphQLTemporalType(value);
 }
 

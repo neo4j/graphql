@@ -18,10 +18,10 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { GraphQLError, lexicographicSortSchema } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { getErrorAsync, NoErrorThrownError } from "../../utils/get-error";
+import { NoErrorThrownError, getErrorAsync } from "../../utils/get-error";
 
 describe("@populatedBy tests", () => {
     describe("Node property tests", () => {
@@ -185,7 +185,7 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -198,11 +198,11 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregateSelection {
-                  callback1: StringAggregateSelectionNonNullable!
-                  callback2: StringAggregateSelectionNonNullable!
-                  callback3: StringAggregateSelectionNonNullable!
+                  callback1: StringAggregateSelection!
+                  callback2: StringAggregateSelection!
+                  callback3: StringAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -317,9 +317,9 @@ describe("@populatedBy tests", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelection {
+                  longest: String
+                  shortest: String
                 }
 
                 \\"\\"\\"
@@ -398,16 +398,16 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
 
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
+                type IntAggregateSelection {
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
                 }
 
                 type Movie {
@@ -418,11 +418,11 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregateSelection {
-                  callback1: IntAggregateSelectionNonNullable!
-                  callback2: IntAggregateSelectionNonNullable!
-                  callback3: IntAggregateSelectionNonNullable!
+                  callback1: IntAggregateSelection!
+                  callback2: IntAggregateSelection!
+                  callback3: IntAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -558,7 +558,7 @@ describe("@populatedBy tests", () => {
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback1: String!
                             @populatedBy(operations: [CREATE], callback: "callback4")
@@ -605,7 +605,7 @@ describe("@populatedBy tests", () => {
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback1: ID! @populatedBy(operations: [CREATE], callback: "callback4") @id
                     }
@@ -651,7 +651,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties @relationshipProperties {
+                type RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback4")
                 }
@@ -695,7 +695,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties @relationshipProperties {
+                type RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -762,7 +762,7 @@ describe("@populatedBy tests", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNonNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -820,12 +820,7 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
-                }
-
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -839,7 +834,7 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -871,14 +866,14 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
-                  callback1: StringAggregateSelectionNonNullable!
-                  callback2: StringAggregateSelectionNonNullable!
-                  callback3: StringAggregateSelectionNonNullable!
-                  id: IDAggregateSelectionNonNullable!
+                  callback1: StringAggregateSelection!
+                  callback2: StringAggregateSelection!
+                  callback3: StringAggregateSelection!
+                  id: IDAggregateSelection!
                 }
 
                 type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {
@@ -890,7 +885,7 @@ describe("@populatedBy tests", () => {
                   count_GTE: Int
                   count_LT: Int
                   count_LTE: Int
-                  edge: MovieGenresEdgeAggregationWhereInput
+                  edge: RelPropertiesAggregationWhereInput
                   node: MovieGenresNodeAggregationWhereInput
                 }
 
@@ -937,10 +932,155 @@ describe("@populatedBy tests", () => {
                   where: MovieGenresConnectionWhere
                 }
 
-                input MovieGenresEdgeAggregationWhereInput {
-                  AND: [MovieGenresEdgeAggregationWhereInput!]
-                  NOT: MovieGenresEdgeAggregationWhereInput
-                  OR: [MovieGenresEdgeAggregationWhereInput!]
+                input MovieGenresFieldInput {
+                  connect: [MovieGenresConnectFieldInput!]
+                  create: [MovieGenresCreateFieldInput!]
+                }
+
+                input MovieGenresNodeAggregationWhereInput {
+                  AND: [MovieGenresNodeAggregationWhereInput!]
+                  NOT: MovieGenresNodeAggregationWhereInput
+                  OR: [MovieGenresNodeAggregationWhereInput!]
+                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                }
+
+                type MovieGenresRelationship {
+                  cursor: String!
+                  node: Genre!
+                  properties: RelProperties!
+                }
+
+                input MovieGenresUpdateConnectionInput {
+                  edge: RelPropertiesUpdateInput
+                  node: GenreUpdateInput
+                }
+
+                input MovieGenresUpdateFieldInput {
+                  connect: [MovieGenresConnectFieldInput!]
+                  create: [MovieGenresCreateFieldInput!]
+                  delete: [MovieGenresDeleteFieldInput!]
+                  disconnect: [MovieGenresDisconnectFieldInput!]
+                  update: MovieGenresUpdateConnectionInput
+                  where: MovieGenresConnectionWhere
+                }
+
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [MovieSort!]
+                }
+
+                input MovieRelationInput {
+                  genres: [MovieGenresCreateFieldInput!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
+                input MovieSort {
+                  id: SortDirection
+                }
+
+                input MovieUpdateInput {
+                  genres: [MovieGenresUpdateFieldInput!]
+                  id: ID
+                }
+
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  NOT: MovieWhere
+                  OR: [MovieWhere!]
+                  genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
+                  genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  genresConnection_ALL: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  genresConnection_NONE: MovieGenresConnectionWhere
+                  genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  genresConnection_SINGLE: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  genresConnection_SOME: MovieGenresConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  genres_ALL: GenreWhere
+                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  genres_NONE: GenreWhere
+                  genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  genres_SINGLE: GenreWhere
+                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  genres_SOME: GenreWhere
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_STARTS_WITH: ID
+                }
+
+                type MoviesConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type Mutation {
+                  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  deleteGenres(where: GenreWhere): DeleteInfo!
+                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
+                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                }
+
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
+                type Query {
+                  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
+                  genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                }
+
+                \\"\\"\\"
+                The edge properties for the following fields:
+                * Movie.genres
+                \\"\\"\\"
+                type RelProperties {
+                  callback1: String!
+                  callback2: String!
+                  callback3: String!
+                  id: ID!
+                }
+
+                input RelPropertiesAggregationWhereInput {
+                  AND: [RelPropertiesAggregationWhereInput!]
+                  NOT: RelPropertiesAggregationWhereInput
+                  OR: [RelPropertiesAggregationWhereInput!]
                   callback1_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback1_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback1_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
@@ -1049,6 +1189,358 @@ describe("@populatedBy tests", () => {
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
+                input RelPropertiesCreateInput {
+                  id: ID!
+                }
+
+                input RelPropertiesSort {
+                  callback1: SortDirection
+                  callback2: SortDirection
+                  callback3: SortDirection
+                  id: SortDirection
+                }
+
+                input RelPropertiesUpdateInput {
+                  id: ID
+                }
+
+                input RelPropertiesWhere {
+                  AND: [RelPropertiesWhere!]
+                  NOT: RelPropertiesWhere
+                  OR: [RelPropertiesWhere!]
+                  callback1: String
+                  callback1_CONTAINS: String
+                  callback1_ENDS_WITH: String
+                  callback1_IN: [String!]
+                  callback1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_STARTS_WITH: String
+                  callback2: String
+                  callback2_CONTAINS: String
+                  callback2_ENDS_WITH: String
+                  callback2_IN: [String!]
+                  callback2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_STARTS_WITH: String
+                  callback3: String
+                  callback3_CONTAINS: String
+                  callback3_ENDS_WITH: String
+                  callback3_IN: [String!]
+                  callback3_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_STARTS_WITH: String
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID!]
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_STARTS_WITH: ID
+                }
+
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type StringAggregateSelection {
+                  longest: String
+                  shortest: String
+                }
+
+                type UpdateGenresMutationResponse {
+                  genres: [Genre!]!
+                  info: UpdateInfo!
+                }
+
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
+                type UpdateInfo {
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }"
+            `);
+        });
+
+        test("PopulatedBy - Int", async () => {
+            const callback1 = () => "random-int";
+            const callback2 = () => "random-int";
+            const callback3 = () => "random-int";
+
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
+                }
+
+                type RelProperties @relationshipProperties {
+                    id: ID!
+                    callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
+                    callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
+                    callback3: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
+                }
+
+                type Genre {
+                    id: ID!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
+                    },
+                },
+            });
+
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+            expect(printedSchema).toMatchInlineSnapshot(`
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
+
+                type CreateGenresMutationResponse {
+                  genres: [Genre!]!
+                  info: CreateInfo!
+                }
+
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
+                type CreateInfo {
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
+
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
+
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
+                type DeleteInfo {
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type Genre {
+                  id: ID!
+                }
+
+                type GenreAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelection!
+                }
+
+                input GenreConnectWhere {
+                  node: GenreWhere!
+                }
+
+                input GenreCreateInput {
+                  id: ID!
+                }
+
+                type GenreEdge {
+                  cursor: String!
+                  node: Genre!
+                }
+
+                input GenreOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [GenreSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
+                \\"\\"\\"
+                input GenreSort {
+                  id: SortDirection
+                }
+
+                input GenreUpdateInput {
+                  id: ID
+                }
+
+                input GenreWhere {
+                  AND: [GenreWhere!]
+                  NOT: GenreWhere
+                  OR: [GenreWhere!]
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID!]
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_STARTS_WITH: ID
+                }
+
+                type GenresConnection {
+                  edges: [GenreEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type IDAggregateSelection {
+                  longest: ID
+                  shortest: ID
+                }
+
+                type IntAggregateSelection {
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
+                }
+
+                type Movie {
+                  genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
+                  genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
+                  id: ID
+                }
+
+                type MovieAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelection!
+                }
+
+                input MovieConnectInput {
+                  genres: [MovieGenresConnectFieldInput!]
+                }
+
+                input MovieCreateInput {
+                  genres: MovieGenresFieldInput
+                  id: ID
+                }
+
+                input MovieDeleteInput {
+                  genres: [MovieGenresDeleteFieldInput!]
+                }
+
+                input MovieDisconnectInput {
+                  genres: [MovieGenresDisconnectFieldInput!]
+                }
+
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
+                type MovieGenreGenresAggregationSelection {
+                  count: Int!
+                  edge: MovieGenreGenresEdgeAggregateSelection
+                  node: MovieGenreGenresNodeAggregateSelection
+                }
+
+                type MovieGenreGenresEdgeAggregateSelection {
+                  callback1: IntAggregateSelection!
+                  callback2: IntAggregateSelection!
+                  callback3: IntAggregateSelection!
+                  id: IDAggregateSelection!
+                }
+
+                type MovieGenreGenresNodeAggregateSelection {
+                  id: IDAggregateSelection!
+                }
+
+                input MovieGenresAggregateInput {
+                  AND: [MovieGenresAggregateInput!]
+                  NOT: MovieGenresAggregateInput
+                  OR: [MovieGenresAggregateInput!]
+                  count: Int
+                  count_GT: Int
+                  count_GTE: Int
+                  count_LT: Int
+                  count_LTE: Int
+                  edge: RelPropertiesAggregationWhereInput
+                  node: MovieGenresNodeAggregationWhereInput
+                }
+
+                input MovieGenresConnectFieldInput {
+                  edge: RelPropertiesCreateInput!
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: GenreConnectWhere
+                }
+
+                type MovieGenresConnection {
+                  edges: [MovieGenresRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieGenresConnectionSort {
+                  edge: RelPropertiesSort
+                  node: GenreSort
+                }
+
+                input MovieGenresConnectionWhere {
+                  AND: [MovieGenresConnectionWhere!]
+                  NOT: MovieGenresConnectionWhere
+                  OR: [MovieGenresConnectionWhere!]
+                  edge: RelPropertiesWhere
+                  edge_NOT: RelPropertiesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  node: GenreWhere
+                  node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                input MovieGenresCreateFieldInput {
+                  edge: RelPropertiesCreateInput!
+                  node: GenreCreateInput!
+                }
+
+                input MovieGenresDeleteFieldInput {
+                  where: MovieGenresConnectionWhere
+                }
+
+                input MovieGenresDisconnectFieldInput {
+                  where: MovieGenresConnectionWhere
+                }
+
                 input MovieGenresFieldInput {
                   connect: [MovieGenresConnectFieldInput!]
                   create: [MovieGenresCreateFieldInput!]
@@ -1061,13 +1553,10 @@ describe("@populatedBy tests", () => {
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
-                type MovieGenresRelationship implements RelProperties {
-                  callback1: String!
-                  callback2: String!
-                  callback3: String!
+                type MovieGenresRelationship {
                   cursor: String!
-                  id: ID!
                   node: Genre!
+                  properties: RelProperties!
                 }
 
                 input MovieGenresUpdateConnectionInput {
@@ -1186,374 +1675,21 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
-                interface RelProperties {
-                  callback1: String!
-                  callback2: String!
-                  callback3: String!
+                \\"\\"\\"
+                The edge properties for the following fields:
+                * Movie.genres
+                \\"\\"\\"
+                type RelProperties {
+                  callback1: Int!
+                  callback2: Int!
+                  callback3: Int!
                   id: ID!
                 }
 
-                input RelPropertiesCreateInput {
-                  id: ID!
-                }
-
-                input RelPropertiesSort {
-                  callback1: SortDirection
-                  callback2: SortDirection
-                  callback3: SortDirection
-                  id: SortDirection
-                }
-
-                input RelPropertiesUpdateInput {
-                  id: ID
-                }
-
-                input RelPropertiesWhere {
-                  AND: [RelPropertiesWhere!]
-                  NOT: RelPropertiesWhere
-                  OR: [RelPropertiesWhere!]
-                  callback1: String
-                  callback1_CONTAINS: String
-                  callback1_ENDS_WITH: String
-                  callback1_IN: [String!]
-                  callback1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback1_STARTS_WITH: String
-                  callback2: String
-                  callback2_CONTAINS: String
-                  callback2_ENDS_WITH: String
-                  callback2_IN: [String!]
-                  callback2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2_STARTS_WITH: String
-                  callback3: String
-                  callback3_CONTAINS: String
-                  callback3_ENDS_WITH: String
-                  callback3_IN: [String!]
-                  callback3_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3_STARTS_WITH: String
-                  id: ID
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_IN: [ID!]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_STARTS_WITH: ID
-                }
-
-                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                enum SortDirection {
-                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                  ASC
-                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                  DESC
-                }
-
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type UpdateGenresMutationResponse {
-                  genres: [Genre!]!
-                  info: UpdateInfo!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created and deleted during an update mutation
-                \\"\\"\\"
-                type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                  nodesCreated: Int!
-                  nodesDeleted: Int!
-                  relationshipsCreated: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type UpdateMoviesMutationResponse {
-                  info: UpdateInfo!
-                  movies: [Movie!]!
-                }"
-            `);
-        });
-
-        test("PopulatedBy - Int", async () => {
-            const callback1 = () => "random-int";
-            const callback2 = () => "random-int";
-            const callback3 = () => "random-int";
-
-            const typeDefs = gql`
-                type Movie {
-                    id: ID
-                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
-                }
-
-                interface RelProperties @relationshipProperties {
-                    id: ID!
-                    callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
-                    callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
-                    callback3: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
-                }
-
-                type Genre {
-                    id: ID!
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: {
-                    populatedBy: {
-                        callbacks: {
-                            callback1,
-                            callback2,
-                            callback3,
-                        },
-                    },
-                },
-            });
-
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-            expect(printedSchema).toMatchInlineSnapshot(`
-                "schema {
-                  query: Query
-                  mutation: Mutation
-                }
-
-                type CreateGenresMutationResponse {
-                  genres: [Genre!]!
-                  info: CreateInfo!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created during a create mutation
-                \\"\\"\\"
-                type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                  nodesCreated: Int!
-                  relationshipsCreated: Int!
-                }
-
-                type CreateMoviesMutationResponse {
-                  info: CreateInfo!
-                  movies: [Movie!]!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships deleted during a delete mutation
-                \\"\\"\\"
-                type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                  nodesDeleted: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type Genre {
-                  id: ID!
-                }
-
-                type GenreAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNonNullable!
-                }
-
-                input GenreConnectWhere {
-                  node: GenreWhere!
-                }
-
-                input GenreCreateInput {
-                  id: ID!
-                }
-
-                type GenreEdge {
-                  cursor: String!
-                  node: Genre!
-                }
-
-                input GenreOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [GenreSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
-                \\"\\"\\"
-                input GenreSort {
-                  id: SortDirection
-                }
-
-                input GenreUpdateInput {
-                  id: ID
-                }
-
-                input GenreWhere {
-                  AND: [GenreWhere!]
-                  NOT: GenreWhere
-                  OR: [GenreWhere!]
-                  id: ID
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_IN: [ID!]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_STARTS_WITH: ID
-                }
-
-                type GenresConnection {
-                  edges: [GenreEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
-                }
-
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
-                }
-
-                type Movie {
-                  genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
-                  genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
-                  id: ID
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
-                }
-
-                input MovieConnectInput {
-                  genres: [MovieGenresConnectFieldInput!]
-                }
-
-                input MovieCreateInput {
-                  genres: MovieGenresFieldInput
-                  id: ID
-                }
-
-                input MovieDeleteInput {
-                  genres: [MovieGenresDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  genres: [MovieGenresDisconnectFieldInput!]
-                }
-
-                type MovieEdge {
-                  cursor: String!
-                  node: Movie!
-                }
-
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
-                  edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
-                }
-
-                type MovieGenreGenresEdgeAggregateSelection {
-                  callback1: IntAggregateSelectionNonNullable!
-                  callback2: IntAggregateSelectionNonNullable!
-                  callback3: IntAggregateSelectionNonNullable!
-                  id: IDAggregateSelectionNonNullable!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
-                }
-
-                input MovieGenresAggregateInput {
-                  AND: [MovieGenresAggregateInput!]
-                  NOT: MovieGenresAggregateInput
-                  OR: [MovieGenresAggregateInput!]
-                  count: Int
-                  count_GT: Int
-                  count_GTE: Int
-                  count_LT: Int
-                  count_LTE: Int
-                  edge: MovieGenresEdgeAggregationWhereInput
-                  node: MovieGenresNodeAggregationWhereInput
-                }
-
-                input MovieGenresConnectFieldInput {
-                  edge: RelPropertiesCreateInput!
-                  \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties.
-                  \\"\\"\\"
-                  overwrite: Boolean! = true
-                  where: GenreConnectWhere
-                }
-
-                type MovieGenresConnection {
-                  edges: [MovieGenresRelationship!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input MovieGenresConnectionSort {
-                  edge: RelPropertiesSort
-                  node: GenreSort
-                }
-
-                input MovieGenresConnectionWhere {
-                  AND: [MovieGenresConnectionWhere!]
-                  NOT: MovieGenresConnectionWhere
-                  OR: [MovieGenresConnectionWhere!]
-                  edge: RelPropertiesWhere
-                  edge_NOT: RelPropertiesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  node: GenreWhere
-                  node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                }
-
-                input MovieGenresCreateFieldInput {
-                  edge: RelPropertiesCreateInput!
-                  node: GenreCreateInput!
-                }
-
-                input MovieGenresDeleteFieldInput {
-                  where: MovieGenresConnectionWhere
-                }
-
-                input MovieGenresDisconnectFieldInput {
-                  where: MovieGenresConnectionWhere
-                }
-
-                input MovieGenresEdgeAggregationWhereInput {
-                  AND: [MovieGenresEdgeAggregationWhereInput!]
-                  NOT: MovieGenresEdgeAggregationWhereInput
-                  OR: [MovieGenresEdgeAggregationWhereInput!]
+                input RelPropertiesAggregationWhereInput {
+                  AND: [RelPropertiesAggregationWhereInput!]
+                  NOT: RelPropertiesAggregationWhereInput
+                  OR: [RelPropertiesAggregationWhereInput!]
                   callback1_AVERAGE_EQUAL: Float
                   callback1_AVERAGE_GT: Float
                   callback1_AVERAGE_GTE: Float
@@ -1630,150 +1766,6 @@ describe("@populatedBy tests", () => {
                   callback3_SUM_LT: Int
                   callback3_SUM_LTE: Int
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                }
-
-                input MovieGenresFieldInput {
-                  connect: [MovieGenresConnectFieldInput!]
-                  create: [MovieGenresCreateFieldInput!]
-                }
-
-                input MovieGenresNodeAggregationWhereInput {
-                  AND: [MovieGenresNodeAggregationWhereInput!]
-                  NOT: MovieGenresNodeAggregationWhereInput
-                  OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                }
-
-                type MovieGenresRelationship implements RelProperties {
-                  callback1: Int!
-                  callback2: Int!
-                  callback3: Int!
-                  cursor: String!
-                  id: ID!
-                  node: Genre!
-                }
-
-                input MovieGenresUpdateConnectionInput {
-                  edge: RelPropertiesUpdateInput
-                  node: GenreUpdateInput
-                }
-
-                input MovieGenresUpdateFieldInput {
-                  connect: [MovieGenresConnectFieldInput!]
-                  create: [MovieGenresCreateFieldInput!]
-                  delete: [MovieGenresDeleteFieldInput!]
-                  disconnect: [MovieGenresDisconnectFieldInput!]
-                  update: MovieGenresUpdateConnectionInput
-                  where: MovieGenresConnectionWhere
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  genres: [MovieGenresCreateFieldInput!]
-                }
-
-                \\"\\"\\"
-                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                \\"\\"\\"
-                input MovieSort {
-                  id: SortDirection
-                }
-
-                input MovieUpdateInput {
-                  genres: [MovieGenresUpdateFieldInput!]
-                  id: ID
-                }
-
-                input MovieWhere {
-                  AND: [MovieWhere!]
-                  NOT: MovieWhere
-                  OR: [MovieWhere!]
-                  genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
-                  genresAggregate: MovieGenresAggregateInput
-                  genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
-                  \\"\\"\\"
-                  Return Movies where all of the related MovieGenresConnections match this filter
-                  \\"\\"\\"
-                  genresConnection_ALL: MovieGenresConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where none of the related MovieGenresConnections match this filter
-                  \\"\\"\\"
-                  genresConnection_NONE: MovieGenresConnectionWhere
-                  genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
-                  \\"\\"\\"
-                  Return Movies where one of the related MovieGenresConnections match this filter
-                  \\"\\"\\"
-                  genresConnection_SINGLE: MovieGenresConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where some of the related MovieGenresConnections match this filter
-                  \\"\\"\\"
-                  genresConnection_SOME: MovieGenresConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-                  genres_ALL: GenreWhere
-                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-                  genres_NONE: GenreWhere
-                  genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
-                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-                  genres_SINGLE: GenreWhere
-                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-                  genres_SOME: GenreWhere
-                  id: ID
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_STARTS_WITH: ID
-                }
-
-                type MoviesConnection {
-                  edges: [MovieEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Mutation {
-                  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
-                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                  deleteGenres(where: GenreWhere): DeleteInfo!
-                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                  updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                }
-
-                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                type PageInfo {
-                  endCursor: String
-                  hasNextPage: Boolean!
-                  hasPreviousPage: Boolean!
-                  startCursor: String
-                }
-
-                type Query {
-                  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
-                  genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                }
-
-                interface RelProperties {
-                  callback1: Int!
-                  callback2: Int!
-                  callback3: Int!
-                  id: ID!
                 }
 
                 input RelPropertiesCreateInput {

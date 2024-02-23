@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - delete", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -49,7 +49,7 @@ describe("Relationship properties - delete", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -134,7 +134,7 @@ describe("Relationship properties - delete", () => {
 
             union ActedInUnion = Movie | Show
 
-            interface ActedInInterface @relationshipProperties {
+            type ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;

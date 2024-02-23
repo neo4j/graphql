@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { generate } from "randomstring";
 import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
 import * as neo4jDriver from "neo4j-driver";
-import Neo4j from "../neo4j";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("@alias directive", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
     const dbName = generate({ charset: "alphabetic" });
@@ -42,7 +42,7 @@ describe("@alias directive", () => {
     const ProtectedUser = new UniqueType("ProtectedUser");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = `
             type JWTPayload @jwt {
@@ -50,12 +50,12 @@ describe("@alias directive", () => {
             }
 
             interface AliasInterface {
-                id: ID! @alias(property: "dbId")
-                name: String! @alias(property: "toBeOverridden")
+                id: ID!
+                name: String! 
             }
 
             type ${AliasDirectiveTestUser} implements AliasInterface {
-                id: ID! @id @unique
+                id: ID! @id @unique  @alias(property: "dbId")
                 name: String! @alias(property: "dbName")
                 likes: [${AliasDirectiveTestMovie}!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
@@ -68,7 +68,7 @@ describe("@alias directive", () => {
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            interface AliasDirectiveTestLikesProps @relationshipProperties {
+            type AliasDirectiveTestLikesProps @relationshipProperties {
                 comment: String! @alias(property: "dbComment")
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
@@ -171,13 +171,15 @@ describe("@alias directive", () => {
         expect((gqlResult.data as any)[ProtectedUser.plural][0]).toEqual({ name: dbName });
     });
     test("Aliased fields on nodes through connections (incl. rel props)", async () => {
-        const usersQuery = `
+        const usersQuery = /* GraphQL */ `
             query UsersLikesMovies {
                 ${AliasDirectiveTestUser.plural} {
                     name
                     likesConnection {
                         edges {
-                            comment
+                            properties {
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -201,7 +203,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        comment: dbComment,
+                        properties: { comment: dbComment },
                         node: {
                             title: dbTitle,
                             year: year.toNumber(),
@@ -213,13 +215,15 @@ describe("@alias directive", () => {
     });
 
     test("Using GraphQL query alias with @alias (using CONTAINS filter)", async () => {
-        const usersQuery = `
+        const usersQuery = /* GraphQL */ `
             query UsersLikesMovies {
                 ${AliasDirectiveTestUser.plural}(where: {name_CONTAINS: "${dbName.substring(0, 6)}"}) {
                     myName: name
                     likesConnection {
                         edges {
-                            myComment: comment
+                           properties {
+                             myComment: comment 
+                            }
                         }
                     }
                 }
@@ -236,7 +240,7 @@ describe("@alias directive", () => {
 
         expect((gqlResult.data as any)[AliasDirectiveTestUser.plural][0]).toEqual({
             myName: dbName,
-            likesConnection: { edges: [{ myComment: dbComment }] },
+            likesConnection: { edges: [{ properties: { myComment: dbComment } }] },
         });
     });
 
@@ -259,8 +263,10 @@ describe("@alias directive", () => {
                     }
                     likesConnection {
                         edges {
-                            relationshipCreatedAt
-                            comment
+                            properties {
+                                relationshipCreatedAt
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -295,8 +301,10 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        relationshipCreatedAt: expect.any(String),
-                        comment,
+                        properties: {
+                            relationshipCreatedAt: expect.any(String),
+                            comment,
+                        },
                         node: {
                             title,
                             year: year.toNumber(),
@@ -327,7 +335,9 @@ describe("@alias directive", () => {
                     }
                     likesConnection {
                         edges {
-                            comment
+                            properties {
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -360,7 +370,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        comment,
+                        properties: { comment },
                         node: {
                             title,
                             year: year.toNumber(),
@@ -416,7 +426,9 @@ describe("@alias directive", () => {
                     }
                     likesConnection {
                         edges {
-                            comment
+                            properties {
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -449,7 +461,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        comment: newComment,
+                        properties: { comment: newComment },
                         node: {
                             title: newTitle,
                             year: newYear.toNumber(),

@@ -28,50 +28,47 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
-import { getPathToNode } from "../utils/path-parser";
 import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
 import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../schema-model/library-directives";
 import { isInArray } from "../../../../utils/is-in-array";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
-export function ValidDirectiveAtFieldLocation(experimental: boolean) {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-                if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
-                    // this rule only checks field location
-                    return;
-                }
-                if (!parentOfTraversedDef) {
-                    console.error("No parent of last definition traversed");
-                    return;
-                }
-                const shouldRunThisRule = isDirectiveValidAtLocation({
-                    directiveNode,
-                    traversedDef,
-                    parentDef: parentOfTraversedDef,
-                    experimental,
-                });
+export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): ASTVisitor {
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
+                // this rule only checks field location
+                return;
+            }
+            if (!parentOfTraversedDef) {
+                console.error("No parent of last definition traversed");
+                return;
+            }
+            const shouldRunThisRule = isDirectiveValidAtLocation({
+                directiveNode,
+                traversedDef,
+                parentDef: parentOfTraversedDef,
+            });
 
-                if (!shouldRunThisRule) {
-                    return;
-                }
+            if (!shouldRunThisRule) {
+                return;
+            }
 
-                const { isValid, errorMsg, errorPath } = assertValid(shouldRunThisRule);
-                if (!isValid) {
-                    context.reportError(
-                        createGraphQLError({
-                            nodes: [traversedDef],
-                            path: [...pathToNode, ...errorPath],
-                            errorMsg,
-                        })
-                    );
-                }
-            },
-        };
+            const { isValid, errorMsg, errorPath } = assertValid(shouldRunThisRule);
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [traversedDef],
+                        path: [...pathToNode, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
@@ -79,12 +76,10 @@ function isDirectiveValidAtLocation({
     directiveNode,
     traversedDef,
     parentDef,
-    experimental,
 }: {
     directiveNode: DirectiveNode;
     traversedDef: FieldDefinitionNode;
     parentDef: ObjectOrInterfaceWithExtensions;
-    experimental: boolean;
 }) {
     if (isLocationFieldOfRootType(parentDef)) {
         return () =>
@@ -94,14 +89,12 @@ function isDirectiveValidAtLocation({
                 parentDef,
             });
     }
-    if (experimental) {
-        if (isLocationFieldOfInterfaceType(parentDef)) {
-            return () =>
-                validFieldOfInterfaceTypeLocation({
-                    directiveNode,
-                    parentDef,
-                });
-        }
+    if (isLocationFieldOfInterfaceType(parentDef)) {
+        return () =>
+            validFieldOfInterfaceTypeLocation({
+                directiveNode,
+                parentDef,
+            });
     }
 
     return;
@@ -120,11 +113,9 @@ function isLocationFieldOfRootType(
 function isLocationFieldOfInterfaceType(
     parentDef: ObjectOrInterfaceWithExtensions
 ): parentDef is InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode {
-    // relationshipProperties interfaces are different bc they are "creatable"
     return (
         parentDef &&
-        (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION || parentDef.kind === Kind.INTERFACE_TYPE_EXTENSION) &&
-        !parentDef.directives?.some((d) => d.name.value === "relationshipProperties")
+        (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION || parentDef.kind === Kind.INTERFACE_TYPE_EXTENSION)
     );
 }
 
@@ -140,10 +131,17 @@ function noDirectivesAllowedAtLocation({
         (d) => d.name === directiveNode.name.value
     );
     if (directiveAtInvalidLocation) {
-        throw new DocumentValidationError(
-            `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of the ${parentDef.name.value} type.`,
-            [`@${directiveNode.name.value}`]
-        );
+        if (directiveAtInvalidLocation.name === "relationship" && parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of interface types (${parentDef.name.value}). Since version 5.0.0, interface fields can only have @declareRelationship. Please add the @relationship directive to the fields in all types which implement it.`,
+                [`@${directiveNode.name.value}`]
+            );
+        } else {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of the ${parentDef.name.value} type.`,
+                [`@${directiveNode.name.value}`]
+            );
+        }
     }
 }
 
@@ -198,8 +196,8 @@ function validFieldOfInterfaceTypeLocation({
     if (isInArray(SCHEMA_CONFIGURATION_FIELD_DIRECTIVES, directiveNode.name.value)) {
         return;
     }
-    if (directiveNode.name.value === "relationship") {
-        // allow @relationship until a different way of supporting relationship-like behavior on interfaces is implemented
+    if (directiveNode.name.value === "declareRelationship") {
+        // allow @declareRelationship as an instruction for schema generation
         return;
     }
     if (directiveNode.name.value === "private") {

@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2614", () => {
     let typeDefs: string;
@@ -44,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                 episodes: Int!
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
             }
             
@@ -60,10 +59,10 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
     });
 
     test("should use the provided node directive label in the call subquery", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query GetProductionsMovie {
                 actors {
-                    actedIn(where: { _on: { Movie: { title: "Test Movie" } } }) {
+                    actedIn(where: { title: "Test Movie" }) {
                         title
                     }
                 }
@@ -81,6 +80,12 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                     WHERE this1.title = $param0
                     WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                    WHERE this4.title = $param1
+                    WITH this4 { .title, __resolveType: \\"Series\\", __id: id(this4) } AS this4
+                    RETURN this4 AS var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2
@@ -90,7 +95,8 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Test Movie\\"
+                \\"param0\\": \\"Test Movie\\",
+                \\"param1\\": \\"Test Movie\\"
             }"
         `);
     });

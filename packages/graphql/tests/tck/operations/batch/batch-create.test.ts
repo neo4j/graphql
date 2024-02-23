@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Batch Create", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 id: ID! @id @unique
                 name: String
@@ -45,7 +43,7 @@ describe("Batch Create", () => {
                 address: String
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 year: Int
             }
         `;
@@ -56,7 +54,7 @@ describe("Batch Create", () => {
     });
 
     test("no nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
@@ -104,7 +102,7 @@ describe("Batch Create", () => {
     });
 
     test("1 to 1 cardinality", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -243,7 +241,7 @@ describe("Batch Create", () => {
     });
 
     test("nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -357,7 +355,7 @@ describe("Batch Create", () => {
     });
 
     test("connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -475,7 +473,7 @@ describe("Batch Create", () => {
     });
 
     test("heterogeneous batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [

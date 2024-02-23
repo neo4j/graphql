@@ -24,14 +24,14 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import { runCypher } from "../../utils/run-cypher";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - read", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
@@ -44,7 +44,7 @@ describe("Relationship properties - read", () => {
     const actorD = `d${generate({ charset: "alphabetic" })}`;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -77,7 +77,7 @@ describe("Relationship properties - read", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -85,7 +85,7 @@ describe("Relationship properties - read", () => {
 
     afterEach(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [typeMovie, typeActor]);
+        await cleanNodesUsingSession(session, [typeMovie, typeActor]);
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
@@ -100,7 +100,9 @@ describe("Relationship properties - read", () => {
                     actorsConnection {
                         totalCount
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -133,19 +135,19 @@ describe("Relationship properties - read", () => {
 
             expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toHaveLength(3);
             expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toContainEqual({
-                screenTime: 5,
+                properties: { screenTime: 5 },
                 node: {
                     name: actorC,
                 },
             });
             expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toContainEqual({
-                screenTime: 105,
+                properties: { screenTime: 105 },
                 node: {
                     name: actorB,
                 },
             });
             expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toContainEqual({
-                screenTime: 105,
+                properties: { screenTime: 105 },
                 node: {
                     name: actorA,
                 },
@@ -170,7 +172,9 @@ describe("Relationship properties - read", () => {
                         totalCount
                         edges {
                             cursor
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -202,7 +206,7 @@ describe("Relationship properties - read", () => {
                         edges: [
                             {
                                 cursor: offsetToCursor(0),
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
@@ -234,7 +238,9 @@ describe("Relationship properties - read", () => {
                         totalCount
                         edges {
                             cursor
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -264,21 +270,21 @@ describe("Relationship properties - read", () => {
                         edges: [
                             {
                                 cursor: offsetToCursor(0),
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
                                 cursor: offsetToCursor(1),
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
                                 cursor: offsetToCursor(2),
-                                screenTime: 5,
+                                properties: { screenTime: 5 },
                                 node: {
                                     name: actorC,
                                 },
@@ -305,21 +311,21 @@ describe("Relationship properties - read", () => {
                         edges: [
                             {
                                 cursor: offsetToCursor(0),
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
                                 cursor: offsetToCursor(1),
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
                                 cursor: offsetToCursor(2),
-                                screenTime: 5,
+                                properties: { screenTime: 5 },
                                 node: {
                                     name: actorC,
                                 },
@@ -345,7 +351,9 @@ describe("Relationship properties - read", () => {
                         sort: [{ edge: { screenTime: DESC } }, { node: { name: ASC } }]
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -362,7 +370,9 @@ describe("Relationship properties - read", () => {
                         sort: [{ node: { name: ASC } }, { edge: { screenTime: DESC } }]
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -395,25 +405,25 @@ describe("Relationship properties - read", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 106,
+                                properties: { screenTime: 106 },
                                 node: {
                                     name: actorD,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                screenTime: 5,
+                                properties: { screenTime: 5 },
                                 node: {
                                     name: actorC,
                                 },
@@ -436,25 +446,25 @@ describe("Relationship properties - read", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                screenTime: 5,
+                                properties: { screenTime: 5 },
                                 node: {
                                     name: actorC,
                                 },
                             },
                             {
-                                screenTime: 106,
+                                properties: { screenTime: 106 },
                                 node: {
                                     name: actorD,
                                 },
@@ -483,7 +493,9 @@ describe("Relationship properties - read", () => {
                     ) {
                         totalCount
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -515,13 +527,13 @@ describe("Relationship properties - read", () => {
                         totalCount: 2,
                         edges: [
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorB,
                                 },
@@ -550,13 +562,13 @@ describe("Relationship properties - read", () => {
                         totalCount: 2,
                         edges: [
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actorA,
                                 },
@@ -586,7 +598,9 @@ describe("Relationship properties - read", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                               properties {
+                                 screenTime
+                               }
                                 node {
                                     name
                                 }
@@ -615,19 +629,19 @@ describe("Relationship properties - read", () => {
 
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toHaveLength(3);
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
-                screenTime: 5,
+                properties: { screenTime: 5 },
                 node: {
                     name: actorC,
                 },
             });
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
-                screenTime: 105,
+                properties: { screenTime: 105 },
                 node: {
                     name: actorB,
                 },
             });
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
-                screenTime: 105,
+                properties: { screenTime: 105 },
                 node: {
                     name: actorA,
                 },
@@ -650,7 +664,9 @@ describe("Relationship properties - read", () => {
                         title
                         actorsConnection(where: { node: { name_NOT: "${actorA}" } }) {
                             edges {
-                                screenTime
+                               properties {
+                                 screenTime
+                               }
                                 node {
                                     name
                                 }
@@ -679,13 +695,13 @@ describe("Relationship properties - read", () => {
 
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toHaveLength(2);
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
-                screenTime: 5,
+                properties: { screenTime: 5 },
                 node: {
                     name: actorC,
                 },
             });
             expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
-                screenTime: 105,
+                properties: { screenTime: 105 },
                 node: {
                     name: actorB,
                 },

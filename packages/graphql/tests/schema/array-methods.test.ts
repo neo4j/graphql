@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Arrays Methods", () => {
@@ -37,7 +37,7 @@ describe("Arrays Methods", () => {
                 averageRating: Float!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -50,7 +50,12 @@ describe("Arrays Methods", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            * Movie.actors
+            \\"\\"\\"
+            type ActedIn {
               pay: [Float]
             }
 
@@ -180,10 +185,10 @@ describe("Arrays Methods", () => {
               id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Movie!
-              pay: [Float]
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -202,7 +207,7 @@ describe("Arrays Methods", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -237,8 +242,8 @@ describe("Arrays Methods", () => {
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              averageRating: FloatAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorOptions {
@@ -345,16 +350,16 @@ describe("Arrays Methods", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -372,7 +377,7 @@ describe("Arrays Methods", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -479,10 +484,10 @@ describe("Arrays Methods", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              pay: [Float]
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -500,9 +505,9 @@ describe("Arrays Methods", () => {
             }
 
             type MovieAggregateSelection {
-              averageRating: FloatAggregateSelectionNonNullable!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -664,7 +669,7 @@ describe("Arrays Methods", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

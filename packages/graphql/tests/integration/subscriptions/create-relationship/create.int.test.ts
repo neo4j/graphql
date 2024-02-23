@@ -19,15 +19,15 @@
 
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import Neo4j from "../../neo4j";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("Subscriptions connect with create", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
 
@@ -38,7 +38,7 @@ describe("Subscriptions connect with create", () => {
     let typeInfluencer: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         plugin = new TestSubscriptionsEngine();
     });
@@ -65,15 +65,15 @@ describe("Subscriptions connect with create", () => {
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         
@@ -107,7 +107,7 @@ describe("Subscriptions connect with create", () => {
 
     afterEach(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
         await session.close();
     });
 

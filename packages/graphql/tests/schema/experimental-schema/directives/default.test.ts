@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
 describe("@default directive", () => {
@@ -48,7 +48,7 @@ describe("@default directive", () => {
                 EVERYWHERE
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -74,9 +74,9 @@ describe("@default directive", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -88,23 +88,23 @@ describe("@default directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             enum Location {
@@ -143,9 +143,9 @@ describe("@default directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -178,13 +178,13 @@ describe("@default directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-              numberOfFriends: IntAggregateSelectionNonNullable!
-              rating: FloatAggregateSelectionNonNullable!
-              toBeOverridden: StringAggregateSelectionNonNullable!
-              verifiedDate: DateTimeAggregateSelectionNonNullable!
+              fromInterface: StringAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              numberOfFriends: IntAggregateSelection!
+              rating: FloatAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
+              verifiedDate: DateTimeAggregateSelection!
             }
 
             input UserCreateInput {
@@ -211,8 +211,8 @@ describe("@default directive", () => {
 
             type UserInterfaceAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelectionNonNullable!
-              toBeOverridden: StringAggregateSelectionNonNullable!
+              fromInterface: StringAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
             }
 
             enum UserInterfaceImplementation {

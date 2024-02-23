@@ -54,6 +54,7 @@ export function rootConnectionResolver({
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
             entityAdapter: concreteEntityAdapter,
+            varName: "this",
         });
 
         const executeResult = await execute({

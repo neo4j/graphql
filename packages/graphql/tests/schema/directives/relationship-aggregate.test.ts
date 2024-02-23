@@ -234,8 +234,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  password: StringAggregateSelectionNonNullable!
-                  username: StringAggregateSelectionNonNullable!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
                 }
 
                 input ActorConnectWhere {
@@ -491,7 +491,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  title: StringAggregateSelectionNullable!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -626,12 +626,7 @@ describe("@relationship directive, aggregate argument", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -688,8 +683,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  password: StringAggregateSelectionNonNullable!
-                  username: StringAggregateSelectionNonNullable!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
                 }
 
                 input ActorConnectWhere {
@@ -801,8 +796,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  password: StringAggregateSelectionNonNullable!
-                  username: StringAggregateSelectionNonNullable!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -956,7 +951,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  title: StringAggregateSelectionNullable!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -1091,12 +1086,7 @@ describe("@relationship directive, aggregate argument", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1159,8 +1149,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorCreateInput {
@@ -1320,7 +1310,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -1432,6 +1422,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type PersonAggregateSelection {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -1440,12 +1436,8 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    enum PersonImplementation {
+                      Actor
                     }
 
                     input PersonOptions {
@@ -1466,13 +1458,14 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       password: String
                       username: String
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
@@ -1483,6 +1476,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -1502,6 +1496,8 @@ describe("@relationship directive, aggregate argument", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1512,12 +1508,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -1578,8 +1569,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorCreateInput {
@@ -1676,6 +1667,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -1739,7 +1731,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -1771,6 +1763,16 @@ describe("@relationship directive, aggregate argument", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -1851,6 +1853,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type PersonAggregateSelection {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -1859,12 +1867,8 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    enum PersonImplementation {
+                      Actor
                     }
 
                     input PersonOptions {
@@ -1885,13 +1889,14 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       password: String
                       username: String
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
@@ -1902,6 +1907,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -1921,6 +1927,8 @@ describe("@relationship directive, aggregate argument", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1931,12 +1939,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -2001,8 +2004,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectWhere {
@@ -2251,7 +2254,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -2305,6 +2308,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2323,6 +2327,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      actors_ALL: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      actors_NONE: CastMemberWhere
+                      actors_NOT: CastMemberWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      actors_SINGLE: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      actors_SOME: CastMemberWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -2373,7 +2386,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      name: StringAggregateSelectionNonNullable!
+                      name: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -2429,6 +2442,7 @@ describe("@relationship directive, aggregate argument", () => {
                       actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+                      castMembers(options: QueryOptions, where: CastMemberWhere): [CastMember!]!
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2451,12 +2465,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -2523,8 +2532,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectWhere {
@@ -2773,7 +2782,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -2827,6 +2836,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2845,6 +2855,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      actors_ALL: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      actors_NONE: CastMemberWhere
+                      actors_NOT: CastMemberWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      actors_SINGLE: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      actors_SOME: CastMemberWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -2895,7 +2914,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      name: StringAggregateSelectionNonNullable!
+                      name: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -2951,6 +2970,7 @@ describe("@relationship directive, aggregate argument", () => {
                       actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+                      castMembers(options: QueryOptions, where: CastMemberWhere): [CastMember!]!
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2973,12 +2993,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }

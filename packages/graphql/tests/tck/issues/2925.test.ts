@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2925", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Group {
             name: String
             hasGroupUser: [User!]! @relationship(type: "HAS_GROUP", direction: IN)
@@ -45,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
     });
 
     test("should query relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Query {
                 users(where: { hasGroup: { name_IN: ["Group A"] } }) {
                     name
@@ -71,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
     });
 
     test("should query required relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Query {
                 users(where: { hasRequiredGroup: { name_IN: ["Group A"] } }) {
                     name
@@ -100,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
     });
 
     test("should query nested relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Query {
                 groups(where: { hasGroupUser: { hasGroup: { name_IN: ["Group A"] } } }) {
                     name
@@ -129,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
     });
 
     test("should query nested required relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Query {
                 groups(where: { hasGroupUser: { hasRequiredGroup: { name_IN: ["Group A"] } } }) {
                     name

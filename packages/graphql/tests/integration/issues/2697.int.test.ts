@@ -19,13 +19,13 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2697", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let typeDefs: string;
 
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = `
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
             movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Duration
         }
         `;

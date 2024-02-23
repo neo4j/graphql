@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import type { Driver, Integer } from "neo4j-driver";
 import { isTime } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import Neo4jHelper from "../../neo4j";
 
 describe("timestamp/time", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -99,7 +99,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp(operations: [CREATE])
                         screenTime: Int!
                     }
@@ -131,7 +131,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        createdAt
+                                        properties {
+                                            createdAt
+                                        }
                                     }
                                 }
                             }
@@ -232,7 +234,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp(operations: [UPDATE])
                         screenTime: Int!
                     }
@@ -263,7 +265,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        updatedAt
+                                        properties {
+                                            updatedAt
+                                        }
                                     }
                                 }
                             }
@@ -366,7 +370,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
@@ -398,7 +402,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        createdAt
+                                        properties {
+                                            createdAt
+                                        }
                                     }
                                 }
                             }
@@ -442,7 +448,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
@@ -473,7 +479,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        updatedAt
+                                        properties {
+                                            updatedAt
+                                        }
                                     }
                                 }
                             }
@@ -631,7 +639,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp
                         screenTime: Int!
                     }
@@ -662,7 +670,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        createdAt
+                                        properties {
+                                            createdAt
+                                        }
                                     }
                                 }
                             }
@@ -706,7 +716,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp
                         screenTime: Int!
                     }
@@ -737,7 +747,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        updatedAt
+                                        properties {
+                                            updatedAt
+                                        }
                                     }
                                 }
                             }

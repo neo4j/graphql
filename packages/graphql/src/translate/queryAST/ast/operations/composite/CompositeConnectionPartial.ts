@@ -87,14 +87,22 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         const uniqueEdgeProjectionFields = Array.from(new Set([...edgeProjectionFields, ...edgeSortProjectionFields]));
 
+        const propertiesProjectionMap = new Cypher.Map();
         uniqueEdgeProjectionFields.forEach((p) => {
             if (typeof p === "string") {
-                edgeProjectionMap.set(p, nestedContext.relationship!.property(p));
+                propertiesProjectionMap.set(p, nestedContext.relationship!.property(p));
             } else {
-                edgeProjectionMap.set(p);
+                propertiesProjectionMap.set(p);
             }
         });
 
+        if (propertiesProjectionMap.size) {
+            if (this.relationship?.propertiesTypeName) {
+                // should be true if getting here but just in case..
+                propertiesProjectionMap.set("__resolveType", new Cypher.Literal(this.relationship.propertiesTypeName));
+            }
+            edgeProjectionMap.set("properties", propertiesProjectionMap);
+        }
         edgeProjectionMap.set("node", nodeProjectionMap);
 
         let withWhere: Cypher.Clause | undefined;

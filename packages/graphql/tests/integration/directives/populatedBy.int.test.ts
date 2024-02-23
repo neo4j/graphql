@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("@populatedBy directive", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -851,7 +851,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [CREATE], callback: "callback")
                     }
@@ -905,7 +905,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -931,7 +932,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string1,
+                                            properties: { callback: string1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -963,7 +964,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
@@ -1013,7 +1014,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1049,7 +1051,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string1,
+                                            properties: { callback: string1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1093,7 +1095,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
@@ -1147,7 +1149,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                      properties {  callback
+                                      }
                                         node {
                                             id
                                         }
@@ -1172,7 +1175,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1198,7 +1202,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string1,
+                                            properties: { callback: string1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1215,7 +1219,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string2,
+                                            properties: { callback: string2 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1252,7 +1256,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
                     }
@@ -1306,7 +1310,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1332,7 +1337,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int1,
+                                            properties: { callback: int1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1367,7 +1372,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
@@ -1417,7 +1422,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                      properties { callback
+                                      }
                                         node {
                                             id
                                         }
@@ -1453,7 +1459,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int1,
+                                            properties: { callback: int1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1503,7 +1509,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
@@ -1557,7 +1563,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1582,7 +1589,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1608,7 +1616,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int1,
+                                            properties: { callback: int1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1625,7 +1633,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int2,
+                                            properties: { callback: int2 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1655,7 +1663,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         title: String!
                         slug: String! @populatedBy(operations: [CREATE], callback: "callback")
@@ -1714,8 +1722,10 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        title
-                                        slug
+                                      properties { 
+                                         title
+                                         slug
+                                      }
                                         node {
                                             id
                                         }
@@ -1741,8 +1751,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            title: movieTitle,
-                                            slug: `${movieTitle}-slug`,
+                                            properties: { title: movieTitle, slug: `${movieTitle}-slug` },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1770,7 +1779,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         title: String!
                         slug: String! @populatedBy(operations: [UPDATE], callback: "callback")
@@ -1824,8 +1833,10 @@ describe("@populatedBy directive", () => {
                             id
                             genresConnection {
                                 edges {
-                                    title
-                                    slug
+                                  properties { 
+                                     title
+                                     slug
+                                  }
                                     node {
                                         id
                                     }
@@ -1861,8 +1872,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            title: movieTitle,
-                                            slug: `${movieTitle}-slug`,
+                                            properties: { title: movieTitle, slug: `${movieTitle}-slug` },
                                             node: {
                                                 id: genreId,
                                             },

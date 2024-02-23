@@ -17,15 +17,49 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, DirectiveNode } from "graphql";
+import type { ASTVisitor, DirectiveNode, FieldDefinitionNode } from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { SCALAR_TYPES } from "../../../../constants";
 import { verifyId } from "../directives/id";
-import { verifyRelationshipFieldType } from "../directives/relationship";
 import { verifyTimestamp } from "../directives/timestamp";
-import { verifyUnique } from "../directives/unique";
 import type { ValidationFunction } from "../utils/document-validation-error";
-import { createGraphQLError, assertValid } from "../utils/document-validation-error";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
+import { getInnerTypeName } from "../utils/utils";
+
+function verifyRelationshipFieldType({
+    traversedDef,
+}: {
+    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
+}): void {
+    if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
+        // delegate
+        return;
+    }
+    const fieldTypeName = getInnerTypeName(traversedDef.type);
+    if (SCALAR_TYPES.includes(fieldTypeName)) {
+        const scalarTypesNotPermittedErrorMessage = `Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead.`;
+        throw new DocumentValidationError(scalarTypesNotPermittedErrorMessage, []);
+    }
+    const listTypesErrorMessage = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${fieldTypeName}!]!`;
+
+    const listIsNotNonNullable = traversedDef.type.kind === Kind.LIST_TYPE;
+    if (listIsNotNonNullable) {
+        throw new DocumentValidationError(listTypesErrorMessage, []);
+    }
+
+    if (traversedDef.type.kind === Kind.NON_NULL_TYPE) {
+        const ifListThenHasNonNullableEntries =
+            traversedDef.type.type.kind === Kind.LIST_TYPE
+                ? traversedDef.type.type.type.kind === Kind.NON_NULL_TYPE
+                : true;
+        if (!ifListThenHasNonNullableEntries) {
+            throw new DocumentValidationError(listTypesErrorMessage, []);
+        }
+    }
+}
 
 function getValidationFunction(directiveName: string): ValidationFunction | undefined {
     switch (directiveName) {
@@ -33,9 +67,9 @@ function getValidationFunction(directiveName: string): ValidationFunction | unde
             return verifyId;
         case "timestamp":
             return verifyTimestamp;
-        case "unique":
-            return verifyUnique;
         case "relationship":
+            return verifyRelationshipFieldType;
+        case "declareRelationship":
             return verifyRelationshipFieldType;
         default:
             return;

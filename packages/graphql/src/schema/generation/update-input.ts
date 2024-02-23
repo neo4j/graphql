@@ -30,14 +30,15 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { concreteEntityToUpdateInputFields, withArrayOperators, withMathOperators } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
 import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
 import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
-import { makeImplementationsUpdateInput } from "./implementation-inputs";
 import { withCreateFieldInputType } from "./relation-input";
-import { makeConnectionWhereInputType } from "./where-input";
+import { withConnectionWhereInputType } from "./connection-where-input";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -69,19 +70,18 @@ export function withUpdateInputType({
             ])
         );
     } else {
+        const hasNestedRelationships = entityAdapter.relationshipDeclarations.size > 0;
+        const hasFields = entityAdapter.updateInputFields.length > 0;
+        if (!hasNestedRelationships && !hasFields) {
+            ensureNonEmptyInput(composer, updateInputType);
+        }
+
         updateInputType.addFields(
             concreteEntityToUpdateInputFields(entityAdapter.updateInputFields, userDefinedFieldDirectives, [
                 withMathOperators(),
             ])
         );
-        const implementationsUpdateInputType = makeImplementationsUpdateInput({
-            interfaceEntityAdapter: entityAdapter,
-            composer,
-        });
-        updateInputType.addFields({ _on: implementationsUpdateInputType });
     }
-
-    // ensureNonEmptyInput(composer, updateInputType); - not for relationshipAdapter
     return updateInputType;
 }
 
@@ -91,7 +91,7 @@ export function augmentUpdateInputTypeWithUpdateFieldInput({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -127,7 +127,7 @@ function makeUpdateInputType({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -147,7 +147,7 @@ function makeUpdateInputTypeRelationshipField({
     updateFieldInput,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     updateFieldInput: InputTypeComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMap {
@@ -173,7 +173,7 @@ function withUpdateFieldInputType({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
@@ -206,7 +206,7 @@ function makeUpdateFieldInputTypeFields({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
@@ -228,7 +228,7 @@ function makeUpdateFieldInputTypeFields({
         if (!ifUnionMemberEntity) {
             throw new Error("Member Entity required.");
         }
-        connectionWhereInputType = makeConnectionWhereInputType({
+        connectionWhereInputType = withConnectionWhereInputType({
             relationshipAdapter,
             memberEntity: ifUnionMemberEntity,
             composer,
@@ -312,7 +312,7 @@ function withUnionUpdateInputType({
     deprecatedDirectives,
     userDefinedFieldDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
@@ -342,7 +342,7 @@ function makeUnionUpdateInputTypeFields({
     deprecatedDirectives,
     userDefinedFieldDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
@@ -374,7 +374,7 @@ function withUpdateConnectionFieldInputType({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
@@ -402,7 +402,7 @@ function makeUpdateConnectionFieldInputTypeFields({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
@@ -428,8 +428,7 @@ function makeUpdateConnectionFieldInputTypeFields({
         // fields["node"] = updateInputType;
         fields["node"] = relationshipAdapter.target.operations.updateInputTypeName;
     }
-    const hasNonGeneratedProperties = relationshipAdapter.updateInputFields.length > 0;
-    if (hasNonGeneratedProperties) {
+    if (relationshipAdapter.hasUpdateInputFields) {
         fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;
     }
     return fields;

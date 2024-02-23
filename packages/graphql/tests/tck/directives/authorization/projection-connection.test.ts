@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher Auth Projection On Connections", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Post {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
@@ -57,7 +55,7 @@ describe("Cypher Auth Projection On Connections", () => {
     });
 
     test("One connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     name
@@ -94,7 +92,7 @@ describe("Cypher Auth Projection On Connections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { content: this1.content } }) AS var3
+                    RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4
             }
@@ -113,7 +111,7 @@ describe("Cypher Auth Projection On Connections", () => {
     });
 
     test("Two connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     name
@@ -167,11 +165,11 @@ describe("Cypher Auth Projection On Connections", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this4, edge.relationship AS this3
-                            RETURN collect({ node: { name: this4.name } }) AS var5
+                            RETURN collect({ node: { name: this4.name, __resolveType: \\"User\\" } }) AS var5
                         }
                         RETURN { edges: var5, totalCount: totalCount } AS var6
                     }
-                    RETURN collect({ node: { content: this1.content, creatorConnection: var6 } }) AS var7
+                    RETURN collect({ node: { content: this1.content, creatorConnection: var6, __resolveType: \\"Post\\" } }) AS var7
                 }
                 RETURN { edges: var7, totalCount: totalCount } AS var8
             }
@@ -192,11 +190,11 @@ describe("Cypher Auth Projection On Connections", () => {
 
 describe("Cypher Auth Projection On top-level connections", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Post {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
@@ -224,7 +222,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
     });
 
     test("One connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -270,11 +268,11 @@ describe("Cypher Auth Projection On top-level connections", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { content: this2.content } }) AS var4
+                        RETURN collect({ node: { content: this2.content, __resolveType: \\"Post\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                RETURN collect({ node: { name: this0.name, postsConnection: var5 } }) AS var6
+                RETURN collect({ node: { name: this0.name, postsConnection: var5, __resolveType: \\"User\\" } }) AS var6
             }
             RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
@@ -291,7 +289,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
     });
 
     test("Two connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -354,15 +352,15 @@ describe("Cypher Auth Projection On top-level connections", () => {
                                 WITH edges
                                 UNWIND edges AS edge
                                 WITH edge.node AS this5, edge.relationship AS this4
-                                RETURN collect({ node: { name: this5.name } }) AS var6
+                                RETURN collect({ node: { name: this5.name, __resolveType: \\"User\\" } }) AS var6
                             }
                             RETURN { edges: var6, totalCount: totalCount } AS var7
                         }
-                        RETURN collect({ node: { content: this2.content, creatorConnection: var7 } }) AS var8
+                        RETURN collect({ node: { content: this2.content, creatorConnection: var7, __resolveType: \\"Post\\" } }) AS var8
                     }
                     RETURN { edges: var8, totalCount: totalCount } AS var9
                 }
-                RETURN collect({ node: { name: this0.name, postsConnection: var9 } }) AS var10
+                RETURN collect({ node: { name: this0.name, postsConnection: var9, __resolveType: \\"User\\" } }) AS var10
             }
             RETURN { edges: var10, totalCount: totalCount } AS this"
         `);

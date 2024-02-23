@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 import { createBearerToken } from "../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Arrays Methods", () => {
     test("push", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 ratings: [Float!]!
@@ -35,7 +34,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_PUSH: 1.0 }) {
                     movies {
@@ -67,7 +66,7 @@ describe("Arrays Methods", () => {
     });
 
     test("push multiple", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 ratings: [Float!]!
@@ -79,7 +78,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_PUSH: 1.0, scores_PUSH: 1.0 }) {
                     movies {
@@ -116,7 +115,7 @@ describe("Arrays Methods", () => {
     });
 
     test("push (point)", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 filmingLocations: [Point!]!
@@ -133,7 +132,7 @@ describe("Arrays Methods", () => {
             height: 60111.54,
         };
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation UpdateMovie($inputValue: [PointInput!]!) {
                 updateMovies(update: { filmingLocations_PUSH: $inputValue }) {
                     movies {
@@ -178,7 +177,7 @@ describe("Arrays Methods", () => {
     });
 
     test("push auth", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -195,7 +194,7 @@ describe("Arrays Methods", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_PUSH: 1.0 }) {
                     movies {
@@ -237,7 +236,7 @@ describe("Arrays Methods", () => {
     });
 
     test("pop", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 ratings: [Float!]!
@@ -248,7 +247,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_POP: 1 }) {
                     movies {
@@ -281,7 +280,7 @@ describe("Arrays Methods", () => {
     });
 
     test("pop multiple", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 ratings: [Float!]!
@@ -293,7 +292,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_POP: 1, scores_POP: 1 }) {
                     movies {
@@ -332,7 +331,7 @@ describe("Arrays Methods", () => {
     });
 
     test("pop auth", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -349,7 +348,7 @@ describe("Arrays Methods", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_POP: 1 }) {
                     movies {
@@ -392,7 +391,7 @@ describe("Arrays Methods", () => {
     });
 
     test("pop and push", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 ratings: [Float!]!
@@ -404,7 +403,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { ratings_PUSH: 1.5, scores_POP: 1 }) {
                     movies {
@@ -454,7 +453,7 @@ describe("Arrays Methods", () => {
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -463,7 +462,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(where: { id: 1 }, update: { actedIn: [{ update: { edge: { pay_PUSH: 10 } } }] }) {
                     actors {
@@ -473,7 +472,9 @@ describe("Arrays Methods", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -509,7 +510,7 @@ describe("Arrays Methods", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
-                    RETURN collect({ pay: update_this3.pay, node: { __resolveType: \\"Movie\\", __id: id(update_this4) } }) AS update_var5
+                    RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
                 }
                 RETURN { edges: update_var5, totalCount: totalCount } AS update_var6
             }
@@ -554,7 +555,7 @@ describe("Arrays Methods", () => {
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -563,7 +564,7 @@ describe("Arrays Methods", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(where: { id: 1 }, update: { actedIn: [{ update: { edge: { pay_POP: 1 } } }] }) {
                     actors {
@@ -573,7 +574,9 @@ describe("Arrays Methods", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -609,7 +612,7 @@ describe("Arrays Methods", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
-                    RETURN collect({ pay: update_this3.pay, node: { __resolveType: \\"Movie\\", __id: id(update_this4) } }) AS update_var5
+                    RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
                 }
                 RETURN { edges: update_var5, totalCount: totalCount } AS update_var6
             }

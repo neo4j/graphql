@@ -47,7 +47,9 @@ export class Relationship {
     public readonly description?: string;
     public readonly annotations: Partial<Annotations>;
     public readonly propertiesTypeName: string | undefined;
-    public readonly inheritedFrom: string | undefined;
+    public readonly firstDeclaredInTypeName: string | undefined; // the name of the Interface that declares this if this is an implementation (used in type names as prefix)
+    public readonly originalTarget?: Entity; // the original target entity of the RelationshipDeclaration if this is an implementation (useful for type narrowing scenarios)
+    private siblings?: string[]; // other Relationship that are implementations of the same RelationshipDeclaration as this
 
     constructor({
         name,
@@ -65,7 +67,9 @@ export class Relationship {
         description,
         annotations = {},
         propertiesTypeName,
-        inheritedFrom,
+        firstDeclaredInTypeName,
+        originalTarget,
+        siblings,
     }: {
         name: string;
         type: string;
@@ -82,7 +86,9 @@ export class Relationship {
         description?: string;
         annotations?: Partial<Annotations>;
         propertiesTypeName?: string;
-        inheritedFrom?: string;
+        firstDeclaredInTypeName?: string;
+        originalTarget?: Entity;
+        siblings?: string[];
     }) {
         this.type = type;
         this.source = source;
@@ -98,10 +104,15 @@ export class Relationship {
         this.description = description;
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
+        this.originalTarget = originalTarget;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
+        }
+
+        if (siblings) {
+            this.setSiblings(siblings);
         }
     }
 
@@ -122,7 +133,9 @@ export class Relationship {
             description: this.description,
             annotations: this.annotations,
             propertiesTypeName: this.propertiesTypeName,
-            inheritedFrom: this.inheritedFrom,
+            firstDeclaredInTypeName: this.firstDeclaredInTypeName,
+            originalTarget: this.originalTarget,
+            siblings: this.siblings,
         });
     }
 
@@ -135,6 +148,14 @@ export class Relationship {
 
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
+    }
+
+    public setSiblings(siblingPropertiesTypeNames: string[]) {
+        this.siblings = siblingPropertiesTypeNames;
+    }
+
+    public getSiblings(): string[] | undefined {
+        return this.siblings;
     }
 
     // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter

@@ -22,13 +22,61 @@ import type { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+
+function createSetRelationshipProperties({
+    properties,
+    varName,
+    withVars,
+    relationship,
+    relationshipAdapter,
+    operation,
+    callbackBucket,
+    parameterPrefix,
+}: {
+    properties: Record<string, Record<string, unknown>>;
+    varName: string;
+    withVars: string[];
+    relationship: Relationship;
+    relationshipAdapter?: RelationshipAdapter;
+    operation: "CREATE" | "UPDATE";
+    callbackBucket: CallbackBucket;
+    parameterPrefix: string;
+}): string | undefined {
+    // setting properties on the edge of an Interface relationship
+    // the input can contain other properties than the one applicable for this concrete entity relationship field
+    if (Object.keys(properties).find((k) => relationshipAdapter?.siblings?.includes(k))) {
+        const applicableProperties = properties[relationship.properties as string];
+        if (applicableProperties) {
+            return createSetRelationshipPropertiesForProperties({
+                properties: applicableProperties,
+                varName,
+                withVars,
+                relationship,
+                operation,
+                callbackBucket,
+                parameterPrefix: `${parameterPrefix}.${relationship.properties}`,
+            });
+        }
+        return;
+    }
+    return createSetRelationshipPropertiesForProperties({
+        properties,
+        varName,
+        withVars,
+        relationship,
+        operation,
+        callbackBucket,
+        parameterPrefix,
+    });
+}
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
            This was not reused due to the large differences between node fields
            - and relationship fields.
 */
-function createSetRelationshipProperties({
+function createSetRelationshipPropertiesForProperties({
     properties,
     varName,
     withVars,

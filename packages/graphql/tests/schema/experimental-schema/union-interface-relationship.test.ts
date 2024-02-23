@@ -38,15 +38,15 @@ describe("Union Interface Relationships", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         
@@ -71,7 +71,7 @@ describe("Union Interface Relationships", () => {
                 reviewerId: Int
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -80,8 +80,44 @@ describe("Union Interface Relationships", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.movies
+            \\"\\"\\"
+            type ActedIn {
               screenTime: Int!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActedInCreateInput {
@@ -122,8 +158,8 @@ describe("Union Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -168,12 +204,12 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              imdbId: IntAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -185,7 +221,7 @@ describe("Union Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: ActorMoviesEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -243,37 +279,6 @@ describe("Union Interface Relationships", () => {
             input ActorMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesEdgeAggregationWhereInput {
-              AND: [ActorMoviesEdgeAggregationWhereInput!]
-              NOT: ActorMoviesEdgeAggregationWhereInput
-              OR: [ActorMoviesEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input ActorMoviesFieldInput {
@@ -348,10 +353,10 @@ describe("Union Interface Relationships", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -504,7 +509,11 @@ describe("Union Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            interface Directed {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.directors
+            \\"\\"\\"
+            type Directed {
               year: Int!
             }
 
@@ -551,9 +560,9 @@ describe("Union Interface Relationships", () => {
 
             type InfluencerAggregateSelection {
               count: Int!
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
-              url: StringAggregateSelectionNonNullable!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
+              url: StringAggregateSelection!
             }
 
             input InfluencerCreateInput {
@@ -633,14 +642,7 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -667,12 +669,12 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              id: IntAggregateSelectionNullable!
-              name: StringAggregateSelectionNonNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -684,7 +686,7 @@ describe("Union Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -742,37 +744,6 @@ describe("Union Interface Relationships", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsFieldInput {
@@ -847,10 +818,10 @@ describe("Union Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -870,8 +841,8 @@ describe("Union Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              imdbId: IntAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1076,10 +1047,10 @@ describe("Union Interface Relationships", () => {
               where: MovieDirectorsPersonConnectionWhere
             }
 
-            type MovieDirectorsRelationship implements Directed {
+            type MovieDirectorsRelationship {
               cursor: String!
               node: Director!
-              year: Int!
+              properties: Directed!
             }
 
             input MovieDirectorsUpdateInput {
@@ -1125,16 +1096,15 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieReviewerReviewersEdgeAggregateSelection {
-              score: IntAggregateSelectionNonNullable!
+              score: IntAggregateSelection!
             }
 
             type MovieReviewerReviewersNodeAggregateSelection {
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             input MovieReviewersConnectFieldInput {
-              connect: ReviewerConnectInput
               edge: ReviewCreateInput!
               where: ReviewerConnectWhere
             }
@@ -1166,12 +1136,10 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieReviewersDeleteFieldInput {
-              delete: ReviewerDeleteInput
               where: MovieReviewersConnectionWhere
             }
 
             input MovieReviewersDisconnectFieldInput {
-              disconnect: ReviewerDisconnectInput
               where: MovieReviewersConnectionWhere
             }
 
@@ -1180,10 +1148,10 @@ describe("Union Interface Relationships", () => {
               create: [MovieReviewersCreateFieldInput!]
             }
 
-            type MovieReviewersRelationship implements Review {
+            type MovieReviewersRelationship {
               cursor: String!
               node: Reviewer!
-              score: Int!
+              properties: Review!
             }
 
             input MovieReviewersUpdateConnectionInput {
@@ -1368,10 +1336,10 @@ describe("Union Interface Relationships", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNullable!
-              name: StringAggregateSelectionNonNullable!
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -1418,12 +1386,12 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonMovieMoviesEdgeAggregateSelection {
-              score: IntAggregateSelectionNonNullable!
+              score: IntAggregateSelection!
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              imdbId: IntAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -1435,7 +1403,7 @@ describe("Union Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: PersonMoviesEdgeAggregationWhereInput
+              edge: ReviewAggregationWhereInput
               node: PersonMoviesNodeAggregationWhereInput
             }
 
@@ -1493,37 +1461,6 @@ describe("Union Interface Relationships", () => {
             input PersonMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: PersonMoviesConnectionWhere
-            }
-
-            input PersonMoviesEdgeAggregationWhereInput {
-              AND: [PersonMoviesEdgeAggregationWhereInput!]
-              NOT: PersonMoviesEdgeAggregationWhereInput
-              OR: [PersonMoviesEdgeAggregationWhereInput!]
-              score_AVERAGE_EQUAL: Float
-              score_AVERAGE_GT: Float
-              score_AVERAGE_GTE: Float
-              score_AVERAGE_LT: Float
-              score_AVERAGE_LTE: Float
-              score_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              score_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              score_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              score_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              score_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              score_MAX_EQUAL: Int
-              score_MAX_GT: Int
-              score_MAX_GTE: Int
-              score_MAX_LT: Int
-              score_MAX_LTE: Int
-              score_MIN_EQUAL: Int
-              score_MIN_GT: Int
-              score_MIN_GTE: Int
-              score_MIN_LT: Int
-              score_MIN_LTE: Int
-              score_SUM_EQUAL: Int
-              score_SUM_GT: Int
-              score_SUM_GTE: Int
-              score_SUM_LT: Int
-              score_SUM_LTE: Int
             }
 
             input PersonMoviesFieldInput {
@@ -1598,10 +1535,10 @@ describe("Union Interface Relationships", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type PersonMoviesRelationship implements Review {
+            type PersonMoviesRelationship {
               cursor: String!
               node: Movie!
-              score: Int!
+              properties: Review!
             }
 
             input PersonMoviesUpdateConnectionInput {
@@ -1761,8 +1698,44 @@ describe("Union Interface Relationships", () => {
               offset: Int
             }
 
-            interface Review {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.reviewers
+            * Person.movies
+            \\"\\"\\"
+            type Review {
               score: Int!
+            }
+
+            input ReviewAggregationWhereInput {
+              AND: [ReviewAggregationWhereInput!]
+              NOT: ReviewAggregationWhereInput
+              OR: [ReviewAggregationWhereInput!]
+              score_AVERAGE_EQUAL: Float
+              score_AVERAGE_GT: Float
+              score_AVERAGE_GTE: Float
+              score_AVERAGE_LT: Float
+              score_AVERAGE_LTE: Float
+              score_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              score_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              score_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              score_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              score_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              score_MAX_EQUAL: Int
+              score_MAX_GT: Int
+              score_MAX_GTE: Int
+              score_MAX_LT: Int
+              score_MAX_LTE: Int
+              score_MIN_EQUAL: Int
+              score_MIN_GT: Int
+              score_MIN_GTE: Int
+              score_MIN_LT: Int
+              score_MIN_LTE: Int
+              score_SUM_EQUAL: Int
+              score_SUM_GT: Int
+              score_SUM_GTE: Int
+              score_SUM_LT: Int
+              score_SUM_LTE: Int
             }
 
             input ReviewCreateInput {
@@ -1800,12 +1773,8 @@ describe("Union Interface Relationships", () => {
 
             type ReviewerAggregateSelection {
               count: Int!
-              reputation: IntAggregateSelectionNonNullable!
-              reviewerId: IntAggregateSelectionNullable!
-            }
-
-            input ReviewerConnectInput {
-              _on: ReviewerImplementationsConnectInput
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             input ReviewerConnectWhere {
@@ -1817,34 +1786,9 @@ describe("Union Interface Relationships", () => {
               Person: PersonCreateInput
             }
 
-            input ReviewerDeleteInput {
-              _on: ReviewerImplementationsDeleteInput
-            }
-
-            input ReviewerDisconnectInput {
-              _on: ReviewerImplementationsDisconnectInput
-            }
-
             enum ReviewerImplementation {
               Influencer
               Person
-            }
-
-            input ReviewerImplementationsConnectInput {
-              Person: [PersonConnectInput!]
-            }
-
-            input ReviewerImplementationsDeleteInput {
-              Person: [PersonDeleteInput!]
-            }
-
-            input ReviewerImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
-            }
-
-            input ReviewerImplementationsUpdateInput {
-              Influencer: InfluencerUpdateInput
-              Person: PersonUpdateInput
             }
 
             input ReviewerOptions {
@@ -1865,7 +1809,6 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerUpdateInput {
-              _on: ReviewerImplementationsUpdateInput
               reputation: Int
               reputation_DECREMENT: Int
               reputation_INCREMENT: Int
@@ -1905,9 +1848,9 @@ describe("Union Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

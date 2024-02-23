@@ -17,29 +17,27 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1756", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface INode {
-                id: ID @populatedBy(operations: [CREATE], callback: "nanoid")
+                id: ID
             }
 
             type Product implements INode {
-                id: ID
+                id: ID @populatedBy(operations: [CREATE], callback: "nanoid")
                 name: String!
                 genre: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
             type Genre implements INode {
-                id: ID
+                id: ID @populatedBy(operations: [CREATE], callback: "nanoid")
                 value: String! @unique
             }
         `;
@@ -55,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
     });
 
     test("should define the ID using the callback function", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createProducts(
                     input: {

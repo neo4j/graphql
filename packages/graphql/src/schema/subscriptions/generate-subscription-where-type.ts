@@ -18,31 +18,28 @@
  */
 
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { DirectiveNode } from "graphql/index";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { withWhereInputType } from "../generation/where-input";
 import type { Neo4jFeaturesSettings } from "../../types";
-import type { DirectiveNode } from "graphql/index";
+import { withWhereInputType } from "../generation/where-input";
 
 const isEmptyObject = (obj: Record<string, unknown>) => !Object.keys(obj).length;
 
 export function generateSubscriptionConnectionWhereType({
     entityAdapter,
     schemaComposer,
-    experimental,
     features,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
     features: Neo4jFeaturesSettings | undefined;
 }): { created: InputTypeComposer; deleted: InputTypeComposer } | undefined {
     const connectedRelationship = getRelationshipConnectionWhereTypes({
         entityAdapter,
         schemaComposer,
-        experimental,
         features,
     });
     const isConnectedNodeTypeNotExcluded = schemaComposer.has(entityAdapter.operations.subscriptionWhereInputTypeName);
@@ -82,12 +79,10 @@ export function generateSubscriptionConnectionWhereType({
 function getRelationshipConnectionWhereTypes({
     entityAdapter,
     schemaComposer,
-    experimental,
     features,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
     features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const relationsFieldInputWhereTypeFields = Array.from(entityAdapter.relationships.values()).reduce(
@@ -95,7 +90,6 @@ function getRelationshipConnectionWhereTypes({
             const fields = makeNodeRelationFields({
                 relationshipAdapter,
                 schemaComposer,
-                experimental,
                 features,
             });
             if (!fields) {
@@ -124,20 +118,17 @@ function getRelationshipConnectionWhereTypes({
 function makeNodeRelationFields({
     relationshipAdapter,
     schemaComposer,
-    experimental,
     features,
     userDefinedDirectivesForInterface,
 }: {
     relationshipAdapter: RelationshipAdapter;
     schemaComposer: SchemaComposer;
-    experimental: boolean;
     features: Neo4jFeaturesSettings | undefined;
     userDefinedDirectivesForInterface?: Map<string, Map<string, DirectiveNode[]>>;
 }) {
     const edgeType = withWhereInputType({
         entityAdapter: relationshipAdapter,
         composer: schemaComposer,
-        experimental,
         features,
         typeName: relationshipAdapter.operations.edgeSubscriptionWhereInputTypeName,
         userDefinedFieldDirectives: relationshipAdapter.propertiesTypeName
@@ -159,7 +150,6 @@ function makeNodeRelationFields({
             schemaComposer,
             interfaceEntity,
             edgeType,
-            experimental,
             features,
             userDefinedFieldDirectives: userDefinedDirectivesForInterface?.[interfaceEntity.name],
         });
@@ -225,26 +215,21 @@ function makeRelationshipToInterfaceTypeWhereType({
     schemaComposer,
     interfaceEntity,
     edgeType,
-    experimental,
     features,
     userDefinedFieldDirectives,
 }: {
     schemaComposer: SchemaComposer;
     interfaceEntity: InterfaceEntityAdapter;
     edgeType: InputTypeComposer | undefined;
-    experimental: boolean;
     features: Neo4jFeaturesSettings | undefined;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): { node?: InputTypeComposer; edge?: InputTypeComposer } | undefined {
     const interfaceNodeType = withWhereInputType({
         entityAdapter: interfaceEntity,
         composer: schemaComposer,
-        experimental,
         features,
         typeName: interfaceEntity.operations.subscriptionWhereInputTypeName,
         interfaceOnTypeName: interfaceEntity.operations.implementationsSubscriptionWhereInputTypeName,
-        getConcreteEntityWhereInputType: (entityAdapter: ConcreteEntityAdapter) =>
-            entityAdapter.operations.subscriptionWhereInputTypeName,
         userDefinedFieldDirectives,
         returnUndefinedIfEmpty: true,
         alwaysAllowNesting: true,

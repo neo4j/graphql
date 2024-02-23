@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { generate as randomstring } from "randomstring";
 import * as fs from "fs";
 import * as path from "path";
+import { generate as randomstring } from "randomstring";
 import generate from "./generate";
 import { OGM } from "./index";
-import gql from "graphql-tag";
 
 describe("generate", () => {
     const filesToDelete: string[] = [];
@@ -167,8 +166,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -198,7 +197,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserEdge = {
@@ -255,13 +254,9 @@ describe("generate", () => {
               NOT?: InputMaybe<UserWhere>;
             };
 
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class UserModel {
@@ -464,8 +459,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -495,7 +490,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserEdge = {
@@ -585,13 +580,9 @@ describe("generate", () => {
               NOT?: InputMaybe<UserWhere>;
             };
 
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class UserModel {
@@ -789,8 +780,8 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
@@ -820,7 +811,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserEdge = {
@@ -877,13 +868,9 @@ describe("generate", () => {
               NOT?: InputMaybe<UserWhere>;
             };
 
-            export interface StringAggregateInputNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface UserAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: boolean;
             }
 
             export declare class UserModel {
@@ -943,7 +930,7 @@ describe("generate", () => {
             type Person {
                 name: String!
             }
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -1085,7 +1072,12 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /**
+             * The edge properties for the following fields:
+             * * Movie.actors
+             */
             export type ActedIn = {
+              __typename?: \\"ActedIn\\";
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
             };
 
@@ -1119,12 +1111,12 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
             };
 
-            export type IntAggregateSelectionNonNullable = {
-              __typename?: \\"IntAggregateSelectionNonNullable\\";
-              max: Scalars[\\"Int\\"][\\"output\\"];
-              min: Scalars[\\"Int\\"][\\"output\\"];
-              average: Scalars[\\"Float\\"][\\"output\\"];
-              sum: Scalars[\\"Int\\"][\\"output\\"];
+            export type IntAggregateSelection = {
+              __typename?: \\"IntAggregateSelection\\";
+              max?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              min?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              average?: Maybe<Scalars[\\"Float\\"][\\"output\\"]>;
+              sum?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
             };
 
             export type Movie = {
@@ -1161,17 +1153,17 @@ describe("generate", () => {
               pageInfo: PageInfo;
             };
 
-            export type MovieActorsRelationship = ActedIn & {
+            export type MovieActorsRelationship = {
               __typename?: \\"MovieActorsRelationship\\";
               cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Person;
-              screenTime: Scalars[\\"Int\\"][\\"output\\"];
+              properties: ActedIn;
             };
 
             export type MovieAggregateSelection = {
               __typename?: \\"MovieAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              title: StringAggregateSelectionNonNullable;
+              title: StringAggregateSelection;
             };
 
             export type MovieEdge = {
@@ -1189,12 +1181,12 @@ describe("generate", () => {
 
             export type MoviePersonActorsEdgeAggregateSelection = {
               __typename?: \\"MoviePersonActorsEdgeAggregateSelection\\";
-              screenTime: IntAggregateSelectionNonNullable;
+              screenTime: IntAggregateSelection;
             };
 
             export type MoviePersonActorsNodeAggregateSelection = {
               __typename?: \\"MoviePersonActorsNodeAggregateSelection\\";
-              name: StringAggregateSelectionNonNullable;
+              name: StringAggregateSelection;
             };
 
             export type MoviesConnection = {
@@ -1228,7 +1220,7 @@ describe("generate", () => {
             export type PersonAggregateSelection = {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              name: StringAggregateSelectionNonNullable;
+              name: StringAggregateSelection;
             };
 
             export type PersonEdge = {
@@ -1237,10 +1229,10 @@ describe("generate", () => {
               node: Person;
             };
 
-            export type StringAggregateSelectionNonNullable = {
-              __typename?: \\"StringAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"String\\"][\\"output\\"];
-              longest: Scalars[\\"String\\"][\\"output\\"];
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
+              shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             /** Information about the number of nodes and relationships created and deleted during an update mutation */
@@ -1264,6 +1256,42 @@ describe("generate", () => {
               __typename?: \\"UpdatePeopleMutationResponse\\";
               info: UpdateInfo;
               people: Array<Person>;
+            };
+
+            export type ActedInAggregationWhereInput = {
+              AND?: InputMaybe<Array<ActedInAggregationWhereInput>>;
+              OR?: InputMaybe<Array<ActedInAggregationWhereInput>>;
+              NOT?: InputMaybe<ActedInAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type ActedInCreateInput = {
@@ -1306,7 +1334,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<MovieActorsAggregateInput>>;
               NOT?: InputMaybe<MovieActorsAggregateInput>;
               node?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
-              edge?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
+              edge?: InputMaybe<ActedInAggregationWhereInput>;
             };
 
             export type MovieActorsConnectFieldInput = {
@@ -1322,8 +1350,8 @@ describe("generate", () => {
             };
 
             export type MovieActorsConnectionWhere = {
-              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
               node?: InputMaybe<PersonWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -1344,42 +1372,6 @@ describe("generate", () => {
 
             export type MovieActorsDisconnectFieldInput = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
-            };
-
-            export type MovieActorsEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type MovieActorsFieldInput = {
@@ -1531,7 +1523,6 @@ describe("generate", () => {
               actors_SINGLE?: InputMaybe<PersonWhere>;
               /** Return Movies where some of the related People match this filter */
               actors_SOME?: InputMaybe<PersonWhere>;
-              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               /** @deprecated Use \`actorsConnection_NONE\` instead. */
@@ -1544,6 +1535,7 @@ describe("generate", () => {
               actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
               /** Return Movies where some of the related MovieActorsConnections match this filter */
               actorsConnection_SOME?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
             };
 
             export type PersonConnectWhere = {
@@ -1591,13 +1583,9 @@ describe("generate", () => {
               NOT?: InputMaybe<PersonWhere>;
             };
 
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface MovieAggregateSelectionInput {
               count?: boolean;
-              title?: StringAggregateInputNonNullable;
+              title?: boolean;
             }
 
             export declare class MovieModel {
@@ -1644,13 +1632,9 @@ describe("generate", () => {
               }): Promise<MovieAggregateSelection>;
             }
 
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface PersonAggregateSelectionInput {
               count?: boolean;
-              name?: StringAggregateInputNonNullable;
+              name?: boolean;
             }
 
             export declare class PersonModel {
@@ -1723,7 +1707,7 @@ describe("generate", () => {
     });
 
     test("https://github.com/neo4j/graphql/issues/3539", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type FAQ {
                 id: ID! @id @unique
                 activated: Boolean!
@@ -1739,7 +1723,7 @@ describe("generate", () => {
                 inFAQs: [FAQ!]! @relationship(type: "FAQ_ENTRY_IN_FAQ", properties: "FaqEntryInFaq", direction: OUT)
             }
 
-            interface FaqEntryInFaq @relationshipProperties {
+            type FaqEntryInFaq @relationshipProperties {
                 position: Int
             }
         `;
@@ -1889,10 +1873,6 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
-            export type FaqEntryInFaq = {
-              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
-            };
-
             export type CreateFaqEntriesMutationResponse = {
               __typename?: \\"CreateFaqEntriesMutationResponse\\";
               info: CreateInfo;
@@ -1955,8 +1935,8 @@ describe("generate", () => {
             export type FaqAggregateSelection = {
               __typename?: \\"FAQAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              id: IdAggregateSelectionNonNullable;
-              name: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              name: StringAggregateSelection;
             };
 
             export type FaqEdge = {
@@ -1979,11 +1959,11 @@ describe("generate", () => {
               pageInfo: PageInfo;
             };
 
-            export type FaqEntriesRelationship = FaqEntryInFaq & {
+            export type FaqEntriesRelationship = {
               __typename?: \\"FAQEntriesRelationship\\";
               cursor: Scalars[\\"String\\"][\\"output\\"];
               node: FaqEntry;
-              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              properties: FaqEntryInFaq;
             };
 
             export type FaqEntry = {
@@ -2018,9 +1998,9 @@ describe("generate", () => {
             export type FaqEntryAggregateSelection = {
               __typename?: \\"FAQEntryAggregateSelection\\";
               count: Scalars[\\"Int\\"][\\"output\\"];
-              id: IdAggregateSelectionNonNullable;
-              title: StringAggregateSelectionNonNullable;
-              body: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              title: StringAggregateSelection;
+              body: StringAggregateSelection;
             };
 
             export type FaqEntryEdge = {
@@ -2038,13 +2018,23 @@ describe("generate", () => {
 
             export type FaqEntryFaqInFaQsEdgeAggregateSelection = {
               __typename?: \\"FAQEntryFAQInFAQsEdgeAggregateSelection\\";
-              position: IntAggregateSelectionNullable;
+              position: IntAggregateSelection;
             };
 
             export type FaqEntryFaqInFaQsNodeAggregateSelection = {
               __typename?: \\"FAQEntryFAQInFAQsNodeAggregateSelection\\";
-              id: IdAggregateSelectionNonNullable;
-              name: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              name: StringAggregateSelection;
+            };
+
+            /**
+             * The edge properties for the following fields:
+             * * FAQ.entries
+             * * FAQEntry.inFAQs
+             */
+            export type FaqEntryInFaq = {
+              __typename?: \\"FaqEntryInFaq\\";
+              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
             };
 
             export type FaqEntryInFaQsConnection = {
@@ -2054,11 +2044,11 @@ describe("generate", () => {
               pageInfo: PageInfo;
             };
 
-            export type FaqEntryInFaQsRelationship = FaqEntryInFaq & {
+            export type FaqEntryInFaQsRelationship = {
               __typename?: \\"FAQEntryInFAQsRelationship\\";
               cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Faq;
-              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              properties: FaqEntryInFaq;
             };
 
             export type FaqfaqEntryEntriesAggregationSelection = {
@@ -2070,14 +2060,14 @@ describe("generate", () => {
 
             export type FaqfaqEntryEntriesEdgeAggregateSelection = {
               __typename?: \\"FAQFAQEntryEntriesEdgeAggregateSelection\\";
-              position: IntAggregateSelectionNullable;
+              position: IntAggregateSelection;
             };
 
             export type FaqfaqEntryEntriesNodeAggregateSelection = {
               __typename?: \\"FAQFAQEntryEntriesNodeAggregateSelection\\";
-              id: IdAggregateSelectionNonNullable;
-              title: StringAggregateSelectionNonNullable;
-              body: StringAggregateSelectionNonNullable;
+              id: IdAggregateSelection;
+              title: StringAggregateSelection;
+              body: StringAggregateSelection;
             };
 
             export type FaqsConnection = {
@@ -2087,14 +2077,14 @@ describe("generate", () => {
               edges: Array<FaqEdge>;
             };
 
-            export type IdAggregateSelectionNonNullable = {
-              __typename?: \\"IDAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"ID\\"][\\"output\\"];
-              longest: Scalars[\\"ID\\"][\\"output\\"];
+            export type IdAggregateSelection = {
+              __typename?: \\"IDAggregateSelection\\";
+              shortest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"ID\\"][\\"output\\"]>;
             };
 
-            export type IntAggregateSelectionNullable = {
-              __typename?: \\"IntAggregateSelectionNullable\\";
+            export type IntAggregateSelection = {
+              __typename?: \\"IntAggregateSelection\\";
               max?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
               min?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
               average?: Maybe<Scalars[\\"Float\\"][\\"output\\"]>;
@@ -2110,10 +2100,10 @@ describe("generate", () => {
               endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            export type StringAggregateSelectionNonNullable = {
-              __typename?: \\"StringAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"String\\"][\\"output\\"];
-              longest: Scalars[\\"String\\"][\\"output\\"];
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
+              shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             export type UpdateFaqEntriesMutationResponse = {
@@ -2179,7 +2169,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntriesAggregateInput>>;
               NOT?: InputMaybe<FaqEntriesAggregateInput>;
               node?: InputMaybe<FaqEntriesNodeAggregationWhereInput>;
-              edge?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
+              edge?: InputMaybe<FaqEntryInFaqAggregationWhereInput>;
             };
 
             export type FaqEntriesConnectFieldInput = {
@@ -2196,8 +2186,8 @@ describe("generate", () => {
             };
 
             export type FaqEntriesConnectionWhere = {
-              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               AND?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               node?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -2230,42 +2220,6 @@ describe("generate", () => {
             export type FaqEntriesDisconnectFieldInput = {
               where?: InputMaybe<FaqEntriesConnectionWhere>;
               disconnect?: InputMaybe<FaqEntryDisconnectInput>;
-            };
-
-            export type FaqEntriesEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FaqEntriesEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FaqEntriesEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type FaqEntriesFieldInput = {
@@ -2437,6 +2391,42 @@ describe("generate", () => {
               inFAQs?: InputMaybe<Array<FaqEntryInFaQsDisconnectFieldInput>>;
             };
 
+            export type FaqEntryInFaqAggregationWhereInput = {
+              AND?: InputMaybe<Array<FaqEntryInFaqAggregationWhereInput>>;
+              OR?: InputMaybe<Array<FaqEntryInFaqAggregationWhereInput>>;
+              NOT?: InputMaybe<FaqEntryInFaqAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+            };
+
             export type FaqEntryInFaqCreateInput = {
               position?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
@@ -2451,7 +2441,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntryInFaQsAggregateInput>>;
               NOT?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               node?: InputMaybe<FaqEntryInFaQsNodeAggregationWhereInput>;
-              edge?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
+              edge?: InputMaybe<FaqEntryInFaqAggregationWhereInput>;
             };
 
             export type FaqEntryInFaQsConnectFieldInput = {
@@ -2468,8 +2458,8 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaQsConnectionWhere = {
-              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               AND?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               node?: InputMaybe<FaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -2502,42 +2492,6 @@ describe("generate", () => {
             export type FaqEntryInFaQsDisconnectFieldInput = {
               where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               disconnect?: InputMaybe<FaqDisconnectInput>;
-            };
-
-            export type FaqEntryInFaQsEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FaqEntryInFaQsEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FaqEntryInFaQsEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type FaqEntryInFaQsFieldInput = {
@@ -2744,7 +2698,6 @@ describe("generate", () => {
               inFAQs_SINGLE?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where some of the related FAQS match this filter */
               inFAQs_SOME?: InputMaybe<FaqWhere>;
-              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               /** @deprecated Use \`inFAQsConnection_SOME\` instead. */
               inFAQsConnection?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** @deprecated Use \`inFAQsConnection_NONE\` instead. */
@@ -2757,6 +2710,7 @@ describe("generate", () => {
               inFAQsConnection_SINGLE?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where some of the related FAQEntryInFAQsConnections match this filter */
               inFAQsConnection_SOME?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
+              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
             };
 
             export type FaqOnCreateInput = {
@@ -2841,7 +2795,6 @@ describe("generate", () => {
               entries_SINGLE?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where some of the related FAQEntries match this filter */
               entries_SOME?: InputMaybe<FaqEntryWhere>;
-              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
               /** @deprecated Use \`entriesConnection_SOME\` instead. */
               entriesConnection?: InputMaybe<FaqEntriesConnectionWhere>;
               /** @deprecated Use \`entriesConnection_NONE\` instead. */
@@ -2854,20 +2807,13 @@ describe("generate", () => {
               entriesConnection_SINGLE?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where some of the related FAQEntriesConnections match this filter */
               entriesConnection_SOME?: InputMaybe<FaqEntriesConnectionWhere>;
+              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
             };
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface FAQAggregateSelectionInput {
               count?: boolean;
-              id?: IdAggregateInputNonNullable;
-              name?: StringAggregateInputNonNullable;
+              id?: boolean;
+              name?: boolean;
             }
 
             export declare class FAQModel {
@@ -2914,19 +2860,11 @@ describe("generate", () => {
               }): Promise<FaqAggregateSelection>;
             }
 
-            export interface IdAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
-            export interface StringAggregateInputNonNullable {
-              shortest?: boolean;
-              longest?: boolean;
-            }
             export interface FAQEntryAggregateSelectionInput {
               count?: boolean;
-              id?: IdAggregateInputNonNullable;
-              title?: StringAggregateInputNonNullable;
-              body?: StringAggregateInputNonNullable;
+              id?: boolean;
+              title?: boolean;
+              body?: boolean;
             }
 
             export declare class FAQEntryModel {

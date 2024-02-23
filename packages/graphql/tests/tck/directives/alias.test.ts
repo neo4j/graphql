@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher alias directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
                 city: String @alias(property: "cityPropInDb")
@@ -39,7 +37,7 @@ describe("Cypher alias directive", () => {
                 rating: Float @alias(property: "ratingPropInDb")
             }
 
-            interface ActorActedInProps @relationshipProperties {
+            type ActorActedInProps @relationshipProperties {
                 character: String! @alias(property: "characterPropInDb")
                 screenTime: Int
             }
@@ -51,7 +49,7 @@ describe("Cypher alias directive", () => {
     });
 
     test("Simple relation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name
@@ -81,15 +79,17 @@ describe("Cypher alias directive", () => {
     });
 
     test("With relationship properties", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name
                     city
                     actedInConnection {
                         edges {
-                            character
-                            screenTime
+                            properties {
+                                character
+                                screenTime
+                            }
                             node {
                                 title
                                 rating
@@ -113,7 +113,7 @@ describe("Cypher alias directive", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ character: this0.characterPropInDb, screenTime: this0.screenTime, node: { title: this1.title, rating: this1.ratingPropInDb } }) AS var2
+                    RETURN collect({ properties: { character: this0.characterPropInDb, screenTime: this0.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: this1.title, rating: this1.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -124,7 +124,7 @@ describe("Cypher alias directive", () => {
     });
 
     test("Create mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createActors(
                     input: [
@@ -149,8 +149,10 @@ describe("Cypher alias directive", () => {
                         }
                         actedInConnection {
                             edges {
-                                character
-                                screenTime
+                                properties {
+                                    character
+                                    screenTime
+                                }
                                 node {
                                     title
                                     rating
@@ -204,7 +206,7 @@ describe("Cypher alias directive", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this12, edge.relationship AS create_this11
-                    RETURN collect({ character: create_this11.characterPropInDb, screenTime: create_this11.screenTime, node: { title: create_this12.title, rating: create_this12.ratingPropInDb } }) AS create_var13
+                    RETURN collect({ properties: { character: create_this11.characterPropInDb, screenTime: create_this11.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: create_this12.title, rating: create_this12.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS create_var13
                 }
                 RETURN { edges: create_var13, totalCount: totalCount } AS create_var14
             }

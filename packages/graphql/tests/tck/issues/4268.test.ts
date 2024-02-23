@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4268", () => {
     test("OR operator should work correctly", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -43,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -78,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     });
 
     test("Nested OR operator should work correctly", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -112,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -149,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     });
 
     test("AND operator should work correctly", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -173,7 +172,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -208,7 +207,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     });
 
     test("Nested AND operator should work correctly", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -242,7 +241,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -279,7 +278,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     });
 
     test("NOT operator should work correctly", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -298,7 +297,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -332,7 +331,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     });
 
     test("Nested NOT operator should work correctly", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -352,7 +351,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title

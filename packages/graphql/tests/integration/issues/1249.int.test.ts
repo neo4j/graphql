@@ -20,13 +20,13 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1249", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const typeDefs = `
         type Bulk
@@ -51,13 +51,13 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             supplierId: String!
         }
 
-        interface RelationMaterialSupplier @relationshipProperties {
+        type RelationMaterialSupplier @relationshipProperties {
             supplierMaterialNumber: String!
         }
     `;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 bulks {
                     supplierMaterialNumber
@@ -80,7 +80,9 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                         id
                         suppliersConnection {
                             edges {
-                                supplierMaterialNumber
+                                properties {
+                                    supplierMaterialNumber
+                                }
                                 node {
                                     supplierId
                                 }

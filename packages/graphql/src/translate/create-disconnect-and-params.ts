@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { RelationField } from "../types";
-import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { caseWhere } from "../utils/case-where";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
-import Cypher from "@neo4j/cypher-builder";
-import { caseWhere } from "../utils/case-where";
-import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
-import { checkAuthentication } from "./authorization/check-authentication";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     disconnects: string[];
@@ -192,124 +192,52 @@ function createDisconnectAndParams({
                 : [disconnect.disconnect];
 
             disconnects.forEach((c) => {
-                const reduced = Object.entries(c)
-                    .filter(([k]) => {
-                        if (k === "_on") {
-                            return false;
-                        }
+                const reduced = Object.entries(c).reduce(
+                    (r: Res, [k, v]: [string, any]) => {
+                        const relField = relatedNode.relationFields.find((x) =>
+                            k.startsWith(x.fieldName)
+                        ) as RelationField;
+                        const newRefNodes: Node[] = [];
 
-                        if (relationField.interface && c?._on?.[relatedNode.name]) {
-                            const onArray = Array.isArray(c._on[relatedNode.name])
-                                ? c._on[relatedNode.name]
-                                : [c._on[relatedNode.name]];
-                            if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
-                                return false;
-                            }
-                        }
-
-                        return true;
-                    })
-                    .reduce(
-                        (r: Res, [k, v]: [string, any]) => {
-                            const relField = relatedNode.relationFields.find((x) =>
-                                k.startsWith(x.fieldName)
-                            ) as RelationField;
-                            const newRefNodes: Node[] = [];
-
-                            if (relField.union) {
-                                Object.keys(v).forEach((modelName) => {
-                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
-                                });
-                            } else if (relField.interface) {
-                                (relField.interface.implementations as string[]).forEach((modelName) => {
-                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
-                                });
-                            } else {
-                                newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
-                            }
-
-                            newRefNodes.forEach((newRefNode, i) => {
-                                const recurse = createDisconnectAndParams({
-                                    withVars: [...withVars, variableName],
-                                    value: relField.union ? v[newRefNode.name] : v,
-                                    varName: `${variableName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
-                                    relationField: relField,
-                                    parentVar: variableName,
-                                    context,
-                                    refNodes: [newRefNode],
-                                    parentNode: relatedNode,
-                                    parameterPrefix: `${parameterPrefix}${
-                                        relField.typeMeta.array ? `[${i}]` : ""
-                                    }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
-                                    labelOverride: relField.union ? newRefNode.name : "",
-                                    isFirstLevel: false,
-                                });
-                                r.disconnects.push(recurse[0]);
-                                r.params = { ...r.params, ...recurse[1] };
+                        if (relField.union) {
+                            Object.keys(v).forEach((modelName) => {
+                                newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                             });
+                        } else if (relField.interface) {
+                            (relField.interface.implementations as string[]).forEach((modelName) => {
+                                newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
+                            });
+                        } else {
+                            newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
+                        }
 
-                            return r;
-                        },
-                        { disconnects: [], params: {} }
-                    );
+                        newRefNodes.forEach((newRefNode, i) => {
+                            const recurse = createDisconnectAndParams({
+                                withVars: [...withVars, variableName],
+                                value: relField.union ? v[newRefNode.name] : v,
+                                varName: `${variableName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
+                                relationField: relField,
+                                parentVar: variableName,
+                                context,
+                                refNodes: [newRefNode],
+                                parentNode: relatedNode,
+                                parameterPrefix: `${parameterPrefix}${
+                                    relField.typeMeta.array ? `[${i}]` : ""
+                                }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
+                                labelOverride: relField.union ? newRefNode.name : "",
+                                isFirstLevel: false,
+                            });
+                            r.disconnects.push(recurse[0]);
+                            r.params = { ...r.params, ...recurse[1] };
+                        });
+
+                        return r;
+                    },
+                    { disconnects: [], params: {} }
+                );
 
                 subquery.push(reduced.disconnects.join("\n"));
                 params = { ...params, ...reduced.params };
-
-                if (relationField.interface && c?._on?.[relatedNode.name]) {
-                    const onDisconnects = Array.isArray(c._on[relatedNode.name])
-                        ? c._on[relatedNode.name]
-                        : [c._on[relatedNode.name]];
-
-                    onDisconnects.forEach((onDisconnect, onDisconnectIndex) => {
-                        const onReduced = Object.entries(onDisconnect).reduce(
-                            (r: Res, [k, v]: [string, any]) => {
-                                const relField = relatedNode.relationFields.find((x) =>
-                                    k.startsWith(x.fieldName)
-                                ) as RelationField;
-                                const newRefNodes: Node[] = [];
-
-                                if (relField.union) {
-                                    Object.keys(v).forEach((modelName) => {
-                                        newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
-                                    });
-                                } else {
-                                    newRefNodes.push(
-                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                                    );
-                                }
-
-                                newRefNodes.forEach((newRefNode, i) => {
-                                    const recurse = createDisconnectAndParams({
-                                        withVars: [...withVars, variableName],
-                                        value: relField.union ? v[newRefNode.name] : v,
-                                        varName: `${variableName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
-                                        relationField: relField,
-                                        parentVar: variableName,
-                                        context,
-                                        refNodes: [newRefNode],
-                                        parentNode: relatedNode,
-                                        parameterPrefix: `${parameterPrefix}${
-                                            relField.typeMeta.array ? `[${i}]` : ""
-                                        }.disconnect._on.${relatedNode.name}${
-                                            relField.typeMeta.array ? `[${onDisconnectIndex}]` : ""
-                                        }.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
-                                        labelOverride: relField.union ? newRefNode.name : "",
-                                        isFirstLevel: false,
-                                    });
-                                    r.disconnects.push(recurse[0]);
-                                    r.params = { ...r.params, ...recurse[1] };
-                                });
-
-                                return r;
-                            },
-                            { disconnects: [], params: {} }
-                        );
-
-                        subquery.push(onReduced.disconnects.join("\n"));
-                        params = { ...params, ...onReduced.params };
-                    });
-                }
             });
         }
 

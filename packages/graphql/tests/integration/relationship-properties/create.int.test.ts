@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - create", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -49,7 +49,7 @@ describe("Relationship properties - create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -63,18 +63,13 @@ describe("Relationship properties - create", () => {
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
-        const source = `
-            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+        const source = /* GraphQL */ `
+            mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 createMovies(
                     input: [
                         {
                             title: $movieTitle
-                            actors: {
-                                create: [{
-                                    edge: { screenTime: $screenTime },
-                                    node: { name: $actorName }
-                                }]
-                            }
+                            actors: { create: [{ edge: { screenTime: $screenTime }, node: { name: $actorName } }] }
                         }
                     ]
                 ) {
@@ -82,7 +77,9 @@ describe("Relationship properties - create", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -103,7 +100,7 @@ describe("Relationship properties - create", () => {
         expect((result.data as any)?.createMovies.movies).toEqual([
             {
                 title: movieTitle,
-                actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
+                actorsConnection: { edges: [{ properties: { screenTime }, node: { name: actorName } }] },
             },
         ]);
 
@@ -135,7 +132,7 @@ describe("Relationship properties - create", () => {
                 publications: [Publication!]! @relationship(type: "WROTE", properties: "Wrote", direction: OUT)
             }
 
-            interface Wrote @relationshipProperties {
+            type Wrote @relationshipProperties {
                 words: Int!
             }
         `;

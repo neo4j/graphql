@@ -16,17 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
+
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Node directive with interface", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Search {
                 name: String
             }
@@ -48,13 +47,10 @@ describe("Node directive with interface", () => {
     });
 
     test("Read Interface", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title: "some title" }) {
-                    search(
-                        where: { _on: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } } }
-                        options: { offset: 1, limit: 10 }
-                    ) {
+                    search(where: { name: "Horror" }, options: { offset: 1, limit: 10 }) {
                         ... on Movie {
                             title
                         }
@@ -82,7 +78,7 @@ describe("Node directive with interface", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Film)
-                    WHERE this4.title = $param2
+                    WHERE this4.name = $param2
                     WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
@@ -98,7 +94,7 @@ describe("Node directive with interface", () => {
             "{
                 \\"param0\\": \\"some title\\",
                 \\"param1\\": \\"Horror\\",
-                \\"param2\\": \\"The Matrix\\",
+                \\"param2\\": \\"Horror\\",
                 \\"param3\\": {
                     \\"low\\": 1,
                     \\"high\\": 0

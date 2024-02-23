@@ -17,29 +17,27 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../../../utils/tck-test-utils";
 import { createBearerToken } from "../../../../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../../../../utils/tck-test-utils";
 
 describe("@auth allow on specific interface implementation", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Content {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @declareRelationship
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
@@ -55,7 +53,7 @@ describe("@auth allow on specific interface implementation", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
@@ -77,7 +75,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("read allow protected interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -133,7 +131,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Read Two Relationships", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users(where: { id: "1" }) {
                     id
@@ -205,7 +203,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Nested Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, update: { content: { update: { node: { id: "new-id" } } } }) {
                     users {
@@ -316,7 +314,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Nested Delete Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(where: { id: "user-id" }, delete: { content: { where: { node: { id: "post-id" } } } }) {
                     nodesDeleted
@@ -378,7 +376,7 @@ describe("@auth allow on specific interface implementation", () => {
     });
 
     test("Disconnect Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, disconnect: { content: { where: { node: { id: "post-id" } } } }) {
                     users {
@@ -459,130 +457,8 @@ describe("@auth allow on specific interface implementation", () => {
         `);
     });
 
-    test("Nested Disconnect Node", async () => {
-        const query = gql`
-            mutation {
-                updateUsers(
-                    where: { id: "user-id" }
-                    disconnect: {
-                        content: {
-                            where: { node: { id: "post-id" } }
-                            disconnect: { _on: { Post: { comments: { where: { node: { id: "comment-id" } } } } } }
-                        }
-                    }
-                ) {
-                    users {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
-            token,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $param0
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0
-            CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
-            	UNWIND this_disconnect_content0 as x
-            	DELETE this_disconnect_content0_rel
-            }
-            RETURN count(*) AS disconnect_this_disconnect_content_Comment
-            }
-            CALL {
-            	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
-            	UNWIND this_disconnect_content0 as x
-            	DELETE this_disconnect_content0_rel
-            }
-            CALL {
-            WITH this, this_disconnect_content0
-            OPTIONAL MATCH (this_disconnect_content0)-[this_disconnect_content0_comments0_rel:HAS_COMMENT]->(this_disconnect_content0_comments0:Comment)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WHERE this_disconnect_content0_comments0.id = $updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-            	WITH this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel, this_disconnect_content0
-            	WITH collect(this_disconnect_content0_comments0) as this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel, this_disconnect_content0
-            	UNWIND this_disconnect_content0_comments0 as x
-            	DELETE this_disconnect_content0_comments0_rel
-            }
-            RETURN count(*) AS disconnect_this_disconnect_content0_comments_Comment
-            }
-            RETURN count(*) AS disconnect_this_disconnect_content_Post
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .id }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0\\": \\"post-id\\",
-                \\"updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0\\": \\"post-id\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"sub\\": \\"user-id\\"
-                },
-                \\"updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0\\": \\"comment-id\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"disconnect\\": {
-                            \\"content\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
-                                        }
-                                    },
-                                    \\"disconnect\\": {
-                                        \\"_on\\": {
-                                            \\"Post\\": [
-                                                {
-                                                    \\"comments\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"id\\": \\"comment-id\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
     test("Connect node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "user-id" }, connect: { content: { where: { node: { id: "post-id" } } } }) {
                     users {

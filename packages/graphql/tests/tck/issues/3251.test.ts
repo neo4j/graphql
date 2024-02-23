@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -44,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
         });
 
         test("should have check in correct place following update and connect", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 mutation UpdateMovieWithConnectAndUpdate {
                     updateMovies(
                         where: { name: "TestMovie1" }

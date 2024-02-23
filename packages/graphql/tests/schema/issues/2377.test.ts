@@ -101,9 +101,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             \\"\\"\\"
@@ -115,9 +115,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -141,6 +141,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type Query {
+              resourceEntities(options: ResourceEntityOptions, where: ResourceEntityWhere): [ResourceEntity!]!
+              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
               resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
@@ -166,10 +168,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-              updatedAt: DateTimeAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              updatedAt: DateTimeAggregateSelection!
             }
 
             input ResourceConnectInput {
@@ -381,6 +383,73 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               type: ResourceType!
             }
 
+            type ResourceEntityAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
+            enum ResourceEntityImplementation {
+              Resource
+            }
+
+            input ResourceEntityOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ResourceEntitySort objects to sort ResourceEntities by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ResourceEntitySort]
+            }
+
+            \\"\\"\\"
+            Fields to sort ResourceEntities by. The order in which sorts are applied is not guaranteed when specifying many fields in one ResourceEntitySort object.
+            \\"\\"\\"
+            input ResourceEntitySort {
+              id: SortDirection
+              name: SortDirection
+              type: SortDirection
+            }
+
+            input ResourceEntityWhere {
+              AND: [ResourceEntityWhere!]
+              NOT: ResourceEntityWhere
+              OR: [ResourceEntityWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              properties: [Property!]
+              properties_INCLUDES: Property
+              properties_NOT: [Property!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              properties_NOT_INCLUDES: Property @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              tags: [Tag!]
+              tags_INCLUDES: Tag
+              tags_NOT: [Tag!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              type: ResourceType
+              type_IN: [ResourceType!]
+              type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              typename_IN: [ResourceEntityImplementation!]
+            }
+
             input ResourceOnCreateInput {
               externalIds: [ID!]
               id: ID!
@@ -410,10 +479,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceResourceContainedByNodeAggregateSelection {
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-              updatedAt: DateTimeAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              updatedAt: DateTimeAggregateSelection!
             }
 
             \\"\\"\\"
@@ -551,7 +620,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

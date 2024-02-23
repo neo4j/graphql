@@ -31,9 +31,7 @@ describe("inheritance", () => {
 
             interface Person @customDirectiveInter {
                 name: String @customDirectiveField
-                friends: [Person!]!
-                    @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
-                    @customDirectiveField
+                friends: [Person!]! @declareRelationship @customDirectiveField
             }
 
             type Actor implements Person @customDirectiveObj {
@@ -41,7 +39,7 @@ describe("inheritance", () => {
                 friends: [Person!]! @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
             }
 
-            interface FriendsWith @relationshipProperties {
+            type FriendsWith @relationshipProperties {
                 since: Int
             }
         `;
@@ -61,14 +59,15 @@ describe("inheritance", () => {
             directive @customDirectiveObj on OBJECT
 
             type Actor implements Person @customDirectiveObj {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+              friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
-              name: String @customDirectiveField
+              name: String
             }
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -76,7 +75,7 @@ describe("inheritance", () => {
             }
 
             input ActorCreateInput {
-              friends: PersonFriendsFieldInput
+              friends: ActorFriendsFieldInput
               name: String
             }
 
@@ -114,6 +113,11 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
+            input ActorFriendsFieldInput {
+              connect: [ActorFriendsConnectFieldInput!]
+              create: [ActorFriendsCreateFieldInput!]
+            }
+
             input ActorFriendsUpdateConnectionInput {
               edge: FriendsWithUpdateInput
               node: PersonUpdateInput
@@ -135,6 +139,20 @@ describe("inheritance", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorPersonFriendsAggregationSelection {
+              count: Int!
+              edge: ActorPersonFriendsEdgeAggregateSelection
+              node: ActorPersonFriendsNodeAggregateSelection
+            }
+
+            type ActorPersonFriendsEdgeAggregateSelection {
+              since: IntAggregateSelection!
+            }
+
+            type ActorPersonFriendsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -216,7 +234,11 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FriendsWith {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.friends
+            \\"\\"\\"
+            type FriendsWith {
               since: Int
             }
 
@@ -248,6 +270,13 @@ describe("inheritance", () => {
               since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
@@ -263,13 +292,17 @@ describe("inheritance", () => {
             }
 
             interface Person @customDirectiveInter {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
-              friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
+              friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
 
+            type PersonAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             input PersonConnectInput {
-              _on: PersonImplementationsConnectInput
               friends: [PersonFriendsConnectFieldInput!]
             }
 
@@ -282,18 +315,16 @@ describe("inheritance", () => {
             }
 
             input PersonDeleteInput {
-              _on: PersonImplementationsDeleteInput
               friends: [PersonFriendsDeleteFieldInput!]
             }
 
             input PersonDisconnectInput {
-              _on: PersonImplementationsDisconnectInput
               friends: [PersonFriendsDisconnectFieldInput!]
             }
 
             input PersonFriendsConnectFieldInput {
               connect: PersonConnectInput
-              edge: FriendsWithCreateInput
+              edge: PersonFriendsEdgeCreateInput
               where: PersonConnectWhere
             }
 
@@ -304,7 +335,7 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsConnectionSort {
-              edge: FriendsWithSort
+              edge: PersonFriendsEdgeSort
               node: PersonSort
             }
 
@@ -312,14 +343,14 @@ describe("inheritance", () => {
               AND: [PersonFriendsConnectionWhere!]
               NOT: PersonFriendsConnectionWhere
               OR: [PersonFriendsConnectionWhere!]
-              edge: FriendsWithWhere
-              edge_NOT: FriendsWithWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              edge: PersonFriendsEdgeWhere
+              edge_NOT: PersonFriendsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: PersonWhere
               node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonFriendsCreateFieldInput {
-              edge: FriendsWithCreateInput
+              edge: PersonFriendsEdgeCreateInput
               node: PersonCreateInput!
             }
 
@@ -333,19 +364,48 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
-            input PersonFriendsFieldInput {
-              connect: [PersonFriendsConnectFieldInput!]
-              create: [PersonFriendsCreateFieldInput!]
+            input PersonFriendsEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithCreateInput
             }
 
-            type PersonFriendsRelationship implements FriendsWith {
+            input PersonFriendsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithSort
+            }
+
+            input PersonFriendsEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithUpdateInput
+            }
+
+            input PersonFriendsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithWhere
+            }
+
+            type PersonFriendsRelationship {
               cursor: String!
               node: Person!
-              since: Int
+              properties: PersonFriendsRelationshipProperties!
             }
 
+            union PersonFriendsRelationshipProperties = FriendsWith
+
             input PersonFriendsUpdateConnectionInput {
-              edge: FriendsWithUpdateInput
+              edge: PersonFriendsEdgeUpdateInput
               node: PersonUpdateInput
             }
 
@@ -358,24 +418,8 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
-            input PersonImplementationsConnectInput {
-              Actor: [ActorConnectInput!]
-            }
-
-            input PersonImplementationsDeleteInput {
-              Actor: [ActorDeleteInput!]
-            }
-
-            input PersonImplementationsDisconnectInput {
-              Actor: [ActorDisconnectInput!]
-            }
-
-            input PersonImplementationsUpdateInput {
-              Actor: ActorUpdateInput
-            }
-
-            input PersonImplementationsWhere {
-              Actor: ActorWhere
+            enum PersonImplementation {
+              Actor
             }
 
             input PersonOptions {
@@ -395,13 +439,14 @@ describe("inheritance", () => {
             }
 
             input PersonUpdateInput {
-              _on: PersonImplementationsUpdateInput
               friends: [PersonFriendsUpdateFieldInput!]
               name: String
             }
 
             input PersonWhere {
-              _on: PersonImplementationsWhere
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
@@ -430,12 +475,15 @@ describe("inheritance", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [PersonImplementation!]
             }
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -446,7 +494,7 @@ describe("inheritance", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

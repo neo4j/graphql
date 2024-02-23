@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4j from "../neo4j";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const secret = "secret";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             interface ${contentType.name} {
                 id: ID
                 content: String
-                creator: ${userType.name}! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: ${userType.name}! @declareRelationship
             }
 
             type ${userType.name} {
@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             type ${commentType.name} implements ${contentType.name} {
                 id: ID
                 content: String
-                creator: ${userType.name}!
+                creator: ${userType.name}!  @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             extend type ${userType.name}
@@ -882,7 +882,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;
@@ -898,7 +898,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                             title
                             actorsConnection(where: { node: { name: "${actorName}" } }) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }
@@ -954,7 +956,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }

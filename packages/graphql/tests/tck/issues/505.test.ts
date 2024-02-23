@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/505", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 id: ID!
                 authId: String
@@ -103,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("Users query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Users {
                 users(where: { id: "my-user-id" }) {
                     id
@@ -146,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("Workspaces query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Workspaces {
                 workspaces(where: { id: "my-workspace-id" }) {
                     id
@@ -189,7 +187,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("Pages query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Pages {
                 pages(where: { workspace: { id: "my-workspace-id" } }) {
                     id
@@ -223,7 +221,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("All pages query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query allPages {
                 pages {
                     id

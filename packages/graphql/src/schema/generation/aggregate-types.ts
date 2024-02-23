@@ -30,6 +30,7 @@ import type { AttributeAdapter } from "../../schema-model/attribute/model-adapte
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
 import { DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
@@ -71,10 +72,7 @@ function makeAggregableFields({
     const aggregableFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};
     const aggregableAttributes = entityAdapter.aggregableFields;
     for (const attribute of aggregableAttributes) {
-        const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-            fieldName: attribute.getTypeName(),
-            nullable: !attribute.typeHelper.isRequired(),
-        });
+        const objectTypeComposer = aggregationTypesMapper.getAggregationType(attribute.getTypeName());
         if (objectTypeComposer) {
             aggregableFields[attribute.name] = objectTypeComposer.NonNull;
         }
@@ -87,7 +85,7 @@ export function withAggregateInputType({
     entityAdapter, // TODO: this is relationshipAdapter.target but from the context above it is known to be ConcreteEntity and we don't know this yet!!!
     composer,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     entityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -135,19 +133,23 @@ function withAggregationWhereInputType({
     entityAdapter,
     composer,
 }: {
-    relationshipAdapter: RelationshipAdapter;
-    entityAdapter: ConcreteEntityAdapter | RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
+    entityAdapter: ConcreteEntityAdapter | RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
+    const aggregationInputName =
+        entityAdapter instanceof ConcreteEntityAdapter
+            ? relationshipAdapter.operations.nodeAggregationWhereInputTypeName
+            : relationshipAdapter.operations.edgeAggregationWhereInputTypeName;
+    if (composer.has(aggregationInputName)) {
+        return composer.getITC(aggregationInputName);
+    }
+    if (entityAdapter instanceof RelationshipDeclarationAdapter) {
+        return;
+    }
     const aggregationFields = entityAdapter.aggregationWhereFields;
     if (!aggregationFields.length) {
         return;
-    }
-    const aggregationInputName = relationshipAdapter.operations.getAggregationWhereInputTypeName(
-        entityAdapter instanceof ConcreteEntityAdapter ? `Node` : `Edge`
-    );
-    if (composer.has(aggregationInputName)) {
-        return composer.getITC(aggregationInputName);
     }
     const aggregationInput = composer.createInputTC({
         name: aggregationInputName,

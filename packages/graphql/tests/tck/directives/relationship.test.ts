@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher relationship", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -36,13 +34,13 @@ describe("Cypher relationship", () => {
             interface MovieInterface {
                 id: ID
                 title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements MovieInterface {
                 id: ID
                 title: String
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 topActor: Actor! @relationship(type: "TOP_ACTOR", direction: OUT)
             }
         `;
@@ -53,7 +51,7 @@ describe("Cypher relationship", () => {
     });
 
     test("Simple relation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -81,7 +79,7 @@ describe("Cypher relationship", () => {
     });
 
     test("Many relation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -109,7 +107,7 @@ describe("Cypher relationship", () => {
     });
 
     test("Nested relation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     title
@@ -146,7 +144,7 @@ describe("Cypher relationship", () => {
     });
 
     test("Nested relation with params", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title: "some title" }) {
                     title

@@ -71,7 +71,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             type ActorEdge {
@@ -130,7 +130,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -211,7 +211,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type MovieAggregateSelection @shareable {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             type MovieEdge @shareable {
@@ -313,9 +313,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection @shareable {
+              longest: String
+              shortest: String
             }
 
             scalar _Any
@@ -393,7 +393,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -493,7 +493,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -726,9 +726,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection @shareable {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

@@ -21,18 +21,18 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
     let schema: GraphQLSchema;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = gql`
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
-            interface RelationProps @relationshipProperties {
+            type RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     });
 
     test("should handle union types with auth and connection-where", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
                 drives(where: { current: true }) {
                     current
@@ -104,7 +104,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                                     }
                                 ) {
                                     edges {
-                                        current
+                                        properties {
+                                            current
+                                        }
                                         node {
                                             ... on Battery {
                                                 id

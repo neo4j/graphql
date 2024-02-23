@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - connect with and without `overwrite` argument", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -36,7 +36,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
     let typeMovie: UniqueType;
 
     beforeEach(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -71,10 +71,10 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -100,7 +100,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodes(session, [typeActor, typeMovie]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -143,7 +143,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         name
                                     }
@@ -151,7 +153,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             }
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }
@@ -234,7 +238,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         name
                                     }
@@ -242,7 +248,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             }
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }
@@ -313,7 +321,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -339,7 +347,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodes(session, [typeActor, typeMovie]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -365,7 +373,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }
@@ -393,7 +403,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             expect((gqlResultUpdate.data as any)?.[typeMovie.operations.update][typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime: screenTimeUpdate, node: { name: actorName } }] },
+                    actorsConnection: {
+                        edges: [{ properties: { screenTime: screenTimeUpdate }, node: { name: actorName } }],
+                    },
                 },
             ]);
 
@@ -425,7 +437,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -483,7 +497,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -540,7 +556,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -568,7 +586,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             expect((gqlResultUpdate.data as any)?.[typeMovie.operations.update][typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime: screenTimeUpdate, node: { name: actorName } }] },
+                    actorsConnection: {
+                        edges: [{ properties: { screenTime: screenTimeUpdate }, node: { name: actorName } }],
+                    },
                 },
             ]);
 
@@ -602,7 +622,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             name
                             moviesConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         title
                                     }
@@ -660,7 +682,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             name
                             moviesConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         title
                                     }
@@ -710,7 +734,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -746,7 +770,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                         id
@@ -806,7 +832,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             name
                             moviesConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         title
                                     }
@@ -871,7 +899,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -936,7 +966,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -1004,7 +1036,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -1073,7 +1107,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                               properties {
+                                 screenTime
+                               }
                                 node {
                                     name
                                 }
@@ -1135,7 +1171,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -1202,7 +1240,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         name
                                     }
@@ -1283,7 +1323,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             name
                             moviesConnection {
                                 edges {
-                                    screenTime
+                                   properties {
+                                     screenTime
+                                   }
                                     node {
                                         title
                                     }
@@ -1353,7 +1395,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -1371,7 +1413,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodes(session, [typeActor, typeMovie]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -1405,7 +1447,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         name
                                     }
@@ -1472,7 +1516,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         name
                                     }
@@ -1535,7 +1581,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             name
                             directedConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         title
                                     }
@@ -1598,7 +1646,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             name
                             directedConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         title
                                     }
@@ -1673,7 +1723,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                                 name
                                 directedConnection {
                                     edges {
-                                        year
+                                       properties {
+                                         year
+                                       }
                                         node {
                                             title
                                         }
@@ -1746,7 +1798,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                                 name
                                 directedConnection {
                                     edges {
-                                        year
+                                       properties {
+                                         year
+                                       }
                                         node {
                                             title
                                         }
@@ -1824,7 +1878,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                   properties {
+                                     year
+                                   }
                                     node {
                                         name
                                     }
@@ -1903,7 +1959,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                                 title
                                 directorsConnection {
                                     edges {
-                                        year
+                                       properties {
+                                         year
+                                       }
                                         node {
                                             name
                                         }
@@ -1973,7 +2031,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                   properties {
+                                     year
+                                   }
                                     node {
                                         name
                                     }
@@ -2045,7 +2105,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         name
                                     }
@@ -2116,7 +2178,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             title
                             directorsConnection {
                                 edges {
-                                    year
+                                    properties {
+                                        year
+                                    }
                                     node {
                                         name
                                     }

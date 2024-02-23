@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Simple Cypher tests", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 title: String
@@ -40,7 +38,7 @@ describe("Simple Cypher tests", () => {
     });
 
     test("Single selection, Movie by title", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title: "River Runs Through It, A" }) {
                     title
@@ -64,7 +62,7 @@ describe("Simple Cypher tests", () => {
     });
 
     test("Multi selection, Movie by title", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title: "River Runs Through It, A" }) {
                     id
@@ -89,7 +87,7 @@ describe("Simple Cypher tests", () => {
     });
 
     test("Multi selection, Movie by title via variable", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($title: String) {
                 movies(where: { title: $title }) {
                     id

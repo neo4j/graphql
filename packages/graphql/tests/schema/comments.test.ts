@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Comments", () => {
@@ -91,7 +91,7 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -105,12 +105,12 @@ describe("Comments", () => {
               ROMANCE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -135,10 +135,10 @@ describe("Comments", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -313,7 +313,7 @@ describe("Comments", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectWhere {
@@ -399,7 +399,7 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -418,7 +418,7 @@ describe("Comments", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -537,7 +537,7 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -672,7 +672,7 @@ describe("Comments", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -716,7 +716,7 @@ describe("Comments", () => {
                     episodes: Int!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
 
@@ -735,7 +735,11 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
-                interface ActedIn {
+                \\"\\"\\"
+                The edge properties for the following fields:
+                * Actor.actedIn
+                \\"\\"\\"
+                type ActedIn {
                   screenTime: Int!
                 }
 
@@ -770,6 +774,7 @@ describe("Comments", () => {
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -818,10 +823,10 @@ describe("Comments", () => {
                   create: [ActorActedInCreateFieldInput!]
                 }
 
-                type ActorActedInRelationship implements ActedIn {
+                type ActorActedInRelationship {
                   cursor: String!
                   node: Production!
-                  screenTime: Int!
+                  properties: ActedIn!
                 }
 
                 input ActorActedInUpdateConnectionInput {
@@ -840,7 +845,7 @@ describe("Comments", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -872,6 +877,20 @@ describe("Comments", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  edge: ActorProductionActedInEdgeAggregateSelection
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInEdgeAggregateSelection {
+                  screenTime: IntAggregateSelection!
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -963,11 +982,11 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
+                type IntAggregateSelection {
+                  average: Float
+                  max: Int
+                  min: Int
+                  sum: Int
                 }
 
                 type Movie implements Production {
@@ -977,8 +996,8 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  runtime: IntAggregateSelectionNonNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  runtime: IntAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1069,6 +1088,11 @@ describe("Comments", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  title: StringAggregateSelection!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -1078,14 +1102,9 @@ describe("Comments", () => {
                   Series: SeriesCreateInput
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                enum ProductionImplementation {
+                  Movie
+                  Series
                 }
 
                 input ProductionOptions {
@@ -1105,12 +1124,13 @@ describe("Comments", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   title: String
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
@@ -1121,6 +1141,7 @@ describe("Comments", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -1130,6 +1151,8 @@ describe("Comments", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -1142,8 +1165,8 @@ describe("Comments", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  episodes: IntAggregateSelectionNonNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  episodes: IntAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
@@ -1218,9 +1241,9 @@ describe("Comments", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelection {
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1308,7 +1331,7 @@ describe("Comments", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1366,7 +1389,7 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -1380,7 +1403,7 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -1581,6 +1604,7 @@ describe("Comments", () => {
                   id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
+                  search: SearchWhere @deprecated(reason: \\"Use \`search_SOME\` instead.\\")
                   searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieSearchConnections match this filter
@@ -1599,6 +1623,15 @@ describe("Comments", () => {
                   Return Movies where some of the related MovieSearchConnections match this filter
                   \\"\\"\\"
                   searchConnection_SOME: MovieSearchConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+                  search_ALL: SearchWhere
+                  \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+                  search_NONE: SearchWhere
+                  search_NOT: SearchWhere @deprecated(reason: \\"Use \`search_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+                  search_SINGLE: SearchWhere
+                  \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+                  search_SOME: SearchWhere
                 }
 
                 type MoviesConnection {
@@ -1631,6 +1664,7 @@ describe("Comments", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  searches(options: QueryOptions, where: SearchWhere): [Search!]!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

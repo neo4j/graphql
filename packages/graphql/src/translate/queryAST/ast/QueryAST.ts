@@ -69,7 +69,7 @@ export class QueryAST {
     ): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
         const returnVariable = new Cypher.NamedVariable(varName);
-        const node = this.getTargetFromOperation(neo4jGraphQLContext);
+        const node = this.getTargetFromOperation(neo4jGraphQLContext, varName);
         return new QueryASTContext({
             target: node,
             env: queryASTEnv,
@@ -78,16 +78,19 @@ export class QueryAST {
         });
     }
 
-    public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
+    public getTargetFromOperation(
+        neo4jGraphQLContext: Neo4jGraphQLTranslationContext,
+        varName: string
+    ): Cypher.Node | undefined {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
             this.operation instanceof DeleteOperation
         ) {
-            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, varName);
         }
         if (this.operation instanceof AggregationOperation) {
-            return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, this.operation.nodeAlias);
+            return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, varName);
         }
     }
 

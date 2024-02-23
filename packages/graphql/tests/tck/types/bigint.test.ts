@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher BigInt", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type File {
                 name: String!
                 size: BigInt!
@@ -40,7 +38,7 @@ describe("Cypher BigInt", () => {
     });
 
     test("Querying with native BigInt in AST", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 files(where: { size: 9223372036854775807 }) {
                     name
@@ -67,7 +65,7 @@ describe("Cypher BigInt", () => {
     });
 
     test("Querying with BigInt as string in AST", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 files(where: { size: "9223372036854775807" }) {
                     name
@@ -94,7 +92,7 @@ describe("Cypher BigInt", () => {
     });
 
     test("Querying with BigInt as string in variables", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Files($size: BigInt) {
                 files(where: { size: $size }) {
                     name

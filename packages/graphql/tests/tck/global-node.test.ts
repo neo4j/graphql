@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { toGlobalId } from "../../src/utils/global-ids";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor {
                 name: ID! @id @unique @relayId
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -39,7 +38,7 @@ describe("Global nodes", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query Node($id: ID!) {
                 node(id: $id) {
                     id
@@ -64,7 +63,7 @@ describe("Global nodes", () => {
         `);
     });
     test("it should project the correct node and fields when id is the idField", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
@@ -78,7 +77,7 @@ describe("Global nodes", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query Node($id: ID!) {
                 node(id: $id) {
                     id
@@ -107,7 +106,7 @@ describe("Global nodes", () => {
         `);
     });
     test("it should project the correct selectionSet when id is used as a where argument", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
@@ -123,7 +122,7 @@ describe("Global nodes", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($where: ActorWhere!) {
                 actors(where: $where) {
                     name
@@ -151,7 +150,7 @@ describe("Global nodes", () => {
         `);
     });
     test("it should project the param as an integer when the underlying field is a number (fixes 1560)", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor {
                 dbId: Int! @relayId
                 name: String!
@@ -162,7 +161,7 @@ describe("Global nodes", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($where: ActorWhere!) {
                 actors(where: $where) {
                     id

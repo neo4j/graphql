@@ -69,6 +69,7 @@ export function globalNodeResolver({ entities }: { entities: ConcreteEntityAdapt
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
             entityAdapter,
+            varName: "this",
         });
         const executeResult = await execute({
             cypher,

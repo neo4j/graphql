@@ -23,11 +23,11 @@ import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("array-subscription", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
@@ -36,7 +36,7 @@ describe("array-subscription", () => {
     let typeMovie: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

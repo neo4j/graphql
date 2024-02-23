@@ -349,8 +349,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             type ActorEdge {
@@ -413,7 +413,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             type MovieEdge {
@@ -485,12 +485,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable @shareable {
+            type StringAggregateSelection @shareable {
               longest: String
               shortest: String
             }
@@ -572,8 +567,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -720,7 +715,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -836,12 +831,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable @shareable {
+            type StringAggregateSelection @shareable {
               longest: String
               shortest: String
             }

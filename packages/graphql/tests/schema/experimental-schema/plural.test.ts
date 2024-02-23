@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Experimental Plural option", () => {
+describe("Plural option", () => {
     test("Plural on interface and union", async () => {
         const typeDefs = gql`
             interface Animal @plural(value: "animales") {
@@ -40,7 +40,7 @@ describe("Experimental Plural option", () => {
 
             union Pet @plural(value: "petties") = Dog | Cat
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -55,7 +55,7 @@ describe("Experimental Plural option", () => {
 
             type AnimalAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             enum AnimalImplementation {
@@ -101,7 +101,7 @@ describe("Experimental Plural option", () => {
 
             type CatAggregateSelection {
               count: Int!
-              queenOf: StringAggregateSelectionNullable!
+              queenOf: StringAggregateSelection!
             }
 
             input CatCreateInput {
@@ -189,9 +189,9 @@ describe("Experimental Plural option", () => {
             }
 
             type DogAggregateSelection {
-              breed: StringAggregateSelectionNullable!
+              breed: StringAggregateSelection!
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input DogCreateInput {
@@ -308,7 +308,7 @@ describe("Experimental Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

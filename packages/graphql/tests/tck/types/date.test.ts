@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Date", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 date: Date
@@ -40,7 +38,7 @@ describe("Cypher Date", () => {
     });
 
     test("Simple Read", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { date: "1970-01-01" }) {
                     date
@@ -68,7 +66,7 @@ describe("Cypher Date", () => {
     });
 
     test("GTE Read", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { date_GTE: "1980-04-08" }) {
                     date
@@ -96,7 +94,7 @@ describe("Cypher Date", () => {
     });
 
     test("Simple Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ date: "1970-01-01" }]) {
                     movies {
@@ -137,7 +135,7 @@ describe("Cypher Date", () => {
     });
 
     test("Simple Update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { date: "1970-01-01" }) {
                     movies {

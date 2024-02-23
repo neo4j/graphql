@@ -18,16 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionWhereArg, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
+import type { ConnectionWhereArg, PredicateReturn } from "../../../types";
 // Recursive function
 
-import { createWhereNodePredicate, createWhereEdgePredicate } from "../create-where-predicate";
-import { asArray, filterTruthy } from "../../../utils/utils";
-import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { asArray, filterTruthy } from "../../../utils/utils";
+import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
+import { createWhereEdgePredicate, createWhereNodePredicate } from "../create-where-predicate";
 
 export function createConnectionWherePropertyOperation({
     context,
@@ -104,17 +104,8 @@ export function createConnectionWherePropertyOperation({
 
         if (key.startsWith("node") || key.startsWith(node.name)) {
             // TODO: improve nodeOn properties generation
-            const nodeOnProperties = value._on?.[node.name] || {};
-            const nestedProperties = { ...value, ...nodeOnProperties };
-            delete nestedProperties._on;
+            const nestedProperties = { ...value };
 
-            if (
-                Object.keys(value as Record<string, any>).length === 1 &&
-                value._on &&
-                !Object.prototype.hasOwnProperty.call(value._on, node.name)
-            ) {
-                throw new Error("_on is used as the only argument and node is not present within");
-            }
             const entity = getEntityAdapterFromNode(node, context);
             const { predicate: result, preComputedSubqueries } = createWhereNodePredicate({
                 entity,
@@ -137,5 +128,3 @@ export function createConnectionWherePropertyOperation({
             : undefined,
     };
 }
-
-

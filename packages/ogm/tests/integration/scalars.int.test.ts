@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { DateTime, Duration, LocalDateTime, LocalTime, Date as Neo4jDate, Time } from "neo4j-driver";
 import { OGM } from "../../src";
@@ -27,7 +26,7 @@ import neo4j from "./neo4j";
 describe("Neo4j native types used with OGM", () => {
     const TestType = new UniqueType("TestType");
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type ${TestType.name} {
             date: Date
             dateTime: DateTime
@@ -78,8 +77,8 @@ describe("Neo4j native types used with OGM", () => {
 
         expect(result[TestType.plural]).toEqual([
             {
-                date: new Date((date as unknown as Neo4jDate).toString()).toISOString().split("T")[0],
-                dateTime: new Date((dateTime as unknown as DateTime).toString()).toISOString(),
+                date: new Date(date.toString()).toISOString().split("T")[0],
+                dateTime: new Date(dateTime.toString()).toISOString(),
                 duration: duration.toString(),
                 localDateTime: localDateTime.toString(),
                 localTime: localTime.toString(),

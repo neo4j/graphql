@@ -27,8 +27,6 @@ import type { CompositeReadPartial } from "./CompositeReadPartial";
 export class CompositeCypherOperation extends Operation {
     private selection: EntitySelection;
     private partials: CompositeReadPartial[];
-    public nodeAlias: string | undefined;
-
     constructor({ selection, partials }: { selection: EntitySelection; partials: CompositeReadPartial[] }) {
         super();
         this.selection = selection;

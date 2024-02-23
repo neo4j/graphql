@@ -20,9 +20,9 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/988", () => {
     const seriesType = new UniqueType("Series");
@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = `
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 current: Boolean!
             }
 
-            interface RelationProps @relationshipProperties {
+            type RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -85,14 +85,16 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     });
 
     test("should query nested connection", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query getSeriesWithRelationFilters($where: ${seriesType.name}Where = { current: true }) {
                 ${seriesType.plural}(where: $where) {
                     name
                     current
                     manufacturerConnection {
                         edges {
-                            current
+                            properties {
+                                current
+                            }
                             node {
                                 name
                             }
@@ -100,7 +102,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     }
                     brandConnection {
                         edges {
-                            current
+                            properties {
+                                current
+                            }
                             node {
                                 name
                             }
@@ -171,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     manufacturerConnection: {
                         edges: [
                             {
-                                current: true,
+                                properties: { current: true },
                                 node: {
                                     name: "C",
                                 },
@@ -181,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     brandConnection: {
                         edges: [
                             {
-                                current: true,
+                                properties: { current: true },
                                 node: {
                                     name: "smart",
                                 },
@@ -195,7 +199,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     manufacturerConnection: {
                         edges: [
                             {
-                                current: false,
+                                properties: { current: false },
                                 node: {
                                     name: "AM",
                                 },
@@ -205,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     brandConnection: {
                         edges: [
                             {
-                                current: true,
+                                properties: { current: true },
                                 node: {
                                     name: "smart",
                                 },

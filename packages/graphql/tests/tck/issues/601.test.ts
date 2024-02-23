@@ -17,23 +17,21 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("#601", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
 
-            interface UploadedDocument @relationshipProperties {
+            type UploadedDocument @relationshipProperties {
                 fileId: ID!
                 uploadedAt: DateTime!
             }
@@ -73,14 +71,16 @@ describe("#601", () => {
     });
 
     test("Example 1", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Document {
                 stakeholders {
                     documents {
                         customerContactConnection {
                             edges {
-                                fileId
-                                uploadedAt
+                                properties {
+                                    fileId
+                                    uploadedAt
+                                }
                             }
                         }
                     }
@@ -111,7 +111,7 @@ describe("#601", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { __resolveType: \\"CustomerContact\\", __id: id(this3) } }) AS var4
+                        RETURN collect({ properties: { fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), __resolveType: \\"UploadedDocument\\" }, node: { __id: id(this3), __resolveType: \\"CustomerContact\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }

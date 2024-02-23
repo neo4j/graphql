@@ -20,13 +20,13 @@
 import { gql } from "graphql-tag";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/620", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
     const typeBusiness = new UniqueType("Business");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = gql`

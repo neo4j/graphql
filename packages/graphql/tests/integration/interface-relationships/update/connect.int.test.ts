@@ -23,15 +23,15 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = gql`
@@ -42,7 +42,7 @@ describe("interface relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
@@ -57,7 +57,7 @@ describe("interface relationships", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -192,7 +192,7 @@ describe("interface relationships", () => {
                             edge: { screenTime: $screenTime }
                             where: { node: { title: $title } }
                             connect: {
-                                actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
+                                actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name: $name2 } } }
                             }
                         }
                     }
@@ -249,233 +249,6 @@ describe("interface relationships", () => {
                                     actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
                                 },
                                 {
-                                    title: seriesTitle,
-                                    actors: [{ name: actorName1 }],
-                                },
-                            ]),
-                            name: actorName1,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should nested connect using interface relationship fields using _on to only connect from certain nested type", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-
-        const query = `
-            mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
-                updateActors(
-                    where: { name: $name1 }
-                    connect: {
-                        actedIn: {
-                            edge: { screenTime: $screenTime }
-                            where: { node: { title: $title } }
-                            connect: {
-                                _on: {
-                                    Movie: {
-                                        actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                        actedIn {
-                            __typename
-                            title
-                            actors {
-                                name
-                            }
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (:Actor { name: $actorName2 })
-                CREATE (:Series { title: $movieTitle })
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
-            `,
-                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
-            );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    name1: actorName1,
-                    name2: actorName2,
-                    title: movieTitle,
-                    screenTime: movieScreenTime,
-                },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
-                        {
-                            actedIn: expect.toIncludeSameMembers([
-                                {
-                                    __typename: "Movie",
-                                    runtime: movieRuntime,
-                                    title: movieTitle,
-                                    actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
-                                },
-                                {
-                                    __typename: "Series",
-                                    title: movieTitle,
-                                    actors: [{ name: actorName1 }],
-                                },
-                                {
-                                    __typename: "Series",
-                                    title: seriesTitle,
-                                    actors: [{ name: actorName1 }],
-                                },
-                            ]),
-                            name: actorName1,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should nested connect using interface relationship fields using where _on to only connect to certain type", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-
-        const query = `
-            mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
-                updateActors(
-                    where: { name: $name1 }
-                    connect: {
-                        actedIn: {
-                            edge: { screenTime: $screenTime }
-                            where: { node: { _on: { Movie: { title: $title } } } }
-                            connect: {
-                                actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
-                            }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                        actedIn {
-                            __typename
-                            title
-                            actors {
-                                name
-                            }
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (:Actor { name: $actorName2 })
-                CREATE (:Series { title: $movieTitle })
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
-            `,
-                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
-            );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    name1: actorName1,
-                    name2: actorName2,
-                    title: movieTitle,
-                    screenTime: movieScreenTime,
-                },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
-                        {
-                            actedIn: expect.toIncludeSameMembers([
-                                {
-                                    __typename: "Movie",
-                                    runtime: movieRuntime,
-                                    title: movieTitle,
-                                    actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
-                                },
-                                {
-                                    __typename: "Series",
                                     title: seriesTitle,
                                     actors: [{ name: actorName1 }],
                                 },

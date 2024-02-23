@@ -22,7 +22,7 @@ import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
@@ -689,28 +689,28 @@ describe("Subscription authentication", () => {
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         
             type ${typePerson} implements Reviewer  {
                 name: String! 
-                reputation: Int!
+                reputation: Int! @authentication(operations: [READ])
                 id: Int @unique 
                 reviewerId: Int @unique @authentication(operations: [READ])
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
             type ${typeInfluencer} implements Reviewer @authentication(operations: [READ]) {
-                reputation: Int!
+                reputation: Int! @authentication(operations: [READ])
                 url: String!
                 reviewerId: Int
             }
@@ -718,7 +718,7 @@ describe("Subscription authentication", () => {
             union Director = ${typePerson} | ${typeActor}
             
             interface Reviewer {
-                reputation: Int! @authentication(operations: [READ])
+                reputation: Int! 
                 reviewerId: Int
 
             }
@@ -747,7 +747,7 @@ describe("Subscription authentication", () => {
         afterEach(async () => {
             await wsClient.close();
             const session = driver.session();
-            await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
             await server.close();
         });
 
@@ -4364,100 +4364,6 @@ describe("Subscription authentication", () => {
                 ]);
                 expect(wsClient.errors).toEqual([]);
             });
-            test("unauthenticated subscription does not send events if authenticated implemented type is selected - delete_relationship", async () => {
-                await supertest(server.path)
-                    .post("")
-                    .send({
-                        query: `
-                            mutation {
-                                ${typeMovie.operations.create}(
-                                    input: [
-                                        {
-                                            reviewers: {
-                                                create: [
-                                                    {
-                                                        node: {
-                                                            ${typeInfluencer.name}: {
-                                                                url: "/bob",
-                                                                reputation: 1,
-                                                            }
-                                                        },
-                                                        edge: {
-                                                            score: 10
-                                                        }
-                                                    }
-                                                ]
-                                            },
-                                            title: "Matrix",
-                                        }
-                                    ]
-                                ) {
-                                    ${typeMovie.plural} {
-                                        title
-                                    }
-                                }
-                            }
-                        `,
-                    })
-                    .expect(200);
-
-                wsClient = new WebSocketTestClient(server.wsPath);
-                await wsClient.subscribe(`
-                subscription SubscriptionMovie {
-                    ${typeMovie.operations.subscribe.relationship_deleted} {
-                        relationshipFieldName
-                        event
-                        deletedRelationship {
-                            reviewers {
-                                score
-                                node {
-                                    ... on ${typeInfluencer.name}EventPayload {
-                                        url
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }`);
-
-                const result = await supertest(server.path)
-                    .post("")
-                    .send({
-                        query: `
-                    mutation {
-                        ${typeMovie.operations.update}(
-                            where: {
-                                title: "Matrix"
-                            },
-                            disconnect: {
-                              reviewers: {
-                                where: {
-                                  node: {
-                                    _on: {
-                                        ${typeInfluencer.name}: {
-                                            url: "/bob",
-                                        }
-                                    } 
-                                  }
-                                }
-                              }
-                            }
-                        ) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-                    })
-                    .expect(200);
-
-                expect(result.body.errors).toBeUndefined();
-                await wsClient.waitForEvents(1);
-
-                expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
-            });
         });
 
         describe("union type", () => {
@@ -5070,15 +4976,15 @@ describe("Subscription authentication", () => {
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         
@@ -5131,7 +5037,7 @@ describe("Subscription authentication", () => {
         afterEach(async () => {
             await wsClient.close();
             const session = driver.session();
-            await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
             await server.close();
         });
 

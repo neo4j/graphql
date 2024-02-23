@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/2709", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
     let Netflix: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -67,13 +67,13 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
             }
 
             interface Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @declareRelationship
             }
 
             type MaleActor implements Actor {
@@ -119,66 +119,12 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Movie, Netflix, Dishney]);
+        await cleanNodesUsingSession(session, [Movie, Netflix, Dishney]);
         await session.close();
     });
 
     afterAll(async () => {
         await driver.close();
-    });
-
-    test("should query only DistributionHouses with the label Netflix", async () => {
-        const query = `
-            query {
-                ${Movie.plural}(
-                    where: { OR: [{ distributionConnection_SOME: { node: { _on: { ${Netflix}: {} }, name: "Netflix" } } }] }
-                ) {
-                    title
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(result.errors).toBeFalsy();
-        expect(result.data as any).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "A Netflix movie",
-                },
-            ],
-        });
-    });
-
-    test("should query only DistributionHouses with the label Dishney", async () => {
-        const query = `
-            query {
-                ${Movie.plural}(
-                    where: { OR: [{ distributionConnection_SOME: { node: { _on: { ${Dishney}: {} }, name: "Dishney" } } }] }
-                ) {
-                    title
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(result.errors).toBeFalsy();
-        expect(result.data as any).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "A Dishney movie",
-                },
-            ],
-        });
     });
 
     test("should query the correct DistributionHouses when no _on present - Netflix", async () => {
@@ -238,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 
 describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
@@ -248,7 +194,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     let Publisher: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -282,13 +228,13 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
             }
 
             interface Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @declareRelationship
             }
 
             type MaleActor implements Actor {
@@ -341,7 +287,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Movie, Netflix, Dishney, Publisher]);
+        await cleanNodesUsingSession(session, [Movie, Netflix, Dishney, Publisher]);
         await session.close();
     });
 

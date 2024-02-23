@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/3765", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
                 otherName: String
@@ -37,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 alternateContent: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "likesProperties")
             }
-            interface likesProperties @relationshipProperties {
+            type likesProperties @relationshipProperties {
                 someProp: String!
             }
         `;
@@ -50,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
     describe("aggregation", () => {
         describe("count", () => {
             test("filter + explicit AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(where: { likesAggregate: { count_GT: 10, AND: [{ count_GT: 25 }, { count_LT: 33 }] } }) {
                             content
@@ -91,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("filter + implicit AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(where: { likesAggregate: { count_GT: 10, AND: [{ count_GT: 25, count_LT: 33 }] } }) {
                             content
@@ -132,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("filter + explicit OR", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(where: { likesAggregate: { count_GT: 10, OR: [{ count_GT: 25 }, { count_LT: 33 }] } }) {
                             content
@@ -173,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("filter + explicit OR which contains an implicit AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -225,7 +223,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("filter + explicit OR which contains an explicit AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -279,7 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
 
         describe("node/edge", () => {
             test("count filter + explicit node AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -327,7 +325,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("count filter + implicit node AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -375,7 +373,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("count filter + explicit node OR", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -423,7 +421,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("count filter + explicit node OR which contains an explicit AND", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -480,7 +478,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             });
 
             test("count filter + complex mixing between edge/node filter", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     {
                         posts(
                             where: {
@@ -551,7 +549,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
 
     describe("property filters", () => {
         test("implicit AND", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     posts(where: { content: "stuff", alternateContent: "stuff2" }) {
                         content
@@ -576,7 +574,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         });
 
         test("explicit OR with an implicit AND", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     posts(where: { OR: [{ content: "stuff", alternateContent: "stuff2" }, { content: "stuff3" }] }) {
                         content
@@ -602,7 +600,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         });
 
         test("explicit NOT with an implicit AND", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     posts(where: { NOT: { content: "stuff", alternateContent: "stuff2" } }) {
                         content
@@ -629,7 +627,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
 
     describe("relationship filters", () => {
         test("implicit AND  inside relationship filter", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     posts(where: { likes_SOME: { name: "stuff", otherName: "stuff2" } }) {
                         content
@@ -657,7 +655,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         });
 
         test("implicit AND outside relationship filters", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     posts(where: { likes_SOME: { name: "stuff" }, likes_ALL: { otherName: "stuff2" } }) {
                         content
@@ -691,7 +689,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         });
 
         test("explicit OR outside relationship filters", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     posts(
                         where: {

@@ -54,10 +54,6 @@ import {
     invalidUnionCombinations,
 } from "../../utils/invalid-directive-combinations";
 import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
-import {
-    getInheritedTypeNames,
-    hydrateInterfaceWithImplementedTypesMap,
-} from "../utils/interface-to-implementing-types";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
@@ -86,7 +82,6 @@ type ASTNodeWithDirectives =
     | EnumTypeExtensionNode
     | InputObjectTypeExtensionNode;
 export function DirectiveCombinationValid(context: SDLValidationContext): ASTVisitor {
-    const interfaceToImplementingTypes = new Map<string, Set<string>>();
     const typeToDirectivesPerFieldMap = new Map<string, Map<string, readonly DirectiveNode[]>>();
     const typeToDirectivesMap = new Map<string, readonly DirectiveNode[]>();
     const hydrateWithDirectives = function (
@@ -126,30 +121,10 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
         ) {
             // might have been directives on extension
             directivesToCheck.push(...(typeToDirectivesMap.get(node.name.value) || []));
-            const inheritedTypeNames = getInheritedTypeNames(node, interfaceToImplementingTypes);
-            if (inheritedTypeNames.length) {
-                return inheritedTypeNames.reduce<DirectiveNode[][]>((acc, i) => {
-                    const inheritedDirectives = typeToDirectivesMap.get(i) || [];
-                    acc.push(directivesToCheck.concat(inheritedDirectives));
-                    return acc;
-                }, []);
-            } else {
-                return [directivesToCheck];
-            }
         }
         if (node.kind === Kind.FIELD_DEFINITION) {
             if (!parentOfTraversedDef) {
                 return [[]];
-            }
-            const inheritedTypeNames = getInheritedTypeNames(parentOfTraversedDef, interfaceToImplementingTypes);
-            if (inheritedTypeNames.length) {
-                return inheritedTypeNames.reduce<DirectiveNode[][]>((acc, i) => {
-                    const inheritedDirectives = typeToDirectivesPerFieldMap.get(i)?.get(node.name.value) || [];
-                    acc.push(directivesToCheck.concat(inheritedDirectives));
-                    return acc;
-                }, []);
-            } else {
-                return [directivesToCheck];
             }
         }
         return [directivesToCheck];
@@ -164,7 +139,6 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
             const currentNodeErrorPath =
                 isTypeDefinitionNode(node) || isTypeExtensionNode(node) ? [...pathToNode, node.name.value] : pathToNode;
 
-            hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementingTypes);
             hydrateWithDirectives(node, parentOfTraversedDef);
             const directiveCombinationsToCheck = getDirectiveCombinations(node, parentOfTraversedDef);
 

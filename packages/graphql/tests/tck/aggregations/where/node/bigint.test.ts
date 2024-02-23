@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where node with BigInt", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 someBigInt: BigInt
                 someBigIntAlias: BigInt @alias(property: "_someBigIntAlias")
@@ -45,7 +43,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_EQUAL: "2147483648" } } }) {
                     content
@@ -78,7 +76,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigIntAlias_EQUAL: "2147483648" } } }) {
                     content
@@ -111,7 +109,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_GT: "2147483648" } } }) {
                     content
@@ -144,7 +142,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_GTE: "2147483648" } } }) {
                     content
@@ -177,7 +175,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_LT: "2147483648" } } }) {
                     content
@@ -210,7 +208,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_LTE: "2147483648" } } }) {
                     content
@@ -243,7 +241,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("AVERAGE_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_EQUAL: "2147483648" } } }) {
                     content
@@ -276,7 +274,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("AVERAGE_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_GT: "2147483648" } } }) {
                     content
@@ -309,7 +307,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("AVERAGE_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_GTE: "2147483648" } } }) {
                     content
@@ -342,7 +340,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("AVERAGE_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_LT: "2147483648" } } }) {
                     content
@@ -375,7 +373,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("AVERAGE_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_LTE: "2147483648" } } }) {
                     content
@@ -408,7 +406,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("SUM_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_SUM_EQUAL: "2147483648" } } }) {
                     content
@@ -441,7 +439,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("SUM_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_SUM_GT: "2147483648" } } }) {
                     content
@@ -474,7 +472,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("SUM_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_SUM_GTE: "2147483648" } } }) {
                     content
@@ -507,7 +505,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("SUM_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_SUM_LT: "2147483648" } } }) {
                     content
@@ -540,7 +538,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("SUM_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_SUM_LTE: "2147483648" } } }) {
                     content
@@ -573,7 +571,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MIN_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MIN_EQUAL: "2147483648" } } }) {
                     content
@@ -606,7 +604,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MIN_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MIN_GT: "2147483648" } } }) {
                     content
@@ -639,7 +637,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MIN_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MIN_GTE: "2147483648" } } }) {
                     content
@@ -672,7 +670,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MIN_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MIN_LT: "2147483648" } } }) {
                     content
@@ -705,7 +703,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MIN_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MIN_LTE: "2147483648" } } }) {
                     content
@@ -738,7 +736,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MAX_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MAX_EQUAL: "2147483648" } } }) {
                     content
@@ -771,7 +769,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MAX_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MAX_GT: "2147483648" } } }) {
                     content
@@ -804,7 +802,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MAX_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MAX_GTE: "2147483648" } } }) {
                     content
@@ -837,7 +835,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MAX_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MAX_LT: "2147483648" } } }) {
                     content
@@ -870,7 +868,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     });
 
     test("MAX_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someBigInt_MAX_LTE: "2147483648" } } }) {
                     content

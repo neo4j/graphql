@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Update", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -39,7 +37,7 @@ describe("Cypher Update", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;
@@ -50,7 +48,7 @@ describe("Cypher Update", () => {
     });
 
     test("Simple Update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, update: { id: "2" }) {
                     movies {
@@ -79,7 +77,7 @@ describe("Cypher Update", () => {
     });
 
     test("Single Nested Update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -141,7 +139,7 @@ describe("Cypher Update", () => {
     });
 
     test("Double Nested Update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -242,7 +240,7 @@ describe("Cypher Update", () => {
     });
 
     test("Simple Update as Connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, connect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
                     movies {
@@ -289,7 +287,7 @@ describe("Cypher Update", () => {
     });
 
     test("Update as multiple Connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -360,7 +358,7 @@ describe("Cypher Update", () => {
     });
 
     test("Simple Update as Disconnect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
                     movies {
@@ -417,7 +415,7 @@ describe("Cypher Update", () => {
     });
 
     test("Update as multiple Disconnect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -500,7 +498,7 @@ describe("Cypher Update", () => {
     });
 
     test("Update an Actor while creating and connecting to a new Movie (via field level)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     where: { name: "Dan" }
@@ -548,7 +546,7 @@ describe("Cypher Update", () => {
     });
 
     test("Update an Actor while creating and connecting to a new Movie (via top level)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     where: { name: "Dan" }
@@ -595,7 +593,7 @@ describe("Cypher Update", () => {
     });
 
     test("Update an Actor while creating and connecting to multiple new Movies (via top level)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     where: { name: "Dan" }
@@ -653,7 +651,7 @@ describe("Cypher Update", () => {
     });
 
     test("Delete related node as update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -722,7 +720,7 @@ describe("Cypher Update", () => {
     });
 
     test("Delete and update nested operations under same mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -813,7 +811,7 @@ describe("Cypher Update", () => {
     });
 
     test("Nested delete under a nested update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }
@@ -875,7 +873,7 @@ describe("Cypher Update", () => {
     });
 
     test("Double nested delete under a nested update", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }

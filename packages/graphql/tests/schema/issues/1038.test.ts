@@ -50,8 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type AWSAccountAggregateSelection {
-              accountName: StringAggregateSelectionNullable!
-              code: StringAggregateSelectionNullable!
+              accountName: StringAggregateSelection!
+              code: StringAggregateSelection!
               count: Int!
             }
 
@@ -144,9 +144,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type DNSZoneAggregateSelection {
-              awsId: StringAggregateSelectionNullable!
+              awsId: StringAggregateSelection!
               count: Int!
-              zoneType: StringAggregateSelectionNullable!
+              zoneType: StringAggregateSelection!
             }
 
             input DNSZoneCreateInput {
@@ -256,7 +256,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

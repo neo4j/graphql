@@ -56,10 +56,11 @@ export function fulltextResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const { cypher, params } = translateRead(
-            { context: context as Neo4jGraphQLTranslationContext, entityAdapter },
-            node.singular
-        );
+        const { cypher, params } = translateRead({
+            context: context as Neo4jGraphQLTranslationContext,
+            entityAdapter,
+            varName: node.singular,
+        });
         const executeResult = await execute({
             cypher,
             params,

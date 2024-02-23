@@ -18,21 +18,21 @@
  */
 
 import { type Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { graphql } from "graphql";
 import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/4239", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
     const Movie = new UniqueType("Movie");
     const Person = new UniqueType("Person");
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
                 type ${Movie.name}
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Movie.name]);
+            await cleanNodesUsingSession(session, [Movie.name]);
         } finally {
             await session.close();
         }

@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import type { PredicateReturn } from "../../types";
-import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
-import type { NodeMap } from "./types/node-map";
-import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { asArray } from "@graphql-tools/utils";
+import Cypher from "@neo4j/cypher-builder";
+import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
+import type { PredicateReturn } from "../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 import { filterTruthy } from "../../utils/utils";
-import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { QueryASTContext, QueryASTEnv } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
-import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
 import { isConcreteEntity } from "../queryAST/utils/is-concrete-entity";
+import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
+import type { NodeMap } from "./types/node-map";
 
 export function createAuthorizationAfterPredicate({
     context,
@@ -49,7 +49,7 @@ export function createAuthorizationAfterPredicate({
         if (!isConcreteEntity(entity)) {
             throw new Error("Expected authorization rule to be applied on a concrete entity");
         }
-        const factory = new QueryASTFactory(context.schemaModel, context.experimental);
+        const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -110,7 +110,7 @@ export function createAuthorizationAfterPredicateField({
         if (!isConcreteEntity(entity)) {
             throw new Error("Expected authorization rule to be applied on a concrete entity");
         }
-        const factory = new QueryASTFactory(context.schemaModel, context.experimental);
+        const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({

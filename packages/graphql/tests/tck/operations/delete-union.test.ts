@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Delete - union", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Episode {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
@@ -64,7 +62,7 @@ describe("Cypher Delete - union", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -75,7 +73,7 @@ describe("Cypher Delete - union", () => {
     });
 
     test("Simple Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(where: { name: "Keanu" }) {
                     nodesDeleted
@@ -99,7 +97,7 @@ describe("Cypher Delete - union", () => {
     });
 
     test("Single Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }
@@ -140,7 +138,7 @@ describe("Cypher Delete - union", () => {
     });
 
     test("Single Nested Delete, deleting multiple", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }
@@ -200,7 +198,7 @@ describe("Cypher Delete - union", () => {
     });
 
     test("Double Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }
@@ -261,7 +259,7 @@ describe("Cypher Delete - union", () => {
     });
 
     test("Double Nested, with union target", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     where: { name: "Keanu" }

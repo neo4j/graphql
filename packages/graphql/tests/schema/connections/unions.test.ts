@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Unions", () => {
@@ -42,7 +42,7 @@ describe("Unions", () => {
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            interface Wrote @relationshipProperties {
+            type Wrote @relationshipProperties {
                 words: Int!
             }
         `;
@@ -63,7 +63,7 @@ describe("Unions", () => {
 
             type AuthorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input AuthorConnectInput {
@@ -241,10 +241,10 @@ describe("Unions", () => {
               where: AuthorPublicationsJournalConnectionWhere
             }
 
-            type AuthorPublicationsRelationship implements Wrote {
+            type AuthorPublicationsRelationship {
               cursor: String!
               node: Publication!
-              words: Int!
+              properties: Wrote!
             }
 
             input AuthorPublicationsUpdateInput {
@@ -282,6 +282,7 @@ describe("Unions", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              publications: PublicationWhere @deprecated(reason: \\"Use \`publications_SOME\` instead.\\")
               publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Authors where all of the related AuthorPublicationsConnections match this filter
@@ -300,6 +301,19 @@ describe("Unions", () => {
               Return Authors where some of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
               publicationsConnection_SOME: AuthorPublicationsConnectionWhere
+              \\"\\"\\"Return Authors where all of the related Publications match this filter\\"\\"\\"
+              publications_ALL: PublicationWhere
+              \\"\\"\\"
+              Return Authors where none of the related Publications match this filter
+              \\"\\"\\"
+              publications_NONE: PublicationWhere
+              publications_NOT: PublicationWhere @deprecated(reason: \\"Use \`publications_NONE\` instead.\\")
+              \\"\\"\\"Return Authors where one of the related Publications match this filter\\"\\"\\"
+              publications_SINGLE: PublicationWhere
+              \\"\\"\\"
+              Return Authors where some of the related Publications match this filter
+              \\"\\"\\"
+              publications_SOME: PublicationWhere
             }
 
             type AuthorsConnection {
@@ -317,7 +331,7 @@ describe("Unions", () => {
 
             type BookAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input BookAuthorAggregateInput {
@@ -329,7 +343,7 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: BookAuthorEdgeAggregationWhereInput
+              edge: WroteAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
             }
 
@@ -340,11 +354,11 @@ describe("Unions", () => {
             }
 
             type BookAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelectionNonNullable!
+              words: IntAggregateSelection!
             }
 
             type BookAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input BookAuthorConnectFieldInput {
@@ -393,37 +407,6 @@ describe("Unions", () => {
               where: BookAuthorConnectionWhere
             }
 
-            input BookAuthorEdgeAggregationWhereInput {
-              AND: [BookAuthorEdgeAggregationWhereInput!]
-              NOT: BookAuthorEdgeAggregationWhereInput
-              OR: [BookAuthorEdgeAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
-            }
-
             input BookAuthorFieldInput {
               connect: [BookAuthorConnectFieldInput!]
               create: [BookAuthorCreateFieldInput!]
@@ -470,10 +453,10 @@ describe("Unions", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type BookAuthorRelationship implements Wrote {
+            type BookAuthorRelationship {
               cursor: String!
               node: Author!
-              words: Int!
+              properties: Wrote!
             }
 
             input BookAuthorUpdateConnectionInput {
@@ -625,11 +608,11 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Journal {
@@ -641,7 +624,7 @@ describe("Unions", () => {
 
             type JournalAggregateSelection {
               count: Int!
-              subject: StringAggregateSelectionNonNullable!
+              subject: StringAggregateSelection!
             }
 
             input JournalAuthorAggregateInput {
@@ -653,7 +636,7 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: JournalAuthorEdgeAggregationWhereInput
+              edge: WroteAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
             }
 
@@ -664,11 +647,11 @@ describe("Unions", () => {
             }
 
             type JournalAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelectionNonNullable!
+              words: IntAggregateSelection!
             }
 
             type JournalAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -717,37 +700,6 @@ describe("Unions", () => {
               where: JournalAuthorConnectionWhere
             }
 
-            input JournalAuthorEdgeAggregationWhereInput {
-              AND: [JournalAuthorEdgeAggregationWhereInput!]
-              NOT: JournalAuthorEdgeAggregationWhereInput
-              OR: [JournalAuthorEdgeAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
-            }
-
             input JournalAuthorFieldInput {
               connect: [JournalAuthorConnectFieldInput!]
               create: [JournalAuthorCreateFieldInput!]
@@ -794,10 +746,10 @@ describe("Unions", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type JournalAuthorRelationship implements Wrote {
+            type JournalAuthorRelationship {
               cursor: String!
               node: Author!
-              words: Int!
+              properties: Wrote!
             }
 
             input JournalAuthorUpdateConnectionInput {
@@ -953,6 +905,7 @@ describe("Unions", () => {
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
               journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
+              publications(options: QueryOptions, where: PublicationWhere): [Publication!]!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -969,9 +922,9 @@ describe("Unions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateAuthorsMutationResponse {
@@ -1000,8 +953,45 @@ describe("Unions", () => {
               journals: [Journal!]!
             }
 
-            interface Wrote {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Author.publications
+            * Book.author
+            * Journal.author
+            \\"\\"\\"
+            type Wrote {
               words: Int!
+            }
+
+            input WroteAggregationWhereInput {
+              AND: [WroteAggregationWhereInput!]
+              NOT: WroteAggregationWhereInput
+              OR: [WroteAggregationWhereInput!]
+              words_AVERAGE_EQUAL: Float
+              words_AVERAGE_GT: Float
+              words_AVERAGE_GTE: Float
+              words_AVERAGE_LT: Float
+              words_AVERAGE_LTE: Float
+              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              words_MAX_EQUAL: Int
+              words_MAX_GT: Int
+              words_MAX_GTE: Int
+              words_MAX_LT: Int
+              words_MAX_LTE: Int
+              words_MIN_EQUAL: Int
+              words_MIN_GT: Int
+              words_MIN_GTE: Int
+              words_MIN_LT: Int
+              words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input WroteCreateInput {

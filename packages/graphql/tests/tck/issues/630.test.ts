@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies(title: String): [Movie]
@@ -53,7 +51,7 @@ describe("Cypher directive", () => {
     });
 
     test("Nested Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     movies {
@@ -87,7 +85,7 @@ describe("Cypher directive", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this2) } }) AS var3
+                        RETURN collect({ node: { __id: id(this2), __resolveType: \\"Actor\\" } }) AS var3
                     }
                     RETURN { edges: var3, totalCount: totalCount } AS var4
                 }

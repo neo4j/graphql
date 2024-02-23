@@ -43,6 +43,11 @@ function createSetRelationshipPropertiesAndParams({
     const strs: string[] = [];
     const params = {};
 
+    const propertiesObj =
+        relationship.properties && properties[relationship.properties]
+            ? (properties[relationship.properties] as Record<string, unknown>)
+            : properties;
+
     relationship.primitiveFields.forEach((primitiveField) => {
         if (primitiveField?.autogenerate) {
             if (operation === "CREATE") {
@@ -64,10 +69,10 @@ function createSetRelationshipPropertiesAndParams({
     });
 
     relationship.primitiveFields.forEach((field) =>
-        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
+        addCallbackAndSetParam(field, varName, propertiesObj, callbackBucket, strs, operation)
     );
 
-    Object.entries(properties).forEach(([key, value]) => {
+    Object.entries(propertiesObj).forEach(([key, value]) => {
         const paramName = `${varName}_${key}`;
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);

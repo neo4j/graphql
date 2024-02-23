@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import Neo4jHelper from "../../../neo4j";
 
 describe("aggregations-where-edge-bigint", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const bigInt = "2147483647";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -51,7 +51,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -188,7 +188,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -255,7 +255,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -324,7 +324,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;

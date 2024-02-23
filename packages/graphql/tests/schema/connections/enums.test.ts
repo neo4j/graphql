@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Enums", () => {
@@ -40,7 +40,7 @@ describe("Enums", () => {
                 SUPPORTING
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;
@@ -53,7 +53,12 @@ describe("Enums", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
+            \\"\\"\\"
+            type ActedIn {
               roleType: RoleType!
             }
 
@@ -88,7 +93,7 @@ describe("Enums", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -123,7 +128,7 @@ describe("Enums", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -230,10 +235,10 @@ describe("Enums", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              roleType: RoleType!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -367,7 +372,7 @@ describe("Enums", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -474,10 +479,10 @@ describe("Enums", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              roleType: RoleType!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -496,7 +501,7 @@ describe("Enums", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -640,9 +645,9 @@ describe("Enums", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

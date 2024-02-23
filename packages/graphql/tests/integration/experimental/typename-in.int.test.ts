@@ -21,13 +21,13 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("typename_IN", () => {
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
     let typeDefs: string;
 
@@ -45,7 +45,7 @@ describe("typename_IN", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = `
@@ -72,7 +72,7 @@ describe("typename_IN", () => {
             cartoonist: String!
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
 
@@ -98,14 +98,13 @@ describe("typename_IN", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [Movie, Series, Cartoon]);
+        await cleanNodesUsingSession(session, [Movie, Series, Cartoon]);
         await session.close();
         await driver.close();
     });

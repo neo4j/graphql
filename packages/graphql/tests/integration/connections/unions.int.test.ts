@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("Connections -> Unions", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const typeDefs = gql`
         union Publication = Book | Journal
@@ -45,7 +45,7 @@ describe("Connections -> Unions", () => {
             author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
         }
 
-        interface Wrote @relationshipProperties {
+        type Wrote @relationshipProperties {
             words: Int!
         }
     `;
@@ -62,7 +62,7 @@ describe("Connections -> Unions", () => {
     const journalWordCount = 3413;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const session = await neo4j.getSession();
 
@@ -126,7 +126,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -161,19 +163,19 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: expect.toIncludeSameMembers([
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },
                             },
                             {
-                                words: book2WordCount,
+                                properties: { words: book2WordCount },
                                 node: {
                                     title: book2Title,
                                 },
                             },
                             {
-                                words: journalWordCount,
+                                properties: { words: journalWordCount },
                                 node: {
                                     subject: journalSubject,
                                 },
@@ -198,7 +200,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection(sort: [{ edge: { words: ASC } }]) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -233,19 +237,19 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: journalWordCount,
+                                properties: { words: journalWordCount },
                                 node: {
                                     subject: journalSubject,
                                 },
                             },
                             {
-                                words: book2WordCount,
+                                properties: { words: book2WordCount },
                                 node: {
                                     title: book2Title,
                                 },
                             },
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },
@@ -275,7 +279,9 @@ describe("Connections -> Unions", () => {
                             endCursor
                         }
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -315,13 +321,13 @@ describe("Connections -> Unions", () => {
                         },
                         edges: [
                             {
-                                words: journalWordCount,
+                                properties: { words: journalWordCount },
                                 node: {
                                     subject: journalSubject,
                                 },
                             },
                             {
-                                words: book2WordCount,
+                                properties: { words: book2WordCount },
                                 node: {
                                     title: book2Title,
                                 },
@@ -354,7 +360,7 @@ describe("Connections -> Unions", () => {
                         },
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },
@@ -379,7 +385,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -411,19 +419,19 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: expect.toIncludeSameMembers([
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },
                             },
                             {
-                                words: book2WordCount,
+                                properties: { words: book2WordCount },
                                 node: {
                                     title: book2Title,
                                 },
                             },
                             {
-                                words: journalWordCount,
+                                properties: { words: journalWordCount },
                                 node: {},
                             },
                         ]),
@@ -446,7 +454,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection(where: { Book: { node: { title: $bookTitle } } }) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -479,7 +489,7 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },
@@ -504,7 +514,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection(where: { Book: { node: { title_NOT: $bookTitle } } }) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -540,7 +552,7 @@ describe("Connections -> Unions", () => {
                                 node: {
                                     title: "A Christmas Carol",
                                 },
-                                words: 30953,
+                                properties: { words: 30953 },
                             },
                         ],
                     },
@@ -568,7 +580,9 @@ describe("Connections -> Unions", () => {
                     ) {
                         totalCount
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 __typename
                                 ... on Book {
@@ -607,14 +621,14 @@ describe("Connections -> Unions", () => {
                         totalCount: 2,
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     __typename: "Book",
                                     title: book1Title,
                                 },
                             },
                             {
-                                words: journalWordCount,
+                                properties: { words: journalWordCount },
                                 node: {
                                     __typename: "Journal",
                                     subject: journalSubject,
@@ -646,7 +660,9 @@ describe("Connections -> Unions", () => {
                     ) {
                         totalCount
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 __typename
                                 ... on Book {
@@ -685,7 +701,7 @@ describe("Connections -> Unions", () => {
                         totalCount: 1,
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     __typename: "Book",
                                     title: book1Title,
@@ -711,7 +727,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection(where: { Book: { edge: { words: $bookWordCount } } }) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -744,7 +762,7 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },
@@ -769,7 +787,9 @@ describe("Connections -> Unions", () => {
                     name
                     publicationsConnection(where: { Book: { edge: { words_NOT: $bookWordCount } } }) {
                         edges {
-                            words
+                           properties {
+                             words
+                           }
                             node {
                                 ... on Book {
                                     title
@@ -802,7 +822,7 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: book2WordCount,
+                                properties: { words: book2WordCount },
                                 node: {
                                     title: book2Title,
                                 },
@@ -833,7 +853,9 @@ describe("Connections -> Unions", () => {
                     ) {
                         totalCount
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 __typename
                                 ... on Book {
@@ -872,14 +894,14 @@ describe("Connections -> Unions", () => {
                         totalCount: 2,
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     __typename: "Book",
                                     title: book1Title,
                                 },
                             },
                             {
-                                words: journalWordCount,
+                                properties: { words: journalWordCount },
                                 node: {
                                     __typename: "Journal",
                                     subject: journalSubject,
@@ -911,7 +933,9 @@ describe("Connections -> Unions", () => {
                     ) {
                         totalCount
                         edges {
-                            words
+                           properties {
+                             words
+                           }
                             node {
                                 __typename
                                 ... on Book {
@@ -950,7 +974,7 @@ describe("Connections -> Unions", () => {
                         totalCount: 1,
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     __typename: "Book",
                                     title: book1Title,
@@ -983,7 +1007,9 @@ describe("Connections -> Unions", () => {
                         }
                     ) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -1017,7 +1043,7 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: book1WordCount,
+                                properties: { words: book1WordCount },
                                 node: {
                                     title: book1Title,
                                 },

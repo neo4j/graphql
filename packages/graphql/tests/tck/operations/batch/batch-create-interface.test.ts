@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Batch Create, Interface", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Person {
                 id: ID!
                 name: String
@@ -57,7 +55,7 @@ describe("Batch Create, Interface", () => {
                 address: String
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 year: Int
             }
         `;
@@ -68,7 +66,7 @@ describe("Batch Create, Interface", () => {
     });
 
     test("no nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
@@ -116,7 +114,7 @@ describe("Batch Create, Interface", () => {
     });
 
     test("nested batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -266,7 +264,7 @@ describe("Batch Create, Interface", () => {
     });
 
     test("heterogeneous batch", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [

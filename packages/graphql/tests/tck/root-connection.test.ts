@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Root Connection Query tests", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 id: ID
                 title: String
@@ -46,7 +44,7 @@ describe("Root Connection Query tests", () => {
     });
 
     test("Simple selection, Movie by title", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(where: { title: "River Runs Through It, A" }) {
                     totalCount
@@ -70,7 +68,7 @@ describe("Root Connection Query tests", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title } }) AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
@@ -83,7 +81,7 @@ describe("Root Connection Query tests", () => {
     });
 
     test("should apply limit and sort before return", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(first: 20, sort: [{ title: ASC }]) {
                     edges {
@@ -108,7 +106,7 @@ describe("Root Connection Query tests", () => {
                 WITH *
                 ORDER BY this0.title ASC
                 LIMIT $param0
-                RETURN collect({ node: { title: this0.title } }) AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
@@ -122,7 +120,7 @@ describe("Root Connection Query tests", () => {
         `);
     });
     test("should apply limit, sort, and filter correctly when all three are used", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(first: 20, where: { title_CONTAINS: "Matrix" }, sort: [{ title: ASC }]) {
                     edges {
@@ -147,7 +145,7 @@ describe("Root Connection Query tests", () => {
                 WITH *
                 ORDER BY this0.title ASC
                 LIMIT $param1
-                RETURN collect({ node: { title: this0.title } }) AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
@@ -162,7 +160,7 @@ describe("Root Connection Query tests", () => {
         `);
     });
     test("should correctly place any connection strings", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(first: 20, sort: [{ title: ASC }]) {
                     edges {
@@ -202,11 +200,11 @@ describe("Root Connection Query tests", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { name: this2.name } }) AS var3
+                        RETURN collect({ node: { name: this2.name, __resolveType: \\"Actor\\" } }) AS var3
                     }
                     RETURN { edges: var3, totalCount: totalCount } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actorsConnection: var4 } }) AS var5
+                RETURN collect({ node: { title: this0.title, actorsConnection: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);

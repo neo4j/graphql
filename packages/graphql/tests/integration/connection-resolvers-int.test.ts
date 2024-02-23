@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { offsetToCursor } from "graphql-relay";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 
 describe("Connection Resolvers", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -53,7 +53,7 @@ describe("Connection Resolvers", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -70,7 +70,7 @@ describe("Connection Resolvers", () => {
             charset: "alphabetic",
         });
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation {
                 createMovies(input:[{
                     id: "${movieId}",
@@ -98,7 +98,9 @@ describe("Connection Resolvers", () => {
                                 startCursor
                             }
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     id
                                     name
@@ -131,7 +133,7 @@ describe("Connection Resolvers", () => {
                     },
                     edges: [
                         {
-                            screenTime: 100,
+                            properties: { screenTime: 100 },
                             node: {
                                 id: actorId,
                                 name: "Keanu Reeves",
@@ -161,7 +163,7 @@ describe("Connection Resolvers", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -171,7 +173,7 @@ describe("Connection Resolvers", () => {
             driver,
         });
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateMovie($input: [MovieCreateInput!]!) {
                 createMovies(input: $input) {
                     movies {
@@ -187,7 +189,9 @@ describe("Connection Resolvers", () => {
                             }
                             edges {
                                 cursor
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     id
                                     name
@@ -242,7 +246,7 @@ describe("Connection Resolvers", () => {
                         totalCount: 20,
                         edges: actors.slice(0, 5).map(({ node, edge }) => ({
                             node,
-                            screenTime: edge.screenTime,
+                            properties: { screenTime: edge.screenTime },
                             cursor: expect.any(String),
                         })),
                         pageInfo: {
@@ -255,7 +259,7 @@ describe("Connection Resolvers", () => {
                 },
             ]);
 
-            const secondQuery = `
+            const secondQuery = /* GraphQL */ `
                 query Movies($movieId: ID!, $endCursor: String) {
                     movies(where: { id: $movieId }) {
                         id
@@ -264,7 +268,9 @@ describe("Connection Resolvers", () => {
                             totalCount
                             edges {
                                 cursor
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     id
                                     name
@@ -300,7 +306,7 @@ describe("Connection Resolvers", () => {
                     edges: actors.slice(5, 10).map(({ node, edge }) => ({
                         node,
                         cursor: expect.any(String),
-                        screenTime: edge.screenTime,
+                        properties: { screenTime: edge.screenTime },
                     })),
                     pageInfo: {
                         hasPreviousPage: true,
@@ -331,7 +337,7 @@ describe("Connection Resolvers", () => {
                     edges: actors.slice(10, 15).map(({ node, edge }) => ({
                         node,
                         cursor: expect.any(String),
-                        screenTime: edge.screenTime,
+                        properties: { screenTime: edge.screenTime },
                     })),
                     pageInfo: {
                         hasPreviousPage: true,

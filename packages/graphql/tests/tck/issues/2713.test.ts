@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2713", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Movie {
             title: String
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "InGenre")
@@ -41,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "InGenre")
         }
 
-        interface InGenre @relationshipProperties {
+        type InGenre @relationshipProperties {
             intValue: Int!
         }
     `;
@@ -53,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     });
 
     test("should not find genresConnection_ALL where NONE true", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { genresConnection_ALL: { node: { moviesAggregate: { count: 0 } } } }) {
                     title
@@ -109,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     });
 
     test("should not find genresConnection_ALL where NONE true and filter by genre title", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { genresConnection_ALL: { node: { moviesAggregate: { count: 0 }, name: "Thriller" } } }) {
                     title
@@ -167,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     });
 
     test("should not find genresConnection_ALL by genre title", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { genresConnection_ALL: { node: { name: "Thriller" } } }) {
                     title

@@ -17,25 +17,37 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField } from "../types";
-import createWhereAndParams from "./where/create-where-and-params";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import createRelationshipValidationString from "./create-relationship-validation-string";
 import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { RelationField } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { caseWhere } from "../utils/case-where";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import createRelationshipValidationString from "./create-relationship-validation-string";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
-import Cypher from "@neo4j/cypher-builder";
-import { caseWhere } from "../utils/case-where";
-import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
-import { checkAuthentication } from "./authorization/check-authentication";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { asArray } from "../utils/utils";
+import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { compileCypherIfExists } from "../utils/compile-cypher";
+import { createWhereNodePredicate } from "./where/create-where-predicate";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 interface Res {
     connects: string[];
     params: any;
 }
+
+type Filters = {
+    preComputedSubqueries?: string;
+    predicate: [string, Record<string, any>];
+};
 
 function createConnectAndParams({
     withVars,
@@ -73,14 +85,14 @@ function createConnectAndParams({
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
-        index: number
+        index: number,
+        filters?: Filters
     ): { subquery: string; params: Record<string, any> } {
         checkAuthentication({ context, node: relatedNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
         let params = {};
-        const baseName = `${varName}${index}`;
-        const nodeName = `${baseName}_node`;
-        const relationshipName = `${baseName}_relationship`;
+        const nodeName = getConnectNodeName(varName, index);
+        const relationshipName = getConnectEdgeName(varName, index);
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${relationField.properties || context.subscriptionsEnabled ? relationshipName : ""}:${
@@ -100,75 +112,11 @@ function createConnectAndParams({
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
-        let aggregationWhere = false;
-        if (connect.where) {
-            // If _on is the only where key and it doesn't contain this implementation, don't connect it
-            if (
-                connect.where.node._on &&
-                Object.keys(connect.where.node).length === 1 &&
-                !Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name)
-            ) {
-                return { subquery: "", params: {} };
-            }
-            const whereInput = {
-                ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                    if (k !== "_on") {
-                        // If this where key is also inside _on for this implementation, use the one in _on instead
-                        if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
-                            return args;
-                        }
-                        return { ...args, [k]: v };
-                    }
-
-                    return args;
-                }, {}),
-            };
-            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
-                whereInput,
-                context,
-                node: relatedNode,
-                varName: nodeName,
-                recursing: true,
-            });
-            if (rootNodeWhereCypher) {
-                whereStrs.push(rootNodeWhereCypher);
-                params = { ...params, ...rootNodeWhereParams };
-                if (preComputedSubqueries) {
-                    subquery.push(preComputedSubqueries);
-                    aggregationWhere = true;
-                }
-            }
-
-            // For _on filters
-            if (connect.where.node?._on?.[relatedNode.name]) {
-                const [onTypeNodeWhereCypher, preComputedSubqueries, onTypeNodeWhereParams] = createWhereAndParams({
-                    whereInput: {
-                        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                            if (k !== "_on") {
-                                return { ...args, [k]: v };
-                            }
-
-                            if (Object.prototype.hasOwnProperty.call(v, relatedNode.name)) {
-                                return { ...args, ...(v as any)[relatedNode.name] };
-                            }
-
-                            return args;
-                        }, {}),
-                    },
-                    context,
-                    node: relatedNode,
-                    varName: `${nodeName}`,
-                    chainStr: `${nodeName}_on_${relatedNode.name}`,
-                    recursing: true,
-                });
-                if (onTypeNodeWhereCypher) {
-                    whereStrs.push(onTypeNodeWhereCypher);
-                    params = { ...params, ...onTypeNodeWhereParams };
-                    if (preComputedSubqueries) {
-                        subquery.push(preComputedSubqueries);
-                        aggregationWhere = true;
-                    }
-                }
+        if (filters) {
+            whereStrs.push(filters.predicate[0]);
+            params = { ...filters.predicate[1] };
+            if (filters.preComputedSubqueries) {
+                subquery.push(filters.preComputedSubqueries);
             }
         }
 
@@ -203,7 +151,7 @@ function createConnectAndParams({
 
         if (whereStrs.length) {
             const predicate = `${whereStrs.join(" AND ")}`;
-            if (aggregationWhere) {
+            if (filters?.preComputedSubqueries?.length) {
                 const columns = [new Cypher.NamedVariable(nodeName)];
                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
@@ -321,118 +269,50 @@ function createConnectAndParams({
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
 
             connects.forEach((c) => {
-                const reduced = Object.entries(c)
-                    .filter(([k]) => {
-                        if (k === "_on") {
-                            return false;
-                        }
+                const reduced = Object.entries(c).reduce(
+                    (r: Res, [k, v]: [string, any]) => {
+                        const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
+                        const newRefNodes: Node[] = [];
 
-                        if (relationField.interface && c?._on?.[relatedNode.name]) {
-                            const onArray = Array.isArray(c._on[relatedNode.name])
-                                ? c._on[relatedNode.name]
-                                : [c._on[relatedNode.name]];
-                            if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
-                                return false;
-                            }
-                        }
-
-                        return true;
-                    })
-                    .reduce(
-                        (r: Res, [k, v]: [string, any]) => {
-                            const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
-                            const newRefNodes: Node[] = [];
-
-                            if (relField.union) {
-                                Object.keys(v).forEach((modelName) => {
-                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
-                                });
-                            } else if (relField.interface) {
-                                (relField.interface.implementations as string[]).forEach((modelName) => {
-                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
-                                });
-                            } else {
-                                newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
-                            }
-
-                            newRefNodes.forEach((newRefNode) => {
-                                const recurse = createConnectAndParams({
-                                    withVars: [...withVars, nodeName],
-                                    value: relField.union ? v[newRefNode.name] : v,
-                                    varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
-                                    relationField: relField,
-                                    parentVar: nodeName,
-                                    context,
-                                    callbackBucket,
-                                    refNodes: [newRefNode],
-                                    parentNode: relatedNode,
-                                    labelOverride: relField.union ? newRefNode.name : "",
-                                    includeRelationshipValidation: true,
-                                    isFirstLevel: false,
-                                    source: "CONNECT",
-                                });
-                                r.connects.push(recurse[0]);
-                                r.params = { ...r.params, ...recurse[1] };
+                        if (relField.union) {
+                            Object.keys(v).forEach((modelName) => {
+                                newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                             });
+                        } else if (relField.interface) {
+                            (relField.interface.implementations as string[]).forEach((modelName) => {
+                                newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
+                            });
+                        } else {
+                            newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
+                        }
 
-                            return r;
-                        },
-                        { connects: [], params: {} }
-                    );
+                        newRefNodes.forEach((newRefNode) => {
+                            const recurse = createConnectAndParams({
+                                withVars: [...withVars, nodeName],
+                                value: relField.union ? v[newRefNode.name] : v,
+                                varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
+                                relationField: relField,
+                                parentVar: nodeName,
+                                context,
+                                callbackBucket,
+                                refNodes: [newRefNode],
+                                parentNode: relatedNode,
+                                labelOverride: relField.union ? newRefNode.name : "",
+                                includeRelationshipValidation: true,
+                                isFirstLevel: false,
+                                source: "CONNECT",
+                            });
+                            r.connects.push(recurse[0]);
+                            r.params = { ...r.params, ...recurse[1] };
+                        });
+
+                        return r;
+                    },
+                    { connects: [], params: {} }
+                );
 
                 subquery.push(reduced.connects.join("\n"));
                 params = { ...params, ...reduced.params };
-
-                if (relationField.interface && c?._on?.[relatedNode.name]) {
-                    const onConnects = Array.isArray(c._on[relatedNode.name])
-                        ? c._on[relatedNode.name]
-                        : [c._on[relatedNode.name]];
-
-                    onConnects.forEach((onConnect, onConnectIndex) => {
-                        const onReduced = Object.entries(onConnect).reduce(
-                            (r: Res, [k, v]: [string, any]) => {
-                                const relField = relatedNode.relationFields.find((x) =>
-                                    k.startsWith(x.fieldName)
-                                ) as RelationField;
-                                const newRefNodes: Node[] = [];
-
-                                if (relField.union) {
-                                    Object.keys(v).forEach((modelName) => {
-                                        newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
-                                    });
-                                } else {
-                                    newRefNodes.push(
-                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                                    );
-                                }
-
-                                newRefNodes.forEach((newRefNode) => {
-                                    const recurse = createConnectAndParams({
-                                        withVars: [...withVars, nodeName],
-                                        value: relField.union ? v[newRefNode.name] : v,
-                                        varName: `${nodeName}_on_${relatedNode.name}${onConnectIndex}_${k}`,
-                                        relationField: relField,
-                                        parentVar: nodeName,
-                                        context,
-                                        callbackBucket,
-                                        refNodes: [newRefNode],
-                                        parentNode: relatedNode,
-                                        labelOverride: relField.union ? newRefNode.name : "",
-                                        isFirstLevel: false,
-                                        source: "CONNECT",
-                                    });
-                                    r.connects.push(recurse[0]);
-                                    r.params = { ...r.params, ...recurse[1] };
-                                });
-
-                                return r;
-                            },
-                            { connects: [], params: {} }
-                        );
-                        subquery.push(onReduced.connects.join("\n"));
-                        params = { ...params, ...onReduced.params };
-                    });
-                }
             });
         }
 
@@ -479,10 +359,22 @@ function createConnectAndParams({
         }
 
         const inner: string[] = [];
+
         if (relationField.interface) {
             const subqueries: string[] = [];
+            const targetInterface = context.schemaModel.compositeEntities.find(
+                (x) => x.name === relationField.typeMeta.name
+            );
+            if (!targetInterface || !(targetInterface instanceof InterfaceEntity)) {
+                throw new Error(`Target with name ${relationField.typeMeta.name} not found`);
+            }
+            const entity = new InterfaceEntityAdapter(targetInterface);
             refNodes.forEach((refNode, i) => {
-                const subquery = createSubqueryContents(refNode, connect, i);
+                const nodeName = getConnectNodeName(varName, i);
+                const targetEntity = entity.concreteEntities.find((x) => x.name === refNode.name);
+                const filters = getFilters({ connect, context, entity, nodeName, targetEntity });
+
+                const subquery = createSubqueryContents(refNode, connect, i, filters);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
@@ -499,7 +391,14 @@ function createConnectAndParams({
                 }
             }
         } else {
-            const subquery = createSubqueryContents(refNodes[0] as Node, connect, index);
+            const targetNode = refNodes[0];
+            if (!targetNode) {
+                throw new Error("No refNodes found");
+            }
+            const entity = getEntityAdapterFromNode(targetNode, context);
+            const nodeName = getConnectNodeName(varName, index);
+            const filters = getFilters({ connect, context, entity, nodeName });
+            const subquery = createSubqueryContents(targetNode, connect, index, filters);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }
@@ -517,12 +416,66 @@ function createConnectAndParams({
         return res;
     }
 
-    const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
+    const { connects, params } = asArray(value).reduce(reducer, {
         connects: [],
         params: {},
     });
 
     return [connects.join("\n"), params];
+}
+
+// function to have a single source of truth for the node name of a connect operation, until the refactor to use CypherBuilder.
+function getConnectNodeName(varName: string, index: number): string {
+    return `${varName}${index}_node`;
+}
+// function to have a single source of truth for the edge name of a connect operation, until the refactor to use CypherBuilder.
+function getConnectEdgeName(varName: string, index: number): string {
+    return `${varName}${index}_relationship`;
+}
+
+function getFilters({
+    connect,
+    entity,
+    targetEntity,
+    context,
+    nodeName,
+}: {
+    connect: any;
+    entity: EntityAdapter;
+    targetEntity?: ConcreteEntityAdapter;
+    context: Neo4jGraphQLTranslationContext;
+    nodeName: string;
+}): Filters | undefined {
+    if (!connect.where) {
+        return;
+    }
+
+    const targetElement = new Cypher.NamedNode(nodeName);
+    const whereInput = connect.where.node ?? {};
+
+    const { predicate: wherePredicate, preComputedSubqueries } = createWhereNodePredicate({
+        entity,
+        context,
+        whereInput,
+        targetElement,
+        targetEntity,
+    });
+    let preComputedWhereFieldsResult = "";
+
+    const whereCypher = new Cypher.Raw((env: Cypher.Environment) => {
+        preComputedWhereFieldsResult = compileCypherIfExists(preComputedSubqueries, env);
+        const cypher = (wherePredicate as any)?.getCypher(env) || "";
+        return [cypher, {}];
+    });
+
+    const result = whereCypher.build(`${nodeName}_`);
+
+    if (result.cypher) {
+        return {
+            predicate: [result.cypher, result.params],
+            preComputedSubqueries: preComputedWhereFieldsResult,
+        };
+    }
 }
 
 export default createConnectAndParams;

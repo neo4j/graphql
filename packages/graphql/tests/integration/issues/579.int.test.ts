@@ -21,14 +21,14 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("579", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -45,7 +45,7 @@ describe("579", () => {
              color: Color! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
            }
 
-           interface OfColorProperties @relationshipProperties {
+           type OfColorProperties @relationshipProperties {
                test: Boolean
            }
 
@@ -65,7 +65,7 @@ describe("579", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 updateProducts(
                   where: { id: "${productId}" }
@@ -83,7 +83,9 @@ describe("579", () => {
                         id
                         colorConnection {
                             edges {
-                                test
+                                properties { 
+                                    test
+                                }
                             }
                         }
                     }
@@ -118,7 +120,7 @@ describe("579", () => {
                 colorConnection: {
                     edges: [
                         {
-                            test: true,
+                            properties: { test: true },
                         },
                     ],
                 },

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("#402", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Event {
                 id: ID!
                 area: Area! @relationship(type: "HAPPENS_IN", direction: OUT)
@@ -44,7 +42,7 @@ describe("#402", () => {
     });
 
     test("Should ignore the empty array and not include any where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($area: [ID!]) {
                 events(where: { area: { id_IN: $area } }) {
                     id

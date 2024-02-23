@@ -43,7 +43,6 @@ async function beforeAll() {
     driver = await neo4j();
     neoSchema = new Neo4jGraphQL({
         typeDefs,
-        experimental: true,
     });
     await resetDb();
 }

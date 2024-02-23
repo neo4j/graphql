@@ -35,10 +35,12 @@ export function translateAggregate({
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     // TODO: Rename QueryAST to OperationsTree
-    const queryASTFactory = new QueryASTFactory(context.schemaModel, context.experimental);
+    const queryASTFactory = new QueryASTFactory(context.schemaModel);
 
-    if (!entityAdapter) throw new Error("Entity not found");
-    const queryAST = queryASTFactory.createQueryAST({resolveTree, entityAdapter, context});
+    if (!entityAdapter) {
+        throw new Error("Entity not found");
+    }
+    const queryAST = queryASTFactory.createQueryAST({ resolveTree, entityAdapter, context });
     debug(queryAST.print());
     const clause = queryAST.buildNew(context);
     return clause.build();
