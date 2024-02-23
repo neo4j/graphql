@@ -25,11 +25,11 @@ import { Neo4jGraphQL } from "../../../src";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
 import { runAndParseRecords } from "../../utils/run-and-parse-records";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Create -> ConnectOrCreate", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let typeDefs: DocumentNode;
 
@@ -39,7 +39,7 @@ describe("Create -> ConnectOrCreate", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = gql`

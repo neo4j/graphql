@@ -23,13 +23,13 @@ import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 
 describe("Interface Field Level Aggregations with authorization", () => {
     const secret = "the-secret";
 
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let typeDefs: string;
 
@@ -41,7 +41,7 @@ describe("Interface Field Level Aggregations with authorization", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = /* GraphQL */ `

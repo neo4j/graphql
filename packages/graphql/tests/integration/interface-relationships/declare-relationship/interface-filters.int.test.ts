@@ -22,13 +22,13 @@ import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 
 describe("interface filters of declared relationships", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
@@ -51,7 +51,7 @@ describe("interface filters of declared relationships", () => {
     let episodeNr;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -144,7 +144,7 @@ describe("interface filters of declared relationships", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Movie, Series, Actor, Episode]);
+        await cleanNodesUsingSession(session, [Movie, Series, Actor, Episode]);
         await session.close();
     });
 

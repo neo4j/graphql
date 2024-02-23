@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { toGlobalId } from "../../src/utils/global-ids";
 import { UniqueType } from "../utils/graphql-types";
@@ -28,14 +28,14 @@ import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Global node resolution", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     const secret = "secret";
 
     const typeFilm = new UniqueType("Film");
     const typeUser = new UniqueType("User");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

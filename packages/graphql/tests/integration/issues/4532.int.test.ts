@@ -20,13 +20,13 @@
 import { graphql } from "graphql";
 import { type Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { default as Neo4j } from "../neo4j";
+import { default as Neo4jHelper } from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4532", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
 
     describe("order-by relationship property", () => {
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
         const Scenario = new UniqueType("Scenario");
 
         beforeAll(async () => {
-            neo4j = new Neo4j();
+            neo4j = new Neo4jHelper();
             driver = await neo4j.getDriver();
             const typeDefs = /* GraphQL */ `
                 type ${Inventory} {
@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
         afterAll(async () => {
             const session = await neo4j.getSession();
             try {
-                await cleanNodes(session, [Inventory, Scenario]);
+                await cleanNodesUsingSession(session, [Inventory, Scenario]);
             } finally {
                 await session.close();
             }
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
         const Video = new UniqueType("Video");
 
         beforeAll(async () => {
-            neo4j = new Neo4j();
+            neo4j = new Neo4jHelper();
             driver = await neo4j.getDriver();
             const typeDefs = /* GraphQL */ `
                 type ${Inventory} {
@@ -200,7 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
         afterAll(async () => {
             const session = await neo4j.getSession();
             try {
-                await cleanNodes(session, [Inventory, Image, Video]);
+                await cleanNodesUsingSession(session, [Inventory, Image, Video]);
             } finally {
                 await session.close();
             }

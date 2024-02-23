@@ -18,16 +18,16 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { graphql } from "graphql";
 import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/4118", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const User = new UniqueType("User");
     const Tenant = new UniqueType("Tenant");
@@ -122,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
     let myUserId: string;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -161,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
 
     afterEach(async () => {
         const session = driver.session();
-        await cleanNodes(session, [User, Tenant, Settings, OpeningDay, LOL]);
+        await cleanNodesUsingSession(session, [User, Tenant, Settings, OpeningDay, LOL]);
         await session.close();
     });
 

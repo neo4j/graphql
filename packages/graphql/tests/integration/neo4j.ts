@@ -23,7 +23,7 @@ import type { Neo4jGraphQLContext } from "../../src";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 
-class Neo4j {
+class Neo4jHelper {
     private driver: neo4j.Driver | undefined;
     private hasIntegrationTestDb: boolean;
 
@@ -109,4 +109,4 @@ class Neo4j {
     }
 }
 
-export default Neo4j;
+export default Neo4jHelper;

@@ -29,7 +29,7 @@ import { delay } from "../../../../src/utils/utils";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -49,12 +49,12 @@ function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): strin
 
 describe("@fulltext directive", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         databaseName = generate({ readable: true, charset: "alphabetic" });

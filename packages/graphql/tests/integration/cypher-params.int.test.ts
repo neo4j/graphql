@@ -22,20 +22,20 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 
 describe("cypherParams", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let Movie: UniqueType;
+
+    beforeAll(async () => {
+        neo4j = new Neo4jHelper();
+        driver = await neo4j.getDriver();
+    });
 
     beforeEach(() => {
         Movie = new UniqueType("Movie");
-    });
-
-    beforeAll(async () => {
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {

@@ -23,7 +23,7 @@ import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { delay } from "../../../../src/utils/utils";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
@@ -143,7 +143,7 @@ describe.each([
         await wsClient2.close();
         subscriptionEngine.close();
         const session = driver.session();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
         await driver.close();

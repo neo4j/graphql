@@ -20,16 +20,16 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { runCypher } from "../../../utils/run-cypher";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/roles", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     const secret = "secret";
 
     let typeUser: UniqueType;
@@ -39,7 +39,7 @@ describe("auth/roles", () => {
     let typeHistory: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -66,7 +66,7 @@ describe("auth/roles", () => {
 
     afterEach(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [typeProduct, typeUser]);
+        await cleanNodesUsingSession(session, [typeProduct, typeUser]);
     });
 
     describe("read", () => {

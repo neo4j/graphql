@@ -20,16 +20,16 @@
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/allow", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let plugin: TestSubscriptionsEngine;
     const secret = "secret";
@@ -39,7 +39,7 @@ describe("auth/allow", () => {
     let commentType: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -57,7 +57,7 @@ describe("auth/allow", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [userType, postType]);
+        await cleanNodesUsingSession(session, [userType, postType]);
         await session.close();
     });
 

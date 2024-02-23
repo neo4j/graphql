@@ -20,16 +20,16 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
 import { toGlobalId } from "../../../../src/utils/global-ids";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { generate } from "randomstring";
 
 describe("RelayId projection with different database name", () => {
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
     let session: Session;
     let movieDatabaseID: string;
@@ -41,7 +41,7 @@ describe("RelayId projection with different database name", () => {
     const Actor = new UniqueType("Actor");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = `
@@ -93,7 +93,7 @@ describe("RelayId projection with different database name", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Movie, Genre, Actor]);
+        await cleanNodesUsingSession(session, [Movie, Genre, Actor]);
         await session.close();
     });
 
