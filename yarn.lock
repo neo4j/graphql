@@ -3591,9 +3591,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@neo4j-ndl/react@npm:2.6.2"
+"@neo4j-ndl/react@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@neo4j-ndl/react@npm:2.6.3"
   dependencies:
     "@floating-ui/react": "npm:0.25.1"
     "@heroicons/react": "npm:2.0.13"
@@ -3620,7 +3620,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 10c0/16007e41249f0c776f546c2e473f71158fcc4a993cca6ed400eced61786d1d81d41a51097497d59f40ad48782622256aa221ee05f13cd9be0875c4be4b72b4f7
+  checksum: 10c0/7f710ba0be066e37675ebee3a695e967a5faee018473c2f17b75a6c97fa2494db8828a05d4d4f79eadea54fcaa7cb7d23b999c9d7420413e976b80f36ffa4131
   languageName: node
   linkType: hard
 
@@ -3631,18 +3631,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-amqp-subscriptions-engine@npm:^1.0.0, @neo4j/graphql-amqp-subscriptions-engine@npm:^1.0.0-beta.0, @neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine":
+"@neo4j/graphql-amqp-subscriptions-engine@npm:^2.0.0, @neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
     "@apollo/server": "npm:4.10.0"
-    "@neo4j/graphql": "npm:^4.0.0"
+    "@neo4j/graphql": "npm:^5.0.0"
     "@types/amqplib": "npm:0.10.4"
     "@types/body-parser": "npm:1.19.5"
     "@types/cors": "npm:2.8.17"
     "@types/debug": "npm:4.1.12"
     "@types/jest": "npm:29.5.12"
-    "@types/node": "npm:20.11.19"
+    "@types/node": "npm:20.11.20"
     amqplib: "npm:0.10.3"
     body-parser: "npm:^1.20.2"
     camelcase: "npm:6.3.0"
@@ -3657,7 +3657,7 @@ __metadata:
     typescript: "npm:5.1.6"
     ws: "npm:8.16.0"
   peerDependencies:
-    "@neo4j/graphql": ^4.0.0-beta.0
+    "@neo4j/graphql": ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -3669,14 +3669,13 @@ __metadata:
     "@graphql-codegen/plugin-helpers": "npm:^5.0.0"
     "@graphql-codegen/typescript": "npm:^4.0.0"
     "@graphql-tools/merge": "npm:^9.0.0"
-    "@neo4j/graphql": "npm:^4.4.6"
+    "@neo4j/graphql": "npm:^5.0.0"
     "@types/jest": "npm:29.5.12"
-    "@types/node": "npm:20.11.19"
+    "@types/node": "npm:20.11.20"
     camelcase: "npm:6.3.0"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
     libnpmsearch: "npm:7.0.1"
-    npm-run-all2: "npm:6.1.2"
     pluralize: "npm:8.0.0"
     prettier: "npm:^2.7.1"
     randomstring: "npm:1.3.0"
@@ -3702,9 +3701,9 @@ __metadata:
     "@dnd-kit/sortable": "npm:8.0.0"
     "@graphiql/react": "npm:0.20.3"
     "@neo4j-ndl/base": "npm:2.6.0"
-    "@neo4j-ndl/react": "npm:2.6.2"
-    "@neo4j/graphql": "npm:4.4.6"
-    "@neo4j/introspector": "npm:2.0.0"
+    "@neo4j-ndl/react": "npm:2.6.3"
+    "@neo4j/graphql": "npm:5.0.0"
+    "@neo4j/introspector": "npm:3.0.0"
     "@playwright/test": "npm:1.41.2"
     "@tsconfig/create-react-app": "npm:2.0.2"
     "@types/codemirror": "npm:5.60.15"
@@ -3764,7 +3763,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:4.4.6, @neo4j/graphql@npm:^4.0.0, @neo4j/graphql@npm:^4.0.0-beta.0, @neo4j/graphql@npm:^4.4.6, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:5.0.0, @neo4j/graphql@npm:^5.0.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3781,7 +3780,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:29.5.12"
     "@types/jsonwebtoken": "npm:9.0.5"
-    "@types/node": "npm:20.11.19"
+    "@types/node": "npm:20.11.20"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.1.11"
     "@types/semver": "npm:7.5.7"
@@ -3790,7 +3789,6 @@ __metadata:
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
     dedent: "npm:1.5.1"
-    deep-equal: "npm:^2.0.5"
     dot-prop: "npm:^6.0.1"
     graphql-compose: "npm:^9.0.8"
     graphql-middleware: "npm:6.1.35"
@@ -3809,7 +3807,6 @@ __metadata:
     libnpmsearch: "npm:7.0.1"
     mock-jwks: "npm:1.0.10"
     nock: "npm:13.5.3"
-    npm-run-all2: "npm:6.1.2"
     pluralize: "npm:^8.0.0"
     randomstring: "npm:1.3.0"
     rimraf: "npm:5.0.5"
@@ -3826,13 +3823,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/introspector@npm:2.0.0, @neo4j/introspector@workspace:packages/introspector":
+"@neo4j/introspector@npm:3.0.0, @neo4j/introspector@workspace:packages/introspector":
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": "npm:^4.0.0"
+    "@neo4j/graphql": "npm:^5.0.0"
     "@types/jest": "npm:29.5.12"
-    "@types/node": "npm:20.11.19"
+    "@types/node": "npm:20.11.20"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -3849,7 +3846,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/package-tests@workspace:packages/package-tests"
   dependencies:
-    npm-run-all2: "npm:6.1.2"
     rimraf: "npm:5.0.5"
     upper-case-first: "npm:^2.0.2"
   languageName: unknown
@@ -7745,12 +7741,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.11.19":
-  version: 20.11.19
-  resolution: "@types/node@npm:20.11.19"
+"@types/node@npm:20.11.20":
+  version: 20.11.20
+  resolution: "@types/node@npm:20.11.20"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/f451ef0a1d78f29c57bad7b77e49ebec945f2a6d0d7a89851d7e185ee9fe7ad94d651c0dfbcb7858c9fa791310c8b40a881e2260f56bd3c1b7e7ae92723373ae
+  checksum: 10c0/8e8de211e6d54425c603388a9b5cc9c434101985d0a1c88aabbf65d10df2b1fccd71855c20e61ae8a75c7aea56cb0f64e722cf7914cff1247d0b62ce21996ac4
   languageName: node
   linkType: hard
 
@@ -8987,7 +8983,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.1.0"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
-    "@neo4j/graphql": "npm:^4.4.6"
+    "@neo4j/graphql": "npm:^5.0.0"
     fork-ts-checker-webpack-plugin: "npm:9.0.2"
     graphql: "npm:16.8.1"
     graphql-tag: "npm:^2.12.6"
@@ -9004,8 +9000,8 @@ __metadata:
   resolution: "apollo-subscriptions-server@workspace:examples/subscriptions/apollo_rabbitmq"
   dependencies:
     "@apollo/server": "npm:^4.7.0"
-    "@neo4j/graphql": "npm:^4.0.0-beta.0"
-    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^1.0.0-beta.0"
+    "@neo4j/graphql": "npm:^5.0.0"
+    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^2.0.0"
     amqplib: "npm:^0.10.3"
     express: "npm:^4.17.3"
     graphql-ws: "npm:^5.7.0"
@@ -17900,13 +17896,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-parse-even-better-errors@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "json-parse-even-better-errors@npm:3.0.1"
-  checksum: 10c0/bc40600b14231dff1ff911d269c7ed89fbf3dbedf25cad3f47c10ff9cbb998ce03921372a17f27f3c7cfed76e679bc6c02a7b4cb2604b0ba68cd51ed16899492
-  languageName: node
-  linkType: hard
-
 "json-schema-traverse@npm:^0.4.1":
   version: 0.4.1
   resolution: "json-schema-traverse@npm:0.4.1"
@@ -19212,13 +19201,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memorystream@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "memorystream@npm:0.3.1"
-  checksum: 10c0/4bd164657711d9747ff5edb0508b2944414da3464b7fe21ac5c67cf35bba975c4b446a0124bd0f9a8be54cfc18faf92e92bd77563a20328b1ccf2ff04e9f39b9
-  languageName: node
-  linkType: hard
-
 "meow@npm:^6.0.0":
   version: 6.1.1
   resolution: "meow@npm:6.1.1"
@@ -19472,7 +19454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:9.0.3, minimatch@npm:^9.0.0, minimatch@npm:^9.0.1":
+"minimatch@npm:9.0.3, minimatch@npm:^9.0.1":
   version: 9.0.3
   resolution: "minimatch@npm:9.0.3"
   dependencies:
@@ -20112,8 +20094,8 @@ __metadata:
   resolution: "neo-place@workspace:examples/neo-place"
   dependencies:
     "@apollo/server": "npm:^4.7.0"
-    "@neo4j/graphql": "npm:^4.0.0"
-    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^1.0.0"
+    "@neo4j/graphql": "npm:^5.0.0"
+    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^2.0.0"
     concurrently: "npm:8.2.2"
     dotenv: "npm:^16.0.3"
     express: "npm:^4.18.2"
@@ -20212,7 +20194,6 @@ __metadata:
     jest: "npm:29.7.0"
     lint-staged: "npm:15.2.2"
     neo4j-driver: "npm:5.17.0"
-    npm-run-all2: "npm:6.1.2"
     prettier: "npm:2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.1.2"
@@ -20592,13 +20573,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-normalize-package-bin@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "npm-normalize-package-bin@npm:3.0.1"
-  checksum: 10c0/f1831a7f12622840e1375c785c3dab7b1d82dd521211c17ee5e9610cd1a34d8b232d3fdeebf50c170eddcb321d2c644bf73dbe35545da7d588c6b3fa488db0a5
-  languageName: node
-  linkType: hard
-
 "npm-package-arg@npm:^11.0.0":
   version: 11.0.1
   resolution: "npm-package-arg@npm:11.0.1"
@@ -20623,26 +20597,6 @@ __metadata:
     npm-package-arg: "npm:^11.0.0"
     proc-log: "npm:^3.0.0"
   checksum: 10c0/d932f67dcfa412f1ba1f762a109678cdab3d697d39b759e49017219a34e413dda3b911d49976d1c1388b9d64033e63a73baf693b15a99722e9cdb6844ea06ad9
-  languageName: node
-  linkType: hard
-
-"npm-run-all2@npm:6.1.2":
-  version: 6.1.2
-  resolution: "npm-run-all2@npm:6.1.2"
-  dependencies:
-    ansi-styles: "npm:^6.2.1"
-    cross-spawn: "npm:^7.0.3"
-    memorystream: "npm:^0.3.1"
-    minimatch: "npm:^9.0.0"
-    pidtree: "npm:^0.6.0"
-    read-package-json-fast: "npm:^3.0.2"
-    shell-quote: "npm:^1.7.3"
-  bin:
-    npm-run-all: bin/npm-run-all/index.js
-    npm-run-all2: bin/npm-run-all/index.js
-    run-p: bin/run-p/index.js
-    run-s: bin/run-s/index.js
-  checksum: 10c0/3cab02d23757f23e391037ea9a78732037c9c5d05d29f344d6fac330523aea45f84d472c2702dd5c048f23560e9954ed1f16c6090bb817a73db13842c67c17c0
   languageName: node
   linkType: hard
 
@@ -21577,7 +21531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pidtree@npm:0.6.0, pidtree@npm:^0.6.0":
+"pidtree@npm:0.6.0":
   version: 0.6.0
   resolution: "pidtree@npm:0.6.0"
   bin:
@@ -22985,16 +22939,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"read-package-json-fast@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "read-package-json-fast@npm:3.0.2"
-  dependencies:
-    json-parse-even-better-errors: "npm:^3.0.0"
-    npm-normalize-package-bin: "npm:^3.0.0"
-  checksum: 10c0/37787e075f0260a92be0428687d9020eecad7ece3bda37461c2219e50d1ec183ab6ba1d9ada193691435dfe119a42c8a5b5b5463f08c8ddbc3d330800b265318
-  languageName: node
-  linkType: hard
-
 "read-pkg-up@npm:^7.0.1":
   version: 7.0.1
   resolution: "read-pkg-up@npm:7.0.1"
@@ -24036,7 +23980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.6.1, shell-quote@npm:^1.7.3, shell-quote@npm:^1.8.1":
+"shell-quote@npm:^1.6.1, shell-quote@npm:^1.8.1":
   version: 1.8.1
   resolution: "shell-quote@npm:1.8.1"
   checksum: 10c0/8cec6fd827bad74d0a49347057d40dfea1e01f12a6123bf82c4649f3ef152fc2bc6d6176e6376bffcd205d9d0ccb4f1f9acae889384d20baff92186f01ea455a
@@ -27655,7 +27599,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "yoga-subscriptions-server@workspace:examples/subscriptions/yoga_sse"
   dependencies:
-    "@neo4j/graphql": "npm:^4.0.0-beta.0"
+    "@neo4j/graphql": "npm:^5.0.0"
     graphql: "npm:^16.6.0"
     graphql-yoga: "npm:^5.0.0"
     neo4j-driver: "npm:^5.8.0"

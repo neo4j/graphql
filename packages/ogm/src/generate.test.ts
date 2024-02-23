@@ -18,7 +18,6 @@
  */
 
 import * as fs from "fs";
-import gql from "graphql-tag";
 import * as path from "path";
 import { generate as randomstring } from "randomstring";
 import generate from "./generate";
