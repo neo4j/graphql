@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
         await driver.close();
     });
 
-    test("when passed null as argument of a relationship filter should check that a relationship does not exists", async () => {
+    test("when passed null as an argument of a relationship filter should check that a relationship does not exist", async () => {
         const typeDefs = /* GraphQL */ `
             type ${MyThing} {
                 id: ID! @id
