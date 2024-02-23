@@ -1,5 +1,26 @@
 # @neo4j/introspector
 
+## 3.0.0-beta.0
+
+### Major Changes
+
+-   [#4410](https://github.com/neo4j/graphql/pull/4410) [`a76c9c9`](https://github.com/neo4j/graphql/commit/a76c9c96486d98514903c1d8cffaa17a53c6eb07) Thanks [@angrykoala](https://github.com/angrykoala)! - Change @relationshipProperties to target types instead of interfaces:
+
+    Instead of defining relationship properties in an interface, they must be defined as a type:
+
+    ```graphql
+    type Actor {
+        name: String!
+        actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    }
+
+    type ActedIn @relationshipProperties {
+        screenTime: Int
+    }
+    ```
+
+-   [#4441](https://github.com/neo4j/graphql/pull/4441) [`6653a9e`](https://github.com/neo4j/graphql/commit/6653a9e7850101c75608d341a72ef48818addfcd) Thanks [@a-alle](https://github.com/a-alle)! - Introduce new properties field in connection edges field for relationship properties.
+
 ## 2.0.0
 
 ### Major Changes

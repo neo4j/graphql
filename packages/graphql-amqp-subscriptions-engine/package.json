@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-amqp-subscriptions-engine",
-    "version": "1.0.0",
+    "version": "2.0.0-beta.0",
     "description": "Subscriptions engine for `@neo4j/graphql`, supporting AMQP brokers such as RabbitMQ",
     "keywords": [
         "neo4j",
@@ -34,7 +34,7 @@
     "author": "Neo4j Inc.",
     "devDependencies": {
         "@apollo/server": "4.10.0",
-        "@neo4j/graphql": "^4.0.0",
+        "@neo4j/graphql": "^5.0.0-beta.0",
         "@types/amqplib": "0.10.4",
         "@types/body-parser": "1.19.5",
         "@types/cors": "2.8.17",
@@ -58,6 +58,6 @@
         "cors": "^2.8.5"
     },
     "peerDependencies": {
-        "@neo4j/graphql": "^4.0.0-beta.0"
+        "@neo4j/graphql": "^5.0.0-beta.0"
     }
 }

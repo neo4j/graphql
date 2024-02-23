@@ -1,5 +1,44 @@
 # @neo4j/graphql
 
+## 5.0.0-beta.0
+
+### Major Changes
+
+-   [#4675](https://github.com/neo4j/graphql/pull/4675) [`9befbb8`](https://github.com/neo4j/graphql/commit/9befbb81010847054c544231787e8e9565c3bda0) Thanks [@Andy2003](https://github.com/Andy2003)! - change the name of the `*EdgeAggregationWhereInput` so it uses the name of the type defining the edge properties
+
+-   [#4623](https://github.com/neo4j/graphql/pull/4623) [`980f078`](https://github.com/neo4j/graphql/commit/980f07830e645af1493698458d1539efc65aa2cf) Thanks [@angrykoala](https://github.com/angrykoala)! - Makes aggregation types nullable, even if the original property is non-nullable.
+
+    This is because, in case of no nodes existing in the database, a null value will be returned by the aggregation
+
+-   [#4410](https://github.com/neo4j/graphql/pull/4410) [`a76c9c9`](https://github.com/neo4j/graphql/commit/a76c9c96486d98514903c1d8cffaa17a53c6eb07) Thanks [@angrykoala](https://github.com/angrykoala)! - Change @relationshipProperties to target types instead of interfaces:
+
+    Instead of defining relationship properties in an interface, they must be defined as a type:
+
+    ```graphql
+    type Actor {
+        name: String!
+        actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    }
+
+    type ActedIn @relationshipProperties {
+        screenTime: Int
+    }
+    ```
+
+-   [#4441](https://github.com/neo4j/graphql/pull/4441) [`6653a9e`](https://github.com/neo4j/graphql/commit/6653a9e7850101c75608d341a72ef48818addfcd) Thanks [@a-alle](https://github.com/a-alle)! - Introduce new properties field in connection edges field for relationship properties.
+
+-   [#4661](https://github.com/neo4j/graphql/pull/4661) [`99fc744`](https://github.com/neo4j/graphql/commit/99fc74489425748568b97cde32ced8df29a85320) Thanks [@Andy2003](https://github.com/Andy2003)! - The old `*AggregateSelectionNonNullable`-types and `*AggregateSelectionNullable`-types are now merged into `*AggregateSelection`-types`.
+
+### Patch Changes
+
+-   [#4644](https://github.com/neo4j/graphql/pull/4644) [`4fc08b6`](https://github.com/neo4j/graphql/commit/4fc08b65a82fdb258e6b6f362f35917a93d375cc) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix a bug where type-name filters were not applied if used in a connect operation.
+
+-   [#4697](https://github.com/neo4j/graphql/pull/4697) [`712d793`](https://github.com/neo4j/graphql/commit/712d793b02e8ddb04643f03233065b2f9ee4c753) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed incorrect behavior when using relationship-specific filters as `_SOME`/`_SINGLE`/`_NONE`/`_ALL` when the target of the filter was an interface.
+
+-   [#4533](https://github.com/neo4j/graphql/pull/4533) [`3094db4`](https://github.com/neo4j/graphql/commit/3094db4dacd6897f93b3e6aa11bb60adfbd00a90) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix bug sorting by relationship properties on connections to an interface
+
+-   [#4521](https://github.com/neo4j/graphql/pull/4521) [`deed2ec`](https://github.com/neo4j/graphql/commit/deed2ec2d5003b80335d36e36396833bf4283a72) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix subscription payload fields for interfaces
+
 ## 4.4.6
 
 ### Patch Changes

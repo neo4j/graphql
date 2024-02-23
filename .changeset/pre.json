@@ -14,5 +14,15 @@
     "@neo4j/graphql-ogm": "4.4.4",
     "@neo4j/package-tests": "1.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "cold-starfishes-smile",
+    "fair-meals-reflect",
+    "healthy-knives-shake",
+    "little-toys-look",
+    "odd-fans-camp",
+    "rare-carrots-explode",
+    "slimy-swans-ring",
+    "violet-walls-travel",
+    "witty-rice-deny"
+  ]
 }

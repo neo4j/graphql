@@ -1,6 +1,6 @@
 {
     "name": "apollo-subscriptions-server",
-    "version": "1.0.1",
+    "version": "1.0.2-beta.0",
     "private": true,
     "description": "",
     "main": "server.js",
@@ -12,8 +12,8 @@
     "license": "MIT",
     "dependencies": {
         "@apollo/server": "^4.7.0",
-        "@neo4j/graphql": "^4.0.0-beta.0",
-        "@neo4j/graphql-amqp-subscriptions-engine": "^1.0.0-beta.0",
+        "@neo4j/graphql": "^5.0.0-beta.0",
+        "@neo4j/graphql-amqp-subscriptions-engine": "^2.0.0-beta.0",
         "amqplib": "^0.10.3",
         "express": "^4.17.3",
         "graphql-ws": "^5.7.0",
