@@ -3631,12 +3631,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-amqp-subscriptions-engine@npm:^1.0.0, @neo4j/graphql-amqp-subscriptions-engine@npm:^1.0.0-beta.0, @neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine":
+"@neo4j/graphql-amqp-subscriptions-engine@npm:^2.0.0, @neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
     "@apollo/server": "npm:4.10.0"
-    "@neo4j/graphql": "npm:^4.0.0"
+    "@neo4j/graphql": "npm:^5.0.0"
     "@types/amqplib": "npm:0.10.4"
     "@types/body-parser": "npm:1.19.5"
     "@types/cors": "npm:2.8.17"
@@ -3657,7 +3657,7 @@ __metadata:
     typescript: "npm:5.1.6"
     ws: "npm:8.16.0"
   peerDependencies:
-    "@neo4j/graphql": ^4.0.0-beta.0
+    "@neo4j/graphql": ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -3669,7 +3669,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": "npm:^5.0.0"
     "@graphql-codegen/typescript": "npm:^4.0.0"
     "@graphql-tools/merge": "npm:^9.0.0"
-    "@neo4j/graphql": "npm:^4.4.6"
+    "@neo4j/graphql": "npm:^5.0.0"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.11.20"
     camelcase: "npm:6.3.0"
@@ -3702,8 +3702,8 @@ __metadata:
     "@graphiql/react": "npm:0.20.3"
     "@neo4j-ndl/base": "npm:2.6.0"
     "@neo4j-ndl/react": "npm:2.6.3"
-    "@neo4j/graphql": "npm:4.4.6"
-    "@neo4j/introspector": "npm:2.0.0"
+    "@neo4j/graphql": "npm:5.0.0"
+    "@neo4j/introspector": "npm:3.0.0"
     "@playwright/test": "npm:1.41.2"
     "@tsconfig/create-react-app": "npm:2.0.2"
     "@types/codemirror": "npm:5.60.15"
@@ -3763,7 +3763,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:4.4.6, @neo4j/graphql@npm:^4.0.0, @neo4j/graphql@npm:^4.0.0-beta.0, @neo4j/graphql@npm:^4.4.6, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:5.0.0, @neo4j/graphql@npm:^5.0.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3823,11 +3823,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/introspector@npm:2.0.0, @neo4j/introspector@workspace:packages/introspector":
+"@neo4j/introspector@npm:3.0.0, @neo4j/introspector@workspace:packages/introspector":
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": "npm:^4.0.0"
+    "@neo4j/graphql": "npm:^5.0.0"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.11.20"
     "@types/pluralize": "npm:0.0.33"
@@ -8983,7 +8983,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.1.0"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
-    "@neo4j/graphql": "npm:^4.4.6"
+    "@neo4j/graphql": "npm:^5.0.0"
     fork-ts-checker-webpack-plugin: "npm:9.0.2"
     graphql: "npm:16.8.1"
     graphql-tag: "npm:^2.12.6"
@@ -9000,8 +9000,8 @@ __metadata:
   resolution: "apollo-subscriptions-server@workspace:examples/subscriptions/apollo_rabbitmq"
   dependencies:
     "@apollo/server": "npm:^4.7.0"
-    "@neo4j/graphql": "npm:^4.0.0-beta.0"
-    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^1.0.0-beta.0"
+    "@neo4j/graphql": "npm:^5.0.0"
+    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^2.0.0"
     amqplib: "npm:^0.10.3"
     express: "npm:^4.17.3"
     graphql-ws: "npm:^5.7.0"
@@ -20094,8 +20094,8 @@ __metadata:
   resolution: "neo-place@workspace:examples/neo-place"
   dependencies:
     "@apollo/server": "npm:^4.7.0"
-    "@neo4j/graphql": "npm:^4.0.0"
-    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^1.0.0"
+    "@neo4j/graphql": "npm:^5.0.0"
+    "@neo4j/graphql-amqp-subscriptions-engine": "npm:^2.0.0"
     concurrently: "npm:8.2.2"
     dotenv: "npm:^16.0.3"
     express: "npm:^4.18.2"
@@ -27599,7 +27599,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "yoga-subscriptions-server@workspace:examples/subscriptions/yoga_sse"
   dependencies:
-    "@neo4j/graphql": "npm:^4.0.0-beta.0"
+    "@neo4j/graphql": "npm:^5.0.0"
     graphql: "npm:^16.6.0"
     graphql-yoga: "npm:^5.0.0"
     neo4j-driver: "npm:^5.8.0"
