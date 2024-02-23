@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher Auth Projection On Connections On Unions", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Post {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
@@ -59,7 +57,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
     });
 
     test("Two connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     contentConnection {
@@ -110,7 +108,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this4, edge.relationship AS this3
-                            RETURN collect({ node: { name: this4.name } }) AS var5
+                            RETURN collect({ node: { name: this4.name, __resolveType: \\"User\\" } }) AS var5
                         }
                         RETURN { edges: var5, totalCount: totalCount } AS var6
                     }

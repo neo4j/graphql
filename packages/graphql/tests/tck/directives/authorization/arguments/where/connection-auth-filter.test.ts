@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Connection auth filter", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]!
             }
@@ -73,7 +71,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -99,7 +97,7 @@ describe("Connection auth filter", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN collect({ node: { id: this0.id } }) AS var1
+                RETURN collect({ node: { id: this0.id, __resolveType: \\"User\\" } }) AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
@@ -118,7 +116,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Node + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection(where: { name: "bob" }) {
                     edges {
@@ -144,7 +142,7 @@ describe("Connection auth filter", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN collect({ node: { id: this0.id } }) AS var1
+                RETURN collect({ node: { id: this0.id, __resolveType: \\"User\\" } }) AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
@@ -164,7 +162,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -203,7 +201,7 @@ describe("Connection auth filter", () => {
                     WITH this2 { .content } AS this2
                     RETURN collect(this2) AS var4
                 }
-                RETURN collect({ node: { id: this0.id, posts: var4 } }) AS var5
+                RETURN collect({ node: { id: this0.id, posts: var4, __resolveType: \\"User\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
@@ -222,7 +220,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -268,11 +266,11 @@ describe("Connection auth filter", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { content: this2.content } }) AS var4
+                        RETURN collect({ node: { content: this2.content, __resolveType: \\"Post\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                RETURN collect({ node: { id: this0.id, postsConnection: var5 } }) AS var6
+                RETURN collect({ node: { id: this0.id, postsConnection: var5, __resolveType: \\"User\\" } }) AS var6
             }
             RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
@@ -291,7 +289,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Connection + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -337,11 +335,11 @@ describe("Connection auth filter", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { content: this2.content } }) AS var4
+                        RETURN collect({ node: { content: this2.content, __resolveType: \\"Post\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                RETURN collect({ node: { id: this0.id, postsConnection: var5 } }) AS var6
+                RETURN collect({ node: { id: this0.id, postsConnection: var5, __resolveType: \\"User\\" } }) AS var6
             }
             RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
@@ -361,7 +359,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union Relationship + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -400,7 +398,7 @@ describe("Connection auth filter", () => {
                     WITH this2 { .content } AS this2
                     RETURN collect(this2) AS var4
                 }
-                RETURN collect({ node: { id: this0.id, posts: var4 } }) AS var5
+                RETURN collect({ node: { id: this0.id, posts: var4, __resolveType: \\"User\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
@@ -420,7 +418,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -466,7 +464,7 @@ describe("Connection auth filter", () => {
                     WITH var4
                     RETURN collect(var4) AS var4
                 }
-                RETURN collect({ node: { id: this0.id, content: var4 } }) AS var5
+                RETURN collect({ node: { id: this0.id, content: var4, __resolveType: \\"User\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
@@ -485,7 +483,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union Using Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -536,7 +534,7 @@ describe("Connection auth filter", () => {
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
-                RETURN collect({ node: { id: this0.id, contentConnection: var4 } }) AS var5
+                RETURN collect({ node: { id: this0.id, contentConnection: var4, __resolveType: \\"User\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
@@ -555,7 +553,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union Using Connection + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -606,7 +604,7 @@ describe("Connection auth filter", () => {
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
-                RETURN collect({ node: { id: this0.id, contentConnection: var4 } }) AS var5
+                RETURN collect({ node: { id: this0.id, contentConnection: var4, __resolveType: \\"User\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);

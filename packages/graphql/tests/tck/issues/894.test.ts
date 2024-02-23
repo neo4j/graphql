@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/894", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 id: ID! @id @unique @alias(property: "_id")
                 name: String!
@@ -46,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
     });
 
     test("Disconnect and connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation SwapSides {
                 updateUsers(
                     where: { name: "Luke Skywalker" }

@@ -19,9 +19,52 @@
 
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { isConcreteEntity } from "./is-concrete-entity";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
-export function getConcreteEntities(entity: EntityAdapter): ConcreteEntityAdapter[] {
-    if (isConcreteEntity(entity)) return [entity];
-    return entity.concreteEntities;
+import { isConcreteEntity } from "./is-concrete-entity";
+import { isUnionEntity } from "./is-union-entity";
+
+/**
+ * Returns the concrete entities presents in the where argument,
+ * for interface this implicit behavior was substituted by the typename filters therefore we return all the concrete entities,
+ * if the where argument is not defined then returns all the concrete entities of the composite target.
+ * In case of concrete entities returns the entity itself.
+ **/
+export function getConcreteEntities(target: EntityAdapter, whereArgs?: Record<string, any>): ConcreteEntityAdapter[] {
+    if (isConcreteEntity(target)) {
+        return [target];
+    }
+    if (isUnionEntity(target)) {
+        return getConcreteEntitiesInOnArgumentOfWhereUnion(target, whereArgs);
+    }
+
+    return target.concreteEntities;
+}
+
+function getConcreteEntitiesInOnArgumentOfWhereUnion(
+    compositeTarget: UnionEntityAdapter,
+    whereArgs?: Record<string, any>
+): ConcreteEntityAdapter[] {
+    if (!whereArgs || countObjectKeys(whereArgs) === 0) {
+        return compositeTarget.concreteEntities;
+    }
+    return getMatchingConcreteEntity(compositeTarget, whereArgs);
+}
+
+function getMatchingConcreteEntity(
+    compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
+    whereArgs: Record<string, any>
+): ConcreteEntityAdapter[] {
+    const concreteEntities: ConcreteEntityAdapter[] = [];
+    for (const concreteEntity of compositeTarget.concreteEntities) {
+        if (whereArgs[concreteEntity.name]) {
+            concreteEntities.push(concreteEntity);
+        }
+    }
+    return concreteEntities;
+}
+
+function countObjectKeys(obj: Record<string, any>): number {
+    return Object.keys(obj).length;
 }

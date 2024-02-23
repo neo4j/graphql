@@ -18,8 +18,8 @@
  */
 
 import { codegen } from "@graphql-codegen/core";
-import * as typescriptPlugin from "@graphql-codegen/typescript";
 import type { Types } from "@graphql-codegen/plugin-helpers";
+import * as typescriptPlugin from "@graphql-codegen/typescript";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";

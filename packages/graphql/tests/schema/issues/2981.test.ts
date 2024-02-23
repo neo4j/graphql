@@ -61,8 +61,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookAggregateSelection {
               count: Int!
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
             }
 
             input BookConnectInput {
@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_ENAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNonNullable!
+              value: StringAggregateSelection!
             }
 
             input BookTitle_ENBookAggregateInput {
@@ -162,8 +162,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_ENBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
             }
 
             input BookTitle_ENBookConnectFieldInput {
@@ -387,7 +387,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_SVAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNonNullable!
+              value: StringAggregateSelection!
             }
 
             input BookTitle_SVBookAggregateInput {
@@ -408,8 +408,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_SVBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
             }
 
             input BookTitle_SVBookConnectFieldInput {
@@ -790,8 +790,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               originalTitle_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               originalTitle_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               originalTitle_STARTS_WITH: String
+              translatedTitle: BookTitleWhere
               translatedTitleConnection: BookTranslatedTitleConnectionWhere
               translatedTitleConnection_NOT: BookTranslatedTitleConnectionWhere
+              translatedTitle_NOT: BookTitleWhere
             }
 
             type BooksConnection {
@@ -860,6 +862,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               bookTitleSvs(options: BookTitle_SVOptions, where: BookTitle_SVWhere): [BookTitle_SV!]!
               bookTitleSvsAggregate(where: BookTitle_SVWhere): BookTitle_SVAggregateSelection!
               bookTitleSvsConnection(after: String, first: Int, sort: [BookTitle_SVSort], where: BookTitle_SVWhere): BookTitleSvsConnection!
+              bookTitles(options: QueryOptions, where: BookTitleWhere): [BookTitle!]!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
@@ -879,9 +882,9 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateBookTitleEnsMutationResponse {

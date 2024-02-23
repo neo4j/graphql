@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1249", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Bulk @mutation(operations: []) @node(labels: ["Bulk", "$tenant"]) {
                 id: ID!
                 supplierMaterialNumber: String!
@@ -48,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                 supplierId: String!
             }
 
-            interface RelationMaterialSupplier @relationshipProperties {
+            type RelationMaterialSupplier @relationshipProperties {
                 supplierMaterialNumber: String!
             }
         `;
@@ -59,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
     });
 
     test("should contain the cypherParams that are passed via the context", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 bulks {
                     supplierMaterialNumber
@@ -67,7 +65,9 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                         id
                         suppliersConnection {
                             edges {
-                                supplierMaterialNumber
+                                properties {
+                                    supplierMaterialNumber
+                                }
                                 node {
                                     supplierId
                                 }
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ supplierMaterialNumber: this2.supplierMaterialNumber, node: { supplierId: this3.supplierId } }) AS var4
+                        RETURN collect({ properties: { supplierMaterialNumber: this2.supplierMaterialNumber, __resolveType: \\"RelationMaterialSupplier\\" }, node: { supplierId: this3.supplierId, __resolveType: \\"Supplier\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }

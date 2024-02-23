@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("typename_IN with auth", () => {
     let typeDefs: string;
@@ -54,7 +53,7 @@ describe("typename_IN with auth", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -85,12 +84,11 @@ describe("typename_IN with auth", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs: authTypeDefs,
-                experimental: true,
             });
         });
 
         test("read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actors {
                         actedIn {
@@ -139,7 +137,7 @@ describe("typename_IN with auth", () => {
         });
 
         test("connection read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actorsConnection {
                         edges {
@@ -185,7 +183,7 @@ describe("typename_IN with auth", () => {
                         WITH var5
                         RETURN collect(var5) AS var5
                     }
-                    RETURN collect({ node: { actedIn: var5 } }) AS var10
+                    RETURN collect({ node: { actedIn: var5, __resolveType: \\"Actor\\" } }) AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS this"
             `);
@@ -222,12 +220,11 @@ describe("typename_IN with auth", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs: authTypeDefs,
-                experimental: true,
             });
         });
 
         test("read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actors {
                         actedIn {
@@ -276,7 +273,7 @@ describe("typename_IN with auth", () => {
         });
 
         test("connection read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actorsConnection {
                         edges {
@@ -322,7 +319,7 @@ describe("typename_IN with auth", () => {
                         WITH var5
                         RETURN collect(var5) AS var5
                     }
-                    RETURN collect({ node: { actedIn: var5 } }) AS var10
+                    RETURN collect({ node: { actedIn: var5, __resolveType: \\"Actor\\" } }) AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS this"
             `);

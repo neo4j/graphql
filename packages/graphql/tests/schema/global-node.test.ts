@@ -62,9 +62,9 @@ describe("Node Interface Types", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Movie implements Node {
@@ -75,8 +75,8 @@ describe("Node Interface Types", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              imdb: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              imdb: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -183,9 +183,9 @@ describe("Node Interface Types", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

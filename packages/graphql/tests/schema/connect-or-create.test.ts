@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Connect Or Create", () => {
@@ -53,7 +53,7 @@ describe("Connect Or Create", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -88,8 +88,8 @@ describe("Connect Or Create", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -363,8 +363,8 @@ describe("Connect Or Create", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectOrCreateWhere {
@@ -482,9 +482,9 @@ describe("Connect Or Create", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -522,7 +522,7 @@ describe("Connect Or Create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screentime: Int!
                 characterName: String
             }
@@ -536,176 +536,19 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            \\"\\"\\"
+            type ActedIn {
               characterName: String
               screentime: Int!
             }
 
-            input ActedInCreateInput {
-              characterName: String
-              screentime: Int!
-            }
-
-            input ActedInSort {
-              characterName: SortDirection
-              screentime: SortDirection
-            }
-
-            input ActedInUpdateInput {
-              characterName: String
-              screentime: Int
-              screentime_DECREMENT: Int
-              screentime_INCREMENT: Int
-            }
-
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              NOT: ActedInWhere
-              OR: [ActedInWhere!]
-              characterName: String
-              characterName_CONTAINS: String
-              characterName_ENDS_WITH: String
-              characterName_IN: [String]
-              characterName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              characterName_STARTS_WITH: String
-              screentime: Int
-              screentime_GT: Int
-              screentime_GTE: Int
-              screentime_IN: [Int!]
-              screentime_LT: Int
-              screentime_LTE: Int
-              screentime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screentime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            type Actor {
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
-              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
-              name: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input ActorConnectInput {
-              movies: [ActorMoviesConnectFieldInput!]
-            }
-
-            input ActorConnectOrCreateInput {
-              movies: [ActorMoviesConnectOrCreateFieldInput!]
-            }
-
-            input ActorCreateInput {
-              movies: ActorMoviesFieldInput
-              name: String!
-            }
-
-            input ActorDeleteInput {
-              movies: [ActorMoviesDeleteFieldInput!]
-            }
-
-            input ActorDisconnectInput {
-              movies: [ActorMoviesDisconnectFieldInput!]
-            }
-
-            type ActorEdge {
-              cursor: String!
-              node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              edge: ActorMovieMoviesEdgeAggregateSelection
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesEdgeAggregateSelection {
-              characterName: StringAggregateSelectionNullable!
-              screentime: IntAggregateSelectionNonNullable!
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
-            }
-
-            input ActorMoviesAggregateInput {
-              AND: [ActorMoviesAggregateInput!]
-              NOT: ActorMoviesAggregateInput
-              OR: [ActorMoviesAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: ActorMoviesEdgeAggregationWhereInput
-              node: ActorMoviesNodeAggregationWhereInput
-            }
-
-            input ActorMoviesConnectFieldInput {
-              edge: ActedInCreateInput!
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: MovieConnectWhere
-            }
-
-            input ActorMoviesConnectOrCreateFieldInput {
-              onCreate: ActorMoviesConnectOrCreateFieldInputOnCreate!
-              where: MovieConnectOrCreateWhere!
-            }
-
-            input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              edge: ActedInCreateInput!
-              node: MovieOnCreateInput!
-            }
-
-            type ActorMoviesConnection {
-              edges: [ActorMoviesRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input ActorMoviesConnectionSort {
-              edge: ActedInSort
-              node: MovieSort
-            }
-
-            input ActorMoviesConnectionWhere {
-              AND: [ActorMoviesConnectionWhere!]
-              NOT: ActorMoviesConnectionWhere
-              OR: [ActorMoviesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input ActorMoviesCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: MovieCreateInput!
-            }
-
-            input ActorMoviesDeleteFieldInput {
-              where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesDisconnectFieldInput {
-              where: ActorMoviesConnectionWhere
-            }
-
-            input ActorMoviesEdgeAggregationWhereInput {
-              AND: [ActorMoviesEdgeAggregationWhereInput!]
-              NOT: ActorMoviesEdgeAggregationWhereInput
-              OR: [ActorMoviesEdgeAggregationWhereInput!]
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
               characterName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               characterName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               characterName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
@@ -766,6 +609,167 @@ describe("Connect Or Create", () => {
               screentime_SUM_GTE: Int
               screentime_SUM_LT: Int
               screentime_SUM_LTE: Int
+            }
+
+            input ActedInCreateInput {
+              characterName: String
+              screentime: Int!
+            }
+
+            input ActedInSort {
+              characterName: SortDirection
+              screentime: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              characterName: String
+              screentime: Int
+              screentime_DECREMENT: Int
+              screentime_INCREMENT: Int
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              characterName: String
+              characterName_CONTAINS: String
+              characterName_ENDS_WITH: String
+              characterName_IN: [String]
+              characterName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_STARTS_WITH: String
+              screentime: Int
+              screentime_GT: Int
+              screentime_GTE: Int
+              screentime_IN: [Int!]
+              screentime_LT: Int
+              screentime_LTE: Int
+              screentime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screentime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type Actor {
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              name: String!
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            input ActorConnectInput {
+              movies: [ActorMoviesConnectFieldInput!]
+            }
+
+            input ActorConnectOrCreateInput {
+              movies: [ActorMoviesConnectOrCreateFieldInput!]
+            }
+
+            input ActorCreateInput {
+              movies: ActorMoviesFieldInput
+              name: String!
+            }
+
+            input ActorDeleteInput {
+              movies: [ActorMoviesDeleteFieldInput!]
+            }
+
+            input ActorDisconnectInput {
+              movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            type ActorMovieMoviesAggregationSelection {
+              count: Int!
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
+            }
+
+            type ActorMovieMoviesEdgeAggregateSelection {
+              characterName: StringAggregateSelection!
+              screentime: IntAggregateSelection!
+            }
+
+            type ActorMovieMoviesNodeAggregateSelection {
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            input ActorMoviesAggregateInput {
+              AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
+              OR: [ActorMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
+            input ActorMoviesConnectFieldInput {
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: MovieConnectWhere
+            }
+
+            input ActorMoviesConnectOrCreateFieldInput {
+              onCreate: ActorMoviesConnectOrCreateFieldInputOnCreate!
+              where: MovieConnectOrCreateWhere!
+            }
+
+            input ActorMoviesConnectOrCreateFieldInputOnCreate {
+              edge: ActedInCreateInput!
+              node: MovieOnCreateInput!
+            }
+
+            type ActorMoviesConnection {
+              edges: [ActorMoviesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorMoviesConnectionSort {
+              edge: ActedInSort
+              node: MovieSort
+            }
+
+            input ActorMoviesConnectionWhere {
+              AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
+              OR: [ActorMoviesConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ActorMoviesCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: MovieCreateInput!
+            }
+
+            input ActorMoviesDeleteFieldInput {
+              where: ActorMoviesConnectionWhere
+            }
+
+            input ActorMoviesDisconnectFieldInput {
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesFieldInput {
@@ -850,11 +854,10 @@ describe("Connect Or Create", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
-              characterName: String
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              screentime: Int!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -976,11 +979,11 @@ describe("Connect Or Create", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -990,8 +993,8 @@ describe("Connect Or Create", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectOrCreateWhere {
@@ -1109,12 +1112,7 @@ describe("Connect Or Create", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

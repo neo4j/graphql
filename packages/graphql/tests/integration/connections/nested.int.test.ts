@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("Connections Alias", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let schema: GraphQLSchema;
 
@@ -39,7 +39,7 @@ describe("Connections Alias", () => {
     const screenTime = 120;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -59,7 +59,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -83,7 +83,9 @@ describe("Connections Alias", () => {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
-                            screenTime
+                            properties { 
+                                screenTime
+                            }
                             node {
                                 name
                                 moviesConnection {
@@ -147,7 +149,9 @@ describe("Connections Alias", () => {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 moviesConnection(where: { node: { title: "${movieTitle}" } }) {

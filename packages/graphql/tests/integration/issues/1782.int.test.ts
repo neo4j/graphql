@@ -20,15 +20,15 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1782", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
 
     const testMain = new UniqueType("Main");
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
             fullName: String!
         }
 
-        interface RelationProps @relationshipProperties {
+        type RelationProps @relationshipProperties {
             current: Boolean!
         }
 
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
     `;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
 
     afterEach(async () => {
         try {
-            await cleanNodes(session, [testMain, testSeries, testNameDetails, testMasterData]);
+            await cleanNodesUsingSession(session, [testMain, testSeries, testNameDetails, testMasterData]);
         } finally {
             await session.close();
         }

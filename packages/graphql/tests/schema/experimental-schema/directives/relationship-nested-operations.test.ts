@@ -36,7 +36,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
 
             const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
@@ -78,7 +78,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -168,7 +168,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -195,7 +195,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -289,7 +289,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -354,7 +354,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -393,7 +393,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -430,7 +430,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -533,7 +533,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -561,7 +561,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieRelationInput {
@@ -660,7 +660,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -725,7 +725,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -764,7 +764,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -801,7 +801,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -908,7 +908,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -940,7 +940,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -1035,7 +1035,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonConnectWhere {
@@ -1104,7 +1104,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1143,7 +1143,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -1180,7 +1180,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -1279,7 +1279,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1306,7 +1306,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -1401,7 +1401,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -1466,7 +1466,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1505,7 +1505,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -1542,7 +1542,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -1641,7 +1641,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1672,7 +1672,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -1767,7 +1767,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -1832,7 +1832,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1871,7 +1871,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -1908,7 +1908,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -2007,7 +2007,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -2038,7 +2038,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -2133,7 +2133,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -2198,7 +2198,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -2238,7 +2238,7 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -2275,7 +2275,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -2365,7 +2365,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -2392,7 +2392,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -2486,7 +2486,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -2551,7 +2551,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -2592,7 +2592,7 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -2629,12 +2629,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
-                }
-
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -2743,7 +2738,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectOrCreateInput {
@@ -2775,8 +2770,8 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
-                  name: StringAggregateSelectionNullable!
+                  id: IDAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -2872,8 +2867,8 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNonNullable!
-                  name: StringAggregateSelectionNullable!
+                  id: IDAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonConnectOrCreateWhere {
@@ -2961,7 +2956,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -3001,7 +2996,7 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -3038,7 +3033,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -3169,7 +3164,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -3210,7 +3205,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregationSelection {
@@ -3219,7 +3214,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonProducersNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieProducersAggregateInput {
@@ -3433,7 +3428,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonConnectWhere {
@@ -3502,7 +3497,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -3542,7 +3537,7 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -3579,7 +3574,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -3685,7 +3680,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -3717,7 +3712,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregationSelection {
@@ -3726,7 +3721,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonProducersNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieProducersAggregateInput {
@@ -3940,7 +3935,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -4005,7 +4000,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -4052,7 +4047,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
 
             const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
@@ -4099,7 +4094,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -4144,7 +4139,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -4254,7 +4249,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -4314,7 +4309,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -4400,7 +4395,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -4450,7 +4445,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -4492,7 +4487,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -4578,7 +4573,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -4694,7 +4689,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -4754,7 +4749,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -4840,7 +4835,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -4890,7 +4885,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -4932,7 +4927,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -5018,7 +5013,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -5134,7 +5129,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneConnectWhere {
@@ -5198,7 +5193,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoConnectWhere {
@@ -5288,7 +5283,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -5338,7 +5333,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -5380,7 +5375,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -5448,7 +5443,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -5559,7 +5554,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -5619,7 +5614,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -5705,7 +5700,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -5755,7 +5750,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -5797,7 +5792,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -5870,7 +5865,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -5985,7 +5980,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -6045,7 +6040,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -6131,7 +6126,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -6181,7 +6176,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -6223,7 +6218,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -6296,7 +6291,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -6411,7 +6406,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -6471,7 +6466,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -6557,7 +6552,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -6608,7 +6603,7 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -6650,7 +6645,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -6695,7 +6690,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -6805,7 +6800,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -6865,7 +6860,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -6951,7 +6946,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -7004,7 +6999,7 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -7046,12 +7041,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
-                }
-
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -7147,7 +7137,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectOrCreateInput {
@@ -7264,8 +7254,8 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNonNullable!
-                  name: StringAggregateSelectionNullable!
+                  id: IDAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneConnectOrCreateWhere {
@@ -7349,8 +7339,8 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNonNullable!
-                  nameTwo: StringAggregateSelectionNullable!
+                  id: IDAggregateSelection!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoConnectOrCreateWhere {
@@ -7459,7 +7449,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -7510,7 +7500,7 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -7552,7 +7542,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -7697,7 +7687,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -7915,7 +7905,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneConnectWhere {
@@ -7979,7 +7969,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoConnectWhere {
@@ -8069,7 +8059,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -8120,7 +8110,7 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -8162,7 +8152,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -8250,7 +8240,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -8459,7 +8449,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -8519,7 +8509,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  nameTwo: StringAggregateSelectionNullable!
+                  nameTwo: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -8605,7 +8595,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -8660,7 +8650,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
 
             const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
@@ -8707,7 +8697,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -8744,7 +8734,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -8771,7 +8761,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -8851,7 +8841,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 enum PersonImplementation {
@@ -8866,7 +8856,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -8950,7 +8940,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -9043,7 +9033,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -9096,7 +9086,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -9138,7 +9128,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -9188,7 +9178,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -9216,7 +9206,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieRelationInput {
@@ -9301,7 +9291,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -9321,7 +9311,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -9405,7 +9395,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -9498,7 +9488,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -9551,7 +9541,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -9593,7 +9583,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -9643,7 +9633,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -9675,7 +9665,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -9756,7 +9746,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonConnectWhere {
@@ -9775,7 +9765,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -9859,7 +9849,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -9952,7 +9942,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -10005,7 +9995,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -10047,7 +10037,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -10093,7 +10083,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -10120,7 +10110,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -10201,17 +10191,12 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 enum PersonImplementation {
                   PersonOne
                   PersonTwo
-                }
-
-                input PersonImplementationsUpdateInput {
-                  PersonOne: PersonOneUpdateInput
-                  PersonTwo: PersonTwoUpdateInput
                 }
 
                 type PersonOne implements Person {
@@ -10221,7 +10206,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -10305,7 +10290,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -10360,7 +10345,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  _on: PersonImplementationsUpdateInput
                   name: String
                 }
 
@@ -10403,7 +10387,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -10456,7 +10440,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -10498,7 +10482,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -10544,7 +10528,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -10575,7 +10559,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -10656,7 +10640,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 enum PersonImplementation {
@@ -10671,7 +10655,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -10755,7 +10739,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -10848,7 +10832,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -10901,7 +10885,7 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -10943,7 +10927,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -10989,7 +10973,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -11020,7 +11004,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -11101,7 +11085,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 enum PersonImplementation {
@@ -11116,7 +11100,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -11200,7 +11184,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -11293,7 +11277,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -11347,7 +11331,7 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -11389,7 +11373,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -11463,7 +11447,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -11504,7 +11488,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregationSelection {
@@ -11513,7 +11497,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonProducersNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 type MovieProducersConnection {
@@ -11649,7 +11633,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonConnectWhere {
@@ -11666,11 +11650,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo
                 }
 
-                input PersonImplementationsUpdateInput {
-                  PersonOne: PersonOneUpdateInput
-                  PersonTwo: PersonTwoUpdateInput
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -11678,7 +11657,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -11762,7 +11741,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -11817,7 +11796,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  _on: PersonImplementationsUpdateInput
                   name: String
                 }
 
@@ -11860,7 +11838,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -11915,7 +11893,7 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -11957,7 +11935,7 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
+                type IDAggregateSelection {
                   longest: ID
                   shortest: ID
                 }
@@ -12015,7 +11993,7 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelectionNullable!
+                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -12051,7 +12029,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregationSelection {
@@ -12060,7 +12038,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviePersonProducersNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 type MovieProducersConnection {
@@ -12196,7 +12174,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonCreateInput {
@@ -12216,7 +12194,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonOneAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonOneCreateInput {
@@ -12300,7 +12278,7 @@ describe("Relationship nested operations", () => {
 
                 type PersonTwoAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input PersonTwoCreateInput {
@@ -12393,7 +12371,7 @@ describe("Relationship nested operations", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }

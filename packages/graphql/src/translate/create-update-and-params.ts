@@ -17,42 +17,42 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
-import type { BaseField } from "../types";
-import createConnectAndParams from "./create-connect-and-params";
-import createDisconnectAndParams from "./create-disconnect-and-params";
-import createCreateAndParams from "./create-create-and-params";
-import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
-import createDeleteAndParams from "./create-delete-and-params";
-import createSetRelationshipProperties from "./create-set-relationship-properties";
-import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
-import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-string";
-import { createEventMeta } from "./subscriptions/create-event-meta";
-import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
-import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { addCallbackAndSetParam } from "./utils/callback-utils";
-import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
-import { indentBlock } from "./utils/indent-block";
-import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
-import { findConflictingProperties } from "../utils/is-property-clash";
-import Cypher from "@neo4j/cypher-builder";
+import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
+import type { BaseField } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
+import { findConflictingProperties } from "../utils/is-property-clash";
+import mapToDbProperty from "../utils/map-to-db-property";
+import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
+import { checkAuthentication } from "./authorization/check-authentication";
+import {
+    createAuthorizationAfterAndParams,
+    createAuthorizationAfterAndParamsField,
+} from "./authorization/compatibility/create-authorization-after-and-params";
 import {
     createAuthorizationBeforeAndParams,
     createAuthorizationBeforeAndParamsField,
 } from "./authorization/compatibility/create-authorization-before-and-params";
-import {
-    createAuthorizationAfterAndParamsField,
-    createAuthorizationAfterAndParams,
-} from "./authorization/compatibility/create-authorization-after-and-params";
-import { checkAuthentication } from "./authorization/check-authentication";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import createConnectAndParams from "./create-connect-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
+import createCreateAndParams from "./create-create-and-params";
+import createDeleteAndParams from "./create-delete-and-params";
+import createDisconnectAndParams from "./create-disconnect-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
+import createSetRelationshipProperties from "./create-set-relationship-properties";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
+import { indentBlock } from "./utils/indent-block";
+import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     strs: string[];
@@ -272,41 +272,34 @@ export default function createUpdateAndParams({
                         }
 
                         if (update.update.edge) {
+                            const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
+                            const relationshipAdapter = entity
+                                ? entity.findRelationship(relationField.fieldName)
+                                : undefined;
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
                                 withVars: withVars,
                                 relationship,
+                                relationshipAdapter,
                                 callbackBucket,
                                 operation: "UPDATE",
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
-                            innerUpdate.push(setProperties);
+                            if (setProperties) {
+                                innerUpdate.push(setProperties);
+                            }
                         }
 
                         if (update.update.node) {
                             const nestedWithVars = [...withVars, variableName];
 
-                            const nestedUpdateInput = Object.entries(update.update.node)
-                                .filter(([k]) => {
-                                    if (k === "_on") {
-                                        return false;
-                                    }
-
-                                    if (relationField.interface && update.update.node?._on?.[refNode.name]) {
-                                        const onArray = Array.isArray(update.update.node._on[refNode.name])
-                                            ? update.update.node._on[refNode.name]
-                                            : [update.update.node._on[refNode.name]];
-                                        if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
-                                            return false;
-                                        }
-                                    }
-
-                                    return true;
-                                })
-                                .reduce((d1, [k1, v1]) => ({ ...d1, [k1]: v1 }), {});
+                            const nestedUpdateInput = Object.entries(update.update.node).reduce(
+                                (d1, [k1, v1]) => ({ ...d1, [k1]: v1 }),
+                                {}
+                            );
 
                             const updateAndParams = createUpdateAndParams({
                                 context,
@@ -324,28 +317,6 @@ export default function createUpdateAndParams({
                             });
                             res.params = { ...res.params, ...updateAndParams[1] };
                             innerUpdate.push(updateAndParams[0]);
-
-                            if (relationField.interface && update.update.node?._on?.[refNode.name]) {
-                                const onUpdateAndParams = createUpdateAndParams({
-                                    context,
-                                    callbackBucket,
-                                    node: refNode,
-                                    updateInput: update.update.node._on[refNode.name],
-                                    varName: variableName,
-                                    withVars: nestedWithVars,
-                                    parentVar: variableName,
-                                    chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}_on_${
-                                        refNode.name
-                                    }`,
-                                    parameterPrefix: `${parameterPrefix}.${key}${
-                                        relationField.union ? `.${refNode.name}` : ""
-                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node._on.${
-                                        refNode.name
-                                    }`,
-                                });
-                                res.params = { ...res.params, ...onUpdateAndParams[1] };
-                                innerUpdate.push(onUpdateAndParams[0]);
-                            }
                         }
 
                         if (context.subscriptionsEnabled) {
@@ -450,18 +421,25 @@ export default function createUpdateAndParams({
                             );
 
                             if (create.edge) {
+                                const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
+                                const relationshipAdapter = entity
+                                    ? entity.findRelationship(relationField.fieldName)
+                                    : undefined;
                                 const setA = createSetRelationshipProperties({
                                     properties: create.edge,
                                     varName: propertiesName,
                                     withVars,
                                     relationship,
+                                    relationshipAdapter,
                                     callbackBucket,
                                     operation: "CREATE",
                                     parameterPrefix: `${parameterPrefix}.${key}${
                                         relationField.union ? `.${refNode.name}` : ""
                                     }[${index}].create[${i}].edge`,
                                 });
-                                subquery.push(setA);
+                                if (setA) {
+                                    subquery.push(setA);
+                                }
                             }
 
                             subquery.push(

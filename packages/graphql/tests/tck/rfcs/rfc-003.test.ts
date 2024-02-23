@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
@@ -25,7 +24,7 @@ describe("tck/rfs/003", () => {
     describe("one-to-one", () => {
         describe("create", () => {
             test("should add validation when creating node with a required relationship", async () => {
-                const typeDefs = gql`
+                const typeDefs = /* GraphQL */ `
                     type Director {
                         id: ID!
                     }
@@ -40,7 +39,7 @@ describe("tck/rfs/003", () => {
 
                 const movieId = "movieId-1";
 
-                const mutation = gql`
+                const mutation = /* GraphQL */ `
                     mutation {
                         createMovies(input: [{ id: "${movieId}" }]) {
                             info {
@@ -85,7 +84,7 @@ describe("tck/rfs/003", () => {
             });
 
             test("should add length validation when creating a node with a non required relationship", async () => {
-                const typeDefs = gql`
+                const typeDefs = /* GraphQL */ `
                     type Director {
                         id: ID!
                     }
@@ -100,7 +99,7 @@ describe("tck/rfs/003", () => {
 
                 const movieId = "movieId-1";
 
-                const mutation = gql`
+                const mutation = /* GraphQL */ `
                     mutation {
                         createMovies(input: [{ id: "${movieId}" }]) {
                             info {
@@ -146,7 +145,7 @@ describe("tck/rfs/003", () => {
 
             describe("nested mutations", () => {
                 test("should add validation when creating node with required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Address {
                             street: String!
                         }
@@ -167,7 +166,7 @@ describe("tck/rfs/003", () => {
                     const movieId = "movieId-2";
                     const directorId = "directorId-2";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             createMovies(input: [{ id: "${movieId}", director: { create: { node: { id: "${directorId}" } } } }]) {
                                 info {
@@ -238,7 +237,7 @@ describe("tck/rfs/003", () => {
                 });
 
                 test("should add length validation when creating a node with a non required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Address {
                             street: String!
                         }
@@ -259,7 +258,7 @@ describe("tck/rfs/003", () => {
                     const movieId = "movieId-2";
                     const directorId = "directorId-2";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             createMovies(input: [{ id: "${movieId}", director: { create: { node: { id: "${directorId}" } } } }]) {
                                 info {
@@ -332,7 +331,7 @@ describe("tck/rfs/003", () => {
 
             describe("update", () => {
                 test("should add validation when updating a node with a required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -347,7 +346,7 @@ describe("tck/rfs/003", () => {
 
                     const movieId = "movieId-3";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
                                 info {
@@ -384,7 +383,7 @@ describe("tck/rfs/003", () => {
                 });
 
                 test("should add length validation when updating a node with a non required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -399,7 +398,7 @@ describe("tck/rfs/003", () => {
 
                     const movieId = "movieId-3";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
                                 info {
@@ -437,7 +436,7 @@ describe("tck/rfs/003", () => {
 
                 describe("nested mutations", () => {
                     test("should add validation when updating a nested node with a required relationship", async () => {
-                        const typeDefs = gql`
+                        const typeDefs = /* GraphQL */ `
                             type Address {
                                 street: String!
                             }
@@ -458,7 +457,7 @@ describe("tck/rfs/003", () => {
                         const movieId = "movieId-4";
                         const directorId = "directorId-3";
 
-                        const mutation = gql`
+                        const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
                                   where: { id: "${movieId}" }
@@ -512,7 +511,7 @@ describe("tck/rfs/003", () => {
                     });
 
                     test("should add length validation when updating a nested node with a non required relationship", async () => {
-                        const typeDefs = gql`
+                        const typeDefs = /* GraphQL */ `
                             type Address {
                                 street: String!
                             }
@@ -533,7 +532,7 @@ describe("tck/rfs/003", () => {
                         const movieId = "movieId-4";
                         const directorId = "directorId-3";
 
-                        const mutation = gql`
+                        const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
                                   where: { id: "${movieId}" }
@@ -587,7 +586,7 @@ describe("tck/rfs/003", () => {
                     });
 
                     test("should add validation when creating a node with a required relationship through a nested mutation", async () => {
-                        const typeDefs = gql`
+                        const typeDefs = /* GraphQL */ `
                             type Address {
                                 street: String!
                             }
@@ -608,7 +607,7 @@ describe("tck/rfs/003", () => {
                         const movieId = "movieId-4";
                         const directorId = "directorId-3";
 
-                        const mutation = gql`
+                        const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(
                               where: { id: "${movieId}" }
@@ -663,7 +662,7 @@ describe("tck/rfs/003", () => {
             describe("delete", () => {
                 describe("nested mutations", () => {
                     test("should add validation when deleting a required relationship", async () => {
-                        const typeDefs = gql`
+                        const typeDefs = /* GraphQL */ `
                             type Address {
                                 id: ID!
                             }
@@ -689,7 +688,7 @@ describe("tck/rfs/003", () => {
                         const movieId = "movieId-4";
                         const directorId = "directorId-3";
 
-                        const mutation = gql`
+                        const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
                                     where: { id: "${movieId}" },
@@ -788,7 +787,7 @@ describe("tck/rfs/003", () => {
                     });
 
                     test("should add length validation when deleting a node with a non required relationship", async () => {
-                        const typeDefs = gql`
+                        const typeDefs = /* GraphQL */ `
                             type Address {
                                 id: ID!
                             }
@@ -814,7 +813,7 @@ describe("tck/rfs/003", () => {
                         const movieId = "movieId-4";
                         const directorId = "directorId-3";
 
-                        const mutation = gql`
+                        const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
                                     where: { id: "${movieId}" },
@@ -916,7 +915,7 @@ describe("tck/rfs/003", () => {
 
             describe("connect", () => {
                 test("should add validation when connecting to a required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -932,7 +931,7 @@ describe("tck/rfs/003", () => {
                     const movieId = "movieId-4";
                     const directorId = "directorId-4";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
                                 info {
@@ -989,7 +988,7 @@ describe("tck/rfs/003", () => {
                 });
 
                 test("should add length validation when connecting to a non required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -1005,7 +1004,7 @@ describe("tck/rfs/003", () => {
                     const movieId = "movieId-4";
                     const directorId = "directorId-4";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
                                 info {
@@ -1063,7 +1062,7 @@ describe("tck/rfs/003", () => {
 
                 describe("nested mutations", () => {
                     test("should add validation when connecting to a required relationship", async () => {
-                        const typeDefs = gql`
+                        const typeDefs = /* GraphQL */ `
                             type Address {
                                 street: String!
                             }
@@ -1084,7 +1083,7 @@ describe("tck/rfs/003", () => {
                         const movieId = "movieId-4";
                         const directorId = "directorId-4";
 
-                        const mutation = gql`
+                        const mutation = /* GraphQL */ `
                             mutation {
                                 createMovies(
                                   input: [
@@ -1182,7 +1181,7 @@ describe("tck/rfs/003", () => {
 
             describe("disconnect", () => {
                 test("should add validation when disconnecting from a required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -1198,7 +1197,7 @@ describe("tck/rfs/003", () => {
                     const movieId = "movieId-5";
                     const directorId = "directorId-5";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(where: { id: "${movieId}" }, disconnect: { director: { where: { node: {  id: "${directorId}" } } } }) {
                                 info {
@@ -1263,7 +1262,7 @@ describe("tck/rfs/003", () => {
 
             describe("reconnect", () => {
                 test("should add validation after disconnecting and connecting with a required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -1280,7 +1279,7 @@ describe("tck/rfs/003", () => {
                     const directorId1 = "directorId-6";
                     const directorId2 = "directorId2-6";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(
                                 where: { id: "${movieId}" },
@@ -1379,7 +1378,7 @@ describe("tck/rfs/003", () => {
                 });
 
                 test("should add validation after disconnecting and connecting with a non required relationship", async () => {
-                    const typeDefs = gql`
+                    const typeDefs = /* GraphQL */ `
                         type Director {
                             id: ID!
                         }
@@ -1396,7 +1395,7 @@ describe("tck/rfs/003", () => {
                     const directorId1 = "directorId-6";
                     const directorId2 = "directorId2-6";
 
-                    const mutation = gql`
+                    const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(
                                 where: { id: "${movieId}" },

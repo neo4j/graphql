@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Relationship Properties Cypher", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -43,7 +41,7 @@ describe("Relationship Properties Cypher", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
                 year: Int!
             }
@@ -55,7 +53,7 @@ describe("Relationship Properties Cypher", () => {
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 moviesConnection(first: 5, sort: { title: ASC }) {
                     edges {
@@ -96,11 +94,11 @@ describe("Relationship Properties Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { name: this2.name } }) AS var3
+                        RETURN collect({ node: { name: this2.name, __resolveType: \\"Actor\\" } }) AS var3
                     }
                     RETURN { edges: var3, totalCount: totalCount } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actorsConnection: var4 } }) AS var5
+                RETURN collect({ node: { title: this0.title, actorsConnection: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
@@ -116,7 +114,7 @@ describe("Relationship Properties Cypher", () => {
     });
 
     test("Sort by cypher fields", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 moviesConnection(first: 2, sort: { title: DESC, numberOfActors: ASC }) {
                     edges {
@@ -167,11 +165,11 @@ describe("Relationship Properties Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ node: { name: this3.name } }) AS var4
+                        RETURN collect({ node: { name: this3.name, __resolveType: \\"Actor\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                RETURN collect({ node: { title: this0.title, actorsConnection: var5 } }) AS var6
+                RETURN collect({ node: { title: this0.title, actorsConnection: var5, __resolveType: \\"Movie\\" } }) AS var6
             }
             RETURN { edges: var6, totalCount: totalCount } AS this"
         `);

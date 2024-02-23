@@ -19,7 +19,7 @@
 
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -27,11 +27,11 @@ import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/4112", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     const Category = new UniqueType("Category");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const session = await neo4j.getSession();

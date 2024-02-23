@@ -17,28 +17,28 @@
  * limitations under the License.
  */
 
-import type { Node, Relationship } from "../classes";
-import type { GraphQLWhereArg, RelationField } from "../types";
-import createCreateAndParams from "./create-create-and-params";
-import createUpdateAndParams from "./create-update-and-params";
-import createConnectAndParams from "./create-connect-and-params";
-import createDisconnectAndParams from "./create-disconnect-and-params";
-import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
-import createDeleteAndParams from "./create-delete-and-params";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import { translateTopLevelMatch } from "./translate-top-level-match";
-import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-string";
-import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
+import Debug from "debug";
+import type { Node, Relationship } from "../classes";
+import { CallbackBucket } from "../classes/CallbackBucket";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
-import { compileCypher } from "../utils/compile-cypher";
+import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { getAuthorizationStatements } from "./utils/get-authorization-statements";
-import Debug from "debug";
-import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
+import { compileCypher } from "../utils/compile-cypher";
+import createConnectAndParams from "./create-connect-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
+import createCreateAndParams from "./create-create-and-params";
+import createDeleteAndParams from "./create-delete-and-params";
+import createDisconnectAndParams from "./create-disconnect-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import createUpdateAndParams from "./create-update-and-params";
+import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { translateTopLevelMatch } from "./translate-top-level-match";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -440,7 +440,7 @@ export default async function translateUpdate({
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST({
+    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
         resolveTree,
         entityAdapter,
         context,

@@ -21,7 +21,7 @@ import { gql } from "graphql-tag";
 import type { Driver, Session, Integer } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
@@ -30,7 +30,7 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 describe("connectOrCreate", () => {
     describe("Update -> ConnectOrCreate", () => {
         let driver: Driver;
-        let neo4j: Neo4j;
+        let neo4j: Neo4jHelper;
         let session: Session;
         let typeDefs: DocumentNode;
         let queryUpdate: DocumentNode;
@@ -42,7 +42,7 @@ describe("connectOrCreate", () => {
         let neoSchema: Neo4jGraphQL;
 
         beforeAll(async () => {
-            neo4j = new Neo4j();
+            neo4j = new Neo4jHelper();
             driver = await neo4j.getDriver();
 
             typeDefs = gql`
@@ -176,7 +176,7 @@ describe("connectOrCreate", () => {
 
     describe("authorization rules on source and target types", () => {
         let driver: Driver;
-        let neo4j: Neo4j;
+        let neo4j: Neo4jHelper;
         let session: Session;
         let typeDefs: DocumentNode;
         let queryUpdate: DocumentNode;
@@ -188,7 +188,7 @@ describe("connectOrCreate", () => {
         let neoSchema: Neo4jGraphQL;
 
         beforeAll(async () => {
-            neo4j = new Neo4j();
+            neo4j = new Neo4jHelper();
             driver = await neo4j.getDriver();
 
             typeDefs = gql`

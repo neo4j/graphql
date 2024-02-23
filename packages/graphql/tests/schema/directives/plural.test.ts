@@ -93,7 +93,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -105,8 +105,8 @@ describe("Plural option", () => {
 
             type TechAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
-              value: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
             }
 
             input TechCreateInput {
@@ -261,7 +261,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -273,8 +273,8 @@ describe("Plural option", () => {
 
             type TechAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
-              value: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
             }
 
             input TechCreateInput {
@@ -429,7 +429,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -441,8 +441,8 @@ describe("Plural option", () => {
 
             type TechAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
-              value: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
             }
 
             input TechCreateInput {
@@ -597,7 +597,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -608,7 +608,7 @@ describe("Plural option", () => {
 
             type TechsAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNullable!
+              value: StringAggregateSelection!
             }
 
             type TechsConnection {
@@ -750,7 +750,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -783,7 +783,7 @@ describe("Plural option", () => {
 
             type UserAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNullable!
+              value: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -903,7 +903,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -930,7 +930,7 @@ describe("Plural option", () => {
 
             type UserAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNullable!
+              value: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -1056,7 +1056,7 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -1083,7 +1083,7 @@ describe("Plural option", () => {
 
             type UsersAggregateSelection {
               count: Int!
-              value: StringAggregateSelectionNullable!
+              value: StringAggregateSelection!
             }
 
             type UsersConnection {

@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3165", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
@@ -35,16 +35,12 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
     let BookTitle_EN: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-
-        Book = new UniqueType("Book");
-        BookTitle_SV = new UniqueType("BookTitle_SV");
-        BookTitle_EN = new UniqueType("BookTitle_EN");
 
         const typeDefs = `
             type A {
@@ -59,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
 
             union RelatedTarget = A | B
 
-            interface RelatedProperties @relationshipProperties {
+            type RelatedProperties @relationshipProperties {
                 prop: String!
             }
 
@@ -78,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Book, BookTitle_EN, BookTitle_SV]);
+        await cleanNodesUsingSession(session, [Book, BookTitle_EN, BookTitle_SV]);
         await session.close();
     });
 
@@ -87,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
     });
 
     test("create and query by edge property over an union", async () => {
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation CreateA {
                 createAs(
                     input: {
@@ -99,7 +95,9 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
                         name
                         relatedConnection {
                             edges {
-                                prop
+                                properties {
+                                    prop
+                                }
                                 node {
                                     name
                                 }
@@ -110,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query Relateds {
                 relateds(
                     where: {

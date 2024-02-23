@@ -24,7 +24,7 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../utils/utils";
-import { attributeAdapterToComposeFields, relationshipAdapterToComposeFields } from "../to-compose";
+import { attributeAdapterToComposeFields } from "../to-compose";
 
 function buildRelationshipDestinationUnionNodeType({
     unionNodes,
@@ -60,15 +60,11 @@ function buildRelationshipDestinationInterfaceNodeType({
     if (!userDefinedFieldDirectives) {
         throw new Error("fix user directives for interface types in subscriptions.");
     }
-    const interfaceConnectionComposeFields = relationshipAdapterToComposeFields(
-        Array.from(interfaceEntity.relationships.values()),
-        userDefinedFieldDirectives
-    );
+
     const interfaceComposeFields = attributeAdapterToComposeFields(
         interfaceEntity.subscriptionEventPayloadFields,
         userDefinedFieldDirectives
     );
-
     if (Object.keys(interfaceComposeFields).length) {
         const nodeTo = schemaComposer.createInterfaceTC({
             name: interfaceEntity.operations.subscriptionEventPayloadTypeName,
@@ -76,7 +72,6 @@ function buildRelationshipDestinationInterfaceNodeType({
         });
         interfaceNodes?.forEach((interfaceNodeType) => {
             nodeTo.addTypeResolver(interfaceNodeType, () => true);
-            interfaceNodeType.addFields(interfaceConnectionComposeFields);
         });
         return nodeTo;
     }

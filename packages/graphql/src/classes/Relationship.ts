@@ -30,7 +30,7 @@ import { GraphElement } from "./GraphElement";
 
 interface RelationshipConstructor {
     name: string;
-    type: string;
+    type?: string;
     source: string; // temporary addition to infer the source using the schema model
     target: string; // temporary addition to infer the target using the schema model
     description?: string;

@@ -33,6 +33,7 @@ export { privateDirective } from "./private";
 export { limitDirective } from "./limit";
 export { relationshipPropertiesDirective } from "./relationship-properties";
 export { relationshipDirective } from "./relationship";
+export { declareRelationshipDirective } from "./declare-relationship";
 export { relayIdDirective } from "./relay-id";
 export { timestampDirective } from "./timestamp";
 export { uniqueDirective } from "./unique";

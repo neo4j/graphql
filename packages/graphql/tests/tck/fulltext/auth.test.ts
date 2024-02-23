@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, translateQuery } from "../utils/tck-test-utils";
@@ -40,7 +39,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
     describe("4.4", () => {
         test("simple match with auth where", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(filter: [{ where: { node: { director: { id: "$jwt.sub" } } } }]) {
@@ -62,7 +61,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -96,7 +95,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id: "$jwt.sub" } } } }]) {
@@ -118,7 +117,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -152,7 +151,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow ALL", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -176,7 +175,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -210,7 +209,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection node", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -236,7 +235,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -270,7 +269,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection node ALL", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -299,7 +298,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -333,7 +332,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection edge", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -349,7 +348,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -363,7 +362,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -394,7 +393,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection edge ALL", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -410,7 +409,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -424,7 +423,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -457,7 +456,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
     describe("5", () => {
         test("simple match with auth where", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(filter: [{ where: { node: { director: { id: "$jwt.sub" } } } }]) {
@@ -479,7 +478,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -516,7 +515,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id: "$jwt.sub" } } } }]) {
@@ -538,7 +537,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -575,7 +574,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow ALL", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -599,7 +598,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -639,7 +638,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection node", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -665,7 +664,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -702,7 +701,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection node ALL", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -731,7 +730,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -771,7 +770,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection edge", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -787,7 +786,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -801,7 +800,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title
@@ -835,7 +834,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         });
 
         test("simple match with auth allow on connection edge ALL", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
@@ -851,7 +850,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -865,7 +864,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                         title

@@ -927,8 +927,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -985,7 +985,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -1277,8 +1277,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -1443,7 +1443,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -1661,12 +1661,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -1745,8 +1740,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -1803,7 +1798,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -2137,8 +2132,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -2303,7 +2298,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -2521,12 +2516,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -2605,8 +2595,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -2663,7 +2653,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -2987,8 +2977,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -3153,7 +3143,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -3343,12 +3333,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -3430,8 +3415,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -3488,7 +3473,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -3822,8 +3807,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -3900,7 +3885,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -4117,12 +4102,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -4203,8 +4183,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -4261,7 +4241,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -4595,8 +4575,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -4761,7 +4741,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -4979,12 +4959,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -5065,8 +5040,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -5123,7 +5098,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -5457,8 +5432,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsAggregateInput {
@@ -5623,7 +5598,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -5813,12 +5788,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -5899,8 +5869,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -5957,7 +5927,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -6291,8 +6261,8 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -6369,7 +6339,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -6586,12 +6556,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -6677,8 +6642,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -6731,7 +6696,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -7054,12 +7019,12 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -7090,12 +7055,10 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -7128,7 +7091,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -7184,6 +7147,15 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -7322,8 +7294,9 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                    type PersonAggregateSelection {
+                      count: Int!
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -7334,40 +7307,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
-                    }
-
-                    input PersonImplementationsSubscriptionWhere {
-                      Actor: ActorSubscriptionWhere
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    enum PersonImplementation {
+                      Actor
                     }
 
                     input PersonOptions {
@@ -7390,7 +7335,7 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
-                      _on: PersonImplementationsSubscriptionWhere
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -7404,12 +7349,14 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -7429,6 +7376,8 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -7439,12 +7388,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -7530,8 +7474,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -7584,7 +7528,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -7907,12 +7851,12 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -7943,12 +7887,10 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -7981,7 +7923,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -8037,6 +7979,15 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -8175,8 +8126,9 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                    type PersonAggregateSelection {
+                      count: Int!
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -8187,40 +8139,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
-                    }
-
-                    input PersonImplementationsSubscriptionWhere {
-                      Actor: ActorSubscriptionWhere
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    enum PersonImplementation {
+                      Actor
                     }
 
                     input PersonOptions {
@@ -8243,7 +8167,7 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
-                      _on: PersonImplementationsSubscriptionWhere
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -8257,12 +8181,14 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -8282,6 +8208,8 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8292,12 +8220,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -8383,8 +8306,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -8437,7 +8360,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -8760,12 +8683,12 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -8796,12 +8719,10 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -8834,7 +8755,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -8890,6 +8811,15 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -9028,8 +8958,9 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                    type PersonAggregateSelection {
+                      count: Int!
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -9040,40 +8971,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
-                    }
-
-                    input PersonImplementationsSubscriptionWhere {
-                      Actor: ActorSubscriptionWhere
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    enum PersonImplementation {
+                      Actor
                     }
 
                     input PersonOptions {
@@ -9096,7 +8999,7 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
-                      _on: PersonImplementationsSubscriptionWhere
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -9110,12 +9013,14 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -9135,6 +9040,8 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -9145,12 +9052,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -9240,8 +9142,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -9298,7 +9200,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -9593,8 +9495,8 @@ describe("@filterable directive", () => {
 
                     type AppearanceAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input AppearanceConnectInput {
@@ -9651,7 +9553,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input AppearanceMoviesAggregateInput {
@@ -10138,7 +10040,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -10275,6 +10177,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -10293,6 +10196,15 @@ describe("@filterable directive", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      actors_ALL: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      actors_NONE: PersonWhere
+                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      actors_SINGLE: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      actors_SOME: PersonWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -10350,6 +10262,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: QueryOptions, where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -10366,12 +10279,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -10471,8 +10379,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -10529,7 +10437,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -10824,8 +10732,8 @@ describe("@filterable directive", () => {
 
                     type AppearanceAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input AppearanceConnectInput {
@@ -10882,7 +10790,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input AppearanceMoviesAggregateInput {
@@ -11369,7 +11277,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -11506,6 +11414,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -11524,6 +11433,15 @@ describe("@filterable directive", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      actors_ALL: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      actors_NONE: PersonWhere
+                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      actors_SINGLE: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      actors_SOME: PersonWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -11581,6 +11499,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: QueryOptions, where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -11597,12 +11516,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -11702,8 +11616,8 @@ describe("@filterable directive", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectInput {
@@ -11760,7 +11674,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input ActorMoviesAggregateInput {
@@ -12055,8 +11969,8 @@ describe("@filterable directive", () => {
 
                     type AppearanceAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input AppearanceConnectInput {
@@ -12113,7 +12027,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input AppearanceMoviesAggregateInput {
@@ -12600,7 +12514,7 @@ describe("@filterable directive", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -12737,6 +12651,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -12755,6 +12670,15 @@ describe("@filterable directive", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      actors_ALL: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      actors_NONE: PersonWhere
+                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      actors_SINGLE: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      actors_SOME: PersonWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -12812,6 +12736,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: QueryOptions, where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -12828,12 +12753,7 @@ describe("@filterable directive", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }

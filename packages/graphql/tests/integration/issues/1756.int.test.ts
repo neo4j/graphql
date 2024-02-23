@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1756", () => {
     const productType = new UniqueType("Product");
@@ -30,24 +30,24 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = `
         interface INode {
-            id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
+            id: ID! 
         }
 
         type ${productType.name} implements INode {
-            id: ID!
+            id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
             name: String!
             genre: [${genreType.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
         }
 
         type ${genreType.name} implements INode {
-            id: ID!
+            id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
             value: String! @unique
         }
         `;

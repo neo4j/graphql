@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1320", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Risk {
                 code: String!
                 ownedBy: Team @relationship(type: "OWNS_RISK", direction: IN)
@@ -53,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     });
 
     test("multiple aggregations in the same query should return the same results as if were written separately", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query getAggreationOnTeams {
                 stats: teams {
                     accepted: ownsRisksAggregate(where: { mitigationState_INCLUDES: Accepted }) {

@@ -20,13 +20,13 @@
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4450", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
 
     const Actor = new UniqueType("Actor");
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
     const Location = new UniqueType("Location");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = /* GraphQL */ `
             type ${Actor} {
@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
                 scenes: [${Scene}!]! @relationship(type: "AT_LOCATION", direction: IN)
             }
 
-            interface ActorScene @relationshipProperties {
+            type ActorScene @relationshipProperties {
                 cut: Boolean
             }
         `;
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Actor, Scene, Location]);
+            await cleanNodesUsingSession(session, [Actor, Scene, Location]);
         } finally {
             await session.close();
         }

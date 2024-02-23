@@ -34,6 +34,7 @@ import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapt
 import { plural, singular } from "../../utils/string-manipulation";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { RelationshipOperations } from "./RelationshipOperations";
+import { Memoize } from "typescript-memoize";
 
 export class RelationshipAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
@@ -42,6 +43,7 @@ export class RelationshipAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly source: EntityAdapter;
     private rawEntity: Entity;
+    private rawOriginalTargetEntity?: Entity;
     private _target: EntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
@@ -50,10 +52,12 @@ export class RelationshipAdapter {
     public readonly isNullable: boolean;
     public readonly description?: string;
     public readonly propertiesTypeName: string | undefined;
-    public readonly inheritedFrom: string | undefined;
+    public readonly firstDeclaredInTypeName: string | undefined;
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
+
+    public readonly siblings?: string[];
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -78,7 +82,8 @@ export class RelationshipAdapter {
             description,
             annotations,
             propertiesTypeName,
-            inheritedFrom,
+            firstDeclaredInTypeName,
+            originalTarget,
         } = relationship;
         this.name = name;
         this.type = type;
@@ -107,16 +112,21 @@ export class RelationshipAdapter {
         this.description = description;
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
+        this.firstDeclaredInTypeName = firstDeclaredInTypeName;
+        this.rawOriginalTargetEntity = originalTarget;
+
+        if (relationship.getSiblings()) {
+            this.siblings = relationship.getSiblings();
+        }
     }
 
-    get operations(): RelationshipOperations {
+    public get operations(): RelationshipOperations {
         if (!this._operations) {
             return new RelationshipOperations(this);
         }
         return this._operations;
     }
-    get listFiltersModel(): ListFiltersAdapter | undefined {
+    public get listFiltersModel(): ListFiltersAdapter | undefined {
         if (!this._listFiltersModel) {
             if (!this.isList) {
                 return;
@@ -184,7 +194,8 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
-    get target(): EntityAdapter {
+    @Memoize()
+    public get target(): EntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
                 this._target = new ConcreteEntityAdapter(this.rawEntity);
@@ -199,31 +210,47 @@ export class RelationshipAdapter {
         return this._target;
     }
 
-    isReadable(): boolean {
+    @Memoize()
+    public get originalTarget(): EntityAdapter | undefined {
+        if (!this.rawOriginalTargetEntity) {
+            return;
+        }
+        if (this.rawOriginalTargetEntity instanceof ConcreteEntity) {
+            return new ConcreteEntityAdapter(this.rawOriginalTargetEntity);
+        } else if (this.rawOriginalTargetEntity instanceof InterfaceEntity) {
+            return new InterfaceEntityAdapter(this.rawOriginalTargetEntity);
+        } else if (this.rawOriginalTargetEntity instanceof UnionEntity) {
+            return new UnionEntityAdapter(this.rawOriginalTargetEntity);
+        } else {
+            throw new Error("invalid original target entity type");
+        }
+    }
+
+    public isReadable(): boolean {
         return this.annotations.selectable?.onRead !== false;
     }
 
-    isFilterableByValue(): boolean {
+    public isFilterableByValue(): boolean {
         return this.annotations.filterable?.byValue !== false;
     }
 
-    isFilterableByAggregate(): boolean {
+    public isFilterableByAggregate(): boolean {
         return this.annotations.filterable?.byAggregate !== false;
     }
 
-    isAggregable(): boolean {
+    public isAggregable(): boolean {
         return this.annotations.selectable?.onAggregate !== false;
     }
 
-    isCreatable(): boolean {
+    public isCreatable(): boolean {
         return this.annotations.settable?.onCreate !== false;
     }
 
-    isUpdatable(): boolean {
+    public isUpdatable(): boolean {
         return this.annotations.settable?.onUpdate !== false;
     }
 
-    shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+    public shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
         let relationshipTarget = this.target;
         if (ifUnionRelationshipTargetEntity) {
             relationshipTarget = ifUnionRelationshipTargetEntity;
@@ -238,7 +265,7 @@ export class RelationshipAdapter {
         );
     }
 
-    shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+    public shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
         const onlyConnectOrCreate =
             this.nestedOperations.size === 1 &&
             this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE);
@@ -261,6 +288,16 @@ export class RelationshipAdapter {
     public get hasNonNullCreateInputFields(): boolean {
         return this.createInputFields.some((property) => property.typeHelper.isRequired());
     }
+    public get hasCreateInputFields(): boolean {
+        return this.createInputFields.length > 0;
+    }
+    public get hasUpdateInputFields(): boolean {
+        return this.updateInputFields.length > 0;
+    }
+    public get hasAnyProperties(): boolean {
+        return this.propertiesTypeName !== undefined;
+    }
+
     /**
      * Categories
      * = a grouping of attributes

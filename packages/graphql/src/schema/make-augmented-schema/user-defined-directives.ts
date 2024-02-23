@@ -17,41 +17,18 @@
  * limitations under the License.
  */
 
-import type {
-    DirectiveNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    ObjectTypeDefinitionNode,
-} from "graphql";
+import type { DirectiveNode, InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { PROPAGATED_DIRECTIVES } from "../../constants";
 import { LIBRARY_DIRECTIVES } from "../../schema-model/library-directives";
 import { isInArray } from "../../utils/is-in-array";
 import type { DefinitionNodes } from "../get-definition-nodes";
 
 function getUserDefinedMergedFieldDirectivesForDefinition(
-    definitionNode: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    definitionNodes: DefinitionNodes
+    definitionNode: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
 ): Map<string, DirectiveNode[]> {
     const userDefinedFieldDirectives = new Map<string, DirectiveNode[]>();
 
-    const allFields: Array<FieldDefinitionNode> = [...(definitionNode.fields || [])];
-    /**
-     * TODO [directive-inheritance]
-     * is it a good idea to inherit the field directives from implemented interfaces?
-     * makes sense for deprecated but for other user-defined directives?
-     */
-    if (definitionNode.interfaces) {
-        for (const inheritsFrom of definitionNode.interfaces) {
-            const interfaceDefinition = definitionNodes.interfaceTypes.find(
-                (type) => type.name.value === inheritsFrom.name.value
-            );
-            const inheritedFields = interfaceDefinition?.fields;
-            if (inheritedFields) {
-                allFields.push(...inheritedFields);
-            }
-        }
-    }
-    for (const field of allFields) {
+    for (const field of definitionNode.fields || []) {
         if (!field.directives) {
             return userDefinedFieldDirectives;
         }
@@ -65,12 +42,6 @@ function getUserDefinedMergedFieldDirectivesForDefinition(
     return userDefinedFieldDirectives;
 }
 
-/**
- * TODO [directive-inheritance]
- * should directives be inherited?? they are user-defined after all.
- * other considerations might apply to PROPAGATED_DIRECTIVES: deprecated and shareable
- * ATM we only test deprecated propagates
- */
 export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
     const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
     const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
@@ -87,10 +58,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
             [];
         userDefinedDirectivesForNode.set(definitionNode.name.value, userDefinedObjectDirectives);
         propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
-        const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(
-            definitionNode,
-            definitionNodes
-        );
+        const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(definitionNode);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
 
@@ -103,10 +71,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
             [];
         userDefinedDirectivesForInterface.set(definitionNode.name.value, userDefinedInterfaceDirectives);
         propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
-        const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(
-            definitionNode,
-            definitionNodes
-        );
+        const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(definitionNode);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
 
@@ -122,10 +87,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
     }
 
     for (const definitionNode of definitionNodes.operations) {
-        const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(
-            definitionNode,
-            definitionNodes
-        );
+        const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(definitionNode);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
     return {

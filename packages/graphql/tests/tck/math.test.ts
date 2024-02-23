@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Math operators", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Wife {
                 marriageLength: Int
             }
@@ -52,7 +50,7 @@ describe("Math operators", () => {
                 marriedWith: Wife @relationship(type: "MARRIED_WITH", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: Float
             }
         `;
@@ -63,7 +61,7 @@ describe("Math operators", () => {
     });
 
     test("Simple Int increment", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { viewers_INCREMENT: 3 }) {
                     movies {
@@ -100,7 +98,7 @@ describe("Math operators", () => {
     });
 
     test("Simple Float multiply", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(update: { revenue_MULTIPLY: 3 }) {
                     movies {
@@ -134,7 +132,7 @@ describe("Math operators", () => {
     });
 
     test("Nested Int increment", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(update: { actedIn: [{ update: { node: { viewers_INCREMENT: 10 } } }] }) {
                     actors {
@@ -186,7 +184,7 @@ describe("Math operators", () => {
     });
 
     test("Increment on relationship property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation Mutation {
                 updateActors(update: { actedIn: [{ update: { edge: { pay_ADD: 100 } } }] }) {
                     actors {
@@ -196,7 +194,9 @@ describe("Math operators", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -237,7 +237,7 @@ describe("Math operators", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
-                    RETURN collect({ pay: update_this3.pay, node: { __resolveType: \\"Movie\\", __id: id(update_this4) } }) AS update_var5
+                    RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
                 }
                 RETURN { edges: update_var5, totalCount: totalCount } AS update_var6
             }
@@ -267,7 +267,7 @@ describe("Math operators", () => {
     });
 
     test("Increment on interface property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(update: { marriedWith: { update: { node: { marriageLength_INCREMENT: 1 } } } }) {
                     actors {
@@ -328,78 +328,6 @@ describe("Math operators", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_update_marriedWith0_marriageLength_INCREMENT\\": {
-                    \\"low\\": 1,
-                    \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
-    test("Increment on interface implementation property", async () => {
-        const query = gql`
-            mutation {
-                updateActors(
-                    update: { marriedWith: { update: { node: { _on: { Star: { marriageLength_INCREMENT: 1 } } } } } }
-                ) {
-                    actors {
-                        name
-                        marriedWith {
-                            marriageLength
-                        }
-                    }
-                }
-            }
-        `;
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WITH this
-            CALL {
-            	 WITH this
-            WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
-            	WITH this, this_marriedWith0
-            	CALL {
-            		WITH this_marriedWith0
-            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
-            		WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
-            		WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
-            		RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
-            	}
-            	WITH this_marriedWith0, this
-            	CALL {
-            	WITH this_marriedWith0
-            	WITH this_marriedWith0
-            	WHERE apoc.util.validatePredicate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT]) AND apoc.util.validatePredicate(this_marriedWith0.marriageLength IS NOT NULL AND this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
-            	SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT
-            	RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
-            	}
-            	RETURN count(*) AS update_this_marriedWith0
-            }
-            RETURN count(*) AS update_this_Star
-            }
-            WITH *
-            CALL {
-                WITH this
-                CALL {
-                    WITH *
-                    MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:Star)
-                    WITH update_this1 { .marriageLength, __resolveType: \\"Star\\", __id: id(update_this1) } AS update_this1
-                    RETURN update_this1 AS update_var2
-                }
-                WITH update_var2
-                RETURN head(collect(update_var2)) AS update_var2
-            }
-            RETURN collect(DISTINCT this { .name, marriedWith: update_var2 }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"this_update_marriedWith0_on_Star_marriageLength_INCREMENT\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 },

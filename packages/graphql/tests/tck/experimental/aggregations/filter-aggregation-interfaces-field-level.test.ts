@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Field Level Aggregations", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 cost: Float!
@@ -46,7 +44,7 @@ describe("Interface Field Level Aggregations", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -58,12 +56,11 @@ describe("Interface Field Level Aggregations", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            experimental: true,
         });
     });
 
     test("Count with where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate(where: { title: "The Matrix" }) {
@@ -103,7 +100,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Count with where and string aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate(where: { title_STARTS_WITH: "The" }) {
@@ -191,7 +188,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Count with OR operator and string aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate(where: { OR: [{ title_STARTS_WITH: "The" }, { title_STARTS_WITH: "A" }] }) {

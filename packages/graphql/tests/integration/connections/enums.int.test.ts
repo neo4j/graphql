@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("Enum Relationship Properties", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -60,7 +60,7 @@ describe("Enum Relationship Properties", () => {
                 SUPPORTING
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;
@@ -78,28 +78,20 @@ describe("Enum Relationship Properties", () => {
             charset: "alphabetic",
         });
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateMovies($title: String!, $name: String!) {
                 createMovies(
                     input: [
-                        {
-                            title: $title
-                            actors: {
-                                create: [
-                                    {
-                                        edge: { roleType: LEADING }
-                                        node: { name: $name }
-                                    }
-                                ]
-                            }
-                        }
+                        { title: $title, actors: { create: [{ edge: { roleType: LEADING }, node: { name: $name } }] } }
                     ]
                 ) {
                     movies {
                         title
                         actorsConnection {
                             edges {
-                                roleType
+                                properties {
+                                    roleType
+                                }
                                 node {
                                     name
                                 }
@@ -122,7 +114,12 @@ describe("Enum Relationship Properties", () => {
 
             expect(gqlResult.data).toEqual({
                 createMovies: {
-                    movies: [{ title, actorsConnection: { edges: [{ roleType: "LEADING", node: { name } }] } }],
+                    movies: [
+                        {
+                            title,
+                            actorsConnection: { edges: [{ properties: { roleType: "LEADING" }, node: { name } }] },
+                        },
+                    ],
                 },
             });
 

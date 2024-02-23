@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import { Neo4jGraphQL } from "../../../../src";
+import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
-import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { gql } from "graphql-tag";
+import { Neo4jGraphQL } from "../../../../src";
 
 describe("@relationship directive, aggregate argument", () => {
     test("the default behavior should enable nested aggregation (this will change in 4.0)", async () => {
@@ -37,7 +37,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -65,7 +65,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -93,7 +93,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -121,7 +121,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -169,7 +169,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -218,7 +218,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -234,8 +234,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  password: StringAggregateSelectionNonNullable!
-                  username: StringAggregateSelectionNonNullable!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
                 }
 
                 input ActorConnectWhere {
@@ -491,7 +491,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  title: StringAggregateSelectionNullable!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -626,12 +626,7 @@ describe("@relationship directive, aggregate argument", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -672,7 +667,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -688,8 +683,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  password: StringAggregateSelectionNonNullable!
-                  username: StringAggregateSelectionNonNullable!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
                 }
 
                 input ActorConnectWhere {
@@ -801,8 +796,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  password: StringAggregateSelectionNonNullable!
-                  username: StringAggregateSelectionNonNullable!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -956,7 +951,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  title: StringAggregateSelectionNullable!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -1091,12 +1086,7 @@ describe("@relationship directive, aggregate argument", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1143,7 +1133,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -1159,8 +1149,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorCreateInput {
@@ -1320,7 +1310,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -1434,8 +1424,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -1448,10 +1438,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -1472,7 +1458,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       password: String
                       username: String
                     }
@@ -1523,12 +1508,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -1573,7 +1553,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -1589,8 +1569,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorCreateInput {
@@ -1751,7 +1731,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -1791,8 +1771,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviePersonActorsNodeAggregateSelection {
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input MovieRelationInput {
@@ -1875,8 +1855,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -1889,10 +1869,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -1913,7 +1889,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       password: String
                       username: String
                     }
@@ -1964,12 +1939,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -2018,7 +1988,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -2034,8 +2004,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectWhere {
@@ -2284,7 +2254,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -2416,7 +2386,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      name: StringAggregateSelectionNonNullable!
+                      name: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -2495,12 +2465,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }
@@ -2551,7 +2516,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -2567,8 +2532,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type ActorAggregateSelection {
                       count: Int!
-                      password: StringAggregateSelectionNonNullable!
-                      username: StringAggregateSelectionNonNullable!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     input ActorConnectWhere {
@@ -2817,7 +2782,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MovieAggregateSelection {
                       count: Int!
-                      title: StringAggregateSelectionNullable!
+                      title: StringAggregateSelection!
                     }
 
                     input MovieConnectInput {
@@ -2949,7 +2914,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type PersonAggregateSelection {
                       count: Int!
-                      name: StringAggregateSelectionNonNullable!
+                      name: StringAggregateSelection!
                     }
 
                     input PersonConnectWhere {
@@ -3028,12 +2993,7 @@ describe("@relationship directive, aggregate argument", () => {
                       DESC
                     }
 
-                    type StringAggregateSelectionNonNullable {
-                      longest: String!
-                      shortest: String!
-                    }
-
-                    type StringAggregateSelectionNullable {
+                    type StringAggregateSelection {
                       longest: String
                       shortest: String
                     }

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -38,7 +36,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
                 location: Point!
             }
@@ -57,7 +55,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
             delete process.env.VERIFY_TCK;
         }
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -67,10 +65,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                         }
                     ) {
                         edges {
-                            screenTime
-                            location {
-                                latitude
-                                longitude
+                            properties {
+                                screenTime
+                                location {
+                                    latitude
+                                    longitude
+                                }
                             }
                             node {
                                 name
@@ -95,10 +95,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, location: CASE
+                    RETURN collect({ properties: { screenTime: this0.screenTime, location: CASE
                         WHEN this0.location IS NOT NULL THEN { point: this0.location }
                         ELSE NULL
-                    END, node: { name: this1.name } }) AS var2
+                    END, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

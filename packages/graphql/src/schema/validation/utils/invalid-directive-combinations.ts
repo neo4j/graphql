@@ -71,12 +71,12 @@ export const invalidFieldCombinations: InvalidFieldCombinations = {
     selectable: ["jwtClaim", "customResolver"],
     settable: ["jwtClaim", "customResolver"],
     filterable: ["jwtClaim", "customResolver"],
+    declareRelationship: ["jwtClaim"],
 };
 
 type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<InterfaceDirective>>;
 
 export const invalidInterfaceCombinations: InvalidInterfaceCombinations = {
-    relationshipProperties: [],
     query: [],
     plural: [],
     limit: [],
@@ -92,6 +92,7 @@ export const invalidUnionCombinations: InvalidUnionCombinations = {
 type InvalidObjectCombinations = Record<Exclude<ObjectDirective, "jwt">, ReadonlyArray<ObjectDirective>>;
 
 export const invalidObjectCombinations: InvalidObjectCombinations = {
+    relationshipProperties: [],
     authentication: [],
     authorization: [],
     deprecated: [],

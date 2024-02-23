@@ -31,7 +31,6 @@ import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/mod
 
 export class DeleteOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
     private selection: EntitySelection;
     private filters: Filter[];
     private authFilters: Filter[];

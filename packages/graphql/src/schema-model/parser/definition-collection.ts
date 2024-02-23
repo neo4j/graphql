@@ -38,10 +38,10 @@ export type DefinitionCollection = {
     nodes: Map<string, ObjectTypeDefinitionNode>; // this does not include @jwtPayload type.
     scalarTypes: Map<string, ScalarTypeDefinitionNode>;
     enumTypes: Map<string, EnumTypeDefinitionNode>;
-    interfaceTypes: Map<string, InterfaceTypeDefinitionNode>; // this does not include @relationshipProperties interfaces.
+    interfaceTypes: Map<string, InterfaceTypeDefinitionNode>;
     unionTypes: Map<string, UnionTypeDefinitionNode>;
     directives: Map<string, DirectiveDefinitionNode>;
-    relationshipProperties: Map<string, InterfaceTypeDefinitionNode>;
+    relationshipProperties: Map<string, ObjectTypeDefinitionNode>;
     inputTypes: Map<string, InputObjectTypeDefinitionNode>;
     schemaExtension: SchemaExtensionNode | undefined;
     jwtPayload: ObjectTypeDefinitionNode | undefined;
@@ -59,24 +59,23 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
                     definitionCollection.scalarTypes.set(definition.name.value, definition);
                     break;
                 case Kind.OBJECT_TYPE_DEFINITION:
-                    if (findDirective(definition.directives, jwt.name)) {
+                    if (findDirective(definition.directives, relationshipPropertiesDirective.name)) {
+                        definitionCollection.relationshipProperties.set(definition.name.value, definition);
+                    } else if (findDirective(definition.directives, jwt.name)) {
                         definitionCollection.jwtPayload = definition;
                     } else if (!isRootType(definition)) {
                         definitionCollection.nodes.set(definition.name.value, definition);
                     } else {
                         definitionCollection.operations.push(definition);
                     }
+
                     break;
                 case Kind.ENUM_TYPE_DEFINITION:
                     definitionCollection.enumTypes.set(definition.name.value, definition);
                     break;
                 case Kind.INTERFACE_TYPE_DEFINITION:
-                    if (findDirective(definition.directives, relationshipPropertiesDirective.name)) {
-                        definitionCollection.relationshipProperties.set(definition.name.value, definition);
-                    } else {
-                        definitionCollection.interfaceTypes.set(definition.name.value, definition);
-                        definitionCollection.interfaceToImplementingTypeNamesMap.set(definition.name.value, []); // previous initInterfacesToTypeNamesMap logic.
-                    }
+                    definitionCollection.interfaceTypes.set(definition.name.value, definition);
+                    definitionCollection.interfaceToImplementingTypeNamesMap.set(definition.name.value, []); // previous initInterfacesToTypeNamesMap logic.
                     break;
                 case Kind.DIRECTIVE_DEFINITION:
                     definitionCollection.directives.set(definition.name.value, definition);

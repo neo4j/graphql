@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver, DateTime } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { DateTime, Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import Neo4jHelper from "../../neo4j";
 
 describe("timestamp/datetime", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -99,7 +99,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     screenTime: Int!
                 }
@@ -129,7 +129,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    createdAt
+                                    properties {
+                                        createdAt
+                                    }
                                 }
                             }
                         }
@@ -149,7 +151,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].createdAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -223,7 +225,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     updatedAt: DateTime! @timestamp(operations: [UPDATE])
                     screenTime: Int!
                 }
@@ -252,7 +254,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    updatedAt
+                                    properties {
+                                        updatedAt
+                                    }
                                 }
                             }
                         }
@@ -279,7 +283,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).updateMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].updatedAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -349,7 +353,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     createdAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
                     screenTime: Int!
                 }
@@ -379,7 +383,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    createdAt
+                                    properties {
+                                        createdAt
+                                    }
                                 }
                             }
                         }
@@ -399,7 +405,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].createdAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -413,7 +419,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
                     screenTime: Int!
                 }
@@ -442,7 +448,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    updatedAt
+                                    properties {
+                                        updatedAt
+                                    }
                                 }
                             }
                         }
@@ -469,7 +477,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).updateMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].updatedAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -597,7 +605,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     createdAt: DateTime! @timestamp
                     screenTime: Int!
                 }
@@ -627,7 +635,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    createdAt
+                                    properties {
+                                        createdAt
+                                    }
                                 }
                             }
                         }
@@ -647,7 +657,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].createdAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -661,7 +671,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     updatedAt: DateTime! @timestamp
                     screenTime: Int!
                 }
@@ -690,7 +700,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    updatedAt
+                                    properties {
+                                        updatedAt
+                                    }
                                 }
                             }
                         }
@@ -717,7 +729,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).updateMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].updatedAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }

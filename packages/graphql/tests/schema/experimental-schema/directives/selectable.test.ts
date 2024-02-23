@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 
@@ -37,7 +37,7 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: false, onAggregate: true)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -74,8 +74,8 @@ describe("@selectable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -170,12 +170,7 @@ describe("@selectable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -205,7 +200,7 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: true, onAggregate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -243,7 +238,7 @@ describe("@selectable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -338,9 +333,9 @@ describe("@selectable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -368,7 +363,7 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: false, onAggregate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -405,7 +400,7 @@ describe("@selectable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -500,9 +495,9 @@ describe("@selectable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -576,8 +571,8 @@ describe("@selectable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -721,12 +716,7 @@ describe("@selectable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -770,7 +760,7 @@ describe("@selectable", () => {
                         @selectable(onRead: false, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -919,7 +909,7 @@ describe("@selectable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -950,8 +940,8 @@ describe("@selectable", () => {
                 }
 
                 type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorOptions {
@@ -1065,8 +1055,8 @@ describe("@selectable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -1171,12 +1161,7 @@ describe("@selectable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1217,7 +1202,7 @@ describe("@selectable", () => {
                         @selectable(onRead: true, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1383,7 +1368,7 @@ describe("@selectable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -1414,8 +1399,8 @@ describe("@selectable", () => {
                 }
 
                 type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorOptions {
@@ -1529,8 +1514,8 @@ describe("@selectable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -1635,12 +1620,7 @@ describe("@selectable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1691,7 +1671,7 @@ describe("@selectable", () => {
                         @selectable(onRead: false, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1824,7 +1804,7 @@ describe("@selectable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -1964,8 +1944,8 @@ describe("@selectable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -2089,8 +2069,8 @@ describe("@selectable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  name: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesConnectWhere {
@@ -2169,12 +2149,7 @@ describe("@selectable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -2227,7 +2202,7 @@ describe("@selectable", () => {
                         @selectable(onRead: true, onAggregate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -2373,7 +2348,7 @@ describe("@selectable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -2513,8 +2488,8 @@ describe("@selectable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -2638,8 +2613,8 @@ describe("@selectable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  name: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesConnectWhere {
@@ -2718,12 +2693,7 @@ describe("@selectable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -2782,7 +2752,7 @@ describe("@selectable", () => {
                         @selectable(onRead: false, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -2839,7 +2809,7 @@ describe("@selectable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -2879,8 +2849,8 @@ describe("@selectable", () => {
                 }
 
                 type ActorProductionActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -2979,8 +2949,8 @@ describe("@selectable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -3074,8 +3044,8 @@ describe("@selectable", () => {
 
                 type ProductionAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ProductionConnectWhere {
@@ -3090,11 +3060,6 @@ describe("@selectable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
                 }
 
                 input ProductionOptions {
@@ -3115,7 +3080,6 @@ describe("@selectable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   description: String
                   title: String
                 }
@@ -3168,8 +3132,8 @@ describe("@selectable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
@@ -3244,12 +3208,7 @@ describe("@selectable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -3305,7 +3264,7 @@ describe("@selectable", () => {
                         @selectable(onRead: true, onAggregate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -3379,7 +3338,7 @@ describe("@selectable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -3419,8 +3378,8 @@ describe("@selectable", () => {
                 }
 
                 type ActorProductionActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -3519,8 +3478,8 @@ describe("@selectable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -3614,8 +3573,8 @@ describe("@selectable", () => {
 
                 type ProductionAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ProductionConnectWhere {
@@ -3630,11 +3589,6 @@ describe("@selectable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
                 }
 
                 input ProductionOptions {
@@ -3655,7 +3609,6 @@ describe("@selectable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   description: String
                   title: String
                 }
@@ -3708,8 +3661,8 @@ describe("@selectable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
@@ -3784,12 +3737,7 @@ describe("@selectable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }

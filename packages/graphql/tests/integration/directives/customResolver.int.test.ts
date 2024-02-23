@@ -23,14 +23,14 @@ import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
-import { cleanNodes } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const user = {
         id: "An-ID",
@@ -51,7 +51,7 @@ describe("@customResolver directive", () => {
     `;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -298,38 +298,12 @@ describe("@customResolver directive", () => {
 
             expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
-
-        test("Check throws error if custom resolver defined for interface", async () => {
-            const interfaceType = new UniqueType("UserInterface");
-            const typeDefs = `
-                interface ${interfaceType.name} {
-                    ${customResolverField}: String @customResolver(requires: "firstName lastName")
-                }
-
-                type ${testType} implements ${interfaceType.name} {
-                    id: ID!
-                    firstName: String!
-                    lastName: String!
-                    ${customResolverField}: String
-                }
-            `;
-
-            const testResolver = () => "Some value";
-            const resolvers = {
-                [interfaceType.name]: {
-                    [customResolverField]: testResolver,
-                },
-            };
-            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-            await neoSchema.getSchema();
-            expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
-        });
     });
 });
 
 describe("Related Fields", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     let Publication: UniqueType;
     let Author: UniqueType;
@@ -394,7 +368,7 @@ describe("Related Fields", () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -412,7 +386,7 @@ describe("Related Fields", () => {
     afterEach(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Publication, Author, Book, Journal, User, Address, City, State]);
+            await cleanNodesUsingSession(session, [Publication, Author, Book, Journal, User, Address, City, State]);
         } finally {
             await session.close();
         }
@@ -2047,7 +2021,7 @@ describe("Related Fields", () => {
     test("should throw an error when requiring another @customResolver field on a nested type", async () => {
         const typeDefs = gql`
             interface ${Publication} {
-                publicationYear: Int! @customResolver
+                publicationYear: Int! 
             }
 
             type ${User} {
@@ -2065,13 +2039,13 @@ describe("Related Fields", () => {
 
             type ${Book} implements ${Publication} {
                 title: String!
-                publicationYear: Int!
+                publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${Journal} implements ${Publication} {
                 subject: String!
-                publicationYear: Int!
+                publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
         `;

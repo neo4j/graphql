@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Interface Relationships", () => {
@@ -39,7 +39,7 @@ describe("Interface Relationships", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -57,7 +57,11 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            \\"\\"\\"
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -91,6 +95,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -139,10 +144,10 @@ describe("Interface Relationships", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -161,7 +166,7 @@ describe("Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -193,6 +198,20 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregationSelection {
+              count: Int!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
+            }
+
+            type ActorProductionActedInEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type ActorProductionActedInNodeAggregateSelection {
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -284,11 +303,11 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -298,8 +317,8 @@ describe("Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -390,6 +409,11 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -399,14 +423,9 @@ describe("Interface Relationships", () => {
               Series: SeriesCreateInput
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
+            enum ProductionImplementation {
+              Movie
+              Series
             }
 
             input ProductionOptions {
@@ -426,12 +445,13 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               title: String
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -442,6 +462,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -451,6 +472,8 @@ describe("Interface Relationships", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -463,8 +486,8 @@ describe("Interface Relationships", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -539,9 +562,9 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -572,7 +595,7 @@ describe("Interface Relationships", () => {
         `);
     });
 
-    test("Interface Relationships - multiple", async () => {
+    test("Interface Relationships - multiple - same relationship implementation", async () => {
         const typeDefs = gql`
             type Episode {
                 runtime: Int!
@@ -581,7 +604,7 @@ describe("Interface Relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
@@ -597,7 +620,7 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -615,8 +638,45 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            * Series.actors
+            * Actor.actedIn
+            \\"\\"\\"
+            type ActedIn {
               screenTime: Int!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActedInCreateInput {
@@ -649,6 +709,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -700,10 +761,10 @@ describe("Interface Relationships", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -722,7 +783,7 @@ describe("Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -758,6 +819,20 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregationSelection {
+              count: Int!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
+            }
+
+            type ActorProductionActedInEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type ActorProductionActedInNodeAggregateSelection {
+              title: StringAggregateSelection!
             }
 
             input ActorRelationInput {
@@ -863,7 +938,7 @@ describe("Interface Relationships", () => {
 
             type EpisodeAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input EpisodeConnectInput {
@@ -1040,8 +1115,8 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesSeriesNodeAggregateSelection {
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input EpisodeSeriesUpdateConnectionInput {
@@ -1096,11 +1171,11 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -1118,11 +1193,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1134,39 +1209,28 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+            input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
             }
 
             input MovieActorsNodeAggregationWhereInput {
@@ -1210,18 +1274,32 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
-              actors: [ProductionActorsConnectFieldInput!]
+              actors: [MovieActorsConnectFieldInput!]
             }
 
             input MovieCreateInput {
-              actors: ProductionActorsFieldInput
+              actors: MovieActorsFieldInput
               runtime: Int!
               title: String!
             }
@@ -1249,7 +1327,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieRelationInput {
-              actors: [ProductionActorsCreateFieldInput!]
+              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -1261,7 +1339,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!]
+              actors: [MovieActorsUpdateFieldInput!]
               runtime: Int
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
@@ -1351,8 +1429,8 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
 
@@ -1371,7 +1449,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
+              edge: ProductionActorsEdgeCreateInput!
               \\"\\"\\"
               Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
@@ -1386,7 +1464,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsConnectionSort {
-              edge: ActedInSort
+              edge: ProductionActorsEdgeSort
               node: ActorSort
             }
 
@@ -1394,14 +1472,14 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsConnectionWhere!]
               NOT: ProductionActorsConnectionWhere
               OR: [ProductionActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              edge: ProductionActorsEdgeWhere
+              edge_NOT: ProductionActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
               node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ProductionActorsCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ProductionActorsEdgeCreateInput!
               node: ActorCreateInput!
             }
 
@@ -1416,39 +1494,48 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsEdgeAggregationWhereInput {
-              AND: [ProductionActorsEdgeAggregationWhereInput!]
-              NOT: ProductionActorsEdgeAggregationWhereInput
-              OR: [ProductionActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              * Series
+              \\"\\"\\"
+              ActedIn: ActedInAggregationWhereInput
             }
 
-            input ProductionActorsFieldInput {
-              connect: [ProductionActorsConnectFieldInput!]
-              create: [ProductionActorsCreateFieldInput!]
+            input ProductionActorsEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              * Series
+              \\"\\"\\"
+              ActedIn: ActedInCreateInput!
+            }
+
+            input ProductionActorsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              * Series
+              \\"\\"\\"
+              ActedIn: ActedInSort
+            }
+
+            input ProductionActorsEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              * Series
+              \\"\\"\\"
+              ActedIn: ActedInUpdateInput
+            }
+
+            input ProductionActorsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              * Series
+              \\"\\"\\"
+              ActedIn: ActedInWhere
             }
 
             input ProductionActorsNodeAggregationWhereInput {
@@ -1492,14 +1579,16 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ProductionActorsRelationship implements ActedIn {
+            type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ProductionActorsRelationshipProperties!
             }
 
+            union ProductionActorsRelationshipProperties = ActedIn
+
             input ProductionActorsUpdateConnectionInput {
-              edge: ActedInUpdateInput
+              edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
             }
 
@@ -1512,8 +1601,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
               actors: [ProductionActorsConnectFieldInput!]
             }
 
@@ -1527,38 +1620,16 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
               actors: [ProductionActorsDeleteFieldInput!]
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
+            enum ProductionImplementation {
+              Movie
+              Series
             }
 
             input ProductionOptions {
@@ -1578,13 +1649,14 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               actors: [ProductionActorsUpdateFieldInput!]
               title: String
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -1624,6 +1696,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -1636,6 +1709,8 @@ describe("Interface Relationships", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -1659,11 +1734,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1675,39 +1750,28 @@ describe("Interface Relationships", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: SeriesActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
               node: SeriesActorsNodeAggregationWhereInput
             }
 
-            input SeriesActorsEdgeAggregationWhereInput {
-              AND: [SeriesActorsEdgeAggregationWhereInput!]
-              NOT: SeriesActorsEdgeAggregationWhereInput
-              OR: [SeriesActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+            input SeriesActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
             }
 
             input SeriesActorsNodeAggregationWhereInput {
@@ -1751,14 +1815,28 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input SeriesActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type SeriesAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
-              actors: [ProductionActorsConnectFieldInput!]
+              actors: [SeriesActorsConnectFieldInput!]
               episodes: [SeriesEpisodesConnectFieldInput!]
             }
 
@@ -1773,7 +1851,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesCreateInput {
-              actors: ProductionActorsFieldInput
+              actors: SeriesActorsFieldInput
               episodeCount: Int!
               episodes: SeriesEpisodesFieldInput
               title: String!
@@ -1800,7 +1878,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodeEpisodesNodeAggregateSelection {
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input SeriesEpisodesAggregateInput {
@@ -1920,7 +1998,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesRelationInput {
-              actors: [ProductionActorsCreateFieldInput!]
+              actors: [SeriesActorsCreateFieldInput!]
               episodes: [SeriesEpisodesCreateFieldInput!]
             }
 
@@ -1933,7 +2011,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!]
+              actors: [SeriesActorsUpdateFieldInput!]
               episodeCount: Int
               episodeCount_DECREMENT: Int
               episodeCount_INCREMENT: Int
@@ -2031,9 +2109,1651 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateEpisodesMutationResponse {
+              episodes: [Episode!]!
+              info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
+            }"
+        `);
+    });
+
+    test("Interface Relationships - multiple - different relationship implementations", async () => {
+        const typeDefs = gql`
+            type Episode {
+                runtime: Int!
+                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+            }
+
+            interface Production {
+                title: String!
+                actors: [Actor!]! @declareRelationship
+            }
+
+            type Movie implements Production {
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type Series implements Production {
+                title: String!
+                episodeCount: Int!
+                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "StarredIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+
+            type StarredIn @relationshipProperties {
+                seasons: Int!
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.actedIn
+            \\"\\"\\"
+            type ActedIn {
+              screenTime: Int!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
+            input ActedInCreateInput {
+              screenTime: Int!
+            }
+
+            input ActedInSort {
+              screenTime: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int!]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type Actor {
+              actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              name: String!
+            }
+
+            input ActorActedInConnectFieldInput {
+              connect: ProductionConnectInput
+              edge: ActedInCreateInput!
+              where: ProductionConnectWhere
+            }
+
+            type ActorActedInConnection {
+              edges: [ActorActedInRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
+              node: ProductionSort
+            }
+
+            input ActorActedInConnectionWhere {
+              AND: [ActorActedInConnectionWhere!]
+              NOT: ActorActedInConnectionWhere
+              OR: [ActorActedInConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ProductionWhere
+              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ActorActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ProductionCreateInput!
+            }
+
+            input ActorActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+            }
+
+            type ActorActedInRelationship {
+              cursor: String!
+              node: Production!
+              properties: ActedIn!
+            }
+
+            input ActorActedInUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ProductionUpdateInput
+            }
+
+            input ActorActedInUpdateFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+              delete: [ActorActedInDeleteFieldInput!]
+              disconnect: [ActorActedInDisconnectFieldInput!]
+              update: ActorActedInUpdateConnectionInput
+              where: ActorActedInConnectionWhere
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            input ActorConnectInput {
+              actedIn: [ActorActedInConnectFieldInput!]
+            }
+
+            input ActorConnectWhere {
+              node: ActorWhere!
+            }
+
+            input ActorCreateInput {
+              actedIn: ActorActedInFieldInput
+              name: String!
+            }
+
+            input ActorDeleteInput {
+              actedIn: [ActorActedInDeleteFieldInput!]
+            }
+
+            input ActorDisconnectInput {
+              actedIn: [ActorActedInDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregationSelection {
+              count: Int!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
+            }
+
+            type ActorProductionActedInEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type ActorProductionActedInNodeAggregateSelection {
+              title: StringAggregateSelection!
+            }
+
+            input ActorRelationInput {
+              actedIn: [ActorActedInCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              actedIn: [ActorActedInUpdateFieldInput!]
+              name: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            type CreateEpisodesMutationResponse {
+              episodes: [Episode!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Episode {
+              runtime: Int!
+              series(directed: Boolean = true, options: SeriesOptions, where: SeriesWhere): Series!
+              seriesAggregate(directed: Boolean = true, where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
+              seriesConnection(after: String, directed: Boolean = true, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
+            }
+
+            type EpisodeAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelection!
+            }
+
+            input EpisodeConnectInput {
+              series: EpisodeSeriesConnectFieldInput
+            }
+
+            input EpisodeConnectWhere {
+              node: EpisodeWhere!
+            }
+
+            input EpisodeCreateInput {
+              runtime: Int!
+              series: EpisodeSeriesFieldInput
+            }
+
+            input EpisodeDeleteInput {
+              series: EpisodeSeriesDeleteFieldInput
+            }
+
+            input EpisodeDisconnectInput {
+              series: EpisodeSeriesDisconnectFieldInput
+            }
+
+            type EpisodeEdge {
+              cursor: String!
+              node: Episode!
+            }
+
+            input EpisodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [EpisodeSort!]
+            }
+
+            input EpisodeRelationInput {
+              series: EpisodeSeriesCreateFieldInput
+            }
+
+            input EpisodeSeriesAggregateInput {
+              AND: [EpisodeSeriesAggregateInput!]
+              NOT: EpisodeSeriesAggregateInput
+              OR: [EpisodeSeriesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
+            input EpisodeSeriesConnectFieldInput {
+              connect: SeriesConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: SeriesConnectWhere
+            }
+
+            type EpisodeSeriesConnection {
+              edges: [EpisodeSeriesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input EpisodeSeriesConnectionSort {
+              node: SeriesSort
+            }
+
+            input EpisodeSeriesConnectionWhere {
+              AND: [EpisodeSeriesConnectionWhere!]
+              NOT: EpisodeSeriesConnectionWhere
+              OR: [EpisodeSeriesConnectionWhere!]
+              node: SeriesWhere
+              node_NOT: SeriesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input EpisodeSeriesCreateFieldInput {
+              node: SeriesCreateInput!
+            }
+
+            input EpisodeSeriesDeleteFieldInput {
+              delete: SeriesDeleteInput
+              where: EpisodeSeriesConnectionWhere
+            }
+
+            input EpisodeSeriesDisconnectFieldInput {
+              disconnect: SeriesDisconnectInput
+              where: EpisodeSeriesConnectionWhere
+            }
+
+            input EpisodeSeriesFieldInput {
+              connect: EpisodeSeriesConnectFieldInput
+              create: EpisodeSeriesCreateFieldInput
+            }
+
+            input EpisodeSeriesNodeAggregationWhereInput {
+              AND: [EpisodeSeriesNodeAggregationWhereInput!]
+              NOT: EpisodeSeriesNodeAggregationWhereInput
+              OR: [EpisodeSeriesNodeAggregationWhereInput!]
+              episodeCount_AVERAGE_EQUAL: Float
+              episodeCount_AVERAGE_GT: Float
+              episodeCount_AVERAGE_GTE: Float
+              episodeCount_AVERAGE_LT: Float
+              episodeCount_AVERAGE_LTE: Float
+              episodeCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeCount_MAX_EQUAL: Int
+              episodeCount_MAX_GT: Int
+              episodeCount_MAX_GTE: Int
+              episodeCount_MAX_LT: Int
+              episodeCount_MAX_LTE: Int
+              episodeCount_MIN_EQUAL: Int
+              episodeCount_MIN_GT: Int
+              episodeCount_MIN_GTE: Int
+              episodeCount_MIN_LT: Int
+              episodeCount_MIN_LTE: Int
+              episodeCount_SUM_EQUAL: Int
+              episodeCount_SUM_GT: Int
+              episodeCount_SUM_GTE: Int
+              episodeCount_SUM_LT: Int
+              episodeCount_SUM_LTE: Int
+              title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LENGTH_EQUAL: Float
+              title_AVERAGE_LENGTH_GT: Float
+              title_AVERAGE_LENGTH_GTE: Float
+              title_AVERAGE_LENGTH_LT: Float
+              title_AVERAGE_LENGTH_LTE: Float
+              title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LENGTH_EQUAL: Int
+              title_LONGEST_LENGTH_GT: Int
+              title_LONGEST_LENGTH_GTE: Int
+              title_LONGEST_LENGTH_LT: Int
+              title_LONGEST_LENGTH_LTE: Int
+              title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int
+              title_SHORTEST_LENGTH_GT: Int
+              title_SHORTEST_LENGTH_GTE: Int
+              title_SHORTEST_LENGTH_LT: Int
+              title_SHORTEST_LENGTH_LTE: Int
+              title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            type EpisodeSeriesRelationship {
+              cursor: String!
+              node: Series!
+            }
+
+            type EpisodeSeriesSeriesAggregationSelection {
+              count: Int!
+              node: EpisodeSeriesSeriesNodeAggregateSelection
+            }
+
+            type EpisodeSeriesSeriesNodeAggregateSelection {
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            input EpisodeSeriesUpdateConnectionInput {
+              node: SeriesUpdateInput
+            }
+
+            input EpisodeSeriesUpdateFieldInput {
+              connect: EpisodeSeriesConnectFieldInput
+              create: EpisodeSeriesCreateFieldInput
+              delete: EpisodeSeriesDeleteFieldInput
+              disconnect: EpisodeSeriesDisconnectFieldInput
+              update: EpisodeSeriesUpdateConnectionInput
+              where: EpisodeSeriesConnectionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.
+            \\"\\"\\"
+            input EpisodeSort {
+              runtime: SortDirection
+            }
+
+            input EpisodeUpdateInput {
+              runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
+              series: EpisodeSeriesUpdateFieldInput
+            }
+
+            input EpisodeWhere {
+              AND: [EpisodeWhere!]
+              NOT: EpisodeWhere
+              OR: [EpisodeWhere!]
+              runtime: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_IN: [Int!]
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              series: SeriesWhere
+              seriesAggregate: EpisodeSeriesAggregateInput
+              seriesConnection: EpisodeSeriesConnectionWhere
+              seriesConnection_NOT: EpisodeSeriesConnectionWhere
+              series_NOT: SeriesWhere
+            }
+
+            type EpisodesConnection {
+              edges: [EpisodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            type Movie implements Production {
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              runtime: Int!
+              title: String!
+            }
+
+            type MovieActorActorsAggregationSelection {
+              count: Int!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type MovieActorActorsNodeAggregateSelection {
+              name: StringAggregateSelection!
+            }
+
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
+            input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            input MovieConnectInput {
+              actors: [MovieActorsConnectFieldInput!]
+            }
+
+            input MovieCreateInput {
+              actors: MovieActorsFieldInput
+              runtime: Int!
+              title: String!
+            }
+
+            input MovieDeleteInput {
+              actors: [ProductionActorsDeleteFieldInput!]
+            }
+
+            input MovieDisconnectInput {
+              actors: [ProductionActorsDisconnectFieldInput!]
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            input MovieRelationInput {
+              actors: [MovieActorsCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              runtime: SortDirection
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              actors: [MovieActorsUpdateFieldInput!]
+              runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
+              title: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
+              actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
+              runtime: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_IN: [Int!]
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createEpisodes(input: [EpisodeCreateInput!]!): CreateEpisodesMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
+              deleteEpisodes(delete: EpisodeDeleteInput, where: EpisodeWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateEpisodes(connect: EpisodeConnectInput, create: EpisodeRelationInput, delete: EpisodeDeleteInput, disconnect: EpisodeDisconnectInput, update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            interface Production {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              title: String!
+            }
+
+            input ProductionActorsAggregateInput {
+              AND: [ProductionActorsAggregateInput!]
+              NOT: ProductionActorsAggregateInput
+              OR: [ProductionActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
+            input ProductionActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ProductionActorsEdgeCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            type ProductionActorsConnection {
+              edges: [ProductionActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ProductionActorsConnectionSort {
+              edge: ProductionActorsEdgeSort
+              node: ActorSort
+            }
+
+            input ProductionActorsConnectionWhere {
+              AND: [ProductionActorsConnectionWhere!]
+              NOT: ProductionActorsConnectionWhere
+              OR: [ProductionActorsConnectionWhere!]
+              edge: ProductionActorsEdgeWhere
+              edge_NOT: ProductionActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ProductionActorsCreateFieldInput {
+              edge: ProductionActorsEdgeCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input ProductionActorsDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            input ProductionActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            input ProductionActorsEdgeAggregationWhereInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInAggregationWhereInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInAggregationWhereInput
+            }
+
+            input ProductionActorsEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInCreateInput!
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInCreateInput!
+            }
+
+            input ProductionActorsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInSort
+            }
+
+            input ProductionActorsEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInUpdateInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInUpdateInput
+            }
+
+            input ProductionActorsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInWhere
+            }
+
+            input ProductionActorsNodeAggregationWhereInput {
+              AND: [ProductionActorsNodeAggregationWhereInput!]
+              NOT: ProductionActorsNodeAggregationWhereInput
+              OR: [ProductionActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            type ProductionActorsRelationship {
+              cursor: String!
+              node: Actor!
+              properties: ProductionActorsRelationshipProperties!
+            }
+
+            union ProductionActorsRelationshipProperties = ActedIn | StarredIn
+
+            input ProductionActorsUpdateConnectionInput {
+              edge: ProductionActorsEdgeUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input ProductionActorsUpdateFieldInput {
+              connect: [ProductionActorsConnectFieldInput!]
+              create: [ProductionActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: ProductionActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            input ProductionConnectInput {
+              actors: [ProductionActorsConnectFieldInput!]
+            }
+
+            input ProductionConnectWhere {
+              node: ProductionWhere!
+            }
+
+            input ProductionCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
+            input ProductionDeleteInput {
+              actors: [ProductionActorsDeleteFieldInput!]
+            }
+
+            input ProductionDisconnectInput {
+              actors: [ProductionActorsDisconnectFieldInput!]
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
+            input ProductionUpdateInput {
+              actors: [ProductionActorsUpdateFieldInput!]
+              title: String
+            }
+
+            input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
+              actorsAggregate: ProductionActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Productions where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Productions where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
+            }
+
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
+              episodesConnection(after: String, first: Int, sort: [EpisodeSort], where: EpisodeWhere): EpisodesConnection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+            }
+
+            type Series implements Production {
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              episodeCount: Int!
+              episodes(directed: Boolean = true, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(directed: Boolean = true, where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
+              episodesConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
+              title: String!
+            }
+
+            type SeriesActorActorsAggregationSelection {
+              count: Int!
+              edge: SeriesActorActorsEdgeAggregateSelection
+              node: SeriesActorActorsNodeAggregateSelection
+            }
+
+            type SeriesActorActorsEdgeAggregateSelection {
+              seasons: IntAggregateSelection!
+            }
+
+            type SeriesActorActorsNodeAggregateSelection {
+              name: StringAggregateSelection!
+            }
+
+            input SeriesActorsAggregateInput {
+              AND: [SeriesActorsAggregateInput!]
+              NOT: SeriesActorsAggregateInput
+              OR: [SeriesActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: StarredInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
+            input SeriesActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: StarredInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: StarredInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+            }
+
+            input SeriesActorsNodeAggregationWhereInput {
+              AND: [SeriesActorsNodeAggregationWhereInput!]
+              NOT: SeriesActorsNodeAggregationWhereInput
+              OR: [SeriesActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input SeriesActorsUpdateConnectionInput {
+              edge: StarredInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            input SeriesConnectInput {
+              actors: [SeriesActorsConnectFieldInput!]
+              episodes: [SeriesEpisodesConnectFieldInput!]
+            }
+
+            input SeriesConnectWhere {
+              node: SeriesWhere!
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesCreateInput {
+              actors: SeriesActorsFieldInput
+              episodeCount: Int!
+              episodes: SeriesEpisodesFieldInput
+              title: String!
+            }
+
+            input SeriesDeleteInput {
+              actors: [ProductionActorsDeleteFieldInput!]
+              episodes: [SeriesEpisodesDeleteFieldInput!]
+            }
+
+            input SeriesDisconnectInput {
+              actors: [ProductionActorsDisconnectFieldInput!]
+              episodes: [SeriesEpisodesDisconnectFieldInput!]
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
+            type SeriesEpisodeEpisodesAggregationSelection {
+              count: Int!
+              node: SeriesEpisodeEpisodesNodeAggregateSelection
+            }
+
+            type SeriesEpisodeEpisodesNodeAggregateSelection {
+              runtime: IntAggregateSelection!
+            }
+
+            input SeriesEpisodesAggregateInput {
+              AND: [SeriesEpisodesAggregateInput!]
+              NOT: SeriesEpisodesAggregateInput
+              OR: [SeriesEpisodesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: SeriesEpisodesNodeAggregationWhereInput
+            }
+
+            input SeriesEpisodesConnectFieldInput {
+              connect: [EpisodeConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: EpisodeConnectWhere
+            }
+
+            type SeriesEpisodesConnection {
+              edges: [SeriesEpisodesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesEpisodesConnectionSort {
+              node: EpisodeSort
+            }
+
+            input SeriesEpisodesConnectionWhere {
+              AND: [SeriesEpisodesConnectionWhere!]
+              NOT: SeriesEpisodesConnectionWhere
+              OR: [SeriesEpisodesConnectionWhere!]
+              node: EpisodeWhere
+              node_NOT: EpisodeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input SeriesEpisodesCreateFieldInput {
+              node: EpisodeCreateInput!
+            }
+
+            input SeriesEpisodesDeleteFieldInput {
+              delete: EpisodeDeleteInput
+              where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesEpisodesDisconnectFieldInput {
+              disconnect: EpisodeDisconnectInput
+              where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesEpisodesFieldInput {
+              connect: [SeriesEpisodesConnectFieldInput!]
+              create: [SeriesEpisodesCreateFieldInput!]
+            }
+
+            input SeriesEpisodesNodeAggregationWhereInput {
+              AND: [SeriesEpisodesNodeAggregationWhereInput!]
+              NOT: SeriesEpisodesNodeAggregationWhereInput
+              OR: [SeriesEpisodesNodeAggregationWhereInput!]
+              runtime_AVERAGE_EQUAL: Float
+              runtime_AVERAGE_GT: Float
+              runtime_AVERAGE_GTE: Float
+              runtime_AVERAGE_LT: Float
+              runtime_AVERAGE_LTE: Float
+              runtime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              runtime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              runtime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              runtime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              runtime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              runtime_MAX_EQUAL: Int
+              runtime_MAX_GT: Int
+              runtime_MAX_GTE: Int
+              runtime_MAX_LT: Int
+              runtime_MAX_LTE: Int
+              runtime_MIN_EQUAL: Int
+              runtime_MIN_GT: Int
+              runtime_MIN_GTE: Int
+              runtime_MIN_LT: Int
+              runtime_MIN_LTE: Int
+              runtime_SUM_EQUAL: Int
+              runtime_SUM_GT: Int
+              runtime_SUM_GTE: Int
+              runtime_SUM_LT: Int
+              runtime_SUM_LTE: Int
+            }
+
+            type SeriesEpisodesRelationship {
+              cursor: String!
+              node: Episode!
+            }
+
+            input SeriesEpisodesUpdateConnectionInput {
+              node: EpisodeUpdateInput
+            }
+
+            input SeriesEpisodesUpdateFieldInput {
+              connect: [SeriesEpisodesConnectFieldInput!]
+              create: [SeriesEpisodesCreateFieldInput!]
+              delete: [SeriesEpisodesDeleteFieldInput!]
+              disconnect: [SeriesEpisodesDisconnectFieldInput!]
+              update: SeriesEpisodesUpdateConnectionInput
+              where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
+            }
+
+            input SeriesRelationInput {
+              actors: [SeriesActorsCreateFieldInput!]
+              episodes: [SeriesEpisodesCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
+            input SeriesSort {
+              episodeCount: SortDirection
+              title: SortDirection
+            }
+
+            input SeriesUpdateInput {
+              actors: [SeriesActorsUpdateFieldInput!]
+              episodeCount: Int
+              episodeCount_DECREMENT: Int
+              episodeCount_INCREMENT: Int
+              episodes: [SeriesEpisodesUpdateFieldInput!]
+              title: String
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              NOT: SeriesWhere
+              OR: [SeriesWhere!]
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
+              actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
+              episodeCount: Int
+              episodeCount_GT: Int
+              episodeCount_GTE: Int
+              episodeCount_IN: [Int!]
+              episodeCount_LT: Int
+              episodeCount_LTE: Int
+              episodeCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodeCount_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodes: EpisodeWhere @deprecated(reason: \\"Use \`episodes_SOME\` instead.\\")
+              episodesAggregate: SeriesEpisodesAggregateInput
+              episodesConnection: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              episodesConnection_ALL: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere
+              episodesConnection_NOT: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
+              episodes_ALL: EpisodeWhere
+              \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
+              episodes_NONE: EpisodeWhere
+              episodes_NOT: EpisodeWhere @deprecated(reason: \\"Use \`episodes_NONE\` instead.\\")
+              \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
+              episodes_SINGLE: EpisodeWhere
+              \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
+              episodes_SOME: EpisodeWhere
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Series.actors
+            \\"\\"\\"
+            type StarredIn {
+              seasons: Int!
+            }
+
+            input StarredInAggregationWhereInput {
+              AND: [StarredInAggregationWhereInput!]
+              NOT: StarredInAggregationWhereInput
+              OR: [StarredInAggregationWhereInput!]
+              seasons_AVERAGE_EQUAL: Float
+              seasons_AVERAGE_GT: Float
+              seasons_AVERAGE_GTE: Float
+              seasons_AVERAGE_LT: Float
+              seasons_AVERAGE_LTE: Float
+              seasons_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              seasons_MAX_EQUAL: Int
+              seasons_MAX_GT: Int
+              seasons_MAX_GTE: Int
+              seasons_MAX_LT: Int
+              seasons_MAX_LTE: Int
+              seasons_MIN_EQUAL: Int
+              seasons_MIN_GT: Int
+              seasons_MIN_GTE: Int
+              seasons_MIN_LT: Int
+              seasons_MIN_LTE: Int
+              seasons_SUM_EQUAL: Int
+              seasons_SUM_GT: Int
+              seasons_SUM_GTE: Int
+              seasons_SUM_LT: Int
+              seasons_SUM_LTE: Int
+            }
+
+            input StarredInCreateInput {
+              seasons: Int!
+            }
+
+            input StarredInSort {
+              seasons: SortDirection
+            }
+
+            input StarredInUpdateInput {
+              seasons: Int
+              seasons_DECREMENT: Int
+              seasons_INCREMENT: Int
+            }
+
+            input StarredInWhere {
+              AND: [StarredInWhere!]
+              NOT: StarredInWhere
+              OR: [StarredInWhere!]
+              seasons: Int
+              seasons_GT: Int
+              seasons_GTE: Int
+              seasons_IN: [Int!]
+              seasons_LT: Int
+              seasons_LTE: Int
+              seasons_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              seasons_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2073,7 +3793,7 @@ describe("Interface Relationships", () => {
         const typeDefs = gql`
             interface Interface1 {
                 field1: String!
-                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
+                interface2: [Interface2!]! @declareRelationship
             }
 
             interface Interface2 {
@@ -2158,12 +3878,16 @@ describe("Interface Relationships", () => {
 
             interface Interface1 {
               field1: String!
-              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
-              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
             }
 
             input Interface1ConnectInput {
-              _on: Interface1ImplementationsConnectInput
               interface2: [Interface1Interface2ConnectFieldInput!]
             }
 
@@ -2177,38 +3901,16 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DeleteInput {
-              _on: Interface1ImplementationsDeleteInput
               interface2: [Interface1Interface2DeleteFieldInput!]
             }
 
             input Interface1DisconnectInput {
-              _on: Interface1ImplementationsDisconnectInput
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
-            input Interface1ImplementationsConnectInput {
-              Type1Interface1: [Type1Interface1ConnectInput!]
-              Type2Interface1: [Type2Interface1ConnectInput!]
-            }
-
-            input Interface1ImplementationsDeleteInput {
-              Type1Interface1: [Type1Interface1DeleteInput!]
-              Type2Interface1: [Type2Interface1DeleteInput!]
-            }
-
-            input Interface1ImplementationsDisconnectInput {
-              Type1Interface1: [Type1Interface1DisconnectInput!]
-              Type2Interface1: [Type2Interface1DisconnectInput!]
-            }
-
-            input Interface1ImplementationsUpdateInput {
-              Type1Interface1: Type1Interface1UpdateInput
-              Type2Interface1: Type2Interface1UpdateInput
-            }
-
-            input Interface1ImplementationsWhere {
-              Type1Interface1: Type1Interface1Where
-              Type2Interface1: Type2Interface1Where
+            enum Interface1Implementation {
+              Type1Interface1
+              Type2Interface1
             }
 
             input Interface1Interface2ConnectFieldInput {
@@ -2243,11 +3945,6 @@ describe("Interface Relationships", () => {
 
             input Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
-            }
-
-            input Interface1Interface2FieldInput {
-              connect: [Interface1Interface2ConnectFieldInput!]
-              create: [Interface1Interface2CreateFieldInput!]
             }
 
             type Interface1Interface2Relationship {
@@ -2285,13 +3982,14 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              _on: Interface1ImplementationsUpdateInput
               field1: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
             input Interface1Where {
-              _on: Interface1ImplementationsWhere
+              AND: [Interface1Where!]
+              NOT: Interface1Where
+              OR: [Interface1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
@@ -2320,10 +4018,16 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              typename_IN: [Interface1Implementation!]
             }
 
             interface Interface2 {
               field2: String
+            }
+
+            type Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
             }
 
             input Interface2ConnectWhere {
@@ -2335,14 +4039,9 @@ describe("Interface Relationships", () => {
               Type2Interface2: Type2Interface2CreateInput
             }
 
-            input Interface2ImplementationsUpdateInput {
-              Type1Interface2: Type1Interface2UpdateInput
-              Type2Interface2: Type2Interface2UpdateInput
-            }
-
-            input Interface2ImplementationsWhere {
-              Type1Interface2: Type1Interface2Where
-              Type2Interface2: Type2Interface2Where
+            enum Interface2Implementation {
+              Type1Interface2
+              Type2Interface2
             }
 
             input Interface2Options {
@@ -2362,12 +4061,13 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              _on: Interface2ImplementationsUpdateInput
               field2: String
             }
 
             input Interface2Where {
-              _on: Interface2ImplementationsWhere
+              AND: [Interface2Where!]
+              NOT: Interface2Where
+              OR: [Interface2Where!]
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
@@ -2378,6 +4078,7 @@ describe("Interface Relationships", () => {
               field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
+              typename_IN: [Interface2Implementation!]
             }
 
             type Mutation {
@@ -2407,6 +4108,10 @@ describe("Interface Relationships", () => {
             }
 
             type Query {
+              interface1s(options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface2s(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
               type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
               type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1sConnection!
@@ -2432,20 +4137,21 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Type1 {
               field1: String!
               interface1(directed: Boolean = true, options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1Aggregate(directed: Boolean = true, where: Interface1Where): Type1Interface1Interface1AggregationSelection
               interface1Connection(after: String, directed: Boolean = true, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
             type Type1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelectionNonNullable!
+              field1: StringAggregateSelection!
             }
 
             input Type1ConnectInput {
@@ -2473,12 +4179,13 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type1Interface1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelectionNonNullable!
+              field1: StringAggregateSelection!
             }
 
             input Type1Interface1ConnectFieldInput {
@@ -2514,7 +4221,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1CreateInput {
               field1: String!
-              interface2: Interface1Interface2FieldInput
+              interface2: Type1Interface1Interface2FieldInput
             }
 
             input Type1Interface1DeleteFieldInput {
@@ -2545,6 +4252,15 @@ describe("Interface Relationships", () => {
               create: [Type1Interface1CreateFieldInput!]
             }
 
+            type Type1Interface1Interface1AggregationSelection {
+              count: Int!
+              node: Type1Interface1Interface1NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface1NodeAggregateSelection {
+              field1: StringAggregateSelection!
+            }
+
             input Type1Interface1Interface2ConnectFieldInput {
               where: Interface2ConnectWhere
             }
@@ -2559,6 +4275,20 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2FieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              node: Type1Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2UpdateConnectionInput {
@@ -2663,7 +4393,7 @@ describe("Interface Relationships", () => {
 
             type Type1Interface2AggregateSelection {
               count: Int!
-              field2: StringAggregateSelectionNonNullable!
+              field2: StringAggregateSelection!
             }
 
             input Type1Interface2CreateInput {
@@ -2785,12 +4515,13 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type2Interface1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelectionNonNullable!
+              field1: StringAggregateSelection!
             }
 
             input Type2Interface1ConnectInput {
@@ -2799,7 +4530,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1CreateInput {
               field1: String!
-              interface2: Interface1Interface2FieldInput
+              interface2: Type2Interface1Interface2FieldInput
             }
 
             input Type2Interface1DeleteInput {
@@ -2829,6 +4560,20 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2FieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type2Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              node: Type2Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type2Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2UpdateConnectionInput {
@@ -2915,7 +4660,7 @@ describe("Interface Relationships", () => {
 
             type Type2Interface2AggregateSelection {
               count: Int!
-              field2: StringAggregateSelectionNonNullable!
+              field2: StringAggregateSelection!
             }
 
             input Type2Interface2CreateInput {
@@ -3012,25 +4757,2236 @@ describe("Interface Relationships", () => {
         // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
     });
 
+    test("Interface Relationships - nested interface relationships - with same properties", async () => {
+        const typeDefs = gql`
+            interface Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @declareRelationship
+            }
+
+            interface Interface2 {
+                field2: String
+            }
+
+            type Type1Interface1 implements Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Props")
+            }
+
+            type Type2Interface1 implements Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Props")
+            }
+
+            type Type1Interface2 implements Interface2 {
+                field2: String!
+            }
+
+            type Type2Interface2 implements Interface2 {
+                field2: String!
+            }
+
+            type Type1 {
+                field1: String!
+                interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
+            }
+
+            type Props @relationshipProperties {
+                propsField: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateType1Interface1sMutationResponse {
+              info: CreateInfo!
+              type1Interface1s: [Type1Interface1!]!
+            }
+
+            type CreateType1Interface2sMutationResponse {
+              info: CreateInfo!
+              type1Interface2s: [Type1Interface2!]!
+            }
+
+            type CreateType1sMutationResponse {
+              info: CreateInfo!
+              type1s: [Type1!]!
+            }
+
+            type CreateType2Interface1sMutationResponse {
+              info: CreateInfo!
+              type2Interface1s: [Type2Interface1!]!
+            }
+
+            type CreateType2Interface2sMutationResponse {
+              info: CreateInfo!
+              type2Interface2s: [Type2Interface2!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            interface Interface1 {
+              field1: String!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Interface1ConnectInput {
+              interface2: [Interface1Interface2ConnectFieldInput!]
+            }
+
+            input Interface1ConnectWhere {
+              node: Interface1Where!
+            }
+
+            input Interface1CreateInput {
+              Type1Interface1: Type1Interface1CreateInput
+              Type2Interface1: Type2Interface1CreateInput
+            }
+
+            input Interface1DeleteInput {
+              interface2: [Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Interface1DisconnectInput {
+              interface2: [Interface1Interface2DisconnectFieldInput!]
+            }
+
+            enum Interface1Implementation {
+              Type1Interface1
+              Type2Interface1
+            }
+
+            input Interface1Interface2ConnectFieldInput {
+              edge: Interface1Interface2EdgeCreateInput!
+              where: Interface2ConnectWhere
+            }
+
+            type Interface1Interface2Connection {
+              edges: [Interface1Interface2Relationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Interface1Interface2ConnectionSort {
+              edge: Interface1Interface2EdgeSort
+              node: Interface2Sort
+            }
+
+            input Interface1Interface2ConnectionWhere {
+              AND: [Interface1Interface2ConnectionWhere!]
+              NOT: Interface1Interface2ConnectionWhere
+              OR: [Interface1Interface2ConnectionWhere!]
+              edge: Interface1Interface2EdgeWhere
+              edge_NOT: Interface1Interface2EdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: Interface2Where
+              node_NOT: Interface2Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input Interface1Interface2CreateFieldInput {
+              edge: Interface1Interface2EdgeCreateInput!
+              node: Interface2CreateInput!
+            }
+
+            input Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Interface2EdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              * Type2Interface1
+              \\"\\"\\"
+              Props: PropsCreateInput!
+            }
+
+            input Interface1Interface2EdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              * Type2Interface1
+              \\"\\"\\"
+              Props: PropsSort
+            }
+
+            input Interface1Interface2EdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              * Type2Interface1
+              \\"\\"\\"
+              Props: PropsUpdateInput
+            }
+
+            input Interface1Interface2EdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              * Type2Interface1
+              \\"\\"\\"
+              Props: PropsWhere
+            }
+
+            type Interface1Interface2Relationship {
+              cursor: String!
+              node: Interface2!
+              properties: Interface1Interface2RelationshipProperties!
+            }
+
+            union Interface1Interface2RelationshipProperties = Props
+
+            input Interface1Interface2UpdateConnectionInput {
+              edge: Interface1Interface2EdgeUpdateInput
+              node: Interface2UpdateInput
+            }
+
+            input Interface1Interface2UpdateFieldInput {
+              connect: [Interface1Interface2ConnectFieldInput!]
+              create: [Interface1Interface2CreateFieldInput!]
+              delete: [Interface1Interface2DeleteFieldInput!]
+              disconnect: [Interface1Interface2DisconnectFieldInput!]
+              update: Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Interface1Sort objects to sort Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Interface1Sort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
+            \\"\\"\\"
+            input Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Interface1UpdateInput {
+              field1: String
+              interface2: [Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Interface1Where {
+              AND: [Interface1Where!]
+              NOT: Interface1Where
+              OR: [Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              typename_IN: [Interface1Implementation!]
+            }
+
+            interface Interface2 {
+              field2: String
+            }
+
+            type Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Interface2ConnectWhere {
+              node: Interface2Where!
+            }
+
+            input Interface2CreateInput {
+              Type1Interface2: Type1Interface2CreateInput
+              Type2Interface2: Type2Interface2CreateInput
+            }
+
+            enum Interface2Implementation {
+              Type1Interface2
+              Type2Interface2
+            }
+
+            input Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Interface2Sort objects to sort Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Interface2Sort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
+            \\"\\"\\"
+            input Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Interface2UpdateInput {
+              field2: String
+            }
+
+            input Interface2Where {
+              AND: [Interface2Where!]
+              NOT: Interface2Where
+              OR: [Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String]
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_STARTS_WITH: String
+              typename_IN: [Interface2Implementation!]
+            }
+
+            type Mutation {
+              createType1Interface1s(input: [Type1Interface1CreateInput!]!): CreateType1Interface1sMutationResponse!
+              createType1Interface2s(input: [Type1Interface2CreateInput!]!): CreateType1Interface2sMutationResponse!
+              createType1s(input: [Type1CreateInput!]!): CreateType1sMutationResponse!
+              createType2Interface1s(input: [Type2Interface1CreateInput!]!): CreateType2Interface1sMutationResponse!
+              createType2Interface2s(input: [Type2Interface2CreateInput!]!): CreateType2Interface2sMutationResponse!
+              deleteType1Interface1s(delete: Type1Interface1DeleteInput, where: Type1Interface1Where): DeleteInfo!
+              deleteType1Interface2s(where: Type1Interface2Where): DeleteInfo!
+              deleteType1s(delete: Type1DeleteInput, where: Type1Where): DeleteInfo!
+              deleteType2Interface1s(delete: Type2Interface1DeleteInput, where: Type2Interface1Where): DeleteInfo!
+              deleteType2Interface2s(where: Type2Interface2Where): DeleteInfo!
+              updateType1Interface1s(connect: Type1Interface1ConnectInput, create: Type1Interface1RelationInput, delete: Type1Interface1DeleteInput, disconnect: Type1Interface1DisconnectInput, update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
+              updateType1Interface2s(update: Type1Interface2UpdateInput, where: Type1Interface2Where): UpdateType1Interface2sMutationResponse!
+              updateType1s(connect: Type1ConnectInput, create: Type1RelationInput, delete: Type1DeleteInput, disconnect: Type1DisconnectInput, update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
+              updateType2Interface1s(connect: Type2Interface1ConnectInput, create: Type2Interface1RelationInput, delete: Type2Interface1DeleteInput, disconnect: Type2Interface1DisconnectInput, update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
+              updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Type1Interface1.interface2
+            * Type2Interface1.interface2
+            \\"\\"\\"
+            type Props {
+              propsField: Int!
+            }
+
+            input PropsCreateInput {
+              propsField: Int!
+            }
+
+            input PropsSort {
+              propsField: SortDirection
+            }
+
+            input PropsUpdateInput {
+              propsField: Int
+              propsField_DECREMENT: Int
+              propsField_INCREMENT: Int
+            }
+
+            input PropsWhere {
+              AND: [PropsWhere!]
+              NOT: PropsWhere
+              OR: [PropsWhere!]
+              propsField: Int
+              propsField_GT: Int
+              propsField_GTE: Int
+              propsField_IN: [Int!]
+              propsField_LT: Int
+              propsField_LTE: Int
+              propsField_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              propsField_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type Query {
+              interface1s(options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface2s(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
+              type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
+              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
+              type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1sConnection!
+              type1Interface2s(options: Type1Interface2Options, where: Type1Interface2Where): [Type1Interface2!]!
+              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
+              type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort], where: Type1Interface2Where): Type1Interface2sConnection!
+              type1s(options: Type1Options, where: Type1Where): [Type1!]!
+              type1sAggregate(where: Type1Where): Type1AggregateSelection!
+              type1sConnection(after: String, first: Int, sort: [Type1Sort], where: Type1Where): Type1sConnection!
+              type2Interface1s(options: Type2Interface1Options, where: Type2Interface1Where): [Type2Interface1!]!
+              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
+              type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort], where: Type2Interface1Where): Type2Interface1sConnection!
+              type2Interface2s(options: Type2Interface2Options, where: Type2Interface2Where): [Type2Interface2!]!
+              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
+              type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort], where: Type2Interface2Where): Type2Interface2sConnection!
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type Type1 {
+              field1: String!
+              interface1(directed: Boolean = true, options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1Aggregate(directed: Boolean = true, where: Interface1Where): Type1Interface1Interface1AggregationSelection
+              interface1Connection(after: String, directed: Boolean = true, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+            }
+
+            type Type1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type1ConnectInput {
+              interface1: [Type1Interface1ConnectFieldInput!]
+            }
+
+            input Type1CreateInput {
+              field1: String!
+              interface1: Type1Interface1FieldInput
+            }
+
+            input Type1DeleteInput {
+              interface1: [Type1Interface1DeleteFieldInput!]
+            }
+
+            input Type1DisconnectInput {
+              interface1: [Type1Interface1DisconnectFieldInput!]
+            }
+
+            type Type1Edge {
+              cursor: String!
+              node: Type1!
+            }
+
+            type Type1Interface1 implements Interface1 {
+              field1: String!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
+              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type1Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type1Interface1ConnectFieldInput {
+              connect: Interface1ConnectInput
+              where: Interface1ConnectWhere
+            }
+
+            input Type1Interface1ConnectInput {
+              interface2: [Type1Interface1Interface2ConnectFieldInput!]
+            }
+
+            type Type1Interface1Connection {
+              edges: [Type1Interface1Relationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionSort {
+              node: Interface1Sort
+            }
+
+            input Type1Interface1ConnectionWhere {
+              AND: [Type1Interface1ConnectionWhere!]
+              NOT: Type1Interface1ConnectionWhere
+              OR: [Type1Interface1ConnectionWhere!]
+              node: Interface1Where
+              node_NOT: Interface1Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input Type1Interface1CreateFieldInput {
+              node: Interface1CreateInput!
+            }
+
+            input Type1Interface1CreateInput {
+              field1: String!
+              interface2: Type1Interface1Interface2FieldInput
+            }
+
+            input Type1Interface1DeleteFieldInput {
+              delete: Interface1DeleteInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1DeleteInput {
+              interface2: [Type1Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Type1Interface1DisconnectFieldInput {
+              disconnect: Interface1DisconnectInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1DisconnectInput {
+              interface2: [Type1Interface1Interface2DisconnectFieldInput!]
+            }
+
+            type Type1Interface1Edge {
+              cursor: String!
+              node: Type1Interface1!
+            }
+
+            input Type1Interface1FieldInput {
+              connect: [Type1Interface1ConnectFieldInput!]
+              create: [Type1Interface1CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface1AggregationSelection {
+              count: Int!
+              node: Type1Interface1Interface1NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface1NodeAggregateSelection {
+              field1: StringAggregateSelection!
+            }
+
+            input Type1Interface1Interface2ConnectFieldInput {
+              edge: PropsCreateInput!
+              where: Interface2ConnectWhere
+            }
+
+            input Type1Interface1Interface2CreateFieldInput {
+              edge: PropsCreateInput!
+              node: Interface2CreateInput!
+            }
+
+            input Type1Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2FieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              edge: Type1Interface1Interface2Interface2EdgeAggregateSelection
+              node: Type1Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface2Interface2EdgeAggregateSelection {
+              propsField: IntAggregateSelection!
+            }
+
+            type Type1Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelection!
+            }
+
+            input Type1Interface1Interface2UpdateConnectionInput {
+              edge: PropsUpdateInput
+              node: Interface2UpdateInput
+            }
+
+            input Type1Interface1Interface2UpdateFieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
+              delete: [Type1Interface1Interface2DeleteFieldInput!]
+              disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
+              update: Type1Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Interface1Sort!]
+            }
+
+            input Type1Interface1RelationInput {
+              interface2: [Type1Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type1Interface1Relationship {
+              cursor: String!
+              node: Interface1!
+            }
+
+            \\"\\"\\"
+            Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
+            \\"\\"\\"
+            input Type1Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Type1Interface1UpdateConnectionInput {
+              node: Interface1UpdateInput
+            }
+
+            input Type1Interface1UpdateFieldInput {
+              connect: [Type1Interface1ConnectFieldInput!]
+              create: [Type1Interface1CreateFieldInput!]
+              delete: [Type1Interface1DeleteFieldInput!]
+              disconnect: [Type1Interface1DisconnectFieldInput!]
+              update: Type1Interface1UpdateConnectionInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1UpdateInput {
+              field1: String
+              interface2: [Type1Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Type1Interface1Where {
+              AND: [Type1Interface1Where!]
+              NOT: Type1Interface1Where
+              OR: [Type1Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+            }
+
+            type Type1Interface1sConnection {
+              edges: [Type1Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Type1Interface2 implements Interface2 {
+              field2: String!
+            }
+
+            type Type1Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Type1Interface2CreateInput {
+              field2: String!
+            }
+
+            type Type1Interface2Edge {
+              cursor: String!
+              node: Type1Interface2!
+            }
+
+            input Type1Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Interface2Sort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.
+            \\"\\"\\"
+            input Type1Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Type1Interface2UpdateInput {
+              field2: String
+            }
+
+            input Type1Interface2Where {
+              AND: [Type1Interface2Where!]
+              NOT: Type1Interface2Where
+              OR: [Type1Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String!]
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_STARTS_WITH: String
+            }
+
+            type Type1Interface2sConnection {
+              edges: [Type1Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Type1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Sort!]
+            }
+
+            input Type1RelationInput {
+              interface1: [Type1Interface1CreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
+            \\"\\"\\"
+            input Type1Sort {
+              field1: SortDirection
+            }
+
+            input Type1UpdateInput {
+              field1: String
+              interface1: [Type1Interface1UpdateFieldInput!]
+            }
+
+            input Type1Where {
+              AND: [Type1Where!]
+              NOT: Type1Where
+              OR: [Type1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Type1s where all of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where none of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NOT: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1s where one of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where some of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_SOME: Type1Interface1ConnectionWhere
+            }
+
+            type Type1sConnection {
+              edges: [Type1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Type2Interface1 implements Interface1 {
+              field1: String!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
+              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type2Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type2Interface1ConnectInput {
+              interface2: [Type2Interface1Interface2ConnectFieldInput!]
+            }
+
+            input Type2Interface1CreateInput {
+              field1: String!
+              interface2: Type2Interface1Interface2FieldInput
+            }
+
+            input Type2Interface1DeleteInput {
+              interface2: [Type2Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Type2Interface1DisconnectInput {
+              interface2: [Type2Interface1Interface2DisconnectFieldInput!]
+            }
+
+            type Type2Interface1Edge {
+              cursor: String!
+              node: Type2Interface1!
+            }
+
+            input Type2Interface1Interface2ConnectFieldInput {
+              edge: PropsCreateInput!
+              where: Interface2ConnectWhere
+            }
+
+            input Type2Interface1Interface2CreateFieldInput {
+              edge: PropsCreateInput!
+              node: Interface2CreateInput!
+            }
+
+            input Type2Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2FieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type2Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              edge: Type2Interface1Interface2Interface2EdgeAggregateSelection
+              node: Type2Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type2Interface1Interface2Interface2EdgeAggregateSelection {
+              propsField: IntAggregateSelection!
+            }
+
+            type Type2Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelection!
+            }
+
+            input Type2Interface1Interface2UpdateConnectionInput {
+              edge: PropsUpdateInput
+              node: Interface2UpdateInput
+            }
+
+            input Type2Interface1Interface2UpdateFieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
+              delete: [Type2Interface1Interface2DeleteFieldInput!]
+              disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
+              update: Type2Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type2Interface1Sort!]
+            }
+
+            input Type2Interface1RelationInput {
+              interface2: [Type2Interface1Interface2CreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.
+            \\"\\"\\"
+            input Type2Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Type2Interface1UpdateInput {
+              field1: String
+              interface2: [Type2Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Type2Interface1Where {
+              AND: [Type2Interface1Where!]
+              NOT: Type2Interface1Where
+              OR: [Type2Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+            }
+
+            type Type2Interface1sConnection {
+              edges: [Type2Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Type2Interface2 implements Interface2 {
+              field2: String!
+            }
+
+            type Type2Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Type2Interface2CreateInput {
+              field2: String!
+            }
+
+            type Type2Interface2Edge {
+              cursor: String!
+              node: Type2Interface2!
+            }
+
+            input Type2Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type2Interface2Sort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.
+            \\"\\"\\"
+            input Type2Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Type2Interface2UpdateInput {
+              field2: String
+            }
+
+            input Type2Interface2Where {
+              AND: [Type2Interface2Where!]
+              NOT: Type2Interface2Where
+              OR: [Type2Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String!]
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_STARTS_WITH: String
+            }
+
+            type Type2Interface2sConnection {
+              edges: [Type2Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateType1Interface1sMutationResponse {
+              info: UpdateInfo!
+              type1Interface1s: [Type1Interface1!]!
+            }
+
+            type UpdateType1Interface2sMutationResponse {
+              info: UpdateInfo!
+              type1Interface2s: [Type1Interface2!]!
+            }
+
+            type UpdateType1sMutationResponse {
+              info: UpdateInfo!
+              type1s: [Type1!]!
+            }
+
+            type UpdateType2Interface1sMutationResponse {
+              info: UpdateInfo!
+              type2Interface1s: [Type2Interface1!]!
+            }
+
+            type UpdateType2Interface2sMutationResponse {
+              info: UpdateInfo!
+              type2Interface2s: [Type2Interface2!]!
+            }"
+        `);
+
+        // expect(() => {
+        //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
+        // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
+    });
+
+    test("Interface Relationships - nested interface relationships - different relationship implementations", async () => {
+        const typeDefs = gql`
+            interface Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @declareRelationship
+            }
+
+            interface Interface2 {
+                field2: String
+            }
+
+            type Type1Interface1 implements Interface1 {
+                field1: String!
+                interface2: [Interface2!]!
+                    @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Type1Props")
+            }
+
+            type Type2Interface1 implements Interface1 {
+                field1: String!
+                interface2: [Interface2!]!
+                    @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Type2Props")
+            }
+
+            type Type1Interface2 implements Interface2 {
+                field2: String!
+            }
+
+            type Type2Interface2 implements Interface2 {
+                field2: String!
+            }
+
+            type Type1 {
+                field1: String!
+                interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
+            }
+
+            type Type1Props @relationshipProperties {
+                type1Field: Int!
+            }
+
+            type Type2Props @relationshipProperties {
+                type2Field: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateType1Interface1sMutationResponse {
+              info: CreateInfo!
+              type1Interface1s: [Type1Interface1!]!
+            }
+
+            type CreateType1Interface2sMutationResponse {
+              info: CreateInfo!
+              type1Interface2s: [Type1Interface2!]!
+            }
+
+            type CreateType1sMutationResponse {
+              info: CreateInfo!
+              type1s: [Type1!]!
+            }
+
+            type CreateType2Interface1sMutationResponse {
+              info: CreateInfo!
+              type2Interface1s: [Type2Interface1!]!
+            }
+
+            type CreateType2Interface2sMutationResponse {
+              info: CreateInfo!
+              type2Interface2s: [Type2Interface2!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            interface Interface1 {
+              field1: String!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Interface1ConnectInput {
+              interface2: [Interface1Interface2ConnectFieldInput!]
+            }
+
+            input Interface1ConnectWhere {
+              node: Interface1Where!
+            }
+
+            input Interface1CreateInput {
+              Type1Interface1: Type1Interface1CreateInput
+              Type2Interface1: Type2Interface1CreateInput
+            }
+
+            input Interface1DeleteInput {
+              interface2: [Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Interface1DisconnectInput {
+              interface2: [Interface1Interface2DisconnectFieldInput!]
+            }
+
+            enum Interface1Implementation {
+              Type1Interface1
+              Type2Interface1
+            }
+
+            input Interface1Interface2ConnectFieldInput {
+              edge: Interface1Interface2EdgeCreateInput!
+              where: Interface2ConnectWhere
+            }
+
+            type Interface1Interface2Connection {
+              edges: [Interface1Interface2Relationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Interface1Interface2ConnectionSort {
+              edge: Interface1Interface2EdgeSort
+              node: Interface2Sort
+            }
+
+            input Interface1Interface2ConnectionWhere {
+              AND: [Interface1Interface2ConnectionWhere!]
+              NOT: Interface1Interface2ConnectionWhere
+              OR: [Interface1Interface2ConnectionWhere!]
+              edge: Interface1Interface2EdgeWhere
+              edge_NOT: Interface1Interface2EdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: Interface2Where
+              node_NOT: Interface2Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input Interface1Interface2CreateFieldInput {
+              edge: Interface1Interface2EdgeCreateInput!
+              node: Interface2CreateInput!
+            }
+
+            input Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Interface2EdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              \\"\\"\\"
+              Type1Props: Type1PropsCreateInput!
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type2Interface1
+              \\"\\"\\"
+              Type2Props: Type2PropsCreateInput!
+            }
+
+            input Interface1Interface2EdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              \\"\\"\\"
+              Type1Props: Type1PropsSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type2Interface1
+              \\"\\"\\"
+              Type2Props: Type2PropsSort
+            }
+
+            input Interface1Interface2EdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              \\"\\"\\"
+              Type1Props: Type1PropsUpdateInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type2Interface1
+              \\"\\"\\"
+              Type2Props: Type2PropsUpdateInput
+            }
+
+            input Interface1Interface2EdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type1Interface1
+              \\"\\"\\"
+              Type1Props: Type1PropsWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Type2Interface1
+              \\"\\"\\"
+              Type2Props: Type2PropsWhere
+            }
+
+            type Interface1Interface2Relationship {
+              cursor: String!
+              node: Interface2!
+              properties: Interface1Interface2RelationshipProperties!
+            }
+
+            union Interface1Interface2RelationshipProperties = Type1Props | Type2Props
+
+            input Interface1Interface2UpdateConnectionInput {
+              edge: Interface1Interface2EdgeUpdateInput
+              node: Interface2UpdateInput
+            }
+
+            input Interface1Interface2UpdateFieldInput {
+              connect: [Interface1Interface2ConnectFieldInput!]
+              create: [Interface1Interface2CreateFieldInput!]
+              delete: [Interface1Interface2DeleteFieldInput!]
+              disconnect: [Interface1Interface2DisconnectFieldInput!]
+              update: Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Interface1Sort objects to sort Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Interface1Sort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
+            \\"\\"\\"
+            input Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Interface1UpdateInput {
+              field1: String
+              interface2: [Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Interface1Where {
+              AND: [Interface1Where!]
+              NOT: Interface1Where
+              OR: [Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              typename_IN: [Interface1Implementation!]
+            }
+
+            interface Interface2 {
+              field2: String
+            }
+
+            type Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Interface2ConnectWhere {
+              node: Interface2Where!
+            }
+
+            input Interface2CreateInput {
+              Type1Interface2: Type1Interface2CreateInput
+              Type2Interface2: Type2Interface2CreateInput
+            }
+
+            enum Interface2Implementation {
+              Type1Interface2
+              Type2Interface2
+            }
+
+            input Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Interface2Sort objects to sort Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Interface2Sort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
+            \\"\\"\\"
+            input Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Interface2UpdateInput {
+              field2: String
+            }
+
+            input Interface2Where {
+              AND: [Interface2Where!]
+              NOT: Interface2Where
+              OR: [Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String]
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_STARTS_WITH: String
+              typename_IN: [Interface2Implementation!]
+            }
+
+            type Mutation {
+              createType1Interface1s(input: [Type1Interface1CreateInput!]!): CreateType1Interface1sMutationResponse!
+              createType1Interface2s(input: [Type1Interface2CreateInput!]!): CreateType1Interface2sMutationResponse!
+              createType1s(input: [Type1CreateInput!]!): CreateType1sMutationResponse!
+              createType2Interface1s(input: [Type2Interface1CreateInput!]!): CreateType2Interface1sMutationResponse!
+              createType2Interface2s(input: [Type2Interface2CreateInput!]!): CreateType2Interface2sMutationResponse!
+              deleteType1Interface1s(delete: Type1Interface1DeleteInput, where: Type1Interface1Where): DeleteInfo!
+              deleteType1Interface2s(where: Type1Interface2Where): DeleteInfo!
+              deleteType1s(delete: Type1DeleteInput, where: Type1Where): DeleteInfo!
+              deleteType2Interface1s(delete: Type2Interface1DeleteInput, where: Type2Interface1Where): DeleteInfo!
+              deleteType2Interface2s(where: Type2Interface2Where): DeleteInfo!
+              updateType1Interface1s(connect: Type1Interface1ConnectInput, create: Type1Interface1RelationInput, delete: Type1Interface1DeleteInput, disconnect: Type1Interface1DisconnectInput, update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
+              updateType1Interface2s(update: Type1Interface2UpdateInput, where: Type1Interface2Where): UpdateType1Interface2sMutationResponse!
+              updateType1s(connect: Type1ConnectInput, create: Type1RelationInput, delete: Type1DeleteInput, disconnect: Type1DisconnectInput, update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
+              updateType2Interface1s(connect: Type2Interface1ConnectInput, create: Type2Interface1RelationInput, delete: Type2Interface1DeleteInput, disconnect: Type2Interface1DisconnectInput, update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
+              updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              interface1s(options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface2s(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
+              type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
+              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
+              type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1sConnection!
+              type1Interface2s(options: Type1Interface2Options, where: Type1Interface2Where): [Type1Interface2!]!
+              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
+              type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort], where: Type1Interface2Where): Type1Interface2sConnection!
+              type1s(options: Type1Options, where: Type1Where): [Type1!]!
+              type1sAggregate(where: Type1Where): Type1AggregateSelection!
+              type1sConnection(after: String, first: Int, sort: [Type1Sort], where: Type1Where): Type1sConnection!
+              type2Interface1s(options: Type2Interface1Options, where: Type2Interface1Where): [Type2Interface1!]!
+              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
+              type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort], where: Type2Interface1Where): Type2Interface1sConnection!
+              type2Interface2s(options: Type2Interface2Options, where: Type2Interface2Where): [Type2Interface2!]!
+              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
+              type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort], where: Type2Interface2Where): Type2Interface2sConnection!
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type Type1 {
+              field1: String!
+              interface1(directed: Boolean = true, options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1Aggregate(directed: Boolean = true, where: Interface1Where): Type1Interface1Interface1AggregationSelection
+              interface1Connection(after: String, directed: Boolean = true, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+            }
+
+            type Type1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type1ConnectInput {
+              interface1: [Type1Interface1ConnectFieldInput!]
+            }
+
+            input Type1CreateInput {
+              field1: String!
+              interface1: Type1Interface1FieldInput
+            }
+
+            input Type1DeleteInput {
+              interface1: [Type1Interface1DeleteFieldInput!]
+            }
+
+            input Type1DisconnectInput {
+              interface1: [Type1Interface1DisconnectFieldInput!]
+            }
+
+            type Type1Edge {
+              cursor: String!
+              node: Type1!
+            }
+
+            type Type1Interface1 implements Interface1 {
+              field1: String!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
+              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type1Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type1Interface1ConnectFieldInput {
+              connect: Interface1ConnectInput
+              where: Interface1ConnectWhere
+            }
+
+            input Type1Interface1ConnectInput {
+              interface2: [Type1Interface1Interface2ConnectFieldInput!]
+            }
+
+            type Type1Interface1Connection {
+              edges: [Type1Interface1Relationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionSort {
+              node: Interface1Sort
+            }
+
+            input Type1Interface1ConnectionWhere {
+              AND: [Type1Interface1ConnectionWhere!]
+              NOT: Type1Interface1ConnectionWhere
+              OR: [Type1Interface1ConnectionWhere!]
+              node: Interface1Where
+              node_NOT: Interface1Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input Type1Interface1CreateFieldInput {
+              node: Interface1CreateInput!
+            }
+
+            input Type1Interface1CreateInput {
+              field1: String!
+              interface2: Type1Interface1Interface2FieldInput
+            }
+
+            input Type1Interface1DeleteFieldInput {
+              delete: Interface1DeleteInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1DeleteInput {
+              interface2: [Type1Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Type1Interface1DisconnectFieldInput {
+              disconnect: Interface1DisconnectInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1DisconnectInput {
+              interface2: [Type1Interface1Interface2DisconnectFieldInput!]
+            }
+
+            type Type1Interface1Edge {
+              cursor: String!
+              node: Type1Interface1!
+            }
+
+            input Type1Interface1FieldInput {
+              connect: [Type1Interface1ConnectFieldInput!]
+              create: [Type1Interface1CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface1AggregationSelection {
+              count: Int!
+              node: Type1Interface1Interface1NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface1NodeAggregateSelection {
+              field1: StringAggregateSelection!
+            }
+
+            input Type1Interface1Interface2ConnectFieldInput {
+              edge: Type1PropsCreateInput!
+              where: Interface2ConnectWhere
+            }
+
+            input Type1Interface1Interface2CreateFieldInput {
+              edge: Type1PropsCreateInput!
+              node: Interface2CreateInput!
+            }
+
+            input Type1Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2FieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              edge: Type1Interface1Interface2Interface2EdgeAggregateSelection
+              node: Type1Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface2Interface2EdgeAggregateSelection {
+              type1Field: IntAggregateSelection!
+            }
+
+            type Type1Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelection!
+            }
+
+            input Type1Interface1Interface2UpdateConnectionInput {
+              edge: Type1PropsUpdateInput
+              node: Interface2UpdateInput
+            }
+
+            input Type1Interface1Interface2UpdateFieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
+              delete: [Type1Interface1Interface2DeleteFieldInput!]
+              disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
+              update: Type1Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Interface1Sort!]
+            }
+
+            input Type1Interface1RelationInput {
+              interface2: [Type1Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type1Interface1Relationship {
+              cursor: String!
+              node: Interface1!
+            }
+
+            \\"\\"\\"
+            Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
+            \\"\\"\\"
+            input Type1Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Type1Interface1UpdateConnectionInput {
+              node: Interface1UpdateInput
+            }
+
+            input Type1Interface1UpdateFieldInput {
+              connect: [Type1Interface1ConnectFieldInput!]
+              create: [Type1Interface1CreateFieldInput!]
+              delete: [Type1Interface1DeleteFieldInput!]
+              disconnect: [Type1Interface1DisconnectFieldInput!]
+              update: Type1Interface1UpdateConnectionInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1UpdateInput {
+              field1: String
+              interface2: [Type1Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Type1Interface1Where {
+              AND: [Type1Interface1Where!]
+              NOT: Type1Interface1Where
+              OR: [Type1Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+            }
+
+            type Type1Interface1sConnection {
+              edges: [Type1Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Type1Interface2 implements Interface2 {
+              field2: String!
+            }
+
+            type Type1Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Type1Interface2CreateInput {
+              field2: String!
+            }
+
+            type Type1Interface2Edge {
+              cursor: String!
+              node: Type1Interface2!
+            }
+
+            input Type1Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Interface2Sort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.
+            \\"\\"\\"
+            input Type1Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Type1Interface2UpdateInput {
+              field2: String
+            }
+
+            input Type1Interface2Where {
+              AND: [Type1Interface2Where!]
+              NOT: Type1Interface2Where
+              OR: [Type1Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String!]
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_STARTS_WITH: String
+            }
+
+            type Type1Interface2sConnection {
+              edges: [Type1Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Type1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Sort!]
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Type1Interface1.interface2
+            \\"\\"\\"
+            type Type1Props {
+              type1Field: Int!
+            }
+
+            input Type1PropsCreateInput {
+              type1Field: Int!
+            }
+
+            input Type1PropsSort {
+              type1Field: SortDirection
+            }
+
+            input Type1PropsUpdateInput {
+              type1Field: Int
+              type1Field_DECREMENT: Int
+              type1Field_INCREMENT: Int
+            }
+
+            input Type1PropsWhere {
+              AND: [Type1PropsWhere!]
+              NOT: Type1PropsWhere
+              OR: [Type1PropsWhere!]
+              type1Field: Int
+              type1Field_GT: Int
+              type1Field_GTE: Int
+              type1Field_IN: [Int!]
+              type1Field_LT: Int
+              type1Field_LTE: Int
+              type1Field_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              type1Field_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input Type1RelationInput {
+              interface1: [Type1Interface1CreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
+            \\"\\"\\"
+            input Type1Sort {
+              field1: SortDirection
+            }
+
+            input Type1UpdateInput {
+              field1: String
+              interface1: [Type1Interface1UpdateFieldInput!]
+            }
+
+            input Type1Where {
+              AND: [Type1Where!]
+              NOT: Type1Where
+              OR: [Type1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Type1s where all of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where none of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NOT: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1s where one of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where some of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              interface1Connection_SOME: Type1Interface1ConnectionWhere
+            }
+
+            type Type1sConnection {
+              edges: [Type1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Type2Interface1 implements Interface1 {
+              field1: String!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
+              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type2Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type2Interface1ConnectInput {
+              interface2: [Type2Interface1Interface2ConnectFieldInput!]
+            }
+
+            input Type2Interface1CreateInput {
+              field1: String!
+              interface2: Type2Interface1Interface2FieldInput
+            }
+
+            input Type2Interface1DeleteInput {
+              interface2: [Type2Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Type2Interface1DisconnectInput {
+              interface2: [Type2Interface1Interface2DisconnectFieldInput!]
+            }
+
+            type Type2Interface1Edge {
+              cursor: String!
+              node: Type2Interface1!
+            }
+
+            input Type2Interface1Interface2ConnectFieldInput {
+              edge: Type2PropsCreateInput!
+              where: Interface2ConnectWhere
+            }
+
+            input Type2Interface1Interface2CreateFieldInput {
+              edge: Type2PropsCreateInput!
+              node: Interface2CreateInput!
+            }
+
+            input Type2Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2FieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type2Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              edge: Type2Interface1Interface2Interface2EdgeAggregateSelection
+              node: Type2Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type2Interface1Interface2Interface2EdgeAggregateSelection {
+              type2Field: IntAggregateSelection!
+            }
+
+            type Type2Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelection!
+            }
+
+            input Type2Interface1Interface2UpdateConnectionInput {
+              edge: Type2PropsUpdateInput
+              node: Interface2UpdateInput
+            }
+
+            input Type2Interface1Interface2UpdateFieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
+              delete: [Type2Interface1Interface2DeleteFieldInput!]
+              disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
+              update: Type2Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type2Interface1Sort!]
+            }
+
+            input Type2Interface1RelationInput {
+              interface2: [Type2Interface1Interface2CreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.
+            \\"\\"\\"
+            input Type2Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Type2Interface1UpdateInput {
+              field1: String
+              interface2: [Type2Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Type2Interface1Where {
+              AND: [Type2Interface1Where!]
+              NOT: Type2Interface1Where
+              OR: [Type2Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String!]
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+            }
+
+            type Type2Interface1sConnection {
+              edges: [Type2Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Type2Interface2 implements Interface2 {
+              field2: String!
+            }
+
+            type Type2Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Type2Interface2CreateInput {
+              field2: String!
+            }
+
+            type Type2Interface2Edge {
+              cursor: String!
+              node: Type2Interface2!
+            }
+
+            input Type2Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type2Interface2Sort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.
+            \\"\\"\\"
+            input Type2Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Type2Interface2UpdateInput {
+              field2: String
+            }
+
+            input Type2Interface2Where {
+              AND: [Type2Interface2Where!]
+              NOT: Type2Interface2Where
+              OR: [Type2Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String!]
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              field2_STARTS_WITH: String
+            }
+
+            type Type2Interface2sConnection {
+              edges: [Type2Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Type2Interface1.interface2
+            \\"\\"\\"
+            type Type2Props {
+              type2Field: Int!
+            }
+
+            input Type2PropsCreateInput {
+              type2Field: Int!
+            }
+
+            input Type2PropsSort {
+              type2Field: SortDirection
+            }
+
+            input Type2PropsUpdateInput {
+              type2Field: Int
+              type2Field_DECREMENT: Int
+              type2Field_INCREMENT: Int
+            }
+
+            input Type2PropsWhere {
+              AND: [Type2PropsWhere!]
+              NOT: Type2PropsWhere
+              OR: [Type2PropsWhere!]
+              type2Field: Int
+              type2Field_GT: Int
+              type2Field_GTE: Int
+              type2Field_IN: [Int!]
+              type2Field_LT: Int
+              type2Field_LTE: Int
+              type2Field_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              type2Field_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateType1Interface1sMutationResponse {
+              info: UpdateInfo!
+              type1Interface1s: [Type1Interface1!]!
+            }
+
+            type UpdateType1Interface2sMutationResponse {
+              info: UpdateInfo!
+              type1Interface2s: [Type1Interface2!]!
+            }
+
+            type UpdateType1sMutationResponse {
+              info: UpdateInfo!
+              type1s: [Type1!]!
+            }
+
+            type UpdateType2Interface1sMutationResponse {
+              info: UpdateInfo!
+              type2Interface1s: [Type2Interface1!]!
+            }
+
+            type UpdateType2Interface2sMutationResponse {
+              info: UpdateInfo!
+              type2Interface2s: [Type2Interface2!]!
+            }"
+        `);
+
+        // expect(() => {
+        //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
+        // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
+    });
+
     test("Interface Relationships - nested relationships", async () => {
         const typeDefs = gql`
             interface Content {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @declareRelationship
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
@@ -3062,13 +7018,13 @@ describe("Interface Relationships", () => {
             }
 
             type CommentAggregateSelection {
-              content: StringAggregateSelectionNullable!
+              content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input CommentConnectInput {
-              creator: ContentCreatorConnectFieldInput
+              creator: CommentCreatorConnectFieldInput
               post: CommentPostConnectFieldInput
             }
 
@@ -3078,7 +7034,7 @@ describe("Interface Relationships", () => {
 
             input CommentCreateInput {
               content: String
-              creator: ContentCreatorFieldInput
+              creator: CommentCreatorFieldInput
               id: ID
               post: CommentPostFieldInput
             }
@@ -3093,6 +7049,24 @@ describe("Interface Relationships", () => {
               count_LT: Int
               count_LTE: Int
               node: CommentCreatorNodeAggregationWhereInput
+            }
+
+            input CommentCreatorConnectFieldInput {
+              connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: UserConnectWhere
+            }
+
+            input CommentCreatorCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input CommentCreatorFieldInput {
+              connect: CommentCreatorConnectFieldInput
+              create: CommentCreatorCreateFieldInput
             }
 
             input CommentCreatorNodeAggregationWhereInput {
@@ -3135,6 +7109,19 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int
               name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input CommentCreatorUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input CommentCreatorUpdateFieldInput {
+              connect: CommentCreatorConnectFieldInput
+              create: CommentCreatorCreateFieldInput
+              delete: ContentCreatorDeleteFieldInput
+              disconnect: ContentCreatorDisconnectFieldInput
+              update: CommentCreatorUpdateConnectionInput
+              where: ContentCreatorConnectionWhere
             }
 
             input CommentDeleteInput {
@@ -3267,8 +7254,8 @@ describe("Interface Relationships", () => {
             }
 
             type CommentPostPostNodeAggregateSelection {
-              content: StringAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              content: StringAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             type CommentPostRelationship {
@@ -3290,7 +7277,7 @@ describe("Interface Relationships", () => {
             }
 
             input CommentRelationInput {
-              creator: ContentCreatorCreateFieldInput
+              creator: CommentCreatorCreateFieldInput
               post: CommentPostCreateFieldInput
             }
 
@@ -3304,7 +7291,7 @@ describe("Interface Relationships", () => {
 
             input CommentUpdateInput {
               content: String
-              creator: ContentCreatorUpdateFieldInput
+              creator: CommentCreatorUpdateFieldInput
               id: ID
               post: CommentPostUpdateFieldInput
             }
@@ -3315,8 +7302,8 @@ describe("Interface Relationships", () => {
             }
 
             type CommentUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input CommentWhere {
@@ -3363,13 +7350,18 @@ describe("Interface Relationships", () => {
 
             interface Content {
               content: String
-              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
-              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(options: UserOptions, where: UserWhere): User!
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
+            type ContentAggregateSelection {
+              content: StringAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
             input ContentConnectInput {
-              _on: ContentImplementationsConnectInput
               creator: ContentCreatorConnectFieldInput
             }
 
@@ -3435,11 +7427,6 @@ describe("Interface Relationships", () => {
               where: ContentCreatorConnectionWhere
             }
 
-            input ContentCreatorFieldInput {
-              connect: ContentCreatorConnectFieldInput
-              create: ContentCreatorCreateFieldInput
-            }
-
             input ContentCreatorNodeAggregationWhereInput {
               AND: [ContentCreatorNodeAggregationWhereInput!]
               NOT: ContentCreatorNodeAggregationWhereInput
@@ -3501,38 +7488,16 @@ describe("Interface Relationships", () => {
             }
 
             input ContentDeleteInput {
-              _on: ContentImplementationsDeleteInput
               creator: ContentCreatorDeleteFieldInput
             }
 
             input ContentDisconnectInput {
-              _on: ContentImplementationsDisconnectInput
               creator: ContentCreatorDisconnectFieldInput
             }
 
-            input ContentImplementationsConnectInput {
-              Comment: [CommentConnectInput!]
-              Post: [PostConnectInput!]
-            }
-
-            input ContentImplementationsDeleteInput {
-              Comment: [CommentDeleteInput!]
-              Post: [PostDeleteInput!]
-            }
-
-            input ContentImplementationsDisconnectInput {
-              Comment: [CommentDisconnectInput!]
-              Post: [PostDisconnectInput!]
-            }
-
-            input ContentImplementationsUpdateInput {
-              Comment: CommentUpdateInput
-              Post: PostUpdateInput
-            }
-
-            input ContentImplementationsWhere {
-              Comment: CommentWhere
-              Post: PostWhere
+            enum ContentImplementation {
+              Comment
+              Post
             }
 
             input ContentOptions {
@@ -3553,14 +7518,15 @@ describe("Interface Relationships", () => {
             }
 
             input ContentUpdateInput {
-              _on: ContentImplementationsUpdateInput
               content: String
               creator: ContentCreatorUpdateFieldInput
               id: ID
             }
 
             input ContentWhere {
-              _on: ContentImplementationsWhere
+              AND: [ContentWhere!]
+              NOT: ContentWhere
+              OR: [ContentWhere!]
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
@@ -3586,6 +7552,7 @@ describe("Interface Relationships", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ContentImplementation!]
             }
 
             type CreateCommentsMutationResponse {
@@ -3621,7 +7588,7 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -3658,9 +7625,9 @@ describe("Interface Relationships", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNullable!
+              content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             type PostCommentCommentsAggregationSelection {
@@ -3669,8 +7636,8 @@ describe("Interface Relationships", () => {
             }
 
             type PostCommentCommentsNodeAggregateSelection {
-              content: StringAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              content: StringAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PostCommentsAggregateInput {
@@ -3793,7 +7760,7 @@ describe("Interface Relationships", () => {
 
             input PostConnectInput {
               comments: [PostCommentsConnectFieldInput!]
-              creator: ContentCreatorConnectFieldInput
+              creator: PostCreatorConnectFieldInput
             }
 
             input PostConnectWhere {
@@ -3803,7 +7770,7 @@ describe("Interface Relationships", () => {
             input PostCreateInput {
               comments: PostCommentsFieldInput
               content: String
-              creator: ContentCreatorFieldInput
+              creator: PostCreatorFieldInput
               id: ID
             }
 
@@ -3817,6 +7784,24 @@ describe("Interface Relationships", () => {
               count_LT: Int
               count_LTE: Int
               node: PostCreatorNodeAggregationWhereInput
+            }
+
+            input PostCreatorConnectFieldInput {
+              connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: UserConnectWhere
+            }
+
+            input PostCreatorCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input PostCreatorFieldInput {
+              connect: PostCreatorConnectFieldInput
+              create: PostCreatorCreateFieldInput
             }
 
             input PostCreatorNodeAggregationWhereInput {
@@ -3861,6 +7846,19 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input PostCreatorUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input PostCreatorUpdateFieldInput {
+              connect: PostCreatorConnectFieldInput
+              create: PostCreatorCreateFieldInput
+              delete: ContentCreatorDeleteFieldInput
+              disconnect: ContentCreatorDisconnectFieldInput
+              update: PostCreatorUpdateConnectionInput
+              where: ContentCreatorConnectionWhere
+            }
+
             input PostDeleteInput {
               comments: [PostCommentsDeleteFieldInput!]
               creator: ContentCreatorDeleteFieldInput
@@ -3887,7 +7885,7 @@ describe("Interface Relationships", () => {
 
             input PostRelationInput {
               comments: [PostCommentsCreateFieldInput!]
-              creator: ContentCreatorCreateFieldInput
+              creator: PostCreatorCreateFieldInput
             }
 
             \\"\\"\\"
@@ -3901,7 +7899,7 @@ describe("Interface Relationships", () => {
             input PostUpdateInput {
               comments: [PostCommentsUpdateFieldInput!]
               content: String
-              creator: ContentCreatorUpdateFieldInput
+              creator: PostCreatorUpdateFieldInput
               id: ID
             }
 
@@ -3911,8 +7909,8 @@ describe("Interface Relationships", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -3985,6 +7983,8 @@ describe("Interface Relationships", () => {
               comments(options: CommentOptions, where: CommentWhere): [Comment!]!
               commentsAggregate(where: CommentWhere): CommentAggregateSelection!
               commentsConnection(after: String, first: Int, sort: [CommentSort], where: CommentWhere): CommentsConnection!
+              contents(options: ContentOptions, where: ContentWhere): [Content!]!
+              contentsAggregate(where: ContentWhere): ContentAggregateSelection!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
@@ -4001,7 +8001,7 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -4034,6 +8034,7 @@ describe("Interface Relationships", () => {
 
             type User {
               content(directed: Boolean = true, options: ContentOptions, where: ContentWhere): [Content!]!
+              contentAggregate(directed: Boolean = true, where: ContentWhere): UserContentContentAggregationSelection
               contentConnection(after: String, directed: Boolean = true, first: Int, sort: [UserContentConnectionSort!], where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
@@ -4041,8 +8042,8 @@ describe("Interface Relationships", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
@@ -4074,6 +8075,16 @@ describe("Interface Relationships", () => {
               OR: [UserContentConnectionWhere!]
               node: ContentWhere
               node_NOT: ContentWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type UserContentContentAggregationSelection {
+              count: Int!
+              node: UserContentContentNodeAggregateSelection
+            }
+
+            type UserContentContentNodeAggregateSelection {
+              content: StringAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input UserContentCreateFieldInput {
@@ -4207,6 +8218,1282 @@ describe("Interface Relationships", () => {
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }"
+        `);
+    });
+
+    test("Interface Relationships - interface implementing interface", async () => {
+        const typeDefs = gql`
+            interface Show {
+                title: String!
+                actors: [Actor!]! @declareRelationship
+            }
+
+            interface Production implements Show {
+                title: String!
+                actors: [Actor!]!
+            }
+
+            type Movie implements Production & Show {
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type Series implements Production & Show {
+                title: String!
+                episodeCount: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "StarredIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+
+            type StarredIn @relationshipProperties {
+                episodeNr: Int!
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.actedIn
+            \\"\\"\\"
+            type ActedIn {
+              screenTime: Int!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
+            input ActedInCreateInput {
+              screenTime: Int!
+            }
+
+            input ActedInSort {
+              screenTime: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int!]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type Actor {
+              actedIn(directed: Boolean = true, options: ShowOptions, where: ShowWhere): [Show!]!
+              actedInAggregate(directed: Boolean = true, where: ShowWhere): ActorShowActedInAggregationSelection
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              name: String!
+            }
+
+            input ActorActedInConnectFieldInput {
+              connect: ShowConnectInput
+              edge: ActedInCreateInput!
+              where: ShowConnectWhere
+            }
+
+            type ActorActedInConnection {
+              edges: [ActorActedInRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
+              node: ShowSort
+            }
+
+            input ActorActedInConnectionWhere {
+              AND: [ActorActedInConnectionWhere!]
+              NOT: ActorActedInConnectionWhere
+              OR: [ActorActedInConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ShowWhere
+              node_NOT: ShowWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ActorActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ShowCreateInput!
+            }
+
+            input ActorActedInDeleteFieldInput {
+              delete: ShowDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInDisconnectFieldInput {
+              disconnect: ShowDisconnectInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+            }
+
+            type ActorActedInRelationship {
+              cursor: String!
+              node: Show!
+              properties: ActedIn!
+            }
+
+            input ActorActedInUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ShowUpdateInput
+            }
+
+            input ActorActedInUpdateFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+              delete: [ActorActedInDeleteFieldInput!]
+              disconnect: [ActorActedInDisconnectFieldInput!]
+              update: ActorActedInUpdateConnectionInput
+              where: ActorActedInConnectionWhere
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            input ActorConnectInput {
+              actedIn: [ActorActedInConnectFieldInput!]
+            }
+
+            input ActorConnectWhere {
+              node: ActorWhere!
+            }
+
+            input ActorCreateInput {
+              actedIn: ActorActedInFieldInput
+              name: String!
+            }
+
+            input ActorDeleteInput {
+              actedIn: [ActorActedInDeleteFieldInput!]
+            }
+
+            input ActorDisconnectInput {
+              actedIn: [ActorActedInDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
+            }
+
+            input ActorRelationInput {
+              actedIn: [ActorActedInCreateFieldInput!]
+            }
+
+            type ActorShowActedInAggregationSelection {
+              count: Int!
+              edge: ActorShowActedInEdgeAggregateSelection
+              node: ActorShowActedInNodeAggregateSelection
+            }
+
+            type ActorShowActedInEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type ActorShowActedInNodeAggregateSelection {
+              title: StringAggregateSelection!
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              actedIn: [ActorActedInUpdateFieldInput!]
+              name: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            type Movie implements Production & Show {
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
+              runtime: Int!
+              title: String!
+            }
+
+            type MovieActorActorsAggregationSelection {
+              count: Int!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type MovieActorActorsNodeAggregateSelection {
+              name: StringAggregateSelection!
+            }
+
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
+            input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [ShowActorsDeleteFieldInput!]
+              disconnect: [ShowActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: ShowActorsConnectionWhere
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            input MovieConnectInput {
+              actors: [MovieActorsConnectFieldInput!]
+            }
+
+            input MovieCreateInput {
+              actors: MovieActorsFieldInput
+              runtime: Int!
+              title: String!
+            }
+
+            input MovieDeleteInput {
+              actors: [ShowActorsDeleteFieldInput!]
+            }
+
+            input MovieDisconnectInput {
+              actors: [ShowActorsDisconnectFieldInput!]
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            input MovieRelationInput {
+              actors: [MovieActorsCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              runtime: SortDirection
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              actors: [MovieActorsUpdateFieldInput!]
+              runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
+              title: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
+              actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NOT: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: ShowActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
+              runtime: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_IN: [Int!]
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            interface Production {
+              actors: [Actor!]!
+              title: String!
+            }
+
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
+            input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
+            }
+
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              shows(options: ShowOptions, where: ShowWhere): [Show!]!
+              showsAggregate(where: ShowWhere): ShowAggregateSelection!
+            }
+
+            type Series implements Production & Show {
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
+              episodeCount: Int!
+              title: String!
+            }
+
+            type SeriesActorActorsAggregationSelection {
+              count: Int!
+              edge: SeriesActorActorsEdgeAggregateSelection
+              node: SeriesActorActorsNodeAggregateSelection
+            }
+
+            type SeriesActorActorsEdgeAggregateSelection {
+              episodeNr: IntAggregateSelection!
+            }
+
+            type SeriesActorActorsNodeAggregateSelection {
+              name: StringAggregateSelection!
+            }
+
+            input SeriesActorsAggregateInput {
+              AND: [SeriesActorsAggregateInput!]
+              NOT: SeriesActorsAggregateInput
+              OR: [SeriesActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: StarredInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
+            input SeriesActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: StarredInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: StarredInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+            }
+
+            input SeriesActorsNodeAggregationWhereInput {
+              AND: [SeriesActorsNodeAggregationWhereInput!]
+              NOT: SeriesActorsNodeAggregationWhereInput
+              OR: [SeriesActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input SeriesActorsUpdateConnectionInput {
+              edge: StarredInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [ShowActorsDeleteFieldInput!]
+              disconnect: [ShowActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: ShowActorsConnectionWhere
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            input SeriesConnectInput {
+              actors: [SeriesActorsConnectFieldInput!]
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesCreateInput {
+              actors: SeriesActorsFieldInput
+              episodeCount: Int!
+              title: String!
+            }
+
+            input SeriesDeleteInput {
+              actors: [ShowActorsDeleteFieldInput!]
+            }
+
+            input SeriesDisconnectInput {
+              actors: [ShowActorsDisconnectFieldInput!]
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
+            }
+
+            input SeriesRelationInput {
+              actors: [SeriesActorsCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
+            input SeriesSort {
+              episodeCount: SortDirection
+              title: SortDirection
+            }
+
+            input SeriesUpdateInput {
+              actors: [SeriesActorsUpdateFieldInput!]
+              episodeCount: Int
+              episodeCount_DECREMENT: Int
+              episodeCount_INCREMENT: Int
+              title: String
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              NOT: SeriesWhere
+              OR: [SeriesWhere!]
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
+              actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NOT: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: ShowActorsConnectionWhere
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
+              episodeCount: Int
+              episodeCount_GT: Int
+              episodeCount_GTE: Int
+              episodeCount_IN: [Int!]
+              episodeCount_LT: Int
+              episodeCount_LTE: Int
+              episodeCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodeCount_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            interface Show {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
+              title: String!
+            }
+
+            input ShowActorsAggregateInput {
+              AND: [ShowActorsAggregateInput!]
+              NOT: ShowActorsAggregateInput
+              OR: [ShowActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ShowActorsEdgeAggregationWhereInput
+              node: ShowActorsNodeAggregationWhereInput
+            }
+
+            input ShowActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ShowActorsEdgeCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            type ShowActorsConnection {
+              edges: [ShowActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ShowActorsConnectionSort {
+              edge: ShowActorsEdgeSort
+              node: ActorSort
+            }
+
+            input ShowActorsConnectionWhere {
+              AND: [ShowActorsConnectionWhere!]
+              NOT: ShowActorsConnectionWhere
+              OR: [ShowActorsConnectionWhere!]
+              edge: ShowActorsEdgeWhere
+              edge_NOT: ShowActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ShowActorsCreateFieldInput {
+              edge: ShowActorsEdgeCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input ShowActorsDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ShowActorsConnectionWhere
+            }
+
+            input ShowActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ShowActorsConnectionWhere
+            }
+
+            input ShowActorsEdgeAggregationWhereInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInAggregationWhereInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInAggregationWhereInput
+            }
+
+            input ShowActorsEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInCreateInput!
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInCreateInput!
+            }
+
+            input ShowActorsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInSort
+            }
+
+            input ShowActorsEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInUpdateInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInUpdateInput
+            }
+
+            input ShowActorsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedIn: ActedInWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              StarredIn: StarredInWhere
+            }
+
+            input ShowActorsNodeAggregationWhereInput {
+              AND: [ShowActorsNodeAggregationWhereInput!]
+              NOT: ShowActorsNodeAggregationWhereInput
+              OR: [ShowActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            type ShowActorsRelationship {
+              cursor: String!
+              node: Actor!
+              properties: ShowActorsRelationshipProperties!
+            }
+
+            union ShowActorsRelationshipProperties = ActedIn | StarredIn
+
+            input ShowActorsUpdateConnectionInput {
+              edge: ShowActorsEdgeUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input ShowActorsUpdateFieldInput {
+              connect: [ShowActorsConnectFieldInput!]
+              create: [ShowActorsCreateFieldInput!]
+              delete: [ShowActorsDeleteFieldInput!]
+              disconnect: [ShowActorsDisconnectFieldInput!]
+              update: ShowActorsUpdateConnectionInput
+              where: ShowActorsConnectionWhere
+            }
+
+            type ShowAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            input ShowConnectInput {
+              actors: [ShowActorsConnectFieldInput!]
+            }
+
+            input ShowConnectWhere {
+              node: ShowWhere!
+            }
+
+            input ShowCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
+            input ShowDeleteInput {
+              actors: [ShowActorsDeleteFieldInput!]
+            }
+
+            input ShowDisconnectInput {
+              actors: [ShowActorsDisconnectFieldInput!]
+            }
+
+            enum ShowImplementation {
+              Movie
+              Series
+            }
+
+            input ShowOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ShowSort objects to sort Shows by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ShowSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Shows by. The order in which sorts are applied is not guaranteed when specifying many fields in one ShowSort object.
+            \\"\\"\\"
+            input ShowSort {
+              title: SortDirection
+            }
+
+            input ShowUpdateInput {
+              actors: [ShowActorsUpdateFieldInput!]
+              title: String
+            }
+
+            input ShowWhere {
+              AND: [ShowWhere!]
+              NOT: ShowWhere
+              OR: [ShowWhere!]
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
+              actorsAggregate: ShowActorsAggregateInput
+              actorsConnection: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Shows where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NOT: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Shows where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: ShowActorsConnectionWhere
+              \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+              typename_IN: [ShowImplementation!]
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Series.actors
+            \\"\\"\\"
+            type StarredIn {
+              episodeNr: Int!
+            }
+
+            input StarredInAggregationWhereInput {
+              AND: [StarredInAggregationWhereInput!]
+              NOT: StarredInAggregationWhereInput
+              OR: [StarredInAggregationWhereInput!]
+              episodeNr_AVERAGE_EQUAL: Float
+              episodeNr_AVERAGE_GT: Float
+              episodeNr_AVERAGE_GTE: Float
+              episodeNr_AVERAGE_LT: Float
+              episodeNr_AVERAGE_LTE: Float
+              episodeNr_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              episodeNr_MAX_EQUAL: Int
+              episodeNr_MAX_GT: Int
+              episodeNr_MAX_GTE: Int
+              episodeNr_MAX_LT: Int
+              episodeNr_MAX_LTE: Int
+              episodeNr_MIN_EQUAL: Int
+              episodeNr_MIN_GT: Int
+              episodeNr_MIN_GTE: Int
+              episodeNr_MIN_LT: Int
+              episodeNr_MIN_LTE: Int
+              episodeNr_SUM_EQUAL: Int
+              episodeNr_SUM_GT: Int
+              episodeNr_SUM_GTE: Int
+              episodeNr_SUM_LT: Int
+              episodeNr_SUM_LTE: Int
+            }
+
+            input StarredInCreateInput {
+              episodeNr: Int!
+            }
+
+            input StarredInSort {
+              episodeNr: SortDirection
+            }
+
+            input StarredInUpdateInput {
+              episodeNr: Int
+              episodeNr_DECREMENT: Int
+              episodeNr_INCREMENT: Int
+            }
+
+            input StarredInWhere {
+              AND: [StarredInWhere!]
+              NOT: StarredInWhere
+              OR: [StarredInWhere!]
+              episodeNr: Int
+              episodeNr_GT: Int
+              episodeNr_GTE: Int
+              episodeNr_IN: [Int!]
+              episodeNr_LT: Int
+              episodeNr_LTE: Int
+              episodeNr_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodeNr_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
             }"
         `);
     });

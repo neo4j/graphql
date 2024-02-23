@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Relationship Properties Connect Cypher", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -38,7 +36,7 @@ describe("Relationship Properties Connect Cypher", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -49,14 +47,16 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Create movie while connecting a relationship that has properties", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ title: "Forrest Gump", actors: { connect: [{ edge: { screenTime: 60 } }] } }]) {
                     movies {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -104,7 +104,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -126,7 +126,7 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Create movie while connecting a relationship that has properties(with where on node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -140,7 +140,9 @@ describe("Relationship Properties Connect Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -189,7 +191,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -212,14 +214,16 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Update a movie while connecting a relationship that has properties(top level-connect)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { title: "Forrest Gump" }, connect: { actors: { edge: { screenTime: 60 } } }) {
                     movies {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -263,7 +267,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS update_this1, edge.relationship AS update_this0
-                    RETURN collect({ screenTime: update_this0.screenTime, node: { name: update_this1.name } }) AS update_var2
+                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
                 }
                 RETURN { edges: update_var2, totalCount: totalCount } AS update_var3
             }
@@ -283,7 +287,7 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Update a movie while connecting a relationship that has properties(top level-connect)(with where on node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "Forrest Gump" }
@@ -293,7 +297,9 @@ describe("Relationship Properties Connect Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -338,7 +344,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS update_this1, edge.relationship AS update_this0
-                    RETURN collect({ screenTime: update_this0.screenTime, node: { name: update_this1.name } }) AS update_var2
+                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
                 }
                 RETURN { edges: update_var2, totalCount: totalCount } AS update_var3
             }

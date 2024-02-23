@@ -17,23 +17,23 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("Connections Alias", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -723,7 +723,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roles: [String]!
             }
         `;
@@ -739,7 +739,9 @@ describe("Connections Alias", () => {
                 ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
-                            r:roles
+                           r:properties {
+                             r:roles
+                           }
                         }
                     }
                 }
@@ -767,7 +769,7 @@ describe("Connections Alias", () => {
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].r).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].r.r).toBeDefined();
         } finally {
             await session.close();
         }
@@ -786,7 +788,7 @@ describe("Connections Alias", () => {
                 name: String!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roles: [String]!
             }
         `;
@@ -815,7 +817,9 @@ describe("Connections Alias", () => {
                             n:node {
                                 n:name
                             }
-                            r:roles
+                           p:properties {
+                             r:roles
+                           }
                         }
                         page:pageInfo {
                             hNP:hasNextPage
@@ -852,7 +856,7 @@ describe("Connections Alias", () => {
                         title: movieTitle,
                         connection: {
                             tC: 1,
-                            edges: [{ n: { n: actorName }, r: roles }],
+                            edges: [{ n: { n: actorName }, p: { r: roles } }],
                             page: {
                                 hNP: false,
                             },
@@ -957,7 +961,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -972,7 +976,9 @@ describe("Connections Alias", () => {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 b: moviesConnection(where: { node: { title: "${movieTitle}"}}) {

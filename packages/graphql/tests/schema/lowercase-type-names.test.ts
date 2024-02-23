@@ -78,7 +78,7 @@ describe("lower case type names", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNullable {
+            type DateTimeAggregateSelection {
               max: DateTime
               min: DateTime
             }
@@ -92,7 +92,7 @@ describe("lower case type names", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -139,7 +139,7 @@ describe("lower case type names", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -176,9 +176,9 @@ describe("lower case type names", () => {
 
             type actorAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             input actorConnectInput {
@@ -499,10 +499,10 @@ describe("lower case type names", () => {
             }
 
             type actormovieMoviesNodeAggregateSelection {
-              createdAt: DateTimeAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
-              testId: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              testId: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type movie {
@@ -674,10 +674,10 @@ describe("lower case type names", () => {
 
             type movieAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
-              testId: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              testId: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             input movieConnectInput {
@@ -819,9 +819,9 @@ describe("lower case type names", () => {
             }
 
             type movieactorActorsNodeAggregateSelection {
-              createdAt: DateTimeAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              year: IntAggregateSelection!
             }"
         `);
     });

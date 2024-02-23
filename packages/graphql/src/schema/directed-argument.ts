@@ -19,6 +19,7 @@
 
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 type DirectedArgument = {
     type: "Boolean";
@@ -48,11 +49,16 @@ export function getDirectedArgument(relationshipAdapter: RelationshipAdapter): D
 
 export function addDirectedArgument<T extends Record<string, any>>(
     args: T,
-    relationshipAdapter: RelationshipAdapter
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
 ): T & { directed?: DirectedArgument } {
+    if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
+        return { ...args };
+    }
+
     const directedArg = getDirectedArgument(relationshipAdapter);
     if (directedArg) {
         return { ...args, directed: directedArg };
     }
+
     return { ...args };
 }

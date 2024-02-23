@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Interfaces", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -42,7 +40,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -58,13 +56,15 @@ describe("Cypher -> Connections -> Interfaces", () => {
     });
 
     test("Projecting interface node and relationship properties with no arguments", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
                     actedInConnection {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -89,12 +89,12 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -108,13 +108,15 @@ describe("Cypher -> Connections -> Interfaces", () => {
     });
 
     test("Projecting interface node and relationship properties with common where argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
                     actedInConnection(where: { node: { title_STARTS_WITH: "The " } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -140,13 +142,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.title STARTS WITH $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -164,79 +166,16 @@ describe("Cypher -> Connections -> Interfaces", () => {
         `);
     });
 
-    test("Projecting interface node and relationship properties with where argument", async () => {
-        const query = gql`
-            query {
-                actors {
-                    name
-                    actedInConnection(
-                        where: { node: { _on: { Movie: { runtime_GT: 90 }, Series: { episodes_GT: 50 } } } }
-                    ) {
-                        edges {
-                            screenTime
-                            node {
-                                title
-                                ... on Movie {
-                                    runtime
-                                }
-                                ... on Series {
-                                    episodes
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.runtime > $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE this3.episodes > $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
-                    RETURN edge
-                }
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
-            }
-            RETURN this { .name, actedInConnection: var4 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 90,
-                    \\"high\\": 0
-                },
-                \\"param1\\": {
-                    \\"low\\": 50,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
     test("Projecting interface node and relationship properties with where relationship argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
                     actedInConnection(where: { edge: { screenTime_GT: 60 } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -262,13 +201,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this0.screenTime > $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this2.screenTime > $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -295,13 +234,15 @@ describe("Cypher -> Connections -> Interfaces", () => {
     describe("Projecting interface node and relationship properties with sort argument", () => {
         describe("field in selection set", () => {
             test("on edge", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
                             actedInConnection(sort: [{ edge: { screenTime: ASC } }]) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         title
                                         ... on Movie {
@@ -326,36 +267,41 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        UNWIND edges AS edge
-                        WITH edge, totalCount
-                        ORDER BY edge.screenTime ASC
-                        WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var4
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge
+                            ORDER BY edge.properties.screenTime ASC
+                            RETURN collect(edge) AS var4
+                        }
+                        RETURN { edges: var4, totalCount: totalCount } AS var5
                     }
-                    RETURN this { .name, actedInConnection: var4 } AS this"
+                    RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
             });
 
             test("on node", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
                             actedInConnection(sort: [{ node: { title: ASC } }]) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         title
                                         ... on Movie {
@@ -380,23 +326,26 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        UNWIND edges AS edge
-                        WITH edge, totalCount
-                        ORDER BY edge.node.title ASC
-                        WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var4
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge
+                            ORDER BY edge.node.title ASC
+                            RETURN collect(edge) AS var4
+                        }
+                        RETURN { edges: var4, totalCount: totalCount } AS var5
                     }
-                    RETURN this { .name, actedInConnection: var4 } AS this"
+                    RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -405,7 +354,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         describe("field not in selection set", () => {
             test("on edge", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
@@ -435,36 +384,41 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        UNWIND edges AS edge
-                        WITH edge, totalCount
-                        ORDER BY edge.screenTime ASC
-                        WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var4
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge
+                            ORDER BY edge.properties.screenTime ASC
+                            RETURN collect(edge) AS var4
+                        }
+                        RETURN { edges: var4, totalCount: totalCount } AS var5
                     }
-                    RETURN this { .name, actedInConnection: var4 } AS this"
+                    RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
             });
 
             test("on node", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
                             actedInConnection(sort: [{ node: { title: ASC } }]) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         ... on Movie {
                                             runtime
@@ -488,86 +442,30 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        UNWIND edges AS edge
-                        WITH edge, totalCount
-                        ORDER BY edge.node.title ASC
-                        WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var4
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge
+                            ORDER BY edge.node.title ASC
+                            RETURN collect(edge) AS var4
+                        }
+                        RETURN { edges: var4, totalCount: totalCount } AS var5
                     }
-                    RETURN this { .name, actedInConnection: var4 } AS this"
+                    RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
             });
         });
-    });
-
-    test("on node", async () => {
-        const query = gql`
-            query Actors {
-                actors {
-                    name
-                    actedInConnection(
-                        where: { node: { title: "Game of Thrones", _on: { Movie: { title: "Dune" } } } }
-                    ) {
-                        edges {
-                            screenTime
-                            node {
-                                title
-                                ... on Movie {
-                                    runtime
-                                }
-                                ... on Series {
-                                    episodes
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.title = $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE this3.title = $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
-                    RETURN edge
-                }
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
-            }
-            RETURN this { .name, actedInConnection: var4 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"Dune\\",
-                \\"param1\\": \\"Game of Thrones\\"
-            }"
-        `);
     });
 });

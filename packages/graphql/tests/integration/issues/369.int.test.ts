@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("369", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -47,7 +47,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende @relationshipProperties {
+            type Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -76,13 +76,13 @@ describe("369", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 getDato(uuid: "${datoUUID}" ){
                   uuid
                   dependeToConnection {
                     edges {
-                      uuid
+                     properties { uuid }
                       node {
                           uuid
                       }
@@ -114,7 +114,7 @@ describe("369", () => {
             expect(result.data as any).toEqual({
                 getDato: {
                     uuid: datoUUID,
-                    dependeToConnection: { edges: [{ uuid: relUUID, node: { uuid: datoToUUID } }] },
+                    dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
                 },
             });
         } finally {
@@ -132,7 +132,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende @relationshipProperties {
+            type Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -161,13 +161,13 @@ describe("369", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 getDato(uuid: "${datoUUID}" ){
                   uuid
                   dependeToConnection(where: { node: { uuid: "${datoToUUID}" } }) {
                     edges {
-                      uuid
+                     properties{ uuid}
                       node {
                           uuid
                       }
@@ -201,7 +201,7 @@ describe("369", () => {
             expect(result.data as any).toEqual({
                 getDato: {
                     uuid: datoUUID,
-                    dependeToConnection: { edges: [{ uuid: relUUID, node: { uuid: datoToUUID } }] },
+                    dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
                 },
             });
         } finally {

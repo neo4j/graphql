@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { validateSchema } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/556", () => {
@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
                 articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
             }
 
-            interface HasArticle @relationshipProperties {
+            type HasArticle @relationshipProperties {
                 createdAt: DateTime! @timestamp
             }
 
@@ -38,12 +38,12 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
                 images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
 
-            interface HasBlock @relationshipProperties {
+            type HasBlock @relationshipProperties {
                 order: Int!
             }
 
             interface Block {
-                id: ID @id
+                id: ID
             }
 
             type TextBlock implements Block {

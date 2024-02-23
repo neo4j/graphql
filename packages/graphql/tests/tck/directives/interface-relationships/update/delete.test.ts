@@ -17,35 +17,33 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update delete", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
                 episodes: Int!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -61,7 +59,7 @@ describe("Interface Relationships - Update delete", () => {
     });
 
     test("Update delete an interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(delete: { actedIn: { where: { node: { title_STARTS_WITH: "The " } } } }) {
                     actors {
@@ -128,7 +126,7 @@ describe("Interface Relationships - Update delete", () => {
     });
 
     test("Update delete an interface relationship with nested delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     delete: {
@@ -218,239 +216,6 @@ describe("Interface Relationships - Update delete", () => {
                                         }
                                     },
                                     \\"delete\\": {
-                                        \\"actors\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
-    test("Update delete an interface relationship with nested delete using _on to delete from only one implementation", async () => {
-        const query = gql`
-            mutation {
-                updateActors(
-                    delete: {
-                        actedIn: {
-                            where: { node: { title_STARTS_WITH: "The " } }
-                            delete: { _on: { Movie: { actors: { where: { node: { name: "Actor" } } } } } }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
-            WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
-            WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_delete_actedIn_Movie0_actors0param0
-            WITH this_delete_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Movie0_actors0_to_delete
-            	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_delete_actedIn_Movie0_relationship, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Movie0_to_delete
-            	UNWIND this_delete_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
-            WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0
-            WITH this_delete_actedIn_Series0_relationship, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Series0_to_delete
-            	UNWIND this_delete_actedIn_Series0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0\\": \\"The \\",
-                \\"updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_delete_actedIn_Movie0_actors0param0\\": \\"Actor\\",
-                \\"updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0\\": \\"The \\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
-                                    },
-                                    \\"delete\\": {
-                                        \\"_on\\": {
-                                            \\"Movie\\": [
-                                                {
-                                                    \\"actors\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": \\"Actor\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
-    test("Update delete an interface relationship with nested delete using _on to override deletion", async () => {
-        const query = gql`
-            mutation {
-                updateActors(
-                    delete: {
-                        actedIn: {
-                            where: { node: { title_STARTS_WITH: "The " } }
-                            delete: {
-                                actors: { where: { node: { name: "Actor" } } }
-                                _on: { Movie: { actors: { where: { node: { name: "Different Actor" } } } } }
-                            }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
-            WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
-            WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_delete_actedIn_Movie0_actors0param0
-            WITH this_delete_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Movie0_actors0_to_delete
-            	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_delete_actedIn_Movie0_relationship, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Movie0_to_delete
-            	UNWIND this_delete_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
-            WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Series0_actors0:Actor)
-            WHERE this_delete_actedIn_Series0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_this_delete_actedIn_Series0_actors0param0
-            WITH this_delete_actedIn_Series0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Series0_actors0) AS this_delete_actedIn_Series0_actors0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Series0_actors0_to_delete
-            	UNWIND this_delete_actedIn_Series0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_delete_actedIn_Series0_relationship, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
-            CALL {
-            	WITH this_delete_actedIn_Series0_to_delete
-            	UNWIND this_delete_actedIn_Series0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0\\": \\"The \\",
-                \\"updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_delete_actedIn_Movie0_actors0param0\\": \\"Different Actor\\",
-                \\"updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0\\": \\"The \\",
-                \\"updateActors_args_delete_actedIn0_delete_actors0_where_this_delete_actedIn_Series0_actors0param0\\": \\"Actor\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
-                                    },
-                                    \\"delete\\": {
-                                        \\"_on\\": {
-                                            \\"Movie\\": [
-                                                {
-                                                    \\"actors\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": \\"Different Actor\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
                                         \\"actors\\": [
                                             {
                                                 \\"where\\": {

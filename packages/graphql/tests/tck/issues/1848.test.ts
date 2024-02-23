@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1848", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type ContentPiece @node(labels: ["ContentPiece", "UNIVERSAL"]) {
                 uid: String! @unique
                 id: Int
@@ -69,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
     });
 
     test("should not concatenate AND and variable name", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 communities {
                     id

@@ -17,24 +17,24 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import type { GraphQLError } from "graphql";
 import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     const largestSafeSigned32BitInteger = Number(2 ** 31 - 1);
     const largestSafeSigned64BitBigInt = BigInt(2 ** 63 - 1).toString();
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -487,96 +487,6 @@ describe("Mathematical operations tests", () => {
         expect(storedValue.records[0]?.get("name")).toBe(name);
     });
 
-    test("Should be possible to update nested nodes using interface implementations", async () => {
-        const initialViewers = int(100);
-        const name = "Luigino";
-
-        const movie = new UniqueType("Movie");
-        const production = new UniqueType("Production");
-        const actor = new UniqueType("Actor");
-
-        const typeDefs = `
-        interface ${production.name} {
-            viewers: Int!
-        }
-        type ${movie.name} implements ${production.name} {
-            viewers: Int!
-            workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
-        }
-        type ${actor.name} {
-            id: ID!
-            name: String!
-            worksInProductions: [${production.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
-        }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const id = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-        mutation($id: ID, $value: Int) {
-            ${actor.operations.update}(where: { id: $id }, 
-                update: {
-                  worksInProductions: [
-                    {
-                      update: {
-                        node: {
-                            _on: {
-                                ${movie.name}: {
-                                  viewers_INCREMENT: $value
-                                }
-                              }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ) {
-                ${actor.plural} {
-                    name
-                    worksInProductions {
-                      viewers
-                    }
-                }
-            }
-        }
-        `;
-
-        // Create new movie
-        await session.run(
-            `
-                CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
-                `,
-            {
-                id,
-                initialViewers,
-                name,
-            }
-        );
-        // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(gqlResult.errors).toBeUndefined();
-        const storedValue = await session.run(
-            `
-                MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
-                `,
-            {
-                id,
-            }
-        );
-        expect(storedValue.records[0]?.get("viewers")).toEqual(int(110));
-        expect(storedValue.records[0]?.get("name")).toBe(name);
-    });
-
     test("Should throws an error if the property holds Nan values", async () => {
         const increment = 10;
         const movie = new UniqueType("Movie");
@@ -655,7 +565,7 @@ describe("Mathematical operations tests", () => {
             actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             pay: Float
         }
         `;
@@ -686,7 +596,9 @@ describe("Mathematical operations tests", () => {
                 }
                 actedInConnection {
                   edges {
-                    pay
+                    properties {
+                        pay
+                    }
                   }
                 }
               }
@@ -742,7 +654,7 @@ describe("Mathematical operations tests", () => {
             actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             pay: Float
         }
         `;
@@ -774,7 +686,9 @@ describe("Mathematical operations tests", () => {
                 }
                 actedInConnection {
                   edges {
-                    pay
+                    properties { 
+                        pay
+                    }
                   }
                 }
               }

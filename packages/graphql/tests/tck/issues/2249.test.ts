@@ -17,23 +17,21 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2249", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
             }
 
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
 
@@ -62,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
     });
 
     test("nested update with create should generate a single relationship with the nested value", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation UpdateMovies {
                 updateMovies(
                     where: { title: "John Wick" }

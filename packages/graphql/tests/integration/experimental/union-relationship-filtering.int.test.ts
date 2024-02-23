@@ -21,16 +21,16 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Union filtering", () => {
     const secret = "the-secret";
 
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
     let typeDefs: string;
 
@@ -47,7 +47,7 @@ describe("Union filtering", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         typeDefs = /* GraphQL */ `
@@ -68,7 +68,7 @@ describe("Union filtering", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -105,14 +105,13 @@ describe("Union filtering", () => {
                     key: secret,
                 },
             },
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [Movie, Series, Actor]);
+        await cleanNodesUsingSession(session, [Movie, Series, Actor]);
         await session.close();
         await driver.close();
     });

@@ -36,9 +36,15 @@ export function translateResolveReference({
     reference: any;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
-    const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
-    const operationsTree = operationsTreeFactory.createQueryAST({ resolveTree, entityAdapter, context, reference });
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
+    const operationsTree = operationsTreeFactory.createQueryAST({
+        resolveTree,
+        entityAdapter,
+        context,
+        reference,
+        varName: "this",
+    });
     debug(operationsTree.print());
-    const clause = operationsTree.build(context);
+    const clause = operationsTree.build(context, "this");
     return clause.build();
 }

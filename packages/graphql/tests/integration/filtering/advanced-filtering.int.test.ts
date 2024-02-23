@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { generate } from "randomstring";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("Advanced Filtering", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
     });
@@ -1626,7 +1626,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn @relationshipProperties {
+                        type ActedIn @relationshipProperties {
                             id: String
                         }
                 `;
@@ -1693,7 +1693,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn @relationshipProperties {
+                        type ActedIn @relationshipProperties {
                             id: String
                         }
                 `;
@@ -1913,7 +1913,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn @relationshipProperties {
+                        type ActedIn @relationshipProperties {
                             id: ID
                         }
                 `;

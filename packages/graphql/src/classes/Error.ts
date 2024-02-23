@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-export class Neo4jGraphQLError extends Error {
+import { GraphQLError } from "graphql";
+
+export class Neo4jGraphQLError extends GraphQLError {
     readonly name;
 
     constructor(message: string) {

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
 import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
@@ -210,7 +210,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "interface ActedInProperties @relationshipProperties {
+            "type ActedInProperties @relationshipProperties {
             	pay: Float
             	roles: [String]!
             }
@@ -222,7 +222,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	name: String!
             }
 
-            interface DirectedProperties @relationshipProperties {
+            type DirectedProperties @relationshipProperties {
             	skill: BigInt!
             }
 
@@ -266,7 +266,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "interface ActedInProperties @relationshipProperties {
+            "type ActedInProperties @relationshipProperties {
             	roles: [String]!
             }
 

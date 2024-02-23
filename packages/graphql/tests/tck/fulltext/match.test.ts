@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Match", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
                 title: String
             }
@@ -39,7 +37,7 @@ describe("Cypher -> fulltext -> Match", () => {
     });
 
     test("simple match with single fulltext property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
@@ -64,7 +62,7 @@ describe("Cypher -> fulltext -> Match", () => {
     });
 
     test("match with where and single fulltext property", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(
                     fulltext: { MovieTitle: { phrase: "something AND something" } }

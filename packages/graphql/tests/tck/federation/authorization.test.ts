@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -30,7 +29,7 @@ describe("Federation and authorization", () => {
             return;
         }
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
             type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") {
@@ -44,7 +43,7 @@ describe("Federation and authorization", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($representations: [_Any!]!) {
                 _entities(representations: $representations) {
                     ... on User {
@@ -90,7 +89,7 @@ describe("Federation and authorization", () => {
             return;
         }
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
             type User @key(fields: "id") {
@@ -105,7 +104,7 @@ describe("Federation and authorization", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($representations: [_Any!]!) {
                 _entities(representations: $representations) {
                     ... on User {
@@ -152,7 +151,7 @@ describe("Federation and authorization", () => {
             return;
         }
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
             type User @key(fields: "id") {
@@ -174,7 +173,7 @@ describe("Federation and authorization", () => {
             features: { authorization: { key: "secret" } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($representations: [_Any!]!) {
                 _entities(representations: $representations) {
                     ... on Post {

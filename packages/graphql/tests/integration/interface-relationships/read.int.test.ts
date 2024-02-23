@@ -25,11 +25,11 @@ import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +38,7 @@ describe("interface relationships", () => {
     let typeActor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -63,7 +63,7 @@ describe("interface relationships", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -400,195 +400,6 @@ describe("interface relationships", () => {
                         },
                     ]),
                     name: actorName,
-                },
-            ],
-        });
-    });
-
-    test("should read and return interface relationship fields with type specific where", async () => {
-        const actorName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-
-        const query = `
-            query Actors($name: String, $title: String) {
-                ${typeActor.plural}(where: { name: $name }) {
-                    name
-                    actedIn(where: { _on: { ${typeMovie}: { title: $title } } }) {
-                        title
-                        ... on ${typeMovie} {
-                            runtime
-                        }
-                    }
-                }
-            }
-        `;
-
-        await session.run(
-            `
-                CREATE (a:${typeActor} { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: "Apple", runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: "Apple", episodes: $seriesEpisodes })
-            `,
-            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
-        );
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { name: actorName, title: "Apple" },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [typeActor.plural]: [
-                {
-                    actedIn: [
-                        {
-                            runtime: movieRuntime,
-                            title: "Apple",
-                        },
-                    ],
-                    name: actorName,
-                },
-            ],
-        });
-    });
-
-    test("should read and return interface relationship fields with where override", async () => {
-        const actorName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-
-        const query = `
-            query Actors($name: String, $title: String, $movieTitle: String) {
-                ${typeActor.plural}(where: { name: $name }) {
-                    name
-                    actedIn(where: { title: $title, _on: { ${typeMovie}: { title: $movieTitle } } }) {
-                        title
-                        ... on ${typeMovie} {
-                            runtime
-                        }
-                        ... on ${typeSeries} {
-                            episodes
-                        }
-                    }
-                }
-            }
-        `;
-
-        await session.run(
-            `
-                CREATE (a:${typeActor} { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: "Pear", runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: "Apple", episodes: $seriesEpisodes })
-            `,
-            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
-        );
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [typeActor.plural]: [
-                {
-                    actedIn: expect.toIncludeSameMembers([
-                        {
-                            runtime: movieRuntime,
-                            title: "Pear",
-                        },
-                        {
-                            episodes: seriesEpisodes,
-                            title: "Apple",
-                        },
-                    ]),
-                    name: actorName,
-                },
-            ],
-        });
-    });
-
-    test("should read and return all relationships with type specific where", async () => {
-        const query = `
-            query {
-                ${typeActor.plural} {
-                    actedInConnection(
-                        where: { node: { _on: { ${typeMovie}: { title_STARTS_WITH: "The " } } }, edge: { screenTime_GT: 60 } }
-                    ) {
-                        edges {
-                            node {
-                                title
-                                ... on ${typeMovie} {
-                                    runtime
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        await session.run(
-            `
-                CREATE (a:${typeActor} { name: "Arthur" })
-                CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeMovie} { title: "The Movie1", runtime: 100 })
-                CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeMovie} { title: "Movie2", runtime: 150 })
-                CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeSeries} { title: "Apple", episodes: 10 })
-            `
-        );
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [typeActor.plural]: [
-                {
-                    actedInConnection: {
-                        edges: [
-                            {
-                                node: {
-                                    runtime: 100,
-                                    title: "The Movie1",
-                                },
-                            },
-                        ],
-                    },
                 },
             ],
         });

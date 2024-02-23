@@ -29,9 +29,9 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
-import { makeImplementationsDisconnectInput } from "./implementation-inputs";
-import { makeConnectionWhereInputType } from "./where-input";
+import { withConnectionWhereInputType } from "./connection-where-input";
 
 export function withDisconnectInputType({
     entityAdapter,
@@ -43,27 +43,15 @@ export function withDisconnectInputType({
     if (entityAdapter instanceof ConcreteEntityAdapter) {
         return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.disconnect);
     }
-    const implementationsDisconnectInputType = makeImplementationsDisconnectInput({
-        interfaceEntityAdapter: entityAdapter,
-        composer,
-    });
 
-    if (!implementationsDisconnectInputType) {
-        return undefined;
-    }
-
-    const disconnectInputType = composer.getOrCreateITC(
-        entityAdapter.operations.updateMutationArgumentNames.disconnect
-    );
-    disconnectInputType.setField("_on", implementationsDisconnectInputType);
-    return disconnectInputType;
+    return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.disconnect);
 }
 export function augmentDisconnectInputTypeWithDisconnectFieldInput({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }) {
@@ -98,7 +86,7 @@ function makeDisconnectInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -112,7 +100,7 @@ function makeDisconnectInputTypeRelationshipField({
     disconnectFieldInput,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     disconnectFieldInput: InputTypeComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMap {
@@ -137,7 +125,7 @@ function withUnionDisconnectInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -164,7 +152,7 @@ function makeUnionDisconnectInputTypeFields({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMapDefinition {
@@ -193,7 +181,7 @@ export function withDisconnectFieldInputType({
     composer,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposer | undefined {
@@ -215,7 +203,7 @@ function makeDisconnectFieldInputTypeFields({
     composer,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposerFieldConfigMapDefinition {
@@ -235,15 +223,20 @@ function makeDisconnectFieldInputTypeFields({
         }
     } else if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
         fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
-        const disconnectInput = withDisconnectInputType({ entityAdapter: relationshipAdapter.target, composer });
-        if (disconnectInput) {
-            fields["disconnect"] = disconnectInput;
+
+        const disconnectTypename = relationshipAdapter.target.operations.updateMutationArgumentNames.disconnect;
+
+        const hasNestedRelationships = relationshipAdapter.target.relationshipDeclarations.size > 0;
+        if (composer.has(disconnectTypename) || hasNestedRelationships) {
+            const disconnectInputType = composer.getOrCreateITC(disconnectTypename);
+
+            fields["disconnect"] = disconnectInputType;
         }
     } else {
         if (!ifUnionMemberEntity) {
             throw new Error("Member Entity required.");
         }
-        fields["where"] = makeConnectionWhereInputType({
+        fields["where"] = withConnectionWhereInputType({
             relationshipAdapter,
             memberEntity: ifUnionMemberEntity,
             composer,

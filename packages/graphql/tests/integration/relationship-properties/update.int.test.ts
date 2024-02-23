@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - update", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     const typeDefs = gql`
         type Movie {
             title: String!
@@ -38,7 +38,7 @@ describe("Relationship properties - update", () => {
             movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
     `;
@@ -48,7 +48,7 @@ describe("Relationship properties - update", () => {
     const actor3 = generate({ charset: "alphabetic" });
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -99,7 +99,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: DESC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -127,13 +129,13 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 100,
+                                properties: { screenTime: 100 },
                                 node: {
                                     name: actor2,
                                 },
                             },
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor1,
                                 },
@@ -172,7 +174,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -200,13 +204,13 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor3,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actor1,
                                 },
@@ -244,7 +248,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -272,19 +278,19 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor3,
                                 },
                             },
                             {
-                                screenTime: 100,
+                                properties: { screenTime: 100 },
                                 node: {
                                     name: actor2,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actor1,
                                 },
@@ -320,7 +326,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -348,19 +356,19 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor3,
                                 },
                             },
                             {
-                                screenTime: 100,
+                                properties: { screenTime: 100 },
                                 node: {
                                     name: actor2,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actor1,
                                 },

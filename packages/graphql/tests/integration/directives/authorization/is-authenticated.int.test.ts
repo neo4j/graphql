@@ -22,17 +22,17 @@ import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
+import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     let Product: UniqueType;
     let User: UniqueType;
@@ -40,7 +40,7 @@ describe("auth/is-authenticated", () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -4056,7 +4056,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [Product]);
+                await cleanNodesUsingSession(session, [Product]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4140,7 +4140,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User]);
+                await cleanNodesUsingSession(session, [User]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4228,7 +4228,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User]);
+                await cleanNodesUsingSession(session, [User]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4326,7 +4326,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User, Post]);
+                await cleanNodesUsingSession(session, [User, Post]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4449,7 +4449,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User, Post]);
+                await cleanNodesUsingSession(session, [User, Post]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4572,7 +4572,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User, Post]);
+                await cleanNodesUsingSession(session, [User, Post]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4685,7 +4685,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User]);
+                await cleanNodesUsingSession(session, [User]);
             });
 
             test("should throw if not authenticated type definition", async () => {
@@ -4772,7 +4772,7 @@ describe("auth/is-authenticated", () => {
 
             afterEach(async () => {
                 const session = driver.session();
-                await cleanNodes(session, [User]);
+                await cleanNodesUsingSession(session, [User]);
             });
 
             test("should throw if not authenticated type definition", async () => {

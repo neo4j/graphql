@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where with logical AND plus OR", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
             }
@@ -44,7 +42,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     });
 
     test("AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
                     content
@@ -81,7 +79,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     });
 
     test("OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { OR: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
                     content
@@ -118,7 +116,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     });
 
     test("NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { NOT: { count_GT: 10 } } }) {
                     content
@@ -151,7 +149,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     });
 
     test("AND plus OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(
                     where: {
@@ -203,7 +201,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     });
 
     test("OR with multiple count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(
                     where: {

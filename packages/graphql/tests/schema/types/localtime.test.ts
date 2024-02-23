@@ -62,7 +62,7 @@ describe("Localtime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -72,7 +72,7 @@ describe("Localtime", () => {
             \\"\\"\\"
             scalar LocalTime
 
-            type LocalTimeAggregateSelectionNullable {
+            type LocalTimeAggregateSelection {
               max: LocalTime
               min: LocalTime
             }
@@ -84,8 +84,8 @@ describe("Localtime", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              time: LocalTimeAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              time: LocalTimeAggregateSelection!
             }
 
             input MovieCreateInput {

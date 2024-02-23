@@ -20,6 +20,7 @@
 import type { Directive, InputTypeComposerFieldConfigMapDefinition } from "graphql-compose";
 import { DEPRECATED } from "../../constants";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 function augmentWhereInputType({
     whereType,
@@ -36,7 +37,7 @@ function augmentWhereInputType({
               description: string;
           }[]
         | undefined;
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -86,26 +87,28 @@ function augmentWhereInputType({
 }
 
 export function augmentWhereInputTypeWithRelationshipFields(
-    relationshipAdapter: RelationshipAdapter,
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
     deprecatedDirectives: Directive[]
 ): InputTypeComposerFieldConfigMapDefinition {
+    const filters = relationshipAdapter.listFiltersModel?.filters;
     return augmentWhereInputType({
         whereType: relationshipAdapter.target.operations.whereInputTypeName,
         fieldName: relationshipAdapter.name,
-        filters: relationshipAdapter.listFiltersModel?.filters,
+        filters,
         relationshipAdapter,
         deprecatedDirectives,
     });
 }
 
 export function augmentWhereInputTypeWithConnectionFields(
-    relationshipAdapter: RelationshipAdapter,
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
     deprecatedDirectives: Directive[]
 ): InputTypeComposerFieldConfigMapDefinition {
+    const filters = relationshipAdapter.listFiltersModel?.connectionFilters;
     return augmentWhereInputType({
-        whereType: relationshipAdapter.operations.connectionWhereInputTypename,
+        whereType: relationshipAdapter.operations.getConnectionWhereTypename(),
         fieldName: relationshipAdapter.operations.connectionFieldName,
-        filters: relationshipAdapter.listFiltersModel?.connectionFilters,
+        filters,
         relationshipAdapter,
         deprecatedDirectives,
     });

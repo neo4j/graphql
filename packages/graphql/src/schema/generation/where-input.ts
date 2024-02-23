@@ -30,12 +30,14 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType } from "./aggregate-types";
-import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
-import { makeImplementationsWhereInput } from "./implementation-inputs";
+import {
+    augmentWhereInputTypeWithConnectionFields,
+    augmentWhereInputTypeWithRelationshipFields,
+} from "./augment-where-input";
 
 function isEmptyObject(obj: Record<string, unknown>): boolean {
     return !Object.keys(obj).length;
@@ -64,13 +66,7 @@ export function withWhereInputType({
     userDefinedFieldDirectives,
     features,
     composer,
-    experimental,
     typeName = entityAdapter.operations.whereInputTypeName,
-    getConcreteEntityWhereInputType = (entityAdapter: ConcreteEntityAdapter) =>
-        entityAdapter.operations.whereInputTypeName,
-    interfaceOnTypeName = entityAdapter instanceof InterfaceEntityAdapter
-        ? entityAdapter.operations.whereOnImplementationsWhereInputTypeName
-        : undefined,
     returnUndefinedIfEmpty = false,
     alwaysAllowNesting,
 }: {
@@ -79,8 +75,6 @@ export function withWhereInputType({
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
-    experimental: boolean;
-    getConcreteEntityWhereInputType?: (entityAdapter: ConcreteEntityAdapter) => string;
     interfaceOnTypeName?: string;
     returnUndefinedIfEmpty?: boolean;
     alwaysAllowNesting?: boolean;
@@ -101,7 +95,7 @@ export function withWhereInputType({
         alwaysAllowNesting ||
         entityAdapter instanceof ConcreteEntityAdapter ||
         entityAdapter instanceof RelationshipAdapter ||
-        (entityAdapter instanceof InterfaceEntityAdapter && experimental);
+        entityAdapter instanceof InterfaceEntityAdapter;
 
     if (allowNesting) {
         whereInputType.addFields({
@@ -114,30 +108,18 @@ export function withWhereInputType({
         whereInputType.addFields({ id: GraphQLID });
     }
     if (entityAdapter instanceof InterfaceEntityAdapter) {
-        if (experimental) {
-            const enumValues = Object.fromEntries(
-                entityAdapter.concreteEntities.map((concreteEntity) => [
-                    concreteEntity.name,
-                    { value: concreteEntity.name },
-                ])
-            );
+        const enumValues = Object.fromEntries(
+            entityAdapter.concreteEntities.map((concreteEntity) => [
+                concreteEntity.name,
+                { value: concreteEntity.name },
+            ])
+        );
+        if (entityAdapter.concreteEntities.length > 0) {
             const interfaceImplementation = composer.createEnumTC({
                 name: entityAdapter.operations.implementationEnumTypename,
                 values: enumValues,
             });
             whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
-        } else {
-            if (!interfaceOnTypeName) {
-                throw new Error("Unexpected missing interfaceOnTypeName");
-            }
-            const implementationsWhereInputType = makeImplementationsWhereInput({
-                interfaceEntityAdapter: entityAdapter,
-                composer,
-                getConcreteEntityWhereInputType,
-                onTypeName: interfaceOnTypeName,
-            });
-            // TODO: add interfaces that implement this interface here
-            whereInputType.addFields({ _on: implementationsWhereInputType });
         }
     }
     return whereInputType;
@@ -172,21 +154,28 @@ export function withSourceWhereInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
-    if (relationshipTarget instanceof InterfaceEntityAdapter) {
-        throw new Error("Unexpected interface target");
-    }
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
+    // TODO: relationship simple filters were not supported on Interface target, only connection filters
+    // when implementing translation, simply remove this if-case
+    if (relationshipTarget instanceof InterfaceEntityAdapter) {
+        const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+        whereInput.addFields(connectionFields);
+        return whereInput;
+    }
     const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
     whereInput.addFields(fields);
 
+    const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+    whereInput.addFields(connectionFields);
+
     // TODO: Current unions are not supported as relationship targets beyond the above fields
-    if (relationshipTarget instanceof UnionEntityAdapter) {
+    if (relationshipTarget instanceof UnionEntityAdapter || relationshipTarget instanceof InterfaceEntityAdapter) {
         return;
     }
 
@@ -206,47 +195,6 @@ export function withSourceWhereInputType({
     }
 
     return whereInput;
-}
-
-// TODO: make another one of these for non-union ConnectionWhereInputType
-export function makeConnectionWhereInputType({
-    relationshipAdapter,
-    memberEntity,
-    composer,
-}: {
-    relationshipAdapter: RelationshipAdapter;
-    memberEntity: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposer {
-    const typeName = relationshipAdapter.operations.getConnectionWhereTypename(memberEntity);
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-    const connectionWhereInputType = composer.createInputTC({
-        name: typeName,
-        fields: {
-            node: memberEntity.operations.whereInputTypeName,
-            node_NOT: {
-                type: memberEntity.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        },
-    });
-    connectionWhereInputType.addFields({
-        AND: connectionWhereInputType.NonNull.List,
-        OR: connectionWhereInputType.NonNull.List,
-        NOT: connectionWhereInputType,
-    });
-    if (relationshipAdapter.propertiesTypeName) {
-        connectionWhereInputType.addFields({
-            edge: relationshipAdapter.operations.whereInputTypeName,
-            edge_NOT: {
-                type: relationshipAdapter.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        });
-    }
-    return connectionWhereInputType;
 }
 
 export function withConnectWhereFieldInputType(

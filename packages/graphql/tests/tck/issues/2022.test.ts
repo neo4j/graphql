@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2022", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type ArtPiece {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 title: String!
@@ -61,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
     });
 
     test("query nested relations under a root connection field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 artPiecesConnection {
                     totalCount
@@ -115,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                     WITH this8 { .name, dbId: this8.id } AS this8
                     RETURN head(collect(this8)) AS var9
                 }
-                RETURN collect({ node: { dbId: this0.id, title: this0.title, auction: var6, owner: var9 } }) AS var10
+                RETURN collect({ node: { dbId: this0.id, title: this0.title, auction: var6, owner: var9, __resolveType: \\"ArtPiece\\" } }) AS var10
             }
             RETURN { edges: var10, totalCount: totalCount } AS this"
         `);

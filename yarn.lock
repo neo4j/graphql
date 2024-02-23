@@ -3789,7 +3789,6 @@ __metadata:
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
     dedent: "npm:1.5.1"
-    deep-equal: "npm:^2.0.5"
     dot-prop: "npm:^6.0.1"
     graphql-compose: "npm:^9.0.8"
     graphql-middleware: "npm:6.1.35"

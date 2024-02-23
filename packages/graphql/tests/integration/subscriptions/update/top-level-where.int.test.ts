@@ -23,12 +23,12 @@ import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodes } from "../../../utils/clean-nodes";
-import Neo4j from "../../neo4j";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import Neo4jHelper from "../../neo4j";
 
 describe("Delete using top level aggregate where - subscriptions enabled", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
     let plugin: TestSubscriptionsEngine;
@@ -49,7 +49,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     const updatedContent = "This has been updated;";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -95,7 +95,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [userType, postType]);
+        await cleanNodesUsingSession(session, [userType, postType]);
         await session.close();
     });
 

@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../../../utils/tck-test-utils";
 import { createBearerToken } from "../../../../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../../../../utils/tck-test-utils";
 
 describe("Cypher Auth isAuthenticated", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type History {
                 url: String @authentication(operations: [READ])
             }
@@ -64,7 +62,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Create Node with isAuthenticated", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createPosts(input: [{ id: "1", content: "content" }]) {
                     posts {
@@ -106,7 +104,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Create Node without isAuthenticated", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createComments(input: [{ id: "1", content: "content" }]) {
                     comments {
@@ -148,7 +146,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Update Node with bind", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updatePosts(where: { id: "1" }, update: { id: "id-1" }) {
                     posts {
@@ -180,7 +178,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Update Node without bind", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateComments(where: { id: "1" }, update: { id: "id-1" }) {
                     comments {
@@ -212,7 +210,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(connect: { content: {} }) {
                     users {
@@ -274,7 +272,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Disconnect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(disconnect: { content: {} }) {
                     users {
@@ -335,7 +333,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Delete nodes with bind", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deletePosts {
                     nodesDeleted
@@ -357,7 +355,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Delete nodes without bind", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteComments {
                     nodesDeleted
@@ -379,7 +377,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(delete: { content: { where: {} } }) {
                     nodesDeleted

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("tck/rfcs/query-limits", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie @limit(default: 3, max: 5) {
                 id: ID!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -54,7 +52,7 @@ describe("tck/rfcs/query-limits", () => {
 
     describe("Top Level Query Limits", () => {
         test("should limit the top level query with default value", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies {
                         id
@@ -82,7 +80,7 @@ describe("tck/rfcs/query-limits", () => {
         });
 
         test("should limit the top level query with max value if not default is available", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     shows {
                         id
@@ -110,7 +108,7 @@ describe("tck/rfcs/query-limits", () => {
         });
 
         test("should limit the top level query with max value the option given is higher", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     shows(options: { limit: 5 }) {
                         id
@@ -140,7 +138,7 @@ describe("tck/rfcs/query-limits", () => {
 
     describe("Field Level Query Limits", () => {
         test("should limit the normal field level query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies {
                         id
@@ -182,7 +180,7 @@ describe("tck/rfcs/query-limits", () => {
         });
 
         test("should limit the connection field level query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies {
                         id
@@ -214,7 +212,7 @@ describe("tck/rfcs/query-limits", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         LIMIT $param1
-                        RETURN collect({ node: { id: this1.id } }) AS var2
+                        RETURN collect({ node: { id: this1.id, __resolveType: \\"Person\\" } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
@@ -236,7 +234,7 @@ describe("tck/rfcs/query-limits", () => {
         });
 
         test("should extend the limit to the connection field if `first` provided", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies {
                         id
@@ -268,7 +266,7 @@ describe("tck/rfcs/query-limits", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         LIMIT $param1
-                        RETURN collect({ node: { id: this1.id } }) AS var2
+                        RETURN collect({ node: { id: this1.id, __resolveType: \\"Person\\" } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
@@ -290,7 +288,7 @@ describe("tck/rfcs/query-limits", () => {
         });
 
         test("should extend the limit to the connection field if `first` provided, honouring the `max` argument", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     festivals {
                         name
@@ -320,7 +318,7 @@ describe("tck/rfcs/query-limits", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         LIMIT $param0
-                        RETURN collect({ node: { id: this1.id } }) AS var2
+                        RETURN collect({ node: { id: this1.id, __resolveType: \\"Show\\" } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
@@ -338,7 +336,7 @@ describe("tck/rfcs/query-limits", () => {
         });
 
         test("should limit the relationship field level query", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     movies {
                         id

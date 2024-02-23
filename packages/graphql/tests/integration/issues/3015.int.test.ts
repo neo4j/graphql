@@ -21,10 +21,10 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3015", () => {
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let driver: Driver;
 
@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
     let Connected: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

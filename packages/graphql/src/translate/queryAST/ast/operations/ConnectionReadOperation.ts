@@ -47,7 +47,6 @@ export class ConnectionReadOperation extends Operation {
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
-    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
     protected selection: EntitySelection;
 
@@ -226,17 +225,28 @@ export class ConnectionReadOperation extends Operation {
     private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
         const nodeProjectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
         if (nodeProjectionMap.size === 0) {
-            const targetNodeName = this.target.name;
             nodeProjectionMap.set({
-                __resolveType: new Cypher.Literal(targetNodeName),
                 __id: Cypher.id(context.target),
             });
         }
+        nodeProjectionMap.set({
+            __resolveType: new Cypher.Literal(this.target.name),
+        });
 
-        let edgeProjectionMap = new Cypher.Map();
+        const edgeProjectionMap = new Cypher.Map();
 
         if (context.relationship) {
-            edgeProjectionMap = this.generateProjectionMapForFields(this.edgeFields, context.relationship);
+            const propertiesProjectionMap = this.generateProjectionMapForFields(this.edgeFields, context.relationship);
+            if (propertiesProjectionMap.size) {
+                if (this.relationship?.propertiesTypeName) {
+                    // should be true if getting here but just in case..
+                    propertiesProjectionMap.set(
+                        "__resolveType",
+                        new Cypher.Literal(this.relationship.propertiesTypeName)
+                    );
+                }
+                edgeProjectionMap.set("properties", propertiesProjectionMap);
+            }
         }
 
         edgeProjectionMap.set("node", nodeProjectionMap);

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -39,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     });
 
     test("should produce a predicate for apoc.util.validatePredicate for version 4.4", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie
                 @authorization(
                     validate: [
@@ -64,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             features: { authorization: { key: secret } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -95,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     });
 
     test("should produce a predicate for apoc.util.validatePredicate for version 4.4 (simple API)", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie
                 @authorization(validate: [{ when: [BEFORE], where: { node: { director_SOME: { id: "$jwt.sub" } } } }]) {
                 title: String
@@ -116,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             features: { authorization: { key: secret } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -147,7 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     });
 
     test("should produce a predicate for apoc.util.validatePredicate for version 5.0", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie
                 @authorization(
                     validate: [
@@ -172,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             features: { authorization: { key: secret } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Mixed nesting", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -38,7 +36,7 @@ describe("Mixed nesting", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -49,13 +47,15 @@ describe("Mixed nesting", () => {
     });
 
     test("Connection -> Relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
                     actorsConnection(where: { node: { name: "Tom Hanks" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 movies(where: { title_NOT: "Forrest Gump" }) {
@@ -90,7 +90,7 @@ describe("Mixed nesting", () => {
                         WITH this3 { .title } AS this3
                         RETURN collect(this3) AS var4
                     }
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } }) AS var5
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, movies: var4, __resolveType: \\"Actor\\" } }) AS var5
                 }
                 RETURN { edges: var5, totalCount: totalCount } AS var6
             }
@@ -107,13 +107,15 @@ describe("Mixed nesting", () => {
     });
 
     test("Connection -> Connection -> Relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
                     actorsConnection(where: { node: { name: "Tom Hanks" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 moviesConnection(where: { node: { title_NOT: "Forrest Gump" } }) {
@@ -165,11 +167,11 @@ describe("Mixed nesting", () => {
                                 WITH this5 { .name } AS this5
                                 RETURN collect(this5) AS var6
                             }
-                            RETURN collect({ node: { title: this3.title, actors: var6 } }) AS var7
+                            RETURN collect({ node: { title: this3.title, actors: var6, __resolveType: \\"Movie\\" } }) AS var7
                         }
                         RETURN { edges: var7, totalCount: totalCount } AS var8
                     }
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var8 } }) AS var9
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, moviesConnection: var8, __resolveType: \\"Actor\\" } }) AS var9
                 }
                 RETURN { edges: var9, totalCount: totalCount } AS var10
             }
@@ -187,7 +189,7 @@ describe("Mixed nesting", () => {
     });
 
     test("Relationship -> Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -195,7 +197,9 @@ describe("Mixed nesting", () => {
                         name
                         moviesConnection(where: { node: { title_NOT: "Forrest Gump" } }) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     title
                                 }
@@ -225,7 +229,7 @@ describe("Mixed nesting", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ screenTime: this2.screenTime, node: { title: this3.title } }) AS var4
+                        RETURN collect({ properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { title: this3.title, __resolveType: \\"Movie\\" } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }

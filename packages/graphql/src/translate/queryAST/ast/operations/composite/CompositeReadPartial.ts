@@ -38,7 +38,9 @@ export class CompositeReadPartial extends ReadOperation {
         entity: RelationshipAdapter,
         context: QueryASTContext
     ): OperationTranspileResult {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
 
         // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);

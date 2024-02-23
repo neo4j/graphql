@@ -21,8 +21,8 @@ import { upperFirst } from "../../../utils/upper-first";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
-import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
-import type { Relationship } from "../../relationship/Relationship";
+import { RelationshipDeclarationAdapter } from "../../relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { RelationshipDeclaration } from "../../relationship/RelationshipDeclaration";
 import { getFromMap } from "../../utils/get-from-map";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
@@ -34,7 +34,7 @@ export class InterfaceEntityAdapter {
     public readonly name: string;
     public concreteEntities: ConcreteEntityAdapter[];
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
-    public readonly relationships: Map<string, RelationshipAdapter> = new Map();
+    public readonly relationshipDeclarations: Map<string, RelationshipDeclarationAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
     private uniqueFieldsKeys: string[] = [];
 
@@ -49,12 +49,16 @@ export class InterfaceEntityAdapter {
         this.concreteEntities = [];
         this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
-        this.initRelationships(entity.relationships);
+        this.initRelationshipDeclarations(entity.relationshipDeclarations);
         this.initConcreteEntities(entity.concreteEntities);
     }
 
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
+    }
+
+    public findRelationshipDeclarations(name: string): RelationshipDeclarationAdapter | undefined {
+        return this.relationshipDeclarations.get(name);
     }
 
     get globalIdField(): AttributeAdapter | undefined {
@@ -78,9 +82,12 @@ export class InterfaceEntityAdapter {
         }
     }
 
-    private initRelationships(relationships: Map<string, Relationship>) {
-        for (const [relationshipName, relationship] of relationships.entries()) {
-            this.relationships.set(relationshipName, new RelationshipAdapter(relationship, this));
+    private initRelationshipDeclarations(relationshipDeclarations: Map<string, RelationshipDeclaration>) {
+        for (const [relationshipName, relationshipDeclaration] of relationshipDeclarations.entries()) {
+            this.relationshipDeclarations.set(
+                relationshipName,
+                new RelationshipDeclarationAdapter(relationshipDeclaration, this)
+            );
         }
     }
     get operations(): InterfaceEntityOperations {

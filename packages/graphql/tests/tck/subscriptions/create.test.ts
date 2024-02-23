@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on create", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -51,7 +49,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with create relation: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -62,12 +60,12 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -81,7 +79,9 @@ describe("Subscriptions metadata on create", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -128,7 +128,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -150,7 +150,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with create relation without properties: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -162,7 +162,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [{ title: "Forrest Gump", actors: { create: [{ node: { name: "Tom Hanks" } }] } }]
@@ -216,7 +216,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -234,7 +234,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with nested create relation: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -245,12 +245,12 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -276,7 +276,9 @@ describe("Subscriptions metadata on create", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -329,7 +331,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -356,7 +358,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with create relation to union field: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -368,11 +370,11 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
 
@@ -383,7 +385,7 @@ describe("Subscriptions metadata on create", () => {
             union Director = Person | Actor
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -483,7 +485,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with nested create relation to union field: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -495,11 +497,11 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
 
@@ -510,7 +512,7 @@ describe("Subscriptions metadata on create", () => {
             union Director = Person | Actor
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -644,7 +646,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Simple Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }]) {
                     movies {
@@ -681,7 +683,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Multi Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
@@ -730,7 +732,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Nested Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1", actors: { create: { node: { name: "Andrés" } } } }]) {
                     movies {
@@ -782,7 +784,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Triple nested Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -847,7 +849,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Quadruple nested Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -947,7 +949,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Multi Create with nested", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -1031,7 +1033,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Simple create without returned data", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }]) {
                     info {

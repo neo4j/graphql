@@ -72,12 +72,7 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -168,7 +163,7 @@ describe("Relationship nested operations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -195,8 +190,8 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviePersonActorsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             \\"\\"\\"
@@ -291,8 +286,8 @@ describe("Relationship nested operations", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PersonCreateInput {
@@ -368,7 +363,7 @@ describe("Relationship nested operations", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -455,7 +450,7 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -500,7 +495,7 @@ describe("Relationship nested operations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -536,6 +531,7 @@ describe("Relationship nested operations", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -554,6 +550,15 @@ describe("Relationship nested operations", () => {
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+              actors_ALL: PersonWhere
+              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+              actors_NONE: PersonWhere
+              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+              actors_SINGLE: PersonWhere
+              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+              actors_SOME: PersonWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -600,7 +605,7 @@ describe("Relationship nested operations", () => {
 
             type PersonOneAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input PersonOneCreateInput {
@@ -660,7 +665,7 @@ describe("Relationship nested operations", () => {
 
             type PersonTwoAggregateSelection {
               count: Int!
-              nameTwo: StringAggregateSelectionNullable!
+              nameTwo: StringAggregateSelection!
             }
 
             input PersonTwoCreateInput {
@@ -723,6 +728,7 @@ describe("Relationship nested operations", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              people(options: QueryOptions, where: PersonWhere): [Person!]!
               personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
               personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
               personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -745,7 +751,7 @@ describe("Relationship nested operations", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

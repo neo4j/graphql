@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Relationships", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -42,7 +40,7 @@ describe("Interface Relationships", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -59,7 +57,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Simple Interface Relationship Query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedIn {
@@ -102,7 +100,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Simple Interface Relationship Query For Non-Array Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     currentlyActingIn {
@@ -145,7 +143,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Simple Interface Relationship Query with offset and limit", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedIn(options: { offset: 5, limit: 10, sort: [{ title: DESC }] }) {
@@ -201,103 +199,15 @@ describe("Interface Relationships", () => {
         `);
     });
 
-    test("Type filtering using onType", async () => {
-        const query = gql`
-            query {
-                actors {
-                    actedIn(where: { _on: { Movie: { title_STARTS_WITH: "The " } } }) {
-                        title
-                        ... on Movie {
-                            runtime
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.title STARTS WITH $param0
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
-            }
-            RETURN this { actedIn: var2 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The \\"
-            }"
-        `);
-    });
-
-    test("Filter overriding using onType", async () => {
-        const query = gql`
-            query {
-                actors {
-                    actedIn(where: { title_STARTS_WITH: "A ", _on: { Movie: { title_STARTS_WITH: "The " } } }) {
-                        title
-                        ... on Movie {
-                            runtime
-                        }
-                        ... on Series {
-                            episodes
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.title STARTS WITH $param0
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WHERE this4.title STARTS WITH $param1
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
-            }
-            RETURN this { actedIn: var2 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The \\",
-                \\"param1\\": \\"A \\"
-            }"
-        `);
-    });
-
     test("Interface Relationship Query through connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedInConnection {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -322,12 +232,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -341,12 +251,14 @@ describe("Interface Relationships", () => {
     });
 
     test("Interface Relationship Query through connection with where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedInConnection(where: { node: { title_STARTS_WITH: "The " }, edge: { screenTime_GT: 60 } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -372,13 +284,13 @@ describe("Interface Relationships", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE (this3.title STARTS WITH $param2 AND this2.screenTime > $param3)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -391,127 +303,6 @@ describe("Interface Relationships", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The \\",
-                \\"param1\\": {
-                    \\"low\\": 60,
-                    \\"high\\": 0
-                },
-                \\"param2\\": \\"The \\",
-                \\"param3\\": {
-                    \\"low\\": 60,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("Interface Relationship Query through connection with where excluding type", async () => {
-        const query = gql`
-            query {
-                actors {
-                    actedInConnection(
-                        where: { node: { _on: { Movie: { title_STARTS_WITH: "The " } } }, edge: { screenTime_GT: 60 } }
-                    ) {
-                        edges {
-                            screenTime
-                            node {
-                                title
-                                ... on Movie {
-                                    runtime
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
-                    RETURN edge
-                }
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
-            }
-            RETURN this { actedInConnection: var2 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The \\",
-                \\"param1\\": {
-                    \\"low\\": 60,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("Interface Relationship Query through connection with where overriding", async () => {
-        const query = gql`
-            query {
-                actors {
-                    actedInConnection(
-                        where: {
-                            node: { title_STARTS_WITH: "The ", _on: { Movie: { title_STARTS_WITH: "A " } } }
-                            edge: { screenTime_GT: 60 }
-                        }
-                    ) {
-                        edges {
-                            screenTime
-                            node {
-                                title
-                                ... on Movie {
-                                    runtime
-                                }
-                                ... on Series {
-                                    episodes
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE (this3.title STARTS WITH $param2 AND this2.screenTime > $param3)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
-                    RETURN edge
-                }
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
-            }
-            RETURN this { actedInConnection: var4 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"A \\",
                 \\"param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0

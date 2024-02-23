@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import type { CypherField } from "../types";
-import { DEBUG_TRANSLATE } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import { applyAuthentication } from "./authorization/utils/apply-authentication";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import Debug from "debug";
-import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
-import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { UnionEntity } from "../schema-model/entity/UnionEntity";
-import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
-import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { DEBUG_TRANSLATE } from "../constants";
 import type { Entity } from "../schema-model/entity/Entity";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
+import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { CypherField } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -64,10 +64,11 @@ export function translateTopLevelCypher({
     // entity could be undefined as the field could be a scalar
     const entityAdapter = entity && getEntityAdapter(entity);
 
-    const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST({
+    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
         resolveTree,
         entityAdapter,
         context,
+        varName: "this",
     });
     const queryASTEnv = new QueryASTEnv();
     const targetNode = new Cypher.NamedNode("this");

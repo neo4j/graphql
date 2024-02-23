@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type ServiceLog {
                 id: ID
                 records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
@@ -47,9 +45,9 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
 
             interface Church {
-                id: ID @id
+                id: ID
                 name: String!
-                serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
+                serviceLogs: [ServiceLog!]! @declareRelationship
             }
 
             type Bacenta implements Church {
@@ -75,14 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 id: ID!
                 attendance: Int
                 markedAttendance: Boolean!
-                    @cypher(
-                        statement: """
-                        MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
-                        RETURN COUNT(member) > 0 AS markedAttendance
-                        """
-                        columnName: "markedAttendance"
-                    )
-                serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
+                serviceDate: TimeGraph! @declareRelationship
             }
         `;
 
@@ -92,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     });
 
     test("query nested relations under a root connection field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 bacentas(where: { id: 1 }) {
                     id

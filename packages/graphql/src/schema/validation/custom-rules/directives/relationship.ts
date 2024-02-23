@@ -18,21 +18,22 @@
  */
 import type {
     DirectiveNode,
-    FieldDefinitionNode,
     EnumTypeDefinitionNode,
+    FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
-    UnionTypeDefinitionNode,
     InterfaceTypeExtensionNode,
+    ObjectTypeDefinitionNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import { getInnerTypeName, getPrettyName } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 import {
     getInheritedTypeNames,
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { getPrettyName } from "../utils/utils";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
@@ -41,6 +42,7 @@ export function verifyRelationshipArgumentValue(
         enums: EnumTypeDefinitionNode[];
         interfaces: (InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode)[];
         unions: UnionTypeDefinitionNode[];
+        objects: ObjectTypeDefinitionNode[];
     }
 ) {
     return function ({
@@ -87,30 +89,45 @@ export function verifyRelationshipArgumentValue(
             if (!extra) {
                 throw new Error("Missing data: Enums, Interfaces, Unions.");
             }
+
             const relationshipPropertiesInterface = extra.interfaces.filter(
                 (i) =>
                     i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
-                    i.kind !== Kind.INTERFACE_TYPE_EXTENSION
+                    i.kind === Kind.INTERFACE_TYPE_DEFINITION
             );
-            if (relationshipPropertiesInterface.length > 1) {
+
+            if (relationshipPropertiesInterface.length > 0) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. Cannot have more than 1 interface represent the relationship properties.`,
+                    `@relationship.properties invalid. The @relationshipProperties directive must be applied to a type and not an interface, a breaking change introduced in version 5.0.0.`,
                     ["properties"]
                 );
             }
-            if (!relationshipPropertiesInterface.length) {
+
+            const relationshipPropertiesType = extra.objects.filter(
+                (i) =>
+                    i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
+                    i.kind === Kind.OBJECT_TYPE_DEFINITION
+            );
+
+            if (relationshipPropertiesType.length > 1) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. Cannot find interface to represent the relationship properties: ${propertiesValue}.`,
+                    `@relationship.properties invalid. Cannot have more than 1 type represent the relationship properties.`,
                     ["properties"]
                 );
             }
-            const isRelationshipPropertiesInterfaceAnnotated = relationshipPropertiesInterface[0]?.directives?.some(
+            if (!relationshipPropertiesType.length) {
+                throw new DocumentValidationError(
+                    `@relationship.properties invalid. Cannot find type to represent the relationship properties: ${propertiesValue}.`,
+                    ["properties"]
+                );
+            }
+            const isRelationshipPropertiesTypeAnnotated = relationshipPropertiesType[0]?.directives?.some(
                 (d) => d.name.value === "relationshipProperties"
             );
 
-            if (!isRelationshipPropertiesInterfaceAnnotated) {
+            if (!isRelationshipPropertiesTypeAnnotated) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. Properties interface ${propertiesValue} must use directive \`@relationshipProperties\`.`,
+                    `@relationship.properties invalid. Properties type ${propertiesValue} must use directive \`@relationshipProperties\`.`,
                     ["properties"]
                 );
             }
@@ -176,27 +193,4 @@ function verifyRelationshipFields(
     });
 
     hydrateInterfaceWithImplementedTypesMap(parentDef, interfaceToImplementationsMap);
-}
-
-export function verifyRelationshipFieldType({
-    traversedDef,
-}: {
-    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-}) {
-    if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-        // delegate
-        return;
-    }
-    const msg = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${getInnerTypeName(
-        traversedDef.type
-    )}!]!`;
-    if (traversedDef.type.kind === Kind.NON_NULL_TYPE) {
-        if (traversedDef.type.type.kind === Kind.LIST_TYPE) {
-            if (traversedDef.type.type.type.kind !== Kind.NON_NULL_TYPE) {
-                throw new DocumentValidationError(msg, []);
-            }
-        }
-    } else if (traversedDef.type.kind === Kind.LIST_TYPE) {
-        throw new DocumentValidationError(msg, []);
-    }
 }

@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 import { TestSubscriptionsEngine } from "../utils/TestSubscriptionsEngine";
 
@@ -65,7 +65,7 @@ describe("Subscriptions", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -198,19 +198,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -233,7 +233,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -359,10 +359,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -630,9 +630,9 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -755,9 +755,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -1026,19 +1026,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1131,10 +1131,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1514,19 +1514,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -1679,10 +1679,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1851,6 +1851,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -1869,6 +1870,15 @@ describe("Subscriptions", () => {
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
@@ -1978,9 +1988,9 @@ describe("Subscriptions", () => {
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -2208,6 +2218,7 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              actors(options: QueryOptions, where: ActorWhere): [Actor!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2288,9 +2299,9 @@ describe("Subscriptions", () => {
             }
 
             type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -2579,7 +2590,7 @@ describe("Subscriptions", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -2604,8 +2615,43 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
-            interface ActedIn {
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            \\"\\"\\"
+            type ActedIn {
               screenTime: Int!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActedInCreateInput {
@@ -2705,9 +2751,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -2976,26 +3022,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3018,7 +3057,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3030,7 +3069,7 @@ describe("Subscriptions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
+              edge: ActedInAggregationWhereInput
             }
 
             input MovieActorsConnectFieldInput {
@@ -3082,46 +3121,15 @@ describe("Subscriptions", () => {
               where: MovieActorsConnectionWhere
             }
 
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
-            }
-
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input MovieActorsRelationshipSubscriptionWhere {
@@ -3143,10 +3151,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3489,7 +3497,7 @@ describe("Subscriptions", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -3622,19 +3630,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -3657,7 +3665,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3775,10 +3783,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3946,9 +3954,9 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -4017,8 +4025,8 @@ describe("Subscriptions", () => {
 
             type AgreementAggregateSelection {
               count: Int!
-              id: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input AgreementConnectInput {
@@ -4324,8 +4332,8 @@ describe("Subscriptions", () => {
             }
 
             type AgreementUserOwnerNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input AgreementWhere {
@@ -4394,11 +4402,11 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Mutation {
@@ -4432,12 +4440,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -4473,8 +4476,8 @@ describe("Subscriptions", () => {
 
             type UserAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserConnectWhere {
@@ -4662,19 +4665,19 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -4827,10 +4830,10 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -4999,6 +5002,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -5017,6 +5021,15 @@ describe("Subscriptions", () => {
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
@@ -5126,9 +5139,9 @@ describe("Subscriptions", () => {
             }
 
             type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -5356,6 +5369,7 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              actors(options: QueryOptions, where: ActorWhere): [Actor!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -5422,9 +5436,9 @@ describe("Subscriptions", () => {
             }
 
             type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -5660,27 +5674,27 @@ describe("Subscriptions", () => {
             type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
-                director: Creature!
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
-                director: Creature!
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
 
             interface Production {
                 id: ID
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+                director: Creature! @declareRelationship
             }
 
             type Person implements Creature {
-                movies: Production!
+                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             interface Creature {
-                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+                movies: Production! @declareRelationship
             }
         `;
 
@@ -5725,12 +5739,15 @@ describe("Subscriptions", () => {
             }
 
             interface Creature {
-              movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
-              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+              movies(options: ProductionOptions, where: ProductionWhere): Production!
+              moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type CreatureAggregateSelection {
+              count: Int!
             }
 
             input CreatureConnectInput {
-              _on: CreatureImplementationsConnectInput
               movies: CreatureMoviesConnectFieldInput
             }
 
@@ -5743,33 +5760,15 @@ describe("Subscriptions", () => {
             }
 
             input CreatureDeleteInput {
-              _on: CreatureImplementationsDeleteInput
               movies: CreatureMoviesDeleteFieldInput
             }
 
             input CreatureDisconnectInput {
-              _on: CreatureImplementationsDisconnectInput
               movies: CreatureMoviesDisconnectFieldInput
             }
 
-            input CreatureImplementationsConnectInput {
-              Person: [PersonConnectInput!]
-            }
-
-            input CreatureImplementationsDeleteInput {
-              Person: [PersonDeleteInput!]
-            }
-
-            input CreatureImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
-            }
-
-            input CreatureImplementationsUpdateInput {
-              Person: PersonUpdateInput
-            }
-
-            input CreatureImplementationsWhere {
-              Person: PersonWhere
+            enum CreatureImplementation {
+              Person
             }
 
             input CreatureMoviesConnectFieldInput {
@@ -5809,11 +5808,6 @@ describe("Subscriptions", () => {
               where: CreatureMoviesConnectionWhere
             }
 
-            input CreatureMoviesFieldInput {
-              connect: CreatureMoviesConnectFieldInput
-              create: CreatureMoviesCreateFieldInput
-            }
-
             type CreatureMoviesRelationship {
               cursor: String!
               node: Production!
@@ -5838,14 +5832,16 @@ describe("Subscriptions", () => {
             }
 
             input CreatureUpdateInput {
-              _on: CreatureImplementationsUpdateInput
               movies: CreatureMoviesUpdateFieldInput
             }
 
             input CreatureWhere {
-              _on: CreatureImplementationsWhere
+              AND: [CreatureWhere!]
+              NOT: CreatureWhere
+              OR: [CreatureWhere!]
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              typename_IN: [CreatureImplementation!]
             }
 
             \\"\\"\\"
@@ -5865,20 +5861,21 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorAggregate(directed: Boolean = true, where: CreatureWhere): MovieCreatureDirectorAggregationSelection
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
@@ -5886,8 +5883,8 @@ describe("Subscriptions", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -5895,9 +5892,13 @@ describe("Subscriptions", () => {
             }
 
             input MovieCreateInput {
-              director: ProductionDirectorFieldInput
+              director: MovieDirectorFieldInput
               id: ID
               title: String!
+            }
+
+            type MovieCreatureDirectorAggregationSelection {
+              count: Int!
             }
 
             input MovieDeleteInput {
@@ -5921,6 +5922,11 @@ describe("Subscriptions", () => {
             input MovieDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              connect: MovieDirectorConnectFieldInput
+              create: MovieDirectorCreateFieldInput
             }
 
             input MovieDirectorUpdateConnectionInput {
@@ -5964,32 +5970,6 @@ describe("Subscriptions", () => {
             input MovieSort {
               id: SortDirection
               title: SortDirection
-            }
-
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_STARTS_WITH: String
             }
 
             input MovieUpdateInput {
@@ -6060,6 +6040,7 @@ describe("Subscriptions", () => {
 
             type Person implements Creature {
               movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
+              moviesAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
@@ -6076,7 +6057,7 @@ describe("Subscriptions", () => {
             }
 
             input PersonCreateInput {
-              movies: CreatureMoviesFieldInput
+              movies: PersonMoviesFieldInput
             }
 
             type PersonCreatedEvent {
@@ -6125,6 +6106,11 @@ describe("Subscriptions", () => {
               where: CreatureMoviesConnectionWhere
             }
 
+            input PersonMoviesFieldInput {
+              connect: PersonMoviesConnectFieldInput
+              create: PersonMoviesCreateFieldInput
+            }
+
             input PersonMoviesRelationshipSubscriptionWhere {
               node: ProductionSubscriptionWhere
             }
@@ -6145,6 +6131,15 @@ describe("Subscriptions", () => {
             input PersonOptions {
               limit: Int
               offset: Int
+            }
+
+            type PersonProductionMoviesAggregationSelection {
+              count: Int!
+              node: PersonProductionMoviesNodeAggregateSelection
+            }
+
+            type PersonProductionMoviesNodeAggregateSelection {
+              id: IDAggregateSelection!
             }
 
             input PersonRelationInput {
@@ -6199,13 +6194,17 @@ describe("Subscriptions", () => {
             }
 
             interface Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
-              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              director(options: CreatureOptions, where: CreatureWhere): Creature!
+              directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
               director: ProductionDirectorConnectFieldInput
             }
 
@@ -6219,7 +6218,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
               director: ProductionDirectorDeleteFieldInput
             }
 
@@ -6256,11 +6254,6 @@ describe("Subscriptions", () => {
               where: ProductionDirectorConnectionWhere
             }
 
-            input ProductionDirectorFieldInput {
-              connect: ProductionDirectorConnectFieldInput
-              create: ProductionDirectorCreateFieldInput
-            }
-
             type ProductionDirectorRelationship {
               cursor: String!
               node: Creature!
@@ -6280,7 +6273,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               director: ProductionDirectorDisconnectFieldInput
             }
 
@@ -6288,34 +6280,9 @@ describe("Subscriptions", () => {
               id: ID
             }
 
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
-            }
-
-            input ProductionImplementationsSubscriptionWhere {
-              Movie: MovieSubscriptionWhere
-              Series: SeriesSubscriptionWhere
-            }
-
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
+            enum ProductionImplementation {
+              Movie
+              Series
             }
 
             input ProductionOptions {
@@ -6338,7 +6305,6 @@ describe("Subscriptions", () => {
               AND: [ProductionSubscriptionWhere!]
               NOT: ProductionSubscriptionWhere
               OR: [ProductionSubscriptionWhere!]
-              _on: ProductionImplementationsSubscriptionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6349,16 +6315,18 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProductionImplementation!]
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               director: ProductionDirectorUpdateFieldInput
               id: ID
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               id: ID
@@ -6371,15 +6339,20 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
+              creatures(options: CreatureOptions, where: CreatureWhere): [Creature!]!
+              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6387,6 +6360,7 @@ describe("Subscriptions", () => {
 
             type Series implements Production {
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorAggregate(directed: Boolean = true, where: CreatureWhere): SeriesCreatureDirectorAggregationSelection
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
@@ -6395,9 +6369,9 @@ describe("Subscriptions", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episode: IntAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -6411,7 +6385,7 @@ describe("Subscriptions", () => {
             }
 
             input SeriesCreateInput {
-              director: ProductionDirectorFieldInput
+              director: SeriesDirectorFieldInput
               episode: Int!
               id: ID
               title: String!
@@ -6421,6 +6395,10 @@ describe("Subscriptions", () => {
               createdSeries: SeriesEventPayload!
               event: EventType!
               timestamp: Float!
+            }
+
+            type SeriesCreatureDirectorAggregationSelection {
+              count: Int!
             }
 
             input SeriesDeleteInput {
@@ -6452,6 +6430,11 @@ describe("Subscriptions", () => {
               where: ProductionDirectorConnectionWhere
             }
 
+            input SeriesDirectorFieldInput {
+              connect: SeriesDirectorConnectFieldInput
+              create: SeriesDirectorCreateFieldInput
+            }
+
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -6475,8 +6458,6 @@ describe("Subscriptions", () => {
             }
 
             type SeriesEventPayload implements ProductionEventPayload {
-              director: Creature!
-              directorConnection: ProductionDirectorConnection!
               episode: Int!
               id: ID
               title: String!
@@ -6626,9 +6607,9 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {

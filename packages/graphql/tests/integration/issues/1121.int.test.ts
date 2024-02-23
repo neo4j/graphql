@@ -20,13 +20,13 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1121", () => {
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
     let session: Session;
 
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = `
@@ -56,8 +56,9 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
             }
 
             interface Ingredient_Interface {
-                id: ID! @id
+                id: ID!
                 name: String
+                qty_ozs: Float
             }
 
             type ${Banana.name} implements Ingredient_Interface {
@@ -130,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
         const query = `
             {
                 ${Food.plural}(
-                    where: { ingredients_interfaceConnection_ALL: { node: { _on: { ${Banana.name}: { qty_ozs_GT: 1 } } } } }
+                    where: { ingredients_interfaceConnection_ALL: { node: { qty_ozs_GT: 1  } } }
                 ) {
                     name
                     ingredients_interface {

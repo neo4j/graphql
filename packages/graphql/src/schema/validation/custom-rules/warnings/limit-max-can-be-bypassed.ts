@@ -19,25 +19,20 @@
 import type {
     ASTVisitor,
     DirectiveNode,
+    InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
     ObjectTypeDefinitionNode,
     ObjectTypeExtensionNode,
-    InterfaceTypeDefinitionNode,
 } from "graphql";
-import { getPathToNode } from "../utils/path-parser";
-import { parseArgumentToInt } from "../utils/utils";
 import { Integer } from "neo4j-driver";
 import {
     getInheritedTypeNames,
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
+import { getPathToNode } from "../utils/path-parser";
+import { parseArgumentToInt } from "../utils/utils";
 
-export function WarnIfAMaxLimitCanBeBypassedThroughInterface(experimental: boolean) {
-    if (!experimental) {
-        return (): ASTVisitor => {
-            return {};
-        };
-    }
+export function WarnIfAMaxLimitCanBeBypassedThroughInterface() {
     return function (): ASTVisitor {
         const entityToMaxLimitMap = new Map<string, Integer>();
         const interfaceToImplementingTypes = new Map<string, Set<string>>();

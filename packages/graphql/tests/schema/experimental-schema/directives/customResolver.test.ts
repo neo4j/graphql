@@ -18,15 +18,15 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
 describe("@customResolver directive", () => {
     test("passes fields directly through with no generation", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                customResolver: String @customResolver
+                customResolver: String
             }
 
             type User implements UserInterface {
@@ -34,7 +34,7 @@ describe("@customResolver directive", () => {
                 username: String!
                 password: String!
                 nickname: String! @customResolver
-                customResolver: String
+                customResolver: String @customResolver
             }
         `;
 
@@ -77,9 +77,9 @@ describe("@customResolver directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -97,6 +97,8 @@ describe("@customResolver directive", () => {
             }
 
             type Query {
+              userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
+              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -110,9 +112,9 @@ describe("@customResolver directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"
@@ -141,9 +143,9 @@ describe("@customResolver directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -159,6 +161,48 @@ describe("@customResolver directive", () => {
 
             interface UserInterface {
               customResolver: String
+            }
+
+            type UserInterfaceAggregateSelection {
+              count: Int!
+              customResolver: StringAggregateSelection!
+            }
+
+            enum UserInterfaceImplementation {
+              User
+            }
+
+            input UserInterfaceOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserInterfaceSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort UserInterfaces by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserInterfaceSort object.
+            \\"\\"\\"
+            input UserInterfaceSort {
+              customResolver: SortDirection
+            }
+
+            input UserInterfaceWhere {
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
+              customResolver: String
+              customResolver_CONTAINS: String
+              customResolver_ENDS_WITH: String
+              customResolver_IN: [String]
+              customResolver_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              customResolver_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              customResolver_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              customResolver_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              customResolver_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              customResolver_STARTS_WITH: String
+              typename_IN: [UserInterfaceImplementation!]
             }
 
             input UserOptions {

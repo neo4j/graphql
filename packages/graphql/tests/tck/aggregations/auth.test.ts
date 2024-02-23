@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations with Auth", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 id: ID
                     @authorization(
@@ -71,7 +69,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Simple Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     count
@@ -103,7 +101,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Count with WHERE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate(where: { name: "some-name" }) {
                     count
@@ -136,7 +134,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Field Int with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     imdbRatingInt {
@@ -171,7 +169,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Field Float with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     imdbRatingFloat {
@@ -206,7 +204,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Field BigInt with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     imdbRatingBigInt {
@@ -241,7 +239,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Field ID with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     id {
@@ -276,7 +274,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Field String with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     name {
@@ -314,7 +312,7 @@ describe("Cypher Aggregations with Auth", () => {
     });
 
     test("Field DateTime with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersAggregate {
                     createdAt {

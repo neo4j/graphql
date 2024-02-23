@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1536", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type SomeNode {
                 id: ID! @id @unique
                 other: OtherNode! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
@@ -39,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
             }
 
             interface MyInterface {
-                id: ID! @id
+                id: ID!
             }
 
             type MyImplementation implements MyInterface {
@@ -53,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
     });
 
     test("query nested interfaces", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 someNodes {
                     id

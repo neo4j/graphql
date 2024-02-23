@@ -24,3 +24,11 @@ import type { RelationshipAdapter } from "../../../schema-model/relationship/mod
 export function isConcreteEntity(entity: EntityAdapter | RelationshipAdapter): entity is ConcreteEntityAdapter {
     return entity instanceof ConcreteEntityAdapter;
 }
+
+export function assertIsConcreteEntity(
+    entity?: EntityAdapter | RelationshipAdapter
+): asserts entity is ConcreteEntityAdapter {
+    if (!entity || !isConcreteEntity(entity)) {
+        throw new Error("Transpile Error: Expected EntityAdapter to be a ConcreteEntityAdapter");
+    }
+}

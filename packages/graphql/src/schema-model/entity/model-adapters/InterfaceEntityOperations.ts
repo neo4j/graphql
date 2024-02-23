@@ -181,6 +181,10 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}ImplementationsSubscriptionWhere`;
     }
 
+    public getAggregationFieldTypename(): string {
+        return this.aggregateTypeNames.selection;
+    }
+
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             create: `create${this.pascalCasePlural}`,

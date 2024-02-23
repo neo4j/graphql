@@ -20,14 +20,14 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { delay } from "../../../src/utils/utils";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
-import { cleanNodes } from "../../utils/clean-nodes";
-import { delay } from "../../../src/utils/utils";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { WebSocketTestClient } from "../setup/ws-client";
 
 describe("Delete Subscriptions when only nodes are targeted - with interfaces, unions and label manipulation", () => {
     let neo4j: Neo4j;
@@ -60,15 +60,15 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         
@@ -119,7 +119,7 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
         await wsClient2.close();
 
         const session = driver.session();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
         await driver.close();

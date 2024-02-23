@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input GenreConnectInput {
@@ -127,9 +127,9 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type GenreMovieMoviesNodeAggregateSelection {
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              imdbRating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             input GenreMoviesAggregateInput {
@@ -375,7 +375,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -393,9 +393,9 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
+              imdbRating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -432,7 +432,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type MovieGenreGenresNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieGenresAggregateInput {
@@ -688,7 +688,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

@@ -24,7 +24,7 @@ import type { RelationshipAdapter } from "../../../../../schema-model/relationsh
 import type { RelationshipSubscriptionsEvent } from "../../../../../types";
 import type { InterfaceType, RecordType, RelationshipType, StandardType, UnionType } from "../../types";
 import { filterByProperties } from "../filters/filter-by-properties";
-import { isInterfaceSpecificFieldType, isInterfaceType, isStandardType } from "./type-checks";
+import { isInterfaceType, isStandardType } from "./type-checks";
 
 type EventProperties = {
     from: Record<string, unknown>;
@@ -194,7 +194,7 @@ function filterRelationshipInterfaceProperty({
     targetNodeTypename: string;
     key: string;
 }): boolean {
-    const { _on, ...commonFields } = nodeProperty;
+    const { ...commonFields } = nodeProperty;
     const targetNode = relationshipAdapter.target;
     if (!(targetNode instanceof InterfaceEntityAdapter)) {
         throw new Error(`Expected ${targetNode.name} to be interface`);
@@ -203,29 +203,12 @@ function filterRelationshipInterfaceProperty({
     if (!nodeTo) {
         throw new Error(`${targetNodeTypename} not found as part of interface ${targetNode.name}`);
     }
-    // const targetNode = nodes.find((n) => n.name === targetNodeTypename) as Node;
-    if (commonFields && !_on) {
+
+    if (commonFields) {
         if (
             !filterByProperties({
                 attributes: nodeTo.attributes,
                 whereProperties: commonFields,
-                receivedProperties: receivedEventProperties[key],
-            })
-        ) {
-            return false;
-        }
-    }
-    if (isInterfaceSpecificFieldType(_on)) {
-        const isRelationshipOfReceivedTypeFilteredOut = !_on[targetNodeTypename];
-        if (isRelationshipOfReceivedTypeFilteredOut) {
-            return false;
-        }
-        const commonFieldsMergedWithSpecificFields = { ...commonFields, ..._on[targetNodeTypename] }; //override common <fields, filter> combination with specific <fields, filter>
-
-        if (
-            !filterByProperties({
-                attributes: nodeTo.attributes,
-                whereProperties: commonFieldsMergedWithSpecificFields,
                 receivedProperties: receivedEventProperties[key],
             })
         ) {

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1687", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 id: ID
                 title: String
@@ -52,9 +50,9 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
     });
 
     test("should be able to return all the genres related to the Matrix movie using connection fields", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Genres {
-                genres(where: { moviesConnection_ALL: { node: { _on: { Movie: { title: "Matrix" } } } } }) {
+                genres(where: { moviesConnection_ALL: { node: { title: "Matrix" } } }) {
                     name
                 }
             }
@@ -65,11 +63,11 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Genre)
             WHERE (EXISTS {
-                MATCH (this)<-[this0:HAS_GENRE]-(this1:Movie)
-                WHERE this1.title = $param0
+                MATCH (this)<-[this0:HAS_GENRE]-(this1)
+                WHERE (this1.title = $param0 AND this1:Movie)
             } AND NOT (EXISTS {
-                MATCH (this)<-[this0:HAS_GENRE]-(this1:Movie)
-                WHERE NOT (this1.title = $param0)
+                MATCH (this)<-[this0:HAS_GENRE]-(this1)
+                WHERE NOT (this1.title = $param0 AND this1:Movie)
             }))
             RETURN this { .name } AS this"
         `);

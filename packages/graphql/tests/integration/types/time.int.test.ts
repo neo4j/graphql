@@ -24,14 +24,14 @@ import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { parseTime } from "../../../src/graphql/scalars/Time";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Time", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

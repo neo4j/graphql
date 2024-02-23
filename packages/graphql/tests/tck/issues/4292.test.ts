@@ -17,45 +17,33 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
     test("authorization subqueries should be wrapped in a Cypher.CALL", async () => {
         const typeDefs = /* GraphQL */ `
             type User {
                 id: ID! @unique
-
                 email: String! @unique
-
                 name: String
-
                 creator: [Group!]! @relationship(type: "CREATOR_OF", direction: OUT)
-
                 admin: [Admin!]! @relationship(type: "IS_USER", direction: IN)
-
                 contributor: [Contributor!]! @relationship(type: "IS_USER", direction: IN)
-
                 invitations: [Invitee!]! @relationship(type: "CREATOR_OF", direction: OUT)
-
                 roles: [String!]!
             }
 
             type Group {
                 id: ID! @id @unique
-
                 name: String
-
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
-
                 creator: User!
                     @relationship(type: "CREATOR_OF", direction: IN)
                     @settable(onCreate: true, onUpdate: true)
 
                 admins: [Admin!]! @relationship(type: "ADMIN_OF", direction: IN)
-
                 contributors: [Contributor!]! @relationship(type: "CONTRIBUTOR_TO", direction: IN)
             }
 
@@ -90,15 +78,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     ]
                 ) {
                 id: ID! @id @unique
-
                 name: String!
-
                 creator: User!
                     @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
                     @settable(onCreate: true, onUpdate: true)
-
                 group: Group! @relationship(type: "MEMBER_OF", direction: OUT)
-
                 partners: [Person!]!
                     @relationship(
                         type: "PARTNER_OF"
@@ -119,46 +103,39 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             interface Invitee {
-                id: ID! @id
-
+                id: ID!
                 email: String!
-
                 name: String
-
-                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
-
-                group: Group! @relationship(type: "ADMIN_OF", direction: OUT)
-
-                status: InviteeStatus! @default(value: INVITED)
-
-                user: User @relationship(type: "IS_USER", direction: OUT)
-
+                creator: User! @declareRelationship
+                group: Group! @declareRelationship
+                status: InviteeStatus!
+                user: User @declareRelationship
                 role: InviteeRole!
             }
 
             type Admin implements Invitee {
-                id: ID! @unique
-                group: Group!
-                creator: User!
+                id: ID! @unique @id
+                group: Group! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
-                status: InviteeStatus!
-                user: User
+                status: InviteeStatus! @default(value: INVITED)
+                user: User @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type Contributor implements Invitee {
-                id: ID! @unique
+                id: ID! @unique @id
                 group: Group! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
-                creator: User!
+                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
-                status: InviteeStatus!
-                user: User
+                status: InviteeStatus! @default(value: INVITED)
+                user: User @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }
 
-            interface PartnerOf @relationshipProperties {
+            type PartnerOf @relationshipProperties {
                 id: ID! @id
                 firstDay: Date
                 lastDay: Date
@@ -178,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Groups {
                 groups(where: { id: "family_id_1" }) {
                     id
@@ -188,9 +165,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                                properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                                }
                             }
                         }
                     }
@@ -253,7 +232,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this13, edge.relationship AS this12
-                        RETURN collect({ active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, node: { __resolveType: \\"Person\\", __id: id(this13) } }) AS var25
+                        RETURN collect({ properties: { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __id: id(this13), __resolveType: \\"Person\\" } }) AS var25
                     }
                     RETURN { edges: var25, totalCount: totalCount } AS var26
                 }

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -43,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
 
     test("should sort by aliased field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query listProducts {
                 products(options: { sort: { partNumber: DESC } }) {
                     id
@@ -66,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
 
     test("should sort by aliased field in relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query listProducts {
                 employees {
                     products(options: { sort: { partNumber: DESC } }) {
@@ -96,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
     describe("Connection sort", () => {
         test("should sort by aliased field in connection", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query listProducts {
                     productsConnection(sort: { partNumber: DESC }) {
                         edges {
@@ -122,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                     WITH edge.node AS this0
                     WITH *
                     ORDER BY this0.fg_item DESC
-                    RETURN collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description } }) AS var1
+                    RETURN collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description, __resolveType: \\"Product\\" } }) AS var1
                 }
                 RETURN { edges: var1, totalCount: totalCount } AS this"
             `);
@@ -131,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         });
 
         test("should sort by aliased field in nested connection", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query listProducts {
                     employees {
                         productsConnection(sort: { node: { partNumber: DESC } }) {
@@ -162,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         ORDER BY this1.fg_item DESC
-                        RETURN collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } }) AS var2
+                        RETURN collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description, __resolveType: \\"Product\\" } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }

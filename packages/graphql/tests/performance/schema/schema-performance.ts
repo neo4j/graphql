@@ -24,7 +24,7 @@ const basicTypeDefs = `
         articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
     }
 
-    interface HasArticle @relationshipProperties {
+    type HasArticle @relationshipProperties {
         createdAt: DateTime! @timestamp
     }
 
@@ -34,12 +34,12 @@ const basicTypeDefs = `
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 
-    interface HasBlock @relationshipProperties {
+    type HasBlock @relationshipProperties {
         order: Int!
     }
 
     interface Block {
-        id: ID @id
+        id: ID
     }
 
     type TextBlock implements Block {

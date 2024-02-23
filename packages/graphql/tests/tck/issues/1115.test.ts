@@ -17,18 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1115", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -60,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
     });
 
     test("multiple connectOrCreate operations with auth", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation UpdateParents {
                 updateParents(
                     connectOrCreate: {

@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
@@ -75,8 +75,8 @@ describe("@settable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -170,12 +170,7 @@ describe("@settable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -243,8 +238,8 @@ describe("@settable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -338,12 +333,7 @@ describe("@settable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -420,8 +410,8 @@ describe("@settable", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -564,12 +554,7 @@ describe("@settable", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -774,7 +759,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -804,8 +789,8 @@ describe("@settable", () => {
                 }
 
                 type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorOptions {
@@ -919,8 +904,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -1025,12 +1010,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1225,7 +1205,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -1256,8 +1236,8 @@ describe("@settable", () => {
                 }
 
                 type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorOptions {
@@ -1370,8 +1350,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -1476,12 +1456,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1678,7 +1653,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -1713,8 +1688,8 @@ describe("@settable", () => {
                 }
 
                 type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorOptions {
@@ -1834,7 +1809,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -1956,8 +1931,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -2109,12 +2084,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -2319,7 +2289,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -2353,8 +2323,8 @@ describe("@settable", () => {
                 }
 
                 type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorOptions {
@@ -2475,7 +2445,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -2597,8 +2567,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -2750,12 +2720,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -2936,7 +2901,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -2989,6 +2954,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3007,6 +2973,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -3065,8 +3040,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -3171,6 +3146,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3189,8 +3165,8 @@ describe("@settable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  name: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesConnectWhere {
@@ -3269,12 +3245,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -3443,7 +3414,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -3496,6 +3467,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3514,6 +3486,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -3572,8 +3553,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectWhere {
@@ -3678,6 +3659,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3696,8 +3678,8 @@ describe("@settable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  name: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesConnectWhere {
@@ -3776,12 +3758,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -3952,7 +3929,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -4009,6 +3986,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -4027,6 +4005,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -4092,7 +4079,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -4214,8 +4201,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -4367,6 +4354,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -4385,8 +4373,8 @@ describe("@settable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  name: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesConnectWhere {
@@ -4465,12 +4453,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -4657,7 +4640,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -4714,6 +4697,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -4732,6 +4716,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -4797,7 +4790,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -4919,8 +4912,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
@@ -5072,6 +5065,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -5090,8 +5084,8 @@ describe("@settable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  name: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesConnectWhere {
@@ -5170,12 +5164,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -5244,6 +5233,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -5302,7 +5292,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -5333,6 +5323,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -5431,8 +5431,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -5524,6 +5524,12 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -5533,14 +5539,9 @@ describe("@settable", () => {
                   Series: SeriesCreateInput
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                enum ProductionImplementation {
+                  Movie
+                  Series
                 }
 
                 input ProductionOptions {
@@ -5561,13 +5562,14 @@ describe("@settable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   description: String
                   title: String
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -5588,6 +5590,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -5597,6 +5600,8 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -5609,8 +5614,8 @@ describe("@settable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
@@ -5685,12 +5690,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -5757,6 +5757,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -5807,7 +5808,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -5839,6 +5840,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -5936,8 +5947,8 @@ describe("@settable", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -6029,6 +6040,12 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -6038,9 +6055,9 @@ describe("@settable", () => {
                   Series: SeriesCreateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                enum ProductionImplementation {
+                  Movie
+                  Series
                 }
 
                 input ProductionOptions {
@@ -6061,7 +6078,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -6082,6 +6101,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -6091,6 +6111,8 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6103,8 +6125,8 @@ describe("@settable", () => {
 
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
@@ -6179,12 +6201,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -6222,7 +6239,7 @@ describe("@settable", () => {
                 interface Production {
                     title: String!
                     description: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @declareRelationship
                 }
 
                 type Movie implements Production @query(aggregate: true) {
@@ -6252,6 +6269,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -6305,7 +6323,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -6341,6 +6359,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -6445,7 +6473,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -6458,6 +6486,24 @@ describe("@settable", () => {
                   count_LT: Int
                   count_LTE: Int
                   node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input MovieActorsFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -6501,18 +6547,31 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input MovieActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: MovieActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [MovieActorsConnectFieldInput!]
                 }
 
                 input MovieCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: MovieActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -6540,7 +6599,7 @@ describe("@settable", () => {
                 }
 
                 input MovieRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -6552,7 +6611,7 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [MovieActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -6639,8 +6698,8 @@ describe("@settable", () => {
                 }
 
                 interface Production {
-                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
                 }
@@ -6684,10 +6743,6 @@ describe("@settable", () => {
                   node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input ProductionActorsCreateFieldInput {
-                  node: ActorCreateInput!
-                }
-
                 input ProductionActorsDeleteFieldInput {
                   delete: ActorDeleteInput
                   where: ProductionActorsConnectionWhere
@@ -6696,11 +6751,6 @@ describe("@settable", () => {
                 input ProductionActorsDisconnectFieldInput {
                   disconnect: ActorDisconnectInput
                   where: ProductionActorsConnectionWhere
-                }
-
-                input ProductionActorsFieldInput {
-                  connect: [ProductionActorsConnectFieldInput!]
-                  create: [ProductionActorsCreateFieldInput!]
                 }
 
                 input ProductionActorsNodeAggregationWhereInput {
@@ -6749,21 +6799,13 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input ProductionActorsUpdateConnectionInput {
-                  node: ActorUpdateInput
-                }
-
-                input ProductionActorsUpdateFieldInput {
-                  connect: [ProductionActorsConnectFieldInput!]
-                  create: [ProductionActorsCreateFieldInput!]
-                  delete: [ProductionActorsDeleteFieldInput!]
-                  disconnect: [ProductionActorsDisconnectFieldInput!]
-                  update: ProductionActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ProductionConnectInput {
-                  _on: ProductionImplementationsConnectInput
                   actors: [ProductionActorsConnectFieldInput!]
                 }
 
@@ -6777,33 +6819,16 @@ describe("@settable", () => {
                 }
 
                 input ProductionDeleteInput {
-                  _on: ProductionImplementationsDeleteInput
                   actors: [ProductionActorsDeleteFieldInput!]
                 }
 
                 input ProductionDisconnectInput {
-                  _on: ProductionImplementationsDisconnectInput
                   actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
-                input ProductionImplementationsConnectInput {
-                  Movie: [MovieConnectInput!]
-                  Series: [SeriesConnectInput!]
-                }
-
-                input ProductionImplementationsDeleteInput {
-                  Movie: [MovieDeleteInput!]
-                  Series: [SeriesDeleteInput!]
-                }
-
-                input ProductionImplementationsDisconnectInput {
-                  Movie: [MovieDisconnectInput!]
-                  Series: [SeriesDisconnectInput!]
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                enum ProductionImplementation {
+                  Movie
+                  Series
                 }
 
                 input ProductionOptions {
@@ -6824,7 +6849,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -6874,6 +6901,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -6883,6 +6911,8 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6902,7 +6932,7 @@ describe("@settable", () => {
                 }
 
                 type SeriesActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesActorsAggregateInput {
@@ -6915,6 +6945,24 @@ describe("@settable", () => {
                   count_LT: Int
                   count_LTE: Int
                   node: SeriesActorsNodeAggregationWhereInput
+                }
+
+                input SeriesActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input SeriesActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input SeriesActorsFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
                 }
 
                 input SeriesActorsNodeAggregationWhereInput {
@@ -6958,14 +7006,27 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input SeriesActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input SeriesActorsUpdateFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: SeriesActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input SeriesConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [SeriesActorsConnectFieldInput!]
                 }
 
                 type SeriesConnection {
@@ -6975,7 +7036,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: SeriesActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -7003,7 +7064,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [SeriesActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7015,7 +7076,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [SeriesActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -7083,12 +7144,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -7126,7 +7182,7 @@ describe("@settable", () => {
                 interface Production {
                     title: String!
                     description: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @declareRelationship
                 }
 
                 type Movie implements Production @query(aggregate: true) {
@@ -7156,6 +7212,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -7217,7 +7274,7 @@ describe("@settable", () => {
 
                 type ActorAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input ActorConnectInput {
@@ -7252,6 +7309,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input ActorRelationInput {
@@ -7357,7 +7424,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -7370,6 +7437,24 @@ describe("@settable", () => {
                   count_LT: Int
                   count_LTE: Int
                   node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input MovieActorsFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -7413,18 +7498,31 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input MovieActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: MovieActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input MovieConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [MovieActorsConnectFieldInput!]
                 }
 
                 input MovieCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: MovieActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -7452,7 +7550,7 @@ describe("@settable", () => {
                 }
 
                 input MovieRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7464,7 +7562,7 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [MovieActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -7551,8 +7649,8 @@ describe("@settable", () => {
                 }
 
                 interface Production {
-                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
                 }
@@ -7608,11 +7706,6 @@ describe("@settable", () => {
                 input ProductionActorsDisconnectFieldInput {
                   disconnect: ActorDisconnectInput
                   where: ProductionActorsConnectionWhere
-                }
-
-                input ProductionActorsFieldInput {
-                  connect: [ProductionActorsConnectFieldInput!]
-                  create: [ProductionActorsCreateFieldInput!]
                 }
 
                 input ProductionActorsNodeAggregationWhereInput {
@@ -7674,8 +7767,13 @@ describe("@settable", () => {
                   where: ProductionActorsConnectionWhere
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 input ProductionConnectInput {
-                  _on: ProductionImplementationsConnectInput
                   actors: [ProductionActorsConnectFieldInput!]
                 }
 
@@ -7689,38 +7787,16 @@ describe("@settable", () => {
                 }
 
                 input ProductionDeleteInput {
-                  _on: ProductionImplementationsDeleteInput
                   actors: [ProductionActorsDeleteFieldInput!]
                 }
 
                 input ProductionDisconnectInput {
-                  _on: ProductionImplementationsDisconnectInput
                   actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
-                input ProductionImplementationsConnectInput {
-                  Movie: [MovieConnectInput!]
-                  Series: [SeriesConnectInput!]
-                }
-
-                input ProductionImplementationsDeleteInput {
-                  Movie: [MovieDeleteInput!]
-                  Series: [SeriesDeleteInput!]
-                }
-
-                input ProductionImplementationsDisconnectInput {
-                  Movie: [MovieDisconnectInput!]
-                  Series: [SeriesDisconnectInput!]
-                }
-
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                enum ProductionImplementation {
+                  Movie
+                  Series
                 }
 
                 input ProductionOptions {
@@ -7741,14 +7817,15 @@ describe("@settable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   actors: [ProductionActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -7798,6 +7875,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -7807,6 +7885,8 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -7826,7 +7906,7 @@ describe("@settable", () => {
                 }
 
                 type SeriesActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
+                  name: StringAggregateSelection!
                 }
 
                 input SeriesActorsAggregateInput {
@@ -7839,6 +7919,24 @@ describe("@settable", () => {
                   count_LT: Int
                   count_LTE: Int
                   node: SeriesActorsNodeAggregationWhereInput
+                }
+
+                input SeriesActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input SeriesActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input SeriesActorsFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
                 }
 
                 input SeriesActorsNodeAggregationWhereInput {
@@ -7882,14 +7980,27 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input SeriesActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input SeriesActorsUpdateFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: SeriesActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type SeriesAggregateSelection {
                   count: Int!
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 input SeriesConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [SeriesActorsConnectFieldInput!]
                 }
 
                 type SeriesConnection {
@@ -7899,7 +8010,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: SeriesActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -7927,7 +8038,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [SeriesActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7939,7 +8050,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [SeriesActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -8007,12 +8118,7 @@ describe("@settable", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }

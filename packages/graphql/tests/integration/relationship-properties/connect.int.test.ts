@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - connect", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -49,7 +49,7 @@ describe("Relationship properties - connect", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -63,17 +63,14 @@ describe("Relationship properties - connect", () => {
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
-        const source = `
-            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+        const source = /* GraphQL */ `
+            mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 createMovies(
                     input: [
                         {
                             title: $movieTitle
                             actors: {
-                                connect: [{
-                                    where: { node: { name: $actorName } },
-                                    edge: { screenTime: $screenTime },
-                                }]
+                                connect: [{ where: { node: { name: $actorName } }, edge: { screenTime: $screenTime } }]
                             }
                         }
                     ]
@@ -82,7 +79,9 @@ describe("Relationship properties - connect", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -111,7 +110,7 @@ describe("Relationship properties - connect", () => {
             expect((gqlResult.data as any)?.createMovies.movies).toEqual([
                 {
                     title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
+                    actorsConnection: { edges: [{ properties: { screenTime }, node: { name: actorName } }] },
                 },
             ]);
 
@@ -147,7 +146,7 @@ describe("Relationship properties - connect", () => {
 
             union ActedInUnion = Movie | Show
 
-            interface ActedInInterface @relationshipProperties {
+            type ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -232,7 +231,7 @@ describe("Relationship properties - connect", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -246,22 +245,19 @@ describe("Relationship properties - connect", () => {
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
-        const source = `
-            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+        const source = /* GraphQL */ `
+            mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 updateMovies(
-                  where: { title: $movieTitle }
-                  connect: {
-                    actors: {
-                      where: { node: { name: $actorName } }
-                      edge: { screenTime: $screenTime }
-                    }
-                  }
+                    where: { title: $movieTitle }
+                    connect: { actors: { where: { node: { name: $actorName } }, edge: { screenTime: $screenTime } } }
                 ) {
                     movies {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -291,7 +287,7 @@ describe("Relationship properties - connect", () => {
             expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
+                    actorsConnection: { edges: [{ properties: { screenTime }, node: { name: actorName } }] },
                 },
             ]);
 
@@ -323,7 +319,7 @@ describe("Relationship properties - connect", () => {
                     @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
             }
             union ActedInUnion = Movie | Show
-            interface ActedInInterface @relationshipProperties {
+            type ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;

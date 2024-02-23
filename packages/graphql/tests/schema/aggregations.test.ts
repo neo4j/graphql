@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Aggregations", () => {
@@ -53,7 +53,7 @@ describe("Aggregations", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNullable {
+            type BigIntAggregateSelection {
               average: BigInt
               max: BigInt
               min: BigInt
@@ -77,7 +77,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNullable {
+            type DateTimeAggregateSelection {
               max: DateTime
               min: DateTime
             }
@@ -94,24 +94,24 @@ describe("Aggregations", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
-            type DurationAggregateSelectionNullable {
+            type DurationAggregateSelection {
               max: Duration
               min: Duration
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -121,7 +121,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
-            type LocalDateTimeAggregateSelectionNullable {
+            type LocalDateTimeAggregateSelection {
               max: LocalDateTime
               min: LocalDateTime
             }
@@ -131,7 +131,7 @@ describe("Aggregations", () => {
             \\"\\"\\"
             scalar LocalTime
 
-            type LocalTimeAggregateSelectionNullable {
+            type LocalTimeAggregateSelection {
               max: LocalTime
               min: LocalTime
             }
@@ -152,17 +152,17 @@ describe("Aggregations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
-              imdbRating: FloatAggregateSelectionNullable!
-              isbn: StringAggregateSelectionNonNullable!
-              screenTime: DurationAggregateSelectionNullable!
-              someBigInt: BigIntAggregateSelectionNullable!
-              someInt: IntAggregateSelectionNullable!
-              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
-              someLocalTime: LocalTimeAggregateSelectionNullable!
-              someTime: TimeAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              imdbRating: FloatAggregateSelection!
+              isbn: StringAggregateSelection!
+              screenTime: DurationAggregateSelection!
+              someBigInt: BigIntAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someTime: TimeAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -366,12 +366,7 @@ describe("Aggregations", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -379,7 +374,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
-            type TimeAggregateSelectionNullable {
+            type TimeAggregateSelection {
               max: Time
               min: Time
             }
@@ -422,7 +417,7 @@ describe("Aggregations", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someId: ID
                 someString: String
                 someFloat: Float
@@ -449,7 +444,7 @@ describe("Aggregations", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNullable {
+            type BigIntAggregateSelection {
               average: BigInt
               max: BigInt
               min: BigInt
@@ -478,7 +473,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNullable {
+            type DateTimeAggregateSelection {
               max: DateTime
               min: DateTime
             }
@@ -495,309 +490,51 @@ describe("Aggregations", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
-            type DurationAggregateSelectionNullable {
+            type DurationAggregateSelection {
               max: Duration
               min: Duration
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
             }
 
-            interface Likes {
-              someBigInt: BigInt
-              someDateTime: DateTime
-              someDuration: Duration
-              someFloat: Float
-              someId: ID
-              someInt: Int
-              someLocalDateTime: LocalDateTime
-              someLocalTime: LocalTime
-              someString: String
-              someTime: Time
-            }
-
-            input LikesCreateInput {
-              someBigInt: BigInt
-              someDateTime: DateTime
-              someDuration: Duration
-              someFloat: Float
-              someId: ID
-              someInt: Int
-              someLocalDateTime: LocalDateTime
-              someLocalTime: LocalTime
-              someString: String
-              someTime: Time
-            }
-
-            input LikesSort {
-              someBigInt: SortDirection
-              someDateTime: SortDirection
-              someDuration: SortDirection
-              someFloat: SortDirection
-              someId: SortDirection
-              someInt: SortDirection
-              someLocalDateTime: SortDirection
-              someLocalTime: SortDirection
-              someString: SortDirection
-              someTime: SortDirection
-            }
-
-            input LikesUpdateInput {
-              someBigInt: BigInt
-              someBigInt_DECREMENT: BigInt
-              someBigInt_INCREMENT: BigInt
-              someDateTime: DateTime
-              someDuration: Duration
-              someFloat: Float
-              someFloat_ADD: Float
-              someFloat_DIVIDE: Float
-              someFloat_MULTIPLY: Float
-              someFloat_SUBTRACT: Float
-              someId: ID
-              someInt: Int
-              someInt_DECREMENT: Int
-              someInt_INCREMENT: Int
-              someLocalDateTime: LocalDateTime
-              someLocalTime: LocalTime
-              someString: String
-              someTime: Time
-            }
-
-            input LikesWhere {
-              AND: [LikesWhere!]
-              NOT: LikesWhere
-              OR: [LikesWhere!]
-              someBigInt: BigInt
-              someBigInt_GT: BigInt
-              someBigInt_GTE: BigInt
-              someBigInt_IN: [BigInt]
-              someBigInt_LT: BigInt
-              someBigInt_LTE: BigInt
-              someBigInt_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someBigInt_NOT_IN: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDateTime: DateTime
-              someDateTime_GT: DateTime
-              someDateTime_GTE: DateTime
-              someDateTime_IN: [DateTime]
-              someDateTime_LT: DateTime
-              someDateTime_LTE: DateTime
-              someDateTime_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDateTime_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDuration: Duration
-              someDuration_GT: Duration
-              someDuration_GTE: Duration
-              someDuration_IN: [Duration]
-              someDuration_LT: Duration
-              someDuration_LTE: Duration
-              someDuration_NOT: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDuration_NOT_IN: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someFloat: Float
-              someFloat_GT: Float
-              someFloat_GTE: Float
-              someFloat_IN: [Float]
-              someFloat_LT: Float
-              someFloat_LTE: Float
-              someFloat_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someFloat_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId: ID
-              someId_CONTAINS: ID
-              someId_ENDS_WITH: ID
-              someId_IN: [ID]
-              someId_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_STARTS_WITH: ID
-              someInt: Int
-              someInt_GT: Int
-              someInt_GTE: Int
-              someInt_IN: [Int]
-              someInt_LT: Int
-              someInt_LTE: Int
-              someInt_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someInt_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalDateTime: LocalDateTime
-              someLocalDateTime_GT: LocalDateTime
-              someLocalDateTime_GTE: LocalDateTime
-              someLocalDateTime_IN: [LocalDateTime]
-              someLocalDateTime_LT: LocalDateTime
-              someLocalDateTime_LTE: LocalDateTime
-              someLocalDateTime_NOT: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalDateTime_NOT_IN: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalTime: LocalTime
-              someLocalTime_GT: LocalTime
-              someLocalTime_GTE: LocalTime
-              someLocalTime_IN: [LocalTime]
-              someLocalTime_LT: LocalTime
-              someLocalTime_LTE: LocalTime
-              someLocalTime_NOT: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalTime_NOT_IN: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString: String
-              someString_CONTAINS: String
-              someString_ENDS_WITH: String
-              someString_IN: [String]
-              someString_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_STARTS_WITH: String
-              someTime: Time
-              someTime_GT: Time
-              someTime_GTE: Time
-              someTime_IN: [Time]
-              someTime_LT: Time
-              someTime_LTE: Time
-              someTime_NOT: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someTime_NOT_IN: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
-            scalar LocalDateTime
-
-            type LocalDateTimeAggregateSelectionNullable {
-              max: LocalDateTime
-              min: LocalDateTime
-            }
-
             \\"\\"\\"
-            A local time, represented as a time string without timezone information
+            The edge properties for the following fields:
+            * Post.likes
             \\"\\"\\"
-            scalar LocalTime
-
-            type LocalTimeAggregateSelectionNullable {
-              max: LocalTime
-              min: LocalTime
+            type Likes {
+              someBigInt: BigInt
+              someDateTime: DateTime
+              someDuration: Duration
+              someFloat: Float
+              someId: ID
+              someInt: Int
+              someLocalDateTime: LocalDateTime
+              someLocalTime: LocalTime
+              someString: String
+              someTime: Time
             }
 
-            type Mutation {
-              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
-              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-              deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
-              deleteUsers(where: UserWhere): DeleteInfo!
-              updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Post {
-              likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
-              likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
-              likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
-              title: String
-            }
-
-            type PostAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
-            input PostConnectInput {
-              likes: [PostLikesConnectFieldInput!]
-            }
-
-            input PostCreateInput {
-              likes: PostLikesFieldInput
-              title: String
-            }
-
-            input PostDeleteInput {
-              likes: [PostLikesDeleteFieldInput!]
-            }
-
-            input PostDisconnectInput {
-              likes: [PostLikesDisconnectFieldInput!]
-            }
-
-            type PostEdge {
-              cursor: String!
-              node: Post!
-            }
-
-            input PostLikesAggregateInput {
-              AND: [PostLikesAggregateInput!]
-              NOT: PostLikesAggregateInput
-              OR: [PostLikesAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: PostLikesEdgeAggregationWhereInput
-              node: PostLikesNodeAggregationWhereInput
-            }
-
-            input PostLikesConnectFieldInput {
-              edge: LikesCreateInput
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: UserConnectWhere
-            }
-
-            type PostLikesConnection {
-              edges: [PostLikesRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input PostLikesConnectionSort {
-              edge: LikesSort
-              node: UserSort
-            }
-
-            input PostLikesConnectionWhere {
-              AND: [PostLikesConnectionWhere!]
-              NOT: PostLikesConnectionWhere
-              OR: [PostLikesConnectionWhere!]
-              edge: LikesWhere
-              edge_NOT: LikesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input PostLikesCreateFieldInput {
-              edge: LikesCreateInput
-              node: UserCreateInput!
-            }
-
-            input PostLikesDeleteFieldInput {
-              where: PostLikesConnectionWhere
-            }
-
-            input PostLikesDisconnectFieldInput {
-              where: PostLikesConnectionWhere
-            }
-
-            input PostLikesEdgeAggregationWhereInput {
-              AND: [PostLikesEdgeAggregationWhereInput!]
-              NOT: PostLikesEdgeAggregationWhereInput
-              OR: [PostLikesEdgeAggregationWhereInput!]
+            input LikesAggregationWhereInput {
+              AND: [LikesAggregationWhereInput!]
+              NOT: LikesAggregationWhereInput
+              OR: [LikesAggregationWhereInput!]
               someBigInt_AVERAGE_EQUAL: BigInt
               someBigInt_AVERAGE_GT: BigInt
               someBigInt_AVERAGE_GTE: BigInt
@@ -989,6 +726,268 @@ describe("Aggregations", () => {
               someTime_MIN_GTE: Time
               someTime_MIN_LT: Time
               someTime_MIN_LTE: Time
+            }
+
+            input LikesCreateInput {
+              someBigInt: BigInt
+              someDateTime: DateTime
+              someDuration: Duration
+              someFloat: Float
+              someId: ID
+              someInt: Int
+              someLocalDateTime: LocalDateTime
+              someLocalTime: LocalTime
+              someString: String
+              someTime: Time
+            }
+
+            input LikesSort {
+              someBigInt: SortDirection
+              someDateTime: SortDirection
+              someDuration: SortDirection
+              someFloat: SortDirection
+              someId: SortDirection
+              someInt: SortDirection
+              someLocalDateTime: SortDirection
+              someLocalTime: SortDirection
+              someString: SortDirection
+              someTime: SortDirection
+            }
+
+            input LikesUpdateInput {
+              someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
+              someDateTime: DateTime
+              someDuration: Duration
+              someFloat: Float
+              someFloat_ADD: Float
+              someFloat_DIVIDE: Float
+              someFloat_MULTIPLY: Float
+              someFloat_SUBTRACT: Float
+              someId: ID
+              someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
+              someLocalDateTime: LocalDateTime
+              someLocalTime: LocalTime
+              someString: String
+              someTime: Time
+            }
+
+            input LikesWhere {
+              AND: [LikesWhere!]
+              NOT: LikesWhere
+              OR: [LikesWhere!]
+              someBigInt: BigInt
+              someBigInt_GT: BigInt
+              someBigInt_GTE: BigInt
+              someBigInt_IN: [BigInt]
+              someBigInt_LT: BigInt
+              someBigInt_LTE: BigInt
+              someBigInt_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someBigInt_NOT_IN: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someDateTime: DateTime
+              someDateTime_GT: DateTime
+              someDateTime_GTE: DateTime
+              someDateTime_IN: [DateTime]
+              someDateTime_LT: DateTime
+              someDateTime_LTE: DateTime
+              someDateTime_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someDateTime_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someDuration: Duration
+              someDuration_GT: Duration
+              someDuration_GTE: Duration
+              someDuration_IN: [Duration]
+              someDuration_LT: Duration
+              someDuration_LTE: Duration
+              someDuration_NOT: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someDuration_NOT_IN: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someFloat: Float
+              someFloat_GT: Float
+              someFloat_GTE: Float
+              someFloat_IN: [Float]
+              someFloat_LT: Float
+              someFloat_LTE: Float
+              someFloat_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someFloat_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someId: ID
+              someId_CONTAINS: ID
+              someId_ENDS_WITH: ID
+              someId_IN: [ID]
+              someId_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someId_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someId_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someId_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someId_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someId_STARTS_WITH: ID
+              someInt: Int
+              someInt_GT: Int
+              someInt_GTE: Int
+              someInt_IN: [Int]
+              someInt_LT: Int
+              someInt_LTE: Int
+              someInt_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someInt_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someLocalDateTime: LocalDateTime
+              someLocalDateTime_GT: LocalDateTime
+              someLocalDateTime_GTE: LocalDateTime
+              someLocalDateTime_IN: [LocalDateTime]
+              someLocalDateTime_LT: LocalDateTime
+              someLocalDateTime_LTE: LocalDateTime
+              someLocalDateTime_NOT: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someLocalDateTime_NOT_IN: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someLocalTime: LocalTime
+              someLocalTime_GT: LocalTime
+              someLocalTime_GTE: LocalTime
+              someLocalTime_IN: [LocalTime]
+              someLocalTime_LT: LocalTime
+              someLocalTime_LTE: LocalTime
+              someLocalTime_NOT: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someLocalTime_NOT_IN: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someString: String
+              someString_CONTAINS: String
+              someString_ENDS_WITH: String
+              someString_IN: [String]
+              someString_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someString_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someString_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someString_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someString_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someString_STARTS_WITH: String
+              someTime: Time
+              someTime_GT: Time
+              someTime_GTE: Time
+              someTime_IN: [Time]
+              someTime_LT: Time
+              someTime_LTE: Time
+              someTime_NOT: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              someTime_NOT_IN: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
+            scalar LocalDateTime
+
+            type LocalDateTimeAggregateSelection {
+              max: LocalDateTime
+              min: LocalDateTime
+            }
+
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
+            scalar LocalTime
+
+            type LocalTimeAggregateSelection {
+              max: LocalTime
+              min: LocalTime
+            }
+
+            type Mutation {
+              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Post {
+              likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
+              likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
+              likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
+              title: String
+            }
+
+            type PostAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            input PostConnectInput {
+              likes: [PostLikesConnectFieldInput!]
+            }
+
+            input PostCreateInput {
+              likes: PostLikesFieldInput
+              title: String
+            }
+
+            input PostDeleteInput {
+              likes: [PostLikesDeleteFieldInput!]
+            }
+
+            input PostDisconnectInput {
+              likes: [PostLikesDisconnectFieldInput!]
+            }
+
+            type PostEdge {
+              cursor: String!
+              node: Post!
+            }
+
+            input PostLikesAggregateInput {
+              AND: [PostLikesAggregateInput!]
+              NOT: PostLikesAggregateInput
+              OR: [PostLikesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: LikesAggregationWhereInput
+              node: PostLikesNodeAggregationWhereInput
+            }
+
+            input PostLikesConnectFieldInput {
+              edge: LikesCreateInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: UserConnectWhere
+            }
+
+            type PostLikesConnection {
+              edges: [PostLikesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input PostLikesConnectionSort {
+              edge: LikesSort
+              node: UserSort
+            }
+
+            input PostLikesConnectionWhere {
+              AND: [PostLikesConnectionWhere!]
+              NOT: PostLikesConnectionWhere
+              OR: [PostLikesConnectionWhere!]
+              edge: LikesWhere
+              edge_NOT: LikesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: UserWhere
+              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input PostLikesCreateFieldInput {
+              edge: LikesCreateInput
+              node: UserCreateInput!
+            }
+
+            input PostLikesDeleteFieldInput {
+              where: PostLikesConnectionWhere
+            }
+
+            input PostLikesDisconnectFieldInput {
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesFieldInput {
@@ -1193,19 +1192,10 @@ describe("Aggregations", () => {
               someTime_MIN_LTE: Time
             }
 
-            type PostLikesRelationship implements Likes {
+            type PostLikesRelationship {
               cursor: String!
               node: User!
-              someBigInt: BigInt
-              someDateTime: DateTime
-              someDuration: Duration
-              someFloat: Float
-              someId: ID
-              someInt: Int
-              someLocalDateTime: LocalDateTime
-              someLocalTime: LocalTime
-              someString: String
-              someTime: Time
+              properties: Likes!
             }
 
             input PostLikesUpdateConnectionInput {
@@ -1254,29 +1244,29 @@ describe("Aggregations", () => {
             }
 
             type PostUserLikesEdgeAggregateSelection {
-              someBigInt: BigIntAggregateSelectionNullable!
-              someDateTime: DateTimeAggregateSelectionNullable!
-              someDuration: DurationAggregateSelectionNullable!
-              someFloat: FloatAggregateSelectionNullable!
-              someId: IDAggregateSelectionNullable!
-              someInt: IntAggregateSelectionNullable!
-              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
-              someLocalTime: LocalTimeAggregateSelectionNullable!
-              someString: StringAggregateSelectionNullable!
-              someTime: TimeAggregateSelectionNullable!
+              someBigInt: BigIntAggregateSelection!
+              someDateTime: DateTimeAggregateSelection!
+              someDuration: DurationAggregateSelection!
+              someFloat: FloatAggregateSelection!
+              someId: IDAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someString: StringAggregateSelection!
+              someTime: TimeAggregateSelection!
             }
 
             type PostUserLikesNodeAggregateSelection {
-              someBigInt: BigIntAggregateSelectionNullable!
-              someDateTime: DateTimeAggregateSelectionNullable!
-              someDuration: DurationAggregateSelectionNullable!
-              someFloat: FloatAggregateSelectionNullable!
-              someId: IDAggregateSelectionNullable!
-              someInt: IntAggregateSelectionNullable!
-              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
-              someLocalTime: LocalTimeAggregateSelectionNullable!
-              someString: StringAggregateSelectionNullable!
-              someTime: TimeAggregateSelectionNullable!
+              someBigInt: BigIntAggregateSelection!
+              someDateTime: DateTimeAggregateSelection!
+              someDuration: DurationAggregateSelection!
+              someFloat: FloatAggregateSelection!
+              someId: IDAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someString: StringAggregateSelection!
+              someTime: TimeAggregateSelection!
             }
 
             input PostWhere {
@@ -1347,7 +1337,7 @@ describe("Aggregations", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -1355,7 +1345,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
-            type TimeAggregateSelectionNullable {
+            type TimeAggregateSelection {
               max: Time
               min: Time
             }
@@ -1396,16 +1386,16 @@ describe("Aggregations", () => {
 
             type UserAggregateSelection {
               count: Int!
-              someBigInt: BigIntAggregateSelectionNullable!
-              someDateTime: DateTimeAggregateSelectionNullable!
-              someDuration: DurationAggregateSelectionNullable!
-              someFloat: FloatAggregateSelectionNullable!
-              someId: IDAggregateSelectionNullable!
-              someInt: IntAggregateSelectionNullable!
-              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
-              someLocalTime: LocalTimeAggregateSelectionNullable!
-              someString: StringAggregateSelectionNullable!
-              someTime: TimeAggregateSelectionNullable!
+              someBigInt: BigIntAggregateSelection!
+              someDateTime: DateTimeAggregateSelection!
+              someDuration: DurationAggregateSelection!
+              someFloat: FloatAggregateSelection!
+              someId: IDAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someString: StringAggregateSelection!
+              someTime: TimeAggregateSelection!
             }
 
             input UserConnectWhere {

@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2871", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type JWT @jwt {
             id: String
             roles: [String]
@@ -87,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     });
 
     test("should include checks for auth jwt param is not null", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation addLols($input: [LOLCreateInput!]!) {
                 createLols(input: $input) {
                     lols {

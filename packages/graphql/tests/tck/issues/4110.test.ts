@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4110", () => {
     const secret = "sssh!";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Company
                 @authorization(
                     filter: [{ operations: [READ], where: { node: { inBetween: { company: { id: "example" } } } } }]
@@ -54,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     });
 
     test("wrap authenticated subquery on top level read operation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 companies {
                     inBetween {

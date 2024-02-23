@@ -20,13 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
 
 describe("multi-database", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     const id = generate({
         charset: "alphabetic",
     });
@@ -34,7 +34,7 @@ describe("multi-database", () => {
     const dbName = "non-default-db-name";
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         try {

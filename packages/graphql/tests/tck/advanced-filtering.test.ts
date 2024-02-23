@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "./utils/tck-test-utils";
 
 describe("Cypher Advanced Filtering", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 _id: ID
                 id: ID
@@ -68,7 +66,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("IN", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { _id_IN: ["123"] }) {
                     _id
@@ -94,7 +92,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("REGEX", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_MATCHES: "(?i)123.*" }) {
                     id
@@ -118,7 +116,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_NOT: "123" }) {
                     id
@@ -142,7 +140,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("NOT_IN", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_NOT_IN: ["123"] }) {
                     id
@@ -168,7 +166,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("CONTAINS", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_CONTAINS: "123" }) {
                     id
@@ -192,7 +190,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("NOT_CONTAINS", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_NOT_CONTAINS: "123" }) {
                     id
@@ -216,7 +214,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("STARTS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_STARTS_WITH: "123" }) {
                     id
@@ -240,7 +238,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("NOT_STARTS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_NOT_STARTS_WITH: "123" }) {
                     id
@@ -264,7 +262,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("ENDS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_ENDS_WITH: "123" }) {
                     id
@@ -288,7 +286,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("NOT_ENDS_WITH", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { id_NOT_ENDS_WITH: "123" }) {
                     id
@@ -312,7 +310,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { actorCount_LT: 123 }) {
                     actorCount
@@ -339,7 +337,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("LT BigInt", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { budget_LT: 9223372036854775807 }) {
                     budget
@@ -366,7 +364,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("LT String", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title_LT: "The Matrix Revolutions" }) {
                     title
@@ -389,7 +387,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { actorCount_LTE: 123 }) {
                     actorCount
@@ -416,7 +414,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("LTE BigInt", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { budget_LTE: 9223372036854775807 }) {
                     budget
@@ -443,7 +441,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("LTE String", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title_LTE: "The Matrix Revolutions" }) {
                     title
@@ -466,7 +464,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { actorCount_GT: 123 }) {
                     actorCount
@@ -493,7 +491,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("GT BigInt", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { budget_GT: 9223372036854775000 }) {
                     budget
@@ -520,7 +518,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("GT String", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title_GT: "The Matrix Revolutions" }) {
                     title
@@ -543,7 +541,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { actorCount_GTE: 123 }) {
                     actorCount
@@ -570,7 +568,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("GTE BigInt", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { budget_GTE: 9223372036854775000 }) {
                     budget
@@ -597,7 +595,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     test("GTE String", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title_GTE: "The Matrix Revolutions" }) {
                     title
@@ -621,7 +619,7 @@ describe("Cypher Advanced Filtering", () => {
 
     describe("Relationships", () => {
         test("equality", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     movies(where: { genres: { name: "some genre" } }) {
                         actorCount
@@ -648,7 +646,7 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         test("NOT", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     movies(where: { genres_NOT: { name: "some genre" } }) {
                         actorCount
@@ -675,8 +673,8 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): DocumentNode => {
-                const query = gql`
+            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
+                const query = /* GraphQL */ `
                     {
                         movies(where: { genres_${operator}: { name: "some genre" } }) {
                             actorCount
@@ -766,7 +764,7 @@ describe("Cypher Advanced Filtering", () => {
 
     describe("Connections", () => {
         test("Node and relationship properties equality", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     movies(where: { genresConnection: { node: { name: "some genre" } } }) {
                         actorCount
@@ -793,7 +791,7 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         test("Node and relationship properties NOT", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
                         actorCount
@@ -820,8 +818,8 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): DocumentNode => {
-                const query = gql`
+            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
+                const query = /* GraphQL */ `
                     {
                         movies(where: { genresConnection_${operator}: { node: { name: "some genre" } } }) {
                             actorCount

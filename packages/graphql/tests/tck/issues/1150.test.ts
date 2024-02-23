@@ -17,16 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     test("union types with auth and connection-where", async () => {
         const secret = "secret";
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -59,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
-            interface RelationProps @relationshipProperties {
+            type RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -69,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             features: { authorization: { key: secret } },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
                 drives(where: { current: true }) {
                     current
@@ -83,7 +82,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                                     }
                                 ) {
                                     edges {
-                                        current
+                                        properties {
+                                            current
+                                        }
                                         node {
                                             ... on Battery {
                                                 id
@@ -125,20 +126,20 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                             WITH this1
                             MATCH (this1)-[this2:HAS]->(this3:Battery)
                             WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                            WITH { current: this2.current, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
+                            WITH { properties: { current: this2.current, __resolveType: \\"RelationProps\\" }, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
                             RETURN edge
                             UNION
                             WITH this1
                             MATCH (this1)-[this4:HAS]->(this5:CombustionEngine)
                             WHERE this4.current = $param6
-                            WITH { current: this4.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this5), id: this5.id } } AS edge
+                            WITH { properties: { current: this4.current, __resolveType: \\"RelationProps\\" }, node: { __resolveType: \\"CombustionEngine\\", __id: id(this5), id: this5.id } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
                         RETURN { edges: edges, totalCount: totalCount } AS var6
                     }
-                    RETURN collect({ node: { driveComponentConnection: var6 } }) AS var7
+                    RETURN collect({ node: { driveComponentConnection: var6, __resolveType: \\"DriveComposition\\" } }) AS var7
                 }
                 RETURN { edges: var7, totalCount: totalCount } AS var8
             }

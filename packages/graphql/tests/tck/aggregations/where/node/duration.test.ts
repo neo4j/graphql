@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where node with Duration", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 someDuration: Duration
                 someDurationAlias: Duration @alias(property: "_someDurationAlias")
@@ -45,7 +43,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_EQUAL: "P1Y" } } }) {
                     content
@@ -86,7 +84,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDurationAlias_EQUAL: "P1Y" } } }) {
                     content
@@ -127,7 +125,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_GT: "P1Y" } } }) {
                     content
@@ -168,7 +166,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_GTE: "P1Y" } } }) {
                     content
@@ -209,7 +207,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_LT: "P1Y" } } }) {
                     content
@@ -250,7 +248,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_LTE: "P1Y" } } }) {
                     content
@@ -291,7 +289,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("AVERAGE_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_AVERAGE_EQUAL: "P1Y" } } }) {
                     content
@@ -332,7 +330,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("AVERAGE_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_AVERAGE_GT: "P1Y" } } }) {
                     content
@@ -373,7 +371,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("AVERAGE_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_AVERAGE_GTE: "P1Y" } } }) {
                     content
@@ -414,7 +412,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("AVERAGE_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_AVERAGE_LT: "P1Y" } } }) {
                     content
@@ -455,7 +453,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("AVERAGE_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_AVERAGE_LTE: "P1Y" } } }) {
                     content
@@ -496,7 +494,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MIN_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MIN_EQUAL: "P1Y" } } }) {
                     content
@@ -537,7 +535,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MIN_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MIN_GT: "P1Y" } } }) {
                     content
@@ -578,7 +576,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MIN_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MIN_GTE: "P1Y" } } }) {
                     content
@@ -619,7 +617,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MIN_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MIN_LT: "P1Y" } } }) {
                     content
@@ -660,7 +658,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MIN_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MIN_LTE: "P1Y" } } }) {
                     content
@@ -701,7 +699,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MAX_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MAX_EQUAL: "P1Y" } } }) {
                     content
@@ -742,7 +740,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MAX_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MAX_GT: "P1Y" } } }) {
                     content
@@ -783,7 +781,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MAX_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MAX_GTE: "P1Y" } } }) {
                     content
@@ -824,7 +822,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MAX_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MAX_LT: "P1Y" } } }) {
                     content
@@ -865,7 +863,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     });
 
     test("MAX_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDuration_MAX_LTE: "P1Y" } } }) {
                     content

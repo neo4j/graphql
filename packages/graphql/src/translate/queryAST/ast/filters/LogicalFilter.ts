@@ -64,6 +64,9 @@ export class LogicalFilter extends Filter {
             case "OR": {
                 return Cypher.or(...predicates);
             }
+            case "XOR": {
+                return Cypher.xor(...predicates);
+            }
         }
     }
 }

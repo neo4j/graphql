@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 
 describe("Cypher WHERE", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -47,7 +45,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Simple", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($title: String, $isFavorite: Boolean) {
                 movies(where: { title: $title, isFavorite: $isFavorite }) {
                     title
@@ -74,7 +72,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Simple AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { AND: [{ title: "some title" }] }) {
                     title
@@ -98,7 +96,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Simple AND with multiple parameters", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { AND: [{ title: "some title" }, { isFavorite: true }] }) {
                     title
@@ -123,7 +121,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Nested AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { AND: [{ AND: [{ title: "some title" }] }] }) {
                     title
@@ -147,7 +145,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Nested AND with multiple properties", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { AND: [{ AND: [{ title: "some title" }, { title: "another title" }] }] }) {
                     title
@@ -172,7 +170,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Nested AND and OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { AND: [{ OR: [{ title: "some title" }, { isFavorite: true }], id: 2 }] }) {
                     title
@@ -198,7 +196,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Super Nested AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { AND: [{ AND: [{ AND: [{ title: "some title" }] }] }] }) {
                     title
@@ -222,7 +220,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Simple OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { OR: [{ title: "some title" }] }) {
                     title
@@ -246,7 +244,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Nested OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { OR: [{ OR: [{ title: "some title" }] }] }) {
                     title
@@ -270,7 +268,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Super Nested OR", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { OR: [{ OR: [{ OR: [{ title: "some title" }] }] }] }) {
                     title
@@ -295,7 +293,7 @@ describe("Cypher WHERE", () => {
 
     describe("Where with null", () => {
         test("Match with NULL in where", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     movies(where: { title: null }) {
                         title
@@ -315,7 +313,7 @@ describe("Cypher WHERE", () => {
         });
 
         test("Match with not NULL in where", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     movies(where: { title_NOT: null }) {
                         title
@@ -336,7 +334,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Simple NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { NOT: { title: "some title" } }) {
                     title
@@ -360,7 +358,7 @@ describe("Cypher WHERE", () => {
     });
 
     test("Simple NOT, implicit AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { NOT: { title: "some title", isFavorite: false } }) {
                     title

@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodes } from "../../utils/clean-nodes";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
     const User = new UniqueType("User");
     const Group = new UniqueType("Group");
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     const Contributor = new UniqueType("Contributor");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
@@ -122,39 +122,39 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             interface Invitee {
-                id: ID! @id
+                id: ID!
                 email: String!
                 name: String
-                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
-                group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
-                status: InviteeStatus! @default(value: INVITED)
-                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
+                creator: ${User.name}! @declareRelationship 
+                group: ${Group.name}! @declareRelationship 
+                status: InviteeStatus!
+                user: ${User.name} @declareRelationship 
                 role: InviteeRole!
             }
 
             type ${Admin.name} implements Invitee {
-                id: ID! @unique
-                group: ${Group.name}!
-                creator: ${User.name}!
+                id: ID! @unique @id
+                group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
-                status: InviteeStatus!
-                user: ${User.name}
+                status: InviteeStatus! @default(value: INVITED)
+                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type ${Contributor.name} implements Invitee {
-                id: ID! @unique
+                id: ID! @unique @id
                 group: ${Group.name}! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
-                creator: ${User.name}!
+                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
-                status: InviteeStatus!
-                user: ${User.name}
+                status: InviteeStatus! @default(value: INVITED)
+                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }
 
-            interface PartnerOf @relationshipProperties {
+            type PartnerOf @relationshipProperties {
                 id: ID! @id
                 firstDay: Date
                 lastDay: Date
@@ -197,7 +197,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [User.name, Group.name, Person.name, Admin.name, Contributor.name]);
+            await cleanNodesUsingSession(session, [User.name, Group.name, Person.name, Admin.name, Contributor.name]);
         } finally {
             await session.close();
         }
@@ -217,9 +217,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                               properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                               }
                             }
                         }
                     }
@@ -257,9 +259,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                               properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                               }
                             }
                         }
                     }

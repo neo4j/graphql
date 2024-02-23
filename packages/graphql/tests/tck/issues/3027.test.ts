@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
@@ -25,7 +24,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
     describe("union", () => {
         let neoSchema: Neo4jGraphQL;
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Book {
                 originalTitle: String!
                 translatedTitle: BookTitle @relationship(type: "TRANSLATED_BOOK_TITLE", direction: IN)
@@ -52,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
         });
 
         test("should validate cardinality against all the implementations", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 mutation UpdateBooks {
                     updateBooks(
                         where: { isbn: "123" }
@@ -123,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
     describe("interface", () => {
         let neoSchema: Neo4jGraphQL;
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Book {
                 originalTitle: String!
                 translatedTitle: BookTitle @relationship(type: "TRANSLATED_BOOK_TITLE", direction: IN)
@@ -152,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
         });
 
         test("should validate cardinality against all the implementations", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 mutation UpdateBooks {
                     updateBooks(
                         where: { isbn: "123" }

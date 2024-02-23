@@ -21,14 +21,14 @@ import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { getErrorAsync } from "../../utils/get-error";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Throw error if missing @relationshipProperties", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -48,7 +48,7 @@ describe("Throw error if missing @relationshipProperties", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            type ActedIn {
                 screenTime: Int!
             }
         `;
@@ -59,12 +59,12 @@ describe("Throw error if missing @relationshipProperties", () => {
         expect(errors).toHaveLength(2);
         expect(errors[0]).toHaveProperty(
             "message",
-            "@relationship.properties invalid. Properties interface ActedIn must use directive `@relationshipProperties`."
+            "@relationship.properties invalid. Properties type ActedIn must use directive `@relationshipProperties`."
         );
         expect(errors[0]).toHaveProperty("path", ["Movie", "actors", "@relationship", "properties"]);
         expect(errors[1]).toHaveProperty(
             "message",
-            "@relationship.properties invalid. Properties interface ActedIn must use directive `@relationshipProperties`."
+            "@relationship.properties invalid. Properties type ActedIn must use directive `@relationshipProperties`."
         );
         expect(errors[1]).toHaveProperty("path", ["Actor", "movies", "@relationship", "properties"]);
     });
@@ -81,7 +81,7 @@ describe("Throw error if missing @relationshipProperties", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;

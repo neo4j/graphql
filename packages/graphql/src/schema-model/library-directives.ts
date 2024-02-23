@@ -22,7 +22,14 @@ import type { DEPRECATED } from "../constants";
 import { SHAREABLE } from "../constants";
 import type { ValueOf } from "../utils/value-of";
 
-const additionalDirectives = ["alias", "relationship", "relationshipProperties", "node", SHAREABLE] as const;
+const additionalDirectives = [
+    "alias",
+    "relationship",
+    "relationshipProperties",
+    "declareRelationship",
+    "node",
+    SHAREABLE,
+] as const;
 
 type LibraryDirectives = keyof Annotations | ValueOf<typeof additionalDirectives> | typeof DEPRECATED;
 export const LIBRARY_DIRECTIVES = [
@@ -54,6 +61,7 @@ export const FIELD_DIRECTIVES = [
     "subscriptionsAuthorization",
     "timestamp",
     "unique",
+    "declareRelationship",
     ...SCHEMA_CONFIGURATION_FIELD_DIRECTIVES,
 ] as const satisfies readonly LibraryDirectives[];
 
@@ -75,16 +83,12 @@ const OBJECT_DIRECTIVES = [
     "jwt",
     SHAREABLE,
     "deprecated",
+    "relationshipProperties",
     ...SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES,
 ] as const satisfies readonly LibraryDirectives[];
 export type ObjectDirective = ValueOf<typeof OBJECT_DIRECTIVES>;
 
-const INTERFACE_DIRECTIVES = [
-    "relationshipProperties",
-    "query",
-    "plural",
-    "limit",
-] as const satisfies readonly LibraryDirectives[];
+const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const satisfies readonly LibraryDirectives[];
 export type InterfaceDirective = ValueOf<typeof INTERFACE_DIRECTIVES>;
 
 const UNION_DIRECTIVES = ["query", "plural"] as const satisfies readonly LibraryDirectives[];

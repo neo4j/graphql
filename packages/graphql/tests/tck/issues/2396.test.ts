@@ -17,18 +17,16 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        const typeDefsStr = `
+        typeDefs = /* GraphQL */ `
             type PostalCode @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
                 number: String! @unique
@@ -116,7 +114,6 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             extend type Estate @authorization(filter: [{ where: { node: { archivedAt: null } } }])
         `;
 
-        typeDefs = gql(typeDefsStr);
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: "secret" } },
@@ -124,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("nested relationship filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Mandates($where: MandateWhere, $options: MandateOptions) {
                 mandates(options: $options, where: $where) {
                     valuation {
@@ -189,7 +186,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("nested relationship filter with AND", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Mandates($where: MandateWhere, $options: MandateOptions) {
                 mandates(options: $options, where: $where) {
                     valuation {
@@ -256,7 +253,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("query should not contain skip or limit", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Mandates($where: MandateWhere, $options: MandateOptions) {
                 mandates(options: $options, where: $where) {
                     valuation {
@@ -358,7 +355,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("query should contain offset of 0 and limit of 20", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Mandates($where: MandateWhere, $options: MandateOptions) {
                 mandates(options: $options, where: $where) {
                     valuation {
@@ -474,7 +471,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("query should contain offset of 20 and limit of 40", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query Mandates($where: MandateWhere, $options: MandateOptions) {
                 mandates(options: $options, where: $where) {
                     valuation {

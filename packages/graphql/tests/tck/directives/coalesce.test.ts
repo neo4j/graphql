@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "../utils/tck-test-utils";
 
 describe("Cypher coalesce()", () => {
     beforeAll(() => {
@@ -30,10 +29,10 @@ describe("Cypher coalesce()", () => {
         unsetTestEnvVars(undefined);
     });
     test("Simple coalesce", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             interface UserInterface {
-                fromInterface: String! @coalesce(value: "From Interface")
-                toBeOverridden: String! @coalesce(value: "To Be Overridden")
+                fromInterface: String!
+                toBeOverridden: String!
             }
 
             type User implements UserInterface {
@@ -58,7 +57,7 @@ describe("Cypher coalesce()", () => {
             },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query (
                 $id: ID
                 $name: String
@@ -98,7 +97,7 @@ describe("Cypher coalesce()", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (coalesce(this.verified, false) = $param2) AND coalesce(this.numberOfFriends, 0) > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
+            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (coalesce(this.verified, false) = $param2) AND coalesce(this.numberOfFriends, 0) > $param3 AND coalesce(this.rating, 2.5) < $param4 AND this.fromInterface = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
             RETURN this { .name } AS this"
         `);
 
@@ -119,7 +118,7 @@ describe("Cypher coalesce()", () => {
     });
 
     test("Coalesce with enum in match", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             enum Status {
                 ACTIVE
                 INACTIVE
@@ -141,7 +140,7 @@ describe("Cypher coalesce()", () => {
             },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { status: ACTIVE }) {
                     id
@@ -166,7 +165,7 @@ describe("Cypher coalesce()", () => {
     });
 
     test("Coalesce with enum in projection", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             enum Status {
                 ACTIVE
                 INACTIVE
@@ -192,7 +191,7 @@ describe("Cypher coalesce()", () => {
             },
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Actors {
                 actors {
                     moviesConnection(where: { node: { status: ACTIVE } }) {
@@ -221,7 +220,7 @@ describe("Cypher coalesce()", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { id: this1.id, status: this1.status } }) AS var2
+                    RETURN collect({ node: { id: this1.id, status: this1.status, __resolveType: \\"Movie\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -236,7 +235,7 @@ describe("Cypher coalesce()", () => {
     });
 
     test("Coalesce with enum list in projection", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             enum Status {
                 ACTIVE
                 INACTIVE
@@ -255,7 +254,7 @@ describe("Cypher coalesce()", () => {
             typeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Actors {
                 actors {
                     moviesConnection(where: { node: { statuses: [ACTIVE, INACTIVE] } }) {
@@ -284,7 +283,7 @@ describe("Cypher coalesce()", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { id: this1.id, statuses: this1.statuses } }) AS var2
+                    RETURN collect({ node: { id: this1.id, statuses: this1.statuses, __resolveType: \\"Movie\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

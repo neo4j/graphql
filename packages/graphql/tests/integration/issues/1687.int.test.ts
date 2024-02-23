@@ -20,9 +20,9 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1687", () => {
     const productionType = new UniqueType("Production");
@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
     const genreType = new UniqueType("Genre");
 
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
 
     async function graphqlQuery(query: string) {
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = `
@@ -81,11 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
                 ${genreType.plural}(where: {
                     ${movieType.operations.connection}_SOME: {
                         node: {
-                            _on: {
-                                ${movieType.name}: {
-                                    title: "Matrix"
-                                }
-                            }
+                            title: "Matrix"
                         }
                     }
                 }) {
