@@ -21,8 +21,6 @@ import { isObject, isString } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
-import { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import { InterfaceEntity } from "../../../../schema-model/entity/InterfaceEntity";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -32,15 +30,9 @@ import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { Field } from "../../ast/fields/Field";
-import { TypenameFilter } from "../../ast/filters/property-filters/TypenameFilter";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
-import { CypherOperation } from "../../ast/operations/CypherOperation";
-import { CypherScalarOperation } from "../../ast/operations/CypherScalarOperation";
 import { CompositeConnectionPartial } from "../../ast/operations/composite/CompositeConnectionPartial";
 import { CompositeConnectionReadOperation } from "../../ast/operations/composite/CompositeConnectionReadOperation";
-import { CompositeCypherOperation } from "../../ast/operations/composite/CompositeCypherOperation";
-import { CompositeReadPartial } from "../../ast/operations/composite/CompositeReadPartial";
-import { CustomCypherSelection } from "../../ast/selection/CustomCypherSelection";
 import type { EntitySelection } from "../../ast/selection/EntitySelection";
 import { NodeSelection } from "../../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../ast/selection/RelationshipSelection";
@@ -57,75 +49,6 @@ export class ConnectionFactory {
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
-    }
-
-    public createCustomCypherOperation({
-        resolveTree,
-        context,
-        entity,
-        varName,
-    }: {
-        resolveTree: ResolveTree;
-        context: Neo4jGraphQLTranslationContext;
-        entity?: EntityAdapter;
-        varName?: string;
-    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
-        const operationAttribute =
-            context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
-            context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
-
-        if (!operationAttribute) {
-            throw new Error(`Failed to collect information about the operation field with name: ${resolveTree.name}`);
-        }
-        const operationField = new AttributeAdapter(operationAttribute);
-        if (!entity) {
-            const selection = new CustomCypherSelection({
-                operationField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
-            });
-            return new CypherScalarOperation(selection);
-        }
-        if (isConcreteEntity(entity)) {
-            const selection = new CustomCypherSelection({
-                operationField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
-            });
-            const customCypher = new CypherOperation({ target: entity, selection });
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
-                entity,
-                operation: customCypher,
-                resolveTree,
-                context,
-                whereArgs: {},
-            });
-        }
-        const selection = new CustomCypherSelection({
-            operationField,
-            target: entity,
-            alias: varName,
-            rawArguments: resolveTree.args,
-        });
-
-        const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
-            const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
-            const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
-            // The Typename filter here is required to access concrete entities from a Cypher Union selection.
-            // It would be probably more ergonomic to pass the label filter with the selection,
-            // although is currently not possible to do so with Cypher.Builder
-            partial.addFilters(new TypenameFilter([concreteEntity]));
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
-                entity: concreteEntity,
-                operation: partial,
-                resolveTree,
-                context,
-                whereArgs: {},
-            });
-        });
-        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
     }
 
     public createCompositeConnectionOperationAST({

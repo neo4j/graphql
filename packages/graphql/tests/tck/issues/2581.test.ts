@@ -106,12 +106,13 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                         WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
-                RETURN head(collect(this0 { .name, .year, soldCopies: this1 })) AS this0
+                WITH this0 { .name, .year, soldCopies: var2 } AS this0
+                RETURN head(collect(this0)) AS var3
             }
-            RETURN this { .name, mostRecentBook: this0 } AS this"
+            RETURN this { .name, mostRecentBook: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -149,12 +150,13 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                         WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
-                RETURN head(collect(this0 { .name, .year, soldCopiesWithoutColumnName: this1 })) AS this0
+                WITH this0 { .name, .year, soldCopiesWithoutColumnName: var2 } AS this0
+                RETURN head(collect(this0)) AS var3
             }
-            RETURN this { .name, mostRecentBook: this0 } AS this"
+            RETURN this { .name, mostRecentBook: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

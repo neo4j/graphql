@@ -32,9 +32,12 @@ import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
 import type { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import type { CypherOperation } from "../ast/operations/CypherOperation";
+import type { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import type { ReadOperation } from "../ast/operations/ReadOperation";
 import type { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
+import type { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import type { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import type { Operation } from "../ast/operations/operations";
 import type { FulltextSelection } from "../ast/selection/FulltextSelection";
@@ -164,7 +167,7 @@ export class OperationsFactory {
                 });
             }
             case "CUSTOM_CYPHER": {
-                return this.customCypherFactory.createCustomCypherOperation({ entity, resolveTree, context, varName });
+                return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
             }
         }
     }
@@ -239,6 +242,15 @@ export class OperationsFactory {
         return this.readFactory.hydrateReadOperation(arg);
     }
 
+    public createCustomCypherOperation(arg: {
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        entity?: EntityAdapter;
+        cypherAttributeField: AttributeAdapter;
+        cypherArguments?: Record<string, any>;
+    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+        return this.customCypherFactory.createCustomCypherOperation(arg);
+    }
     /**
      * END of proxy methods
      **/

@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
     let typeDefs: string;
@@ -142,9 +142,10 @@ describe("Cypher directive", () => {
                     RETURN a
                 }
                 WITH a AS this0
-                RETURN head(collect(this0 { .name })) AS this0
+                WITH this0 { .name } AS this0
+                RETURN head(collect(this0)) AS var1
             }
-            RETURN this { .title, topActor: this0 } AS this"
+            RETURN this { .title, topActor: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -170,10 +171,10 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH res AS this0
+                RETURN this0 AS var1
             }
-            RETURN this { randomNumber: this0 } AS this"
+            RETURN this { randomNumber: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -201,10 +202,10 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH res AS this0
+                RETURN this0 AS var1
             }
-            RETURN this { randomNumber: this0 } AS this"
+            RETURN this { randomNumber: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -237,13 +238,13 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH res AS this0
+                RETURN this0 AS var1
             }
             WITH *
-            ORDER BY this0 ASC
+            ORDER BY var1 ASC
             LIMIT $param0
-            RETURN this { randomNumber: this0 } AS this"
+            RETURN this { randomNumber: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -293,11 +294,13 @@ describe("Cypher directive", () => {
                         RETURN m
                     }
                     WITH m AS this1
-                    RETURN collect(this1 { .title }) AS this1
+                    WITH this1 { .title } AS this1
+                    RETURN collect(this1) AS var2
                 }
-                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
+                WITH this0 { .name, movies: var2 } AS this0
+                RETURN head(collect(this0)) AS var3
             }
-            RETURN this { .title, topActor: this0 } AS this"
+            RETURN this { .title, topActor: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -368,15 +371,19 @@ describe("Cypher directive", () => {
                                 RETURN m
                             }
                             WITH m AS this3
-                            RETURN collect(this3 { .title }) AS this3
+                            WITH this3 { .title } AS this3
+                            RETURN collect(this3) AS var4
                         }
-                        RETURN head(collect(this2 { .name, movies: this3 })) AS this2
+                        WITH this2 { .name, movies: var4 } AS this2
+                        RETURN head(collect(this2)) AS var5
                     }
-                    RETURN collect(this1 { .title, topActor: this2 }) AS this1
+                    WITH this1 { .title, topActor: var5 } AS this1
+                    RETURN collect(this1) AS var6
                 }
-                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
+                WITH this0 { .name, movies: var6 } AS this0
+                RETURN head(collect(this0)) AS var7
             }
-            RETURN this { .title, topActor: this0 } AS this"
+            RETURN this { .title, topActor: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -424,11 +431,13 @@ describe("Cypher directive", () => {
                         RETURN m
                     }
                     WITH m AS this1
-                    RETURN collect(this1 { .title }) AS this1
+                    WITH this1 { .title } AS this1
+                    RETURN collect(this1) AS var2
                 }
-                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
+                WITH this0 { .name, movies: var2 } AS this0
+                RETURN head(collect(this0)) AS var3
             }
-            RETURN this { .title, topActor: this0 } AS this"
+            RETURN this { .title, topActor: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -492,7 +501,8 @@ describe("Cypher directive", () => {
                         RETURN a
                     }
                     WITH a AS this2
-                    RETURN head(collect(this2 { .name, .year })) AS this2
+                    WITH this2 { .name, .year } AS this2
+                    RETURN head(collect(this2)) AS var3
                 }
                 CALL {
                     WITH this1
@@ -502,24 +512,26 @@ describe("Cypher directive", () => {
                         MATCH (a:Actor)
                         RETURN a
                     }
-                    WITH a AS this3
-                    RETURN collect(this3 { .name }) AS this3
+                    WITH a AS this4
+                    WITH this4 { .name } AS this4
+                    RETURN collect(this4) AS var5
                 }
-                WITH *, this0 AS this4
+                WITH *, this0 AS this6
                 CALL {
-                    WITH this4
+                    WITH this6
                     CALL {
-                        WITH this4
-                        WITH this4 AS this
+                        WITH this6
+                        WITH this6 AS this
                         MATCH (a:Actor)
                         RETURN a
                     }
-                    WITH a AS this5
-                    RETURN head(collect(this5 { .name })) AS this5
+                    WITH a AS this7
+                    WITH this7 { .name } AS this7
+                    RETURN head(collect(this7)) AS var8
                 }
                 RETURN collect(CASE
-                    WHEN this0:Movie THEN this0 { .id, .title, topActor: this2, actors: this3, __resolveType: \\"Movie\\" }
-                    WHEN this0:TVShow THEN this0 { .id, .title, topActor: this5, __resolveType: \\"TVShow\\" }
+                    WHEN this0:Movie THEN this0 { .id, .title, topActor: var3, actors: var5, __resolveType: \\"Movie\\" }
+                    WHEN this0:TVShow THEN this0 { .id, .title, topActor: var8, __resolveType: \\"TVShow\\" }
                 END) AS this0
             }
             RETURN this { movieOrTVShow: this0 } AS this"
@@ -619,14 +631,15 @@ describe("Cypher directive", () => {
                     MATCH (m:Movie {title: $param0})
                     RETURN m
                 }
-                WITH m AS this
+                WITH m AS this0
                 CALL {
-                    WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this1 { .name } AS this1
-                    RETURN collect(this1) AS var2
+                    WITH this0
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH this2 { .name } AS this2
+                    RETURN collect(this2) AS var3
                 }
-                RETURN this { .title, actors: var2 } AS this"
+                WITH this0 { .title, actors: var3 } AS this0
+                RETURN this0 AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -680,14 +693,15 @@ describe("Cypher directive", () => {
                     MATCH (m:Movie {title: $param0})
                     RETURN m
                 }
-                WITH m AS this
+                WITH m AS this0
                 CALL {
-                    WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this1 { .name } AS this1
-                    RETURN collect(this1) AS var2
+                    WITH this0
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH this2 { .name } AS this2
+                    RETURN collect(this2) AS var3
                 }
-                RETURN this { .title, actors: var2 } AS this"
+                WITH this0 { .title, actors: var3 } AS this0
+                RETURN this0 AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -752,9 +766,10 @@ describe("Cypher directive", () => {
                         WITH this2 { .name } AS this2
                         RETURN collect(this2) AS var3
                     }
-                    RETURN collect(this0 { .title, actors: var3 }) AS this0
+                    WITH this0 { .title, actors: var3 } AS this0
+                    RETURN collect(this0) AS var4
                 }
-                RETURN this { custom: this0 } AS this"
+                RETURN this { custom: var4 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

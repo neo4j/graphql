@@ -42,12 +42,59 @@ export class CustomCypherFactory {
         resolveTree,
         context,
         entity,
-        varName,
+        cypherAttributeField,
+        cypherArguments = {},
     }: {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
-        varName?: string;
+        cypherAttributeField: AttributeAdapter;
+        cypherArguments?: Record<string, any>;
+    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+        const selection = new CustomCypherSelection({
+            operationField: cypherAttributeField,
+            rawArguments: cypherArguments,
+            isNested: true,
+        });
+        if (!entity) {
+            return new CypherScalarOperation(selection, cypherAttributeField, true);
+        }
+        if (isConcreteEntity(entity)) {
+            const customCypher = new CypherOperation({
+                cypherAttributeField: cypherAttributeField,
+                target: entity,
+                selection,
+            });
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+        }
+
+        const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
+            const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
+            const partial = new CompositeReadPartial({ target: concreteEntity, selection: partialSelection });
+            // The Typename filter here is required to access concrete entities from a Cypher Union selection.
+            // It would be probably more ergonomic to pass the label filter with the selection,
+            // although is currently not possible to do so with Cypher.Builder
+            // https://github.com/neo4j/cypher-builder/issues/300
+            partial.addFilters(new TypenameFilter([concreteEntity]));
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
+                entity: concreteEntity,
+                operation: partial,
+                resolveTree,
+                context,
+                whereArgs: {},
+            });
+        });
+        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
+    }
+
+    public createTopLevelCustomCypherOperation({
+        resolveTree,
+        context,
+        entity,
+    }: {
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        entity?: EntityAdapter;
     }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
         const operationAttribute =
             context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
@@ -56,32 +103,24 @@ export class CustomCypherFactory {
         if (!operationAttribute) {
             throw new Error(`Failed to collect information about the operation field with name: ${resolveTree.name}`);
         }
+
         const operationField = new AttributeAdapter(operationAttribute);
-        if (!entity) {
-            const selection = new CustomCypherSelection({
-                operationField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
-            });
-            return new CypherScalarOperation(selection);
-        }
-        if (isConcreteEntity(entity)) {
-            const selection = new CustomCypherSelection({
-                operationField,
-                target: entity,
-                alias: varName,
-                rawArguments: resolveTree.args,
-            });
-            const customCypher = new CypherOperation({ target: entity, selection });
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
-        }
         const selection = new CustomCypherSelection({
             operationField,
-            target: entity,
-            alias: varName,
             rawArguments: resolveTree.args,
+            isNested: false,
         });
+        if (!entity) {
+            return new CypherScalarOperation(selection, operationField, false);
+        }
+        if (isConcreteEntity(entity)) {
+            const customCypher = new CypherOperation({
+                cypherAttributeField: operationField,
+                target: entity,
+                selection,
+            });
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+        }
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
             const partialSelection = new NodeSelection({ target: concreteEntity, useContextTarget: true });
@@ -89,6 +128,7 @@ export class CustomCypherFactory {
             // The Typename filter here is required to access concrete entities from a Cypher Union selection.
             // It would be probably more ergonomic to pass the label filter with the selection,
             // although is currently not possible to do so with Cypher.Builder
+            // https://github.com/neo4j/cypher-builder/issues/300
             partial.addFilters(new TypenameFilter([concreteEntity]));
             return this.queryASTFactory.operationsFactory.hydrateReadOperation({
                 entity: concreteEntity,

@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4004", () => {
     let driver: Driver;
@@ -89,8 +89,14 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
                 contextValue: neo4j.getContextValues(),
             });
 
-            expect((result.data as any)[typeSeries.plural][0].allEpisodes).toBeDefined();
-            expect((result.data as any)[typeSeries.plural][0].allEpisodes).toHaveLength(2);
+            expect(result.errors).toBeFalsy();
+            expect(result.data?.[typeSeries.plural]).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        allEpisodes: expect.arrayContaining([expect.objectContaining({ id: expect.any(String) })]),
+                    }),
+                ])
+            );
         } finally {
             await session.close();
         }

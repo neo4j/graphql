@@ -193,25 +193,26 @@ describe("Missing custom Cypher on unions", () => {
                             RETURN DISTINCT obj as result
                         }
                         WITH result AS this6
-                        RETURN collect(this6 { .hasSortKey, iri: this6.uri }) AS this6
+                        WITH this6 { .hasSortKey, iri: this6.uri } AS this6
+                        RETURN collect(this6) AS var7
                     }
-                    WITH this5 { hierarchicalPathNodes: this6, __resolveType: \\"HierarchicalComponent\\", __id: id(this5) } AS this5
+                    WITH this5 { hierarchicalPathNodes: var7, __resolveType: \\"HierarchicalComponent\\", __id: id(this5) } AS this5
                     RETURN this5 AS var3
                     UNION
                     WITH *
-                    MATCH (this)-[this7:relatesToChild]->(this8:Expression:MyTenant:Resource)
-                    WITH this8 { __resolveType: \\"Expression\\", __id: id(this8) } AS this8
-                    RETURN this8 AS var3
+                    MATCH (this)-[this8:relatesToChild]->(this9:Expression:MyTenant:Resource)
+                    WITH this9 { __resolveType: \\"Expression\\", __id: id(this9) } AS this9
+                    RETURN this9 AS var3
                     UNION
                     WITH *
-                    MATCH (this)-[this9:relatesToChild]->(this10:Work:MyTenant:Resource)
-                    WITH this10 { __resolveType: \\"Work\\", __id: id(this10) } AS this10
-                    RETURN this10 AS var3
+                    MATCH (this)-[this10:relatesToChild]->(this11:Work:MyTenant:Resource)
+                    WITH this11 { __resolveType: \\"Work\\", __id: id(this11) } AS this11
+                    RETURN this11 AS var3
                     UNION
                     WITH *
-                    MATCH (this)-[this11:relatesToChild]->(this12:Fragment:MyTenant:Resource)
-                    WITH this12 { __resolveType: \\"Fragment\\", __id: id(this12) } AS this12
-                    RETURN this12 AS var3
+                    MATCH (this)-[this12:relatesToChild]->(this13:Fragment:MyTenant:Resource)
+                    WITH this13 { __resolveType: \\"Fragment\\", __id: id(this13) } AS this13
+                    RETURN this13 AS var3
                 }
                 WITH var3
                 RETURN collect(var3) AS var3

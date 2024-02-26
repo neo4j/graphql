@@ -93,37 +93,37 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     \\"Movie\\" IN labels(node)
                 RETURN node
             }
-            WITH node AS this
+            WITH node AS this0
             CALL {
-                WITH this
+                WITH this0
                 CALL {
                     WITH *
-                    MATCH (this)
-                    WHERE this:Book
+                    MATCH (this0)
+                    WHERE this0:Book
                     CALL {
-                        WITH this
-                        MATCH (this)<-[this0:WROTE]-(this1:Author)
-                        WITH this1 { .id } AS this1
-                        RETURN head(collect(this1)) AS var2
+                        WITH this0
+                        MATCH (this0)<-[this1:WROTE]-(this2:Author)
+                        WITH this2 { .id } AS this2
+                        RETURN head(collect(this2)) AS var3
                     }
-                    WITH this { .id, author: var2, __resolveType: \\"Book\\", __id: id(this) } AS this
-                    RETURN this AS var3
+                    WITH this0 { .id, author: var3, __resolveType: \\"Book\\", __id: id(this0) } AS this0
+                    RETURN this0 AS var4
                     UNION
                     WITH *
-                    MATCH (this)
-                    WHERE this:Movie
+                    MATCH (this0)
+                    WHERE this0:Movie
                     CALL {
-                        WITH this
-                        MATCH (this)<-[this4:DIRECTED]-(this5:Director)
-                        WITH this5 { .id } AS this5
-                        RETURN head(collect(this5)) AS var6
+                        WITH this0
+                        MATCH (this0)<-[this5:DIRECTED]-(this6:Director)
+                        WITH this6 { .id } AS this6
+                        RETURN head(collect(this6)) AS var7
                     }
-                    WITH this { .id, director: var6, __resolveType: \\"Movie\\", __id: id(this) } AS this
-                    RETURN this AS var3
+                    WITH this0 { .id, director: var7, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
+                    RETURN this0 AS var4
                 }
-                RETURN var3
+                RETURN var4
             }
-            RETURN var3 AS this"
+            RETURN var4 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -202,37 +202,37 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     \\"Movie\\" IN labels(node)
                 RETURN node
             }
-            WITH node AS this
+            WITH node AS this0
             CALL {
-                WITH this
+                WITH this0
                 CALL {
                     WITH *
-                    MATCH (this)
-                    WHERE this:Book
+                    MATCH (this0)
+                    WHERE this0:Book
                     CALL {
-                        WITH this
-                        MATCH (this)<-[this0:WROTE]-(this1:Author)
-                        WITH this1 { .id } AS this1
-                        RETURN head(collect(this1)) AS var2
+                        WITH this0
+                        MATCH (this0)<-[this1:WROTE]-(this2:Author)
+                        WITH this2 { .id } AS this2
+                        RETURN head(collect(this2)) AS var3
                     }
-                    WITH this { .id, author: var2, __resolveType: \\"Book\\", __id: id(this) } AS this
-                    RETURN this AS var3
+                    WITH this0 { .id, author: var3, __resolveType: \\"Book\\", __id: id(this0) } AS this0
+                    RETURN this0 AS var4
                     UNION
                     WITH *
-                    MATCH (this)
-                    WHERE this:Movie
+                    MATCH (this0)
+                    WHERE this0:Movie
                     CALL {
-                        WITH this
-                        MATCH (this)<-[this4:DIRECTED]-(this5:Director)
-                        WITH this5 { .id } AS this5
-                        RETURN head(collect(this5)) AS var6
+                        WITH this0
+                        MATCH (this0)<-[this5:DIRECTED]-(this6:Director)
+                        WITH this6 { .id } AS this6
+                        RETURN head(collect(this6)) AS var7
                     }
-                    WITH this { .id, director: var6, __resolveType: \\"Movie\\", __id: id(this) } AS this
-                    RETURN this AS var3
+                    WITH this0 { .id, director: var7, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
+                    RETURN this0 AS var4
                 }
-                RETURN var3
+                RETURN var4
             }
-            RETURN var3 AS this"
+            RETURN var4 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

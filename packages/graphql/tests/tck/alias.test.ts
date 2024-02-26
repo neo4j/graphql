@@ -80,15 +80,16 @@ describe("Cypher Alias", () => {
                     RETURN m
                 }
                 WITH m AS this0
-                RETURN collect(this0 { aliasCustomId: this0.id }) AS this0
+                WITH this0 { aliasCustomId: this0.id } AS this0
+                RETURN collect(this0) AS var1
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this2:Actor)
-                WITH this2 { aliasActorsName: this2.name } AS this2
-                RETURN collect(this2) AS var3
+                MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH this3 { aliasActorsName: this3.name } AS this3
+                RETURN collect(this3) AS var4
             }
-            RETURN this { movieId: this.id, actors: var3, custom: this0 } AS this"
+            RETURN this { movieId: this.id, actors: var4, custom: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

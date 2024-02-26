@@ -78,9 +78,10 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -130,9 +131,10 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -175,9 +177,10 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
