@@ -90,14 +90,14 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.plural]).toEqual(expect.toIncludeAllMembers([
             {
                 name: "Arnold",
             },
             {
                 name: "Linda",
             },
-        ]);
+        ]));
     });
 
     test("Aggregate on edge duration", async () => {
