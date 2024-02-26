@@ -124,15 +124,15 @@ export class ConnectionReadOperation extends Operation {
         }
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq).innerWith(nestedContext.target);
+            return new Cypher.Call(sq).importWith(nestedContext.target);
         });
 
         const normalFilterSubqueries = this.getFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq).innerWith(nestedContext.target);
+            return new Cypher.Call(sq).importWith(nestedContext.target);
         });
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
-
+      
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();
@@ -231,7 +231,7 @@ export class ConnectionReadOperation extends Operation {
                 ...postPaginationSubqueries,
                 new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
             )
-        ).innerWith(edgesVar);
+        ).importWith(edgesVar);
     }
 
     private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {

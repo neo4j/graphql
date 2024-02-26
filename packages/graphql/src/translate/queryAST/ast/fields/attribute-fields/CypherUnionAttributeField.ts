@@ -19,12 +19,12 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { filterTruthy } from "../../../../../utils/utils";
 import { CypherAnnotationSubqueryGenerator } from "../../../cypher-generators/CypherAnnotationSubqueryGenerator";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { CypherAttributeField } from "./CypherAttributeField";
 import type { CypherUnionAttributePartial } from "./CypherUnionAttributePartial";
-import { filterTruthy } from "../../../../../utils/utils";
 
 // Should Cypher be an operation?
 export class CypherUnionAttributeField extends CypherAttributeField {
@@ -68,7 +68,7 @@ export class CypherUnionAttributeField extends CypherAttributeField {
             });
 
             const callSubqueries = p.getSubqueries(nestedContext).map((sq) => {
-                return new Cypher.Call(sq).innerWith(innerNode);
+                return new Cypher.Call(sq).importWith(innerNode);
             });
             if (callSubqueries.length === 0) return undefined;
             const withClause = new Cypher.With("*", [this.customCypherVar, innerNode]);

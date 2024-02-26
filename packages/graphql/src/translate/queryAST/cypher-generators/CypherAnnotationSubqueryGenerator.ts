@@ -24,8 +24,8 @@ import { QueryASTContext } from "../ast/QueryASTContext";
 import type { Field } from "../ast/fields/Field";
 import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { assertIsCypherNode } from "../utils/assert-is-cypher-node";
-import { wrapSubqueryInCall } from "../utils/wrap-subquery-in-call";
 import { replaceArgumentsInStatement } from "../utils/replace-arguments-in-statement";
+import { wrapSubqueryInCall } from "../utils/wrap-subquery-in-call";
 
 /** Variable exposed to the user in their custom cypher */
 const CYPHER_TARGET_VARIABLE = new Cypher.NamedVariable("this");
@@ -140,7 +140,7 @@ export class CypherAnnotationSubqueryGenerator {
 
         const statementSubquery = Cypher.concat(aliasTargetToPublicTarget, statementCypherQuery);
 
-        const callStatement = new Cypher.Call(statementSubquery).innerWith(target);
+        const callStatement = new Cypher.Call(statementSubquery).importWith(target);
 
         if (this.attribute.typeHelper.isScalar() || this.attribute.typeHelper.isEnum()) {
             callStatement.unwind([this.columnName, this.returnVariable]);

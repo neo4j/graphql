@@ -19,15 +19,15 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import { MutationOperation } from "./operations";
-import type { OperationTranspileResult } from "./operations";
-import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
 import type { Filter } from "../filters/Filter";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
-import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
+import type { OperationTranspileResult } from "./operations";
+import { MutationOperation } from "./operations";
 
 export class DeleteOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter | InterfaceEntityAdapter;
@@ -115,7 +115,7 @@ export class DeleteOperation extends MutationOperation {
         const unwindDeleteVar = new Cypher.Variable();
         const deleteClause = new Cypher.Unwind([deleteVar, unwindDeleteVar]).detachDelete(unwindDeleteVar);
 
-        const deleteBlock = new Cypher.Call(deleteClause).innerWith(deleteVar);
+        const deleteBlock = new Cypher.Call(deleteClause).importWith(deleteVar);
         const nestedOperations: (Cypher.Call | Cypher.With)[] = this.getNestedDeleteSubQueries(context);
         const statements = this.appendFilters(
             [selection, ...extraSelections, ...filterSubqueries, ...authBeforeSubqueries],
@@ -177,7 +177,7 @@ export class DeleteOperation extends MutationOperation {
         const nestedOperations: Cypher.Call[] = [];
         for (const nestedDeleteOperation of this.nestedOperations) {
             const { clauses } = nestedDeleteOperation.transpile(context);
-            nestedOperations.push(...clauses.map((c) => new Cypher.Call(c).innerWith("*")));
+            nestedOperations.push(...clauses.map((c) => new Cypher.Call(c).importWith("*")));
         }
         return nestedOperations;
     }
