@@ -148,7 +148,7 @@ export class ReadOperation extends Operation {
         const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).innerWith(nestedContext.target)
+            new Cypher.Call(sq).importWith(nestedContext.target)
         );
 
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);

@@ -18,17 +18,17 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { RelationshipWhereOperator } from "../../../where/types";
-import { Filter } from "./Filter";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { QueryASTNode } from "../QueryASTNode";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { isConcreteEntity } from "../../utils/is-concrete-entity";
-import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipWhereOperator } from "../../../where/types";
 import { hasTarget } from "../../utils/context-has-target";
 import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
+import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
+import { Filter } from "./Filter";
 
 export class ConnectionFilter extends Filter {
     protected innerFilters: Filter[] = [];
@@ -203,7 +203,7 @@ export class ConnectionFilter extends Filter {
         const subqueries = this.innerFilters.flatMap((f) => {
             const nestedSubqueries = f
                 .getSubqueries(queryASTContext)
-                .map((sq) => new Cypher.Call(sq).innerWith(queryASTContext.target));
+                .map((sq) => new Cypher.Call(sq).importWith(queryASTContext.target));
             const selection = f.getSelection(queryASTContext);
             const predicate = f.getPredicate(queryASTContext);
             const clauses = [...selection, ...nestedSubqueries];
@@ -249,7 +249,7 @@ export class ConnectionFilter extends Filter {
                     const returnVar = new Cypher.Variable();
                     truthyFilters.push(returnVar);
                     return new Cypher.Call(sq)
-                        .innerWith(queryASTContext.target)
+                        .importWith(queryASTContext.target)
                         .with("*")
                         .where(predicate)
                         .return([Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0)), returnVar]);
@@ -268,7 +268,7 @@ export class ConnectionFilter extends Filter {
                     const returnVar = new Cypher.Variable();
                     falsyFilters.push(returnVar);
                     return new Cypher.Call(sq)
-                        .innerWith(queryASTContext.target)
+                        .importWith(queryASTContext.target)
                         .with("*")
                         .where(Cypher.not(predicate))
                         .return([Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0)), returnVar]);
