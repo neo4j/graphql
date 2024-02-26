@@ -123,9 +123,16 @@ export class ConnectionReadOperation extends Operation {
             selectionClause = new Cypher.With("*");
         }
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).importWith(nestedContext.target)
-        );
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) => {
+            return new Cypher.Call(sq).importWith(nestedContext.target);
+        });
+
+        const normalFilterSubqueries = this.getFilterSubqueries(nestedContext).map((sq) => {
+            return new Cypher.Call(sq).importWith(nestedContext.target);
+        });
+
+        const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
+      
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();
@@ -138,7 +145,7 @@ export class ConnectionReadOperation extends Operation {
 
         let withWhere: Cypher.With | undefined;
 
-        if (authFilterSubqueries.length > 0) {
+        if (filtersSubqueries.length > 0) {
             withWhere = new Cypher.With("*");
             this.addFiltersToClause(withWhere, nestedContext);
         } else {
@@ -171,7 +178,7 @@ export class ConnectionReadOperation extends Operation {
                 Cypher.concat(
                     ...extraMatches,
                     selectionClause,
-                    ...authFilterSubqueries,
+                    ...filtersSubqueries,
                     withWhere,
                     withCollectEdgesAndTotalCount,
                     unwindAndProjectionSubquery,
@@ -184,6 +191,10 @@ export class ConnectionReadOperation extends Operation {
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
         return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    }
+
+    protected getFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.filters.flatMap((f) => f.getSubqueries(context));
     }
 
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
