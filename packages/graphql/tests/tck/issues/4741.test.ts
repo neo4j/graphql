@@ -62,6 +62,13 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Opportunity)
+            CALL {
+                WITH this0
+                MATCH (this0)-[this1:HAS_LIST]->(this2:ListOli)
+                RETURN count(this2) > $param0 AS var3
+            }
+            WITH *
+            WHERE var3 = true
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -69,28 +76,32 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 WITH *
-                LIMIT $param0
+                LIMIT $param1
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:HAS_LIST]->(this2:ListOli)
-                    WITH collect({ node: this2, relationship: this1 }) AS edges
+                    MATCH (this0)-[this4:HAS_LIST]->(this5:ListOli)
+                    WITH collect({ node: this5, relationship: this4 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { __id: id(this2), __resolveType: \\"ListOli\\" } }) AS var3
+                        WITH edge.node AS this5, edge.relationship AS this4
+                        RETURN collect({ node: { __id: id(this5), __resolveType: \\"ListOli\\" } }) AS var6
                     }
-                    RETURN { edges: var3, totalCount: totalCount } AS var4
+                    RETURN { edges: var6, totalCount: totalCount } AS var7
                 }
-                RETURN collect({ node: { country: this0.country, listsOlisConnection: var4, __resolveType: \\"Opportunity\\" } }) AS var5
+                RETURN collect({ node: { country: this0.country, listsOlisConnection: var7, __resolveType: \\"Opportunity\\" } }) AS var8
             }
-            RETURN { edges: var5, totalCount: totalCount } AS this"
+            RETURN { edges: var8, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }

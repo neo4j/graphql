@@ -88,15 +88,20 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
 
         const queryResults = await graphqlQuery(query);
         expect(queryResults.errors).toBeUndefined();
+        console.log(JSON.stringify(queryResults.data, null, 4));
         expect(queryResults.data).toEqual({
-            [Opportunity.plural]: expect.toIncludeSameMembers([
-                {
-                    country: "ES",
-                    listsOlisConnection: {
-                        count: 2,
+            [Opportunity.operations.connection]: {
+                edges: expect.toIncludeSameMembers([
+                    {
+                        node: {
+                            country: "ES",
+                            listsOlisConnection: {
+                                totalCount: 2,
+                            },
+                        },
                     },
-                },
-            ]),
+                ]),
+            },
         });
     });
 });

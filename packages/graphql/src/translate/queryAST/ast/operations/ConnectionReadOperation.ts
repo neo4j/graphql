@@ -123,9 +123,16 @@ export class ConnectionReadOperation extends Operation {
             selectionClause = new Cypher.With("*");
         }
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).innerWith(nestedContext.target)
-        );
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) => {
+            return new Cypher.Call(sq).importWith(nestedContext.target);
+        });
+
+        const normalFilterSubqueries = this.getFilterSubqueries(nestedContext).map((sq) => {
+            return new Cypher.Call(sq).importWith(nestedContext.target);
+        });
+
+        const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
+
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();
@@ -138,7 +145,7 @@ export class ConnectionReadOperation extends Operation {
 
         let withWhere: Cypher.With | undefined;
 
-        if (authFilterSubqueries.length > 0) {
+        if (filtersSubqueries.length > 0) {
             withWhere = new Cypher.With("*");
             this.addFiltersToClause(withWhere, nestedContext);
         } else {
@@ -171,7 +178,7 @@ export class ConnectionReadOperation extends Operation {
                 Cypher.concat(
                     ...extraMatches,
                     selectionClause,
-                    ...authFilterSubqueries,
+                    ...filtersSubqueries,
                     withWhere,
                     withCollectEdgesAndTotalCount,
                     unwindAndProjectionSubquery,
@@ -184,6 +191,10 @@ export class ConnectionReadOperation extends Operation {
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
         return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    }
+
+    protected getFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.filters.flatMap((f) => f.getSubqueries(context));
     }
 
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
@@ -344,9 +355,9 @@ export class ConnectionReadOperation extends Operation {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
         /**
-         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key 
+         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key
          * and a boolean flag defined as true when the field is a `@cypher` field.
-         **/ 
+         **/
         const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
             (sortFieldsFlagMap, sortField) => {
                 if (sortField instanceof CypherPropertySort) {
