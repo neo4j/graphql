@@ -18,7 +18,6 @@
  */
 
 import * as fs from "fs";
-import gql from "graphql-tag";
 import * as path from "path";
 import { generate as randomstring } from "randomstring";
 import generate from "./generate";
@@ -1708,7 +1707,7 @@ describe("generate", () => {
     });
 
     test("https://github.com/neo4j/graphql/issues/3539", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type FAQ {
                 id: ID! @id @unique
                 activated: Boolean!

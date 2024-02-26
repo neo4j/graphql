@@ -22,12 +22,12 @@ import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4j from "../neo4j";
-import { cleanNodes } from "../../utils/clean-nodes";
+import Neo4jHelper from "../neo4j";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2630", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
     let PostSubject: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Post, User]);
+        await cleanNodesUsingSession(session, [Post, User]);
         await session.close();
     });
 

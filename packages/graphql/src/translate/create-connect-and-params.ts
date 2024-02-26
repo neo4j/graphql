@@ -37,6 +37,7 @@ import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { compileCypherIfExists } from "../utils/compile-cypher";
 import { createWhereNodePredicate } from "./where/create-where-predicate";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 interface Res {
     connects: string[];
@@ -370,7 +371,8 @@ function createConnectAndParams({
             const entity = new InterfaceEntityAdapter(targetInterface);
             refNodes.forEach((refNode, i) => {
                 const nodeName = getConnectNodeName(varName, i);
-                const filters = getFilters({ connect, context, entity, nodeName });
+                const targetEntity = entity.concreteEntities.find((x) => x.name === refNode.name);
+                const filters = getFilters({ connect, context, entity, nodeName, targetEntity });
 
                 const subquery = createSubqueryContents(refNode, connect, i, filters);
                 if (subquery.subquery) {
@@ -434,11 +436,13 @@ function getConnectEdgeName(varName: string, index: number): string {
 function getFilters({
     connect,
     entity,
+    targetEntity,
     context,
     nodeName,
 }: {
     connect: any;
     entity: EntityAdapter;
+    targetEntity?: ConcreteEntityAdapter;
     context: Neo4jGraphQLTranslationContext;
     nodeName: string;
 }): Filters | undefined {
@@ -454,6 +458,7 @@ function getFilters({
         context,
         whereInput,
         targetElement,
+        targetEntity,
     });
     let preComputedWhereFieldsResult = "";
 

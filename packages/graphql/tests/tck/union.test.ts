@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Cypher Union", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeEach(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             union Search = Genre | Movie
 
             type Genre
@@ -54,7 +52,7 @@ describe("Cypher Union", () => {
     });
 
     test("Read Unions simple", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     search {
@@ -106,7 +104,7 @@ describe("Cypher Union", () => {
     });
 
     test("Read Unions with missing types", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     search {
@@ -155,7 +153,7 @@ describe("Cypher Union", () => {
     });
 
     test("Read Unions with filter and limit", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies(where: { title: "some title" }) {
                     search(
@@ -225,7 +223,7 @@ describe("Cypher Union", () => {
     });
 
     test("Create Unions from create mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [{ title: "some movie", search: { Genre: { create: [{ node: { name: "some genre" } }] } } }]
@@ -267,7 +265,7 @@ describe("Cypher Union", () => {
     });
 
     test("Create Unions from update create(top-level)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(create: { search: { Genre: [{ node: { name: "some genre" } }] } }) {
                     movies {
@@ -298,7 +296,7 @@ describe("Cypher Union", () => {
     });
 
     test("Connect Unions (in create)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -359,7 +357,7 @@ describe("Cypher Union", () => {
     });
 
     test("Update Unions", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "some movie" }
@@ -429,7 +427,7 @@ describe("Cypher Union", () => {
     });
 
     test("Disconnect Unions (in update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "some movie" }
@@ -495,7 +493,7 @@ describe("Cypher Union", () => {
     });
 
     test("Disconnect Unions", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "some movie" }
@@ -558,7 +556,7 @@ describe("Cypher Union", () => {
     });
 
     test("Connect Unions (in update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "some movie" }
@@ -609,7 +607,7 @@ describe("Cypher Union", () => {
     });
 
     test("Delete Unions (from update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "some movie" }

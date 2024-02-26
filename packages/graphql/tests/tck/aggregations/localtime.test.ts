@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations LocalTime", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 createdAt: LocalTime!
             }
@@ -39,7 +37,7 @@ describe("Cypher Aggregations LocalTime", () => {
     });
 
     test("Min", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     createdAt {
@@ -63,7 +61,7 @@ describe("Cypher Aggregations LocalTime", () => {
     });
 
     test("Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     createdAt {
@@ -87,7 +85,7 @@ describe("Cypher Aggregations LocalTime", () => {
     });
 
     test("Min and Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     createdAt {

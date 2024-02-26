@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
@@ -31,13 +31,13 @@ import { Executor } from "../../../src/classes/Executor";
 
 describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
     let dbInfo: Neo4jDatabaseInfo;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         dbInfo = await getNeo4jDatabaseInfo(new Executor({ executionContext: driver }));
 

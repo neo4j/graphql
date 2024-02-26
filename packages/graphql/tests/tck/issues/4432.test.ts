@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -49,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 inventories {
                     id

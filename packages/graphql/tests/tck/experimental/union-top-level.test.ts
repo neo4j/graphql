@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Union top level operations", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeEach(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             union Search = Genre | Movie
 
             type Genre {
@@ -48,7 +46,7 @@ describe("Union top level operations", () => {
         });
     });
     test("Read union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 searches {
                     ... on Movie {
@@ -82,7 +80,7 @@ describe("Union top level operations", () => {
     });
 
     test("Read union with relationship on member type", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 searches {
                     ... on Movie {
@@ -137,7 +135,7 @@ describe("Union top level operations", () => {
     });
 
     test("Read union with relationship on member type with filters", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 searches(where: { Movie: { title_NOT: "The Matrix" }, Genre: {} }) {
                     ... on Movie {
@@ -197,7 +195,7 @@ describe("Union top level operations", () => {
     });
 
     test("Read union with filters  - only specifying a filter for one constituent automatically filters-out the other constituents from the return data", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 searches(where: { Movie: { title_NOT: "The Matrix" } }) {
                     ... on Movie {
@@ -253,7 +251,7 @@ describe("Union top level operations", () => {
     });
 
     test("Read union with relationship on member type with filters on related field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 searches(where: { Movie: { searchConnection: { Genre: { node: { name: "Action" } } } } }) {
                     ... on Movie {
@@ -316,7 +314,7 @@ describe("Union top level operations", () => {
             typeDefs,
             features: { authorization: { key: secret } },
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 searches(options: { limit: 1, offset: 2 }, where: { Movie: { title_NOT: "The Matrix" }, Genre: {} }) {
                     ... on Movie {

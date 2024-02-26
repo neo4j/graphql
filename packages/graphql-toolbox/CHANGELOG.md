@@ -1,5 +1,20 @@
 # @neo4j/graphql-toolbox
 
+## 2.1.9
+
+### Patch Changes
+
+-   Updated dependencies [[`9befbb8`](https://github.com/neo4j/graphql/commit/9befbb81010847054c544231787e8e9565c3bda0), [`980f078`](https://github.com/neo4j/graphql/commit/980f07830e645af1493698458d1539efc65aa2cf), [`a76c9c9`](https://github.com/neo4j/graphql/commit/a76c9c96486d98514903c1d8cffaa17a53c6eb07), [`6653a9e`](https://github.com/neo4j/graphql/commit/6653a9e7850101c75608d341a72ef48818addfcd), [`4fc08b6`](https://github.com/neo4j/graphql/commit/4fc08b65a82fdb258e6b6f362f35917a93d375cc), [`712d793`](https://github.com/neo4j/graphql/commit/712d793b02e8ddb04643f03233065b2f9ee4c753), [`3094db4`](https://github.com/neo4j/graphql/commit/3094db4dacd6897f93b3e6aa11bb60adfbd00a90), [`99fc744`](https://github.com/neo4j/graphql/commit/99fc74489425748568b97cde32ced8df29a85320), [`deed2ec`](https://github.com/neo4j/graphql/commit/deed2ec2d5003b80335d36e36396833bf4283a72)]:
+    -   @neo4j/graphql@5.0.0
+    -   @neo4j/introspector@3.0.0
+
+## 2.1.8
+
+### Patch Changes
+
+-   Updated dependencies [[`fab9ea9`](https://github.com/neo4j/graphql/commit/fab9ea9a092df885bb1a600f1d549d48d4159899), [`fb62636`](https://github.com/neo4j/graphql/commit/fb626361de99c8f8c882018e82dfe12fe891c9c8), [`38b1eae`](https://github.com/neo4j/graphql/commit/38b1eaef357a1ba4dfa31f48832d10af0628b378), [`916c37e`](https://github.com/neo4j/graphql/commit/916c37eac96fda54e7d0c33384c0039fc1f989cd), [`b8a640e`](https://github.com/neo4j/graphql/commit/b8a640e63dd8f1b5b34385a9512aa44fe76eeb95), [`46c38d0`](https://github.com/neo4j/graphql/commit/46c38d0e6c907cca22ff2d872dda75f48804c6a4), [`92f653f`](https://github.com/neo4j/graphql/commit/92f653f8ce6fb7fcadb5c10ed1f51049d29712bc), [`7e129da`](https://github.com/neo4j/graphql/commit/7e129da51f6d69a054252d6376697d0db6a3163b)]:
+    -   @neo4j/graphql@4.4.6
+
 ## 2.1.7
 
 ### Patch Changes

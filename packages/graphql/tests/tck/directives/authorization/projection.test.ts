@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher Auth Projection", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 id: ID
                 name: String
@@ -51,7 +49,7 @@ describe("Cypher Auth Projection", () => {
     });
 
     test("Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { id: "new-id" }) {
                     users {
@@ -92,7 +90,7 @@ describe("Cypher Auth Projection", () => {
     });
 
     test("Create Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createUsers(input: [{ id: "id-1" }, { id: "id-2" }]) {
                     users {

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with LocalDateTime", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String
             }
@@ -49,7 +47,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_EQUAL: "2003-09-14T12:00:00" } } }) {
                     content
@@ -87,7 +85,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTimeAlias_EQUAL: "2003-09-14T12:00:00" } } }) {
                     content
@@ -125,7 +123,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_GT: "2003-09-14T12:00:00" } } }) {
                     content
@@ -163,7 +161,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_GTE: "2003-09-14T12:00:00" } } }) {
                     content
@@ -201,7 +199,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_LT: "2003-09-14T12:00:00" } } }) {
                     content
@@ -239,7 +237,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_LTE: "2003-09-14T12:00:00" } } }) {
                     content
@@ -277,7 +275,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MIN_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MIN_EQUAL: "2003-09-14T12:00:00" } } }) {
                     content
@@ -315,7 +313,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MIN_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MIN_GT: "2003-09-14T12:00:00" } } }) {
                     content
@@ -353,7 +351,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MIN_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MIN_GTE: "2003-09-14T12:00:00" } } }) {
                     content
@@ -391,7 +389,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MIN_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MIN_LT: "2003-09-14T12:00:00" } } }) {
                     content
@@ -429,7 +427,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MIN_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MIN_LTE: "2003-09-14T12:00:00" } } }) {
                     content
@@ -467,7 +465,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MAX_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MAX_EQUAL: "2003-09-14T12:00:00" } } }) {
                     content
@@ -505,7 +503,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MAX_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MAX_GT: "2003-09-14T12:00:00" } } }) {
                     content
@@ -543,7 +541,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MAX_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MAX_GTE: "2003-09-14T12:00:00" } } }) {
                     content
@@ -581,7 +579,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MAX_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MAX_LT: "2003-09-14T12:00:00" } } }) {
                     content
@@ -619,7 +617,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
     });
 
     test("MAX_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someLocalDateTime_MAX_LTE: "2003-09-14T12:00:00" } } }) {
                     content

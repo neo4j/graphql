@@ -18,12 +18,30 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Result, Session } from "neo4j-driver";
+import type { Driver, Result, Session } from "neo4j-driver";
 import type { UniqueType } from "./graphql-types";
 import { runCypher } from "./run-cypher";
 
 /** Removes all nodes with the given labels from the database */
-export async function cleanNodes(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
+export async function cleanNodes(driver: Driver, labels: Array<string | UniqueType>): Promise<Result> {
+    const nodeRef = new Cypher.Node({});
+
+    const nodeHasLabelPredicates = labels.map((l) => {
+        return nodeRef.hasLabel(`${l}`);
+    });
+
+    const nodeHasAnyLabelPredicate = Cypher.or(...nodeHasLabelPredicates);
+
+    const query = new Cypher.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
+    const { cypher } = query.build();
+    return driver.executeQuery(cypher);
+}
+
+/**
+ * Removes all nodes with the given labels from the database
+ * @deprecated Use {@link cleanNodes} instead
+ */
+export async function cleanNodesUsingSession(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
     const nodeRef = new Cypher.Node({});
 
     const nodeHasLabelPredicates = labels.map((l) => {

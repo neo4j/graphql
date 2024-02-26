@@ -270,7 +270,6 @@ export class ConcreteEntityAdapter {
         return this._operations;
     }
 
-    // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
     get globalIdField(): AttributeAdapter | undefined {
         return this._globalIdField;
     }

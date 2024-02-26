@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Relationship Properties Connect Cypher", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -49,7 +47,7 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Create movie while connecting a relationship that has properties", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ title: "Forrest Gump", actors: { connect: [{ edge: { screenTime: 60 } }] } }]) {
                     movies {
@@ -128,7 +126,7 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Create movie while connecting a relationship that has properties(with where on node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -216,7 +214,7 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Update a movie while connecting a relationship that has properties(top level-connect)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { title: "Forrest Gump" }, connect: { actors: { edge: { screenTime: 60 } } }) {
                     movies {
@@ -289,7 +287,7 @@ describe("Relationship Properties Connect Cypher", () => {
     });
 
     test("Update a movie while connecting a relationship that has properties(top level-connect)(with where on node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { title: "Forrest Gump" }

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations String", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String
                 testId: ID
@@ -40,7 +38,7 @@ describe("Cypher Aggregations String", () => {
     });
 
     test("Shortest", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     title {
@@ -67,7 +65,7 @@ describe("Cypher Aggregations String", () => {
     });
 
     test("Longest", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     title {
@@ -94,7 +92,7 @@ describe("Cypher Aggregations String", () => {
     });
 
     test("Shortest and longest", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate {
                     title {
@@ -122,7 +120,7 @@ describe("Cypher Aggregations String", () => {
     });
 
     test("Shortest with filter", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesAggregate(where: { testId: "10" }) {
                     title {

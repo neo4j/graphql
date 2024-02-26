@@ -23,14 +23,14 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Subscriptions to spatial types", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
@@ -38,7 +38,7 @@ describe("Subscriptions to spatial types", () => {
     const typeMovie = new UniqueType("Movie");
 
     beforeEach(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
@@ -60,7 +60,7 @@ describe("Subscriptions to spatial types", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [typeMovie]);
+        await cleanNodesUsingSession(session, [typeMovie]);
         await session.close();
         await driver.close();
     });

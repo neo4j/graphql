@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2766", () => {
     let neoSchema: Neo4jGraphQL;
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         type Actor {
             name: String!
             movies(title: String): [Movie]
@@ -50,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
     });
 
     test("should return nested Cypher fields", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name
@@ -92,14 +91,16 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
                             RETURN m
                         }
                         WITH m AS this3
-                        RETURN collect(this3 { .title }) AS this3
+                        WITH this3 { .title } AS this3
+                        RETURN collect(this3) AS var4
                     }
-                    WITH this2 { .name, movies: this3 } AS this2
-                    RETURN collect(this2) AS var4
+                    WITH this2 { .name, movies: var4 } AS this2
+                    RETURN collect(this2) AS var5
                 }
-                RETURN collect(this0 { .title, actors: var4 }) AS this0
+                WITH this0 { .title, actors: var5 } AS this0
+                RETURN collect(this0) AS var6
             }
-            RETURN this { .name, movies: this0 } AS this"
+            RETURN this { .name, movies: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

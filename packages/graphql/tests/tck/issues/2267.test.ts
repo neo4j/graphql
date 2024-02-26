@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2267", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Place {
                 displayName: String!
                 activity: [Publication!]! @relationship(type: "ACTIVITY", direction: IN)
@@ -55,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
     });
 
     test("sort should be correct when querying interface relationship field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 places(options: { sort: { displayName: ASC } }) {
                     displayName

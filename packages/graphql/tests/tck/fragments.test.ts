@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Cypher Fragment", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Entity {
                 username: String!
             }
@@ -62,7 +60,7 @@ describe("Cypher Fragment", () => {
     });
 
     test("Fragment On Type", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 users {
                     id
@@ -86,7 +84,7 @@ describe("Cypher Fragment", () => {
     });
 
     test("Fragment On Union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query users {
                 users {
                     id
@@ -127,7 +125,7 @@ describe("Cypher Fragment", () => {
     });
 
     test("Fragment On Interface", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 users {
                     id
@@ -151,7 +149,7 @@ describe("Cypher Fragment", () => {
     });
 
     test("should be able to project nested fragments", async () => {
-        const testTypeDefs = gql`
+        const testTypeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 runtime: Int!
@@ -186,7 +184,7 @@ describe("Cypher Fragment", () => {
             typeDefs: testTypeDefs,
         });
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors(where: { name: "Keanu" }) {
                     name

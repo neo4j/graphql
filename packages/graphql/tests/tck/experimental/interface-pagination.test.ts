@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -61,7 +60,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
     });
 
     test("Sort on Interface top-level", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
                     id
@@ -120,7 +119,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
     });
 
     test("Sort on Interface top-level without projecting the sorted field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
                     ... on MyOtherImplementationType {
@@ -166,7 +165,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
     });
 
     test("Sort on Interfaces top-level + nested", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
                     id
@@ -240,7 +239,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
         });
 
         test("Limit from directive on Interface when interface queried nested", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     someNodeTypes {
                         id
@@ -299,7 +298,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
             `);
         });
         test("Limit from directive on Interface", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     myInterfaces {
                         id
@@ -356,7 +355,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
             `);
         });
         test("Max limit from directive on Interface overwrites the limit argument", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     myInterfaces(options: { limit: 16 }) {
                         id
@@ -413,7 +412,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
             `);
         });
         test("Limit argument overwrites default if lower than max", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     myInterfaces(options: { limit: 3 }) {
                         id
@@ -470,7 +469,7 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
             `);
         });
         test("Max limit from directive on Interface overwrites the limit argument - combines with sort", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 query {
                     myInterfaces(options: { limit: 16, sort: [{ id: ASC }] }) {
                         id

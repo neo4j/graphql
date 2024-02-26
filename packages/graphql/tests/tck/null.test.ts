@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Cypher NULL", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -47,7 +45,7 @@ describe("Cypher NULL", () => {
     });
 
     test("Simple IS NULL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: null }) {
                     title
@@ -67,7 +65,7 @@ describe("Cypher NULL", () => {
     });
 
     test("Simple IS NOT NULL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title_NOT: null }) {
                     title
@@ -87,7 +85,7 @@ describe("Cypher NULL", () => {
     });
 
     test("Simple relationship IS NULL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { actors: null }) {
                     title
@@ -109,7 +107,7 @@ describe("Cypher NULL", () => {
     });
 
     test("Simple relationship IS NOT NULL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { actors_NOT: null }) {
                     title

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Undirected relationships", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     test("query with directed and undirected relationships", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
@@ -37,7 +35,7 @@ describe("Undirected relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 users {
                     name
@@ -74,7 +72,7 @@ describe("Undirected relationships", () => {
     });
 
     test("undirected with unions", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             union Content = Blog | Post
 
             type Blog {
@@ -95,7 +93,7 @@ describe("Undirected relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query Users {
                 users {
                     content(directed: false) {
@@ -137,7 +135,7 @@ describe("Undirected relationships", () => {
     });
 
     test("undirected with interfaces", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 actors: [Actor!]!
@@ -168,7 +166,7 @@ describe("Undirected relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query Actors {
                 actors {
                     actedIn(directed: false) {
@@ -205,7 +203,7 @@ describe("Undirected relationships", () => {
     });
 
     test("nested undirected relationship", async () => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Foo {
                 id: ID @unique
                 Name: String
@@ -223,7 +221,7 @@ describe("Undirected relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query Query {
                 foos {
                     DrinksAt {

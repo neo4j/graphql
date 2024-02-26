@@ -195,6 +195,10 @@ export class RelationshipDeclarationAdapter {
         return this.annotations.settable?.onUpdate !== false;
     }
 
+    public findRelationshipImplementation(relationshipName: string): RelationshipAdapter | undefined {
+        return this.relationshipImplementations.find((impl) => impl.name === relationshipName);
+    }
+
     public shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
         let relationshipTarget = this.target;
         if (ifUnionRelationshipTargetEntity) {

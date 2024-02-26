@@ -19,11 +19,13 @@
 
 import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
 import type { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
@@ -33,7 +35,7 @@ import { AggregationAttributeField } from "../ast/fields/aggregation-fields/Aggr
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
-import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
+import type { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
 import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -69,6 +71,7 @@ export class FieldFactory {
         const mergedFields: Record<string, ResolveTree> = mergeDeep([rawFields, ...fieldsToMerge]);
 
         const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field | undefined => {
+            const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConcreteEntity(entity)) {
                 // TODO: Move this to the tree
                 checkEntityAuthentication({
@@ -77,29 +80,19 @@ export class FieldFactory {
                     context,
                     field: field.name,
                 });
-            }
-            const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
-
-            if (isConnection) {
-                if (entity instanceof RelationshipAdapter)
-                    throw new Error("Cannot create connection field of relationship");
-                return this.createConnectionField(entity, fieldName, field, context);
-            }
-
-            if (isAggregation) {
-                if (entity instanceof RelationshipAdapter)
-                    throw new Error("Cannot create aggregation field of relationship");
-
-                const relationship = entity.findRelationship(fieldName);
-                if (!relationship) throw new Error("Relationship for aggregation not found");
-
-                return this.createRelationshipAggregationField(relationship, fieldName, field, context);
-            }
-
-            if (isConcreteEntity(entity)) {
                 const relationship = entity.findRelationship(fieldName);
                 if (relationship) {
+                    if (isConnection) {
+                        return this.createConnectionField(relationship, field, context);
+                    }
+
+                    if (isAggregation) {
+                        return this.createRelationshipAggregationField(relationship, field, context);
+                    }
                     return this.createRelationshipField({ relationship, field, context });
+                }
+                if (!relationship && (isConnection || isAggregation)) {
+                    throw new Error(`Relationship ${fieldName} not found in entity ${entity.name}`);
                 }
             }
 
@@ -116,7 +109,6 @@ export class FieldFactory {
 
     private createRelationshipAggregationField(
         relationship: RelationshipAdapter,
-        fieldName: string,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): OperationField {
@@ -144,7 +136,9 @@ export class FieldFactory {
                     });
                 } else {
                     const attribute = entity.findAttribute(field.name);
-                    if (!attribute) throw new Error(`Attribute ${field.name} not found`);
+                    if (!attribute) {
+                        throw new Error(`Attribute ${field.name} not found`);
+                    }
 
                     const aggregateFields = field.fieldsByTypeName[attribute.getAggregateSelectionTypeName()] || {};
 
@@ -171,11 +165,13 @@ export class FieldFactory {
         fieldName: string;
     }): Record<string, ResolveTree> | undefined {
         const attribute = entity.findAttribute(fieldName);
-        if (!attribute) return undefined;
+        if (!attribute) {
+            return;
+        }
 
         const customResolver = attribute.annotations.customResolver;
         if (!customResolver) {
-            return undefined;
+            return;
         }
 
         return customResolver.parsedRequires;
@@ -191,23 +187,31 @@ export class FieldFactory {
         fieldName: string;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): AttributeField | undefined {
-        if (["cursor", "node"].includes(fieldName)) return;
-        let attribute = entity.findAttribute(fieldName);
+    }): AttributeField | OperationField | undefined {
+        if (["cursor", "node"].includes(fieldName)) {
+            return;
+        }
+        const attribute = entity.findAttribute(fieldName);
 
         if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {
-            attribute = entity.globalIdField;
-            if (!attribute) throw new Error(`attribute ${fieldName} not found`);
-            return new AttributeField({ alias: attribute.name, attribute });
+            const globalIdAttribute = entity.globalIdField;
+            if (!globalIdAttribute) {
+                throw new Error(`attribute ${fieldName} not found`);
+            }
+            return new AttributeField({ alias: globalIdAttribute.name, attribute: globalIdAttribute });
         }
 
-        if (!attribute) throw new Error(`attribute ${fieldName} not found`);
+        if (!attribute) {
+            throw new Error(`attribute ${fieldName} not found`);
+        }
 
-        if (attribute.annotations.cypher) {
+        const cypherAnnotation = attribute.annotations.cypher;
+        if (cypherAnnotation) {
             return this.createCypherAttributeField({
                 field,
                 attribute,
                 context,
+                cypherAnnotation,
             });
         }
 
@@ -237,17 +241,16 @@ export class FieldFactory {
         field,
         attribute,
         context,
+        cypherAnnotation,
     }: {
         attribute: AttributeAdapter;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): CypherAttributeField {
-        const cypherAnnotation = attribute.annotations.cypher;
-        if (!cypherAnnotation) throw new Error("@Cypher directive missing");
+        cypherAnnotation: CypherAnnotation;
+    }): CypherAttributeField | OperationField {
         const typeName = attribute.typeHelper.isList() ? (attribute.type as ListType).ofType.name : attribute.type.name;
         const rawFields = field.fieldsByTypeName[typeName];
         let cypherProjection: Record<string, string> | undefined;
-        let nestedFields: Field[] | undefined;
         const extraParams: Record<string, any> = {};
 
         if (cypherAnnotation.statement.includes("$jwt") && context.authorization.jwtParam) {
@@ -259,83 +262,119 @@ export class FieldFactory {
                 acc[f.alias] = f.name;
                 return acc;
             }, {});
-            // if the attribute is an object or an abstract type we may have nested fields
-            if (attribute.typeHelper.isAbstract() || attribute.typeHelper.isObject()) {
-                // TODO: this code block could be handled directly in the schema model or in some schema model helper
+
+            if (attribute.typeHelper.isObject()) {
+                const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
+                if (!concreteEntity) {
+                    throw new Error(`Entity ${typeName} not found`);
+                }
+                const cypherArguments = { ...field.args };
+                field.args = {};
+                return this.createCypherOperationField({
+                    target: concreteEntity,
+                    field,
+                    context,
+                    cypherAttributeField: attribute,
+                    cypherArguments,
+                });
+            } else if (attribute.typeHelper.isAbstract()) {
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities
-                if (!targetEntity) throw new Error(`Entity ${typeName} not found`);
-                if (targetEntity.isConcreteEntity()) {
-                    const concreteEntityAdapter = new ConcreteEntityAdapter(targetEntity);
-                    nestedFields = this.createFields(concreteEntityAdapter, rawFields, context);
-                } else if (targetEntity.isCompositeEntity()) {
-                    const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
-                    const nestedUnionFields = concreteEntities.flatMap((concreteEntity) => {
-                        const concreteEntityFields = field.fieldsByTypeName[concreteEntity.name];
-                        const unionNestedFields = this.createFields(
-                            concreteEntity,
-                            { ...rawFields, ...concreteEntityFields },
-                            context
-                        );
-
-                        return [
-                            new CypherUnionAttributePartial({
-                                fields: unionNestedFields,
-                                target: concreteEntity,
-                            }),
-                        ];
-                    });
-
-                    return new CypherUnionAttributeField({
-                        attribute,
-                        alias: field.alias,
-                        projection: cypherProjection,
-                        rawArguments: field.args,
-                        unionPartials: nestedUnionFields,
-                        extraParams,
-                    });
+                if (!targetEntity || !targetEntity.isCompositeEntity()) {
+                    throw new Error(`Entity ${typeName} not found`);
                 }
+                const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
+                const nestedUnionFields = concreteEntities.flatMap((concreteEntity) => {
+                    const concreteEntityFields = field.fieldsByTypeName[concreteEntity.name];
+                    const unionNestedFields = this.createFields(
+                        concreteEntity,
+                        { ...rawFields, ...concreteEntityFields },
+                        context
+                    );
+
+                    return new CypherUnionAttributePartial({
+                        fields: unionNestedFields,
+                        target: concreteEntity,
+                    });
+                });
+                return new CypherUnionAttributeField({
+                    attribute,
+                    alias: field.alias,
+                    projection: cypherProjection,
+                    rawArguments: field.args,
+                    unionPartials: nestedUnionFields,
+                    extraParams,
+                });
             }
         }
+        const cypherArguments = { ...field.args };
+        field.args = {};
+        return this.createCypherOperationField({
+            field,
+            context,
+            cypherAttributeField: attribute,
+            cypherArguments,
+        });
+    }
 
-        return new CypherAttributeField({
-            attribute,
-            alias: field.alias,
-            projection: cypherProjection,
-            nestedFields,
-            rawArguments: field.args,
-            extraParams,
+    private createConnectionOperation(
+        relationship: RelationshipAdapter,
+        target: EntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): ConnectionReadOperation | CompositeConnectionReadOperation {
+        if (isConcreteEntity(target)) {
+            return this.queryASTFactory.operationsFactory.createConnectionOperationAST({
+                relationship,
+                target,
+                resolveTree,
+                context,
+            });
+        }
+        return this.queryASTFactory.operationsFactory.createCompositeConnectionOperationAST({
+            relationship,
+            target,
+            resolveTree,
+            context,
         });
     }
 
     private createConnectionField(
-        entity: ConcreteEntityAdapter,
-        fieldName: string,
+        relationship: RelationshipAdapter,
         field: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): OperationField {
-        const relationship = entity.findRelationship(fieldName);
-        if (!relationship) throw new Error(`Relationship ${fieldName} not found in entity ${entity.name}`);
-        const target = relationship.target;
-        let connectionOp: ConnectionReadOperation | CompositeConnectionReadOperation;
-        if (isConcreteEntity(target)) {
-            connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST({
-                relationship,
-                target,
-                resolveTree: field,
-                context,
-            });
-        } else {
-            connectionOp = this.queryASTFactory.operationsFactory.createCompositeConnectionOperationAST({
-                relationship,
-                target,
-                resolveTree: field,
-                context,
-            });
-        }
+        const connectionOp = this.createConnectionOperation(relationship, relationship.target, field, context);
 
         return new OperationField({
             operation: connectionOp,
+            alias: field.alias,
+        });
+    }
+
+    private createCypherOperationField({
+        target,
+        field,
+        context,
+        cypherAttributeField,
+        cypherArguments,
+    }: {
+        target?: ConcreteEntityAdapter;
+        field: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        cypherAttributeField: AttributeAdapter;
+        cypherArguments?: Record<string, any>;
+    }): OperationField {
+        const cypherOp = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
+            resolveTree: field,
+            context,
+            entity: target,
+            cypherAttributeField,
+            cypherArguments,
+        });
+
+        return new OperationField({
+            operation: cypherOp,
             alias: field.alias,
         });
     }

@@ -23,10 +23,10 @@
  *   `ts-node tests/integration/teardown.ts`
  */
 
-import Neo4j from "./neo4j";
+import Neo4jHelper from "./neo4j";
 
 const teardown = async () => {
-    const neo4j = new Neo4j();
+    const neo4j = new Neo4jHelper();
     const driver = await neo4j.getDriver();
     const session = await neo4j.getSession();
 

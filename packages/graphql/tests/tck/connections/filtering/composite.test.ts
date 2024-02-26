@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Composite", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -50,7 +48,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -114,7 +112,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite NOT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -178,7 +176,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite OR (edge and node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -244,7 +242,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite NOT with nested OR (edge and node)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -312,7 +310,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     });
 
     test("Composite NOT with complex nested filters", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title

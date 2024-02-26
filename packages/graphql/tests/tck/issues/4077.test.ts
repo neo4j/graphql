@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4077", () => {
     const secret = "sssh!";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
             }
@@ -103,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
     });
 
     test("wrap authenticated subquery on top level read operation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query listPossiblePreviewClips {
                 previewClips(where: { clippedFrom: { id: "1234" }, NOT: { markedAsDone: true } }) {
                     id
@@ -148,7 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
     });
 
     test("wrap authenticated subquery on nested read operation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 videos {
                     clips(where: { clippedFrom: { id: "1234" }, NOT: { markedAsDone: true } }) {

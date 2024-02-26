@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Plural directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Tech @plural(value: "Techs") {
                 name: String
             }
@@ -39,7 +37,7 @@ describe("Plural directive", () => {
     });
 
     test("Select Tech with plural techs", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 techs {
                     name
@@ -58,7 +56,7 @@ describe("Plural directive", () => {
     });
 
     test("Count Tech with plural techs using aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 techsAggregate {
                     count
@@ -80,7 +78,7 @@ describe("Plural directive", () => {
     });
 
     test("Create Tech with plural techs using aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createTechs(input: [{ name: "Highlander" }]) {
                     techs {
@@ -117,7 +115,7 @@ describe("Plural directive", () => {
     });
 
     test("Update Tech with plural techs using aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateTechs(update: { name: "Matrix" }) {
                     techs {
@@ -144,7 +142,7 @@ describe("Plural directive", () => {
     });
 
     test("Delete Tech with plural techs using aggregation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteTechs(where: { name: "Matrix" }) {
                     nodesDeleted
@@ -168,7 +166,7 @@ describe("Plural directive", () => {
     });
 
     test("Query with aliases", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 technologies: techs {
                     name

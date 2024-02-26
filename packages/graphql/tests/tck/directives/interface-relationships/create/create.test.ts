@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Create create", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -58,7 +56,7 @@ describe("Interface Relationships - Create create", () => {
     });
 
     test("Create create an interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createActors(
                     input: [

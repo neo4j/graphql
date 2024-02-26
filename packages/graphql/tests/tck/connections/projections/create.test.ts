@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Projections -> Create", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -49,7 +47,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
     });
 
     test("Connection can be selected following the creation of a single node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ title: "Forrest Gump" }]) {
                     movies {
@@ -109,7 +107,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
     });
 
     test("Connection can be selected following the creation of a multiple nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ title: "Forrest Gump" }, { title: "Toy Story" }]) {
                     movies {
@@ -172,7 +170,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
     });
 
     test("Connection can be selected and filtered following the creation of a multiple nodes", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ title: "Forrest Gump" }, { title: "Toy Story" }]) {
                     movies {

@@ -18,9 +18,7 @@
  */
 
 import assert from "assert";
-import { gql } from "graphql-tag";
 import type { Driver, ProfiledPlan } from "neo4j-driver";
-import type { DocumentNode } from "graphql";
 import type * as Performance from "../types";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
@@ -44,7 +42,7 @@ export class TestRunner {
         for (const test of tests) {
             try {
                 await beforeEach(test);
-                const perfResult = await this.runPerformanceTest(gql(test.query));
+                const perfResult = await this.runPerformanceTest(test.query);
                 await afterEach(test);
                 results.push({ name: test.name, result: perfResult, file: test.filename, type: "graphql" });
             } catch (err) {
@@ -76,7 +74,7 @@ export class TestRunner {
         return results;
     }
 
-    private async runPerformanceTest(query: DocumentNode): Promise<Performance.Result> {
+    private async runPerformanceTest(query: string): Promise<Performance.Result> {
         const cypherQuery = await translateQuery(this.schema, query);
 
         return this.runCypherQuery(cypherQuery.cypher, cypherQuery.params);

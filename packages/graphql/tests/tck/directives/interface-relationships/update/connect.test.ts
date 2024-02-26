@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update connect", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 actors: [Actor!]! @declareRelationship
@@ -61,7 +59,7 @@ describe("Interface Relationships - Update connect", () => {
     });
 
     test("Update connect to an interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     connect: { actedIn: { edge: { screenTime: 90 }, where: { node: { title_STARTS_WITH: "The " } } } }
@@ -136,7 +134,7 @@ describe("Interface Relationships - Update connect", () => {
     });
 
     test("Update connect to an interface relationship and nested connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateActors(
                     connect: {

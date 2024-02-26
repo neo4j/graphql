@@ -241,9 +241,7 @@ export class CompositeAggregationOperation extends Operation {
                 c.setAttachedTo("node");
             }
 
-            const result = c.getSubqueries(context);
-
-            let clauses = result;
+            let clauses = c.getSubqueries(context);
 
             if (parentNode && this.addWith) {
                 clauses = clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));

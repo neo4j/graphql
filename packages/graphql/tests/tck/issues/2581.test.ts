@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
@@ -76,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
     });
 
     test("query nested custom cypher with columnName", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -107,19 +106,20 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                         WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
-                RETURN head(collect(this0 { .name, .year, soldCopies: this1 })) AS this0
+                WITH this0 { .name, .year, soldCopies: var2 } AS this0
+                RETURN head(collect(this0)) AS var3
             }
-            RETURN this { .name, mostRecentBook: this0 } AS this"
+            RETURN this { .name, mostRecentBook: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("query nested custom cypher without columnName", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 authors {
                     name
@@ -150,12 +150,13 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                         WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
-                RETURN head(collect(this0 { .name, .year, soldCopiesWithoutColumnName: this1 })) AS this0
+                WITH this0 { .name, .year, soldCopiesWithoutColumnName: var2 } AS this0
+                RETURN head(collect(this0)) AS var3
             }
-            RETURN this { .name, mostRecentBook: this0 } AS this"
+            RETURN this { .name, mostRecentBook: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

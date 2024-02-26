@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -66,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
     test("typename should work for connect operation", async () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const mutation = gql`
+        const mutation = /* GraphQL */ `
             mutation {
                 createActors(
                     input: {
@@ -159,7 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
     test("typename should work for connect operation, with a logical operator", async () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const mutation = gql`
+        const mutation = /* GraphQL */ `
             mutation {
                 createActors(
                     input: {
@@ -252,7 +251,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
     test("typename should work for nested connect operation", async () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const mutation = gql`
+        const mutation = /* GraphQL */ `
             mutation {
                 createActors(
                     input: {

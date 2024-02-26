@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with Int", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String
             }
@@ -49,7 +47,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_EQUAL: 10 } } }) {
                     content
@@ -82,7 +80,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someIntAlias_EQUAL: 10 } } }) {
                     content
@@ -115,7 +113,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_GT: 10 } } }) {
                     content
@@ -148,7 +146,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_GTE: 10 } } }) {
                     content
@@ -181,7 +179,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_LT: 10 } } }) {
                     content
@@ -214,7 +212,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_LTE: 10 } } }) {
                     content
@@ -247,7 +245,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("AVERAGE_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_AVERAGE_EQUAL: 10 } } }) {
                     content
@@ -277,7 +275,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("AVERAGE_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_AVERAGE_GT: 10 } } }) {
                     content
@@ -307,7 +305,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("AVERAGE_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_AVERAGE_GTE: 10 } } }) {
                     content
@@ -337,7 +335,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("AVERAGE_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_AVERAGE_LT: 10 } } }) {
                     content
@@ -367,7 +365,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("AVERAGE_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_AVERAGE_LTE: 10 } } }) {
                     content
@@ -397,7 +395,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("SUM_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_SUM_EQUAL: 10 } } }) {
                     content
@@ -430,7 +428,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("SUM_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_SUM_GT: 10 } } }) {
                     content
@@ -463,7 +461,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("SUM_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_SUM_GTE: 10 } } }) {
                     content
@@ -496,7 +494,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("SUM_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_SUM_LT: 10 } } }) {
                     content
@@ -529,7 +527,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("SUM_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_SUM_LTE: 10 } } }) {
                     content
@@ -562,7 +560,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MIN_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MIN_EQUAL: 10 } } }) {
                     content
@@ -595,7 +593,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MIN_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MIN_GT: 10 } } }) {
                     content
@@ -628,7 +626,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MIN_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MIN_GTE: 10 } } }) {
                     content
@@ -661,7 +659,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MIN_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MIN_LT: 10 } } }) {
                     content
@@ -694,7 +692,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MIN_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MIN_LTE: 10 } } }) {
                     content
@@ -727,7 +725,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MAX_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MAX_EQUAL: 10 } } }) {
                     content
@@ -760,7 +758,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MAX_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MAX_GT: 10 } } }) {
                     content
@@ -793,7 +791,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MAX_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MAX_GTE: 10 } } }) {
                     content
@@ -826,7 +824,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MAX_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MAX_LT: 10 } } }) {
                     content
@@ -859,7 +857,7 @@ describe("Cypher Aggregations where edge with Int", () => {
     });
 
     test("MAX_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someInt_MAX_LTE: 10 } } }) {
                     content

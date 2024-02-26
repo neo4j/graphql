@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1364", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 id: ID
                 name: String
@@ -77,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
     });
 
     test("Should project cypher fields after applying the sort when sorting on a non-cypher field on a root connection)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(sort: [{ title: ASC }]) {
                     edges {
@@ -110,17 +108,17 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
-                RETURN collect({ node: { title: this0.title, totalGenres: this1, __resolveType: \\"Movie\\" } }) AS var2
+                RETURN collect({ node: { title: this0.title, totalGenres: var2, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var3, totalCount: totalCount } AS this"
         `);
     });
 
     test("Should project cypher fields before the sort when sorting on a cypher field on a root connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(sort: [{ totalGenres: ASC }]) {
                     edges {
@@ -151,19 +149,19 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
                 WITH *
-                ORDER BY this1 ASC
-                RETURN collect({ node: { title: this0.title, totalGenres: this1, __resolveType: \\"Movie\\" } }) AS var2
+                ORDER BY var2 ASC
+                RETURN collect({ node: { title: this0.title, totalGenres: var2, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var3, totalCount: totalCount } AS this"
         `);
     });
 
     test("Should sort properly on a root connection when multiple cypher fields are queried but only sorted on one", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 moviesConnection(sort: [{ totalGenres: ASC }]) {
                     edges {
@@ -195,11 +193,11 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
                     }
-                    UNWIND result AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH result AS this1
+                    RETURN this1 AS var2
                 }
                 WITH *
-                ORDER BY this1 ASC
+                ORDER BY var2 ASC
                 CALL {
                     WITH this0
                     CALL {
@@ -208,12 +206,12 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                         MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                         RETURN count(DISTINCT actor) as result
                     }
-                    UNWIND result AS this2
-                    RETURN head(collect(this2)) AS this2
+                    WITH result AS this3
+                    RETURN this3 AS var4
                 }
-                RETURN collect({ node: { title: this0.title, totalGenres: this1, totalActors: this2, __resolveType: \\"Movie\\" } }) AS var3
+                RETURN collect({ node: { title: this0.title, totalGenres: var2, totalActors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
     });
 });

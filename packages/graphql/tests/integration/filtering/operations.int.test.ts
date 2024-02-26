@@ -19,7 +19,7 @@
 
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
@@ -30,10 +30,10 @@ describe("Filtering Operations", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
 
         const typeDefs = `
         type ${personType} {

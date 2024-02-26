@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Interfaces", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -58,7 +56,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
     });
 
     test("Projecting interface node and relationship properties with no arguments", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
@@ -110,7 +108,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
     });
 
     test("Projecting interface node and relationship properties with common where argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
@@ -169,7 +167,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
     });
 
     test("Projecting interface node and relationship properties with where relationship argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
@@ -236,7 +234,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
     describe("Projecting interface node and relationship properties with sort argument", () => {
         describe("field in selection set", () => {
             test("on edge", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
@@ -295,7 +293,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             });
 
             test("on node", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
@@ -356,7 +354,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         describe("field not in selection set", () => {
             test("on edge", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name
@@ -412,7 +410,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             });
 
             test("on node", async () => {
-                const query = gql`
+                const query = /* GraphQL */ `
                     query {
                         actors {
                             name

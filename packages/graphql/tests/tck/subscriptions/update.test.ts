@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on update", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -51,7 +49,7 @@ describe("Subscriptions metadata on update", () => {
     });
 
     test("Simple update with subscriptions", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(where: { id: "1" }, update: { id: "2" }) {
                     movies {
@@ -92,7 +90,7 @@ describe("Subscriptions metadata on update", () => {
     });
 
     test("Nested update with subscriptions", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     where: { id: "1" }

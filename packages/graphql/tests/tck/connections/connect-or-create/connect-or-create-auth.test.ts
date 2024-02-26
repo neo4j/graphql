@@ -17,18 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("connectOrCreate", () => {
     const secret = "secret";
     let neoSchema: Neo4jGraphQL;
 
-    function createTypedef(operations: string): DocumentNode {
-        return gql`
+    function createTypedef(operations: string): string {
+        return /* GraphQL */ `
         type JWT @jwt {
             roles: [String!]!
         }
@@ -45,7 +43,7 @@ describe("connectOrCreate", () => {
     }
 
     describe("Create -> nested connectOrCreate", () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -253,7 +251,7 @@ describe("connectOrCreate", () => {
     });
 
     describe("Update -> nested connectOrCreate", () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     update: {
@@ -431,7 +429,7 @@ describe("connectOrCreate", () => {
     });
 
     describe("Update -> connectOrCreate", () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateMovies(
                     update: { title: "Cool Movie" }

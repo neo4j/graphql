@@ -48,12 +48,12 @@ export class AuthFilterFactory extends FilterFactory {
         context,
         populatedWhere,
     }: {
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        entity: ConcreteEntityAdapter;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
         populatedWhere: GraphQLWhereArg;
     }): Filter[] {
-        const nestedFilters: Filter[] = Object.entries(populatedWhere).flatMap(([key, value]): Filter[] => {
+        return Object.entries(populatedWhere).flatMap(([key, value]): Filter[] => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = value.flatMap((v) => {
                     return this.createAuthFilters({
@@ -80,8 +80,6 @@ export class AuthFilterFactory extends FilterFactory {
 
             return [];
         });
-
-        return nestedFilters;
     }
 
     private createJWTFilters(

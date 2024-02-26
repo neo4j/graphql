@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Connection auth filter", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]!
             }
@@ -73,7 +71,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -118,7 +116,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Node + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection(where: { name: "bob" }) {
                     edges {
@@ -164,7 +162,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -222,7 +220,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -291,7 +289,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Connection + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -361,7 +359,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union Relationship + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -420,7 +418,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -485,7 +483,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union Using Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {
@@ -555,7 +553,7 @@ describe("Connection auth filter", () => {
     });
 
     test("Read Union Using Connection + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 usersConnection {
                     edges {

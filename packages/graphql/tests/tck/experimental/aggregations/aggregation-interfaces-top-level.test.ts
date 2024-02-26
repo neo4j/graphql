@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Top level aggregation interfaces", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 cost: Float!
@@ -61,7 +59,7 @@ describe("Top level aggregation interfaces", () => {
     });
 
     test("top level count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 productionsAggregate {
                     count
@@ -89,7 +87,7 @@ describe("Top level aggregation interfaces", () => {
     });
 
     test("top level count and string fields", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 productionsAggregate {
                     count

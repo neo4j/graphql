@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1430", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type ABCE {
                 id: ID @id @unique
                 name: String
@@ -58,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
     });
 
     test("should not allow to create more than one node for a one-to-one relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation ddfs {
                 updateAbces(
                     where: { id: "TestID" }
@@ -117,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
     });
 
     test("should not allow connecting a second node to an existing one-to-one relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateAbces(
                     where: { id: "TestId" }

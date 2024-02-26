@@ -20,13 +20,13 @@
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { cleanNodes } from "../../../../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../../../../utils/clean-nodes";
 import { UniqueType } from "../../../../../utils/graphql-types";
-import Neo4j from "../../../../neo4j";
+import Neo4jHelper from "../../../../neo4j";
 
 describe("Update using aggregate where", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
     let userType: UniqueType;
@@ -44,7 +44,7 @@ describe("Update using aggregate where", () => {
     const date3 = new Date("2022-08-11T10:06:25.000Z");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -89,7 +89,7 @@ describe("Update using aggregate where", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [userType, postType]);
+        await cleanNodesUsingSession(session, [userType, postType]);
         await session.close();
     });
 

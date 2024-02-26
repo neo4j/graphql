@@ -22,13 +22,13 @@ import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Relationship properties - connect with and without `overwrite` argument", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -36,7 +36,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
     let typeMovie: UniqueType;
 
     beforeEach(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 
@@ -100,7 +100,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodes(session, [typeActor, typeMovie]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -347,7 +347,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodes(session, [typeActor, typeMovie]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
             await session.close();
         });
 
@@ -1413,7 +1413,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         afterEach(async () => {
-            await cleanNodes(session, [typeActor, typeMovie]);
+            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
             await session.close();
         });
 

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Field Level Aggregations", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 cost: Float!
@@ -62,7 +60,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -91,11 +89,13 @@ describe("Interface Field Level Aggregations", () => {
             }
             RETURN this { actedInAggregate: { count: this4 } } AS this"
         `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     // Count with where actor name equals "Keanu Reeves"
     test("Count with where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors(where: { name: "Keanu Reeves" }) {
                     actedInAggregate {
@@ -134,7 +134,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Min", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -172,7 +172,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -210,7 +210,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Count and Max", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -262,7 +262,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Longest", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -304,7 +304,7 @@ describe("Interface Field Level Aggregations", () => {
 
     // Test nested longest on title from movies -> actors -> movies
     test("Longest nested", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 movies {
                     actors {
@@ -353,7 +353,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Edge sum", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -391,7 +391,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     test("Edge and node sum with count", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     actedInAggregate {
@@ -456,5 +456,7 @@ describe("Interface Field Level Aggregations", () => {
             }
             RETURN this { actedInAggregate: { count: this4, node: { cost: this9 }, edge: { screenTime: this14 } } } AS this"
         `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

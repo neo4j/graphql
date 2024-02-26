@@ -22,14 +22,14 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1683", () => {
     const systemType = new UniqueType("System");
     const governedDataTest = new UniqueType("GovernedData");
 
     let schema: GraphQLSchema;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let driver: Driver;
 
     async function graphqlQuery(query: string) {
@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
     }
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
         const typeDefs = `

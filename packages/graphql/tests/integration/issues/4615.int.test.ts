@@ -20,13 +20,13 @@
 import { graphql } from "graphql";
 import { type Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodes } from "../../utils/clean-nodes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { default as Neo4j } from "../neo4j";
+import { default as Neo4jHelper } from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4615", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let neo4jGraphql: Neo4jGraphQL;
 
     const Movie = new UniqueType("Movie");
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
     const Actor = new UniqueType("Actor");
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const typeDefs = /* GraphQL */ `
             interface Show {
@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Movie, Series, Actor]);
+            await cleanNodesUsingSession(session, [Movie, Series, Actor]);
         } finally {
             await session.close();
         }

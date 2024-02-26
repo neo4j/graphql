@@ -20,36 +20,33 @@
 import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 
-import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import type { CypherAnnotation } from "../../../../schema-model/annotation/CypherAnnotation";
+import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { replaceArgumentsInStatement } from "../../utils/replace-arguments-in-statement";
+
+/** Variable exposed to the user in their custom cypher */
+const CYPHER_TARGET_VARIABLE = new Cypher.NamedVariable("this");
 
 export class CustomCypherSelection extends EntitySelection {
     private operationField: AttributeAdapter;
-    private target?: EntityAdapter;
-    private alias?: string;
     private rawArguments: Record<string, any>;
     private cypherAnnotation: CypherAnnotation;
+    private isNested: boolean;
 
     constructor({
         operationField,
-        target,
-        alias,
         rawArguments = {},
+        isNested,
     }: {
         operationField: AttributeAdapter;
-        target?: EntityAdapter;
-        alias?: string;
         rawArguments: Record<string, any>;
+        isNested: boolean;
     }) {
         super();
         this.operationField = operationField;
-        this.target = target;
-        this.alias = alias;
         this.rawArguments = rawArguments;
+        this.isNested = isNested;
         if (!this.operationField.annotations.cypher) {
             throw new Error("Missing Cypher Annotation on Cypher field");
         }
@@ -60,10 +57,6 @@ export class CustomCypherSelection extends EntitySelection {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
-        const node = this.target
-            ? createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias)
-            : new Cypher.Node();
-
         const extraParams: Record<string, any> = {};
 
         if (this.cypherAnnotation.statement.includes("$jwt") && context.neo4jGraphQLContext.authorization.jwtParam) {
@@ -83,9 +76,17 @@ export class CustomCypherSelection extends EntitySelection {
             return [statement, extraParams];
         });
 
-        const statementSubquery = new Cypher.Call(statementCypherQuery);
+        const thisVariable = new Cypher.Node();
 
-        const thisVariable = new Cypher.NamedVariable("this");
+        let statementSubquery: Cypher.Call;
+
+        if (this.isNested && context.target) {
+            const aliasTargetToPublicTarget = new Cypher.With([context.target, CYPHER_TARGET_VARIABLE]);
+            statementSubquery = new Cypher.Call(Cypher.concat(aliasTargetToPublicTarget, statementCypherQuery));
+            statementSubquery.innerWith(context.target);
+        } else {
+            statementSubquery = new Cypher.Call(statementCypherQuery);
+        }
 
         let selection: Cypher.With;
         const unwindVariable = new Cypher.Variable();
@@ -97,11 +98,12 @@ export class CustomCypherSelection extends EntitySelection {
         return {
             selection,
             nestedContext: new QueryASTContext({
-                target: node,
+                source: context.target,
+                target: thisVariable,
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
-                returnVariable: context.returnVariable,
+                returnVariable: thisVariable,
                 env: context.env,
-                shouldCollect: context.shouldCollect,
+                shouldCollect: this.isNested,
             }),
         };
     }

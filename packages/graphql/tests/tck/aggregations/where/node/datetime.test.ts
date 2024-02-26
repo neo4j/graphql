@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where node with DateTime", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 someDateTime: DateTime
                 someDateTimeAlias: DateTime @alias(property: "_someDateTimeAlias")
@@ -45,7 +43,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -84,7 +82,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTimeAlias_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -123,7 +121,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_GT: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -162,7 +160,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_GTE: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -201,7 +199,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_LT: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -240,7 +238,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_LTE: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -279,7 +277,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MIN_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MIN_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -318,7 +316,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MIN_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MIN_GT: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -357,7 +355,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MIN_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MIN_GTE: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -396,7 +394,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MIN_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MIN_LT: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -435,7 +433,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MIN_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MIN_LTE: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -474,7 +472,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MAX_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MAX_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -513,7 +511,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MAX_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MAX_GT: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -552,7 +550,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MAX_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MAX_GTE: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -591,7 +589,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MAX_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MAX_LT: "2021-09-25T12:51:24.037Z" } } }) {
                     content
@@ -630,7 +628,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
     });
 
     test("MAX_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { node: { someDateTime_MAX_LTE: "2021-09-25T12:51:24.037Z" } } }) {
                     content

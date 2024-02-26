@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4001", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             input Pagination {
                 limit: Int = 20
                 offset: Int = 0
@@ -57,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
     });
 
     test("resolve @cypher field with custom input types", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 series {
                     allEpisodes(options: { limit: 10, offset: 0 }) {
@@ -80,9 +78,10 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -102,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
     });
 
     test("resolve @cypher field with custom input types argument", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($option: Pagination) {
                 series {
                     allEpisodes(options: $option) {
@@ -132,9 +131,10 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -154,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
     });
 
     test("resolve @cypher field with custom input types default", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 series {
                     allEpisodes(options: {}) {
@@ -177,9 +177,10 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
                 }
                 WITH n AS this0
-                RETURN collect(this0 { .id }) AS this0
+                WITH this0 { .id } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { allEpisodes: this0 } AS this"
+            RETURN this { allEpisodes: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -23,11 +23,11 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import Neo4jHelper from "../neo4j";
 
 describe("Connections Alias", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
+    let neo4j: Neo4jHelper;
     let session: Session;
     let schema: GraphQLSchema;
 
@@ -39,7 +39,7 @@ describe("Connections Alias", () => {
     const screenTime = 120;
 
     beforeAll(async () => {
-        neo4j = new Neo4j();
+        neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
     });
 

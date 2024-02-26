@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { QueryASTNode } from "../../QueryASTNode";
 import type { Field } from "../Field";
-import Cypher from "@neo4j/cypher-builder";
 
 export class CypherUnionAttributePartial extends QueryASTNode {
     protected fields: Field[];
@@ -69,5 +69,9 @@ export class CypherUnionAttributePartial extends QueryASTNode {
         for (const subqueryProjection of subqueriesProjection) {
             projection.set(subqueryProjection);
         }
+    }
+
+    public isCypherField(): boolean {
+        return true;
     }
 }

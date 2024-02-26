@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -89,7 +88,7 @@ describe("typename_IN with auth", () => {
         });
 
         test("read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actors {
                         actedIn {
@@ -138,7 +137,7 @@ describe("typename_IN with auth", () => {
         });
 
         test("connection read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actorsConnection {
                         edges {
@@ -225,7 +224,7 @@ describe("typename_IN with auth", () => {
         });
 
         test("read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actors {
                         actedIn {
@@ -274,7 +273,7 @@ describe("typename_IN with auth", () => {
         });
 
         test("connection read", async () => {
-            const query = gql`
+            const query = /* GraphQL */ `
                 {
                     actorsConnection {
                         edges {

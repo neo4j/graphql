@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type ServiceLog {
                 id: ID
                 records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
@@ -85,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     });
 
     test("query nested relations under a root connection field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 bacentas(where: { id: 1 }) {
                     id
@@ -121,24 +119,25 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 WITH records AS this0
                 CALL {
                     WITH this0
+                    MATCH (this0)-[this1:BUSSED_ON]->(this2:TimeGraph)
+                    WITH this2 { .date } AS this2
+                    RETURN head(collect(this2)) AS var3
+                }
+                CALL {
+                    WITH this0
                     CALL {
                         WITH this0
                         WITH this0 AS this
                         MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                         RETURN COUNT(member) > 0 AS markedAttendance
                     }
-                    UNWIND markedAttendance AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH markedAttendance AS this4
+                    RETURN this4 AS var5
                 }
-                CALL {
-                    WITH this0
-                    MATCH (this0)-[this2:BUSSED_ON]->(this3:TimeGraph)
-                    WITH this3 { .date } AS this3
-                    RETURN head(collect(this3)) AS var4
-                }
-                RETURN collect(this0 { .id, .attendance, markedAttendance: this1, serviceDate: var4 }) AS this0
+                WITH this0 { .id, .attendance, markedAttendance: var5, serviceDate: var3 } AS this0
+                RETURN collect(this0) AS var6
             }
-            RETURN this { .id, .name, bussing: this0 } AS this"
+            RETURN this { .id, .name, bussing: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

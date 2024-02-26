@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher alias directive", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
                 city: String @alias(property: "cityPropInDb")
@@ -51,7 +49,7 @@ describe("Cypher alias directive", () => {
     });
 
     test("Simple relation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name
@@ -81,7 +79,7 @@ describe("Cypher alias directive", () => {
     });
 
     test("With relationship properties", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 actors {
                     name
@@ -126,7 +124,7 @@ describe("Cypher alias directive", () => {
     });
 
     test("Create mutation", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createActors(
                     input: [

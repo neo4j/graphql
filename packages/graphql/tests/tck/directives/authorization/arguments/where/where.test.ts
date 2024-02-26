@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Auth Where", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]!
             }
@@ -73,7 +71,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -107,7 +105,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Node + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users(where: { name: "bob" }) {
                     id
@@ -142,7 +140,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -189,7 +187,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -247,7 +245,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Connection + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -306,7 +304,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Union Relationship + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -354,7 +352,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -408,7 +406,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Union Using Connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -467,7 +465,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Read Union Using Connection + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -527,7 +525,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { name: "Bob" }) {
                     users {
@@ -568,7 +566,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Update Node + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { name: "bob" }, update: { name: "Bob" }) {
                     users {
@@ -610,7 +608,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Update Nested Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { posts: { update: { node: { id: "new-id" } } } }) {
                     users {
@@ -681,7 +679,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Delete Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers {
                     nodesDeleted
@@ -714,7 +712,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Delete Node + User Defined Where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(where: { name: "Bob" }) {
                     nodesDeleted
@@ -748,7 +746,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Delete Nested Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(delete: { posts: { where: {} } }) {
                     nodesDeleted
@@ -796,7 +794,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Connect Node (from create)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createUsers(
                     input: [
@@ -869,7 +867,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Connect Node + User Defined Where (from create)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createUsers(
                     input: [
@@ -948,7 +946,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Connect Node (from update update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { posts: { connect: { where: { node: {} } } } }) {
                     users {
@@ -1008,7 +1006,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Connect Node + User Defined Where (from update update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { posts: { connect: { where: { node: { id: "new-id" } } } } }) {
                     users {
@@ -1069,7 +1067,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Connect Node (from update connect)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(connect: { posts: { where: { node: {} } } }) {
                     users {
@@ -1130,7 +1128,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Connect Node + User Defined Where (from update connect)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(connect: { posts: { where: { node: { id: "some-id" } } } }) {
                     users {
@@ -1192,7 +1190,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Disconnect Node (from update update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { posts: { disconnect: { where: {} } } }) {
                     users {
@@ -1246,7 +1244,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Disconnect Node + User Defined Where (from update update)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(update: { posts: [{ disconnect: { where: { node: { id: "new-id" } } } }] }) {
                     users {
@@ -1320,7 +1318,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Disconnect Node (from update disconnect)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(disconnect: { posts: { where: {} } }) {
                     users {
@@ -1386,7 +1384,7 @@ describe("Cypher Auth Where", () => {
     });
 
     test("Disconnect Node + User Defined Where (from update disconnect)", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(disconnect: { posts: { where: { node: { id: "some-id" } } } }) {
                     users {

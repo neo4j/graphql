@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with String", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type User {
                 name: String!
             }
@@ -49,7 +47,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_EQUAL: "10" } } }) {
                     content
@@ -79,7 +77,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someStringAlias_EQUAL: "10" } } }) {
                     content
@@ -109,7 +107,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_GT: 10 } } }) {
                     content
@@ -142,7 +140,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_GTE: 10 } } }) {
                     content
@@ -175,7 +173,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LT: 10 } } }) {
                     content
@@ -208,7 +206,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LTE: 10 } } }) {
                     content
@@ -241,7 +239,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("SHORTEST_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_SHORTEST_EQUAL: 10 } } }) {
                     content
@@ -274,7 +272,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("SHORTEST_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_SHORTEST_GT: 10 } } }) {
                     content
@@ -307,7 +305,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("SHORTEST_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_SHORTEST_GTE: 10 } } }) {
                     content
@@ -340,7 +338,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("SHORTEST_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_SHORTEST_LT: 10 } } }) {
                     content
@@ -373,7 +371,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("SHORTEST_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_SHORTEST_LTE: 10 } } }) {
                     content
@@ -406,7 +404,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LONGEST_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LONGEST_EQUAL: 10 } } }) {
                     content
@@ -439,7 +437,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LONGEST_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LONGEST_GT: 10 } } }) {
                     content
@@ -472,7 +470,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LONGEST_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LONGEST_GTE: 10 } } }) {
                     content
@@ -505,7 +503,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LONGEST_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LONGEST_LT: 10 } } }) {
                     content
@@ -538,7 +536,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("LONGEST_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_LONGEST_LTE: 10 } } }) {
                     content
@@ -571,7 +569,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("AVERAGE_EQUAL", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_AVERAGE_EQUAL: 10 } } }) {
                     content
@@ -601,7 +599,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("AVERAGE_GT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_AVERAGE_GT: 10 } } }) {
                     content
@@ -631,7 +629,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("AVERAGE_GTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_AVERAGE_GTE: 10 } } }) {
                     content
@@ -661,7 +659,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("AVERAGE_LT", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_AVERAGE_LT: 10 } } }) {
                     content
@@ -691,7 +689,7 @@ describe("Cypher Aggregations where edge with String", () => {
     });
 
     test("AVERAGE_LTE", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 posts(where: { likesAggregate: { edge: { someString_AVERAGE_LTE: 10 } } }) {
                     content

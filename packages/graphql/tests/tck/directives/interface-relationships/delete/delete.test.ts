@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Delete delete", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 actors: [Actor!]! @declareRelationship
@@ -61,7 +59,7 @@ describe("Interface Relationships - Delete delete", () => {
     });
 
     test("Delete delete an interface relationship", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(delete: { actedIn: { where: { node: { title_STARTS_WITH: "The " } } } }) {
                     nodesDeleted
@@ -110,7 +108,7 @@ describe("Interface Relationships - Delete delete", () => {
     });
 
     test("Delete delete an interface relationship with nested delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteActors(
                     delete: {

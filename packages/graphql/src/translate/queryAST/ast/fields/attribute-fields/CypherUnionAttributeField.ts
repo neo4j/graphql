@@ -55,7 +55,7 @@ export class CypherUnionAttributeField extends CypherAttributeField {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const scope = context.getTargetScope();
-
+        // by setting the return variable of this operation in the attribute scope, we can avoid duplicate the same cypher resolution for sorting and projection purposes
         scope.set(this.attribute.name, this.customCypherVar);
 
         // TODO: this logic may be needed in normal Cypher Fields
@@ -91,5 +91,9 @@ export class CypherUnionAttributeField extends CypherAttributeField {
         });
 
         return [subquery];
+    }
+
+    public isCypherField(): boolean {
+        return true;
     }
 }

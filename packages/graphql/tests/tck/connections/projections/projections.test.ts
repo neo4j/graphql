@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Relay Cursor Connection projections", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             union Production = Movie | Series
 
             type Movie {
@@ -52,7 +50,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("edges not returned if not asked for", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -92,7 +90,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("edges and totalCount returned if pageInfo asked for", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -137,7 +135,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("Minimal edges returned if not asked for with pagination arguments", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -183,7 +181,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("edges not returned if not asked for on a union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors(where: { name: "Tom Hanks" }) {
                     name
@@ -227,7 +225,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("edges and totalCount returned if pageInfo asked for on a union", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors(where: { name: "Tom Hanks" }) {
                     name
@@ -276,7 +274,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("totalCount is calculated and returned if asked for with edges", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title
@@ -321,7 +319,7 @@ describe("Relay Cursor Connection projections", () => {
     });
 
     test("totalCount is calculated and returned if asked for with edges with pagination arguments", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 movies(where: { title: "Forrest Gump" }) {
                     title

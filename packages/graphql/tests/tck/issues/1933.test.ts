@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1933", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Employee {
                 employeeId: ID! @unique
                 firstName: String! @settable(onCreate: false, onUpdate: false)
@@ -55,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     });
 
     test("should compare for SUM_LTE allocation in return statement rather than the WITH clause", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 employees(where: { projectsAggregate: { edge: { allocation_SUM_LTE: 25 } } }) {
                     employeeId
@@ -108,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     });
 
     test("should compare for LTE allocation in return statement", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 employees(where: { projectsAggregate: { edge: { allocation_LTE: 25 } } }) {
                     employeeId

@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Relationships", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -59,7 +57,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Simple Interface Relationship Query", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedIn {
@@ -102,7 +100,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Simple Interface Relationship Query For Non-Array Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     currentlyActingIn {
@@ -145,7 +143,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Simple Interface Relationship Query with offset and limit", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedIn(options: { offset: 5, limit: 10, sort: [{ title: DESC }] }) {
@@ -202,7 +200,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Interface Relationship Query through connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedInConnection {
@@ -253,7 +251,7 @@ describe("Interface Relationships", () => {
     });
 
     test("Interface Relationship Query through connection with where", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 actors {
                     actedInConnection(where: { node: { title_STARTS_WITH: "The " }, edge: { screenTime_GT: 60 } }) {

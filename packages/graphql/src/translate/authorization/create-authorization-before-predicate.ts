@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { asArray } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { PredicateReturn } from "../../types";
@@ -65,9 +64,7 @@ export function createAuthorizationBeforePredicate({
         });
         authorizationRules.forEach((filter) => {
             const nodeRawSubqueries = filter?.getSubqueries(queryASTContext);
-            const nodeSubqueries = filterTruthy(asArray(nodeRawSubqueries)).map((sq) =>
-                wrapSubqueryInCall(sq, matchNode)
-            );
+            const nodeSubqueries = filterTruthy(nodeRawSubqueries).map((sq) => wrapSubqueryInCall(sq, matchNode));
             const nodePredicate = filter?.getPredicate(queryASTContext);
 
             if (nodePredicate) {
@@ -75,7 +72,7 @@ export function createAuthorizationBeforePredicate({
             }
             const extraSelections = filter?.getSelection(queryASTContext);
 
-            const preComputedSubqueries = [...asArray(extraSelections), ...asArray(nodeSubqueries)];
+            const preComputedSubqueries = [...extraSelections, ...nodeSubqueries];
             if (preComputedSubqueries) {
                 subqueries = Cypher.concat(subqueries, ...preComputedSubqueries);
             }
@@ -142,7 +139,7 @@ export function createAuthorizationBeforePredicateField({
                 const fieldSelection = filter.getSelection(queryASTContext);
                 const fieldSubqueries = filter.getSubqueries(queryASTContext);
 
-                const preComputedSubqueries = [...asArray(fieldSelection), ...asArray(fieldSubqueries)];
+                const preComputedSubqueries = [...fieldSelection, ...fieldSubqueries];
                 if (preComputedSubqueries) {
                     subqueries = Cypher.concat(subqueries, ...preComputedSubqueries);
                 }

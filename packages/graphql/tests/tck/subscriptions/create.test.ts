@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on create", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -51,7 +49,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with create relation: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -67,7 +65,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -152,7 +150,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with create relation without properties: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -164,7 +162,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [{ title: "Forrest Gump", actors: { create: [{ node: { name: "Tom Hanks" } }] } }]
@@ -236,7 +234,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with nested create relation: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -252,7 +250,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -360,7 +358,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with create relation to union field: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -387,7 +385,7 @@ describe("Subscriptions metadata on create", () => {
             union Director = Person | Actor
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -487,7 +485,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Create with nested create relation to union field: connect event", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -514,7 +512,7 @@ describe("Subscriptions metadata on create", () => {
             union Director = Person | Actor
         `;
 
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -648,7 +646,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Simple Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }]) {
                     movies {
@@ -685,7 +683,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Multi Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
@@ -734,7 +732,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Nested Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1", actors: { create: { node: { name: "Andrés" } } } }]) {
                     movies {
@@ -786,7 +784,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Triple nested Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -851,7 +849,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Quadruple nested Create", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -951,7 +949,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Multi Create with nested", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -1035,7 +1033,7 @@ describe("Subscriptions metadata on create", () => {
     });
 
     test("Simple create without returned data", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: "1" }]) {
                     info {

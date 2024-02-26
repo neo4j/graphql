@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Auth isAuthenticated", () => {
     const secret = "secret";
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = /* GraphQL */ `
             type History {
                 url: String @authentication(operations: [READ])
             }
@@ -68,7 +66,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Read Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -91,7 +89,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Read Node & Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     id
@@ -115,7 +113,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Read Node & Cypher Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             {
                 users {
                     history {
@@ -140,16 +138,17 @@ describe("Cypher Auth isAuthenticated", () => {
                     MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
                 }
                 WITH h AS this0
-                RETURN collect(this0 { .url }) AS this0
+                WITH this0 { .url } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { history: this0 } AS this"
+            RETURN this { history: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Create Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createUsers(input: [{ id: "1" }]) {
                     users {
@@ -189,7 +188,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Create Node & Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 createUsers(input: [{ id: "1", password: "super-password" }]) {
                     users {
@@ -231,7 +230,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Update Node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "1" }, update: { id: "id-1" }) {
                     users {
@@ -263,7 +262,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Update Node & Field", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(where: { id: "1" }, update: { password: "password" }) {
                     users {
@@ -295,7 +294,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Connect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(connect: { posts: {} }) {
                     users {
@@ -341,7 +340,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Disconnect", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 updateUsers(disconnect: { posts: {} }) {
                     users {
@@ -391,7 +390,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers {
                     nodesDeleted
@@ -413,7 +412,7 @@ describe("Cypher Auth isAuthenticated", () => {
     });
 
     test("Nested Delete", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 deleteUsers(delete: { posts: { where: {} } }) {
                     nodesDeleted
