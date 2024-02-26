@@ -333,13 +333,20 @@ export class ConnectionReadOperation extends Operation {
             return nodeFields;
         });
     }
-
+    /**
+     *  This method resolves all the subqueries for each field and splits them into separate fields: `prePaginationSubqueries` and `postPaginationSubqueries`,
+     *  in the `prePaginationSubqueries` are present all the subqueries required for the pagination purpose.
+     **/
     private getPreAndPostSubqueries(context: QueryASTContext): {
         prePaginationSubqueries: Cypher.Clause[];
         postPaginationSubqueries: Cypher.Clause[];
     } {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
+        /**
+         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key 
+         * and a boolean flag defined as true when the field is a `@cypher` field.
+         **/ 
         const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
             (sortFieldsFlagMap, sortField) => {
                 if (sortField instanceof CypherPropertySort) {
