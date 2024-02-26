@@ -17,24 +17,22 @@
  * limitations under the License.
  */
 
+import { Memoize } from "typescript-memoize";
 import { RelationshipNestedOperationsOption } from "../../../constants";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
-import { ConcreteEntity } from "../../entity/ConcreteEntity";
 import type { Entity } from "../../entity/Entity";
 import type { EntityAdapter } from "../../entity/EntityAdapter";
-import { InterfaceEntity } from "../../entity/InterfaceEntity";
-import { UnionEntity } from "../../entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
+import { getEntityAdapter } from "../../utils/get-entity-adapter";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { RelationshipOperations } from "./RelationshipOperations";
-import { Memoize } from "typescript-memoize";
 
 export class RelationshipAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
@@ -91,15 +89,7 @@ export class RelationshipAdapter {
         if (sourceAdapter) {
             this.source = sourceAdapter;
         } else {
-            if (source instanceof ConcreteEntity) {
-                this.source = new ConcreteEntityAdapter(source);
-            } else if (source instanceof InterfaceEntity) {
-                this.source = new InterfaceEntityAdapter(source);
-            } else if (source instanceof UnionEntity) {
-                this.source = new UnionEntityAdapter(source);
-            } else {
-                throw new Error("relationship source must be an Entity");
-            }
+            this.source = getEntityAdapter(source);
         }
         this.direction = direction;
         this.isList = isList;
@@ -197,15 +187,7 @@ export class RelationshipAdapter {
     @Memoize()
     public get target(): EntityAdapter {
         if (!this._target) {
-            if (this.rawEntity instanceof ConcreteEntity) {
-                this._target = new ConcreteEntityAdapter(this.rawEntity);
-            } else if (this.rawEntity instanceof InterfaceEntity) {
-                this._target = new InterfaceEntityAdapter(this.rawEntity);
-            } else if (this.rawEntity instanceof UnionEntity) {
-                this._target = new UnionEntityAdapter(this.rawEntity);
-            } else {
-                throw new Error("invalid target entity type");
-            }
+            this._target = getEntityAdapter(this.rawEntity);
         }
         return this._target;
     }
@@ -215,15 +197,7 @@ export class RelationshipAdapter {
         if (!this.rawOriginalTargetEntity) {
             return;
         }
-        if (this.rawOriginalTargetEntity instanceof ConcreteEntity) {
-            return new ConcreteEntityAdapter(this.rawOriginalTargetEntity);
-        } else if (this.rawOriginalTargetEntity instanceof InterfaceEntity) {
-            return new InterfaceEntityAdapter(this.rawOriginalTargetEntity);
-        } else if (this.rawOriginalTargetEntity instanceof UnionEntity) {
-            return new UnionEntityAdapter(this.rawOriginalTargetEntity);
-        } else {
-            throw new Error("invalid original target entity type");
-        }
+        return getEntityAdapter(this.rawOriginalTargetEntity);
     }
 
     public isReadable(): boolean {

@@ -280,10 +280,15 @@ export class FieldFactory {
             } else if (attribute.typeHelper.isAbstract()) {
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities
-                if (!targetEntity || !targetEntity.isCompositeEntity()) {
+                if (!targetEntity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
+                if (!targetEntity.isCompositeEntity()) {
+                    throw new Error(`Entity ${typeName} is not a composite entity`);
+                }
+
                 const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
+
                 const nestedUnionFields = concreteEntities.flatMap((concreteEntity) => {
                     const concreteEntityFields = field.fieldsByTypeName[concreteEntity.name];
                     const unionNestedFields = this.createFields(
@@ -359,7 +364,7 @@ export class FieldFactory {
         cypherAttributeField,
         cypherArguments,
     }: {
-        target?: ConcreteEntityAdapter;
+        target?: EntityAdapter;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         cypherAttributeField: AttributeAdapter;
