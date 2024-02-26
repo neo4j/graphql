@@ -124,11 +124,11 @@ export class ConnectionReadOperation extends Operation {
         }
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq).importWith(nestedContext.target);
+            return new Cypher.Call(sq).innerWith(nestedContext.target);
         });
 
         const normalFilterSubqueries = this.getFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq).importWith(nestedContext.target);
+            return new Cypher.Call(sq).innerWith(nestedContext.target);
         });
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];

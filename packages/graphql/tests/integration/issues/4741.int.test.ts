@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
         await driver.close();
     });
 
-    test("should return only one Opportunity", async () => {
+    test("should return only one Opportunity filtering by count", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Opportunity.operations.connection}(first: 10, where: { listsOlisAggregate: { count_GT: 1 } }) {
@@ -88,7 +88,40 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
 
         const queryResults = await graphqlQuery(query);
         expect(queryResults.errors).toBeUndefined();
-        console.log(JSON.stringify(queryResults.data, null, 4));
+        expect(queryResults.data).toEqual({
+            [Opportunity.operations.connection]: {
+                edges: expect.toIncludeSameMembers([
+                    {
+                        node: {
+                            country: "ES",
+                            listsOlisConnection: {
+                                totalCount: 2,
+                            },
+                        },
+                    },
+                ]),
+            },
+        });
+    });
+
+    test("should return only one Opportunity filering by name length", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Opportunity.operations.connection}(first: 10, where: { listsOlisAggregate: { node: { name_LT: 10 } } }) {
+                    edges {
+                        node {
+                            country
+                            listsOlisConnection {
+                                totalCount
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const queryResults = await graphqlQuery(query);
+        expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Opportunity.operations.connection]: {
                 edges: expect.toIncludeSameMembers([
