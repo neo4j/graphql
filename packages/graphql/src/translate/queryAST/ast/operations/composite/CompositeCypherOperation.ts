@@ -19,9 +19,9 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTNode } from "../../QueryASTNode";
 import type { EntitySelection } from "../../selection/EntitySelection";
 import { Operation, type OperationTranspileResult } from "../operations";
-import type { QueryASTNode } from "../../QueryASTNode";
 import type { CompositeReadPartial } from "./CompositeReadPartial";
 
 export class CompositeCypherOperation extends Operation {
@@ -52,7 +52,7 @@ export class CompositeCypherOperation extends Operation {
         );
 
         const subquery = new Cypher.Call(partialsSubquery)
-            .innerWith(nestedContext.target)
+            .importWith(nestedContext.target)
             .return([partialContext.returnVariable, nestedContext.returnVariable]);
         return {
             clauses: [matchClause, subquery],

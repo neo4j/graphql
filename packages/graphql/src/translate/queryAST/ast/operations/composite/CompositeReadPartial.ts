@@ -68,7 +68,7 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(nestedContext.target));
+            .map((sq) => new Cypher.Call(sq).importWith(nestedContext.target));
 
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
