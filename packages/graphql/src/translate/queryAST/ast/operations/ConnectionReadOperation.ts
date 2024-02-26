@@ -344,9 +344,9 @@ export class ConnectionReadOperation extends Operation {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
         /**
-         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key
+         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key 
          * and a boolean flag defined as true when the field is a `@cypher` field.
-         **/
+         **/ 
         const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
             (sortFieldsFlagMap, sortField) => {
                 if (sortField instanceof CypherPropertySort) {

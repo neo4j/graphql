@@ -65,13 +65,7 @@ export class CustomCypherFactory {
                 target: entity,
                 selection,
             });
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
-                entity,
-                operation: customCypher,
-                resolveTree,
-                context,
-                whereArgs: {},
-            });
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
@@ -125,13 +119,7 @@ export class CustomCypherFactory {
                 target: entity,
                 selection,
             });
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
-                entity,
-                operation: customCypher,
-                resolveTree,
-                context,
-                whereArgs: {},
-            });
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
         }
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {

@@ -52,7 +52,7 @@ export function parseWhereField(field: string): WhereRegexGroups {
             operator = notSplit[1] as WhereOperator;
         } else if (matchGroups.operator === "NOT" || matchGroups.operator === "NONE") {
             isNot = true;
-            if (matchGroups.operator === "NONE") {
+            if (matchGroups.operator === "NONE") { 
                 operator = notSplit[0] as WhereOperator;
             }
         } else {

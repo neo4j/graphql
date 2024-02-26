@@ -98,14 +98,7 @@ export function createWhereNodePredicate({
         env: queryASTEnv,
         neo4jGraphQLContext: context,
     });
-    return createWherePredicate({
-        factory,
-        queryASTContext,
-        entityOrRel: entity,
-        whereInput,
-        targetElement,
-        targetEntity,
-    });
+    return createWherePredicate({ factory, queryASTContext, entityOrRel: entity, whereInput, targetElement, targetEntity });
 }
 
 export function createWhereEdgePredicate({
