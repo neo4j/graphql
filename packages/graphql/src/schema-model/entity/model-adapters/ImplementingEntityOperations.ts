@@ -64,8 +64,10 @@ export type CreateMutationArgumentNames = {
 export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | ConcreteEntityAdapter> {
     protected readonly pascalCasePlural: string;
     protected readonly pascalCaseSingular: string;
+    protected readonly entityAdapter: T;
 
-    constructor(protected readonly entityAdapter: T) {
+    constructor(entityAdapter: T) {
+        this.entityAdapter = entityAdapter;
         this.pascalCasePlural = upperFirst(entityAdapter.plural);
         this.pascalCaseSingular = upperFirst(entityAdapter.singular);
     }
@@ -75,7 +77,6 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
     }
 
     public get uniqueWhereInputTypeName(): string {
-        // ConnectOrCreateWhere.node
         return `${this.entityAdapter.name}UniqueWhere`;
     }
 
