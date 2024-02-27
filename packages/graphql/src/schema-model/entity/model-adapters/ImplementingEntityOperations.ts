@@ -61,6 +61,7 @@ export type CreateMutationArgumentNames = {
     input: string;
 };
 
+/** ImplementingType refers to the common abstraction of an ObjectType (ConcreteEntity) and InterfaceType */
 export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | ConcreteEntityAdapter> {
     protected readonly pascalCasePlural: string;
     protected readonly pascalCaseSingular: string;
