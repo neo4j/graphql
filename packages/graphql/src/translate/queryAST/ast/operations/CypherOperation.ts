@@ -72,23 +72,23 @@ export class CypherOperation extends ReadOperation {
         };
     }
 
-    public getReturnClause(context: QueryASTContext<Cypher.Node>, returnVariable: Cypher.Variable): Cypher.Clause {
+    private getReturnClause(context: QueryASTContext<Cypher.Node>, returnVariable: Cypher.Variable): Cypher.Clause {
         const projection = this.getProjectionMap(context);
 
-        let aggregationExpr: Cypher.Expr;
+        let returnExpr: Cypher.Expr;
         if (context.shouldCollect) {
-            aggregationExpr = Cypher.collect(context.target);
+            returnExpr = Cypher.collect(context.target);
         } else {
-            aggregationExpr = context.target;
+            returnExpr = context.target;
         }
         if (context.shouldCollect && !this.cypherAttributeField.typeHelper.isList()) {
-            aggregationExpr = Cypher.head(aggregationExpr);
+            returnExpr = Cypher.head(returnExpr);
         }
         const withClause = new Cypher.With([projection, context.target]);
         if (this.sortFields.length > 0 || this.pagination) {
             this.addSortToClause(context, context.target, withClause);
         }
 
-        return withClause.return([aggregationExpr, returnVariable]);
+        return withClause.return([returnExpr, returnVariable]);
     }
 }

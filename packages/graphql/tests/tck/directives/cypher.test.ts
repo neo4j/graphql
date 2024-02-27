@@ -489,50 +489,60 @@ describe("Cypher directive", () => {
                     RETURN n
                 }
                 WITH n AS this0
-                WITH *
-                WHERE (this0:Movie OR this0:TVShow)
-                WITH *, this0 AS this1
                 CALL {
-                    WITH this1
+                    WITH this0
                     CALL {
-                        WITH this1
-                        WITH this1 AS this
-                        MATCH (a:Actor)
-                        RETURN a
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:Movie
+                        CALL {
+                            WITH this0
+                            CALL {
+                                WITH this0
+                                WITH this0 AS this
+                                MATCH (a:Actor)
+                                RETURN a
+                            }
+                            WITH a AS this1
+                            WITH this1 { .name, .year } AS this1
+                            RETURN head(collect(this1)) AS var2
+                        }
+                        CALL {
+                            WITH this0
+                            CALL {
+                                WITH this0
+                                WITH this0 AS this
+                                MATCH (a:Actor)
+                                RETURN a
+                            }
+                            WITH a AS this3
+                            WITH this3 { .name } AS this3
+                            RETURN collect(this3) AS var4
+                        }
+                        WITH this0 { .id, .title, topActor: var2, actors: var4, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var5
+                        UNION
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:TVShow
+                        CALL {
+                            WITH this0
+                            CALL {
+                                WITH this0
+                                WITH this0 AS this
+                                MATCH (a:Actor)
+                                RETURN a
+                            }
+                            WITH a AS this6
+                            WITH this6 { .name } AS this6
+                            RETURN head(collect(this6)) AS var7
+                        }
+                        WITH this0 { .id, .title, topActor: var7, __resolveType: \\"TVShow\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var5
                     }
-                    WITH a AS this2
-                    WITH this2 { .name, .year } AS this2
-                    RETURN head(collect(this2)) AS var3
+                    RETURN var5
                 }
-                CALL {
-                    WITH this1
-                    CALL {
-                        WITH this1
-                        WITH this1 AS this
-                        MATCH (a:Actor)
-                        RETURN a
-                    }
-                    WITH a AS this4
-                    WITH this4 { .name } AS this4
-                    RETURN collect(this4) AS var5
-                }
-                WITH *, this0 AS this6
-                CALL {
-                    WITH this6
-                    CALL {
-                        WITH this6
-                        WITH this6 AS this
-                        MATCH (a:Actor)
-                        RETURN a
-                    }
-                    WITH a AS this7
-                    WITH this7 { .name } AS this7
-                    RETURN head(collect(this7)) AS var8
-                }
-                RETURN collect(CASE
-                    WHEN this0:Movie THEN this0 { .id, .title, topActor: var3, actors: var5, __resolveType: \\"Movie\\" }
-                    WHEN this0:TVShow THEN this0 { .id, .title, topActor: var8, __resolveType: \\"TVShow\\" }
-                END) AS this0
+                RETURN collect(var5) AS this0
             }
             RETURN this { movieOrTVShow: this0 } AS this"
         `);
@@ -569,12 +579,24 @@ describe("Cypher directive", () => {
                     RETURN n
                 }
                 WITH n AS this0
-                WITH *
-                WHERE (this0:Movie OR this0:TVShow)
-                RETURN collect(CASE
-                    WHEN this0:Movie THEN this0 { __resolveType: \\"Movie\\" }
-                    WHEN this0:TVShow THEN this0 { __resolveType: \\"TVShow\\" }
-                END) AS this0
+                CALL {
+                    WITH this0
+                    CALL {
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:Movie
+                        WITH this0 { __resolveType: \\"Movie\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var1
+                        UNION
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:TVShow
+                        WITH this0 { __resolveType: \\"TVShow\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var1
+                    }
+                    RETURN var1
+                }
+                RETURN collect(var1) AS this0
             }
             RETURN this { movieOrTVShow: this0 } AS this"
         `);

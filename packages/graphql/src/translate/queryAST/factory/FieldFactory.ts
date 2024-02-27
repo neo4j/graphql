@@ -45,6 +45,7 @@ import type { CompositeConnectionReadOperation } from "../ast/operations/composi
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -250,7 +251,7 @@ export class FieldFactory {
     }): CypherAttributeField | OperationField {
         const typeName = attribute.typeHelper.isList() ? (attribute.type as ListType).ofType.name : attribute.type.name;
         const rawFields = field.fieldsByTypeName[typeName];
-        let cypherProjection: Record<string, string> | undefined;
+       // let cypherProjection: Record<string, string> | undefined;
         const extraParams: Record<string, any> = {};
 
         if (cypherAnnotation.statement.includes("$jwt") && context.authorization.jwtParam) {
@@ -258,10 +259,10 @@ export class FieldFactory {
         }
 
         if (rawFields) {
-            cypherProjection = Object.values(rawFields).reduce((acc, f) => {
+           /*  cypherProjection = Object.values(rawFields).reduce((acc, f) => {
                 acc[f.alias] = f.name;
                 return acc;
-            }, {});
+            }, {}); */
 
             if (attribute.typeHelper.isObject()) {
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
@@ -278,16 +279,25 @@ export class FieldFactory {
                     cypherArguments,
                 });
             } else if (attribute.typeHelper.isAbstract()) {
-                const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
+                const entity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities
-                if (!targetEntity) {
+                if (!entity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
-                if (!targetEntity.isCompositeEntity()) {
+                if (!entity.isCompositeEntity()) {
                     throw new Error(`Entity ${typeName} is not a composite entity`);
                 }
-
-                const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
+                const targetEntity = getEntityAdapter(entity);
+                const cypherArguments = { ...field.args };
+                field.args = {};
+                return this.createCypherOperationField({
+                    target: targetEntity,
+                    field,
+                    context,
+                    cypherAttributeField: attribute,
+                    cypherArguments,
+                });
+              /*   const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
 
                 const nestedUnionFields = concreteEntities.flatMap((concreteEntity) => {
                     const concreteEntityFields = field.fieldsByTypeName[concreteEntity.name];
@@ -309,7 +319,7 @@ export class FieldFactory {
                     rawArguments: field.args,
                     unionPartials: nestedUnionFields,
                     extraParams,
-                });
+                }); */
             }
         }
         const cypherArguments = { ...field.args };

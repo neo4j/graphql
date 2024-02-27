@@ -95,12 +95,24 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                     Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($param0 * $param1) LIMIT $param0
                 }
                 WITH pag AS this0
-                WITH *
-                WHERE ((this0:ContentPiece AND this0:UNIVERSAL) OR (this0:Project AND this0:UNIVERSAL))
-                RETURN collect(CASE
-                    WHEN (this0:ContentPiece AND this0:UNIVERSAL) THEN this0 { .id, __resolveType: \\"ContentPiece\\" }
-                    WHEN (this0:Project AND this0:UNIVERSAL) THEN this0 { .id, __resolveType: \\"Project\\" }
-                END) AS this0
+                CALL {
+                    WITH this0
+                    CALL {
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:ContentPiece
+                        WITH this0 { .id, __resolveType: \\"ContentPiece\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var1
+                        UNION
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:Project
+                        WITH this0 { .id, __resolveType: \\"Project\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var1
+                    }
+                    RETURN var1
+                }
+                RETURN collect(var1) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"
         `);

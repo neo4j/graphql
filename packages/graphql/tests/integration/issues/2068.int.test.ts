@@ -243,6 +243,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         });
     });
+
     test("Unions in cypher directives", async () => {
         const actorName = "someName";
         const actorAge = 43;
