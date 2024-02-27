@@ -576,7 +576,7 @@ function generateObjectType({
 
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                concreteEntityAdapter,
+                entityAdapter: concreteEntityAdapter,
             }),
         });
         composer.Query.setFieldDirectives(
@@ -702,7 +702,7 @@ function generateInterfaceObjectType({
 
         composer.Query.addFields({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                concreteEntityAdapter: interfaceEntityAdapter,
+                entityAdapter: interfaceEntityAdapter,
             }),
         });
         composer.Query.setFieldDirectives(

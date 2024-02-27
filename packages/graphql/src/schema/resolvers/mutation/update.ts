@@ -21,7 +21,7 @@ import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { UpdateMutationArgumentNames } from "../../../schema-model/entity/model-adapters/ConcreteEntityOperations";
+import type { UpdateMutationArgumentNames } from "../../../schema-model/entity/model-adapters/ImplementingEntityOperations";
 import { translateUpdate } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
