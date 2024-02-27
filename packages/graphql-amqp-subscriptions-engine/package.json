@@ -35,7 +35,7 @@
     "devDependencies": {
         "@apollo/server": "4.10.0",
         "@neo4j/graphql": "^5.0.0",
-        "@types/amqplib": "0.10.4",
+        "@types/amqplib": "0.10.5",
         "@types/body-parser": "1.19.5",
         "@types/cors": "2.8.17",
         "@types/debug": "4.1.12",
