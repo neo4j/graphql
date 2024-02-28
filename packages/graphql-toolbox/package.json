@@ -78,7 +78,7 @@
         "@types/react-dom": "18.2.19",
         "@types/webpack": "5.28.5",
         "autoprefixer": "10.4.17",
-        "compression-webpack-plugin": "11.0.0",
+        "compression-webpack-plugin": "11.1.0",
         "copy-webpack-plugin": "12.0.2",
         "cross-env": "7.0.3",
         "css-loader": "6.10.0",
