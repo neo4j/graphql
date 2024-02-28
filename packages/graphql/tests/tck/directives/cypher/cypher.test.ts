@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
     let typeDefs: string;
@@ -37,7 +37,6 @@ describe("Cypher directive", () => {
                         """
                         columnName: "m"
                     )
-
                 tvShows(title: String): [Movie]
                     @cypher(
                         statement: """
@@ -45,16 +44,6 @@ describe("Cypher directive", () => {
                         RETURN t
                         """
                         columnName: "t"
-                    )
-
-                movieOrTVShow(title: String): [MovieOrTVShow]
-                    @cypher(
-                        statement: """
-                        MATCH (n)
-                        WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-                        RETURN n
-                        """
-                        columnName: "n"
                     )
 
                 randomNumber: Int
@@ -66,7 +55,6 @@ describe("Cypher directive", () => {
                     )
             }
 
-            union MovieOrTVShow = Movie | TVShow
 
             type TVShow {
                 id: ID
@@ -438,167 +426,6 @@ describe("Cypher directive", () => {
                 RETURN head(collect(this0)) AS var3
             }
             RETURN this { .title, topActor: var3 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"some title\\"
-            }"
-        `);
-    });
-
-    test("Union directive", async () => {
-        const query = /* GraphQL */ `
-            {
-                actors {
-                    movieOrTVShow(title: "some title") {
-                        ... on Movie {
-                            id
-                            title
-                            topActor {
-                                name
-                                year
-                            }
-                            actors {
-                                name
-                            }
-                        }
-                        ... on TVShow {
-                            id
-                            title
-                            topActor {
-                                name
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    WITH this AS this
-                    MATCH (n)
-                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                    RETURN n
-                }
-                WITH n AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH *
-                        MATCH (this0)
-                        WHERE this0:Movie
-                        CALL {
-                            WITH this0
-                            CALL {
-                                WITH this0
-                                WITH this0 AS this
-                                MATCH (a:Actor)
-                                RETURN a
-                            }
-                            WITH a AS this1
-                            WITH this1 { .name, .year } AS this1
-                            RETURN head(collect(this1)) AS var2
-                        }
-                        CALL {
-                            WITH this0
-                            CALL {
-                                WITH this0
-                                WITH this0 AS this
-                                MATCH (a:Actor)
-                                RETURN a
-                            }
-                            WITH a AS this3
-                            WITH this3 { .name } AS this3
-                            RETURN collect(this3) AS var4
-                        }
-                        WITH this0 { .id, .title, topActor: var2, actors: var4, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                        RETURN this0 AS var5
-                        UNION
-                        WITH *
-                        MATCH (this0)
-                        WHERE this0:TVShow
-                        CALL {
-                            WITH this0
-                            CALL {
-                                WITH this0
-                                WITH this0 AS this
-                                MATCH (a:Actor)
-                                RETURN a
-                            }
-                            WITH a AS this6
-                            WITH this6 { .name } AS this6
-                            RETURN head(collect(this6)) AS var7
-                        }
-                        WITH this0 { .id, .title, topActor: var7, __resolveType: \\"TVShow\\", __id: id(this0) } AS this0
-                        RETURN this0 AS var5
-                    }
-                    RETURN var5
-                }
-                RETURN collect(var5) AS this0
-            }
-            RETURN this { movieOrTVShow: this0 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"some title\\"
-            }"
-        `);
-    });
-
-    test("Union directive - querying only __typename", async () => {
-        const query = /* GraphQL */ `
-            {
-                actors {
-                    movieOrTVShow(title: "some title") {
-                        __typename
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    WITH this AS this
-                    MATCH (n)
-                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                    RETURN n
-                }
-                WITH n AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH *
-                        MATCH (this0)
-                        WHERE this0:Movie
-                        WITH this0 { __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                        RETURN this0 AS var1
-                        UNION
-                        WITH *
-                        MATCH (this0)
-                        WHERE this0:TVShow
-                        WITH this0 { __resolveType: \\"TVShow\\", __id: id(this0) } AS this0
-                        RETURN this0 AS var1
-                    }
-                    RETURN var1
-                }
-                RETURN collect(var1) AS this0
-            }
-            RETURN this { movieOrTVShow: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
