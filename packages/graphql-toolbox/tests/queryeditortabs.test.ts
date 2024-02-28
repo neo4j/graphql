@@ -17,20 +17,19 @@
  * limitations under the License.
  */
 
-import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import { expect, test } from "./utils/pagemodel";
 
 dotenv.config();
 
-base.test.describe("query editor tabs", () => {
-    const typeDefs = `
+test.describe("query editor tabs", () => {
+    const typeDefs = /* GraphQL */ `
         type Movie {
             id: ID!
         }
     `;
 
-    const queryOne = `
+    const queryOne = /* GraphQL */ `
         query MyTest1 {
             movies {
                 id
@@ -38,7 +37,7 @@ base.test.describe("query editor tabs", () => {
         }
     `;
 
-    const queryTwo = `
+    const queryTwo = /* GraphQL */ `
         query MyTest2 {
             movies {
                 id
