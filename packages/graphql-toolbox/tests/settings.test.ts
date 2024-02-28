@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import { test } from "./utils/pagemodel";
 
 dotenv.config();
 
-base.test.describe("settings", () => {
+test.describe("settings", () => {
     test("should be able to enable and disable product usage tracking", async ({
         loginPage,
         applicationSettingsPage,
