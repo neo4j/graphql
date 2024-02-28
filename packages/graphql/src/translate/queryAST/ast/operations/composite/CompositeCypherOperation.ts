@@ -90,7 +90,7 @@ export class CompositeCypherOperation extends Operation {
     }
 
     private wrapWithHeadIfNeeded(context: QueryASTContext<Cypher.Node | undefined>, expr: Cypher.Expr): Cypher.Expr {
-        if (!this.cypherAttributeField.typeHelper.isList()) {
+        if (context.shouldCollect && !this.cypherAttributeField.typeHelper.isList()) {
             return Cypher.head(expr);
         }
         return expr;

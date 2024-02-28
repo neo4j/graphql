@@ -452,7 +452,7 @@ describe("Cypher directive on union", () => {
                 }
                 RETURN var1
             }
-            RETURN head(var1) AS this0"
+            RETURN var1 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -498,7 +498,7 @@ describe("Cypher directive on union", () => {
                 }
                 RETURN var1
             }
-            RETURN head(var1) AS this0"
+            RETURN var1 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -597,7 +597,7 @@ describe("Cypher directive on union", () => {
                 }
                 RETURN var7
             }
-            RETURN head(var7) AS this0"
+            RETURN var7 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

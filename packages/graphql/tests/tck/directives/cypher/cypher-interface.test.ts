@@ -442,7 +442,7 @@ describe("Cypher directive on interface", () => {
                 }
                 RETURN var1
             }
-            RETURN head(var1) AS this0"
+            RETURN var1 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -488,7 +488,7 @@ describe("Cypher directive on interface", () => {
                 }
                 RETURN var1
             }
-            RETURN head(var1) AS this0"
+            RETURN var1 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -586,7 +586,7 @@ describe("Cypher directive on interface", () => {
                 }
                 RETURN var5
             }
-            RETURN head(var5) AS this0"
+            RETURN var5 AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
