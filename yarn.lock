@@ -3782,7 +3782,7 @@ __metadata:
     "@types/jsonwebtoken": "npm:9.0.6"
     "@types/node": "npm:20.11.20"
     "@types/pluralize": "npm:0.0.33"
-    "@types/randomstring": "npm:1.1.11"
+    "@types/randomstring": "npm:1.1.12"
     "@types/semver": "npm:7.5.8"
     "@types/supertest": "npm:6.0.2"
     "@types/ws": "npm:8.5.10"
@@ -7806,10 +7806,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/randomstring@npm:1.1.11":
-  version: 1.1.11
-  resolution: "@types/randomstring@npm:1.1.11"
-  checksum: 10c0/19ab3803b41b164920ed39599fd909da5aeed87006f87c882c32943c5e4ecd5edd85c413531bb76b09a989bc327d94a39522d7e584b29bb7ca56dc60a4c420ac
+"@types/randomstring@npm:1.1.12":
+  version: 1.1.12
+  resolution: "@types/randomstring@npm:1.1.12"
+  checksum: 10c0/bb2f78eaf16dbfb8f58fec5d9f5092400c69f74d181fcd80191991045e4371c0c40939ae6fbd2b318bbf5c52deb2d6dec2a8c880fcce0ffc7a2c00c8db4e8029
   languageName: node
   linkType: hard
 
