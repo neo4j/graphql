@@ -21,19 +21,18 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
-import { hasTarget } from "../../utils/context-has-target";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Field } from "../fields/Field";
 import { OperationField } from "../fields/OperationField";
-import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort, SortField } from "../sort/Sort";
+import { CypherScalarOperation } from "./CypherScalarOperation";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
@@ -341,12 +340,14 @@ export class ConnectionReadOperation extends Operation {
         prePaginationSubqueries: Cypher.Clause[];
         postPaginationSubqueries: Cypher.Clause[];
     } {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
         /**
-         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key 
+         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key
          * and a boolean flag defined as true when the field is a `@cypher` field.
-         **/ 
+         **/
         const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
             (sortFieldsFlagMap, sortField) => {
                 if (sortField instanceof CypherPropertySort) {
@@ -359,16 +360,16 @@ export class ConnectionReadOperation extends Operation {
 
         const preAndPostFields = this.nodeFields.reduce<Record<"Pre" | "Post", Field[]>>(
             (acc, nodeField) => {
-                if (nodeField instanceof OperationField && nodeField.isCypherField()) {
+                if (
+                    nodeField instanceof OperationField &&
+                    nodeField.isCypherField() &&
+                    nodeField.operation instanceof CypherScalarOperation
+                ) {
                     const cypherFieldName = nodeField.operation.cypherAttributeField.name;
                     if (cypherSortFieldsFlagMap[cypherFieldName]) {
                         acc.Pre.push(nodeField);
                         return acc;
                     }
-                }
-                if (nodeField instanceof CypherAttributeField && cypherSortFieldsFlagMap[nodeField.getFieldName()]) {
-                    acc.Pre.push(nodeField);
-                    return acc;
                 }
 
                 acc.Post.push(nodeField);

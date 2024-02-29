@@ -27,7 +27,7 @@ import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
 export class CypherOperation extends ReadOperation {
-    public cypherAttributeField: AttributeAdapter;
+    private cypherAttributeField: AttributeAdapter;
 
     constructor({
         cypherAttributeField,

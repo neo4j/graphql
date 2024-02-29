@@ -132,21 +132,12 @@ export class SortAndPaginationFactory {
                 throw new Error(`no filter attribute ${fieldName}`);
             }
             if (attribute.annotations.cypher && isConcreteEntity(entity)) {
-                /* 
-                
-                resolveTree: field,
-            context,
-            entity: target,
-            cypherAttributeField,
-            cypherArguments,
-                
-                */
                 const cypherOperation = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
                     context,
                     cypherAttributeField: attribute,
                 });
                 if (!(cypherOperation instanceof CypherScalarOperation)) {
-                    throw new Error("Cypher operation must be a scalar operation");
+                    throw new Error("Transpile error: sorting is supported only for scalar properties");
                 }
                 return new CypherPropertySort({
                     direction: sortDir,

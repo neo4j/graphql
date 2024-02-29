@@ -253,7 +253,7 @@ export class FieldFactory {
         if (cypherAnnotation.statement.includes("$jwt") && context.authorization.jwtParam) {
             extraParams.jwt = context.authorization.jwtParam.value;
         }
-        // move the used specified arguments in a different object
+        // move the user specified arguments in a different object as they should be treated as arguments of a Cypher Field
         const cypherArguments = { ...field.args };
         field.args = {};
 
