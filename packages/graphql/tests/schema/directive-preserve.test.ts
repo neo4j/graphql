@@ -4036,8 +4036,8 @@ describe("Directive-preserve", () => {
         `);
     });
 
-    //github.com/neo4j/graphql/issues/2676
-    https: test("Directives on unions preserved", async () => {
+    // https://github.com/neo4j/graphql/issues/2676
+    test("Directives on unions preserved", async () => {
         const typeDefs = gql`
             union Content = Blog | Post
 
