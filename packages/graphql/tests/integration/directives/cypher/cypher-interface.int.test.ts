@@ -105,14 +105,21 @@ describe("cypher targeting interface", () => {
                 name: String!
                 productions(title: String!): [Production!]! @cypher(
                     statement: """
-                    MATCH (m:${Movie}|${Series} {title: $title})
+                    MATCH (m:${Movie} {title: $title})
                     RETURN m
+                    UNION 
+                    MATCH (m:${Series} {title: $title})
+                    RETURN m
+
                     """,
                     columnName: "m"
                 )
                 singleProduction(title: String!): Production @cypher(
                     statement: """
-                    MATCH (m:${Movie}|${Series} {title: $title})
+                    MATCH (m:${Movie} {title: $title})
+                    RETURN m
+                    UNION 
+                    MATCH (m:${Series} {title: $title})
                     RETURN m
                     """,
                     columnName: "m"
@@ -125,7 +132,10 @@ describe("cypher targeting interface", () => {
                 customProductions(title: String!): [Production!]!
                     @cypher(
                         statement: """
-                        MATCH (m:${Movie}|${Series} {title: $title})
+                        MATCH (m:${Movie} {title: $title})
+                        RETURN m
+                        UNION 
+                        MATCH (m:${Series} {title: $title})
                         RETURN m
                         """,
                         columnName: "m"
@@ -133,7 +143,10 @@ describe("cypher targeting interface", () => {
                 customSingleProduction(title: String!): Production
                     @cypher(
                         statement: """
-                        MATCH (m:${Movie}|${Series} {title: $title})
+                        MATCH (m:${Movie} {title: $title})
+                        RETURN m
+                        UNION 
+                        MATCH (m:${Series} {title: $title})
                         RETURN m
                         """,
                         columnName: "m"
