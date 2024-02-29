@@ -25,7 +25,7 @@ import type {
     ObjectTypeComposerFieldConfigMapDefinition,
     SchemaComposer,
 } from "graphql-compose";
-import { AGGREGATION_COMPARISON_OPERATORS } from "../../constants";
+import { AGGREGATION_COMPARISON_OPERATORS, DEPRECATED } from "../../constants";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -84,10 +84,12 @@ export function withAggregateInputType({
     relationshipAdapter,
     entityAdapter, // TODO: this is relationshipAdapter.target but from the context above it is known to be ConcreteEntity and we don't know this yet!!!
     composer,
+    userDefinedDirectivesOnTargetFields,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     entityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
 }): InputTypeComposer {
     const aggregateInputTypeName = relationshipAdapter.operations.aggregateInputTypeName;
     if (composer.has(aggregateInputTypeName)) {
@@ -113,6 +115,7 @@ export function withAggregateInputType({
         relationshipAdapter,
         entityAdapter,
         composer,
+        userDefinedDirectivesOnTargetFields,
     });
     if (nodeWhereInputType) {
         aggregateSelection.addFields({ node: nodeWhereInputType });
@@ -121,6 +124,7 @@ export function withAggregateInputType({
         relationshipAdapter,
         entityAdapter: relationshipAdapter,
         composer,
+        userDefinedDirectivesOnTargetFields,
     });
     if (edgeWhereInputType) {
         aggregateSelection.addFields({ edge: edgeWhereInputType });
@@ -132,10 +136,12 @@ function withAggregationWhereInputType({
     relationshipAdapter,
     entityAdapter,
     composer,
+    userDefinedDirectivesOnTargetFields,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     entityAdapter: ConcreteEntityAdapter | RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
 }): InputTypeComposer | undefined {
     const aggregationInputName =
         entityAdapter instanceof ConcreteEntityAdapter
@@ -160,20 +166,31 @@ function withAggregationWhereInputType({
         OR: aggregationInput.NonNull.List,
         NOT: aggregationInput,
     });
-    aggregationInput.addFields(makeAggregationFields(aggregationFields));
+    aggregationInput.addFields(makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields));
     return aggregationInput;
 }
 
-function makeAggregationFields(attributes: AttributeAdapter[]): InputTypeComposerFieldConfigMapDefinition {
+function makeAggregationFields(
+    attributes: AttributeAdapter[],
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined
+): InputTypeComposerFieldConfigMapDefinition {
     const aggregationFields = attributes
-        .map((attribute) => getAggregationFieldsByType(attribute))
+        .map((attribute) =>
+            getAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name))
+        )
         .reduce((acc, el) => ({ ...acc, ...el }), {});
     return aggregationFields;
 }
 
 // TODO: refactor this by introducing specialized Adapters
-function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeComposerFieldConfigMapDefinition {
+function getAggregationFieldsByType(
+    attribute: AttributeAdapter,
+    directivesOnField: DirectiveNode[] | undefined
+): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    const deprecatedDirectives = graphqlDirectivesToCompose(
+        (directivesOnField || []).filter((d) => d.name.value === DEPRECATED)
+    );
     if (attribute.typeHelper.isID()) {
         fields[`${attribute.name}_EQUAL`] = {
             type: GraphQLID,
@@ -199,9 +216,18 @@ function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeCompo
                 type: GraphQLInt,
                 directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
             };
-            fields[`${attribute.name}_AVERAGE_LENGTH_${operator}`] = GraphQLFloat;
-            fields[`${attribute.name}_LONGEST_LENGTH_${operator}`] = GraphQLInt;
-            fields[`${attribute.name}_SHORTEST_LENGTH_${operator}`] = GraphQLInt;
+            fields[`${attribute.name}_AVERAGE_LENGTH_${operator}`] = {
+                type: GraphQLFloat,
+                directives: deprecatedDirectives,
+            };
+            fields[`${attribute.name}_LONGEST_LENGTH_${operator}`] = {
+                type: GraphQLInt,
+                directives: deprecatedDirectives,
+            };
+            fields[`${attribute.name}_SHORTEST_LENGTH_${operator}`] = {
+                type: GraphQLInt,
+                directives: deprecatedDirectives,
+            };
         }
         return fields;
     }
@@ -215,17 +241,26 @@ function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeCompo
                 type: attribute.getTypeName(),
                 directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
             };
-            fields[`${attribute.name}_MIN_${operator}`] = attribute.getTypeName();
-            fields[`${attribute.name}_MAX_${operator}`] = attribute.getTypeName();
+            fields[`${attribute.name}_MIN_${operator}`] = {
+                type: attribute.getTypeName(),
+                directives: deprecatedDirectives,
+            };
+            fields[`${attribute.name}_MAX_${operator}`] = {
+                type: attribute.getTypeName(),
+                directives: deprecatedDirectives,
+            };
             if (attribute.getTypeName() !== "Duration") {
-                fields[`${attribute.name}_SUM_${operator}`] = attribute.getTypeName();
+                fields[`${attribute.name}_SUM_${operator}`] = {
+                    type: attribute.getTypeName(),
+                    directives: deprecatedDirectives,
+                };
             }
             const averageType = attribute.typeHelper.isBigInt()
                 ? "BigInt"
                 : attribute.typeHelper.isDuration()
                 ? "Duration"
                 : GraphQLFloat;
-            fields[`${attribute.name}_AVERAGE_${operator}`] = averageType;
+            fields[`${attribute.name}_AVERAGE_${operator}`] = { type: averageType, directives: deprecatedDirectives };
         }
         return fields;
     }
@@ -234,8 +269,14 @@ function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeCompo
             type: attribute.getTypeName(),
             directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
         };
-        fields[`${attribute.name}_MIN_${operator}`] = attribute.getTypeName();
-        fields[`${attribute.name}_MAX_${operator}`] = attribute.getTypeName();
+        fields[`${attribute.name}_MIN_${operator}`] = {
+            type: attribute.getTypeName(),
+            directives: deprecatedDirectives,
+        };
+        fields[`${attribute.name}_MAX_${operator}`] = {
+            type: attribute.getTypeName(),
+            directives: deprecatedDirectives,
+        };
     }
     return fields;
 }

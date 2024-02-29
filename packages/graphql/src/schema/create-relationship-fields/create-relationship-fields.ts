@@ -226,6 +226,9 @@ export function createRelationshipFields({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
         );
+        const userDefinedDirectivesOnTargetFields = userDefinedFieldDirectivesForNode.get(
+            relationshipAdapter.target.name
+        );
 
         const relationshipFieldsOpts: {
             relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
@@ -233,6 +236,7 @@ export function createRelationshipFields({
             composeNode: ObjectTypeComposer<any, any> | InterfaceTypeComposer<any, any>;
             userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
             deprecatedDirectives: Directive[];
+            userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
             subgraph?: Subgraph;
         } = {
             relationshipAdapter,
@@ -240,6 +244,7 @@ export function createRelationshipFields({
             composeNode,
             userDefinedFieldDirectives,
             deprecatedDirectives,
+            userDefinedDirectivesOnTargetFields,
         };
 
         if (relationshipTarget instanceof UnionEntityAdapter) {
@@ -285,16 +290,23 @@ function createRelationshipFieldsForTarget({
     composeNode,
     userDefinedFieldDirectives,
     deprecatedDirectives,
+    userDefinedDirectivesOnTargetFields,
     subgraph, // only for concrete targets
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
     deprecatedDirectives: Directive[];
     subgraph?: Subgraph;
 }) {
-    withSourceWhereInputType({ relationshipAdapter, composer, deprecatedDirectives });
+    withSourceWhereInputType({
+        relationshipAdapter,
+        composer,
+        deprecatedDirectives,
+        userDefinedDirectivesOnTargetFields,
+    });
 
     if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
         withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
