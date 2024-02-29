@@ -89,7 +89,7 @@ export class CompositeConnectionReadOperation extends Operation {
 
             extraWithOrder.return([Cypher.collect(edgeVar), edgesVar2]);
             returnEdgesVar = edgesVar2;
-            orderSubquery = new Cypher.Call(extraWithOrder).innerWith(edgesVar);
+            orderSubquery = new Cypher.Call(extraWithOrder).importWith(edgesVar);
         }
 
         nestedSubquery.with([Cypher.collect(edgeVar), edgesVar]).with(edgesVar, [Cypher.size(edgesVar), totalCount]);

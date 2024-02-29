@@ -35,6 +35,15 @@ class Neo4jHelper {
         return INT_TEST_DB_NAME;
     }
 
+    public async run(query: string, params: Record<string, unknown> = {}) {
+        const session = await this.getSession();
+        try {
+            await session.run(query, params);
+        } finally {
+            await session.close();
+        }
+    }
+
     public async getDriver(): Promise<neo4j.Driver> {
         if (this.driver) {
             return this.driver;

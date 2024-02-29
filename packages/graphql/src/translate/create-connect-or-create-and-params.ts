@@ -108,7 +108,7 @@ export function createConnectOrCreateAndParams({
 
         const withStatement = new Cypher.With(...withVarsVariables);
 
-        const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
+        const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).importWith(
             ...withVarsVariables
         );
         const subqueryClause = Cypher.concat(withStatement, callStatement);

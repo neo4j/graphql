@@ -197,9 +197,12 @@ describe("Cypher Auth Roles", () => {
                     MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
                 }
                 WITH h AS this0
-                RETURN collect(this0 { .url }) AS this0
+                WITH *
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this0 { .url } AS this0
+                RETURN collect(this0) AS var1
             }
-            RETURN this { history: this0 } AS this"
+            RETURN this { history: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -212,7 +215,8 @@ describe("Cypher Auth Roles", () => {
                     \\"sub\\": \\"super_admin\\"
                 },
                 \\"param2\\": \\"admin\\",
-                \\"param3\\": \\"super-admin\\"
+                \\"param3\\": \\"super-admin\\",
+                \\"param4\\": \\"super-admin\\"
             }"
         `);
     });

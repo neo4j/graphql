@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import * as neo4j from "neo4j-driver";
 import { generate } from "randomstring";
@@ -27,7 +26,7 @@ dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-base.test.describe("Switch database", () => {
+test.describe("Switch database", () => {
     const randomString = generate({
         charset: "alphabetic",
         length: 8,
@@ -37,7 +36,7 @@ base.test.describe("Switch database", () => {
 
     let driver: neo4j.Driver;
 
-    const typeDefs = `
+    const typeDefs = /* GraphQL */ `
         type Movie {
             id: ID!
         }

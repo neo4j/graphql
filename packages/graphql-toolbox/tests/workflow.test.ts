@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import * as neo4j from "neo4j-driver";
 import { generate } from "randomstring";
@@ -27,18 +26,18 @@ dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-base.test.describe("workflow", () => {
+test.describe("workflow", () => {
     const id = generate({
         charset: "alphabetic",
     });
 
-    const typeDefs = `
+    const typeDefs = /* GraphQL */ `
         type Movie {
             id: ID!
         }
     `;
 
-    const query = `
+    const query = /* GraphQL */ `
         query {
             movies(where: { id: "${id}" }) {
                 id
@@ -46,15 +45,15 @@ base.test.describe("workflow", () => {
         }
     `;
 
-    const queryWithVariables = `
-        query($moviesWhere: MovieWhere) {
+    const queryWithVariables = /* GraphQL */ `
+        query ($moviesWhere: MovieWhere) {
             movies(where: $moviesWhere) {
                 id
             }
         }
     `;
 
-    const variables = `
+    const variables = /* GraphQL */ `
         {
             "moviesWhere": {
                 "id": "${id}"

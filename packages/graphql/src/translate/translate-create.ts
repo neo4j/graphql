@@ -143,7 +143,7 @@ export default async function translateCreate({
                 if (queryASTResult.clauses.length) {
                     projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
                     const clause = Cypher.concat(...queryASTResult.clauses);
-                    return new Cypher.Call(clause).innerWith(varName);
+                    return new Cypher.Call(clause).importWith(varName);
                 }
             })
         )

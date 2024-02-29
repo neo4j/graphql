@@ -17,19 +17,25 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("cypherParams", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+    });
+
+    beforeEach(() => {
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
@@ -40,7 +46,7 @@ describe("cypherParams", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
             }
 
@@ -86,7 +92,7 @@ describe("cypherParams", () => {
                 id: ID
             }
 
-            type Movie {
+            type ${Movie} {
               id: ID
               cypherParams: CypherParams @cypher(statement: "RETURN $cypherParams AS result", columnName: "result")
             }
@@ -105,7 +111,7 @@ describe("cypherParams", () => {
 
         const source = `
             query($id: ID) {
-                movies(where: {id: $id}) {
+                ${Movie.plural}(where: {id: $id}) {
                     id
                     cypherParams {
                         id
@@ -117,7 +123,7 @@ describe("cypherParams", () => {
         try {
             await session.run(
                 `
-                CREATE (:Movie {id: $movieId})
+                CREATE (:${Movie} {id: $movieId})
             `,
                 { movieId }
             );
@@ -133,7 +139,7 @@ describe("cypherParams", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).movies[0]).toEqual({
+            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
                 id: movieId,
                 cypherParams: {
                     id: cypherParamsId,
@@ -148,7 +154,7 @@ describe("cypherParams", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
             }
 

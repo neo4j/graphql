@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     )
                 lastPublishedYear: Int
                     @cypher(
-                        statement: "MATCH (this)-[:AUTHORED_BOOK]->(b:${Book}) RETURN b.year AS result ORDER BY b.year DESC LIMIT 1"
+                    statement: "MATCH (this)-[:AUTHORED_BOOK]->(b:${Book}) RETURN b.year AS result ORDER BY b.year DESC LIMIT 1"
                         columnName: "result"
                     )
                 books: [${Book}!]! @relationship(type: "AUTHORED_BOOK", direction: OUT)

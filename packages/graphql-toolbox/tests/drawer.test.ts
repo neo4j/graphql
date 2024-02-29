@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import { test } from "./utils/pagemodel";
 
 dotenv.config();
 
-base.test.describe("drawer", () => {
-    const typeDefs = `
+test.describe("drawer", () => {
+    const typeDefs = /* GraphQL */ `
         type Movie {
             name: String!
         }

@@ -89,9 +89,10 @@ describe("Cypher directive", () => {
                     }
                     RETURN { edges: var3, totalCount: totalCount } AS var4
                 }
-                RETURN collect(this0 { actorsConnection: var4 }) AS this0
+                WITH this0 { actorsConnection: var4 } AS this0
+                RETURN collect(this0) AS var5
             }
-            RETURN this { movies: this0 } AS this"
+            RETURN this { movies: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

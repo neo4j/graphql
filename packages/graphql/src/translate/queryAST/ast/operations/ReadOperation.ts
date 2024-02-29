@@ -26,7 +26,6 @@ import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls"
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Field } from "../fields/Field";
-import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
@@ -103,7 +102,9 @@ export class ReadOperation extends Operation {
         returnVariable: Cypher.Variable,
         isArray: boolean
     ): Cypher.Return {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
         const projection = this.getProjectionMap(context);
 
         let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);
@@ -147,7 +148,7 @@ export class ReadOperation extends Operation {
         const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).innerWith(nestedContext.target)
+            new Cypher.Call(sq).importWith(nestedContext.target)
         );
 
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
@@ -259,7 +260,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const nonCypherFields = this.fields.filter((f) => !(f instanceof CypherAttributeField));
+        const nonCypherFields = this.fields.filter((f) => !f.isCypherField());
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
@@ -274,9 +275,7 @@ export class ReadOperation extends Operation {
     }
 
     private getCypherFields(): Field[] {
-        return this.fields.filter((f) => {
-            return f instanceof CypherAttributeField;
-        });
+        return this.fields.filter((f) => f.isCypherField());
     }
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {

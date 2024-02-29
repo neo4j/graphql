@@ -33,4 +33,8 @@ export abstract class Field extends QueryASTNode {
     public print(): string {
         return `${super.print()} <${this.alias}>`;
     }
+
+    public isCypherField(): boolean {
+        return false;
+    }
 }
