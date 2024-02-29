@@ -3734,7 +3734,7 @@ __metadata:
     node-polyfill-webpack-plugin: "npm:3.0.0"
     parse5: "npm:7.1.2"
     postcss: "npm:8.4.35"
-    postcss-loader: "npm:8.1.0"
+    postcss-loader: "npm:8.1.1"
     prettier: "npm:3.0.0"
     process: "npm:0.11.10"
     randomstring: "npm:1.3.0"
@@ -21841,9 +21841,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-loader@npm:8.1.0":
-  version: 8.1.0
-  resolution: "postcss-loader@npm:8.1.0"
+"postcss-loader@npm:8.1.1":
+  version: 8.1.1
+  resolution: "postcss-loader@npm:8.1.1"
   dependencies:
     cosmiconfig: "npm:^9.0.0"
     jiti: "npm:^1.20.0"
@@ -21857,7 +21857,7 @@ __metadata:
       optional: true
     webpack:
       optional: true
-  checksum: 10c0/75f46f2728469a5dc410c21fdcabbf98236329a7763243ad0087d971fb9ee5a771e2f5c958b131698e22381b147927e2b4bee1a81c010ae137a147b45909adc7
+  checksum: 10c0/86cde94cd4c7c39892ef9bd4bf09342f422a21789654038694cf2b23c37c0ed9550c73608f656426a6631f0ade1eca82022781831e93d5362afe2f191388b85e
   languageName: node
   linkType: hard
 
