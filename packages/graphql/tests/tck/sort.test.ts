@@ -160,7 +160,7 @@ describe("Cypher sort tests", () => {
         });
     });
 
-    test.only("Simple Sort On Cypher Field Without Projection", async () => {
+    test("Simple Sort On Cypher Field Without Projection", async () => {
         const query = /* GraphQL */ `
             {
                 movies(options: { sort: [{ totalGenres: DESC }] }) {
@@ -213,12 +213,10 @@ describe("Cypher sort tests", () => {
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
                 }
-                UNWIND result AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH result AS this0
+                RETURN this0 AS var1
             }
-            WITH *
-            ORDER BY this0 DESC
-            RETURN this { .title, totalGenres: this0 } AS this"
+            RETURN this { totalGenres: var1 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -458,39 +456,39 @@ describe("Cypher sort tests", () => {
                         WITH this0 AS this
                         MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                     }
-                    UNWIND count AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH count AS this1
+                    RETURN this1 AS var2
                 }
                 WITH *
-                ORDER BY this0.title DESC, this1 ASC
+                ORDER BY this0.title DESC, var2 ASC
                 LIMIT $param0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this2:ACTED_IN]-(this3:Actor)
-                    WITH collect({ node: this3, relationship: this2 }) AS edges
+                    MATCH (this0)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS this3, edge.relationship AS this2
+                        WITH edge.node AS this4, edge.relationship AS this3
                         CALL {
-                            WITH this3
+                            WITH this4
                             CALL {
-                                WITH this3
-                                WITH this3 AS this
+                                WITH this4
+                                WITH this4 AS this
                                 MATCH (this)-[r:ACTED_IN]->(:Movie)
                                 RETURN sum(r.screenTime) as sum
                             }
-                            WITH sum AS this4
-                            RETURN this4 AS var5
+                            WITH sum AS this5
+                            RETURN this5 AS var6
                         }
-                        RETURN collect({ node: { name: this3.name, totalScreenTime: var5, __resolveType: \\"Actor\\" } }) AS var6
+                        RETURN collect({ node: { name: this4.name, totalScreenTime: var6, __resolveType: \\"Actor\\" } }) AS var7
                     }
-                    RETURN { edges: var6, totalCount: totalCount } AS var7
+                    RETURN { edges: var7, totalCount: totalCount } AS var8
                 }
-                RETURN collect({ node: { title: this0.title, actorsConnection: var7, __resolveType: \\"Movie\\" } }) AS var8
+                RETURN collect({ node: { title: this0.title, actorsConnection: var8, __resolveType: \\"Movie\\" } }) AS var9
             }
-            RETURN { edges: var8, totalCount: totalCount } AS this"
+            RETURN { edges: var9, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -551,41 +549,41 @@ describe("Cypher sort tests", () => {
                             WITH this1 AS this
                             MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                         }
-                        UNWIND count AS this2
-                        RETURN head(collect(this2)) AS this2
+                        WITH count AS this2
+                        RETURN this2 AS var3
                     }
                     WITH *
-                    ORDER BY this1.title DESC, this2 ASC
+                    ORDER BY this1.title DESC, var3 ASC
                     LIMIT $param0
                     CALL {
                         WITH this1
-                        MATCH (this1)<-[this3:ACTED_IN]-(this4:Actor)
-                        WITH collect({ node: this4, relationship: this3 }) AS edges
+                        MATCH (this1)<-[this4:ACTED_IN]-(this5:Actor)
+                        WITH collect({ node: this5, relationship: this4 }) AS edges
                         WITH edges, size(edges) AS totalCount
                         CALL {
                             WITH edges
                             UNWIND edges AS edge
-                            WITH edge.node AS this4, edge.relationship AS this3
+                            WITH edge.node AS this5, edge.relationship AS this4
                             CALL {
-                                WITH this4
+                                WITH this5
                                 CALL {
-                                    WITH this4
-                                    WITH this4 AS this
+                                    WITH this5
+                                    WITH this5 AS this
                                     MATCH (this)-[r:ACTED_IN]->(:Movie)
                                     RETURN sum(r.screenTime) as sum
                                 }
-                                WITH sum AS this5
-                                RETURN this5 AS var6
+                                WITH sum AS this6
+                                RETURN this6 AS var7
                             }
-                            RETURN collect({ node: { name: this4.name, totalScreenTime: var6, __resolveType: \\"Actor\\" } }) AS var7
+                            RETURN collect({ node: { name: this5.name, totalScreenTime: var7, __resolveType: \\"Actor\\" } }) AS var8
                         }
-                        RETURN { edges: var7, totalCount: totalCount } AS var8
+                        RETURN { edges: var8, totalCount: totalCount } AS var9
                     }
-                    RETURN collect({ node: { title: this1.title, actorsConnection: var8, __resolveType: \\"Movie\\" } }) AS var9
+                    RETURN collect({ node: { title: this1.title, actorsConnection: var9, __resolveType: \\"Movie\\" } }) AS var10
                 }
-                RETURN { edges: var9, totalCount: totalCount } AS var10
+                RETURN { edges: var10, totalCount: totalCount } AS var11
             }
-            RETURN this { moviesConnection: var10 } AS this"
+            RETURN this { moviesConnection: var11 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

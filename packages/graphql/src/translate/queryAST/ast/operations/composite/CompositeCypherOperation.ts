@@ -61,9 +61,7 @@ export class CompositeCypherOperation extends Operation {
         });
         const partialsSubquery = new Cypher.Call(new Cypher.Union(...partialClauses)).return(
             partialContext.returnVariable
-        );
-        /* const returnVar = nestedContext.shouldCollect ? Cypher.collect(returnVariable) : returnVariable;
-        const returnVar2 = this.cypherAttributeField.typeHelper.isList() ? returnVar : Cypher.head(returnVar); */
+        )
 
         const returnExpr = this.getReturnExpression(nestedContext, returnVariable);
         const subquery = new Cypher.Call(partialsSubquery)

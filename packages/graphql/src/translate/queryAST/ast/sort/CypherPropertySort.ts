@@ -29,7 +29,7 @@ export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
     private direction: Cypher.Order;
     private cypherOperation: CypherScalarOperation;
-    private sortVariable: Cypher.Variable;
+
     constructor({
         attribute,
         direction,
@@ -43,7 +43,6 @@ export class CypherPropertySort extends Sort {
         this.attribute = attribute;
         this.direction = direction;
         this.cypherOperation = cypherOperation;
-        this.sortVariable = new Cypher.Variable();
     }
 
     public getChildren(): QueryASTNode[] {
@@ -63,25 +62,14 @@ export class CypherPropertySort extends Sort {
         _variable: Cypher.Variable | Cypher.Property,
         _sortByDatabaseName = true
     ): SortField[] {
-        const scope = context.getTargetScope();
-        if (scope.has(this.attribute.name)) {
-            const projectionVar = context.getScopeVariable(this.attribute.name);
-            return [[projectionVar, this.direction]];
-        }
-        const projectionVar = this.sortVariable;
+        // sort variable could be defined by the the CypherPropertySort as well as by the CypherScalarOperation
+        const projectionVar = context.getScopeVariable(this.attribute.name);
         return [[projectionVar, this.direction]];
     }
 
     public getProjectionField(context: QueryASTContext): string | Record<string, Cypher.Expr> {
-        const scope = context.getTargetScope();
-        if (scope.has(this.attribute.name)) {
-            const projectionVar = context.getScopeVariable(this.attribute.name);
-            return {
-                [this.attribute.databaseName]: projectionVar,
-            };
-        }
-        const projectionVar = this.sortVariable;
-
+        // sort variable could be defined by the the CypherPropertySort as well as by the CypherScalarOperation
+        const projectionVar = context.getScopeVariable(this.attribute.name);
         return {
             [this.attribute.databaseName]: projectionVar,
         };
@@ -92,7 +80,8 @@ export class CypherPropertySort extends Sort {
         if (scope.has(this.attribute.name)) {
             return [];
         }
-        const sortContext = context.setReturn(this.sortVariable);
+        const returnVariable = new Cypher.Variable();
+        const sortContext = context.setReturn(returnVariable);
         const { clauses: subqueries } = this.cypherOperation.transpile(sortContext);
 
         return subqueries;
