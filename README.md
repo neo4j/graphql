@@ -24,7 +24,7 @@ and [development guide](./docs/contributing/DEVELOPING.md) to get started!
 ## Links
 
 * [Documentation](https://neo4j.com/docs/graphql-manual/current/)
-* [Discord](https://discord.gg/neo4j)
+* [Discord](https://discord.gg/neo4j) (See the server guide at the top of the discord channels if you have a question!)
 * [Examples](./examples)
 * [Hands-on Course](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql)
 * [Neo4j Community](https://community.neo4j.com/c/drivers-stacks/graphql/33)
