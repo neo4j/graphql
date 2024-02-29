@@ -42,7 +42,7 @@ export class QueryASTFactory {
         this.schemaModel = schemaModel;
         this.filterFactory = new FilterFactory(this);
         this.fieldFactory = new FieldFactory(this);
-        this.sortAndPaginationFactory = new SortAndPaginationFactory();
+        this.sortAndPaginationFactory = new SortAndPaginationFactory(this);
         const authFilterFactory = new AuthFilterFactory(this);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
         this.operationsFactory = new OperationsFactory(this);

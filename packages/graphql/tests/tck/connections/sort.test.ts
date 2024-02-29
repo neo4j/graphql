@@ -150,28 +150,28 @@ describe("Relationship Properties Cypher", () => {
                         WITH this0 AS this
                         MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                     }
-                    UNWIND count AS this1
-                    RETURN head(collect(this1)) AS this1
+                    WITH count AS this1
+                    RETURN this1 AS var2
                 }
                 WITH *
-                ORDER BY this0.title DESC, this1 ASC
+                ORDER BY this0.title DESC, var2 ASC
                 LIMIT $param0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this2:ACTED_IN]-(this3:Actor)
-                    WITH collect({ node: this3, relationship: this2 }) AS edges
+                    MATCH (this0)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ node: { name: this3.name, __resolveType: \\"Actor\\" } }) AS var4
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { name: this4.name, __resolveType: \\"Actor\\" } }) AS var5
                     }
-                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                    RETURN { edges: var5, totalCount: totalCount } AS var6
                 }
-                RETURN collect({ node: { title: this0.title, actorsConnection: var5, __resolveType: \\"Movie\\" } }) AS var6
+                RETURN collect({ node: { title: this0.title, actorsConnection: var6, __resolveType: \\"Movie\\" } }) AS var7
             }
-            RETURN { edges: var6, totalCount: totalCount } AS this"
+            RETURN { edges: var7, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

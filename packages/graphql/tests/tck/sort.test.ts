@@ -160,11 +160,43 @@ describe("Cypher sort tests", () => {
         });
     });
 
-    test("Simple Sort On Cypher Field Without Projection", async () => {
+    test.only("Simple Sort On Cypher Field Without Projection", async () => {
         const query = /* GraphQL */ `
             {
                 movies(options: { sort: [{ totalGenres: DESC }] }) {
                     title
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                }
+                WITH result AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            ORDER BY var1 DESC
+            RETURN this { .title, totalGenres: var1 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Simple Sort On Cypher Field Without Projection --projection", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies {
+                    totalGenres
                 }
             }
         `;
@@ -191,7 +223,6 @@ describe("Cypher sort tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
-
     test("Simple Sort On Cypher Field", async () => {
         const query = /* GraphQL */ `
             {

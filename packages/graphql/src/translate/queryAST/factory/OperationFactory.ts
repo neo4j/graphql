@@ -243,7 +243,7 @@ export class OperationsFactory {
     }
 
     public createCustomCypherOperation(arg: {
-        resolveTree: ResolveTree;
+        resolveTree?: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
         cypherAttributeField: AttributeAdapter;
@@ -311,7 +311,7 @@ export class OperationsFactory {
             const sortOptions = this.getOptions(entity, sortArgs);
 
             if (sortOptions) {
-                const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity);
+                const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity, context);
                 operation.addSort(...sort);
 
                 const pagination = this.sortAndPaginationFactory.createPagination(sortOptions);

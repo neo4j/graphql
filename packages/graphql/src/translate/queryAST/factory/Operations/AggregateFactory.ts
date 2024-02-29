@@ -181,7 +181,7 @@ export class AggregateFactory {
                     (resolveTree.args.options ?? {}) as any
                 );
                 if (options) {
-                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity);
+                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
                     operation.addSort(...sort);
 
                     const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);
@@ -342,7 +342,7 @@ export class AggregateFactory {
             (resolveTree.args.options ?? {}) as any
         );
         if (options) {
-            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity);
+            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
             operation.addSort(...sort);
 
             const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);

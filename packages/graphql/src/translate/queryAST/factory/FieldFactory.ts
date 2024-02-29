@@ -23,9 +23,10 @@ import type { CypherAnnotation } from "../../../schema-model/annotation/CypherAn
 import type { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
-import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
@@ -35,9 +36,6 @@ import { AggregationAttributeField } from "../ast/fields/aggregation-fields/Aggr
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
-import type { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
-import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
-import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
@@ -45,7 +43,6 @@ import type { CompositeConnectionReadOperation } from "../ast/operations/composi
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -248,29 +245,25 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         cypherAnnotation: CypherAnnotation;
-    }): CypherAttributeField | OperationField {
+    }): OperationField {
         const typeName = attribute.typeHelper.isList() ? (attribute.type as ListType).ofType.name : attribute.type.name;
         const rawFields = field.fieldsByTypeName[typeName];
-       // let cypherProjection: Record<string, string> | undefined;
         const extraParams: Record<string, any> = {};
 
         if (cypherAnnotation.statement.includes("$jwt") && context.authorization.jwtParam) {
             extraParams.jwt = context.authorization.jwtParam.value;
         }
+        // move the used specified arguments in a different object
+        const cypherArguments = { ...field.args };
+        field.args = {};
 
         if (rawFields) {
-           /*  cypherProjection = Object.values(rawFields).reduce((acc, f) => {
-                acc[f.alias] = f.name;
-                return acc;
-            }, {}); */
-
             if (attribute.typeHelper.isObject()) {
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
                 if (!concreteEntity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
-                const cypherArguments = { ...field.args };
-                field.args = {};
+
                 return this.createCypherOperationField({
                     target: concreteEntity,
                     field,
@@ -288,8 +281,6 @@ export class FieldFactory {
                     throw new Error(`Entity ${typeName} is not a composite entity`);
                 }
                 const targetEntity = getEntityAdapter(entity);
-                const cypherArguments = { ...field.args };
-                field.args = {};
                 return this.createCypherOperationField({
                     target: targetEntity,
                     field,
@@ -297,33 +288,9 @@ export class FieldFactory {
                     cypherAttributeField: attribute,
                     cypherArguments,
                 });
-              /*   const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
-
-                const nestedUnionFields = concreteEntities.flatMap((concreteEntity) => {
-                    const concreteEntityFields = field.fieldsByTypeName[concreteEntity.name];
-                    const unionNestedFields = this.createFields(
-                        concreteEntity,
-                        { ...rawFields, ...concreteEntityFields },
-                        context
-                    );
-
-                    return new CypherUnionAttributePartial({
-                        fields: unionNestedFields,
-                        target: concreteEntity,
-                    });
-                });
-                return new CypherUnionAttributeField({
-                    attribute,
-                    alias: field.alias,
-                    projection: cypherProjection,
-                    rawArguments: field.args,
-                    unionPartials: nestedUnionFields,
-                    extraParams,
-                }); */
             }
         }
-        const cypherArguments = { ...field.args };
-        field.args = {};
+
         return this.createCypherOperationField({
             field,
             context,
