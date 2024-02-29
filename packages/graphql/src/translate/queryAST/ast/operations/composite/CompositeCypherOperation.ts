@@ -61,11 +61,11 @@ export class CompositeCypherOperation extends Operation {
         });
         const partialsSubquery = new Cypher.Call(new Cypher.Union(...partialClauses)).return(
             partialContext.returnVariable
-        )
+        );
 
         const returnExpr = this.getReturnExpression(nestedContext, returnVariable);
         const subquery = new Cypher.Call(partialsSubquery)
-            .innerWith(nestedContext.target)
+            .importWith(nestedContext.target)
             .return([returnExpr, nestedContext.returnVariable]);
         return {
             clauses: [Cypher.concat(matchClause, subquery)],

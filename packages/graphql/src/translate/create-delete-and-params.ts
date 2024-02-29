@@ -193,7 +193,7 @@ function createDeleteAndParams({
                             (d1, [k1, v1]) => ({ ...d1, [k1]: v1 }),
                             {}
                         );
-                        const innerWithVars = context.subscriptionsEnabled
+                        const importWithVars = context.subscriptionsEnabled
                             ? [...withVars, variableName, relationshipVariable]
                             : [...withVars, variableName];
 
@@ -202,7 +202,7 @@ function createDeleteAndParams({
                             node: refNode,
                             deleteInput: nestedDeleteInput,
                             varName: variableName,
-                            withVars: innerWithVars,
+                            withVars: importWithVars,
                             parentVar: variableName,
                             parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                 relationField.union ? `.${refNode.name}` : ""

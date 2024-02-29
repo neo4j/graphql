@@ -18,13 +18,13 @@
  */
 
 import * as base from "@playwright/test";
+import { ApplicationSettings } from "../pages/ApplicationSettings";
 import { Editor } from "../pages/Editor";
 import { HelpDrawer } from "../pages/HelpDrawer";
 import { Login } from "../pages/Login";
-import { TopBar } from "../pages/TopBar";
 import { SchemaEditor } from "../pages/SchemaEditor";
 import { SchemaSettings } from "../pages/SchemaSettings";
-import { ApplicationSettings } from "../pages/ApplicationSettings";
+import { TopBar } from "../pages/TopBar";
 
 type Pages = {
     editorPage: Editor;
@@ -67,6 +67,6 @@ const test = base.test.extend<Pages>({
 
 const { expect } = base;
 // eslint-disable-next-line @typescript-eslint/unbound-method
-const { beforeAll, beforeEach, afterAll, afterEach } = base.test;
+const { beforeAll, beforeEach, afterAll, afterEach } = test;
 
-export { expect, test, beforeAll, beforeEach, afterAll, afterEach };
+export { afterAll, afterEach, beforeAll, beforeEach, expect, test };

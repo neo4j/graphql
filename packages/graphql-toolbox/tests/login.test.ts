@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import { expect, test } from "./utils/pagemodel";
 
@@ -25,7 +24,7 @@ dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-base.test.describe("login", () => {
+test.describe("login", () => {
     test("should be able to connect to database", async ({ loginPage }) => {
         await loginPage.setUsername(NEO_USER);
         await loginPage.setPassword(NEO_PASSWORD);

@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 5.0.1
+
+### Patch Changes
+
+-   [#4762](https://github.com/neo4j/graphql/pull/4762) [`714b4ed`](https://github.com/neo4j/graphql/commit/714b4ed1f9b3d1f23c9d5a32f59fd6ecf217ad50) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix non-existing relationships for 1 to 1 relationship.
+
+-   [#4781](https://github.com/neo4j/graphql/pull/4781) [`752f9fb`](https://github.com/neo4j/graphql/commit/752f9fb2bc0cad63a736e95b3a5d16ad09542bce) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix aggregation filters for connection fields
+
 ## 5.0.0
 
 ### Major Changes

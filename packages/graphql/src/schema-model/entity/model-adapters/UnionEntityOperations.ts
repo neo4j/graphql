@@ -17,33 +17,16 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "../../../utils/upper-first";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
 type RootTypeFieldNames = {
-    // create: string;
     read: string;
-    // update: string;
-    // delete: string;
-    // aggregate: string;
-    // subscribe: {
-    //     created: string;
-    //     updated: string;
-    //     deleted: string;
-    //     relationship_created: string;
-    //     relationship_deleted: string;
-    // };
 };
 
 export class UnionEntityOperations {
     private readonly unionEntityAdapter: UnionEntityAdapter;
 
-    private readonly pascalCasePlural: string;
-    private readonly pascalCaseSingular: string;
-
     constructor(unionEntityAdapter: UnionEntityAdapter) {
         this.unionEntityAdapter = unionEntityAdapter;
-        this.pascalCasePlural = upperFirst(this.unionEntityAdapter.plural);
-        this.pascalCaseSingular = upperFirst(this.unionEntityAdapter.singular);
     }
 
     public get whereInputTypeName(): string {
@@ -56,18 +39,7 @@ export class UnionEntityOperations {
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
-            // create: `create${this.pascalCasePlural}`,
             read: this.unionEntityAdapter.plural,
-            // update: `update${this.pascalCasePlural}`,
-            // delete: `delete${this.pascalCasePlural}`,
-            // aggregate: `${this.unionEntityAdapter.plural}Aggregate`,
-            // subscribe: {
-            //     created: `${this.unionEntityAdapter.singular}Created`,
-            //     updated: `${this.unionEntityAdapter.singular}Updated`,
-            //     deleted: `${this.unionEntityAdapter.singular}Deleted`,
-            //     relationship_deleted: `${this.unionEntityAdapter.singular}RelationshipDeleted`,
-            //     relationship_created: `${this.unionEntityAdapter.singular}RelationshipCreated`,
-            // },
         };
     }
 }

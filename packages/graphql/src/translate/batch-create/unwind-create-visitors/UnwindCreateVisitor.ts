@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import type { PredicateReturn } from "../../../types";
-import type { CallbackBucket } from "../../../classes/CallbackBucket";
-import type { Visitor, CreateAST, NestedCreateAST, UnwindASTNode } from "../GraphQLInputAST/GraphQLInputAST";
-import type { Node, Relationship } from "../../../classes";
-import createRelationshipValidationString from "../../create-relationship-validation-string";
-import { filterTruthy } from "../../../utils/utils";
 import type { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import Cypher from "@neo4j/cypher-builder";
-import mapToDbProperty from "../../../utils/map-to-db-property";
-import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
-import {
-    createAuthorizationAfterPredicateField,
-    createAuthorizationAfterPredicate,
-} from "../../authorization/create-authorization-after-predicate";
-import { checkAuthentication } from "../../authorization/check-authentication";
+import type { Node, Relationship } from "../../../classes";
+import type { CallbackBucket } from "../../../classes/CallbackBucket";
+import type { PredicateReturn } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import mapToDbProperty from "../../../utils/map-to-db-property";
+import { filterTruthy } from "../../../utils/utils";
+import { checkAuthentication } from "../../authorization/check-authentication";
+import {
+    createAuthorizationAfterPredicate,
+    createAuthorizationAfterPredicateField,
+} from "../../authorization/create-authorization-after-predicate";
+import createRelationshipValidationString from "../../create-relationship-validation-string";
+import type { CreateAST, NestedCreateAST, UnwindASTNode, Visitor } from "../GraphQLInputAST/GraphQLInputAST";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -139,7 +139,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
             ])
         );
         this.rootNode = currentNode;
-        this.clause = new Cypher.Call(clause).innerWith(this.unwindVar);
+        this.clause = new Cypher.Call(clause).importWith(this.unwindVar);
         return this.clause;
     }
 

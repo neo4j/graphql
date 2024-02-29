@@ -5,7 +5,7 @@ This example application runs GraphQL SSE (Server-Side-Events) subscriptions ove
 To run this demo:
 
 1. Run `npm install`
-2. Make sure the variables `NEO4J_URL`, `NEO4J_USER` and `NEO4J_PASSWORD` in `server.js` are set to you Neo4j database.
+2. Make sure the variables `NEO4J_URL`, `NEO4J_USER` and `NEO4J_PASSWORD` in `server.js` are set to your Neo4j database.
 3. Run `npm start`
 4. Go to `localhost:4000/graphql`
 
