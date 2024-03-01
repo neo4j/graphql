@@ -55,7 +55,7 @@
         "@neo4j/graphql": "5.0.1",
         "@neo4j/introspector": "3.0.0",
         "classnames": "2.5.1",
-        "cm6-graphql": "0.0.13",
+        "cm6-graphql": "0.0.14",
         "codemirror": "6.0.1",
         "dotenv-webpack": "8.0.1",
         "graphiql-explorer": "0.9.0",
