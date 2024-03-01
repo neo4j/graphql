@@ -139,7 +139,7 @@ export class ReadFactory {
                 children: concreteReadOperations,
                 relationship,
             });
-            this.hydrateCompositeReadOperationWithPagination(entity, compositeReadOp, resolveTree);
+            this.hydrateCompositeReadOperationWithPagination(entity, compositeReadOp, resolveTree, context);
             return compositeReadOp;
         }
     }
@@ -172,14 +172,15 @@ export class ReadFactory {
     private hydrateCompositeReadOperationWithPagination(
         entity: EntityAdapter,
         operation: CompositeReadOperation | ReadOperation,
-        resolveTree: ResolveTree
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
     ) {
         const options = this.queryASTFactory.operationsFactory.getOptions(
             entity,
             (resolveTree.args.options ?? {}) as any
         );
         if (options) {
-            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity);
+            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
             operation.addSort(...sort);
 
             const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);

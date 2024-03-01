@@ -20,13 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
-import type { Entity } from "../schema-model/entity/Entity";
-import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
-import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
-import { UnionEntity } from "../schema-model/entity/UnionEntity";
-import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { getEntityAdapter } from "../schema-model/utils/get-entity-adapter";
 import type { CypherField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
@@ -87,17 +81,4 @@ export function translateTopLevelCypher({
         ? Cypher.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
     return projectionStatements.build();
-}
-
-function getEntityAdapter(entity: Entity): EntityAdapter {
-    if (entity instanceof UnionEntity) {
-        return new UnionEntityAdapter(entity);
-    }
-    if (entity instanceof InterfaceEntity) {
-        return new InterfaceEntityAdapter(entity);
-    }
-    if (entity.isConcreteEntity()) {
-        return new ConcreteEntityAdapter(entity);
-    }
-    throw new Error(`Error while trying to build Entity: ${entity.name}`);
 }

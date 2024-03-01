@@ -118,6 +118,7 @@ export class FulltextFactory {
             const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
                 sortOptions2,
                 entity,
+                context,
                 fulltextOptions.score
             );
             operation.addSort(...sort);

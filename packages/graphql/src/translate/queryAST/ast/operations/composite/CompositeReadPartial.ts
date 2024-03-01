@@ -109,7 +109,8 @@ export class CompositeReadPartial extends ReadOperation {
         if (wherePredicate) {
             matchClause.where(wherePredicate);
         }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(...extraMatches, matchClause, ...authFilterSubqueries, subqueries, ret);

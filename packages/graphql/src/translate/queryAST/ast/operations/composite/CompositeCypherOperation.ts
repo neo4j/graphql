@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { EntitySelection } from "../../selection/EntitySelection";
@@ -27,10 +28,21 @@ import type { CompositeReadPartial } from "./CompositeReadPartial";
 export class CompositeCypherOperation extends Operation {
     private selection: EntitySelection;
     private partials: CompositeReadPartial[];
-    constructor({ selection, partials }: { selection: EntitySelection; partials: CompositeReadPartial[] }) {
+    public cypherAttributeField: AttributeAdapter;
+
+    constructor({
+        selection,
+        partials,
+        cypherAttributeField,
+    }: {
+        selection: EntitySelection;
+        partials: CompositeReadPartial[];
+        cypherAttributeField: AttributeAdapter;
+    }) {
         super();
         this.selection = selection;
         this.partials = partials;
+        this.cypherAttributeField = cypherAttributeField;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -51,12 +63,34 @@ export class CompositeCypherOperation extends Operation {
             partialContext.returnVariable
         );
 
+        const returnExpr = this.getReturnExpression(nestedContext, returnVariable);
         const subquery = new Cypher.Call(partialsSubquery)
             .importWith(nestedContext.target)
-            .return([partialContext.returnVariable, nestedContext.returnVariable]);
+            .return([returnExpr, nestedContext.returnVariable]);
         return {
-            clauses: [matchClause, subquery],
+            clauses: [Cypher.concat(matchClause, subquery)],
             projectionExpr: nestedContext.returnVariable,
         };
+    }
+
+    private getReturnExpression(
+        context: QueryASTContext<Cypher.Node | undefined>,
+        returnVariable: Cypher.Variable
+    ): Cypher.Expr {
+        return this.wrapWithHeadIfNeeded(context, this.wrapWithCollectIfNeeded(context, returnVariable));
+    }
+
+    private wrapWithCollectIfNeeded(context: QueryASTContext<Cypher.Node | undefined>, expr: Cypher.Expr): Cypher.Expr {
+        if (context.shouldCollect) {
+            return Cypher.collect(expr);
+        }
+        return expr;
+    }
+
+    private wrapWithHeadIfNeeded(context: QueryASTContext<Cypher.Node | undefined>, expr: Cypher.Expr): Cypher.Expr {
+        if (context.shouldCollect && !this.cypherAttributeField.typeHelper.isList()) {
+            return Cypher.head(expr);
+        }
+        return expr;
     }
 }

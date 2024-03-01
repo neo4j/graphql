@@ -90,12 +90,24 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                        return pag SKIP ($param1 * $param2Index) LIMIT $param1
                 }
                 WITH pag AS this0
-                WITH *
-                WHERE (this0:Content OR this0:Project)
-                RETURN collect(CASE
-                    WHEN this0:Content THEN this0 { .name, __resolveType: \\"Content\\" }
-                    WHEN this0:Project THEN this0 { .name, __resolveType: \\"Project\\" }
-                END) AS this0
+                CALL {
+                    WITH this0
+                    CALL {
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:Content
+                        WITH this0 { .name, __resolveType: \\"Content\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var1
+                        UNION
+                        WITH *
+                        MATCH (this0)
+                        WHERE this0:Project
+                        WITH this0 { .name, __resolveType: \\"Project\\", __id: id(this0) } AS this0
+                        RETURN this0 AS var1
+                    }
+                    RETURN var1
+                }
+                RETURN collect(var1) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"
         `);

@@ -107,6 +107,7 @@ export class ConnectionFactory {
             entityOrRel: relationship,
             resolveTree,
             operation: compositeConnectionOp,
+            context,
         });
         return compositeConnectionOp;
     }
@@ -160,10 +161,12 @@ export class ConnectionFactory {
         entityOrRel,
         resolveTree,
         operation,
+        context,
     }: {
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;
         operation: T;
+        context: Neo4jGraphQLTranslationContext;
     }): T {
         let options: Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined;
         const target = isConcreteEntity(entityOrRel) ? entityOrRel : entityOrRel.target;
@@ -192,7 +195,8 @@ export class ConnectionFactory {
             sort.forEach((options) => {
                 const sort = this.queryASTFactory.sortAndPaginationFactory.createConnectionSortFields(
                     options,
-                    entityOrRel
+                    entityOrRel,
+                    context
                 );
                 operation.addSort(sort);
             });
@@ -253,6 +257,7 @@ export class ConnectionFactory {
             entityOrRel,
             resolveTree,
             operation,
+            context,
         });
         const isTopLevel = !relationship;
         const resolveTreeNodeFieldsTypesNames = isTopLevel
