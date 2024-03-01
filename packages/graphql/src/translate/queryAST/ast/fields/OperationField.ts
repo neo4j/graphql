@@ -22,7 +22,7 @@ import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import { CypherOperation } from "../operations/CypherOperation";
 import { CypherScalarOperation } from "../operations/CypherScalarOperation";
-import type { CompositeCypherOperation } from "../operations/composite/CompositeCypherOperation";
+import { CompositeCypherOperation } from "../operations/composite/CompositeCypherOperation";
 import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
 
@@ -60,7 +60,7 @@ export class OperationField extends Field {
         return (
             this.operation instanceof CypherOperation ||
             this.operation instanceof CypherScalarOperation ||
-            this.operation instanceof CypherScalarOperation
+            this.operation instanceof CompositeCypherOperation
         );
     }
 }

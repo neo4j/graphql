@@ -57,7 +57,7 @@ export class SortAndPaginationFactory {
     ): { edge: Sort[]; node: Sort[] } {
         if (isConcreteEntity(entityOrRel)) {
             const nodeSortFields = this.createPropertySort({
-                optionArg: options.node || {},
+                optionArg: options.node ?? {},
                 entity: entityOrRel,
                 context,
             });
@@ -67,7 +67,7 @@ export class SortAndPaginationFactory {
             };
         }
         const nodeSortFields = this.createPropertySort({
-            optionArg: options.node || {},
+            optionArg: options.node ?? {},
             entity: entityOrRel.target,
             context,
         });
