@@ -1701,9 +1701,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/autocomplete@npm:6.12.0":
-  version: 6.12.0
-  resolution: "@codemirror/autocomplete@npm:6.12.0"
+"@codemirror/autocomplete@npm:6.13.0":
+  version: 6.13.0
+  resolution: "@codemirror/autocomplete@npm:6.13.0"
   dependencies:
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/state": "npm:^6.0.0"
@@ -1714,7 +1714,7 @@ __metadata:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.0.0
-  checksum: 10c0/9f627f27e25b83816f3b60fe45285d0c976b6bdc0a4b01e7fc1ab90a536113dc5b6a1adfbe403963b97bdb84343a464e58b1614e8d522a4e937949ec81e227f3
+  checksum: 10c0/9a0a8a0f9872a6dbd76dd98d365cee5e1d679220dc8d9d4d10ed62be1e4064ea5f729928a596f1a485b99e0fb8f97818540a18f87e671411e07938ca581828b2
   languageName: node
   linkType: hard
 
@@ -3692,7 +3692,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@codemirror/autocomplete": "npm:6.12.0"
+    "@codemirror/autocomplete": "npm:6.13.0"
     "@codemirror/commands": "npm:6.3.3"
     "@codemirror/lang-javascript": "npm:6.2.2"
     "@codemirror/language": "npm:6.10.1"
