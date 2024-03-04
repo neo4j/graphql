@@ -17,22 +17,32 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { CypherAnnotationSubqueryGenerator } from "../../cypher-generators/CypherAnnotationSubqueryGenerator";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { CypherScalarOperation } from "../operations/CypherScalarOperation";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
 
 export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
     private direction: Cypher.Order;
+    private cypherOperation: CypherScalarOperation;
 
-    constructor({ attribute, direction }: { attribute: AttributeAdapter; direction: Cypher.Order }) {
+    constructor({
+        attribute,
+        direction,
+        cypherOperation,
+    }: {
+        attribute: AttributeAdapter;
+        direction: Cypher.Order;
+        cypherOperation: CypherScalarOperation;
+    }) {
         super();
         this.attribute = attribute;
         this.direction = direction;
+        this.cypherOperation = cypherOperation;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -52,13 +62,14 @@ export class CypherPropertySort extends Sort {
         _variable: Cypher.Variable | Cypher.Property,
         _sortByDatabaseName = true
     ): SortField[] {
+        // sort variable could be defined by the the CypherPropertySort as well as by the CypherScalarOperation
         const projectionVar = context.getScopeVariable(this.attribute.name);
         return [[projectionVar, this.direction]];
     }
 
     public getProjectionField(context: QueryASTContext): string | Record<string, Cypher.Expr> {
+        // sort variable could be defined by the the CypherPropertySort as well as by the CypherScalarOperation
         const projectionVar = context.getScopeVariable(this.attribute.name);
-
         return {
             [this.attribute.databaseName]: projectionVar,
         };
@@ -69,14 +80,10 @@ export class CypherPropertySort extends Sort {
         if (scope.has(this.attribute.name)) {
             return [];
         }
+        const returnVariable = new Cypher.Variable();
+        const sortContext = context.setReturn(returnVariable);
+        const { clauses: subqueries } = this.cypherOperation.transpile(sortContext);
 
-        const cypherGenerator = new CypherAnnotationSubqueryGenerator({
-            context,
-            attribute: this.attribute,
-        });
-
-        const subquery = cypherGenerator.createSubqueryForCypherAnnotation({});
-
-        return [subquery];
+        return subqueries;
     }
 }

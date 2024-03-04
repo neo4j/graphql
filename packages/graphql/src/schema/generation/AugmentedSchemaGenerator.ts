@@ -40,15 +40,12 @@ import { DeleteInfo } from "../../graphql/objects/DeleteInfo";
 import { PageInfo } from "../../graphql/objects/PageInfo";
 import { Point } from "../../graphql/objects/Point";
 import { UpdateInfo } from "../../graphql/objects/UpdateInfo";
-import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import { InterfaceEntity } from "../../schema-model/entity/InterfaceEntity";
+import * as Scalars from "../../graphql/scalars";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { UnionEntity } from "../../schema-model/entity/UnionEntity";
-import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import { getEntityAdapter } from "../../schema-model/utils/get-entity-adapter";
 import type { DefinitionNodes } from "../get-definition-nodes";
-import * as Scalars from "../../graphql/scalars";
 
 export class AugmentedSchemaGenerator {
     private composer: SchemaComposer;
@@ -72,12 +69,7 @@ export class AugmentedSchemaGenerator {
         let floatWhereInTypeDefs = false;
 
         for (const entity of this.schemaModel.entities.values()) {
-            const model =
-                entity instanceof ConcreteEntity
-                    ? new ConcreteEntityAdapter(entity)
-                    : entity instanceof InterfaceEntity
-                    ? new InterfaceEntityAdapter(entity)
-                    : new UnionEntityAdapter(entity as UnionEntity); // fixme
+            const model = getEntityAdapter(entity);
 
             // TODO: check if these can be created ad-hoc
             if (model instanceof ConcreteEntityAdapter || model instanceof InterfaceEntityAdapter) {

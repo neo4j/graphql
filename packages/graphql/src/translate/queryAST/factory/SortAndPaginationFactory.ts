@@ -19,11 +19,12 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { FulltextScoreSort } from "../ast/sort/FulltextScoreSort";
@@ -31,31 +32,46 @@ import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
+import type { QueryASTFactory } from "./QueryASTFactory";
 
 export class SortAndPaginationFactory {
+    private queryASTFactory: QueryASTFactory;
+    constructor(queryASTFactory: QueryASTFactory) {
+        this.queryASTFactory = queryASTFactory;
+    }
     public createSortFields(
         options: GraphQLOptionsArg,
-        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        entity: EntityAdapter | RelationshipAdapter,
+        context: Neo4jGraphQLTranslationContext,
         scoreVariable?: Cypher.Variable
     ): Sort[] {
         return (options.sort || [])?.flatMap((s) => {
-            return this.createPropertySort(s, entity, scoreVariable);
+            return this.createPropertySort({ optionArg: s, entity, context, scoreVariable });
         });
     }
 
     public createConnectionSortFields(
         options: ConnectionSortArg,
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
+        context: Neo4jGraphQLTranslationContext
     ): { edge: Sort[]; node: Sort[] } {
         if (isConcreteEntity(entityOrRel)) {
-            const nodeSortFields = this.createPropertySort(options.node || {}, entityOrRel);
+            const nodeSortFields = this.createPropertySort({
+                optionArg: options.node ?? {},
+                entity: entityOrRel,
+                context,
+            });
             return {
                 edge: [],
                 node: nodeSortFields,
             };
         }
-        const nodeSortFields = this.createPropertySort(options.node || {}, entityOrRel.target);
-        const edgeSortFields = this.createPropertySort(options.edge || {}, entityOrRel);
+        const nodeSortFields = this.createPropertySort({
+            optionArg: options.node ?? {},
+            entity: entityOrRel.target,
+            context,
+        });
+        const edgeSortFields = this.createPropertySort({ optionArg: options.edge || {}, entity: entityOrRel, context });
         return {
             edge: edgeSortFields,
             node: nodeSortFields,
@@ -71,11 +87,17 @@ export class SortAndPaginationFactory {
         }
     }
 
-    private createPropertySort(
-        optionArg: GraphQLSortArg | NestedGraphQLSortArg,
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter,
-        scoreVariable?: Cypher.Variable
-    ): Sort[] {
+    private createPropertySort({
+        optionArg,
+        entity,
+        context,
+        scoreVariable,
+    }: {
+        optionArg: GraphQLSortArg | NestedGraphQLSortArg;
+        entity: EntityAdapter | RelationshipAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        scoreVariable?: Cypher.Variable;
+    }): Sort[] {
         if (isUnionEntity(entity)) {
             return [];
         }
@@ -88,11 +110,12 @@ export class SortAndPaginationFactory {
             if (!optionArg[entity.propertiesTypeName]) {
                 return [];
             }
-            return this.createPropertySort(
-                optionArg[entity.propertiesTypeName] as GraphQLSortArg,
+            return this.createPropertySort({
+                optionArg: optionArg[entity.propertiesTypeName] as GraphQLSortArg,
                 entity,
-                scoreVariable
-            );
+                context,
+                scoreVariable,
+            });
         }
 
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
@@ -108,10 +131,18 @@ export class SortAndPaginationFactory {
             if (!attribute) {
                 throw new Error(`no filter attribute ${fieldName}`);
             }
-            if (attribute.annotations.cypher) {
+            if (attribute.annotations.cypher && isConcreteEntity(entity)) {
+                const cypherOperation = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
+                    context,
+                    cypherAttributeField: attribute,
+                });
+                if (!(cypherOperation instanceof CypherScalarOperation)) {
+                    throw new Error("Transpile error: sorting is supported only for scalar properties");
+                }
                 return new CypherPropertySort({
                     direction: sortDir,
                     attribute,
+                    cypherOperation,
                 });
             }
             return new PropertySort({

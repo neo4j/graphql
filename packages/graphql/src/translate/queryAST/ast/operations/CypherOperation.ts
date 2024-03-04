@@ -27,7 +27,7 @@ import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
 export class CypherOperation extends ReadOperation {
-    public cypherAttributeField: AttributeAdapter;
+    private cypherAttributeField: AttributeAdapter;
 
     constructor({
         cypherAttributeField,
@@ -61,9 +61,7 @@ export class CypherOperation extends ReadOperation {
             ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
             : [];
         
-        const scope = context.getTargetScope();
-        // by setting the return variable of this operation in the attribute scope, we can avoid duplicate the same cypher resolution for sorting and projection purposes
-        scope.set(this.cypherAttributeField.name, context.returnVariable);
+
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
         const clause = Cypher.concat(matchClause, fieldSubqueries, ...authClauses, ret);
         return {
@@ -72,23 +70,23 @@ export class CypherOperation extends ReadOperation {
         };
     }
 
-    public getReturnClause(context: QueryASTContext<Cypher.Node>, returnVariable: Cypher.Variable): Cypher.Clause {
+    private getReturnClause(context: QueryASTContext<Cypher.Node>, returnVariable: Cypher.Variable): Cypher.Clause {
         const projection = this.getProjectionMap(context);
 
-        let aggregationExpr: Cypher.Expr;
+        let returnExpr: Cypher.Expr;
         if (context.shouldCollect) {
-            aggregationExpr = Cypher.collect(context.target);
+            returnExpr = Cypher.collect(context.target);
         } else {
-            aggregationExpr = context.target;
+            returnExpr = context.target;
         }
         if (context.shouldCollect && !this.cypherAttributeField.typeHelper.isList()) {
-            aggregationExpr = Cypher.head(aggregationExpr);
+            returnExpr = Cypher.head(returnExpr);
         }
         const withClause = new Cypher.With([projection, context.target]);
         if (this.sortFields.length > 0 || this.pagination) {
             this.addSortToClause(context, context.target, withClause);
         }
 
-        return withClause.return([aggregationExpr, returnVariable]);
+        return withClause.return([returnExpr, returnVariable]);
     }
 }

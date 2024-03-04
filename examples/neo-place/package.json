@@ -51,6 +51,6 @@
     },
     "devDependencies": {
         "concurrently": "8.2.2",
-        "parcel": "2.11.0"
+        "parcel": "2.12.0"
     }
 }

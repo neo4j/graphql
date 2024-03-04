@@ -20,21 +20,19 @@
 import { RelationshipNestedOperationsOption } from "../../../constants";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
-import { ConcreteEntity } from "../../entity/ConcreteEntity";
+import type { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
+import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import type { Entity } from "../../entity/Entity";
 import type { EntityAdapter } from "../../entity/EntityAdapter";
-import { InterfaceEntity } from "../../entity/InterfaceEntity";
-import { UnionEntity } from "../../entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
+import { getEntityAdapter } from "../../utils/get-entity-adapter";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { NestedOperation } from "../Relationship";
 import type { RelationshipDeclaration } from "../RelationshipDeclaration";
-import { RelationshipDeclarationOperations } from "./RelationshipDeclarationOperations";
-import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import { RelationshipAdapter } from "./RelationshipAdapter";
-import type { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
+import { RelationshipDeclarationOperations } from "./RelationshipDeclarationOperations";
 
 export class RelationshipDeclarationAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
@@ -78,15 +76,7 @@ export class RelationshipDeclarationAdapter {
         if (sourceAdapter) {
             this.source = sourceAdapter;
         } else {
-            if (source instanceof ConcreteEntity) {
-                this.source = new ConcreteEntityAdapter(source);
-            } else if (source instanceof InterfaceEntity) {
-                this.source = new InterfaceEntityAdapter(source);
-            } else if (source instanceof UnionEntity) {
-                this.source = new UnionEntityAdapter(source);
-            } else {
-                throw new Error("relationship source must be an Entity");
-            }
+            this.source = getEntityAdapter(source);
         }
         this.isList = isList;
         this.nestedOperations = new Set(nestedOperations);
@@ -135,15 +125,7 @@ export class RelationshipDeclarationAdapter {
     // construct the target entity only when requested
     public get target(): EntityAdapter {
         if (!this._target) {
-            if (this.rawEntity instanceof ConcreteEntity) {
-                this._target = new ConcreteEntityAdapter(this.rawEntity);
-            } else if (this.rawEntity instanceof InterfaceEntity) {
-                this._target = new InterfaceEntityAdapter(this.rawEntity);
-            } else if (this.rawEntity instanceof UnionEntity) {
-                this._target = new UnionEntityAdapter(this.rawEntity);
-            } else {
-                throw new Error("invalid target entity type");
-            }
+            this._target = getEntityAdapter(this.rawEntity);
         }
         return this._target;
     }

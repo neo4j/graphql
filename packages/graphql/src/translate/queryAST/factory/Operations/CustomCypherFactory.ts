@@ -45,7 +45,7 @@ export class CustomCypherFactory {
         cypherAttributeField,
         cypherArguments = {},
     }: {
-        resolveTree: ResolveTree;
+        resolveTree?: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
         cypherAttributeField: AttributeAdapter;
@@ -65,7 +65,16 @@ export class CustomCypherFactory {
                 target: entity,
                 selection,
             });
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+            if (!resolveTree) {
+                return customCypher;
+            }
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
+                entity,
+                operation: customCypher,
+                resolveTree,
+                context,
+                whereArgs: {},
+            });
         }
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
@@ -76,6 +85,9 @@ export class CustomCypherFactory {
             // although is currently not possible to do so with Cypher.Builder
             // https://github.com/neo4j/cypher-builder/issues/300
             partial.addFilters(new TypenameFilter([concreteEntity]));
+            if (!resolveTree) {
+                return partial;
+            }
             return this.queryASTFactory.operationsFactory.hydrateReadOperation({
                 entity: concreteEntity,
                 operation: partial,
@@ -84,7 +96,7 @@ export class CustomCypherFactory {
                 whereArgs: {},
             });
         });
-        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
+        return new CompositeCypherOperation({ selection, partials: CypherReadPartials, cypherAttributeField });
     }
 
     public createTopLevelCustomCypherOperation({
@@ -119,7 +131,13 @@ export class CustomCypherFactory {
                 target: entity,
                 selection,
             });
-            return this.queryASTFactory.operationsFactory.hydrateReadOperation({ entity, operation: customCypher, resolveTree, context, whereArgs: {} });
+            return this.queryASTFactory.operationsFactory.hydrateReadOperation({
+                entity,
+                operation: customCypher,
+                resolveTree,
+                context,
+                whereArgs: {},
+            });
         }
 
         const CypherReadPartials = entity.concreteEntities.map((concreteEntity) => {
@@ -138,6 +156,10 @@ export class CustomCypherFactory {
                 whereArgs: {},
             });
         });
-        return new CompositeCypherOperation({ selection, partials: CypherReadPartials });
+        return new CompositeCypherOperation({
+            selection,
+            partials: CypherReadPartials,
+            cypherAttributeField: operationField,
+        });
     }
 }
