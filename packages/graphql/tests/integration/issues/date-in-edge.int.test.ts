@@ -17,20 +17,27 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("587: Dates in edges can cause wrongly generated cypher", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let typeDefs: string;
+    let Genre: UniqueType;
+    let Actor: UniqueType;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Genre = new UniqueType("Genre");
+        Movie = new UniqueType("Movie");
+        Actor = new UniqueType("Actor");
     });
 
     afterAll(async () => {
@@ -40,21 +47,21 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
     test("should not throw when returning a date in an edge", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = gql`
-            type Genre {
+        typeDefs = `
+            type ${Genre} {
                 id: ID!
-                movies: [Movie!]! @relationship(type: "MOVIE", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "MOVIE", direction: OUT)
             }
 
-            type Movie {
+            type ${Movie} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTOR", direction: OUT)
+                actors: [${Actor}!]! @relationship(type: "ACTOR", direction: OUT)
             }
 
-            type Actor {
+            type ${Actor} {
                 name: String!
                 birthday: DateTime!
-                movie: Movie! @relationship(type: "ACTOR", direction: IN)
+                movie: ${Movie}! @relationship(type: "ACTOR", direction: IN)
             }
         `;
 
@@ -74,7 +81,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
 
         const query = `
         query {
-            genres(where: { id: "${genreId}" }) {
+            ${Genre.plural}(where: { id: "${genreId}" }) {
                 movies {
                     actorsConnection {
                         edges {
@@ -90,9 +97,9 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
 
         try {
             await session.run(`
-                CREATE (genre:Genre { id: "${genreId}" })
-                CREATE (movie:Movie { title: "${title}" })
-                CREATE (actor:Actor { name: "${name}", birthday: datetime("2021-11-16T10:53:20.200000000Z")})
+                CREATE (genre:${Genre} { id: "${genreId}" })
+                CREATE (movie:${Movie} { title: "${title}" })
+                CREATE (actor:${Actor} { name: "${name}", birthday: datetime("2021-11-16T10:53:20.200000000Z")})
                 CREATE (genre)-[:MOVIE]->(movie)-[:ACTOR { role: "Name" }]->(actor)
                 RETURN actor
             `);

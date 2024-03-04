@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
-import Neo4jHelper from "../neo4j";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let schema: GraphQLSchema;
@@ -32,51 +31,63 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let neo4j: Neo4jHelper;
     const secret = "secret";
 
+    let ApplicationVariant: UniqueType;
+    let NameDetails: UniqueType;
+    let Market: UniqueType;
+    let BaseObject: UniqueType;
+    let typeDefs: string;
+
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
-        const typeDefs = gql`
-            type JWTPayload @jwt {
-                roles: [String!]!
-            }
+        ApplicationVariant = new UniqueType("ApplicationVariant");
+        NameDetails = new UniqueType("NameDetails");
+        Market = new UniqueType("Market");
+        BaseObject = new UniqueType("BaseObject");
 
-            interface BusinessObject {
-                id: ID!
-                nameDetails: NameDetails
-            }
+        typeDefs = `
+                type JWTPayload @jwt {
+                    roles: [String!]!
+                }
+    
+                interface BusinessObject {
+                    id: ID!
+                    nameDetails: ${NameDetails}
+                }
+    
+                type ${ApplicationVariant} implements BusinessObject
+                    @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
+                    @mutation(operations: []) {
+                    markets: [${Market}!]! @relationship(type: "HAS_MARKETS", direction: OUT)
+                    id: ID! @unique
+                    relatedId: ID
+                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:${BaseObject}) RETURN n.id as res", columnName: "res")
+                    baseObject: ${BaseObject}! @relationship(type: "HAS_BASE", direction: IN)
+                    current: Boolean!
+                    nameDetails: ${NameDetails} @relationship(type: "HAS_NAME", direction: OUT)
+                }
+    
+                type ${NameDetails}
+                    @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
+                    @mutation(operations: [])
+                    @query(read: false, aggregate: false) {
+                    fullName: String!
+                }
+    
+                type ${Market} implements BusinessObject
+                    @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
+                    @mutation(operations: []) {
+                    id: ID! @unique
+                    nameDetails: ${NameDetails} @relationship(type: "HAS_NAME", direction: OUT)
+                }
+    
+                type ${BaseObject}
+                    @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
+                    @mutation(operations: []) {
+                    id: ID! @id @unique
+                }
+            `;
 
-            type ApplicationVariant implements BusinessObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @mutation(operations: []) {
-                markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
-                id: ID! @unique
-                relatedId: ID
-                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res", columnName: "res")
-                baseObject: BaseObject! @relationship(type: "HAS_BASE", direction: IN)
-                current: Boolean!
-                nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
-            }
-
-            type NameDetails
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @mutation(operations: [])
-                @query(read: false, aggregate: false) {
-                fullName: String!
-            }
-
-            type Market implements BusinessObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @mutation(operations: []) {
-                id: ID! @unique
-                nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
-            }
-
-            type BaseObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @mutation(operations: []) {
-                id: ID! @id @unique
-            }
-        `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: secret } } });
         schema = await neoGraphql.getSchema();
     });
@@ -86,9 +97,17 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
     });
 
     test("provided query does not result in an error", async () => {
-        const query = gql`
-            query getApplicationVariants($where: ApplicationVariantWhere, $options: ApplicationVariantOptions) {
-                applicationVariants(where: $where, options: $options) {
+        const query = `
+            query getApplicationVariants {
+                ${ApplicationVariant.plural}(where: {
+                    current: true,
+                }, options: {
+                    sort: {
+                        relatedId: ASC,
+                    },
+                    offset: 0,
+                    limit: 50,
+                },) {
                     relatedId
                     nameDetailsConnection {
                         edges {
@@ -124,19 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         const token = createBearerToken(secret, { roles: ["ALL"] });
         const result = await graphql({
             schema,
-            source: getQuerySource(query),
-            variableValues: {
-                where: {
-                    current: true,
-                },
-                options: {
-                    sort: {
-                        relatedId: "ASC",
-                    },
-                    offset: 0,
-                    limit: 50,
-                },
-            },
+            source: query,
             contextValue: neo4j.getContextValues({ token }),
         });
 

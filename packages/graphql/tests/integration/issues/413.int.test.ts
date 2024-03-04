@@ -17,21 +17,25 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("413", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let JobPlan: UniqueType;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        JobPlan = new UniqueType("JobPlan");
     });
 
     afterAll(async () => {
@@ -47,13 +51,13 @@ describe("413", () => {
                 tenant_id: String!
             }
 
-            type JobPlan {
+            type ${JobPlan} {
                 id: ID! @id @unique
                 tenantID: ID!
                 name: String!
             }
 
-            extend type JobPlan
+            extend type ${JobPlan}
                 @authorization(
                     validate: [
                         { when: [AFTER], operations: [CREATE, UPDATE], where: { node: { tenantID: "$jwt.tenant_id" } } }
@@ -76,7 +80,7 @@ describe("413", () => {
 
         const query = `
             query {
-                jobPlansAggregate(where: {tenantID: "${tenantID}"}) {
+                ${JobPlan.operations.aggregate}(where: {tenantID: "${tenantID}"}) {
                   count
                 }
             }
@@ -85,9 +89,9 @@ describe("413", () => {
         try {
             await session.run(
                 `
-                    CREATE (:JobPlan {tenantID: $tenantID})
-                    CREATE (:JobPlan {tenantID: $tenantID})
-                    CREATE (:JobPlan {tenantID: $tenantID})
+                    CREATE (:${JobPlan} {tenantID: $tenantID})
+                    CREATE (:${JobPlan} {tenantID: $tenantID})
+                    CREATE (:${JobPlan} {tenantID: $tenantID})
                 `,
                 { tenantID }
             );
@@ -105,7 +109,7 @@ describe("413", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                jobPlansAggregate: { count: 3 },
+                [JobPlan.operations.aggregate]: { count: 3 },
             });
         } finally {
             await session.close();

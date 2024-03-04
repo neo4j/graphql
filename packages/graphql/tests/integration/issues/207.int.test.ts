@@ -16,51 +16,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/207", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        union Result = Book | Author
-
-        type Book {
-            title: String
-        }
-
-        type Author {
-            name: String
-        }
-
-        type Query {
-            search: [Result]
-        }
-    `;
-    const resolvers = {
-        Result: {
-            __resolveType(obj) {
-                if (obj.name) {
-                    return "Author";
-                }
-                if (obj.title) {
-                    return "Book";
-                }
-                return null; // GraphQLError is thrown
-            },
-        },
-        Query: {
-            search: () => [{ title: "GraphQL Unions for Dummies" }, { name: "Darrell" }],
-        },
-    };
+    let Book: UniqueType;
+    let Author: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Book = new UniqueType("Book");
+        Author = new UniqueType("Author");
     });
 
     afterAll(async () => {
@@ -68,6 +41,39 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
     });
 
     test("__resolveType resolvers are correctly evaluated", async () => {
+        const typeDefs = gql`
+            union Result = ${Book} | ${Author}
+
+            type ${Book} {
+                title: String
+            }
+
+            type ${Author} {
+                name: String
+            }
+
+            type Query {
+                search: [Result]
+            }
+        `;
+
+        const resolvers = {
+            Result: {
+                __resolveType(obj) {
+                    if (obj.name) {
+                        return Author.toString();
+                    }
+                    if (obj.title) {
+                        return Book.toString();
+                    }
+                    return null; // GraphQLError is thrown
+                },
+            },
+            Query: {
+                search: () => [{ title: "GraphQL Unions for Dummies" }, { name: "Darrell" }],
+            },
+        };
+
         const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, driver });
@@ -76,10 +82,10 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
             query GetSearchResults {
                 search {
                     __typename
-                    ... on Book {
+                    ... on ${Book} {
                         title
                     }
-                    ... on Author {
+                    ... on ${Author} {
                         name
                     }
                 }
@@ -99,11 +105,11 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
 
             expect(result?.data?.search).toEqual([
                 {
-                    __typename: "Book",
+                    __typename: Book.toString(),
                     title: "GraphQL Unions for Dummies",
                 },
                 {
-                    __typename: "Author",
+                    __typename: Author.toString(),
                     name: "Darrell",
                 },
             ]);

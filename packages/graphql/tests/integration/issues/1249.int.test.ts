@@ -21,6 +21,7 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1249", () => {
@@ -28,24 +29,35 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
 
-    const typeDefs = `
-        type Bulk
+    let Bulk: UniqueType;
+    let Material: UniqueType;
+    let Supplier: UniqueType;
+    let typeDefs: string;
+
+    beforeAll(async () => {
+        neo4j = new Neo4jHelper();
+        driver = await neo4j.getDriver();
+        Bulk = new UniqueType("Bulk");
+        Material = new UniqueType("Material");
+        Supplier = new UniqueType("Supplier");
+        typeDefs = `
+        type ${Bulk}
             @mutation(operations: [])
             @node(labels: ["Bulk", "$tenant"]) {
             id: ID!
             supplierMaterialNumber: String!
-            material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)
+            material: ${Material}! @relationship(type: "MATERIAL_BULK", direction: OUT)
         }
 
-        type Material @mutation(operations: []) {
+        type ${Material} @mutation(operations: []) {
             id: ID!
             itemNumber: String!
 
-            suppliers: [Supplier!]!
-                @relationship(type: "MATERIAL_SUPPLIER", properties: "RelationMaterialSupplier", direction: OUT)
+            suppliers: [${Supplier}!]!
+                @relationship(type: "MATERIAL_${Supplier}", properties: "RelationMaterialSupplier", direction: OUT)
         }
 
-        type Supplier @mutation(operations: []) {
+        type ${Supplier} @mutation(operations: []) {
             id: ID!
             name: String
             supplierId: String!
@@ -55,10 +67,6 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             supplierMaterialNumber: String!
         }
     `;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -74,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
         const query = /* GraphQL */ `
             query {
-                bulks {
+                ${Bulk.plural} {
                     supplierMaterialNumber
                     material {
                         id
@@ -101,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
         expect(res.errors).toBeUndefined();
         expect(res.data).toEqual({
-            bulks: [],
+            [Bulk.plural]: [],
         });
     });
 });

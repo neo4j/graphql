@@ -17,19 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/200", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Category: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Category = new UniqueType("Category");
     });
 
     afterAll(async () => {
@@ -38,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
 
     test("should successfully execute given mutation", async () => {
         const typeDefs = `
-            type Category {
+            type ${Category} {
                 categoryId: ID! @id @unique
                 name: String!
                 description: String! @default(value: "")
@@ -53,13 +56,13 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
 
         const query = `
             mutation($catOne: String!, $catTwo: String!, $exampleImageLocations: [String!]) {
-                createCategories(
+                ${Category.operations.create}(
                   input: [
                     { name: $catOne}
                     { name: $catTwo, exampleImageLocations: $exampleImageLocations }
                   ]
                 ) {
-                  categories {
+                  ${Category.plural} {
                     name
                     exampleImageLocations
                   }
@@ -76,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const cats = (gqlResult?.data as any)?.createCategories.categories as any[];
+        const cats = (gqlResult?.data as any)?.[Category.operations.create][Category.plural] as any[];
 
         const one = cats.find((x) => x.name === catOne);
         expect(one).toEqual({ name: catOne, exampleImageLocations: null });

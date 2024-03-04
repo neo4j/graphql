@@ -17,20 +17,32 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/567", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let typeDefs: string;
+    let Movie: UniqueType;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        typeDefs = `
+        type ${Movie} {
+            id: ID!
+            title: String!
+        }
+    `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,15 +51,6 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
 
     test("should not throw when only returning info on update", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = gql`
-            type Movie {
-                id: ID!
-                title: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -63,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
 
         const query = `
             mutation {
-                updateMovies(where: { id: "${movieId}" }, update: { title: "${newTitle}" }) {
+                ${Movie.operations.update}(where: { id: "${movieId}" }, update: { title: "${newTitle}" }) {
                     info {
                         nodesCreated
                         nodesDeleted
@@ -74,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
 
         try {
             await session.run(`
-                CREATE (:Movie { id: "${movieId}", title: "${existingTitle}" })
+                CREATE (:${Movie} { id: "${movieId}", title: "${existingTitle}" })
             `);
 
             const result = await graphql({
@@ -90,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                updateMovies: {
+                [Movie.operations.update]: {
                     info: {
                         nodesCreated: 0,
                         nodesDeleted: 0,
@@ -105,15 +108,6 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
     test("should not throw when only returning info on create", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = gql`
-            type Movie {
-                id: ID!
-                title: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         const movieId = generate({
             charset: "alphabetic",
         });
@@ -124,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
 
         const query = `
             mutation {
-                createMovies(input: [{ id: "${movieId}", title: "${existingTitle}" }]) {
+                ${Movie.operations.create}(input: [{ id: "${movieId}", title: "${existingTitle}" }]) {
                     info {
                         nodesCreated
                     }
@@ -146,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                createMovies: {
+                [Movie.operations.create]: {
                     info: {
                         nodesCreated: 1,
                     },
