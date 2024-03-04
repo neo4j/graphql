@@ -53,6 +53,7 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 
 // GraphQL type imports
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
+import { InterfaceEntityAdapter } from "src/schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { Subgraph } from "../classes/Subgraph";
 import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { SHAREABLE } from "../constants";
@@ -63,10 +64,10 @@ import { UpdateInfo } from "../graphql/objects/UpdateInfo";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { Operation } from "../schema-model/Operation";
 import { OperationAdapter } from "../schema-model/OperationAdapter";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
 import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
@@ -89,7 +90,6 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -554,10 +554,12 @@ function generateObjectType({
             concreteEntityAdapter.operations.rootTypeFieldNames.read,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
+
+        // FOR CONCRETE
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                 composer,
-                concreteEntityAdapter,
+                entityAdapter: concreteEntityAdapter,
                 propagatedDirectives,
             }),
         });
@@ -687,8 +689,22 @@ function generateInterfaceObjectType({
                 entityAdapter: interfaceEntityAdapter,
             }),
         });
+
         composer.Query.setFieldDirectives(
             interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+
+        // FOR CONCRETE
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: interfaceEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
