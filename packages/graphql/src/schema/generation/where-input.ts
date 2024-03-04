@@ -153,10 +153,12 @@ export function withSourceWhereInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
+    userDefinedDirectivesOnTargetFields,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
@@ -183,6 +185,7 @@ export function withSourceWhereInputType({
         relationshipAdapter,
         entityAdapter: relationshipTarget,
         composer: composer,
+        userDefinedDirectivesOnTargetFields,
     });
 
     if (relationshipAdapter.isFilterableByAggregate()) {
