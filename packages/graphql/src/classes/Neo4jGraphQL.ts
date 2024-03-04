@@ -23,7 +23,7 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
@@ -50,6 +50,7 @@ import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGrap
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import checkNeo4jCompat from "./utils/verify-database";
+import { wrapQueryFields, wrapMutationFields } from "./utils/wrap-resolvers";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -284,23 +285,23 @@ class Neo4jGraphQL {
             jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
 
-        const resolversComposition = {
-            "Query.*": [wrapQueryAndMutation(wrapResolverArgs)],
-            "Mutation.*": [wrapQueryAndMutation(wrapResolverArgs)],
-        };
+        const queryResolvers = wrapQueryFields(this.schemaModel, [wrapQueryAndMutation(wrapResolverArgs)]);
+        const mutationResolvers = wrapMutationFields(this.schemaModel, [wrapQueryAndMutation(wrapResolverArgs)]);
+        const subscriptionResolvers = {};
 
         if (this.features.subscriptions) {
-            resolversComposition["Subscription.*"] = wrapSubscription({
+            const wrapSubscriptionResolverArgs = {
                 subscriptionsEngine: this.features.subscriptions,
                 schemaModel: this.schemaModel,
                 authorization: this.authorization,
                 jwtPayloadFieldsMap: this.jwtFieldsMap,
-            });
+            };
+            subscriptionResolvers["Subscription.*"] = [wrapSubscription(wrapSubscriptionResolverArgs)];
         }
 
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);
-        return composeResolvers(mergedResolvers, resolversComposition);
+        return composeResolvers(mergedResolvers, { ...queryResolvers, ...mutationResolvers, ...subscriptionResolvers });
     }
 
     private composeSchema(schema: GraphQLSchema): GraphQLSchema {

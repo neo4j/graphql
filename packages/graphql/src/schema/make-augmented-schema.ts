@@ -347,6 +347,15 @@ function makeAugmentedSchema({
 
             objectComposer.addFields({ [attributeAdapter.name]: { ...composedField, ...customResolver } });
         }
+
+        for (const attributeAdapter of operationAdapter.userResolvedAttributes.values()) {
+            const composedField = attributeAdapterToComposeFields([attributeAdapter], userDefinedFieldDirectives)[
+                attributeAdapter.name
+            ];
+            if (composedField) {
+                objectComposer.addFields({ [attributeAdapter.name]: composedField });
+            }
+        }
     });
 
     if (!Object.values(composer.Mutation.getFields()).length) {
