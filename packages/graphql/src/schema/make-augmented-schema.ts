@@ -348,6 +348,7 @@ function makeAugmentedSchema({
             objectComposer.addFields({ [attributeAdapter.name]: { ...composedField, ...customResolver } });
         }
 
+        // this is to remove library directives from custom resolvers on root type fields in augmented schema
         for (const attributeAdapter of operationAdapter.userResolvedAttributes.values()) {
             const composedField = attributeAdapterToComposeFields([attributeAdapter], userDefinedFieldDirectives)[
                 attributeAdapter.name
