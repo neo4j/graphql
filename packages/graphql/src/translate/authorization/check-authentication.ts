@@ -25,7 +25,7 @@ import type {
 } from "../../schema-model/annotation/AuthenticationAnnotation";
 import { applyAuthentication } from "./utils/apply-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
-import { Operation } from "../../schema-model/Operation";
+import type { Operation } from "../../schema-model/Operation";
 
 export function checkAuthentication({
     context,

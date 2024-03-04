@@ -23,7 +23,7 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import { DocumentNode, GraphQLSchema } from "graphql";
+import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";

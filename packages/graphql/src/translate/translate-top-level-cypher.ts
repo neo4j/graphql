@@ -26,7 +26,7 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import { AuthenticationOperation } from "../schema-model/annotation/AuthenticationAnnotation";
+import type { AuthenticationOperation } from "../schema-model/annotation/AuthenticationAnnotation";
 
 const debug = Debug(DEBUG_TRANSLATE);
 

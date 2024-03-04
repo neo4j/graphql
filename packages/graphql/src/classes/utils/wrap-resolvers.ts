@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { isAuthenticated } from "../../translate/authorization/check-authentication";
 
 export function wrapQueryFields(
