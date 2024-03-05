@@ -28,7 +28,7 @@ ___
     <img alt="Discord" src="https://img.shields.io/discord/787399249741479977?logo=discord&logoColor=white">
   </a>
   <a href="https://community.neo4j.com/c/drivers-stacks/graphql/33">
-    <img alt="Discourse users" src="https://img.shields.iåo/discourse/users?logo=discourse&server=https%3A%2F%2Fcommunity.neo4j.com">
+    <img alt="Discourse users" src="https://img.shields.io/discourse/users?logo=discourse&server=https%3A%2F%2Fcommunity.neo4j.com">
   </a>
 </p>
 
