@@ -30,7 +30,6 @@ describe("413", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     let JobPlan: UniqueType;
-    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
