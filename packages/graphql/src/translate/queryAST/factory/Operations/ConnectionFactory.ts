@@ -17,17 +17,20 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import { isObject, isString } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
+import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import { InterfaceEntity } from "../../../../schema-model/entity/InterfaceEntity";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
+import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { Field } from "../../ast/fields/Field";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
@@ -62,9 +65,6 @@ export class ConnectionFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): CompositeConnectionReadOperation {
-        if (!relationship) {
-            throw new Error("Top-Level Connection are currently supported only for concrete entities");
-        }
         const directed = Boolean(resolveTree.args.directed) ?? true;
         const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
 
@@ -77,11 +77,19 @@ export class ConnectionFactory {
 
         const concreteEntities = getConcreteEntities(target, nodeWhere);
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
-            const selection = new RelationshipSelection({
-                relationship,
-                directed,
-                targetOverride: concreteEntity,
-            });
+            let selection: EntitySelection;
+
+            if (relationship) {
+                selection = new RelationshipSelection({
+                    relationship,
+                    directed,
+                    targetOverride: concreteEntity,
+                });
+            } else {
+                selection = new NodeSelection({
+                    target: concreteEntity,
+                });
+            }
 
             const connectionPartial = new CompositeConnectionPartial({
                 relationship,
@@ -103,12 +111,16 @@ export class ConnectionFactory {
         const compositeConnectionOp = new CompositeConnectionReadOperation(concreteConnectionOperations);
 
         // These sort fields will be duplicated on nested "CompositeConnectionPartial"
-        this.hydrateConnectionOperationsASTWithSort({
-            entityOrRel: relationship,
-            resolveTree,
-            operation: compositeConnectionOp,
-            context,
-        });
+
+        // TODO: this if shouldn't be needed
+        if (relationship) {
+            this.hydrateConnectionOperationsASTWithSort({
+                entityOrRel: relationship,
+                resolveTree,
+                operation: compositeConnectionOp,
+                context,
+            });
+        }
         return compositeConnectionOp;
     }
 
@@ -119,10 +131,18 @@ export class ConnectionFactory {
         context,
     }: {
         relationship?: RelationshipAdapter;
-        target: ConcreteEntityAdapter;
+        target: EntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): ConnectionReadOperation {
+    }): ConnectionReadOperation | CompositeConnectionReadOperation {
+        if (!(target instanceof ConcreteEntityAdapter)) {
+            return this.createCompositeConnectionOperationAST({
+                relationship,
+                target,
+                resolveTree,
+                context,
+            });
+        }
         const directed = Boolean(resolveTree.args.directed) ?? true;
         const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
         checkEntityAuthentication({
@@ -239,20 +259,49 @@ export class ConnectionFactory {
     }): T {
         // hydrate hydrateConnectionOperationAST is used for both top-level and nested connections.
         // If the relationship is defined use the RelationshipAdapter to infer the typeNames, if not use the target.
+
+        // Get the abstract types of the interface
+        const entityInterfaces = filterTruthy(
+            target.compositeEntities.map((compositeEntity) => {
+                if (compositeEntity instanceof InterfaceEntity) {
+                    return new InterfaceEntityAdapter(compositeEntity);
+                }
+            })
+        );
+
+        const interfacesFields = entityInterfaces.map((interfaceAdapter) => {
+            return resolveTree.fieldsByTypeName[interfaceAdapter.operations.connectionFieldTypename] ?? {};
+        });
+
         const entityOrRel = relationship ?? target;
-        const resolveTreeConnectionFields = {
+
+        const concreteProjectionFields = {
             ...resolveTree.fieldsByTypeName[entityOrRel.operations.connectionFieldTypename],
         };
 
+        const resolveTreeConnectionFields = mergeDeep<Record<string, ResolveTree>[]>([
+            ...interfacesFields,
+            concreteProjectionFields,
+        ]);
+
         const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
-        const resolveTreeEdgeFields = getFieldsByTypeName(
+
+        const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
+            return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
+        });
+
+        const concreteEdgeFields = getFieldsByTypeName(
             edgeFieldsRaw,
-            entityOrRel.operations.relationshipFieldTypename
+            entityOrRel.operations.relationshipFieldTypename // Use interface operation
         );
+
+        const resolveTreeEdgeFields = mergeDeep<Record<string, ResolveTree>[]>([
+            ...interfacesEdgeFields,
+            concreteEdgeFields,
+        ]);
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
         const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
-
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
             resolveTree,
@@ -260,13 +309,14 @@ export class ConnectionFactory {
             context,
         });
         const isTopLevel = !relationship;
-        const resolveTreeNodeFieldsTypesNames = isTopLevel
-            ? [target.name]
-            : [
-                  target.name,
-                  relationship.target.name,
-                  ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
-              ];
+
+        const resolveTreeNodeFieldsTypesNames = [
+            target.name,
+            ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+        ];
+        if (!isTopLevel) {
+            resolveTreeNodeFieldsTypesNames.push(relationship.target.name);
+        }
 
         const resolveTreeNodeFields = getFieldsByTypeName(nodeFieldsRaw, resolveTreeNodeFieldsTypesNames);
         const nodeFields = this.queryASTFactory.fieldFactory.createFields(target, resolveTreeNodeFields, context);

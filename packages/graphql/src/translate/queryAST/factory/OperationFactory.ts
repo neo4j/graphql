@@ -103,7 +103,6 @@ export class OperationsFactory {
         varName?: string;
         reference?: any;
     }): Operation {
-        console.log("Create top level");
         // Handles deprecated top level fulltext
         if (context.resolveTree.args.phrase) {
             if (!context.fulltext) {
@@ -135,7 +134,6 @@ export class OperationsFactory {
                 });
             }
             case "CONNECTION": {
-                // assertIsConcreteEntity(entity);
                 if (!entity) {
                     throw new Error("Entity is required for top level connection read operations");
                 }

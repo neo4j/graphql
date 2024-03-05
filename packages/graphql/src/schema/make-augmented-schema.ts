@@ -53,7 +53,6 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 
 // GraphQL type imports
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
-import { InterfaceEntityAdapter } from "src/schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { Subgraph } from "../classes/Subgraph";
 import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { SHAREABLE } from "../constants";
@@ -68,6 +67,7 @@ import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
 import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
