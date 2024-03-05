@@ -1690,6 +1690,7 @@ describe("Union Interface Relationships", () => {
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               reviewers(options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
               reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
+              reviewersConnection(after: String, first: Int, sort: [ReviewerSort], where: ReviewerWhere): ReviewersConnection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -1786,6 +1787,11 @@ describe("Union Interface Relationships", () => {
               Person: PersonCreateInput
             }
 
+            type ReviewerEdge {
+              cursor: String!
+              node: Reviewer!
+            }
+
             enum ReviewerImplementation {
               Influencer
               Person
@@ -1838,6 +1844,12 @@ describe("Union Interface Relationships", () => {
               reviewerId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reviewerId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               typename_IN: [ReviewerImplementation!]
+            }
+
+            type ReviewersConnection {
+              edges: [ReviewerEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

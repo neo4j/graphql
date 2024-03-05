@@ -291,6 +291,12 @@ describe("inheritance", () => {
               startCursor: String
             }
 
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Person @customDirectiveInter {
               friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
@@ -320,6 +326,11 @@ describe("inheritance", () => {
 
             input PersonDisconnectInput {
               friends: [PersonFriendsDisconnectFieldInput!]
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
             }
 
             input PersonFriendsConnectFieldInput {
@@ -484,6 +495,7 @@ describe("inheritance", () => {
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
