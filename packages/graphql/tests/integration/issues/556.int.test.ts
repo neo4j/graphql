@@ -17,37 +17,44 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/556 - Input Object type ArticleCreateInput must define one or more fields", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        type User556 {
-            name: String!
-            things: [Thing556!]! @relationship(type: "HAS_THINGS", direction: OUT)
-        }
-
-        type Thing556 {
-            id: ID! @id @unique
-        }
-    `;
+    let typeDefs: string;
+    let User: UniqueType;
+    let Thing: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        User = new UniqueType("User");
+        Thing = new UniqueType("Thing");
+
+        typeDefs = `
+            type ${User} {
+                name: String!
+                things: [${Thing}!]! @relationship(type: "HAS_THINGS", direction: OUT)
+            }
+
+            type ${Thing} {
+                id: ID! @id @unique
+            }
+        `;
     });
 
     afterAll(async () => {
         const session = await neo4j.getSession();
 
         try {
-            await session.run(`MATCH (u:User556) DETACH DELETE u`);
-            await session.run(`MATCH (t:Thing556) DETACH DELETE t`);
+            await session.run(`MATCH (u:${User}) DETACH DELETE u`);
+            await session.run(`MATCH (t:${Thing}) DETACH DELETE t`);
         } finally {
             await session.close();
         }
@@ -62,8 +69,8 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
 
         const query = `
             mutation {
-                createUser556s(input: { name: "Darrell", things: { create: [{ node: {} }, { node: {} }] } }) {
-                    user556s {
+                ${User.operations.create}(input: { name: "Darrell", things: { create: [{ node: {} }, { node: {} }] } }) {
+                    ${User.plural} {
                         name
                         things {
                             id
@@ -83,9 +90,9 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
 
         expect(result.errors).toBeFalsy();
 
-        expect((result.data as any)?.createUser556s.user556s).toHaveLength(1);
-        expect((result.data as any)?.createUser556s.user556s[0].name).toBe("Darrell");
-        expect((result.data as any)?.createUser556s.user556s[0].things).toHaveLength(2);
+        expect((result.data as any)[User.operations.create][User.plural]).toHaveLength(1);
+        expect((result.data as any)[User.operations.create][User.plural][0].name).toBe("Darrell");
+        expect((result.data as any)[User.operations.create][User.plural][0].things).toHaveLength(2);
         await session.close();
     });
 });
