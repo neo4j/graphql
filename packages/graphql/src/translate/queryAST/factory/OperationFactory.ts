@@ -103,6 +103,7 @@ export class OperationsFactory {
         varName?: string;
         reference?: any;
     }): Operation {
+        console.log("Create top level");
         // Handles deprecated top level fulltext
         if (context.resolveTree.args.phrase) {
             if (!context.fulltext) {
@@ -134,7 +135,10 @@ export class OperationsFactory {
                 });
             }
             case "CONNECTION": {
-                assertIsConcreteEntity(entity);
+                // assertIsConcreteEntity(entity);
+                if (!entity) {
+                    throw new Error("Entity is required for top level connection read operations");
+                }
                 const topLevelConnectionResolveTree =
                     this.connectionFactory.normalizeResolveTreeForTopLevelConnection(resolveTree);
                 return this.connectionFactory.createConnectionOperationAST({
@@ -218,7 +222,7 @@ export class OperationsFactory {
         target: ConcreteEntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): ConnectionReadOperation {
+    }): ConnectionReadOperation | CompositeConnectionReadOperation {
         return this.connectionFactory.createConnectionOperationAST(arg);
     }
 

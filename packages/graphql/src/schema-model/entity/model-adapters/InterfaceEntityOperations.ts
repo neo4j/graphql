@@ -41,4 +41,8 @@ export class InterfaceEntityOperations extends ImplementingEntityOperations<Inte
     public getFullTextIndexInputTypeName(indexName: string): string {
         return `${this.entityAdapter.name}${upperFirst(indexName)}Fulltext`;
     }
+
+    public get connectionFieldTypename(): string {
+        return `${this.pascalCasePlural}Connection`;
+    }
 }
