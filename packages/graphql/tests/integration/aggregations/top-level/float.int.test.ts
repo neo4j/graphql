@@ -17,19 +17,30 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("aggregations-top_level-float", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        const typeDefs = `
+            type ${Movie} {
+                testString: String
+                imdbRating: Float
+            }
+        `;
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,27 +50,18 @@ describe("aggregations-top_level-float", () => {
     test("should return the min of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                imdbRating: Float
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRating: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 4.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
                 {
                     testString,
@@ -68,7 +70,7 @@ describe("aggregations-top_level-float", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
                             min
                         }
@@ -88,7 +90,7 @@ describe("aggregations-top_level-float", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 imdbRating: {
                     min: expect.closeTo(1.1),
                 },
@@ -101,27 +103,18 @@ describe("aggregations-top_level-float", () => {
     test("should return the max of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                imdbRating: Float
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRating: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 4.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
                 {
                     testString,
@@ -130,7 +123,7 @@ describe("aggregations-top_level-float", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
                             max
                         }
@@ -150,7 +143,7 @@ describe("aggregations-top_level-float", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 imdbRating: {
                     max: expect.closeTo(4.1),
                 },
@@ -163,27 +156,18 @@ describe("aggregations-top_level-float", () => {
     test("should return the average of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                imdbRating: Float
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRating: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 4.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
                 {
                     testString,
@@ -192,7 +176,7 @@ describe("aggregations-top_level-float", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
                             average
                         }
@@ -212,7 +196,7 @@ describe("aggregations-top_level-float", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 imdbRating: {
                     average: expect.closeTo(2.6),
                 },
@@ -225,27 +209,18 @@ describe("aggregations-top_level-float", () => {
     test("should return the sum of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                imdbRating: Float
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRating: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 4.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
                 {
                     testString,
@@ -254,7 +229,7 @@ describe("aggregations-top_level-float", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
                             sum
                         }
@@ -274,7 +249,7 @@ describe("aggregations-top_level-float", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 imdbRating: {
                     sum: expect.closeTo(10.4),
                 },
@@ -287,27 +262,18 @@ describe("aggregations-top_level-float", () => {
     test("should return the min, max, sum and average of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                imdbRating: Float
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRating: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRating: 4.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
+                    CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
                 {
                     testString,
@@ -316,7 +282,7 @@ describe("aggregations-top_level-float", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
                             min
                             max
@@ -339,7 +305,7 @@ describe("aggregations-top_level-float", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 imdbRating: {
                     min: expect.closeTo(1.1),
                     max: expect.closeTo(4.1),

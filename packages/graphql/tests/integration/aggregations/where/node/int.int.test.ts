@@ -22,15 +22,33 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import { UniqueType } from "../../../../utils/graphql-types";
 import Neo4jHelper from "../../../neo4j";
 
 describe("aggregations-where-node-int", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let User: UniqueType;
+    let Post: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
+        const typeDefs = `
+            type ${User} {
+                testString: String!
+                someInt: Int!
+            }
+    
+            type ${Post} {
+              testString: String!
+              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+            }
+        `;
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -40,18 +58,6 @@ describe("aggregations-where-node-int", () => {
     test("should return posts where a like Int is EQUAL to", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -59,19 +65,17 @@ describe("aggregations-where-node-int", () => {
 
         const someInt = Number(faker.number.int({ max: 100000 }));
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt}})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt}})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_EQUAL: ${someInt} } } }) {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_EQUAL: ${someInt} } } }) {
                         testString
                         likes {
                             testString
@@ -89,7 +93,7 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString, someInt }],
@@ -103,18 +107,6 @@ describe("aggregations-where-node-int", () => {
     test("should return posts where a like Float is GT than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -123,19 +115,17 @@ describe("aggregations-where-node-int", () => {
         const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntGt = someInt - 1;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt}})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt}})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_GT: ${someIntGt} } } }) {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_GT: ${someIntGt} } } }) {
                         testString
                         likes {
                             testString
@@ -153,7 +143,7 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString, someInt }],
@@ -167,18 +157,6 @@ describe("aggregations-where-node-int", () => {
     test("should return posts where a like Float is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -186,19 +164,17 @@ describe("aggregations-where-node-int", () => {
 
         const someInt = Number(faker.number.int({ max: 100000 }));
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt}})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt}})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_GTE: ${someInt} } } }) {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_GTE: ${someInt} } } }) {
                         testString
                         likes {
                             testString
@@ -216,7 +192,7 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString, someInt }],
@@ -230,18 +206,6 @@ describe("aggregations-where-node-int", () => {
     test("should return posts where a like Float is LT than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -250,19 +214,17 @@ describe("aggregations-where-node-int", () => {
         const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntLT = someInt + 1;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt}})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt}})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_LT: ${someIntLT} } } }) {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_LT: ${someIntLT} } } }) {
                         testString
                         likes {
                             testString
@@ -280,7 +242,7 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString, someInt }],
@@ -294,18 +256,6 @@ describe("aggregations-where-node-int", () => {
     test("should return posts where a like Float is LTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -313,19 +263,17 @@ describe("aggregations-where-node-int", () => {
 
         const someInt = Number(faker.number.int({ max: 100000 }));
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt}})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt}})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_LTE: ${someInt} } } }) {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_LTE: ${someInt} } } }) {
                         testString
                         likes {
                             testString
@@ -343,7 +291,7 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString, someInt }],
@@ -355,18 +303,6 @@ describe("aggregations-where-node-int", () => {
     });
 
     describe("AVERAGE", () => {
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-                testString: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const someInt1 = 1;
         const someInt2 = 2;
         const someInt3 = 3;
@@ -381,22 +317,20 @@ describe("aggregations-where-node-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             try {
                 await session.run(
                     `
-                        CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:Post {testString: "${testString}"})
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:${Post} {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -414,7 +348,7 @@ describe("aggregations-where-node-int", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any).posts as any[];
+                const [post] = (gqlResult.data as any)[Post.plural] as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -433,22 +367,20 @@ describe("aggregations-where-node-int", () => {
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgGT = avg - 1;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             try {
                 await session.run(
                     `
-                        CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:Post {testString: "${testString}"})
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:${Post} {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
                             testString
                             likes {
                                 testString
@@ -466,7 +398,7 @@ describe("aggregations-where-node-int", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any).posts as any[];
+                const [post] = (gqlResult.data as any)[Post.plural] as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -484,22 +416,20 @@ describe("aggregations-where-node-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             try {
                 await session.run(
                     `
-                        CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:Post {testString: "${testString}"})
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:${Post} {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -517,7 +447,7 @@ describe("aggregations-where-node-int", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any).posts as any[];
+                const [post] = (gqlResult.data as any)[Post.plural] as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -536,22 +466,20 @@ describe("aggregations-where-node-int", () => {
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgLT = avg + 1;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             try {
                 await session.run(
                     `
-                        CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:Post {testString: "${testString}"})
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:${Post} {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
                             testString
                             likes {
                                 testString
@@ -569,7 +497,7 @@ describe("aggregations-where-node-int", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any).posts as any[];
+                const [post] = (gqlResult.data as any)[Post.plural] as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -587,22 +515,20 @@ describe("aggregations-where-node-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             try {
                 await session.run(
                     `
-                        CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:Post {testString: "${testString}"})
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:${Post} {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -620,7 +546,7 @@ describe("aggregations-where-node-int", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any).posts as any[];
+                const [post] = (gqlResult.data as any)[Post.plural] as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -633,18 +559,6 @@ describe("aggregations-where-node-int", () => {
         test("should return posts where the sum of like Int's is EQUAL to", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                    someInt: Int!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
@@ -656,22 +570,20 @@ describe("aggregations-where-node-int", () => {
 
             const sum = someInt1 + someInt2 + someInt3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             try {
                 await session.run(
                     `
-                        CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:Post {testString: "${testString}"})
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:${Post} {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
                             testString
                             likes {
                                 testString
@@ -689,7 +601,7 @@ describe("aggregations-where-node-int", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any).posts as any[];
+                const [post] = (gqlResult.data as any)[Post.plural] as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
