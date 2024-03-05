@@ -3709,7 +3709,7 @@ __metadata:
     "@types/codemirror": "npm:5.60.15"
     "@types/lodash.debounce": "npm:4.0.9"
     "@types/prettier": "npm:2.7.3"
-    "@types/react-dom": "npm:18.2.19"
+    "@types/react-dom": "npm:18.2.20"
     "@types/webpack": "npm:5.28.5"
     autoprefixer: "npm:10.4.18"
     classnames: "npm:2.5.1"
@@ -7821,12 +7821,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.19":
-  version: 18.2.19
-  resolution: "@types/react-dom@npm:18.2.19"
+"@types/react-dom@npm:18.2.20":
+  version: 18.2.20
+  resolution: "@types/react-dom@npm:18.2.20"
   dependencies:
     "@types/react": "npm:*"
-  checksum: 10c0/88d7c6daa4659f661d0c97985d9fca492f24b421a34bb614dcd94c343aed7bea121463149e97fb01ecaa693be17b7d1542cf71ddb1705f3889a81eb2639a88aa
+  checksum: 10c0/d352fb9c4fbb773f1db1e463b0228dfb0dc0a670a742983ae840d77f54ad9d4ac38084b23c975487fc37814f44425fc6d1adafbb432a7c48957669c124b5f8df
   languageName: node
   linkType: hard
 
