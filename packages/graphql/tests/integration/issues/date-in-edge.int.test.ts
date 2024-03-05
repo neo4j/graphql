@@ -100,7 +100,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
                 CREATE (genre:${Genre} { id: "${genreId}" })
                 CREATE (movie:${Movie} { title: "${title}" })
                 CREATE (actor:${Actor} { name: "${name}", birthday: datetime("2021-11-16T10:53:20.200000000Z")})
-                CREATE (genre)-[:MOVIE]->(movie)-[:ACTOR { role: "Name" }]->(actor)
+                CREATE (genre)-[:${Movie}]->(movie)-[:${Actor} { role: "Name" }]->(actor)
                 RETURN actor
             `);
 

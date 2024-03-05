@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
@@ -28,20 +27,14 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
     let neo4j: Neo4jHelper;
     let Book: UniqueType;
     let Author: UniqueType;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         Book = new UniqueType("Book");
         Author = new UniqueType("Author");
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("__resolveType resolvers are correctly evaluated", async () => {
-        const typeDefs = gql`
+        typeDefs = `
             union Result = ${Book} | ${Author}
 
             type ${Book} {
@@ -56,7 +49,13 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
                 search: [Result]
             }
         `;
+    });
 
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("__resolveType resolvers are correctly evaluated", async () => {
         const resolvers = {
             Result: {
                 __resolveType(obj) {
@@ -105,11 +104,11 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
 
             expect(result?.data?.search).toEqual([
                 {
-                    __typename: Book.toString(),
+                    __typename: Book.name,
                     title: "GraphQL Unions for Dummies",
                 },
                 {
-                    __typename: Author.toString(),
+                    __typename: Author.name,
                     name: "Darrell",
                 },
             ]);

@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             itemNumber: String!
 
             suppliers: [${Supplier}!]!
-                @relationship(type: "MATERIAL_${Supplier}", properties: "RelationMaterialSupplier", direction: OUT)
+                @relationship(type: "MATERIAL_SUPPLIER", properties: "RelationMaterialSupplier", direction: OUT)
         }
 
         type ${Supplier} @mutation(operations: []) {
