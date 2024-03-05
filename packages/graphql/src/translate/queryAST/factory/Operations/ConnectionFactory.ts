@@ -40,8 +40,8 @@ import type { EntitySelection } from "../../ast/selection/EntitySelection";
 import { NodeSelection } from "../../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../ast/selection/RelationshipSelection";
 import { getConcreteEntities } from "../../utils/get-concrete-entities";
-import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import { isRelationshipEntity } from "../../utils/is-relationship-entity";
 import { isUnionEntity } from "../../utils/is-union-entity";
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
@@ -113,14 +113,14 @@ export class ConnectionFactory {
         // These sort fields will be duplicated on nested "CompositeConnectionPartial"
 
         // TODO: this if shouldn't be needed
-        if (relationship) {
-            this.hydrateConnectionOperationsASTWithSort({
-                entityOrRel: relationship,
-                resolveTree,
-                operation: compositeConnectionOp,
-                context,
-            });
-        }
+        // if (relationship) {
+        this.hydrateConnectionOperationsASTWithSort({
+            entityOrRel: relationship ?? target,
+            resolveTree,
+            operation: compositeConnectionOp,
+            context,
+        });
+        // }
         return compositeConnectionOp;
     }
 
@@ -183,13 +183,13 @@ export class ConnectionFactory {
         operation,
         context,
     }: {
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter;
+        entityOrRel: EntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;
         operation: T;
         context: Neo4jGraphQLTranslationContext;
     }): T {
         let options: Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined;
-        const target = isConcreteEntity(entityOrRel) ? entityOrRel : entityOrRel.target;
+        const target = isRelationshipEntity(entityOrRel) ? entityOrRel.target : entityOrRel;
         if (!isUnionEntity(target)) {
             options = this.queryASTFactory.operationsFactory.getConnectionOptions(target, resolveTree.args);
         } else {
