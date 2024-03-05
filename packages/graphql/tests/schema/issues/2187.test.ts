@@ -222,11 +222,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Do not use title\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Do not use title\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Do not use title\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Do not use title\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Do not use title\\")
               title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
@@ -235,11 +235,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use title\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use title\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
               title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
@@ -247,11 +247,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use title\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use title\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
               title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               year_AVERAGE_EQUAL: Float

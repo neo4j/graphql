@@ -4036,6 +4036,7 @@ describe("Directive-preserve", () => {
         `);
     });
 
+    // https://github.com/neo4j/graphql/issues/2676
     test("Directives on unions preserved", async () => {
         const typeDefs = gql`
             union Content = Blog | Post
@@ -4183,11 +4184,11 @@ describe("Directive-preserve", () => {
               content_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_AVERAGE_LENGTH_EQUAL: Float
-              content_AVERAGE_LENGTH_GT: Float
-              content_AVERAGE_LENGTH_GTE: Float
-              content_AVERAGE_LENGTH_LT: Float
-              content_AVERAGE_LENGTH_LTE: Float
+              content_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Do not use post.content\\")
+              content_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Do not use post.content\\")
+              content_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Do not use post.content\\")
+              content_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Do not use post.content\\")
+              content_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Do not use post.content\\")
               content_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
@@ -4196,11 +4197,11 @@ describe("Directive-preserve", () => {
               content_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_LONGEST_LENGTH_EQUAL: Int
-              content_LONGEST_LENGTH_GT: Int
-              content_LONGEST_LENGTH_GTE: Int
-              content_LONGEST_LENGTH_LT: Int
-              content_LONGEST_LENGTH_LTE: Int
+              content_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use post.content\\")
               content_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
@@ -4208,11 +4209,11 @@ describe("Directive-preserve", () => {
               content_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_SHORTEST_LENGTH_EQUAL: Int
-              content_SHORTEST_LENGTH_GT: Int
-              content_SHORTEST_LENGTH_GTE: Int
-              content_SHORTEST_LENGTH_LT: Int
-              content_SHORTEST_LENGTH_LTE: Int
+              content_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use post.content\\")
+              content_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use post.content\\")
               content_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               content_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
