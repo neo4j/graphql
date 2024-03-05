@@ -2,6 +2,25 @@
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
+___
+
+***GraphQL API for Aura**
+We’ve been working to make GraphQL natively available in Aura and we are now ready to let people try it in an Early Access Program that will run from 1st April to end of May.  There will be at least one more iteration with additional features before a full release later this year.
+
+This will offer
+
+- Use of GraphQL API with an Aura instance in GCP
+- Use of Aura CLI to configure the GraphQL API  
+- Authentication to the GraphQL API using an API Key or a 3rd party Identity Provider that supports OpenID Connect 2.0 with a JWKS endpoint for JWT validation
+- A Discord based community to post feedback and questions that you have
+
+There will be no cost to use the GraphQL API during the EAP with AuraDB instances being charged as normal. 
+
+Interested in taking part? Or just want to know more? Register here:-  [GraphQL API EAP](https://forms.gle/gr8n8sx8S8yXFZzj8) and you'll be contacted nearer the date.
+
+___
+
+
 ![Neo4j + GraphQL](./images/banner.png)
 
 <p align="center">
@@ -9,7 +28,7 @@
     <img alt="Discord" src="https://img.shields.io/discord/787399249741479977?logo=discord&logoColor=white">
   </a>
   <a href="https://community.neo4j.com/c/drivers-stacks/graphql/33">
-    <img alt="Discourse users" src="https://img.shields.io/discourse/users?logo=discourse&server=https%3A%2F%2Fcommunity.neo4j.com">
+    <img alt="Discourse users" src="https://img.shields.iåo/discourse/users?logo=discourse&server=https%3A%2F%2Fcommunity.neo4j.com">
   </a>
 </p>
 
