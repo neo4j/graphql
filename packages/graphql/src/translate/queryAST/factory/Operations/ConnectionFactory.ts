@@ -25,12 +25,11 @@ import { Integer } from "neo4j-driver";
 import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import { InterfaceEntity } from "../../../../schema-model/entity/InterfaceEntity";
 import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { Field } from "../../ast/fields/Field";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
@@ -40,6 +39,7 @@ import type { EntitySelection } from "../../ast/selection/EntitySelection";
 import { NodeSelection } from "../../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../ast/selection/RelationshipSelection";
 import { getConcreteEntities } from "../../utils/get-concrete-entities";
+import { getEntityInterfaces } from "../../utils/get-entity-interfaces";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { isRelationshipEntity } from "../../utils/is-relationship-entity";
 import { isUnionEntity } from "../../utils/is-union-entity";
@@ -239,6 +239,57 @@ export class ConnectionFactory {
         return topLevelConnectionResolveTree;
     }
 
+    public splitConnectionFields(rawFields: Record<string, ResolveTree>): {
+        node: ResolveTree | undefined;
+        edge: ResolveTree | undefined;
+        fields: Record<string, ResolveTree>;
+    } {
+        let nodeField: ResolveTree | undefined;
+        let edgeField: ResolveTree | undefined;
+
+        const fields: Record<string, ResolveTree> = {};
+
+        Object.entries(rawFields).forEach(([key, field]) => {
+            if (field.name === "node") {
+                nodeField = field;
+            } else if (field.name === "edge") {
+                edgeField = field;
+            } else {
+                fields[key] = field;
+            }
+        });
+
+        return {
+            node: nodeField,
+            edge: edgeField,
+            fields,
+        };
+    }
+
+    public getConnectionOptions(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
+        options: Record<string, any>
+    ): Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined {
+        const limitDirective = entity.annotations.limit;
+
+        let limit: Integer | number | undefined = options?.first ?? limitDirective?.default ?? limitDirective?.max;
+        if (limit instanceof Integer) {
+            limit = limit.toNumber();
+        }
+        const maxLimit = limitDirective?.max;
+        if (limit !== undefined && maxLimit !== undefined) {
+            limit = Math.min(limit, maxLimit);
+        }
+
+        if (limit === undefined && options.after === undefined && options.sort === undefined) return undefined;
+
+        return {
+            first: limit,
+            after: options.after,
+            sort: options.sort,
+        };
+    }
+
     private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
         relationship,
         target,
@@ -254,48 +305,13 @@ export class ConnectionFactory {
         operation: T;
         whereArgs: Record<string, any>;
     }): T {
-        // hydrate hydrateConnectionOperationAST is used for both top-level and nested connections.
-        // If the relationship is defined use the RelationshipAdapter to infer the typeNames, if not use the target.
-
-        // Get the abstract types of the interface
-        const entityInterfaces = filterTruthy(
-            target.compositeEntities.map((compositeEntity) => {
-                if (compositeEntity instanceof InterfaceEntity) {
-                    return new InterfaceEntityAdapter(compositeEntity);
-                }
-            })
-        );
-
-        const interfacesFields = entityInterfaces.map((interfaceAdapter) => {
-            return resolveTree.fieldsByTypeName[interfaceAdapter.operations.connectionFieldTypename] ?? {};
-        });
-
         const entityOrRel = relationship ?? target;
 
-        const concreteProjectionFields = {
-            ...resolveTree.fieldsByTypeName[entityOrRel.operations.connectionFieldTypename],
-        };
-
-        const resolveTreeConnectionFields = mergeDeep<Record<string, ResolveTree>[]>([
-            ...interfacesFields,
-            concreteProjectionFields,
-        ]);
-
-        const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
-
-        const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
-            return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
+        const resolveTreeEdgeFields = this.parseConnectionFields({
+            entityOrRel,
+            target,
+            resolveTree,
         });
-
-        const concreteEdgeFields = getFieldsByTypeName(
-            edgeFieldsRaw,
-            entityOrRel.operations.relationshipFieldTypename // Use interface operation
-        );
-
-        const resolveTreeEdgeFields = mergeDeep<Record<string, ResolveTree>[]>([
-            ...interfacesEdgeFields,
-            concreteEdgeFields,
-        ]);
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
         const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
@@ -350,54 +366,39 @@ export class ConnectionFactory {
         return operation;
     }
 
-    public splitConnectionFields(rawFields: Record<string, ResolveTree>): {
-        node: ResolveTree | undefined;
-        edge: ResolveTree | undefined;
-        fields: Record<string, ResolveTree>;
-    } {
-        let nodeField: ResolveTree | undefined;
-        let edgeField: ResolveTree | undefined;
+    private parseConnectionFields({
+        target,
+        resolveTree,
+        entityOrRel,
+    }: {
+        entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
+        target: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+    }): Record<string, ResolveTree> {
+        // Get interfaces of the entity
+        const entityInterfaces = getEntityInterfaces(target);
 
-        const fields: Record<string, ResolveTree> = {};
-
-        Object.entries(rawFields).forEach(([key, field]) => {
-            if (field.name === "node") {
-                nodeField = field;
-            } else if (field.name === "edge") {
-                edgeField = field;
-            } else {
-                fields[key] = field;
-            }
+        const interfacesFields = entityInterfaces.map((interfaceAdapter) => {
+            return resolveTree.fieldsByTypeName[interfaceAdapter.operations.connectionFieldTypename] ?? {};
         });
 
-        return {
-            node: nodeField,
-            edge: edgeField,
-            fields,
+        const concreteProjectionFields = {
+            ...resolveTree.fieldsByTypeName[entityOrRel.operations.connectionFieldTypename],
         };
-    }
 
-    public getConnectionOptions(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
-        options: Record<string, any>
-    ): Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined {
-        const limitDirective = entity.annotations.limit;
+        const resolveTreeConnectionFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+            ...interfacesFields,
+            concreteProjectionFields,
+        ]);
 
-        let limit: Integer | number | undefined = options?.first ?? limitDirective?.default ?? limitDirective?.max;
-        if (limit instanceof Integer) {
-            limit = limit.toNumber();
-        }
-        const maxLimit = limitDirective?.max;
-        if (limit !== undefined && maxLimit !== undefined) {
-            limit = Math.min(limit, maxLimit);
-        }
+        const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
 
-        if (limit === undefined && options.after === undefined && options.sort === undefined) return undefined;
+        const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
+            return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
+        });
 
-        return {
-            first: limit,
-            after: options.after,
-            sort: options.sort,
-        };
+        const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
+
+        return mergeDeep([...interfacesEdgeFields, concreteEdgeFields]);
     }
 }
