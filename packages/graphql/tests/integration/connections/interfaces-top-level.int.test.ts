@@ -26,9 +26,9 @@ import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("Interfaces top level connections", () => {
+    const Movie = new UniqueType("Movie");
     const Series = new UniqueType("Series");
-    const Season = new UniqueType("Season");
-    const ProgrammeItem = new UniqueType("ProgrammeItem");
+    const Actor = new UniqueType("Actor");
 
     let schema: GraphQLSchema;
     let driver: Driver;
@@ -49,23 +49,23 @@ describe("Interfaces top level connections", () => {
         const typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
-                actors: [Actor!]! @declareRelationship
+                actors: [${Actor}!]! @declareRelationship
             }
 
-            type Movie implements Show {
+            type ${Movie} implements Show {
                 title: String!
                 cost: Float
                 runtime: Int
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Show {
+            type ${Series} implements Show {
                 title: String!
                 episodes: Int
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor {
+            type ${Actor} {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -78,19 +78,19 @@ describe("Interfaces top level connections", () => {
         schema = await neoGraphql.getSchema();
 
         await neo4j.run(`
-            CREATE (m1:Movie {title: "The Matrix", cost: 24})
-            CREATE (:Movie {title: "The Godfather", cost: 20})
-            CREATE (:Series {title: "The Matrix Series", episodes: 4})
-            CREATE (s1:Series {title: "Avatar", episodes: 9})
+            CREATE (m1:${Movie} {title: "The Matrix", cost: 24})
+            CREATE (:${Movie} {title: "The Godfather", cost: 20})
+            CREATE (:${Series} {title: "The Matrix Series", episodes: 4})
+            CREATE (s1:${Series} {title: "Avatar", episodes: 9})
 
-            CREATE(a:Actor {name: "Arthur Dent"})
+            CREATE(a:${Actor} {name: "Arthur Dent"})
             CREATE(a)-[:ACTED_IN {screenTime: 10}]->(m1)
             CREATE(a)-[:ACTED_IN {screenTime: 20}]->(s1)
         `);
     });
 
     afterEach(async () => {
-        await cleanNodes(driver, [Series, Season, ProgrammeItem]);
+        await cleanNodes(driver, [Series, Movie, Actor]);
     });
 
     afterAll(async () => {
@@ -133,7 +133,7 @@ describe("Interfaces top level connections", () => {
                     edges {
                         node {
                             title
-                            ... on Movie {
+                            ... on ${Movie} {
                                 cost
                             }
                         }
@@ -169,7 +169,7 @@ describe("Interfaces top level connections", () => {
                     edges {
                         node {
                             title
-                            ... on Movie {
+                            ... on ${Movie} {
                                 cost
                             }
                         }
@@ -193,7 +193,7 @@ describe("Interfaces top level connections", () => {
                     edges {
                         node {
                             title
-                            ... on Movie {
+                            ... on ${Movie} {
                                 cost
                             }
                         }
