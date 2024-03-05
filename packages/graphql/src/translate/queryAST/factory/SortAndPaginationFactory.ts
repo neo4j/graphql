@@ -55,17 +55,6 @@ export class SortAndPaginationFactory {
         entityOrRel: EntityAdapter | RelationshipAdapter,
         context: Neo4jGraphQLTranslationContext
     ): { edge: Sort[]; node: Sort[] } {
-        if (isConcreteEntity(entityOrRel)) {
-            const nodeSortFields = this.createPropertySort({
-                optionArg: options.node ?? {},
-                entity: entityOrRel,
-                context,
-            });
-            return {
-                edge: [],
-                node: nodeSortFields,
-            };
-        }
         if (isRelationshipEntity(entityOrRel)) {
             const nodeSortFields = this.createPropertySort({
                 optionArg: options.node ?? {},
@@ -82,7 +71,6 @@ export class SortAndPaginationFactory {
                 node: nodeSortFields,
             };
         }
-        // Is union or interface
 
         const nodeSortFields = this.createPropertySort({
             optionArg: options.node ?? {},

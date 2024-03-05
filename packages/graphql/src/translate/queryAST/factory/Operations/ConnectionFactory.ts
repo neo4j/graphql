@@ -112,15 +112,12 @@ export class ConnectionFactory {
 
         // These sort fields will be duplicated on nested "CompositeConnectionPartial"
 
-        // TODO: this if shouldn't be needed
-        // if (relationship) {
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel: relationship ?? target,
             resolveTree,
             operation: compositeConnectionOp,
             context,
         });
-        // }
         return compositeConnectionOp;
     }
 

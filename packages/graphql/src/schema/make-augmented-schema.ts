@@ -555,7 +555,6 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        // FOR CONCRETE
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                 composer,
@@ -695,7 +694,6 @@ function generateInterfaceObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        // FOR CONCRETE
         composer.Query.addFields({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                 composer,
