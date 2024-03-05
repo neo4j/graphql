@@ -4,7 +4,7 @@
 
 ___
 
-***GraphQL API for Aura**
+**GraphQL API for Aura**  
 We’ve been working to make GraphQL natively available in Aura and we are now ready to let people try it in an Early Access Program that will run from 1st April to end of May.  There will be at least one more iteration with additional features before a full release later this year.
 
 This will offer
