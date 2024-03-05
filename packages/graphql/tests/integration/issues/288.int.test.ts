@@ -17,31 +17,39 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/288", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        type USER {
-            USERID: String
-            COMPANYID: String
-            COMPANY: [COMPANY!]! @relationship(type: "IS_PART_OF", direction: OUT)
-        }
+    let USER: UniqueType;
+    let COMPANY: UniqueType;
 
-        type COMPANY {
-            USERS: [USER!]! @relationship(type: "IS_PART_OF", direction: IN)
-        }
-    `;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        USER = new UniqueType("USER");
+        COMPANY = new UniqueType("COMPANY");
+
+        typeDefs = `
+            type ${USER} {
+                USERID: String
+                COMPANYID: String
+                COMPANY: [${COMPANY}!]! @relationship(type: "IS_PART_OF", direction: OUT)
+            }
+
+            type ${COMPANY} {
+                USERS: [${USER}!]! @relationship(type: "IS_PART_OF", direction: IN)
+            }
+    `;
     });
 
     afterAll(async () => {
@@ -59,8 +67,8 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const createMutation = `
             mutation {
-                createUsers(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
-                    users {
+                ${USER.operations.create}(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
+                    ${USER.plural} {
                         USERID
                         COMPANYID
                     }
@@ -70,8 +78,8 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const updateMutation = `
             mutation {
-                updateUsers(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
-                    users {
+                ${USER.operations.update}(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
+                    ${USER.plural} {
                         USERID
                         COMPANYID
                     }
@@ -90,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(createResult.errors).toBeFalsy();
 
-            expect((createResult?.data as any)?.createUsers?.users).toEqual([
+            expect((createResult?.data as any)[USER.operations.create][USER.plural]).toEqual([
                 { USERID: userid, COMPANYID: companyid1 },
             ]);
 
@@ -102,11 +110,11 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(updateResult.errors).toBeFalsy();
 
-            expect((updateResult?.data as any)?.updateUsers?.users).toEqual([
+            expect((updateResult?.data as any)[USER.operations.update][USER.plural]).toEqual([
                 { USERID: userid, COMPANYID: companyid2 },
             ]);
 
-            await session.run(`MATCH (u:USER) WHERE u.USERID = "${userid}" DELETE u`);
+            await session.run(`MATCH (u:${USER}) WHERE u.USERID = "${userid}" DELETE u`);
         } finally {
             await session.close();
         }

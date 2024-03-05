@@ -16,18 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { graphql } from "graphql";
 import type { Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3009", () => {
     let neo4j: Neo4jHelper;
     let session: Session;
 
+    let User: UniqueType;
+
     beforeAll(() => {
         neo4j = new Neo4jHelper();
+        User = new UniqueType("User");
     });
 
     beforeEach(async () => {
@@ -39,17 +42,17 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
 
     test("custom resolvers should correctly format dates", async () => {
         const typeDefs = `
-            type User {
+            type ${User} {
                 joinedAt: Date!
             }
         `;
 
-        const resolvers = { Query: { users: () => [{ joinedAt: "2020-01-01" }] } };
+        const resolvers = { Query: { [User.plural]: () => [{ joinedAt: "2020-01-01" }] } };
         const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
 
         const query = `
             query {
-                users {
+                ${User.plural} {
                     joinedAt
                 }
             }
@@ -63,22 +66,22 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
         });
 
         expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual({ users: [{ joinedAt: "2020-01-01" }] });
+        expect(result.data).toEqual({ [User.plural]: [{ joinedAt: "2020-01-01" }] });
     });
 
     test("custom resolvers should correctly format dateTimes", async () => {
         const typeDefs = `
-            type User {
+            type ${User} {
                 joinedAt: DateTime!
             }
         `;
 
-        const resolvers = { Query: { users: () => [{ joinedAt: new Date("2020-01-01").toISOString() }] } };
+        const resolvers = { Query: { [User.plural]: () => [{ joinedAt: new Date("2020-01-01").toISOString() }] } };
         const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
 
         const query = `
             query {
-                users {
+                ${User.plural} {
                     joinedAt
                 }
             }
@@ -92,6 +95,6 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
         });
 
         expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual({ users: [{ joinedAt: "2020-01-01T00:00:00.000Z" }] });
+        expect(result.data).toEqual({ [User.plural]: [{ joinedAt: "2020-01-01T00:00:00.000Z" }] });
     });
 });

@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
+import type { ValueNode } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, graphql } from "graphql";
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { int, isInt } from "neo4j-driver";
 import { generate } from "randomstring";
-import type { ValueNode } from "graphql";
-import { graphql, GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { delay } from "../../../src/utils/utils";
+import { UniqueType } from "../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
+import Neo4jHelper from "../neo4j";
 
 // Adapted from BigInt
 const PositiveInt = new GraphQLScalarType({
@@ -82,10 +83,12 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
     let neo4j: Neo4jHelper;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
+    let Order: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Order = new UniqueType("Order");
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
@@ -134,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         const typeDefs = gql`
             scalar PositiveInt
-            type Order {
+            type ${Order} {
                 orderNo: PositiveInt! @unique
                 name: String!
             }
@@ -168,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
                     .map((record) => {
                         return record.toObject();
                     })
-                    .filter((record) => record.labelsOrTypes.includes("Order"))
+                    .filter((record) => record.labelsOrTypes.includes(Order.name))
             ).toHaveLength(1);
         } finally {
             await session.close();
@@ -176,8 +179,8 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         const mutation = `
             mutation CreateOrders($orderNo: PositiveInt!, $name: String!) {
-                createOrders(input: [{ orderNo: $orderNo, name: $name }]) {
-                    orders {
+                ${Order.operations.create}(input: [{ orderNo: $orderNo, name: $name }]) {
+                    ${Order.plural} {
                         orderNo
                         name
                     }
@@ -200,7 +203,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         expect(createResult.errors).toBeFalsy();
         expect(createResult.data).toEqual({
-            createOrders: { orders: [{ orderNo, name }] },
+            [Order.operations.create]: { [Order.plural]: [{ orderNo, name }] },
         });
 
         const errorResult = await graphql({

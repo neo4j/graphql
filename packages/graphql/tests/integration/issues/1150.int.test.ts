@@ -23,6 +23,7 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
@@ -31,45 +32,55 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
 
+    let Battery: UniqueType;
+    let CombustionEngine: UniqueType;
+    let Drive: UniqueType;
+    let DriveComposition: UniqueType;
+
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        Battery = new UniqueType("Battery");
+        CombustionEngine = new UniqueType("CombustionEngine");
+        Drive = new UniqueType("Drive");
+        DriveComposition = new UniqueType("DriveComposition");
 
         const typeDefs = gql`
             type JWTPayload @jwt {
                 roles: [String!]!
             }
 
-            type Battery {
+            type ${Battery} {
                 id: ID! @unique
                 current: Boolean!
             }
 
-            extend type Battery
+            extend type ${Battery}
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "admin" } } }])
 
-            type CombustionEngine {
+            type ${CombustionEngine} {
                 id: ID! @unique
                 current: Boolean!
             }
 
-            type Drive {
+            type ${Drive} {
                 id: ID! @unique
                 current: Boolean!
-                driveCompositions: [DriveComposition!]!
+                driveCompositions: [${DriveComposition}!]!
                     @relationship(type: "CONSISTS_OF", properties: "RelationProps", direction: OUT)
             }
 
-            union DriveComponent = Battery | CombustionEngine
+            union DriveComponent = ${Battery} | ${CombustionEngine}
 
-            type DriveComposition {
+            type ${DriveComposition} {
                 id: ID! @unique
                 current: Boolean!
                 driveComponent: [DriveComponent!]!
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
-            type RelationProps @relationshipProperties {
+            type  RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -92,15 +103,15 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     test("should handle union types with auth and connection-where", async () => {
         const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
-                drives(where: { current: true }) {
+                ${Drive.plural}(where: { current: true }) {
                     current
                     driveCompositionsConnection(where: { edge: { current: true } }) {
                         edges {
                             node {
                                 driveComponentConnection(
                                     where: {
-                                        Battery: { edge: { current: true } }
-                                        CombustionEngine: { edge: { current: true } }
+                                        ${Battery}: { edge: { current: true } }
+                                        ${CombustionEngine}: { edge: { current: true } }
                                     }
                                 ) {
                                     edges {
@@ -108,10 +119,10 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                                             current
                                         }
                                         node {
-                                            ... on Battery {
+                                            ... on ${Battery} {
                                                 id
                                             }
-                                            ... on CombustionEngine {
+                                            ... on ${CombustionEngine} {
                                                 id
                                             }
                                         }
@@ -133,6 +144,6 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         expect(res.errors).toBeUndefined();
 
-        expect(res.data).toEqual({ drives: [] });
+        expect(res.data).toEqual({ [Drive.plural]: [] });
     });
 });
