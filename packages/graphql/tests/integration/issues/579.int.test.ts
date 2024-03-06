@@ -21,15 +21,37 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("579", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let typeDefs: string;
+    let Product: UniqueType;
+    let Color: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        Product = new UniqueType("Product");
+        Color = new UniqueType("Color");
+        typeDefs = `
+        type ${Product} {
+           id: ID
+           color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
+         }
+
+         type OfColorProperties @relationshipProperties {
+             test: Boolean
+         }
+
+         type ${Color} {
+           name: String
+           id: ID
+         }
+      `;
     });
 
     afterAll(async () => {
@@ -38,23 +60,6 @@ describe("579", () => {
 
     test("should update an Edge property in a one to one relationship", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-          type Product {
-             id: ID
-             color: Color! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
-           }
-
-           type OfColorProperties @relationshipProperties {
-               test: Boolean
-           }
-
-           type Color {
-             name: String
-             id: ID
-           }
-        `;
-
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
@@ -67,7 +72,7 @@ describe("579", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateProducts(
+                ${Product.operations.update}(
                   where: { id: "${productId}" }
                   update: {
                       color: {
@@ -79,7 +84,7 @@ describe("579", () => {
                       }
                   }
                 ) {
-                    products {
+                    ${Product.plural} {
                         id
                         colorConnection {
                             edges {
@@ -96,8 +101,8 @@ describe("579", () => {
         try {
             await session.run(
                 `
-                    CREATE (product:Product {name: "Pringles", id: $productId})
-                    CREATE (color:Color {name: "Yellow", id: $colorId})
+                    CREATE (product:${Product} {name: "Pringles", id: $productId})
+                    CREATE (color:${Color} {name: "Yellow", id: $colorId})
                     MERGE (product)-[:OF_COLOR { test: false }]->(color)
             `,
                 {
@@ -115,7 +120,7 @@ describe("579", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(((gqlResult?.data as any)?.updateProducts.products as any[])[0]).toMatchObject({
+            expect((gqlResult?.data as any)[Product.operations.update][Product.plural][0]).toMatchObject({
                 id: productId,
                 colorConnection: {
                     edges: [

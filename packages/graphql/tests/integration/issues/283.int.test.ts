@@ -17,39 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import type { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/283", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        type Mutation {
-            login: String
-            createPost(input: PostCreateInput!): Post!
-                @cypher(
-                    statement: """
-                    CREATE (post:Post)
-                    SET
-                      post = $input,
-                      post.datetime = datetime(),
-                      post.id = randomUUID()
-                    RETURN post
-                    """
-                    columnName: "post"
-                )
-        }
+    let Post: UniqueType;
+    let typeDefs: string;
 
-        type Post {
-            id: ID! @id @unique
-            title: String!
-            datetime: DateTime @timestamp(operations: [CREATE])
-        }
-    `;
     // Presence of a custom resolver was causing the bug
     const resolvers = {
         Mutation: {
@@ -62,6 +42,29 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        typeDefs = `
+        type Mutation {
+            login: String
+            createPost(input: ${Post}CreateInput!): ${Post}!
+                @cypher(
+                    statement: """
+                    CREATE (post:${Post})
+                    SET
+                      post = $input,
+                      post.datetime = datetime(),
+                      post.id = randomUUID()
+                    RETURN post
+                    """
+                    columnName: "post"
+                )
+        }
+
+        type ${Post} {
+            id: ID! @id @unique
+            title: String!
+            datetime: DateTime @timestamp(operations: [CREATE])
+        }
+    `;
     });
 
     afterAll(async () => {
@@ -98,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
 
             expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
 
-            await session.run(`MATCH (p:Post) WHERE p.title = "${title}" DELETE p`);
+            await session.run(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
         } finally {
             await session.close();
         }

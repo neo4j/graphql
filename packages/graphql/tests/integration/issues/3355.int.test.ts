@@ -17,20 +17,23 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3355", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
@@ -41,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
                 name: String
             }
@@ -68,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
 
         const query = `
         mutation($id: ID, $name: String) {
-            updateMovies(where: { id: $id }, update: {name: $name}) {
+            ${Movie.operations.update}(where: { id: $id }, update: {name: $name}) {
                 info {
                     nodesCreated
                     nodesDeleted
@@ -80,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
         try {
             await session.run(
                 `
-                CREATE (:Movie {id: $id, name: $initialName})
+                CREATE (:${Movie} {id: $id, name: $initialName})
             `,
                 {
                     id,
@@ -97,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual({ info: { nodesCreated: 0, nodesDeleted: 0 } });
+            expect(gqlResult?.data?.[Movie.operations.update]).toEqual({ info: { nodesCreated: 0, nodesDeleted: 0 } });
         } finally {
             await session.close();
         }

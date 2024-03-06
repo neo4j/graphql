@@ -17,32 +17,38 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/440", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        type Video {
-            id: ID! @unique
-            categories: [Category!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
-        }
-
-        type Category {
-            id: ID! @unique
-            videos: [Video!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
-        }
-    `;
+    let typeDefs: string;
+    let Video: UniqueType;
+    let Category: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Video = new UniqueType("Video");
+        Category = new UniqueType("Category");
+
+        typeDefs = `
+        type ${Video} {
+            id: ID! @unique
+            categories: [${Category}!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
+        }
+
+        type ${Category} {
+            id: ID! @unique
+            videos: [${Video}!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
+        }
+    `;
     });
 
     afterAll(async () => {
@@ -58,9 +64,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .map(() => generate({ charset: "alphabetic" }));
 
         await session.run(
-            `CREATE (v:Video {id: $videoID}),
-                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
-                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
+            `CREATE (v:${Video} {id: $videoID}),
+                (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
+                (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
             { videoID, c0: catIDs[0], c1: catIDs[1] }
         );
 
@@ -83,9 +89,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         };
 
         const mutation = `
-            mutation updateVideos($id: ID!, $fields: VideoUpdateInput!) {
-                updateVideos(where: {id: $id}, update: $fields) {
-                    videos {
+            mutation updateVideos($id: ID!, $fields: ${Video}UpdateInput!) {
+                ${Video.operations.update}(where: {id: $id}, update: $fields) {
+                    ${Video.plural} {
                         id
                         categories {
                             id
@@ -107,10 +113,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
+                catIDs[2]
+            );
         } finally {
             await session.close();
         }
@@ -125,9 +133,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .map(() => generate({ charset: "alphabetic" }));
 
         await session.run(
-            `CREATE (v:Video {id: $videoID}),
-                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
-                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
+            `CREATE (v:${Video} {id: $videoID}),
+                (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
+                (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
             { videoID, c0: catIDs[0], c1: catIDs[1] }
         );
 
@@ -150,9 +158,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         };
 
         const mutation = `
-            mutation updateVideos($id: ID!, $fields: VideoUpdateInput!) {
-                updateVideos(where: {id: $id}, update: $fields) {
-                    videos {
+            mutation updateVideos($id: ID!, $fields: ${Video}UpdateInput!) {
+                ${Video.operations.update}(where: {id: $id}, update: $fields) {
+                    ${Video.plural} {
                         id
                         categories {
                             id
@@ -174,10 +182,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
+                catIDs[2]
+            );
         } finally {
             await session.close();
         }
@@ -198,9 +208,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .map(() => generate({ charset: "alphabetic" }));
 
         await session.run(
-            `CREATE (v:Video {id: $videoID}),
-                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
-                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
+            `CREATE (v:${Video} {id: $videoID}),
+                (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
+                (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
             { videoID, c0: catIDs[0], c1: catIDs[1] }
         );
 
@@ -223,9 +233,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         };
 
         const mutation = `
-            mutation updateVideos($id: ID!, $fields: VideoUpdateInput!) {
-                updateVideos(where: {id: $id}, update: $fields) {
-                    videos {
+            mutation updateVideos($id: ID!, $fields: ${Video}UpdateInput!) {
+                ${Video.operations.update}(where: {id: $id}, update: $fields) {
+                    ${Video.plural} {
                         id
                         categories {
                             id
@@ -247,10 +257,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
+                catIDs[2]
+            );
         } finally {
             await session.close();
         }

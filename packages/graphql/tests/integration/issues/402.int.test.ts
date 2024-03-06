@@ -17,19 +17,26 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/402", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Event: UniqueType;
+    let Area: UniqueType;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        Event = new UniqueType("Event");
+        Area = new UniqueType("Area");
     });
 
     afterAll(async () => {
@@ -39,13 +46,13 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
     test("should recreate test and return correct data", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Event {
+         typeDefs = `
+            type ${Event} {
                 id: ID!
-                area: Area! @relationship(type: "HAPPENS_IN", direction: OUT)
+                area: ${Area}! @relationship(type: "HAPPENS_IN", direction: OUT)
             }
 
-            type Area {
+            type ${Area} {
                 id: ID!
             }
         `;
@@ -63,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
         // testing the missing non non-null array
         const query = `
             query ($area: [ID!]) {
-               events (
+               ${Event.plural} (
                  where: {
                    id: "${eventId}"
                    area: {
@@ -83,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Event {id: $eventId})-[:HAPPENS_IN]->(:Area {id: $areaId})
+                    CREATE (:${Event} {id: $eventId})-[:HAPPENS_IN]->(:${Area} {id: $areaId})
                 `,
                 { eventId, areaId }
             );
@@ -97,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             expect(gqlResult.data as any).toEqual({
-                events: [
+                [Event.plural]: [
                     {
                         id: eventId,
                         area: { id: areaId },

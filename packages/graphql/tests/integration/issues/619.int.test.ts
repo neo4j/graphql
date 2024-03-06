@@ -17,34 +17,40 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { getQuerySource } from "../../utils/get-query-source";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/619", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
+    let typeDefs: string;
+    let FooIsARandomName: UniqueType;
+    let BarIsACoolName: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
-        const typeDefs = gql`
-            type FooIsARandomName {
+        FooIsARandomName = new UniqueType("FooIsARandomName");
+        BarIsACoolName = new UniqueType("BarIsACoolName");
+        typeDefs = `
+            type ${FooIsARandomName} {
                 id: ID @unique
                 Name: String
                 Age: Int
-                DrinksAt: BarIsACoolName @relationship(type: "DRINKS_AT", direction: OUT)
+                DrinksAt: ${BarIsACoolName} @relationship(type: "DRINKS_AT", direction: OUT)
             }
 
-            type BarIsACoolName {
+            type ${BarIsACoolName} {
                 id: ID @unique
                 Adress: String
-                Customers: [FooIsARandomName!]! @relationship(type: "DRINKS_AT", direction: IN)
+                Customers: [${FooIsARandomName}!]! @relationship(type: "DRINKS_AT", direction: IN)
             }
         `;
 
@@ -66,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
     test("should not throw 'input.map is not a function' error on one to many mutations", async () => {
         const mutation = gql`
             mutation {
-                createFooIsARandomNames(
+                ${FooIsARandomName.operations.create}(
                     input: {
                         DrinksAt: {
                             connectOrCreate: {
