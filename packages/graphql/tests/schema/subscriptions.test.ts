@@ -5767,6 +5767,11 @@ describe("Subscriptions", () => {
               movies: CreatureMoviesDisconnectFieldInput
             }
 
+            type CreatureEdge {
+              cursor: String!
+              node: Creature!
+            }
+
             enum CreatureImplementation {
               Person
             }
@@ -5842,6 +5847,12 @@ describe("Subscriptions", () => {
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
               typename_IN: [CreatureImplementation!]
+            }
+
+            type CreaturesConnection {
+              edges: [CreatureEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"
@@ -6276,6 +6287,11 @@ describe("Subscriptions", () => {
               director: ProductionDirectorDisconnectFieldInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             interface ProductionEventPayload {
               id: ID
             }
@@ -6342,9 +6358,16 @@ describe("Subscriptions", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               creatures(options: CreatureOptions, where: CreatureWhere): [Creature!]!
               creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
+              creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -6353,6 +6376,7 @@ describe("Subscriptions", () => {
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

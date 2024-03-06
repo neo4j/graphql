@@ -393,6 +393,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: StringAggregateSelection!
             }
 
+            type INodeEdge {
+              cursor: String!
+              node: INode!
+            }
+
             enum INodeImplementation {
               Movie
               Series
@@ -431,6 +436,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               typename_IN: [INodeImplementation!]
             }
 
+            type INodesConnection {
+              edges: [INodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface IProduct {
               genre: Genre!
               id: String!
@@ -450,6 +461,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductCreateInput {
               Movie: MovieCreateInput
               Series: SeriesCreateInput
+            }
+
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
             }
 
             interface IProductEventPayload {
@@ -536,6 +552,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Movie implements INode & IProduct {
@@ -904,8 +926,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iNodes(options: INodeOptions, where: INodeWhere): [INode!]!
               iNodesAggregate(where: INodeWhere): INodeAggregateSelection!
+              iNodesConnection(after: String, first: Int, sort: [INodeSort], where: INodeWhere): INodesConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -1689,6 +1713,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
+            }
+
             interface IProductEventPayload {
               id: String!
               name: String!
@@ -1773,6 +1802,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Movie implements IProduct {
@@ -2141,6 +2176,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2948,6 +2984,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genre: IProductGenreDisconnectFieldInput
             }
 
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
+            }
+
             interface IProductEventPayload {
               id: String!
               name: String!
@@ -3236,6 +3277,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type IntAggregateSelection {
@@ -3671,6 +3718,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -4550,6 +4598,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genre: IProductGenreDisconnectInput
             }
 
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
+            }
+
             interface IProductEventPayload {
               id: String!
               name: String!
@@ -4846,6 +4899,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type IntAggregateSelection {
@@ -5266,6 +5325,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

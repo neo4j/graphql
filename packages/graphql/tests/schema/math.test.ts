@@ -1649,6 +1649,11 @@ describe("Algebraic", () => {
               Movie: MovieCreateInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               Movie
             }
@@ -1690,6 +1695,12 @@ describe("Algebraic", () => {
               viewers_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -1699,6 +1710,7 @@ describe("Algebraic", () => {
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

@@ -53,44 +53,11 @@ export class InterfaceEntityAdapter {
         this.initConcreteEntities(entity.concreteEntities);
     }
 
-    public findAttribute(name: string): AttributeAdapter | undefined {
-        return this.attributes.get(name);
-    }
-
-    public findRelationshipDeclarations(name: string): RelationshipDeclarationAdapter | undefined {
-        return this.relationshipDeclarations.get(name);
-    }
-
-    get globalIdField(): AttributeAdapter | undefined {
+    public get globalIdField(): AttributeAdapter | undefined {
         return undefined;
     }
 
-    private initConcreteEntities(entities: ConcreteEntity[]) {
-        for (const entity of entities) {
-            const entityAdapter = new ConcreteEntityAdapter(entity);
-            this.concreteEntities.push(entityAdapter);
-        }
-    }
-
-    private initAttributes(attributes: Map<string, Attribute>) {
-        for (const [attributeName, attribute] of attributes.entries()) {
-            const attributeAdapter = new AttributeAdapter(attribute);
-            this.attributes.set(attributeName, attributeAdapter);
-            if (attributeAdapter.isConstrainable() && attributeAdapter.isUnique()) {
-                this.uniqueFieldsKeys.push(attribute.name);
-            }
-        }
-    }
-
-    private initRelationshipDeclarations(relationshipDeclarations: Map<string, RelationshipDeclaration>) {
-        for (const [relationshipName, relationshipDeclaration] of relationshipDeclarations.entries()) {
-            this.relationshipDeclarations.set(
-                relationshipName,
-                new RelationshipDeclarationAdapter(relationshipDeclaration, this)
-            );
-        }
-    }
-    get operations(): InterfaceEntityOperations {
+    public get operations(): InterfaceEntityOperations {
         if (!this._operations) {
             return new InterfaceEntityOperations(this);
         }
@@ -119,11 +86,11 @@ export class InterfaceEntityAdapter {
         return upperFirst(this.plural);
     }
 
-    get isReadable(): boolean {
+    public get isReadable(): boolean {
         return this.annotations.query === undefined || this.annotations.query.read === true;
     }
 
-    get isAggregable(): boolean {
+    public get isAggregable(): boolean {
         return this.annotations.query === undefined || this.annotations.query.aggregate === true;
     }
 
@@ -155,5 +122,39 @@ export class InterfaceEntityAdapter {
 
     public get subscriptionEventPayloadFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
+    }
+
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+
+    public findRelationshipDeclarations(name: string): RelationshipDeclarationAdapter | undefined {
+        return this.relationshipDeclarations.get(name);
+    }
+
+    private initConcreteEntities(entities: ConcreteEntity[]) {
+        for (const entity of entities) {
+            const entityAdapter = new ConcreteEntityAdapter(entity);
+            this.concreteEntities.push(entityAdapter);
+        }
+    }
+
+    private initAttributes(attributes: Map<string, Attribute>) {
+        for (const [attributeName, attribute] of attributes.entries()) {
+            const attributeAdapter = new AttributeAdapter(attribute);
+            this.attributes.set(attributeName, attributeAdapter);
+            if (attributeAdapter.isConstrainable() && attributeAdapter.isUnique()) {
+                this.uniqueFieldsKeys.push(attribute.name);
+            }
+        }
+    }
+
+    private initRelationshipDeclarations(relationshipDeclarations: Map<string, RelationshipDeclaration>) {
+        for (const [relationshipName, relationshipDeclaration] of relationshipDeclarations.entries()) {
+            this.relationshipDeclarations.set(
+                relationshipName,
+                new RelationshipDeclarationAdapter(relationshipDeclaration, this)
+            );
+        }
     }
 }

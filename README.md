@@ -2,6 +2,23 @@
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
+___
+
+**GraphQL API for Aura**  
+We’ve been working to make GraphQL natively available in Aura and we are now ready to let people try it in an Early Access Program that will run from 1st April to end of May.  There will be at least one more iteration with additional features before a full release later this year.
+
+This will offer
+
+* Use of GraphQL API with an Aura instance in GCP
+* Use of Aura CLI to configure the GraphQL API
+* Authentication to the GraphQL API using an API Key or a 3rd party Identity Provider that supports OpenID Connect 2.0 with a JWKS endpoint for JWT validation
+* A Discord based community to post feedback and questions that you have
+
+Using the GraphQL API during the EAP with AuraDB instances being charged as normal will be at no cost.
+
+Would you be interested in taking part? Or want to know more? Then register here:-  [GraphQL API EAP](https://forms.gle/gr8n8sx8S8yXFZzj8) and you'll be contacted nearer the date.
+___
+
 ![Neo4j + GraphQL](./images/banner.png)
 
 <p align="center">

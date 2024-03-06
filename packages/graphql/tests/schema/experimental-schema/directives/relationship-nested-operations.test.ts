@@ -8835,6 +8835,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -8842,6 +8848,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -9017,6 +9028,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9285,6 +9297,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -9297,6 +9315,11 @@ describe("Relationship nested operations", () => {
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -9472,6 +9495,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9740,6 +9764,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -9751,6 +9781,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonConnectWhere {
                   node: PersonWhere!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -9926,6 +9961,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10185,6 +10221,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -10192,6 +10234,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -10371,6 +10418,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10634,6 +10682,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -10641,6 +10695,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -10816,6 +10875,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11079,6 +11139,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -11086,6 +11152,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -11261,6 +11332,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11627,6 +11699,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -11643,6 +11721,11 @@ describe("Relationship nested operations", () => {
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -11822,6 +11905,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -12168,6 +12252,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -12180,6 +12270,11 @@ describe("Relationship nested operations", () => {
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -12355,6 +12450,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!

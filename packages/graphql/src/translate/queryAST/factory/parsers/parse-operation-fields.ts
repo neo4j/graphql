@@ -92,6 +92,8 @@ function parseInterfaceOperationField(
     switch (field) {
         case rootTypeFieldNames.read:
             return "READ";
+        case rootTypeFieldNames.connection:
+            return "CONNECTION";
         case rootTypeFieldNames.aggregate:
             return "AGGREGATE";
         default:
