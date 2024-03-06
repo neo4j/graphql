@@ -434,6 +434,11 @@ describe("nested aggregation on interface", () => {
               Series: SeriesCreateInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               Movie
               Series
@@ -490,6 +495,12 @@ describe("nested aggregation on interface", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -499,6 +510,7 @@ describe("nested aggregation on interface", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -1052,6 +1064,11 @@ describe("nested aggregation on interface", () => {
               Series: SeriesCreateInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               Movie
               Series
@@ -1108,6 +1125,12 @@ describe("nested aggregation on interface", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -1117,6 +1140,7 @@ describe("nested aggregation on interface", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

@@ -130,6 +130,7 @@ describe("@default directive", () => {
             type Query {
               userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
               userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
+              userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort], where: UserInterfaceWhere): UserInterfacesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -215,6 +216,11 @@ describe("@default directive", () => {
               toBeOverridden: StringAggregateSelection!
             }
 
+            type UserInterfaceEdge {
+              cursor: String!
+              node: UserInterface!
+            }
+
             enum UserInterfaceImplementation {
               User
             }
@@ -261,6 +267,12 @@ describe("@default directive", () => {
               toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_STARTS_WITH: String
               typename_IN: [UserInterfaceImplementation!]
+            }
+
+            type UserInterfacesConnection {
+              edges: [UserInterfaceEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input UserOptions {

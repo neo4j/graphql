@@ -36,7 +36,6 @@ export class CompositeConnectionReadOperation extends Operation {
 
     constructor(children: CompositeConnectionPartial[]) {
         super();
-
         this.children = children;
     }
 
@@ -48,9 +47,12 @@ export class CompositeConnectionReadOperation extends Operation {
         const nestedSubqueries = this.children.flatMap((c) => {
             const subQueryContext = new QueryASTContext({ ...context, returnVariable: edgeVar });
             const result = c.transpile(subQueryContext);
-            if (!hasTarget(context)) throw new Error("No parent node found!");
-            const parentNode = context.target;
-            return result.clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
+            if (hasTarget(context)) {
+                const parentNode = context.target;
+                return result.clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
+            } else {
+                return result.clauses;
+            }
         });
 
         const union = new Cypher.Union(...nestedSubqueries);

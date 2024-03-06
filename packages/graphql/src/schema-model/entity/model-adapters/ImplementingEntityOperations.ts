@@ -18,11 +18,12 @@
  */
 
 import { upperFirst } from "../../../utils/upper-first";
-import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 
 export type RootTypeFieldNames = {
     create: string;
+    connection: string;
     read: string;
     update: string;
     delete: string;
@@ -147,6 +148,7 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
+            connection: `${this.entityAdapter.plural}Connection`,
             create: `create${this.pascalCasePlural}`,
             read: this.entityAdapter.plural,
             update: `update${this.pascalCasePlural}`,
