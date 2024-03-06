@@ -17,19 +17,31 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("aggregations-top_level-id", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        const typeDefs = `
+        type ${Movie} {
+            testId: ID
+            id: ID
+        }
+        `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,27 +51,18 @@ describe("aggregations-top_level-id", () => {
     test("should return the shortest of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testId: ID
-                id: ID
-            }
-        `;
-
         const id = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, id: "1"})
-                    CREATE (:Movie {testId: $id, id: "22"})
-                    CREATE (:Movie {testId: $id, id: "333"})
-                    CREATE (:Movie {testId: $id, id: "4444"})
+                    CREATE (:${Movie} {testId: $id, id: "1"})
+                    CREATE (:${Movie} {testId: $id, id: "22"})
+                    CREATE (:${Movie} {testId: $id, id: "333"})
+                    CREATE (:${Movie} {testId: $id, id: "4444"})
                 `,
                 {
                     id,
@@ -68,7 +71,7 @@ describe("aggregations-top_level-id", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testId: "${id}"}) {
+                    ${Movie.operations.aggregate}(where: {testId: "${id}"}) {
                         id {
                             shortest
                         }
@@ -88,7 +91,7 @@ describe("aggregations-top_level-id", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 id: {
                     shortest: "1",
                 },
@@ -101,27 +104,18 @@ describe("aggregations-top_level-id", () => {
     test("should return the longest of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testId: ID
-                id: ID
-            }
-        `;
-
         const id = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, id: "1"})
-                    CREATE (:Movie {testId: $id, id: "22"})
-                    CREATE (:Movie {testId: $id, id: "333"})
-                    CREATE (:Movie {testId: $id, id: "4444"})
+                    CREATE (:${Movie} {testId: $id, id: "1"})
+                    CREATE (:${Movie} {testId: $id, id: "22"})
+                    CREATE (:${Movie} {testId: $id, id: "333"})
+                    CREATE (:${Movie} {testId: $id, id: "4444"})
                 `,
                 {
                     id,
@@ -130,7 +124,7 @@ describe("aggregations-top_level-id", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testId: "${id}"}) {
+                    ${Movie.operations.aggregate}(where: {testId: "${id}"}) {
                         id {
                             longest
                         }
@@ -150,7 +144,7 @@ describe("aggregations-top_level-id", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 id: {
                     longest: "4444",
                 },
@@ -163,27 +157,18 @@ describe("aggregations-top_level-id", () => {
     test("should return the shortest and longest of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testId: ID
-                id: ID
-            }
-        `;
-
         const id = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, id: "1"})
-                    CREATE (:Movie {testId: $id, id: "22"})
-                    CREATE (:Movie {testId: $id, id: "333"})
-                    CREATE (:Movie {testId: $id, id: "4444"})
+                    CREATE (:${Movie} {testId: $id, id: "1"})
+                    CREATE (:${Movie} {testId: $id, id: "22"})
+                    CREATE (:${Movie} {testId: $id, id: "333"})
+                    CREATE (:${Movie} {testId: $id, id: "4444"})
                 `,
                 {
                     id,
@@ -192,7 +177,7 @@ describe("aggregations-top_level-id", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testId: "${id}"}) {
+                    ${Movie.operations.aggregate}(where: {testId: "${id}"}) {
                         id {
                             shortest
                             longest
@@ -213,7 +198,7 @@ describe("aggregations-top_level-id", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 id: {
                     shortest: "1",
                     longest: "4444",

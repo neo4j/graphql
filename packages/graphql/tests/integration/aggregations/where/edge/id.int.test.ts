@@ -21,15 +21,38 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import { UniqueType } from "../../../../utils/graphql-types";
 import Neo4jHelper from "../../../neo4j";
 
 describe("aggregations-where-edge-id", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Post: UniqueType;
+    let User: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Post = new UniqueType("Post");
+        User = new UniqueType("User");
+
+        const typeDefs = `
+            type ${User} {
+                testString: String!
+            }
+
+            type ${Post} {
+              testString: String!
+              likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+            }
+
+            type Likes @relationshipProperties {
+                testId: ID
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -38,21 +61,6 @@ describe("aggregations-where-edge-id", () => {
 
     test("should return posts where a edge like ID is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            type Likes @relationshipProperties {
-                testId: ID
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -64,19 +72,17 @@ describe("aggregations-where-edge-id", () => {
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES { testId: "${testId}" }]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { testId: "${testId}" }]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { edge: { testId_EQUAL: "${testId}" } } }) {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { testId_EQUAL: "${testId}" } } }) {
                         testString
                         likes {
                             testString
@@ -97,7 +103,7 @@ describe("aggregations-where-edge-id", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString }],
