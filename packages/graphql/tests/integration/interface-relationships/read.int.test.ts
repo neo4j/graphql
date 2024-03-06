@@ -404,4 +404,378 @@ describe("interface relationships", () => {
             ],
         });
     });
+
+    test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            query Actors($title: String) {
+                ${typeActor.plural}(where: { actedIn_SOME: { title: $title } }) {
+                    name
+                    actedIn {
+                        title
+                        ... on ${typeMovie} {
+                            runtime
+                        }
+                        ... on ${typeSeries} {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle2, runtime:$movieRuntime })
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { title: movieTitle2 },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [typeActor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle2,
+                        },
+                    ]),
+                    name: actorName2,
+                },
+            ],
+        });
+    });
+
+    test("should read and return interface relationship fields with interface relationship filter ALL", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            query Actors($title: String) {
+                ${typeActor.plural}(where: { actedIn_ALL: { title: $title } }) {
+                    name
+                    actedIn {
+                        title
+                        ... on ${typeMovie} {
+                            runtime
+                        }
+                        ... on ${typeSeries} {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                # TODO: remove this and test will fail bc ALL impl bug
+                CREATE (a2)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: $movieTitle, episodes: $seriesEpisodes })
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { title: movieTitle },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [typeActor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle,
+                        },
+                        {
+                            episodes: seriesEpisodes,
+                            title: movieTitle,
+                        },
+                    ]),
+                    name: actorName2,
+                },
+            ],
+        });
+    });
+
+    test("should read and return interface relationship fields with interface relationship filter SINGLE", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            query Actors($title: String) {
+                ${typeActor.plural}(where: { actedIn_SINGLE: { title: $title } }) {
+                    name
+                    actedIn {
+                        title
+                        ... on ${typeMovie} {
+                            runtime
+                        }
+                        ... on ${typeSeries} {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { title: movieTitle2 },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [typeActor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle2,
+                        },
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle,
+                        },
+                    ]),
+                    name: actorName2,
+                },
+            ],
+        });
+    });
+
+    test("should read and return interface relationship fields with interface relationship filter NONE", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            query Actors($title: String) {
+                ${typeActor.plural}(where: { actedIn_NONE: { title: $title } }) {
+                    name
+                    actedIn {
+                        title
+                        ... on ${typeMovie} {
+                            runtime
+                        }
+                        ... on ${typeSeries} {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { title: movieTitle2 },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [typeActor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            episodes: seriesEpisodes,
+                            title: seriesTitle,
+                        },
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle,
+                        },
+                    ]),
+                    name: actorName,
+                },
+            ],
+        });
+    });
 });

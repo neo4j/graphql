@@ -1259,6 +1259,7 @@ describe("Union Interface Relationships", () => {
               imdbId_LTE: Int
               imdbId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               imdbId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              reviewers: ReviewerWhere @deprecated(reason: \\"Use \`reviewers_SOME\` instead.\\")
               reviewersConnection: MovieReviewersConnectionWhere @deprecated(reason: \\"Use \`reviewersConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
@@ -1277,6 +1278,15 @@ describe("Union Interface Relationships", () => {
               Return Movies where some of the related MovieReviewersConnections match this filter
               \\"\\"\\"
               reviewersConnection_SOME: MovieReviewersConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Reviewers match this filter\\"\\"\\"
+              reviewers_ALL: ReviewerWhere
+              \\"\\"\\"Return Movies where none of the related Reviewers match this filter\\"\\"\\"
+              reviewers_NONE: ReviewerWhere
+              reviewers_NOT: ReviewerWhere @deprecated(reason: \\"Use \`reviewers_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Reviewers match this filter\\"\\"\\"
+              reviewers_SINGLE: ReviewerWhere
+              \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
+              reviewers_SOME: ReviewerWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String

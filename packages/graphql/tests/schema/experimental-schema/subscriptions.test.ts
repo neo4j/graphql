@@ -5839,8 +5839,10 @@ describe("Subscriptions", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
             }
 
@@ -5982,8 +5984,10 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6189,8 +6193,10 @@ describe("Subscriptions", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
             }
 
             interface Production {
@@ -6327,8 +6333,10 @@ describe("Subscriptions", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6567,8 +6575,10 @@ describe("Subscriptions", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int

@@ -299,6 +299,7 @@ describe("Declare Relationship", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -317,6 +318,15 @@ describe("Declare Relationship", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               moviesCnt: Int
               moviesCnt_GT: Int
               moviesCnt_GTE: Int
@@ -1180,6 +1190,7 @@ describe("Declare Relationship", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -1198,6 +1209,15 @@ describe("Declare Relationship", () => {
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related People match this filter\\"\\"\\"
+              actors_ALL: PersonWhere
+              \\"\\"\\"Return Productions where none of the related People match this filter\\"\\"\\"
+              actors_NONE: PersonWhere
+              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Productions where one of the related People match this filter\\"\\"\\"
+              actors_SINGLE: PersonWhere
+              \\"\\"\\"Return Productions where some of the related People match this filter\\"\\"\\"
+              actors_SOME: PersonWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1404,6 +1424,7 @@ describe("Declare Relationship", () => {
               AND: [UntrainedPersonWhere!]
               NOT: UntrainedPersonWhere
               OR: [UntrainedPersonWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: UntrainedPersonActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return UntrainedPeople where all of the related UntrainedPersonActedInConnections match this filter
@@ -1422,6 +1443,23 @@ describe("Declare Relationship", () => {
               Return UntrainedPeople where some of the related UntrainedPersonActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: UntrainedPersonActedInConnectionWhere
+              \\"\\"\\"
+              Return UntrainedPeople where all of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"
+              Return UntrainedPeople where none of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"
+              Return UntrainedPeople where one of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"
+              Return UntrainedPeople where some of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_SOME: ProductionWhere
               age: Int
               age_GT: Int
               age_GTE: Int
@@ -2620,6 +2658,7 @@ describe("Declare Relationship", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: PersonActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
@@ -2638,6 +2677,15 @@ describe("Declare Relationship", () => {
               Return People where some of the related PersonActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: PersonActedInConnectionWhere
+              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -2752,6 +2800,7 @@ describe("Declare Relationship", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -2770,6 +2819,15 @@ describe("Declare Relationship", () => {
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related People match this filter\\"\\"\\"
+              actors_ALL: PersonWhere
+              \\"\\"\\"Return Productions where none of the related People match this filter\\"\\"\\"
+              actors_NONE: PersonWhere
+              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Productions where one of the related People match this filter\\"\\"\\"
+              actors_SINGLE: PersonWhere
+              \\"\\"\\"Return Productions where some of the related People match this filter\\"\\"\\"
+              actors_SOME: PersonWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -3376,6 +3434,7 @@ describe("Declare Relationship", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -3394,6 +3453,15 @@ describe("Declare Relationship", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

@@ -280,6 +280,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ShowWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -298,6 +299,15 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
+              actedIn_ALL: ShowWhere
+              \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
+              actedIn_NONE: ShowWhere
+              actedIn_NOT: ShowWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
+              actedIn_SINGLE: ShowWhere
+              \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
+              actedIn_SOME: ShowWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

@@ -8779,6 +8779,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -8797,6 +8798,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -9229,6 +9239,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -9247,6 +9258,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -9684,6 +9704,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -9702,6 +9723,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -10129,6 +10159,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10147,6 +10178,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -10578,6 +10618,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10596,6 +10637,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -11023,6 +11073,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11041,6 +11092,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -11553,6 +11613,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11571,6 +11632,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -11581,6 +11651,7 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
+                  producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -11599,6 +11670,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_SOME: MovieProducersConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  producers_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  producers_NONE: PersonWhere
+                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  producers_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  producers_SOME: PersonWhere
                 }
 
                 type MoviesConnection {
@@ -12094,6 +12174,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -12112,6 +12193,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -12122,6 +12212,7 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
+                  producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -12140,6 +12231,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_SOME: MovieProducersConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  producers_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  producers_NONE: PersonWhere
+                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  producers_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  producers_SOME: PersonWhere
                 }
 
                 type MoviesConnection {
