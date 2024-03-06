@@ -9,15 +9,15 @@ We’ve been working to make GraphQL natively available in Aura and we are now r
 
 This will offer
 
-- Use of GraphQL API with an Aura instance in GCP
-- Use of Aura CLI to configure the GraphQL API  
-- Authentication to the GraphQL API using an API Key or a 3rd party Identity Provider that supports OpenID Connect 2.0 with a JWKS endpoint for JWT validation
-- A Discord based community to post feedback and questions that you have
+* Use of GraphQL API with an Aura instance in GCP
+* Use of Aura CLI to configure the GraphQL API
+* Authentication to the GraphQL API using an API Key or a 3rd party Identity Provider that supports OpenID Connect 2.0 with a JWKS endpoint for JWT validation
+* A Discord based community to post feedback and questions that you have
 
-There will be no cost to use the GraphQL API during the EAP with AuraDB instances being charged as normal. 
 
-Interested in taking part? Or just want to know more? Register here:-  [GraphQL API EAP](https://forms.gle/gr8n8sx8S8yXFZzj8) and you'll be contacted nearer the date.
+Using the GraphQL API during the EAP with AuraDB instances being charged as normal will be at no cost. 
 
+Would you be interested in taking part? Or want to know more? Then register here:-  [GraphQL API EAP](https://forms.gle/gr8n8sx8S8yXFZzj8) and you'll be contacted nearer the date.
 ___
 
 
