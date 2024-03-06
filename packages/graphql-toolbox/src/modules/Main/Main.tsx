@@ -92,7 +92,7 @@ export const Main = () => {
                 role="button"
                 tabIndex={0}
             >
-                Want us to manage your <strong>Neo4j GraphQL API</strong>? Register your interest here!
+                Click here to register for <strong>GraphQL API for Neo4j Aura - Early Access Program</strong>
             </div>
         );
     };
