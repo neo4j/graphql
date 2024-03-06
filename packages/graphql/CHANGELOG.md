@@ -1,5 +1,52 @@
 # @neo4j/graphql
 
+## 5.1.0
+
+### Minor Changes
+
+-   [#4821](https://github.com/neo4j/graphql/pull/4821) [`c198de3`](https://github.com/neo4j/graphql/commit/c198de3cfa0d17e574bb261ccca65de45d350013) Thanks [@angrykoala](https://github.com/angrykoala)! - Support for top-level connection query on interfaces. For example:
+
+    _Typedefs_
+
+    ```graphql
+    interface Show {
+        title: String!
+    }
+
+    type Movie implements Show {
+        title: String!
+        cost: Float
+    }
+
+    type Series implements Show {
+        title: String!
+        episodes: Int
+    }
+    ```
+
+    _Query_
+
+    ```graphql
+    query {
+        showsConnection(where: { title_CONTAINS: "The Matrix" }) {
+            edges {
+                node {
+                    title
+                    ... on Movie {
+                        cost
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+### Patch Changes
+
+-   [#4797](https://github.com/neo4j/graphql/pull/4797) [`19c2a7a`](https://github.com/neo4j/graphql/commit/19c2a7ae9a768751222a99e754130a98a0695512) Thanks [@a-alle](https://github.com/a-alle)! - Fix user defined deprecated directives not propagated on all generated types
+
+-   [#4798](https://github.com/neo4j/graphql/pull/4798) [`9a660fa`](https://github.com/neo4j/graphql/commit/9a660fa67b68b325d62efc945b1e91bb353a0637) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that caused authorization to not be applied on `@cypher` fields in some situations.
+
 ## 5.0.1
 
 ### Patch Changes
