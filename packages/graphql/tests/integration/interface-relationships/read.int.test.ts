@@ -19,11 +19,10 @@
 
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { getQuerySource } from "../../utils/get-query-source";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
@@ -48,7 +47,7 @@ describe("interface relationships", () => {
         typeActor = new UniqueType("Actor");
         session = await neo4j.getSession();
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
             }
@@ -80,18 +79,7 @@ describe("interface relationships", () => {
     });
 
     afterEach(async () => {
-        await session.run(
-            `
-                MATCH(a:${typeMovie})
-                MATCH(b:${typeSeries})
-                MATCH(c:${typeActor})
-
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-            `
-        );
-        await session.close();
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typeSeries]);
     });
 
     afterAll(async () => {
@@ -204,7 +192,7 @@ describe("interface relationships", () => {
             screenTime: faker.number.int({ max: 100000 }),
         };
 
-        const query = gql`
+        const query = /* GraphQL */ `
             query Actors($name: String) {
                 ${typeActor.plural}(where: { name: $name }) {
                     name
@@ -232,7 +220,7 @@ describe("interface relationships", () => {
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
-            source: getQuerySource(query),
+            source: query,
             contextValue: neo4j.getContextValues(),
             variableValues: { name: actor.name },
         });

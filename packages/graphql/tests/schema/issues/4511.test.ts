@@ -193,8 +193,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
             }
 
@@ -342,8 +344,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -549,8 +553,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
             }
 
             interface Production {
@@ -692,8 +698,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -940,8 +948,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int

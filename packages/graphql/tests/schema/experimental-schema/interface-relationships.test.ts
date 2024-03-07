@@ -234,6 +234,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -252,6 +253,15 @@ describe("Interface Relationships", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -867,6 +877,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -885,6 +896,15 @@ describe("Interface Relationships", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -2434,6 +2454,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -2452,6 +2473,15 @@ describe("Interface Relationships", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -4041,6 +4071,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -4059,6 +4090,23 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
               typename_IN: [Interface1Implementation!]
             }
 
@@ -4421,6 +4469,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -4439,6 +4488,23 @@ describe("Interface Relationships", () => {
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
             }
 
             type Type1Interface1sConnection {
@@ -4546,6 +4612,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface1: Interface1Where @deprecated(reason: \\"Use \`interface1_SOME\` instead.\\")
               interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -4564,6 +4631,15 @@ describe("Interface Relationships", () => {
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_SOME: Type1Interface1ConnectionWhere
+              \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
+              interface1_ALL: Interface1Where
+              \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
+              interface1_NONE: Interface1Where
+              interface1_NOT: Interface1Where @deprecated(reason: \\"Use \`interface1_NONE\` instead.\\")
+              \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
+              interface1_SINGLE: Interface1Where
+              \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
+              interface1_SOME: Interface1Where
             }
 
             type Type1sConnection {
@@ -4688,6 +4764,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -4706,6 +4783,23 @@ describe("Interface Relationships", () => {
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
             }
 
             type Type2Interface1sConnection {
@@ -5089,6 +5183,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5107,6 +5202,23 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
               typename_IN: [Interface1Implementation!]
             }
 
@@ -5514,6 +5626,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5532,6 +5645,23 @@ describe("Interface Relationships", () => {
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
             }
 
             type Type1Interface1sConnection {
@@ -5639,6 +5769,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface1: Interface1Where @deprecated(reason: \\"Use \`interface1_SOME\` instead.\\")
               interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -5657,6 +5788,15 @@ describe("Interface Relationships", () => {
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_SOME: Type1Interface1ConnectionWhere
+              \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
+              interface1_ALL: Interface1Where
+              \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
+              interface1_NONE: Interface1Where
+              interface1_NOT: Interface1Where @deprecated(reason: \\"Use \`interface1_NONE\` instead.\\")
+              \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
+              interface1_SINGLE: Interface1Where
+              \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
+              interface1_SOME: Interface1Where
             }
 
             type Type1sConnection {
@@ -5789,6 +5929,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5807,6 +5948,23 @@ describe("Interface Relationships", () => {
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
             }
 
             type Type2Interface1sConnection {
@@ -6212,6 +6370,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6230,6 +6389,23 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
               typename_IN: [Interface1Implementation!]
             }
 
@@ -6600,6 +6776,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6618,6 +6795,23 @@ describe("Interface Relationships", () => {
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
             }
 
             type Type1Interface1sConnection {
@@ -6761,6 +6955,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface1: Interface1Where @deprecated(reason: \\"Use \`interface1_SOME\` instead.\\")
               interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -6779,6 +6974,15 @@ describe("Interface Relationships", () => {
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_SOME: Type1Interface1ConnectionWhere
+              \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
+              interface1_ALL: Interface1Where
+              \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
+              interface1_NONE: Interface1Where
+              interface1_NOT: Interface1Where @deprecated(reason: \\"Use \`interface1_NONE\` instead.\\")
+              \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
+              interface1_SINGLE: Interface1Where
+              \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
+              interface1_SOME: Interface1Where
             }
 
             type Type1sConnection {
@@ -6911,6 +7115,7 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
+              interface2: Interface2Where @deprecated(reason: \\"Use \`interface2_SOME\` instead.\\")
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6929,6 +7134,23 @@ describe("Interface Relationships", () => {
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_ALL: Interface2Where
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_NONE: Interface2Where
+              interface2_NOT: Interface2Where @deprecated(reason: \\"Use \`interface2_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SINGLE: Interface2Where
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface2s match this filter
+              \\"\\"\\"
+              interface2_SOME: Interface2Where
             }
 
             type Type2Interface1sConnection {
@@ -8294,6 +8516,7 @@ describe("Interface Relationships", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              content: ContentWhere @deprecated(reason: \\"Use \`content_SOME\` instead.\\")
               contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
@@ -8312,6 +8535,15 @@ describe("Interface Relationships", () => {
               Return Users where some of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_SOME: UserContentConnectionWhere
+              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              content_ALL: ContentWhere
+              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              content_NONE: ContentWhere
+              content_NOT: ContentWhere @deprecated(reason: \\"Use \`content_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              content_SINGLE: ContentWhere
+              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              content_SOME: ContentWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
