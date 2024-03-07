@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
@@ -78,18 +79,7 @@ describe("interface relationships", () => {
     });
 
     afterEach(async () => {
-        await session.run(
-            `
-                MATCH(a:${typeMovie})
-                MATCH(b:${typeSeries})
-                MATCH(c:${typeActor})
-
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-            `
-        );
-        await session.close();
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typeSeries]);
     });
 
     afterAll(async () => {

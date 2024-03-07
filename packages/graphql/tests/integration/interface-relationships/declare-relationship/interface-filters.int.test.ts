@@ -484,7 +484,6 @@ describe("interface filters of declared interface relationships", () => {
 
     afterEach(async () => {
         await cleanNodesUsingSession(session, [Movie, Series, Actor, Episode]);
-        await session.close();
     });
 
     afterAll(async () => {
