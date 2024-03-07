@@ -1555,6 +1555,7 @@ describe("Algebraic", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              worksInProduction: ProductionWhere @deprecated(reason: \\"Use \`worksInProduction_SOME\` instead.\\")
               worksInProductionConnection: PersonWorksInProductionConnectionWhere @deprecated(reason: \\"Use \`worksInProductionConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
@@ -1573,6 +1574,15 @@ describe("Algebraic", () => {
               Return People where some of the related PersonWorksInProductionConnections match this filter
               \\"\\"\\"
               worksInProductionConnection_SOME: PersonWorksInProductionConnectionWhere
+              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              worksInProduction_ALL: ProductionWhere
+              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              worksInProduction_NONE: ProductionWhere
+              worksInProduction_NOT: ProductionWhere @deprecated(reason: \\"Use \`worksInProduction_NONE\` instead.\\")
+              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              worksInProduction_SINGLE: ProductionWhere
+              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              worksInProduction_SOME: ProductionWhere
             }
 
             input PersonWorksInProductionConnectFieldInput {
