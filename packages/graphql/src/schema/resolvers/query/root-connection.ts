@@ -29,6 +29,7 @@ import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import type { PageInfo as PageInfoRelay } from "graphql-relay";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
@@ -40,11 +41,11 @@ import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-
 
 export function rootConnectionResolver({
     composer,
-    concreteEntityAdapter,
+    entityAdapter,
     propagatedDirectives,
 }: {
     composer: SchemaComposer;
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    entityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
@@ -53,7 +54,7 @@ export function rootConnectionResolver({
 
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
-            entityAdapter: concreteEntityAdapter,
+            entityAdapter: entityAdapter,
             varName: "this",
         });
 
@@ -98,16 +99,16 @@ export function rootConnectionResolver({
     }
 
     const rootEdge = composer.createObjectTC({
-        name: `${concreteEntityAdapter.name}Edge`,
+        name: `${entityAdapter.name}Edge`,
         fields: {
             cursor: new GraphQLNonNull(GraphQLString),
-            node: `${concreteEntityAdapter.name}!`,
+            node: `${entityAdapter.name}!`,
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
     const rootConnection = composer.createObjectTC({
-        name: `${concreteEntityAdapter.upperFirstPlural}Connection`,
+        name: `${entityAdapter.upperFirstPlural}Connection`,
         fields: {
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
@@ -118,8 +119,8 @@ export function rootConnectionResolver({
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer | undefined;
-    if (composer.has(concreteEntityAdapter.operations.sortInputTypeName)) {
-        sortArg = composer.getITC(concreteEntityAdapter.operations.sortInputTypeName);
+    if (composer.has(entityAdapter.operations.sortInputTypeName)) {
+        sortArg = composer.getITC(entityAdapter.operations.sortInputTypeName);
     }
 
     return {
@@ -128,12 +129,12 @@ export function rootConnectionResolver({
         args: {
             first: GraphQLInt,
             after: GraphQLString,
-            where: concreteEntityAdapter.operations.whereInputTypeName,
+            where: entityAdapter.operations.whereInputTypeName,
             ...(sortArg ? { sort: sortArg.List } : {}),
-            ...(concreteEntityAdapter.annotations.fulltext
+            ...(entityAdapter.annotations.fulltext
                 ? {
                       fulltext: {
-                          type: concreteEntityAdapter.operations.fullTextInputTypeName,
+                          type: entityAdapter.operations.fullTextInputTypeName,
                           description:
                               "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
                       },

@@ -7300,6 +7300,12 @@ describe("@filterable directive", () => {
                       startCursor: String
                     }
 
+                    type PeopleConnection {
+                      edges: [PersonEdge!]!
+                      pageInfo: PageInfo!
+                      totalCount: Int!
+                    }
+
                     interface Person {
                       username: String!
                     }
@@ -7315,6 +7321,11 @@ describe("@filterable directive", () => {
 
                     input PersonCreateInput {
                       Actor: ActorCreateInput
+                    }
+
+                    type PersonEdge {
+                      cursor: String!
+                      node: Person!
                     }
 
                     interface PersonEventPayload {
@@ -7388,6 +7399,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                       people(options: PersonOptions, where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8142,6 +8154,12 @@ describe("@filterable directive", () => {
                       startCursor: String
                     }
 
+                    type PeopleConnection {
+                      edges: [PersonEdge!]!
+                      pageInfo: PageInfo!
+                      totalCount: Int!
+                    }
+
                     interface Person {
                       username: String!
                     }
@@ -8157,6 +8175,11 @@ describe("@filterable directive", () => {
 
                     input PersonCreateInput {
                       Actor: ActorCreateInput
+                    }
+
+                    type PersonEdge {
+                      cursor: String!
+                      node: Person!
                     }
 
                     interface PersonEventPayload {
@@ -8230,6 +8253,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                       people(options: PersonOptions, where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8984,6 +9008,12 @@ describe("@filterable directive", () => {
                       startCursor: String
                     }
 
+                    type PeopleConnection {
+                      edges: [PersonEdge!]!
+                      pageInfo: PageInfo!
+                      totalCount: Int!
+                    }
+
                     interface Person {
                       username: String!
                     }
@@ -8999,6 +9029,11 @@ describe("@filterable directive", () => {
 
                     input PersonCreateInput {
                       Actor: ActorCreateInput
+                    }
+
+                    type PersonEdge {
+                      cursor: String!
+                      node: Person!
                     }
 
                     interface PersonEventPayload {
@@ -9072,6 +9107,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                       people(options: PersonOptions, where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

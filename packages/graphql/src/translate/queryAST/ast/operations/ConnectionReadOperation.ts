@@ -98,6 +98,7 @@ export class ConnectionReadOperation extends Operation {
         });
 
         return filterTruthy([
+            this.selection,
             ...this.nodeFields,
             ...this.edgeFields,
             ...this.filters,
@@ -131,7 +132,7 @@ export class ConnectionReadOperation extends Operation {
         });
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
-      
+
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();

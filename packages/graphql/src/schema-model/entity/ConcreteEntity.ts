@@ -68,11 +68,11 @@ export class ConcreteEntity implements Entity {
         }
     }
 
-    isConcreteEntity(): this is ConcreteEntity {
+    public isConcreteEntity(): this is ConcreteEntity {
         return true;
     }
 
-    isCompositeEntity(): this is CompositeEntity {
+    public isCompositeEntity(): this is CompositeEntity {
         return false;
     }
 

@@ -890,6 +890,11 @@ describe("Declare Relationship", () => {
               Series: SeriesCreateInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               Movie
               Series
@@ -932,6 +937,12 @@ describe("Declare Relationship", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -944,11 +955,13 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
               shows(options: ShowOptions, where: ShowWhere): [Show!]!
               showsAggregate(where: ShowWhere): ShowAggregateSelection!
+              showsConnection(after: String, first: Int, sort: [ShowSort], where: ShowWhere): ShowsConnection!
             }
 
             type Series implements Production & Show {
@@ -1479,6 +1492,11 @@ describe("Declare Relationship", () => {
               title: StringAggregateSelection!
             }
 
+            type ShowEdge {
+              cursor: String!
+              node: Show!
+            }
+
             enum ShowImplementation {
               Movie
               Series
@@ -1544,6 +1562,12 @@ describe("Declare Relationship", () => {
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ShowImplementation!]
+            }
+
+            type ShowsConnection {
+              edges: [ShowEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

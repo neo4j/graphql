@@ -58,6 +58,11 @@ describe("Plural option", () => {
               name: StringAggregateSelection!
             }
 
+            type AnimalEdge {
+              cursor: String!
+              node: Animal!
+            }
+
             enum AnimalImplementation {
               Dog
             }
@@ -93,6 +98,12 @@ describe("Plural option", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [AnimalImplementation!]
+            }
+
+            type AnimalesConnection {
+              edges: [AnimalEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Cat {
@@ -285,6 +296,7 @@ describe("Plural option", () => {
             type Query {
               animales(options: AnimalOptions, where: AnimalWhere): [Animal!]!
               animalesAggregate(where: AnimalWhere): AnimalAggregateSelection!
+              animalesConnection(after: String, first: Int, sort: [AnimalSort], where: AnimalWhere): AnimalesConnection!
               cats(options: CatOptions, where: CatWhere): [Cat!]!
               catsAggregate(where: CatWhere): CatAggregateSelection!
               catsConnection(after: String, first: Int, sort: [CatSort], where: CatWhere): CatsConnection!

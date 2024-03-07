@@ -90,6 +90,7 @@ describe("@private directive", () => {
             type Query {
               userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
               userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
+              userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort], where: UserInterfaceWhere): UserInterfacesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -146,6 +147,11 @@ describe("@private directive", () => {
               id: IDAggregateSelection!
             }
 
+            type UserInterfaceEdge {
+              cursor: String!
+              node: UserInterface!
+            }
+
             enum UserInterfaceImplementation {
               User
             }
@@ -181,6 +187,12 @@ describe("@private directive", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               typename_IN: [UserInterfaceImplementation!]
+            }
+
+            type UserInterfacesConnection {
+              edges: [UserInterfaceEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input UserOptions {
@@ -294,6 +306,7 @@ describe("@private directive", () => {
             type Query {
               userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
               userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
+              userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort], where: UserInterfaceWhere): UserInterfacesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -358,6 +371,11 @@ describe("@private directive", () => {
               id: IDAggregateSelection!
             }
 
+            type UserInterfaceEdge {
+              cursor: String!
+              node: UserInterface!
+            }
+
             enum UserInterfaceImplementation {
               User
             }
@@ -393,6 +411,12 @@ describe("@private directive", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               typename_IN: [UserInterfaceImplementation!]
+            }
+
+            type UserInterfacesConnection {
+              edges: [UserInterfaceEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input UserOptions {

@@ -20,7 +20,6 @@
 import type Cypher from "@neo4j/cypher-builder";
 import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -31,6 +30,7 @@ import { FulltextScoreSort } from "../ast/sort/FulltextScoreSort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { isRelationshipEntity } from "../utils/is-relationship-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 
@@ -52,28 +52,34 @@ export class SortAndPaginationFactory {
 
     public createConnectionSortFields(
         options: ConnectionSortArg,
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
+        entityOrRel: EntityAdapter | RelationshipAdapter,
         context: Neo4jGraphQLTranslationContext
     ): { edge: Sort[]; node: Sort[] } {
-        if (isConcreteEntity(entityOrRel)) {
+        if (isRelationshipEntity(entityOrRel)) {
             const nodeSortFields = this.createPropertySort({
                 optionArg: options.node ?? {},
+                entity: entityOrRel.target,
+                context,
+            });
+            const edgeSortFields = this.createPropertySort({
+                optionArg: options.edge || {},
                 entity: entityOrRel,
                 context,
             });
             return {
-                edge: [],
+                edge: edgeSortFields,
                 node: nodeSortFields,
             };
         }
+
         const nodeSortFields = this.createPropertySort({
             optionArg: options.node ?? {},
-            entity: entityOrRel.target,
+            entity: entityOrRel,
             context,
         });
-        const edgeSortFields = this.createPropertySort({ optionArg: options.edge || {}, entity: entityOrRel, context });
+
         return {
-            edge: edgeSortFields,
+            edge: [],
             node: nodeSortFields,
         };
     }

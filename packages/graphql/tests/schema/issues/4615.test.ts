@@ -646,6 +646,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
               shows(options: ShowOptions, where: ShowWhere): [Show!]!
               showsAggregate(where: ShowWhere): ShowAggregateSelection!
+              showsConnection(after: String, first: Int, sort: [ShowSort], where: ShowWhere): ShowsConnection!
             }
 
             type Series implements Show {
@@ -1074,6 +1075,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors: [ShowActorsDisconnectFieldInput!]
             }
 
+            type ShowEdge {
+              cursor: String!
+              node: Show!
+            }
+
             enum ShowImplementation {
               Movie
               Series
@@ -1144,6 +1150,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ShowImplementation!]
+            }
+
+            type ShowsConnection {
+              edges: [ShowEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

@@ -26,9 +26,6 @@ import type { OperationTranspileResult } from "../operations";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (!context.target) throw new Error();
-        if (!this.relationship) throw new Error("connection fields are not supported on top level interface");
-
         // eslint-disable-next-line prefer-const
         let { selection: clause, nestedContext } = this.selection.apply(context);
 

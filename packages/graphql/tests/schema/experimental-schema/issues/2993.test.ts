@@ -149,6 +149,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User: UserCreateInput
             }
 
+            type ProfileEdge {
+              cursor: String!
+              node: Profile!
+            }
+
             enum ProfileImplementation {
               User
             }
@@ -202,9 +207,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName_STARTS_WITH: String
             }
 
+            type ProfilesConnection {
+              edges: [ProfileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
               profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
+              profilesConnection(after: String, first: Int, sort: [ProfileSort], where: ProfileWhere): ProfilesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -565,6 +577,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User: UserCreateInput
             }
 
+            type ProfileEdge {
+              cursor: String!
+              node: Profile!
+            }
+
             enum ProfileImplementation {
               User
             }
@@ -617,9 +634,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName_STARTS_WITH: String
             }
 
+            type ProfilesConnection {
+              edges: [ProfileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
               profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
+              profilesConnection(after: String, first: Int, sort: [ProfileSort], where: ProfileWhere): ProfilesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!

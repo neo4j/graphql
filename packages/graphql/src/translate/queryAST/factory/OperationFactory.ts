@@ -134,7 +134,9 @@ export class OperationsFactory {
                 });
             }
             case "CONNECTION": {
-                assertIsConcreteEntity(entity);
+                if (!entity) {
+                    throw new Error("Entity is required for top level connection read operations");
+                }
                 const topLevelConnectionResolveTree =
                     this.connectionFactory.normalizeResolveTreeForTopLevelConnection(resolveTree);
                 return this.connectionFactory.createConnectionOperationAST({
@@ -218,7 +220,7 @@ export class OperationsFactory {
         target: ConcreteEntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): ConnectionReadOperation {
+    }): ConnectionReadOperation | CompositeConnectionReadOperation {
         return this.connectionFactory.createConnectionOperationAST(arg);
     }
 

@@ -17,20 +17,33 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import neo4jDriver from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("aggregations-top_level-duration", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
+    let typeDefs: string;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        typeDefs = `
+            type ${Movie} {
+                testString: String
+                runningTime: Duration
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,13 +52,6 @@ describe("aggregations-top_level-duration", () => {
 
     test("should return the min of node properties", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type Movie {
-                testString: String
-                runningTime: Duration
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -57,13 +63,11 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, runningTime: $minDuration})
-                    CREATE (:Movie {testString: $testString, runningTime: $maxDuration})
+                    CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
+                    CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
                 `,
                 {
                     testString,
@@ -74,7 +78,7 @@ describe("aggregations-top_level-duration", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         runningTime {
                             min
                         }
@@ -94,7 +98,7 @@ describe("aggregations-top_level-duration", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 runningTime: {
                     min: minDuration.toString(),
                 },
@@ -107,13 +111,6 @@ describe("aggregations-top_level-duration", () => {
     test("should return the max of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                runningTime: Duration
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -124,13 +121,11 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, runningTime: $minDuration})
-                    CREATE (:Movie {testString: $testString, runningTime: $maxDuration})
+                    CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
+                    CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
                 `,
                 {
                     testString,
@@ -141,7 +136,7 @@ describe("aggregations-top_level-duration", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         runningTime {
                             max
                         }
@@ -161,7 +156,7 @@ describe("aggregations-top_level-duration", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 runningTime: {
                     max: maxDuration.toString(),
                 },
@@ -174,13 +169,6 @@ describe("aggregations-top_level-duration", () => {
     test("should return the min and max of node properties", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Movie {
-                testString: String
-                runningTime: Duration
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -191,13 +179,11 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, runningTime: $minDuration})
-                    CREATE (:Movie {testString: $testString, runningTime: $maxDuration})
+                    CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
+                    CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
                 `,
                 {
                     testString,
@@ -208,7 +194,7 @@ describe("aggregations-top_level-duration", () => {
 
             const query = `
                 {
-                    moviesAggregate(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         runningTime {
                             min
                             max
@@ -229,7 +215,7 @@ describe("aggregations-top_level-duration", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
                 runningTime: {
                     min: minDuration.toString(),
                     max: maxDuration.toString(),

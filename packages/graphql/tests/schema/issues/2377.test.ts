@@ -143,6 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type Query {
               resourceEntities(options: ResourceEntityOptions, where: ResourceEntityWhere): [ResourceEntity!]!
               resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
+              resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort], where: ResourceEntityWhere): ResourceEntitiesConnection!
               resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
@@ -373,6 +374,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               node: Resource!
             }
 
+            type ResourceEntitiesConnection {
+              edges: [ResourceEntityEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface ResourceEntity {
               id: ID!
               name: String
@@ -387,6 +394,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               count: Int!
               id: IDAggregateSelection!
               name: StringAggregateSelection!
+            }
+
+            type ResourceEntityEdge {
+              cursor: String!
+              node: ResourceEntity!
             }
 
             enum ResourceEntityImplementation {

@@ -63,6 +63,7 @@ import { UpdateInfo } from "../graphql/objects/UpdateInfo";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { Operation } from "../schema-model/Operation";
 import { OperationAdapter } from "../schema-model/OperationAdapter";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
 import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -89,7 +90,6 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -554,10 +554,11 @@ function generateObjectType({
             concreteEntityAdapter.operations.rootTypeFieldNames.read,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
+
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                 composer,
-                concreteEntityAdapter,
+                entityAdapter: concreteEntityAdapter,
                 propagatedDirectives,
             }),
         });
@@ -687,8 +688,21 @@ function generateInterfaceObjectType({
                 entityAdapter: interfaceEntityAdapter,
             }),
         });
+
         composer.Query.setFieldDirectives(
             interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: interfaceEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }

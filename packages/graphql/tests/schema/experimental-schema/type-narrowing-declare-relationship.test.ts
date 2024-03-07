@@ -971,6 +971,12 @@ describe("Declare Relationship", () => {
               startCursor: String
             }
 
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Person {
               name: String!
             }
@@ -987,6 +993,11 @@ describe("Declare Relationship", () => {
             input PersonCreateInput {
               Actor: ActorCreateInput
               UntrainedPerson: UntrainedPersonCreateInput
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
             }
 
             enum PersonImplementation {
@@ -1160,6 +1171,11 @@ describe("Declare Relationship", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               AmatureProduction
               Movie
@@ -1231,6 +1247,12 @@ describe("Declare Relationship", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -1243,8 +1265,10 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               untrainedPeople(options: UntrainedPersonOptions, where: UntrainedPersonWhere): [UntrainedPerson!]!
               untrainedPeopleAggregate(where: UntrainedPersonWhere): UntrainedPersonAggregateSelection!
               untrainedPeopleConnection(after: String, first: Int, sort: [UntrainedPersonSort], where: UntrainedPersonWhere): UntrainedPeopleConnection!
@@ -2549,6 +2573,12 @@ describe("Declare Relationship", () => {
               startCursor: String
             }
 
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Person {
               actedIn(options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(after: String, first: Int, sort: [PersonActedInConnectionSort!], where: PersonActedInConnectionWhere): PersonActedInConnection!
@@ -2631,6 +2661,11 @@ describe("Declare Relationship", () => {
 
             input PersonDisconnectInput {
               actedIn: [PersonActedInDisconnectFieldInput!]
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
             }
 
             enum PersonImplementation {
@@ -2775,6 +2810,11 @@ describe("Declare Relationship", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               AmatureProduction
               Movie
@@ -2841,6 +2881,12 @@ describe("Declare Relationship", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -2853,8 +2899,10 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               untrainedPeople(options: UntrainedPersonOptions, where: UntrainedPersonWhere): [UntrainedPerson!]!
               untrainedPeopleAggregate(where: UntrainedPersonWhere): UntrainedPersonAggregateSelection!
               untrainedPeopleConnection(after: String, first: Int, sort: [UntrainedPersonSort], where: UntrainedPersonWhere): UntrainedPeopleConnection!
@@ -4236,6 +4284,11 @@ describe("Declare Relationship", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               Movie
               Series
@@ -4308,6 +4361,12 @@ describe("Declare Relationship", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -4320,6 +4379,7 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
