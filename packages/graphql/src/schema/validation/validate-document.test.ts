@@ -3436,35 +3436,6 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@relationship"]);
         });
 
-        test("@authentication can't be used on the field of a root type", () => {
-            const doc = gql`
-                type Query {
-                    someActors: [Actor!]! @authentication
-                }
-
-                type Actor {
-                    name: String
-                }
-            `;
-
-            const executeValidate = () =>
-                validateDocument({
-                    document: doc,
-                    additionalDefinitions,
-                    features: {},
-                });
-
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid directive usage: Directive @authentication is not supported on fields of the Query type unless it is a @cypher field."
-            );
-            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authentication"]);
-        });
-
         test("@authorization can't be used on the field of a root type", () => {
             const doc = gql`
                 type Query {
@@ -3595,6 +3566,27 @@ describe("validation 2.0", () => {
                 "Invalid directive usage: Directive @populatedBy is not supported on fields of the Query type."
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
+        });
+
+        test("@authentication ok to be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]! @authentication
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            expect(executeValidate).not.toThrow();
         });
 
         test("@authentication with @cypher ok to be used on the field of a root type", () => {

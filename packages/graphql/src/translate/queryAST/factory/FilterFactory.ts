@@ -221,24 +221,6 @@ export class FilterFactory {
         // this is because if isNull is true we want to wrap the Exist subclause in a NOT, but if isNull is true and isNot is true they negate each other
         const isNot = isNull ? !filterOps.isNot : filterOps.isNot;
 
-        if (isInterfaceEntity(relationship.target)) {
-            const relationshipFilter = this.createRelationshipFilterTreeNode({
-                relationship,
-                target: relationship.target,
-                isNot,
-                operator: filterOps.operator || "SOME",
-            });
-
-            if (!isNull) {
-                if (isInterfaceEntity(relationship.target)) {
-                    throw new Error("Interface filter to be implemented");
-                }
-                const targetNodeFilters = this.createNodeFilters(relationship.target, where);
-                relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
-            }
-
-            return [relationshipFilter];
-        }
         const filteredEntities = getConcreteEntities(relationship.target, where);
         const relationshipFilters: RelationshipFilter[] = [];
         for (const concreteEntity of filteredEntities) {
