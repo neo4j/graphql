@@ -17,20 +17,25 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "./neo4j";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("delete", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        Actor = new UniqueType("Actor");
     });
 
     afterAll(async () => {
@@ -41,7 +46,7 @@ describe("delete", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -54,7 +59,7 @@ describe("delete", () => {
 
         const mutation = `
         mutation($id: ID!) {
-            deleteMovies(where: { id: $id }) {
+            ${Movie.operations.delete}(where: { id: $id }) {
               nodesDeleted
               relationshipsDeleted
             }
@@ -64,7 +69,7 @@ describe("delete", () => {
         try {
             await session.run(
                 `
-                CREATE (:Movie {id: $id})
+                CREATE (:${Movie} {id: $id})
             `,
                 { id }
             );
@@ -78,11 +83,11 @@ describe("delete", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 1, relationshipsDeleted: 0 });
+            expect(gqlResult?.data?.[Movie.operations.delete]).toEqual({ nodesDeleted: 1, relationshipsDeleted: 0 });
 
             const reFind = await session.run(
                 `
-              MATCH (m:Movie {id: $id})
+              MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
                 { id }
@@ -98,7 +103,7 @@ describe("delete", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -111,7 +116,7 @@ describe("delete", () => {
 
         const mutation = `
         mutation($id: ID!) {
-            deleteMovies(where: { id: $id }) {
+            ${Movie.operations.delete}(where: { id: $id }) {
               nodesDeleted
               relationshipsDeleted
             }
@@ -121,7 +126,7 @@ describe("delete", () => {
         try {
             await session.run(
                 `
-                CREATE (:Movie {id: $id})
+                CREATE (:${Movie} {id: $id})
             `,
                 { id }
             );
@@ -135,11 +140,11 @@ describe("delete", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 0, relationshipsDeleted: 0 });
+            expect(gqlResult?.data?.[Movie.operations.delete]).toEqual({ nodesDeleted: 0, relationshipsDeleted: 0 });
 
             const reFind = await session.run(
                 `
-              MATCH (m:Movie {id: $id})
+              MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
                 { id }
@@ -155,14 +160,14 @@ describe("delete", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type Actor {
+            type ${Actor} {
                 name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie {
+            type ${Movie} {
                 id: ID
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -178,7 +183,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($id: ID!, $name: String) {
-                deleteMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
+                ${Movie.operations.delete}(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -188,8 +193,8 @@ describe("delete", () => {
         try {
             await session.run(
                 `
-                CREATE (m:Movie {id: $id})
-                CREATE (a:Actor {name: $name})
+                CREATE (m:${Movie} {id: $id})
+                CREATE (a:${Actor} {name: $name})
                 MERGE (a)-[:ACTED_IN]->(m)
             `,
                 {
@@ -207,11 +212,11 @@ describe("delete", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 2, relationshipsDeleted: 1 });
+            expect(gqlResult?.data?.[Movie.operations.delete]).toEqual({ nodesDeleted: 2, relationshipsDeleted: 1 });
 
             const movie = await session.run(
                 `
-              MATCH (m:Movie {id: $id})
+              MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
                 { id }
@@ -221,7 +226,7 @@ describe("delete", () => {
 
             const actor = await session.run(
                 `
-              MATCH (a:Actor {name: $name})
+              MATCH (a:${Actor} {name: $name})
               RETURN a
             `,
                 { name }
@@ -237,14 +242,14 @@ describe("delete", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type Actor {
+            type ${Actor} {
                 name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie {
+            type ${Movie} {
                 id: ID
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -264,7 +269,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($id1: ID!, $name: String, $id2: ID!) {
-                deleteMovies(
+                ${Movie.operations.delete}(
                     where: { id: $id1 }
                     delete: { actors: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
                 ) {
@@ -277,9 +282,9 @@ describe("delete", () => {
         try {
             await session.run(
                 `
-                CREATE (m1:Movie {id: $id1})
-                CREATE (a:Actor {name: $name})
-                CREATE (m2:Movie {id: $id2})
+                CREATE (m1:${Movie} {id: $id1})
+                CREATE (a:${Actor} {name: $name})
+                CREATE (m2:${Movie} {id: $id2})
                 MERGE (a)-[:ACTED_IN]->(m1)
                 MERGE (a)-[:ACTED_IN]->(m2)
             `,
@@ -299,11 +304,11 @@ describe("delete", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 3, relationshipsDeleted: 2 });
+            expect(gqlResult?.data?.[Movie.operations.delete]).toEqual({ nodesDeleted: 3, relationshipsDeleted: 2 });
 
             const movie1 = await session.run(
                 `
-              MATCH (m:Movie {id: $id})
+              MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
                 { id: id1 }
@@ -313,7 +318,7 @@ describe("delete", () => {
 
             const actor = await session.run(
                 `
-              MATCH (a:Actor {name: $name})
+              MATCH (a:${Actor} {name: $name})
               RETURN a
             `,
                 { name }
@@ -323,7 +328,7 @@ describe("delete", () => {
 
             const movie2 = await session.run(
                 `
-              MATCH (m:Movie {id: $id})
+              MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
                 { id: id2 }
@@ -339,14 +344,14 @@ describe("delete", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type Actor {
+            type ${Actor} {
                 name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            type ${Movie} {
+                id: ID
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -362,7 +367,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($name: String) {
-                deleteMovies(where: { actorsConnection: { node: { name: $name } } } ) {
+                ${Movie.operations.delete}(where: { actorsConnection: { node: { name: $name } } } ) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -372,8 +377,8 @@ describe("delete", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $title})<-[:ACTED_IN]-(:Actor {name: $name})
-                    CREATE (:Movie {id: $title})<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                    CREATE (:${Movie} {id: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                    CREATE (:${Movie} {id: $title})<-[:ACTED_IN]-(:${Actor} {name: randomUUID()})
                 `,
                 {
                     title,
@@ -390,7 +395,7 @@ describe("delete", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 1, relationshipsDeleted: 1 });
+            expect(gqlResult?.data?.[Movie.operations.delete]).toEqual({ nodesDeleted: 1, relationshipsDeleted: 1 });
         } finally {
             await session.close();
         }

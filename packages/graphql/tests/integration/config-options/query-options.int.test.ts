@@ -17,19 +17,43 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("query options", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+
+    let Actor: UniqueType;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Actor = new UniqueType("Actor");
+        Movie = new UniqueType("Movie");
+        const typeDefs = `
+            type ${Actor} {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+    
+            type ${Movie} {
+                id: ID!
+                title: String!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
     });
 
     afterAll(async () => {
@@ -39,31 +63,13 @@ describe("query options", () => {
     test("queries should work with runtime set to interpreted", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Actor {
-                name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-
-            type Movie {
-                id: ID!
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
-
         const id = generate({
             charset: "alphabetic",
         });
 
         const query = `
             query($id: ID){
-                movies(where: {id: $id}){
+                ${Movie.plural}(where: {id: $id}){
                     id
                 }
             }
@@ -74,7 +80,7 @@ describe("query options", () => {
 
             await session.run(
                 `
-              CREATE (:Movie {id: $id}), (:Movie {id: $id}), (:Movie {id: $id})
+              CREATE (:${Movie} {id: $id}), (:${Movie} {id: $id}), (:${Movie} {id: $id})
             `,
                 { id }
             );
@@ -88,7 +94,7 @@ describe("query options", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.movies).toEqual([{ id }, { id }, { id }]);
+            expect(result?.data?.[Movie.plural]).toEqual([{ id }, { id }, { id }]);
         } finally {
             await session.close();
         }

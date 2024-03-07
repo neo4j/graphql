@@ -21,15 +21,50 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("Enum Relationship Properties", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Movie: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        Actor = new UniqueType("Actor");
+        const typeDefs = `
+            type ${Actor} {
+                name: String!
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+    
+            type ${Movie} {
+                title: String!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+    
+            enum RoleType {
+                LEADING
+                SUPPORTING
+            }
+    
+            type ActedIn @relationshipProperties {
+                roleType: RoleType!
+            }
+        `;
+        const roleTypeResolver = {
+            LEADING: "Leading",
+            SUPPORTING: "Supporting",
+        };
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: { RoleType: roleTypeResolver },
+        });
     });
 
     afterAll(async () => {
@@ -38,37 +73,6 @@ describe("Enum Relationship Properties", () => {
 
     test("should create a movie and an actor, with an enum as a relationship property", async () => {
         const session = await neo4j.getSession();
-
-        const roleTypeResolver = {
-            LEADING: "Leading",
-            SUPPORTING: "Supporting",
-        };
-
-        const typeDefs = `
-            type Actor {
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-
-            type Movie {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            enum RoleType {
-                LEADING
-                SUPPORTING
-            }
-
-            type ActedIn @relationshipProperties {
-                roleType: RoleType!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            resolvers: { RoleType: roleTypeResolver },
-        });
 
         const title = generate({
             charset: "alphabetic",
@@ -80,12 +84,12 @@ describe("Enum Relationship Properties", () => {
 
         const create = /* GraphQL */ `
             mutation CreateMovies($title: String!, $name: String!) {
-                createMovies(
+                ${Movie.operations.create}(
                     input: [
                         { title: $title, actors: { create: [{ edge: { roleType: LEADING }, node: { name: $name } }] } }
                     ]
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actorsConnection {
                             edges {
@@ -113,8 +117,8 @@ describe("Enum Relationship Properties", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult.data).toEqual({
-                createMovies: {
-                    movies: [
+                [Movie.operations.create]: {
+                    [Movie.plural]: [
                         {
                             title,
                             actorsConnection: { edges: [{ properties: { roleType: "LEADING" }, node: { name } }] },
@@ -124,7 +128,7 @@ describe("Enum Relationship Properties", () => {
             });
 
             const result = await session.run(`
-                MATCH (m:Movie)<-[ai:ACTED_IN]-(a:Actor)
+                MATCH (m:${Movie})<-[ai:ACTED_IN]-(a:${Actor})
                 WHERE m.title = "${title}" AND a.name = "${name}"
                 RETURN ai
             `);
