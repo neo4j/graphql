@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { cleanNodesUsingSession } from "../utils/clean-nodes";
+import { UniqueType } from "../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
+import Neo4jHelper from "./neo4j";
 
 describe("multi-database", () => {
     let driver: Driver;
@@ -32,11 +34,13 @@ describe("multi-database", () => {
     });
     let MULTIDB_SUPPORT = true;
     const dbName = "non-default-db-name";
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
+        Movie = new UniqueType("Movie");
         try {
             // Create DB
             const createSession = await neo4j.getSession();
@@ -45,12 +49,12 @@ describe("multi-database", () => {
 
             // Write data
             const writeSession = driver.session({ database: dbName, bookmarks: createSession.lastBookmarks() });
-            await writeSession.executeWrite((tx) => tx.run("CREATE (:Movie {id: $id})", { id }));
+            await writeSession.executeWrite((tx) => tx.run(`CREATE (:${Movie} {id: $id})`, { id }));
             await writeSession.close();
 
             // Make sure it's written before we continue
             const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmarks() });
-            await waitSession.executeRead((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
+            await waitSession.executeRead((tx) => tx.run(`MATCH (m:${Movie}) RETURN COUNT(m)`));
             await waitSession.close();
         } catch (e) {
             if (e instanceof Error) {
@@ -72,6 +76,8 @@ describe("multi-database", () => {
             await dropSession.writeTransaction((tx) => tx.run(`DROP DATABASE \`${dbName}\``));
             await dropSession.close();
         }
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [Movie]);
         await driver.close();
     });
 
@@ -83,7 +89,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -92,7 +98,7 @@ describe("multi-database", () => {
 
         const query = `
             query {
-                movies(where: { id: "${id}" }) {
+                ${Movie.plural}(where: { id: "${id}" }) {
                     id
                 }
             }
@@ -114,7 +120,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -123,7 +129,7 @@ describe("multi-database", () => {
 
         const query = `
             query {
-                movies(where: { id: "${id}" }) {
+                ${Movie.plural}(where: { id: "${id}" }) {
                     id
                 }
             }
@@ -135,7 +141,7 @@ describe("multi-database", () => {
             variableValues: { id },
             contextValue: { executionContext: driver, sessionConfig: { database: dbName } },
         });
-        expect((result.data as any).movies[0].id).toBe(id);
+        expect((result.data as any)[Movie.plural][0].id).toBe(id);
     });
 
     test("should fail for non-existing database specified via neo4j construction", async () => {
@@ -146,7 +152,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -158,7 +164,7 @@ describe("multi-database", () => {
 
         const query = `
             query {
-                movies(where: { id: "${id}" }) {
+                ${Movie.plural}(where: { id: "${id}" }) {
                     id
                 }
             }
@@ -184,7 +190,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -196,7 +202,7 @@ describe("multi-database", () => {
 
         const query = `
             query {
-                movies(where: { id: "${id}" }) {
+                ${Movie.plural}(where: { id: "${id}" }) {
                     id
                 }
             }
@@ -208,6 +214,6 @@ describe("multi-database", () => {
             variableValues: { id },
             contextValue: { sessionConfig: { database: dbName } }, // This is needed, otherwise the context in resolvers will be undefined
         });
-        expect((result.data as any).movies[0].id).toBe(id);
+        expect((result.data as any)[Movie.plural][0].id).toBe(id);
     });
 });

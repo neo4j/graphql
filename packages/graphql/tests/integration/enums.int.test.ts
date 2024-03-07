@@ -17,19 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("enums", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
@@ -44,7 +47,7 @@ describe("enums", () => {
                 ACTIVE
             }
 
-            type Movie {
+            type ${Movie} {
               id: ID
               status: Status
             }
@@ -58,8 +61,8 @@ describe("enums", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}", status: ACTIVE}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}", status: ACTIVE}]) {
+                    ${Movie.plural} {
                         id
                     }
                 }
@@ -76,7 +79,7 @@ describe("enums", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             const result = await session.run(`
-                MATCH (m:Movie {id: "${id}"})
+                MATCH (m:${Movie} {id: "${id}"})
                 RETURN m {.id, .status} as m
             `);
 
@@ -96,7 +99,7 @@ describe("enums", () => {
                 EATING
             }
 
-            type Movie {
+            type ${Movie} {
               id: ID
               status: Status @default(value: ACTIVE)
             }
@@ -110,8 +113,8 @@ describe("enums", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}"}]) {
+                    ${Movie.plural} {
                         id
                     }
                 }
@@ -128,7 +131,7 @@ describe("enums", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             const result = await session.run(`
-                MATCH (m:Movie {id: "${id}"})
+                MATCH (m:${Movie} {id: "${id}"})
                 RETURN m {.id, .status} as m
             `);
 
@@ -150,7 +153,7 @@ describe("enums", () => {
                 ACTIVE
             }
 
-            type Movie {
+            type ${Movie} {
               id: ID
               status: Status
             }
@@ -164,8 +167,8 @@ describe("enums", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}", status: ACTIVE}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}", status: ACTIVE}]) {
+                    ${Movie.plural} {
                         id
                     }
                 }
@@ -182,7 +185,7 @@ describe("enums", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             const result = await session.run(`
-                MATCH (m:Movie {id: "${id}"})
+                MATCH (m:${Movie} {id: "${id}"})
                 RETURN m {.id, .status} as m
             `);
 
@@ -206,7 +209,7 @@ describe("enums", () => {
                 EATING
             }
 
-            type Movie {
+            type ${Movie} {
               id: ID
               status: Status @default(value: ACTIVE)
             }
@@ -220,8 +223,8 @@ describe("enums", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}"}]) {
+                    ${Movie.plural} {
                         id
                     }
                 }
@@ -238,7 +241,7 @@ describe("enums", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             const result = await session.run(`
-                MATCH (m:Movie {id: "${id}"})
+                MATCH (m:${Movie} {id: "${id}"})
                 RETURN m {.id, .status} as m
             `);
 

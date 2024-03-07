@@ -17,25 +17,33 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("auth/bind", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     const secret = "secret";
+    let Post: UniqueType;
+    let User: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Post = new UniqueType("Post");
+        User = new UniqueType("User");
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [User, Post]);
         await driver.close();
     });
 
@@ -44,17 +52,17 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @authorization(validate: [{ when: [AFTER], operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${Post} @authorization(validate: [{ when: [AFTER], operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -63,7 +71,7 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: [{
+                    ${User.operations.create}(input: [{
                         id: "${userId}",
                         posts: {
                             create: [{
@@ -73,7 +81,7 @@ describe("auth/bind", () => {
                             }]
                         }
                     }]) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
