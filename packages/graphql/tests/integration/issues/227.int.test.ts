@@ -17,35 +17,28 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/227", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
     let Member: UniqueType;
     let Gender: UniqueType;
     let Town: UniqueType;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Member = new UniqueType("Member");
-        Gender = new UniqueType("Gender");
-        Town = new UniqueType("Town");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        Member = testHelper.createUniqueType("Member");
+        Gender = testHelper.createUniqueType("Gender");
+        Town = testHelper.createUniqueType("Town");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Return relationship data on custom query", async () => {
-        const session = await neo4j.getSession();
-
         const memberId = generate({
             charset: "alphabetic",
         });
@@ -56,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
             charset: "alphabetic",
         });
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
                     type ${Member} {
                         id: ID!
                         gender: ${Gender}! @relationship(type: "HAS_GENDER", direction: OUT)
@@ -76,45 +69,38 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
                     }
                 `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const source = `
-                    query($id: ID!) {
-                        townMemberList(id: $id) {
-                          id
-                          gender {
-                            gender
-                          }
-                        }
+        const source = /* GraphQL */ `
+            query ($id: ID!) {
+                townMemberList(id: $id) {
+                    id
+                    gender {
+                        gender
                     }
-                `;
-
-        try {
-            await session.run(
-                `
-                            CREATE (t:${Town} {id: $townId})
-                            MERGE (t)<-[:BELONGS_TO]-(m:${Member} {id: $memberId})
-                            MERGE (m)-[:HAS_GENDER]->(:${Gender} {gender: $gender})
-                        `,
-                {
-                    memberId,
-                    gender,
-                    townId,
                 }
-            );
+            }
+        `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { id: townId },
-            });
+        await testHelper.runCypher(
+            `
+            CREATE (t:${Town} {id: $townId})
+            MERGE (t)<-[:BELONGS_TO]-(m:${Member} {id: $memberId})
+            MERGE (m)-[:HAS_GENDER]->(:${Gender} {gender: $gender})
+                        `,
+            {
+                memberId,
+                gender,
+                townId,
+            }
+        );
 
-            expect(gqlResult.errors).toBeFalsy();
+        const gqlResult = await testHelper.runGraphQL(source, {
+            variableValues: { id: townId },
+        });
 
-            expect((gqlResult?.data as any).townMemberList).toEqual([{ id: memberId, gender: { gender } }]);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult?.data as any).townMemberList).toEqual([{ id: memberId, gender: { gender } }]);
     });
 });

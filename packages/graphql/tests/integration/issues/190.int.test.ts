@@ -31,8 +31,8 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
 
     beforeAll(async () => {
         testHelper = new TestHelper();
-        User = testHelper.getUniqueType("User");
-        UserDemographics = testHelper.getUniqueType("UserDemographics");
+        User = testHelper.createUniqueType("User");
+        UserDemographics = testHelper.createUniqueType("UserDemographics");
 
         typeDefs = gql`
         type ${User} {

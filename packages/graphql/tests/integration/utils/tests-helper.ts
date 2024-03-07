@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ExecutionResult } from "graphql";
+import type { ExecutionResult, GraphQLArgs } from "graphql";
 import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { Memoize } from "typescript-memoize";
@@ -60,13 +60,13 @@ export class TestHelper {
         return this.neo4jGraphQL;
     }
 
-    public getUniqueType(type: string): UniqueType {
+    public createUniqueType(type: string): UniqueType {
         const uniqueType = new UniqueType(type);
         this.uniqueTypes.push(uniqueType);
         return uniqueType;
     }
 
-    public async runGraphQL(query: string): Promise<ExecutionResult> {
+    public async runGraphQL(query: string, args: Pick<GraphQLArgs, "variableValues"> = {}): Promise<ExecutionResult> {
         if (!this.neo4jGraphQL) {
             throw new Error("Neo4j GraphQL not ready. Did you forget calling 'initNeo4jGraphQL'?");
         }
@@ -75,6 +75,7 @@ export class TestHelper {
             schema,
             source: query,
             contextValue: await this.getContextValues(),
+            ...args,
         });
     }
 
