@@ -3584,21 +3584,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:2.7.1, @neo4j-ndl/base@npm:^2.7.1":
-  version: 2.7.1
-  resolution: "@neo4j-ndl/base@npm:2.7.1"
-  checksum: 10c0/1d805d796a92f6424df9cd161cfe3c24aae4a8b2e80bbccf59e9869e84f1ed7ea418fbf391c11d4c80e69fb90b1d02f8907e49c44d0923b11c6f2d28c22ee32a
+"@neo4j-ndl/base@npm:2.7.2, @neo4j-ndl/base@npm:^2.7.2":
+  version: 2.7.2
+  resolution: "@neo4j-ndl/base@npm:2.7.2"
+  checksum: 10c0/6e7905a1ece9d33814f32d8c2c6228d5eece2b9d925a684f0c851f00d3c2bc0d8831812b22b3aa19604b8b6011843d0b930b409600ee76751591acdf568e4b31
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:2.8.1":
-  version: 2.8.1
-  resolution: "@neo4j-ndl/react@npm:2.8.1"
+"@neo4j-ndl/react@npm:2.8.3":
+  version: 2.8.3
+  resolution: "@neo4j-ndl/react@npm:2.8.3"
   dependencies:
     "@floating-ui/react": "npm:0.25.1"
     "@heroicons/react": "npm:2.0.13"
     "@neo4j-cypher/react-codemirror": "npm:^1.0.1"
-    "@neo4j-ndl/base": "npm:^2.7.1"
+    "@neo4j-ndl/base": "npm:^2.7.2"
     "@table-nav/core": "npm:0.0.7"
     "@table-nav/react": "npm:0.0.7"
     "@tanstack/react-table": "npm:^8.9.3"
@@ -3620,7 +3620,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 10c0/9c88f7255777077099f6fa638603106a8a9fdc16d3e3ff46bd3f1e53596d3973f0b1cf66e83b15dc8da10bcfde5e30c59eb07daaa58818506a40a7d24456e7ee
+  checksum: 10c0/57ac9e99f25c8f4d6b3d67d21851fd039592fb5f504d380072a1a3d946b1aff11e1e5ae93690208ac4cb842f501532b7861e36eaa2ae4612dfa6abe8f5daf152
   languageName: node
   linkType: hard
 
@@ -3700,8 +3700,8 @@ __metadata:
     "@dnd-kit/modifiers": "npm:7.0.0"
     "@dnd-kit/sortable": "npm:8.0.0"
     "@graphiql/react": "npm:0.20.3"
-    "@neo4j-ndl/base": "npm:2.7.1"
-    "@neo4j-ndl/react": "npm:2.8.1"
+    "@neo4j-ndl/base": "npm:2.7.2"
+    "@neo4j-ndl/react": "npm:2.8.3"
     "@neo4j/graphql": "npm:5.1.0"
     "@neo4j/introspector": "npm:3.0.0"
     "@playwright/test": "npm:1.42.1"
