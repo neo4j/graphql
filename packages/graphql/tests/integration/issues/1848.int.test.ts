@@ -20,35 +20,47 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1848", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let ContentPiece: UniqueType;
+    let Project: UniqueType;
+    let Community: UniqueType;
 
-    const typeDefs = `
-        type ContentPiece @node(labels: ["ContentPiece", "UNIVERSAL"]) {
+    let typeDefs: string;
+
+    beforeAll(async () => {
+        neo4j = new Neo4jHelper();
+        driver = await neo4j.getDriver();
+        ContentPiece = new UniqueType("ContentPiece");
+        Project = new UniqueType("Project");
+        Community = new UniqueType("Community");
+        typeDefs = `
+        type ${ContentPiece} @node(labels: ["${ContentPiece}", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
         }
 
-        type Project @node(labels: ["Project", "UNIVERSAL"]) {
+        type ${Project} @node(labels: ["${Project}", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
         }
 
-        type Community @node(labels: ["Community", "UNIVERSAL"]) {
+        type ${Community} @node(labels: ["${Community}", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
-            hasContentPieces: [ContentPiece!]!
+            hasContentPieces: [${ContentPiece}!]!
                 @relationship(type: "COMMUNITY_CONTENTPIECE_HASCONTENTPIECES", direction: OUT)
-            hasAssociatedProjects: [Project!]!
+            hasAssociatedProjects: [${Project}!]!
                 @relationship(type: "COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS", direction: OUT)
         }
 
-        extend type Community {
+        extend type ${Community} {
             """
             Used on Community Landing Page
             """
@@ -61,12 +73,8 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                 )
         }
 
-        union FeedItem = ContentPiece | Project
+        union FeedItem = ${ContentPiece} | ${Project}
     `;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -82,13 +90,13 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
 
         const query = `
             query {
-                communities {
+                ${Community.plural} {
                     id
                     hasFeedItems {
-                        ... on ContentPiece {
+                        ... on ${ContentPiece} {
                             id
                         }
-                        ... on Project {
+                        ... on ${Project} {
                             id
                         }
                     }
@@ -105,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
         expect(res.errors).toBeUndefined();
 
         expect(res.data).toEqual({
-            communities: [],
+            [Community.plural]: [],
         });
     });
 });

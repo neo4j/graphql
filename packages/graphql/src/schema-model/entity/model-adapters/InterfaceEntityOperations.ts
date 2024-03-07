@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
+import { upperFirst } from "graphql-compose";
 import { ImplementingEntityOperations } from "./ImplementingEntityOperations";
+import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 
 export class InterfaceEntityOperations extends ImplementingEntityOperations<InterfaceEntityAdapter> {
     constructor(interfaceEntityAdapter: InterfaceEntityAdapter) {
@@ -31,5 +32,17 @@ export class InterfaceEntityOperations extends ImplementingEntityOperations<Inte
 
     public get implementationsSubscriptionWhereInputTypeName(): string {
         return `${this.entityAdapter.name}ImplementationsSubscriptionWhere`;
+    }
+
+    public get fullTextInputTypeName(): string {
+        return `${this.entityAdapter.name}Fulltext`;
+    }
+
+    public getFullTextIndexInputTypeName(indexName: string): string {
+        return `${this.entityAdapter.name}${upperFirst(indexName)}Fulltext`;
+    }
+
+    public get connectionFieldTypename(): string {
+        return `${this.pascalCasePlural}Connection`;
     }
 }

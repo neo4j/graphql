@@ -17,31 +17,43 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Query Converted to Float", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        type Movie {
+    let Movie: UniqueType;
+    let Tag: UniqueType;
+    let typeDefs: string;
+
+    beforeAll(async () => {
+        neo4j = new Neo4jHelper();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
+
+        Movie = new UniqueType("Movie");
+        Tag = new UniqueType("Tag");
+
+        typeDefs = `
+        type ${Movie} {
             title: String
-            tags: [Tag!]! @relationship(type: "HAS", direction: OUT)
+            tags: [${Tag}!]! @relationship(type: "HAS", direction: OUT)
         }
 
-        type Tag {
+        type ${Tag} {
             name: String!
-            papers: [Movie!]! @relationship(type: "HAS", direction: IN)
+            papers: [${Movie}!]! @relationship(type: "HAS", direction: IN)
         }
 
         type Query {
-            movie_tags(tagName: String = "", limit: Int): [Movie]
+            movie_tags(tagName: String = "", limit: Int): [${Movie}]
                 @cypher(
                     statement: """
-                    MATCH (tag:Tag)<-[:HAS]-(movie:Movie)
+                    MATCH (tag:${Tag})<-[:HAS]-(movie:${Movie})
                     WHERE tag.name = $tagName
                     RETURN movie
                     LIMIT $limit
@@ -51,15 +63,10 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         }
     `;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
-
         try {
             await session.run(
                 `
-                    CREATE (m1:Movie {title: "M1"}), (m2:Movie {title: "M2"}), (t1:Tag {name: "T1"}), (t2:Tag {name: "T2"})
+                    CREATE (m1:${Movie} {title: "M1"}), (m2:${Movie} {title: "M2"}), (t1:${Tag} {name: "T1"}), (t2:${Tag} {name: "T2"})
                     CREATE (m1)-[:HAS]->(t1)<-[:HAS]-(m2)
                     CREATE (m1)-[:HAS]->(t2)
                 `
@@ -73,8 +80,8 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         const session = await neo4j.getSession();
 
         try {
-            await session.run(`MATCH (m:Movie) WHERE m.title IN ["M1", "M2"] DETACH DELETE m`);
-            await session.run(`MATCH (t:Tag) WHERE t.name IN ["T1", "T2"] DETACH DELETE t`);
+            await session.run(`MATCH (m:${Movie}) WHERE m.title IN ["M1", "M2"] DETACH DELETE m`);
+            await session.run(`MATCH (t:${Tag}) WHERE t.name IN ["T1", "T2"] DETACH DELETE t`);
         } finally {
             await session.close();
         }

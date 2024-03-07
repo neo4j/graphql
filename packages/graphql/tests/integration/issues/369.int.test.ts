@@ -22,15 +22,18 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("369", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Dato: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Dato = new UniqueType("Dato");
     });
 
     afterAll(async () => {
@@ -41,10 +44,10 @@ describe("369", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type Dato {
+            type ${Dato} {
                 uuid: ID
-                dependeTo: [Dato!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
-                dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
+                dependeTo: [${Dato}!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
+                dependeFrom: [${Dato}!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
             type Depende @relationshipProperties {
@@ -52,14 +55,14 @@ describe("369", () => {
             }
 
             type Query {
-                getDato(uuid: String): Dato
+                getDato(uuid: String): ${Dato}
                     @cypher(
-                        statement: """
-                        MATCH (d:Dato {uuid: $uuid}) RETURN d
-                        """
-                        columnName: "d"
+                    statement: """
+                    MATCH (d:${Dato} {uuid: $uuid}) RETURN d
+                    """
+                    columnName: "d"
                     )
-            }
+                }
         `;
 
         const datoUUID = generate({
@@ -94,7 +97,7 @@ describe("369", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Dato {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:Dato {uuid: $datoToUUID})
+                    CREATE (:${Dato} {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:${Dato} {uuid: $datoToUUID})
                 `,
                 {
                     datoUUID,
@@ -126,10 +129,10 @@ describe("369", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type Dato {
+            type ${Dato} {
                 uuid: ID
-                dependeTo: [Dato!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
-                dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
+                dependeTo: [${Dato}!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
+                dependeFrom: [${Dato}!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
             type Depende @relationshipProperties {
@@ -137,10 +140,10 @@ describe("369", () => {
             }
 
             type Query {
-                getDato(uuid: String): Dato
+                getDato(uuid: String): ${Dato}
                     @cypher(
                         statement: """
-                        MATCH (d:Dato {uuid: $uuid}) RETURN d
+                        MATCH (d:${Dato} {uuid: $uuid}) RETURN d
                         """
                         columnName: "d"
                     )
@@ -179,7 +182,7 @@ describe("369", () => {
         try {
             await session.run(
                 `
-                    CREATE (d:Dato {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:Dato {uuid: $datoToUUID})
+                    CREATE (d:${Dato} {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:${Dato} {uuid: $datoToUUID})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
                 `,

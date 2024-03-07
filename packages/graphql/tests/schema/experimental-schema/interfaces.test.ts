@@ -193,6 +193,11 @@ describe("Interfaces", () => {
               id: IDAggregateSelection!
             }
 
+            type MovieNodeEdge {
+              cursor: String!
+              node: MovieNode!
+            }
+
             enum MovieNodeImplementation {
               Movie
             }
@@ -311,6 +316,12 @@ describe("Interfaces", () => {
               typename_IN: [MovieNodeImplementation!]
             }
 
+            type MovieNodesConnection {
+              edges: [MovieNodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -404,6 +415,7 @@ describe("Interfaces", () => {
             type Query {
               movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
               movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
+              movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort], where: MovieNodeWhere): MovieNodesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -608,6 +620,11 @@ describe("Interfaces", () => {
               id: IDAggregateSelection!
             }
 
+            type MovieNodeEdge {
+              cursor: String!
+              node: MovieNode!
+            }
+
             enum MovieNodeImplementation {
               Movie
             }
@@ -726,6 +743,12 @@ describe("Interfaces", () => {
               typename_IN: [MovieNodeImplementation!]
             }
 
+            type MovieNodesConnection {
+              edges: [MovieNodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -819,6 +842,7 @@ describe("Interfaces", () => {
             type Query {
               movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
               movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
+              movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort], where: MovieNodeWhere): MovieNodesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

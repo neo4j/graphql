@@ -17,16 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/350", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Post: UniqueType;
+    let Comment: UniqueType;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
@@ -39,18 +42,19 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
 
     test("Retain attributes when aliasing the same field multiple times in a single query", async () => {
         const session = await neo4j.getSession();
-        const typeDefs = gql`
-            type Post {
+        Post = new UniqueType("Post");
+        typeDefs = `
+            type ${Post} {
                 id: ID!
                 title: String!
                 content: String!
-                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
+                comments: [${Comment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
-            type Comment {
+            type ${Comment} {
                 id: ID!
                 flagged: Boolean!
                 content: String!
-                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+                post: ${Post}! @relationship(type: "HAS_COMMENT", direction: IN)
                 canEdit: Boolean! @cypher(statement: "RETURN false as res", columnName: "res")
             }
         `;
@@ -83,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
 
         const query = `
             query {
-                posts(where: { id: "${postId}" }) {
+                ${Post.plural}(where: { id: "${postId}" }) {
                     flaggedComments: comments(where: { flagged: true }) {
                         content
                         flagged
@@ -99,9 +103,9 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
         try {
             await session.run(
                 `
-                    CREATE (post:Post {id: $postId, title: $postTitle, content: $postContent})
-                    CREATE (comment1:Comment {id: $comment1Id, content: $comment1Content, flagged: true})
-                    CREATE (comment2:Comment {id: $comment2Id, content: $comment2Content, flagged: false})
+                    CREATE (post:${Post} {id: $postId, title: $postTitle, content: $postContent})
+                    CREATE (comment1:${Comment} {id: $comment1Id, content: $comment1Content, flagged: true})
+                    CREATE (comment2:${Comment} {id: $comment2Id, content: $comment2Content, flagged: false})
                     MERGE (post)-[:HAS_COMMENT]->(comment1)
                     MERGE (post)-[:HAS_COMMENT]->(comment2)
 
@@ -123,11 +127,11 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
                 contextValue: neo4j.getContextValues(),
             });
             expect(result.errors).toBeFalsy();
-            expect((result?.data as any)?.posts[0].flaggedComments).toContainEqual({
+            expect((result?.data as any)[Post.plural][0].flaggedComments).toContainEqual({
                 content: comment1Content,
                 flagged: true,
             });
-            expect((result?.data as any)?.posts[0].unflaggedComments).toContainEqual({
+            expect((result?.data as any)[Post.plural][0].unflaggedComments).toContainEqual({
                 content: comment2Content,
                 flagged: false,
             });

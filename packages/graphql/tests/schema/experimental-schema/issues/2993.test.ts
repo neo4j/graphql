@@ -149,6 +149,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User: UserCreateInput
             }
 
+            type ProfileEdge {
+              cursor: String!
+              node: Profile!
+            }
+
             enum ProfileImplementation {
               User
             }
@@ -202,9 +207,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName_STARTS_WITH: String
             }
 
+            type ProfilesConnection {
+              edges: [ProfileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
               profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
+              profilesConnection(after: String, first: Int, sort: [ProfileSort], where: ProfileWhere): ProfilesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -382,6 +394,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              following: ProfileWhere @deprecated(reason: \\"Use \`following_SOME\` instead.\\")
               followingConnection: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
@@ -400,6 +413,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               Return Users where some of the related UserFollowingConnections match this filter
               \\"\\"\\"
               followingConnection_SOME: UserFollowingConnectionWhere
+              \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
+              following_ALL: ProfileWhere
+              \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
+              following_NONE: ProfileWhere
+              following_NOT: ProfileWhere @deprecated(reason: \\"Use \`following_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
+              following_SINGLE: ProfileWhere
+              \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
+              following_SOME: ProfileWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -555,6 +577,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User: UserCreateInput
             }
 
+            type ProfileEdge {
+              cursor: String!
+              node: Profile!
+            }
+
             enum ProfileImplementation {
               User
             }
@@ -607,9 +634,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName_STARTS_WITH: String
             }
 
+            type ProfilesConnection {
+              edges: [ProfileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
               profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
+              profilesConnection(after: String, first: Int, sort: [ProfileSort], where: ProfileWhere): ProfilesConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -787,6 +821,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              following: ProfileWhere @deprecated(reason: \\"Use \`following_SOME\` instead.\\")
               followingConnection: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
@@ -805,6 +840,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               Return Users where some of the related UserFollowingConnections match this filter
               \\"\\"\\"
               followingConnection_SOME: UserFollowingConnectionWhere
+              \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
+              following_ALL: ProfileWhere
+              \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
+              following_NONE: ProfileWhere
+              following_NOT: ProfileWhere @deprecated(reason: \\"Use \`following_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
+              following_SINGLE: ProfileWhere
+              \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
+              following_SOME: ProfileWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

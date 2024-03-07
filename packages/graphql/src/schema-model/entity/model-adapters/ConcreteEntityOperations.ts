@@ -79,7 +79,6 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             ...super.rootTypeFieldNames,
-            connection: `${this.entityAdapter.plural}Connection`,
             subscribe: {
                 created: `${this.entityAdapter.singular}Created`,
                 updated: `${this.entityAdapter.singular}Updated`,

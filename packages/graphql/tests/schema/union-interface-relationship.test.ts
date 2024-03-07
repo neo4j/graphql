@@ -1259,6 +1259,7 @@ describe("Union Interface Relationships", () => {
               imdbId_LTE: Int
               imdbId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               imdbId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              reviewers: ReviewerWhere @deprecated(reason: \\"Use \`reviewers_SOME\` instead.\\")
               reviewersConnection: MovieReviewersConnectionWhere @deprecated(reason: \\"Use \`reviewersConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
@@ -1277,6 +1278,15 @@ describe("Union Interface Relationships", () => {
               Return Movies where some of the related MovieReviewersConnections match this filter
               \\"\\"\\"
               reviewersConnection_SOME: MovieReviewersConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Reviewers match this filter\\"\\"\\"
+              reviewers_ALL: ReviewerWhere
+              \\"\\"\\"Return Movies where none of the related Reviewers match this filter\\"\\"\\"
+              reviewers_NONE: ReviewerWhere
+              reviewers_NOT: ReviewerWhere @deprecated(reason: \\"Use \`reviewers_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Reviewers match this filter\\"\\"\\"
+              reviewers_SINGLE: ReviewerWhere
+              \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
+              reviewers_SOME: ReviewerWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1690,6 +1700,7 @@ describe("Union Interface Relationships", () => {
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               reviewers(options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
               reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
+              reviewersConnection(after: String, first: Int, sort: [ReviewerSort], where: ReviewerWhere): ReviewersConnection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -1786,6 +1797,11 @@ describe("Union Interface Relationships", () => {
               Person: PersonCreateInput
             }
 
+            type ReviewerEdge {
+              cursor: String!
+              node: Reviewer!
+            }
+
             enum ReviewerImplementation {
               Influencer
               Person
@@ -1838,6 +1854,12 @@ describe("Union Interface Relationships", () => {
               reviewerId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reviewerId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               typename_IN: [ReviewerImplementation!]
+            }
+
+            type ReviewersConnection {
+              edges: [ReviewerEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

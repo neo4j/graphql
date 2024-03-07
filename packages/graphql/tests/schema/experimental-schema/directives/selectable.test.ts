@@ -2873,6 +2873,7 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -2891,6 +2892,15 @@ describe("@selectable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -3057,6 +3067,11 @@ describe("@selectable", () => {
                   Series: SeriesCreateInput
                 }
 
+                type ProductionEdge {
+                  cursor: String!
+                  node: Production!
+                }
+
                 enum ProductionImplementation {
                   Movie
                   Series
@@ -3111,6 +3126,12 @@ describe("@selectable", () => {
                   typename_IN: [ProductionImplementation!]
                 }
 
+                type ProductionsConnection {
+                  edges: [ProductionEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -3120,6 +3141,7 @@ describe("@selectable", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
                   productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+                  productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3402,6 +3424,7 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3420,6 +3443,15 @@ describe("@selectable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -3586,6 +3618,11 @@ describe("@selectable", () => {
                   Series: SeriesCreateInput
                 }
 
+                type ProductionEdge {
+                  cursor: String!
+                  node: Production!
+                }
+
                 enum ProductionImplementation {
                   Movie
                   Series
@@ -3640,6 +3677,12 @@ describe("@selectable", () => {
                   typename_IN: [ProductionImplementation!]
                 }
 
+                type ProductionsConnection {
+                  edges: [ProductionEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -3649,6 +3692,7 @@ describe("@selectable", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
                   productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+                  productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

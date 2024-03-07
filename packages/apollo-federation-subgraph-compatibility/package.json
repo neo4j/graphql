@@ -1,7 +1,7 @@
 {
     "name": "apollo-federation-subgraph-compatibility",
     "version": "1.0.0",
-    "packageManager": "yarn@4.1.0",
+    "packageManager": "yarn@4.1.1",
     "scripts": {
         "build": "webpack --config webpack.config.js",
         "test:docker": "yarn build && fedtest docker --compose docker-compose.yml --schema schema.graphql",
@@ -10,7 +10,7 @@
     "dependencies": {
         "@apollo/server": "^4.7.0",
         "@graphql-tools/wrap": "^10.0.0",
-        "@neo4j/graphql": "^5.0.1",
+        "@neo4j/graphql": "^5.1.0",
         "graphql": "16.8.1",
         "graphql-tag": "^2.12.6",
         "neo4j-driver": "^5.8.0"

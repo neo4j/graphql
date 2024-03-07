@@ -299,6 +299,7 @@ describe("Declare Relationship", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -317,6 +318,15 @@ describe("Declare Relationship", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               moviesCnt: Int
               moviesCnt_GT: Int
               moviesCnt_GTE: Int
@@ -961,6 +971,12 @@ describe("Declare Relationship", () => {
               startCursor: String
             }
 
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Person {
               name: String!
             }
@@ -977,6 +993,11 @@ describe("Declare Relationship", () => {
             input PersonCreateInput {
               Actor: ActorCreateInput
               UntrainedPerson: UntrainedPersonCreateInput
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
             }
 
             enum PersonImplementation {
@@ -1150,6 +1171,11 @@ describe("Declare Relationship", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               AmatureProduction
               Movie
@@ -1180,6 +1206,7 @@ describe("Declare Relationship", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -1198,6 +1225,15 @@ describe("Declare Relationship", () => {
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related People match this filter\\"\\"\\"
+              actors_ALL: PersonWhere
+              \\"\\"\\"Return Productions where none of the related People match this filter\\"\\"\\"
+              actors_NONE: PersonWhere
+              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Productions where one of the related People match this filter\\"\\"\\"
+              actors_SINGLE: PersonWhere
+              \\"\\"\\"Return Productions where some of the related People match this filter\\"\\"\\"
+              actors_SOME: PersonWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1209,6 +1245,12 @@ describe("Declare Relationship", () => {
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ProductionImplementation!]
+            }
+
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Query {
@@ -1223,8 +1265,10 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               untrainedPeople(options: UntrainedPersonOptions, where: UntrainedPersonWhere): [UntrainedPerson!]!
               untrainedPeopleAggregate(where: UntrainedPersonWhere): UntrainedPersonAggregateSelection!
               untrainedPeopleConnection(after: String, first: Int, sort: [UntrainedPersonSort], where: UntrainedPersonWhere): UntrainedPeopleConnection!
@@ -1404,6 +1448,7 @@ describe("Declare Relationship", () => {
               AND: [UntrainedPersonWhere!]
               NOT: UntrainedPersonWhere
               OR: [UntrainedPersonWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: UntrainedPersonActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return UntrainedPeople where all of the related UntrainedPersonActedInConnections match this filter
@@ -1422,6 +1467,23 @@ describe("Declare Relationship", () => {
               Return UntrainedPeople where some of the related UntrainedPersonActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: UntrainedPersonActedInConnectionWhere
+              \\"\\"\\"
+              Return UntrainedPeople where all of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"
+              Return UntrainedPeople where none of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"
+              Return UntrainedPeople where one of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"
+              Return UntrainedPeople where some of the related Productions match this filter
+              \\"\\"\\"
+              actedIn_SOME: ProductionWhere
               age: Int
               age_GT: Int
               age_GTE: Int
@@ -2511,6 +2573,12 @@ describe("Declare Relationship", () => {
               startCursor: String
             }
 
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Person {
               actedIn(options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(after: String, first: Int, sort: [PersonActedInConnectionSort!], where: PersonActedInConnectionWhere): PersonActedInConnection!
@@ -2595,6 +2663,11 @@ describe("Declare Relationship", () => {
               actedIn: [PersonActedInDisconnectFieldInput!]
             }
 
+            type PersonEdge {
+              cursor: String!
+              node: Person!
+            }
+
             enum PersonImplementation {
               Actor
               UntrainedPerson
@@ -2620,6 +2693,7 @@ describe("Declare Relationship", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: PersonActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
@@ -2638,6 +2712,15 @@ describe("Declare Relationship", () => {
               Return People where some of the related PersonActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: PersonActedInConnectionWhere
+              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -2727,6 +2810,11 @@ describe("Declare Relationship", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               AmatureProduction
               Movie
@@ -2752,6 +2840,7 @@ describe("Declare Relationship", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -2770,6 +2859,15 @@ describe("Declare Relationship", () => {
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related People match this filter\\"\\"\\"
+              actors_ALL: PersonWhere
+              \\"\\"\\"Return Productions where none of the related People match this filter\\"\\"\\"
+              actors_NONE: PersonWhere
+              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Productions where one of the related People match this filter\\"\\"\\"
+              actors_SINGLE: PersonWhere
+              \\"\\"\\"Return Productions where some of the related People match this filter\\"\\"\\"
+              actors_SOME: PersonWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2781,6 +2879,12 @@ describe("Declare Relationship", () => {
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ProductionImplementation!]
+            }
+
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Query {
@@ -2795,8 +2899,10 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               untrainedPeople(options: UntrainedPersonOptions, where: UntrainedPersonWhere): [UntrainedPerson!]!
               untrainedPeopleAggregate(where: UntrainedPersonWhere): UntrainedPersonAggregateSelection!
               untrainedPeopleConnection(after: String, first: Int, sort: [UntrainedPersonSort], where: UntrainedPersonWhere): UntrainedPeopleConnection!
@@ -3376,6 +3482,7 @@ describe("Declare Relationship", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -3394,6 +3501,15 @@ describe("Declare Relationship", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -4168,6 +4284,11 @@ describe("Declare Relationship", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             enum ProductionImplementation {
               Movie
               Series
@@ -4240,6 +4361,12 @@ describe("Declare Relationship", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -4252,6 +4379,7 @@ describe("Declare Relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

@@ -358,6 +358,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
@@ -376,6 +377,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Return Genres where some of the related GenreProductConnections match this filter
               \\"\\"\\"
               productConnection_SOME: GenreProductConnectionWhere
+              \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
+              product_ALL: IProductWhere
+              \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
+              product_NONE: IProductWhere
+              product_NOT: IProductWhere @deprecated(reason: \\"Use \`product_NONE\` instead.\\")
+              \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
+              product_SINGLE: IProductWhere
+              \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
+              product_SOME: IProductWhere
             }
 
             type GenresConnection {
@@ -391,6 +401,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type INodeAggregateSelection {
               count: Int!
               id: StringAggregateSelection!
+            }
+
+            type INodeEdge {
+              cursor: String!
+              node: INode!
             }
 
             enum INodeImplementation {
@@ -431,6 +446,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               typename_IN: [INodeImplementation!]
             }
 
+            type INodesConnection {
+              edges: [INodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface IProduct {
               genre: Genre!
               id: String!
@@ -450,6 +471,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductCreateInput {
               Movie: MovieCreateInput
               Series: SeriesCreateInput
+            }
+
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
             }
 
             interface IProductEventPayload {
@@ -536,6 +562,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Movie implements INode & IProduct {
@@ -904,8 +936,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iNodes(options: INodeOptions, where: INodeWhere): [INode!]!
               iNodesAggregate(where: INodeWhere): INodeAggregateSelection!
+              iNodesConnection(after: String, first: Int, sort: [INodeSort], where: INodeWhere): INodesConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -1642,6 +1676,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
@@ -1660,6 +1695,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Return Genres where some of the related GenreProductConnections match this filter
               \\"\\"\\"
               productConnection_SOME: GenreProductConnectionWhere
+              \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
+              product_ALL: IProductWhere
+              \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
+              product_NONE: IProductWhere
+              product_NOT: IProductWhere @deprecated(reason: \\"Use \`product_NONE\` instead.\\")
+              \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
+              product_SINGLE: IProductWhere
+              \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
+              product_SOME: IProductWhere
             }
 
             type GenresConnection {
@@ -1687,6 +1731,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductCreateInput {
               Movie: MovieCreateInput
               Series: SeriesCreateInput
+            }
+
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
             }
 
             interface IProductEventPayload {
@@ -1773,6 +1822,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Movie implements IProduct {
@@ -2141,6 +2196,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2888,6 +2944,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
@@ -2906,6 +2963,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Return Genres where some of the related GenreProductConnections match this filter
               \\"\\"\\"
               productConnection_SOME: GenreProductConnectionWhere
+              \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
+              product_ALL: IProductWhere
+              \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
+              product_NONE: IProductWhere
+              product_NOT: IProductWhere @deprecated(reason: \\"Use \`product_NONE\` instead.\\")
+              \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
+              product_SINGLE: IProductWhere
+              \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
+              product_SOME: IProductWhere
             }
 
             type GenresConnection {
@@ -2946,6 +3012,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input IProductDisconnectInput {
               genre: IProductGenreDisconnectFieldInput
+            }
+
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
             }
 
             interface IProductEventPayload {
@@ -3236,6 +3307,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type IntAggregateSelection {
@@ -3671,6 +3748,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -4490,6 +4568,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
@@ -4508,6 +4587,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Return Genres where some of the related GenreProductConnections match this filter
               \\"\\"\\"
               productConnection_SOME: GenreProductConnectionWhere
+              \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
+              product_ALL: IProductWhere
+              \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
+              product_NONE: IProductWhere
+              product_NOT: IProductWhere @deprecated(reason: \\"Use \`product_NONE\` instead.\\")
+              \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
+              product_SINGLE: IProductWhere
+              \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
+              product_SOME: IProductWhere
             }
 
             type GenresConnection {
@@ -4548,6 +4636,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input IProductDisconnectInput {
               genre: IProductGenreDisconnectInput
+            }
+
+            type IProductEdge {
+              cursor: String!
+              node: IProduct!
             }
 
             interface IProductEventPayload {
@@ -4846,6 +4939,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [IProductImplementation!]
+            }
+
+            type IProductsConnection {
+              edges: [IProductEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type IntAggregateSelection {
@@ -5266,6 +5365,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -5528,6 +5628,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               number_LTE: Int
               number_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               number_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productConnection: RatingProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Ratings where all of the related RatingProductConnections match this filter
@@ -5546,6 +5647,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Return Ratings where some of the related RatingProductConnections match this filter
               \\"\\"\\"
               productConnection_SOME: RatingProductConnectionWhere
+              \\"\\"\\"Return Ratings where all of the related IProducts match this filter\\"\\"\\"
+              product_ALL: IProductWhere
+              \\"\\"\\"Return Ratings where none of the related IProducts match this filter\\"\\"\\"
+              product_NONE: IProductWhere
+              product_NOT: IProductWhere @deprecated(reason: \\"Use \`product_NONE\` instead.\\")
+              \\"\\"\\"Return Ratings where one of the related IProducts match this filter\\"\\"\\"
+              product_SINGLE: IProductWhere
+              \\"\\"\\"Return Ratings where some of the related IProducts match this filter\\"\\"\\"
+              product_SOME: IProductWhere
             }
 
             type RatingsConnection {

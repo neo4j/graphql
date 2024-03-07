@@ -175,6 +175,7 @@ describe("inheritance", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              friends: PersonWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
@@ -193,6 +194,15 @@ describe("inheritance", () => {
               Return Actors where some of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_SOME: PersonFriendsConnectionWhere
+              \\"\\"\\"Return Actors where all of the related People match this filter\\"\\"\\"
+              friends_ALL: PersonWhere
+              \\"\\"\\"Return Actors where none of the related People match this filter\\"\\"\\"
+              friends_NONE: PersonWhere
+              friends_NOT: PersonWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related People match this filter\\"\\"\\"
+              friends_SINGLE: PersonWhere
+              \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
+              friends_SOME: PersonWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -291,6 +301,12 @@ describe("inheritance", () => {
               startCursor: String
             }
 
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Person @customDirectiveInter {
               friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
@@ -320,6 +336,11 @@ describe("inheritance", () => {
 
             input PersonDisconnectInput {
               friends: [PersonFriendsDisconnectFieldInput!]
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
             }
 
             input PersonFriendsConnectFieldInput {
@@ -447,6 +468,7 @@ describe("inheritance", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              friends: PersonWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
@@ -465,6 +487,15 @@ describe("inheritance", () => {
               Return People where some of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_SOME: PersonFriendsConnectionWhere
+              \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
+              friends_ALL: PersonWhere
+              \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
+              friends_NONE: PersonWhere
+              friends_NOT: PersonWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
+              \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
+              friends_SINGLE: PersonWhere
+              \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
+              friends_SOME: PersonWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -484,6 +515,7 @@ describe("inheritance", () => {
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

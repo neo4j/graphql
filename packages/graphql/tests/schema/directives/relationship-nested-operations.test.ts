@@ -8779,6 +8779,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -8797,6 +8798,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -8835,6 +8845,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -8842,6 +8858,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -9017,6 +9038,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9229,6 +9251,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -9247,6 +9270,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -9285,6 +9317,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -9297,6 +9335,11 @@ describe("Relationship nested operations", () => {
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -9472,6 +9515,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9684,6 +9728,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -9702,6 +9747,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -9740,6 +9794,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -9751,6 +9811,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonConnectWhere {
                   node: PersonWhere!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -9926,6 +9991,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10129,6 +10195,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10147,6 +10214,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -10185,6 +10261,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -10192,6 +10274,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -10371,6 +10458,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10578,6 +10666,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10596,6 +10685,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -10634,6 +10732,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -10641,6 +10745,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -10816,6 +10925,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11023,6 +11133,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11041,6 +11152,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -11079,6 +11199,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -11086,6 +11212,11 @@ describe("Relationship nested operations", () => {
                 type PersonAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -11261,6 +11392,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11553,6 +11685,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11571,6 +11704,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -11581,6 +11723,7 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
+                  producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -11599,6 +11742,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_SOME: MovieProducersConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  producers_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  producers_NONE: PersonWhere
+                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  producers_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  producers_SOME: PersonWhere
                 }
 
                 type MoviesConnection {
@@ -11627,6 +11779,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -11643,6 +11801,11 @@ describe("Relationship nested operations", () => {
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -11822,6 +11985,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -12094,6 +12258,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -12112,6 +12277,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  actors_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  actors_NONE: PersonWhere
+                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  actors_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  actors_SOME: PersonWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -12122,6 +12296,7 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
+                  producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -12140,6 +12315,15 @@ describe("Relationship nested operations", () => {
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_SOME: MovieProducersConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  producers_ALL: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  producers_NONE: PersonWhere
+                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  producers_SINGLE: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  producers_SOME: PersonWhere
                 }
 
                 type MoviesConnection {
@@ -12168,6 +12352,12 @@ describe("Relationship nested operations", () => {
                   startCursor: String
                 }
 
+                type PeopleConnection {
+                  edges: [PersonEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 interface Person {
                   name: String
                 }
@@ -12180,6 +12370,11 @@ describe("Relationship nested operations", () => {
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
+                }
+
+                type PersonEdge {
+                  cursor: String!
+                  node: Person!
                 }
 
                 enum PersonImplementation {
@@ -12355,6 +12550,7 @@ describe("Relationship nested operations", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!

@@ -116,6 +116,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               movies: CreatureMoviesDisconnectFieldInput
             }
 
+            type CreatureEdge {
+              cursor: String!
+              node: Creature!
+            }
+
             enum CreatureImplementation {
               Person
             }
@@ -188,9 +193,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
+            }
+
+            type CreaturesConnection {
+              edges: [CreatureEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"
@@ -331,8 +344,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -538,8 +553,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
             }
 
             interface Production {
@@ -625,6 +642,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               director: ProductionDirectorDisconnectFieldInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             interface ProductionEventPayload {
               id: ID
             }
@@ -676,8 +698,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -691,9 +715,16 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               creatures(options: CreatureOptions, where: CreatureWhere): [Creature!]!
               creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
+              creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -702,6 +733,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -916,8 +948,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int

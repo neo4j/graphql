@@ -5767,6 +5767,11 @@ describe("Subscriptions", () => {
               movies: CreatureMoviesDisconnectFieldInput
             }
 
+            type CreatureEdge {
+              cursor: String!
+              node: Creature!
+            }
+
             enum CreatureImplementation {
               Person
             }
@@ -5839,9 +5844,17 @@ describe("Subscriptions", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
+            }
+
+            type CreaturesConnection {
+              edges: [CreatureEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             \\"\\"\\"
@@ -5982,8 +5995,10 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6189,8 +6204,10 @@ describe("Subscriptions", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
             }
 
             interface Production {
@@ -6276,6 +6293,11 @@ describe("Subscriptions", () => {
               director: ProductionDirectorDisconnectFieldInput
             }
 
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
             interface ProductionEventPayload {
               id: ID
             }
@@ -6327,8 +6349,10 @@ describe("Subscriptions", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6342,9 +6366,16 @@ describe("Subscriptions", () => {
               typename_IN: [ProductionImplementation!]
             }
 
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               creatures(options: CreatureOptions, where: CreatureWhere): [Creature!]!
               creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
+              creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -6353,6 +6384,7 @@ describe("Subscriptions", () => {
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6567,8 +6599,10 @@ describe("Subscriptions", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              director: CreatureWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
+              director_NOT: CreatureWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int
