@@ -34,7 +34,7 @@ export function generateResolverComposition({
     queryAndMutationWrappers: ((next: any) => (root: any, args: any, context: any, info: any) => any)[];
     subscriptionWrappers: ((next: any) => (root: any, args: any, context: any, info: any) => any)[];
 }): ResolversComposerMapping<IResolvers<any, GraphQLResolveInfo, Record<string, any>, any>> {
-    let resolverComposition = {};
+    const resolverComposition = {};
     const {
         userCustomResolverPattern: customResolverQueryPattern,
         generatedResolverPattern: generatedResolverQueryPattern,
