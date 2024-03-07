@@ -77,18 +77,7 @@ describe("union relationships", () => {
     });
 
     afterEach(async () => {
-        await session.run(
-            `
-                MATCH(a:${typeMovie})
-                MATCH(b:${typeSeries})
-                MATCH(c:${typeActor})
-
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-            `
-        );
-        await session.close();
+        await cleanNodesUsingSession(session, [typeActor, typeMovie, typeSeries]);
     });
 
     afterAll(async () => {
