@@ -17,21 +17,26 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("auth/bind", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     const secret = "secret";
+    let User: UniqueType;
+    let Post: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
     });
 
     afterAll(async () => {
@@ -43,11 +48,11 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -56,8 +61,8 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: [{id: "not bound"}]) {
-                        users {
+                    ${User.operations.create}(input: [{id: "not bound"}]) {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -92,17 +97,17 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -111,7 +116,7 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: [{
+                    ${User.operations.create}(input: [{
                         id: "${userId}",
                         posts: {
                             create: [{
@@ -124,7 +129,7 @@ describe("auth/bind", () => {
                             }]
                         }
                     }]) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -159,16 +164,16 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${User}  {
                     id: ID @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
@@ -182,7 +187,7 @@ describe("auth/bind", () => {
 
             const query = `
                mutation {
-                   updatePosts(
+                   ${Post.operations.update}(
                        where: { id: "${postId}" }
                        update: {
                            creator: {
@@ -190,7 +195,7 @@ describe("auth/bind", () => {
                            }
                        }
                     ) {
-                        posts {
+                        ${Post.plural} {
                             id
                         }
                     }
@@ -208,7 +213,7 @@ describe("auth/bind", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Post {id: "${postId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -229,12 +234,12 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                     name: String
                 }
 
-                extend type User {
+                extend type ${User} {
                     id: ID @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
@@ -249,14 +254,14 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: 
+                    ${User.operations.create}(input: 
                         [
                             {
                                 name: "${userName}",
                             }
                         ]
                         ) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -290,12 +295,12 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID 
                     name: String
                 }
 
-                extend type User {
+                extend type ${User} {
                     id: ID @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
@@ -310,14 +315,14 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: 
+                    ${User.operations.create}(input: 
                         [
                             {
                                 id: "${userName}",
                             }
                         ]
                         ) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -351,18 +356,18 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID
                     title: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post {
+                extend type ${Post} {
                     id: ID @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.postId" } } }])
                 }
             `;
@@ -380,7 +385,7 @@ describe("auth/bind", () => {
             });
             const query = `
                 mutation {
-                    createUsers(input: [{
+                    ${User.operations.create}(input: [{
                         id: "${userId}",
                         posts: {
                             create: 
@@ -393,7 +398,7 @@ describe("auth/bind", () => {
                             ]
                         }
                     }]) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -427,16 +432,16 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type Post @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -449,7 +454,7 @@ describe("auth/bind", () => {
 
             const query = `
                mutation {
-                   createPosts(input: [
+                   ${Post.operations.create}(input: [
                     {
                        id: "${postId}",
                        creator: {
@@ -457,7 +462,7 @@ describe("auth/bind", () => {
                         }
                     }
                 ]) {
-                        posts {
+                        ${Post.plural} {
                             id
                             creator {
                                 id
@@ -478,7 +483,7 @@ describe("auth/bind", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Post {id: "${postId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -501,11 +506,11 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -514,8 +519,8 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    updateUsers(where: { id: "${userId}" }, update: { id: "not bound" }) {
-                        users {
+                    ${User.operations.update}(where: { id: "${userId}" }, update: { id: "not bound" }) {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -532,7 +537,7 @@ describe("auth/bind", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${User} {id: "${userId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -553,17 +558,17 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -576,7 +581,7 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    updateUsers(
+                    ${User.operations.update}(
                         where: { id: "${userId}" },
                         update: {
                             posts: {
@@ -589,7 +594,7 @@ describe("auth/bind", () => {
                             }
                         }
                     ) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -607,7 +612,7 @@ describe("auth/bind", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:${Post} {id: "${postId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -628,11 +633,11 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${User} {
                     id: ID @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
@@ -643,11 +648,11 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    updateUsers(
+                    ${User.operations.update}(
                         where: { id: "${userId}" },
                         update: { id: "not bound" }
                     ) {
-                        users {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -664,7 +669,7 @@ describe("auth/bind", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${User} {id: "${userId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -687,16 +692,16 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @authorization(validate: [{ when: AFTER, operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -709,7 +714,7 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    updatePosts(
+                    ${Post.operations.update}(
                         where: { id: "${postId}" },
                         connect: {
                             creator: {
@@ -717,7 +722,7 @@ describe("auth/bind", () => {
                             }
                         }
                     ) {
-                        posts {
+                        ${Post.plural} {
                             id
                         }
                     }
@@ -734,7 +739,7 @@ describe("auth/bind", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:Post {id: "${postId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -757,16 +762,16 @@ describe("auth/bind", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @authorization(validate: [{ when: AFTER, operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -779,7 +784,7 @@ describe("auth/bind", () => {
 
             const query = `
                 mutation {
-                    updatePosts(
+                    ${Post.operations.update}(
                         where: { id: "${postId}" },
                         disconnect: {
                             creator: {
@@ -787,7 +792,7 @@ describe("auth/bind", () => {
                             }
                         }
                     ) {
-                        posts {
+                        ${Post.plural} {
                             id
                         }
                     }
@@ -805,7 +810,7 @@ describe("auth/bind", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})<-[:HAS_POST]-(:${User} {id: "${userId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
