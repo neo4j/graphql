@@ -543,13 +543,23 @@ function generateOperation(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
 ): Operation {
-    const attributes = (definition.fields || [])
+    const { attributes, userResolvedAttributes } = (definition.fields || [])
         .map((fieldDefinition) => parseAttribute(fieldDefinition, definitionCollection))
-        .filter((attribute) => attribute.annotations.cypher);
-
+        .reduce<{ attributes: Attribute[]; userResolvedAttributes: Attribute[] }>(
+            (acc, attribute) => {
+                if (attribute.annotations.cypher) {
+                    acc.attributes.push(attribute);
+                } else {
+                    acc.userResolvedAttributes.push(attribute);
+                }
+                return acc;
+            },
+            { attributes: [], userResolvedAttributes: [] }
+        );
     return new Operation({
         name: definition.name.value,
         attributes,
+        userResolvedAttributes,
         annotations: parseAnnotations(definition.directives || []),
     });
 }
