@@ -1146,6 +1146,7 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -1164,6 +1165,15 @@ describe("Directive-preserve", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -2307,6 +2317,7 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -2325,6 +2336,15 @@ describe("Directive-preserve", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -3320,6 +3340,7 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -3338,6 +3359,15 @@ describe("Directive-preserve", () => {
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              actedIn_ALL: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              actedIn_NONE: ProductionWhere
+              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              actedIn_SINGLE: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              actedIn_SOME: ProductionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

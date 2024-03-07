@@ -216,8 +216,10 @@ describe("Connection with interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
             }
 
@@ -362,6 +364,7 @@ describe("Connection with interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              director: CreatureWhere @deprecated(reason: \\"Use \`director_SOME\` instead.\\")
               directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
@@ -380,6 +383,15 @@ describe("Connection with interfaces", () => {
               Return Movies where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               directorConnection_SOME: ProductionDirectorConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Creatures match this filter\\"\\"\\"
+              director_ALL: CreatureWhere
+              \\"\\"\\"Return Movies where none of the related Creatures match this filter\\"\\"\\"
+              director_NONE: CreatureWhere
+              director_NOT: CreatureWhere @deprecated(reason: \\"Use \`director_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Creatures match this filter\\"\\"\\"
+              director_SINGLE: CreatureWhere
+              \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
+              director_SOME: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -553,8 +565,10 @@ describe("Connection with interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              movies: ProductionWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              movies_NOT: ProductionWhere
             }
 
             interface Production {
@@ -679,6 +693,7 @@ describe("Connection with interfaces", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              director: CreatureWhere @deprecated(reason: \\"Use \`director_SOME\` instead.\\")
               directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
@@ -697,6 +712,23 @@ describe("Connection with interfaces", () => {
               Return Productions where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               directorConnection_SOME: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where all of the related Creatures match this filter
+              \\"\\"\\"
+              director_ALL: CreatureWhere
+              \\"\\"\\"
+              Return Productions where none of the related Creatures match this filter
+              \\"\\"\\"
+              director_NONE: CreatureWhere
+              director_NOT: CreatureWhere @deprecated(reason: \\"Use \`director_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Productions where one of the related Creatures match this filter
+              \\"\\"\\"
+              director_SINGLE: CreatureWhere
+              \\"\\"\\"
+              Return Productions where some of the related Creatures match this filter
+              \\"\\"\\"
+              director_SOME: CreatureWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -861,6 +893,7 @@ describe("Connection with interfaces", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              director: CreatureWhere @deprecated(reason: \\"Use \`director_SOME\` instead.\\")
               directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
@@ -879,6 +912,15 @@ describe("Connection with interfaces", () => {
               Return Series where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               directorConnection_SOME: ProductionDirectorConnectionWhere
+              \\"\\"\\"Return Series where all of the related Creatures match this filter\\"\\"\\"
+              director_ALL: CreatureWhere
+              \\"\\"\\"Return Series where none of the related Creatures match this filter\\"\\"\\"
+              director_NONE: CreatureWhere
+              director_NOT: CreatureWhere @deprecated(reason: \\"Use \`director_NONE\` instead.\\")
+              \\"\\"\\"Return Series where one of the related Creatures match this filter\\"\\"\\"
+              director_SINGLE: CreatureWhere
+              \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
+              director_SOME: CreatureWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int

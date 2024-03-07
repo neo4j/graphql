@@ -33,7 +33,7 @@ import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
-import { wrapSubscription } from "../schema/resolvers/composition/wrap-subscription";
+import { wrapSubscription, type WrapSubscriptionArgs } from "../schema/resolvers/composition/wrap-subscription";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
@@ -50,6 +50,7 @@ import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGrap
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import checkNeo4jCompat from "./utils/verify-database";
+import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -283,22 +284,28 @@ class Neo4jGraphQL {
             authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
+        const queryAndMutationWrappers = [wrapQueryAndMutation(wrapResolverArgs)];
 
-        const resolversComposition = {
-            "Query.*": [wrapQueryAndMutation(wrapResolverArgs)],
-            "Mutation.*": [wrapQueryAndMutation(wrapResolverArgs)],
+        const isSubscriptionEnabled = !!this.features.subscriptions;
+        const wrapSubscriptionResolverArgs = {
+            subscriptionsEngine: this.features.subscriptions,
+            schemaModel: this.schemaModel,
+            authorization: this.authorization,
+            jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
+        const subscriptionWrappers = isSubscriptionEnabled
+            ? [wrapSubscription(wrapSubscriptionResolverArgs as WrapSubscriptionArgs)]
+            : [];
 
-        if (this.features.subscriptions) {
-            resolversComposition["Subscription.*"] = wrapSubscription({
-                subscriptionsEngine: this.features.subscriptions,
-                schemaModel: this.schemaModel,
-                authorization: this.authorization,
-                jwtPayloadFieldsMap: this.jwtFieldsMap,
-            });
-        }
+        const resolversComposition = generateResolverComposition({
+            schemaModel: this.schemaModel,
+            isSubscriptionEnabled,
+            queryAndMutationWrappers,
+            subscriptionWrappers,
+        });
 
         // Merge generated and custom resolvers
+        // Merging must be done before composing because wrapper won't run otherwise
         const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
