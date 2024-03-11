@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
     let testHelper: TestHelper;
     let Movie: UniqueType;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
     });
@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
             }
         `;
 
-        const neoSchema = await testHelper.initNeo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: new TestSubscriptionsEngine(),

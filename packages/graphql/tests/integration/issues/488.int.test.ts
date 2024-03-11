@@ -24,7 +24,7 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/488", () => {
     let testHelper: TestHelper;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         testHelper = new TestHelper();
     });
 
@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             }
         `;
 
-        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const journalistId = generate({
             charset: "alphabetic",
