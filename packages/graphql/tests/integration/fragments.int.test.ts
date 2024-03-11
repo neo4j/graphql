@@ -24,28 +24,31 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { cleanNodesUsingSession } from "../utils/clean-nodes";
 import { getQuerySource } from "../utils/get-query-source";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
-
-const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     let schema: GraphQLSchema;
+    const Movie = new UniqueType("Movie");
+    const Series = new UniqueType("Series");
+    const Actor = new UniqueType("Actor");
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         interface Production {
             title: String!
             runtime: Int!
         }
 
-        type Movie implements Production {
+        type ${Movie} implements Production {
             title: String!
             runtime: Int!
         }
 
-        type Series implements Production {
+        type ${Series} implements Production {
             title: String!
             runtime: Int!
             episodes: Int!
@@ -59,7 +62,7 @@ describe("fragments", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type Actor implements InterfaceA {
+        type ${Actor} implements InterfaceA {
             name: String!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
@@ -95,9 +98,9 @@ describe("fragments", () => {
 
         await session.run(
             `
-            CREATE (a:Actor:${testLabel} { name: $actorName })
-            CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie:${testLabel} { title: $movieTitle, runtime:$movieRuntime })
-            CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series:${testLabel} { title: $seriesTitle, runtime:$seriesRuntime, episodes: $seriesEpisodes })
+            CREATE (a:${Actor} { name: $actorName })
+            CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+            CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle, runtime:$seriesRuntime, episodes: $seriesEpisodes })
         `,
             {
                 actorName,
@@ -115,19 +118,19 @@ describe("fragments", () => {
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
+        await cleanNodesUsingSession(session, [Actor, Movie, Series]);
         await driver.close();
     });
 
     test("should be able project fragment on type", async () => {
         const query = gql`
             query ($actorName: String!) {
-                actors(where: { name: $actorName }) {
+                ${Actor.plural}(where: { name: $actorName }) {
                     ...FragmentOnType
                 }
             }
 
-            fragment FragmentOnType on Actor {
+            fragment FragmentOnType on ${Actor} {
                 name
             }
         `;
@@ -140,7 +143,7 @@ describe("fragments", () => {
 
         expect(graphqlResult.errors).toBeFalsy();
 
-        const graphqlActor: Array<{ name: string }> = (graphqlResult.data as any)?.actors;
+        const graphqlActor: Array<{ name: string }> = (graphqlResult.data as any)?.[Actor.plural];
 
         expect(graphqlActor).toHaveLength(1);
         expect(graphqlActor[0]?.name).toBe(actorName);
@@ -149,7 +152,7 @@ describe("fragments", () => {
     test("should be able project fragment on interface", async () => {
         const query = gql`
             query ($actorName: String!) {
-                actors(where: { name: $actorName }) {
+                ${Actor.plural}(where: { name: $actorName }) {
                     name
                     actedIn {
                         ...FragmentOnInterface
@@ -171,8 +174,9 @@ describe("fragments", () => {
 
         expect(graphqlResult.errors).toBeFalsy();
 
-        const graphqlActors: Array<{ name: string; actedIn: Array<{ title: string }> }> = (graphqlResult.data as any)
-            ?.actors;
+        const graphqlActors: Array<{ name: string; actedIn: Array<{ title: string }> }> = (graphqlResult.data as any)?.[
+            Actor.plural
+        ];
 
         expect(graphqlActors).toHaveLength(1);
         expect(graphqlActors[0]?.name).toBe(actorName);
@@ -184,7 +188,7 @@ describe("fragments", () => {
     test("should be able to project nested fragments", async () => {
         const query = gql`
             query ($actorName: String!) {
-                actors(where: { name: $actorName }) {
+                ${Actor.plural}(where: { name: $actorName }) {
                     name
                     actedIn {
                         ...FragmentA
@@ -215,7 +219,7 @@ describe("fragments", () => {
 
         const graphqlActors: Array<{ name: string; actedIn: Array<{ title: string; runtime: number }> }> = (
             graphqlResult.data as any
-        )?.actors;
+        )?.[Actor.plural];
 
         expect(graphqlActors).toHaveLength(1);
         expect(graphqlActors[0]?.name).toBe(actorName);

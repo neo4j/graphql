@@ -17,19 +17,24 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("info", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        Actor = new UniqueType("Actor");
     });
 
     afterAll(async () => {
@@ -40,13 +45,13 @@ describe("info", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Actor {
+            type ${Actor} {
                 name: String!
             }
 
-            type Movie {
+            type ${Movie} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -61,13 +66,13 @@ describe("info", () => {
 
         const query = `
             mutation($title: String!, $name: String!) {
-                createMovies(input: [{ title: $title, actors: { create: [{ node: { name: $name } }] } }]) {
+                ${Movie.operations.create}(input: [{ title: $title, actors: { create: [{ node: { name: $name } }] } }]) {
                     info {
                         bookmark
                         nodesCreated
                         relationshipsCreated
                     }
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
                             name
@@ -87,10 +92,12 @@ describe("info", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(typeof (gqlResult?.data as any)?.createMovies.info.bookmark).toBe("string");
-            expect((gqlResult?.data as any)?.createMovies.info.nodesCreated).toBe(2);
-            expect((gqlResult?.data as any)?.createMovies.info.relationshipsCreated).toBe(1);
-            expect((gqlResult?.data as any)?.createMovies.movies).toEqual([{ title, actors: [{ name }] }]);
+            expect(typeof (gqlResult?.data as any)?.[Movie.operations.create].info.bookmark).toBe("string");
+            expect((gqlResult?.data as any)?.[Movie.operations.create].info.nodesCreated).toBe(2);
+            expect((gqlResult?.data as any)?.[Movie.operations.create].info.relationshipsCreated).toBe(1);
+            expect((gqlResult?.data as any)?.[Movie.operations.create][Movie.plural]).toEqual([
+                { title, actors: [{ name }] },
+            ]);
         } finally {
             await session.close();
         }
@@ -100,7 +107,7 @@ describe("info", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -113,7 +120,7 @@ describe("info", () => {
 
         const query = `
             mutation($id: ID!) {
-                deleteMovies(where: { id: $id }) {
+                ${Movie.operations.delete}(where: { id: $id }) {
                     bookmark
                 }
             }
@@ -129,7 +136,7 @@ describe("info", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(typeof (gqlResult?.data as any)?.deleteMovies.bookmark).toBe("string");
+            expect(typeof (gqlResult?.data as any)?.[Movie.operations.delete].bookmark).toBe("string");
         } finally {
             await session.close();
         }
@@ -139,7 +146,7 @@ describe("info", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -152,11 +159,11 @@ describe("info", () => {
 
         const query = `
             mutation($id: ID!) {
-                updateMovies(where: { id: $id }) {
+                ${Movie.operations.update}(where: { id: $id }) {
                     info {
                         bookmark
                     }
-                    movies {
+                    ${Movie.plural} {
                         id
                     }
                 }
@@ -173,7 +180,7 @@ describe("info", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(typeof (gqlResult?.data as any)?.updateMovies.info.bookmark).toBe("string");
+            expect(typeof (gqlResult?.data as any)[Movie.operations.update].info.bookmark).toBe("string");
         } finally {
             await session.close();
         }
