@@ -17,33 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2250", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Movie: UniqueType;
     let Person: UniqueType;
     let Actor: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        Movie = new UniqueType("Movie");
-        Person = new UniqueType("Person");
-        Actor = new UniqueType("Actor");
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        Person = testHelper.createUniqueType("Person");
+        Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
             type ${Movie} {
@@ -73,9 +61,8 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
             union Director = ${Person} | ${Actor}
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: true,
             },
@@ -83,12 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Actor, Movie, Person]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("nested update with create while using subscriptions should generate valid Cypher", async () => {
@@ -125,11 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
             }
         `;
 
-        const mutationResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: mutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const mutationResult = await testHelper.runGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
     });

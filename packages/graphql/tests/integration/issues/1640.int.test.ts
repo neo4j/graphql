@@ -17,25 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1640", () => {
-    const testAdmin = new UniqueType("Admin");
-    const testOrganization = new UniqueType("Organization");
+    let testAdmin: UniqueType;
+    let testOrganization: UniqueType;
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-    let session: Session;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        testAdmin = testHelper.createUniqueType("Admin");
+        testOrganization = testHelper.createUniqueType("Organization");
 
         const typeDefs = `
             type ${testAdmin} {
@@ -49,23 +43,13 @@ describe("https://github.com/neo4j/graphql/issues/1640", () => {
             }
         `;
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await driver.close();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
+        await testHelper.close();
     });
 
     test("delete administrator if the aggregation matches", async () => {
@@ -97,13 +81,9 @@ describe("https://github.com/neo4j/graphql/issues/1640", () => {
             CREATE(org2)-[:HAS_ADMINISTRATOR]->(admin2)
         `;
 
-        await session.run(cypher);
+        await testHelper.runCypher(cypher);
 
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({

@@ -17,29 +17,24 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/247", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let Movie: UniqueType;
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
-        User = new UniqueType("User");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        User = testHelper.createUniqueType("User");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return the correct number of results following connect", async () => {
@@ -55,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const name = generate({ charset: "alphabetic" });
 
@@ -99,21 +94,15 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             }
         `;
 
-        const createUsersResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createUsers,
+        const createUsersResult = await testHelper.runGraphQL(createUsers, {
             variableValues: { name },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(createUsersResult.errors).toBeFalsy();
         expect((createUsersResult.data as any)[User.operations.create][User.plural]).toEqual([{ name }]);
 
-        const createMoviesResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createMovies,
+        const createMoviesResult = await testHelper.runGraphQL(createMovies, {
             variableValues: { title1, title2, title3 },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(createMoviesResult.errors).toBeFalsy();
@@ -123,11 +112,8 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             { title: title3 },
         ]);
 
-        const connectResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: connect,
+        const connectResult = await testHelper.runGraphQL(connect, {
             variableValues: { name, title2, title3 },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(connectResult.errors).toBeFalsy();

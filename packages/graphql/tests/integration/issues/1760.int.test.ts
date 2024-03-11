@@ -18,17 +18,13 @@
  */
 
 import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     const secret = "secret";
 
     let ApplicationVariant: UniqueType;
@@ -38,12 +34,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let typeDefs: string;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        ApplicationVariant = new UniqueType("ApplicationVariant");
-        NameDetails = new UniqueType("NameDetails");
-        Market = new UniqueType("Market");
-        BaseObject = new UniqueType("BaseObject");
+        testHelper = new TestHelper();
+        ApplicationVariant = testHelper.createUniqueType("ApplicationVariant");
+        NameDetails = testHelper.createUniqueType("NameDetails");
+        Market = testHelper.createUniqueType("Market");
+        BaseObject = testHelper.createUniqueType("BaseObject");
 
         typeDefs = `
                 type JWTPayload @jwt {
@@ -88,12 +83,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 }
             `;
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: secret } } });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("provided query does not result in an error", async () => {
@@ -141,11 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         `;
 
         const token = createBearerToken(secret, { roles: ["ALL"] });
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeFalsy();
     });

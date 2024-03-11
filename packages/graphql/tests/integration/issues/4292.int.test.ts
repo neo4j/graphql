@@ -17,26 +17,27 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
-    const User = new UniqueType("User");
-    const Group = new UniqueType("Group");
-    const Person = new UniqueType("Person");
-    const Admin = new UniqueType("Admin");
-    const Contributor = new UniqueType("Contributor");
+    let testHelper: TestHelper;
+
+    let User: UniqueType;
+    let Group: UniqueType;
+    let Person: UniqueType;
+    let Admin: UniqueType;
+    let Contributor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        User = testHelper.createUniqueType("User");
+        Group = testHelper.createUniqueType("Group");
+        Person = testHelper.createUniqueType("Person");
+        Admin = testHelper.createUniqueType("Admin");
+        Contributor = testHelper.createUniqueType("Contributor");
+
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
@@ -170,9 +171,8 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
         `;
-        neo4jGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -180,33 +180,19 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             },
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 CREATE (m:${Person.name} {title: "SomeTitle", id: "person-1", name: "SomePerson"})<-[:CREATOR_OF]-(u:${User.name} { id: "user-1", email: "email-1", roles: ["admin"]})
                 CREATE (g:${Group.name} { id: "family_id_1", name: "group-1" })<-[:MEMBER_OF]-(m)
-                `,
-                {}
-            );
-        } finally {
-            await session.close();
-        }
+                `
+        );
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [User.name, Group.name, Person.name, Admin.name, Contributor.name]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return groups with valid JWT", async () => {
-        const schema = await neo4jGraphql.getSchema();
-
         const query = /* GraphQL */ `
             query Groups {
                 ${Group.plural}(where: { id: "family_id_1" }) {
@@ -229,10 +215,10 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { uid: "user-1", email: "some-email", roles: ["admin"] } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: await testHelper.getContextValue({
+                jwt: { uid: "user-1", email: "some-email", roles: ["admin"] },
+            }),
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Group.plural]).toStrictEqual(
@@ -247,8 +233,6 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     });
 
     test("should raise Forbidden with invalid JWT", async () => {
-        const schema = await neo4jGraphql.getSchema();
-
         const query = /* GraphQL */ `
             query Groups {
                 ${Group.plural}(where: { id: "family_id_1" }) {
@@ -271,10 +255,10 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { uid: "not-user-1", email: "some-email", roles: ["admin"] } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: await testHelper.getContextValue({
+                jwt: { uid: "not-user-1", email: "some-email", roles: ["admin"] },
+            }),
         });
         expect(response.errors?.[0]?.message).toContain("Forbidden");
     });

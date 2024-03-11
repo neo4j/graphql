@@ -17,34 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1536", () => {
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    const SomeNodeType = new UniqueType("SomeNode");
-    const OtherNodeType = new UniqueType("OtherNode");
-    const MyImplementationType = new UniqueType("MyImplementation");
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let SomeNodeType: UniqueType;
+    let OtherNodeType: UniqueType;
+    let MyImplementationType: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        SomeNodeType = testHelper.createUniqueType("SomeNode");
+        OtherNodeType = testHelper.createUniqueType("OtherNode");
+        MyImplementationType = testHelper.createUniqueType("MyImplementation");
 
         const typeDefs = `
             type ${SomeNodeType} {
@@ -66,20 +53,16 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
             }
         `;
 
-        session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE(:${SomeNodeType} {id: "1"})-[:HAS_OTHER_NODES]->(other:${OtherNodeType} {id: "2"})
             CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} {id: "3"})
         `);
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not throw error when querying nested interfaces", async () => {
@@ -96,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
             }
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.runGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [SomeNodeType.plural]: [

@@ -24,31 +24,28 @@ import * as neo4j from "neo4j-driver";
 import { Memoize } from "typescript-memoize";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../../src";
 import { Neo4jGraphQL } from "../../../src";
+import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
 
+let helperLock = false;
+
 export class TestHelper {
-    // private driver: neo4j.Driver | undefined;
-    // private hasIntegrationTestDb: boolean;
-
     private database: string = DEFAULT_DB;
-
     private neo4jGraphQL: Neo4jGraphQL | undefined;
-
     private uniqueTypes: UniqueType[] = [];
 
-    constructor() {
-        // this.hasIntegrationTestDb = false;
-    }
-
-    public async runCypher(query: string, params: Record<string, unknown> = {}): Promise<neo4j.QueryResult> {
-        const driver = await this.getDriver();
-        return driver.executeQuery(query, params, { database: this.database });
+    public createBearerToken(secret: string, extraData?: Record<string, any>) {
+        return createBearerToken(secret, extraData);
     }
 
     public async initNeo4jGraphQL(options: Omit<Neo4jGraphQLConstructor, "driver">): Promise<Neo4jGraphQL> {
+        if (helperLock) {
+            throw new Error("TestHelper still open. Did you forget calling .close()?");
+        }
+        helperLock = true;
         if (this.neo4jGraphQL) {
             throw new Error("Neo4jGraphQL already initialized");
         }
@@ -66,20 +63,46 @@ export class TestHelper {
         return uniqueType;
     }
 
-    public async runGraphQL(query: string, args: Pick<GraphQLArgs, "variableValues"> = {}): Promise<ExecutionResult> {
+    public async runCypher(query: string, params: Record<string, unknown> = {}): Promise<neo4j.QueryResult> {
+        const driver = await this.getDriver();
+        return driver.executeQuery(query, params, { database: this.database });
+    }
+
+    public async runGraphQL(
+        query: string,
+        args: Pick<GraphQLArgs, "variableValues" | "contextValue"> = {}
+    ): Promise<ExecutionResult> {
         if (!this.neo4jGraphQL) {
             throw new Error("Neo4j GraphQL not ready. Did you forget calling 'initNeo4jGraphQL'?");
         }
+        if (args.contextValue instanceof Promise) {
+            throw new Error("contextValue is a promise. Did you forget to use await with 'getContextValue'?");
+        }
         const schema = await this.neo4jGraphQL.getSchema();
+
         return graphqlRuntime({
             schema,
             source: query,
-            contextValue: await this.getContextValues(),
+            contextValue: await this.getContextValue(),
             ...args,
         });
     }
 
+    public async runGraphQLWithToken(
+        query: string,
+        token: string,
+        args: Partial<Pick<GraphQLArgs, "variableValues">> = {}
+    ): Promise<ExecutionResult> {
+        return this.runGraphQL(query, {
+            ...args,
+            contextValue: await this.getContextValue({ token }),
+        });
+    }
+
     public async close(preClose?: () => Promise<void>): Promise<void> {
+        if (!helperLock) {
+            throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
+        }
         const driver = await this.getDriver();
         if (preClose) {
             try {
@@ -90,9 +113,11 @@ export class TestHelper {
         }
         await this.cleanNodes(driver, this.uniqueTypes); // TODO: take the database into account
         await driver.close();
+        helperLock = false;
     }
 
-    private async getContextValues(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
+    /** Use this to add values to context value if needed */
+    public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
         const driver = await this.getDriver();
         return {
             executionContext: driver,

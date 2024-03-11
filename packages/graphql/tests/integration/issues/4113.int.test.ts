@@ -17,28 +17,24 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4113", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    let neoSchema: Neo4jGraphQL;
+    let User: UniqueType;
+    let Store: UniqueType;
+    let Transaction: UniqueType;
+    let TransactionItem: UniqueType;
 
-    const User = new UniqueType("User");
-    const Store = new UniqueType("Store");
-    const Transaction = new UniqueType("Transaction");
-    const TransactionItem = new UniqueType("TransactionItem");
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
+        Store = testHelper.createUniqueType("Store");
+        Transaction = testHelper.createUniqueType("Transaction");
+        TransactionItem = testHelper.createUniqueType("TransactionItem");
 
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
@@ -105,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 )
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -115,15 +111,8 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
         });
     });
 
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
     afterEach(async () => {
-        await session.close();
-    });
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Create sets default enum value correctly", async () => {
@@ -139,11 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 }
             }
       `;
-        const gqlResult1 = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: setupCreateUsers,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult1 = await testHelper.runGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
         const setupCreateStores = `#graphql
@@ -171,11 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 }
                 }
             }`;
-        const gqlResult2 = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: setupCreateStores,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult2 = await testHelper.runGraphQL(setupCreateStores);
         expect(gqlResult2.errors).toBeFalsy();
         const storeId = (gqlResult2.data?.[Store.operations.create] as Record<string, any>)[Store.plural][0].id;
 
@@ -213,11 +194,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
         `;
 
         const token = createBearerToken("secret", { roles: ["employee"], store: storeId });
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
@@ -243,21 +220,22 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
 });
 
 describe("replicates the test for relationship to interface so that multiple refNodes are target", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    let neoSchema: Neo4jGraphQL;
-
-    const User = new UniqueType("User");
-    const Store = new UniqueType("Store");
-    const Transaction = new UniqueType("Transaction");
-    const TransactionItem1 = new UniqueType("TransactionItem1");
-    const TransactionItem2 = new UniqueType("TransactionItem2");
+    let User: UniqueType;
+    let Store: UniqueType;
+    let Transaction: UniqueType;
+    let TransactionItem1: UniqueType;
+    let TransactionItem2: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        User = testHelper.createUniqueType("User");
+        Store = testHelper.createUniqueType("Store");
+        Transaction = testHelper.createUniqueType("Transaction");
+        TransactionItem1 = testHelper.createUniqueType("TransactionItem1");
+        TransactionItem2 = testHelper.createUniqueType("TransactionItem2");
 
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
@@ -352,7 +330,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 )
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -362,15 +340,8 @@ describe("replicates the test for relationship to interface so that multiple ref
         });
     });
 
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
-    });
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Create sets default enum value correctly", async () => {
@@ -386,11 +357,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 }
             }
       `;
-        const gqlResult1 = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: setupCreateUsers,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult1 = await testHelper.runGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
         const setupCreateStores = `#graphql
@@ -418,11 +385,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 }
                 }
             }`;
-        const gqlResult2 = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: setupCreateStores,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult2 = await testHelper.runGraphQL(setupCreateStores);
         expect(gqlResult2.errors).toBeFalsy();
         const storeId = (gqlResult2.data?.[Store.operations.create] as Record<string, any>)[Store.plural][0].id;
 
@@ -465,11 +428,7 @@ describe("replicates the test for relationship to interface so that multiple ref
         `;
 
         const token = createBearerToken("secret", { roles: ["employee"], store: storeId });
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({

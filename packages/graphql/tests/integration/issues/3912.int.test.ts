@@ -17,24 +17,17 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3912", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    let neoSchema: Neo4jGraphQL;
-
-    const Event = new UniqueType("Event");
+    let Event: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        Event = testHelper.createUniqueType("Event");
 
         const typeDefs = /* GraphQL */ `
             enum EventPrivacy {
@@ -51,20 +44,13 @@ describe("https://github.com/neo4j/graphql/issues/3912", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
     afterEach(async () => {
-        await session.close();
-    });
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Create sets default enum value correctly", async () => {
@@ -79,11 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/3912", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({

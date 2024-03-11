@@ -17,23 +17,20 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { graphql } from "graphql";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4405", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
-    const Movie = new UniqueType("Movie");
-    const Actor = new UniqueType("Actor");
+    let testHelper: TestHelper;
+
+    let Movie: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
+
         const typeDefs = /* GraphQL */ `
             type ${Movie.name} {
                 title: String
@@ -53,9 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
                 actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
-        neo4jGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -63,35 +59,21 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             },
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 CREATE (m:${Movie.name} {title: "Matrix" })<-[:ACTED_IN]-(a:${Actor.name} { name: "Keanu"})
                 CREATE (a)-[:ACTED_IN]->(:${Movie.name} {title: "John Wick" })
                 CREATE (m2:${Movie.name} {title: "Hunger games" })<-[:ACTED_IN]-(a2:${Actor.name} { name: "Laurence"})
 
-                `,
-                {}
-            );
-        } finally {
-            await session.close();
-        }
+                `
+        );
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Movie.name, Actor.name]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not raise if title is the filter array value", async () => {
-        const schema = await neo4jGraphql.getSchema();
-
         const query = /* GraphQL */ `
             query Actors {
                 ${Actor.plural}(where: { name: "Keanu"}) {
@@ -100,10 +82,8 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { uid: "user-1" } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: await testHelper.getContextValue({ jwt: { uid: "user-1" } }),
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Actor.plural]).toStrictEqual(
@@ -116,8 +96,6 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
     });
 
     test("should raise if title is not in the filter array value", async () => {
-        const schema = await neo4jGraphql.getSchema();
-
         const query = /* GraphQL */ `
             query Actors {
                 ${Actor.plural}(where: { name: "Laurence"}) {
@@ -126,10 +104,8 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { uid: "user-1" } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: await testHelper.getContextValue({ jwt: { uid: "user-1" } }),
         });
         expect(response.errors?.[0]?.message).toContain("Forbidden");
     });

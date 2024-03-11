@@ -17,34 +17,26 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import gql from "graphql-tag";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/487", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("related fields should resolve on custom queries (union)", async () => {
-        const session = await neo4j.getSession();
-
-        const typeAuthor = new UniqueType("Author");
-        const typeDirector = new UniqueType("Director");
-        const typeBook = new UniqueType("Book");
-        const typeMovie = new UniqueType("Movie");
+        const typeAuthor = testHelper.createUniqueType("Author");
+        const typeDirector = testHelper.createUniqueType("Director");
+        const typeBook = testHelper.createUniqueType("Book");
+        const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeAuthor.name} {
@@ -82,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -122,54 +114,44 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
                 CREATE (:${typeMovie.name} { id: "${movieId}" })<-[:DIRECTED]-(:${typeDirector.name} {id: "${directorId}"})
                 CREATE (:${typeBook.name} { id: "${bookId}" })<-[:WROTE]-(:${typeAuthor.name} {id: "${authorId}"})
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
-
-            expect(result.errors).toBeFalsy();
-
-            const movie = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeMovie.name);
-            const book = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeBook.name);
-
-            expect(movie).toEqual({
-                id: movieId,
-                director: {
-                    id: directorId,
-                },
-                __typename: typeMovie.name,
-            });
-
-            expect(book).toEqual({
-                id: bookId,
-                author: {
-                    id: authorId,
-                },
-                __typename: typeBook.name,
-            });
-        } finally {
-            await session.close();
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
         }
+
+        expect(result.errors).toBeFalsy();
+
+        const movie = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeMovie.name);
+        const book = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeBook.name);
+
+        expect(movie).toEqual({
+            id: movieId,
+            director: {
+                id: directorId,
+            },
+            __typename: typeMovie.name,
+        });
+
+        expect(book).toEqual({
+            id: bookId,
+            author: {
+                id: authorId,
+            },
+            __typename: typeBook.name,
+        });
     });
 
     test("related fields should resolve on custom queries (interface)", async () => {
-        const session = await neo4j.getSession();
-
-        const typeAuthor = new UniqueType("Author");
-        const typeDirector = new UniqueType("Director");
-        const typeBook = new UniqueType("Book");
-        const typeMovie = new UniqueType("Movie");
+        const typeAuthor = testHelper.createUniqueType("Author");
+        const typeDirector = testHelper.createUniqueType("Director");
+        const typeBook = testHelper.createUniqueType("Book");
+        const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeAuthor.name} {
@@ -209,7 +191,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -249,44 +231,36 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
                 CREATE (:${typeMovie.name} { id: "${movieId}" })<-[:DIRECTED]-(:${typeDirector.name} {id: "${directorId}"})
                 CREATE (:${typeBook.name} { id: "${bookId}" })<-[:WROTE]-(:${typeAuthor.name} {id: "${authorId}"})
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
-
-            expect(result.errors).toBeFalsy();
-
-            const movie = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeMovie.name);
-            const book = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeBook.name);
-
-            expect(movie).toEqual({
-                id: movieId,
-                director: {
-                    id: directorId,
-                },
-                __typename: typeMovie.name,
-            });
-
-            expect(book).toEqual({
-                id: bookId,
-                author: {
-                    id: authorId,
-                },
-                __typename: typeBook.name,
-            });
-        } finally {
-            await session.close();
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
         }
+
+        expect(result.errors).toBeFalsy();
+
+        const movie = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeMovie.name);
+        const book = ((result?.data as any).getThings as any[]).find((x) => x.__typename === typeBook.name);
+
+        expect(movie).toEqual({
+            id: movieId,
+            director: {
+                id: directorId,
+            },
+            __typename: typeMovie.name,
+        });
+
+        expect(book).toEqual({
+            id: bookId,
+            author: {
+                id: authorId,
+            },
+            __typename: typeBook.name,
+        });
     });
 });

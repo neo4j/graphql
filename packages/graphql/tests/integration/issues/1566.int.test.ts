@@ -17,25 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1566", () => {
-    const testContent = new UniqueType("Content");
-    const testProject = new UniqueType("Project");
-    const testCommunity = new UniqueType("Community");
+    let testContent: UniqueType;
+    let testProject: UniqueType;
+    let testCommunity: UniqueType;
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        testContent = testHelper.createUniqueType("Content");
+        testProject = testHelper.createUniqueType("Project");
+        testCommunity = testHelper.createUniqueType("Community");
 
         const typeDefs = `
             type ${testContent.name} {
@@ -68,15 +64,13 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                     )
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("single value is returned for custom Cypher field of Union type", async () => {
@@ -101,28 +95,18 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             CREATE (c:${testCommunity.name} { id: 111111 })-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES]->(:${testContent.name} { name: "content1" })
         `;
 
-        const session = await neo4j.getSession();
+        await testHelper.runCypher(cypher);
 
-        try {
-            await session.run(cypher);
+        const result = await testHelper.runGraphQL(query);
 
-            const result = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
-
-            expect(result.errors).toBeUndefined();
-            expect((result.data as any)?.[testCommunity.plural]?.[0]).toEqual({
-                id: 111111,
-                feedItem: {
-                    __typename: testContent.name,
-                    name: "content1",
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeUndefined();
+        expect((result.data as any)?.[testCommunity.plural]?.[0]).toEqual({
+            id: 111111,
+            feedItem: {
+                __typename: testContent.name,
+                name: "content1",
+            },
+        });
     });
 
     test("multiple values are returned for custom Cypher field of list of Union types", async () => {
@@ -149,42 +133,32 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             CREATE (c)-[:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]->(:${testProject.name} { name: "project2" })
         `;
 
-        const session = await neo4j.getSession();
+        await testHelper.runCypher(cypher);
 
-        try {
-            await session.run(cypher);
+        const result = await testHelper.runGraphQL(query);
 
-            const result = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
-
-            expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
-                [testCommunity.plural]: [
-                    {
-                        id: 4656564,
-                        hasFeedItems: expect.toIncludeSameMembers([
-                            {
-                                __typename: testContent.name,
-                                name: "content",
-                            },
-                            {
-                                __typename: testProject.name,
-                                name: "project1",
-                            },
-                            {
-                                __typename: testProject.name,
-                                name: "project2",
-                            },
-                        ]),
-                    },
-                ],
-            });
-            expect((result.data as any)[testCommunity.plural][0].hasFeedItems).toHaveLength(3);
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeUndefined();
+        expect(result.data as any).toEqual({
+            [testCommunity.plural]: [
+                {
+                    id: 4656564,
+                    hasFeedItems: expect.toIncludeSameMembers([
+                        {
+                            __typename: testContent.name,
+                            name: "content",
+                        },
+                        {
+                            __typename: testProject.name,
+                            name: "project1",
+                        },
+                        {
+                            __typename: testProject.name,
+                            name: "project2",
+                        },
+                    ]),
+                },
+            ],
+        });
+        expect((result.data as any)[testCommunity.plural][0].hasFeedItems).toHaveLength(3);
     });
 });

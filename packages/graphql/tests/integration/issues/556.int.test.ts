@@ -17,25 +17,20 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/556 - Input Object type ArticleCreateInput must define one or more fields", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let typeDefs: string;
     let User: UniqueType;
     let Thing: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
 
-        User = new UniqueType("User");
-        Thing = new UniqueType("Thing");
+        User = testHelper.createUniqueType("User");
+        Thing = testHelper.createUniqueType("Thing");
 
         typeDefs = `
             type ${User} {
@@ -50,22 +45,11 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`MATCH (u:${User}) DETACH DELETE u`);
-            await session.run(`MATCH (t:${Thing}) DETACH DELETE t`);
-        } finally {
-            await session.close();
-        }
-
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Can create empty nodes", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             mutation {
@@ -82,17 +66,12 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 
         expect((result.data as any)[User.operations.create][User.plural]).toHaveLength(1);
         expect((result.data as any)[User.operations.create][User.plural][0].name).toBe("Darrell");
         expect((result.data as any)[User.operations.create][User.plural][0].things).toHaveLength(2);
-        await session.close();
     });
 });

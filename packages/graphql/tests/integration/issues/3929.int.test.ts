@@ -17,38 +17,27 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3929", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
+
     const secret = "secret";
 
     let User: UniqueType;
     let Group: UniqueType;
     let Person: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        User = new UniqueType("User");
-        Group = new UniqueType("Group");
-        Person = new UniqueType("Person");
+        User = testHelper.createUniqueType("User");
+        Group = testHelper.createUniqueType("Group");
+        Person = testHelper.createUniqueType("Person");
 
-        const typeDefs = /* GraphQL */ `
+        const typeDefs = `
             type JWT @jwt {
                 uid: String!
             }
@@ -76,9 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
             extend schema @authentication
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -88,12 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [User, Group, Person]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not raise cardinality error when deleting on update", async () => {
@@ -135,18 +118,11 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
 
         const token = createBearerToken(secret, { uid: "user1_id" });
 
-        const createUsersResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createUsers,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const createUsersResult = await testHelper.runGraphQLWithToken(createUsers, token);
 
         expect(createUsersResult.errors).toBeFalsy();
 
-        const createGroupsResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createGroups,
-            contextValue: neo4j.getContextValues({ token }),
+        const createGroupsResult = await testHelper.runGraphQLWithToken(createGroups, token, {
             variableValues: {
                 input: [
                     {
@@ -186,10 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
 
         expect(createGroupsResult.errors).toBeFalsy();
 
-        const updateGroupsResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: updateGroups,
-            contextValue: neo4j.getContextValues({ token }),
+        const updateGroupsResult = await testHelper.runGraphQLWithToken(updateGroups, token, {
             variableValues: {
                 where: {
                     name: "Group 1",

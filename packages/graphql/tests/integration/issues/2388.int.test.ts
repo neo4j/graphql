@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2388", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
     let PartAddress: UniqueType;
     let PartUsage: UniqueType;
     let Part: UniqueType;
     const secret = "secret";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        PartAddress = new UniqueType("PartAddress");
-        PartUsage = new UniqueType("PartUsage");
-        Part = new UniqueType("Part");
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        PartAddress = testHelper.createUniqueType("PartAddress");
+        PartUsage = testHelper.createUniqueType("PartUsage");
+        Part = testHelper.createUniqueType("Part");
 
         const typeDefs = `
         type JWTPayload @jwt {
@@ -82,14 +70,13 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         `;
 
         // Initialise data
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (p:${Part})<-[uo:USAGE_OF]-(pu:${PartUsage})-[bt:BELONGS_TO]->(pa:${PartAddress})
             SET pa.id = "123"
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -99,12 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [PartAddress, PartUsage, Part]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should returns the correct count without errors", async () => {
@@ -120,14 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
 
         const token = createBearerToken(secret, { roles: ["upstream", "downstream"] });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: {
-                ...neo4j.getContextValues(),
-                ...{ token },
-            },
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Part.plural]: [

@@ -17,40 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3015", () => {
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let driver: Driver;
+    let testHelper: TestHelper;
 
     let NodeA: UniqueType;
     let NodeB: UniqueType;
     let Connected: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    beforeEach(async () => {
-        NodeA = new UniqueType("NodeA");
-        NodeB = new UniqueType("NodeB");
-        Connected = new UniqueType("Connected");
-
-        session = await neo4j.getSession();
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        NodeA = testHelper.createUniqueType("NodeA");
+        NodeB = testHelper.createUniqueType("NodeB");
+        Connected = testHelper.createUniqueType("Connected");
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("union should filter by top level match", async () => {
@@ -74,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (a:${NodeA} {name: "testA"})
             CREATE (b:${NodeB} {name: "testB"})
             CREATE (c:${Connected} {name: "connectedB"})
@@ -88,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
             CREATE(c2)-[:LINKED_TO]->(b2)
         `);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -106,11 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

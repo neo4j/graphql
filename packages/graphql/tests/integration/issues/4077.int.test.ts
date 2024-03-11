@@ -17,36 +17,24 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4077", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
     const secret = "secret";
 
     let User: UniqueType;
     let Video: UniqueType;
     let PreviewClip: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        User = new UniqueType("User");
-        Video = new UniqueType("Video");
-        PreviewClip = new UniqueType("PreviewClip");
+        User = testHelper.createUniqueType("User");
+        Video = testHelper.createUniqueType("Video");
+        PreviewClip = testHelper.createUniqueType("PreviewClip");
 
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
@@ -102,9 +90,8 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                 )
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -114,12 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [User, Video, PreviewClip]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("get clips with correct filters", async () => {
@@ -131,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${PreviewClip} { id: "clip1", markedAsDone: false})<-[:VIDEO_HAS_PREVIEW_CLIP]-(v:${Video} {id:"1234", processing: "published"})
             CREATE (v)<-[:PUBLISHER]-(:${User} {id:"user1_id"})
 
@@ -140,11 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
 
         const token = createBearerToken(secret, { sub: "user1_id" });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -166,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${PreviewClip} { id: "clip1", markedAsDone: false})<-[:VIDEO_HAS_PREVIEW_CLIP]-(v:${Video} {id:"1234", processing: "published"})
             CREATE (v)<-[:PUBLISHER]-(:${User} {id:"user1_id"})
 
@@ -175,11 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
 
         const token = createBearerToken(secret, { sub: "user1_id" });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 

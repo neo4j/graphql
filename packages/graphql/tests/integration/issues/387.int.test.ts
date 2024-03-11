@@ -17,28 +17,22 @@
  * limitations under the License.
  */
 
-import { type Driver } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let name: string;
     let url: string;
     let typeDefs: DocumentNode;
+    let Place: UniqueType;
 
-    const Place = new UniqueType("Place");
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        Place = testHelper.createUniqueType("Place");
 
         name = generate({
             charset: "alphabetic",
@@ -85,26 +79,16 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                     )
             }
     `;
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`CREATE (:${Place.name} { name: "${name}" })`);
-        } finally {
-            await session.close();
-        }
+
+        await testHelper.runCypher(`CREATE (:${Place.name} { name: "${name}" })`);
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Place]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return custom scalars from custom Cypher fields", async () => {
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             {
@@ -116,11 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 
@@ -136,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
     });
 
     test("should return custom scalars from root custom Cypher fields", async () => {
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             {
@@ -145,11 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

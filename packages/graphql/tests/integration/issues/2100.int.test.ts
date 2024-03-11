@@ -17,83 +17,82 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let token: string;
 
-    const BacentaType = new UniqueType("Bacenta");
-    const ServiceLogType = new UniqueType("ServiceLog");
-    const BussingRecordType = new UniqueType("BussingRecord");
-    const TimeGraphType = new UniqueType("TimeGraph");
+    let BacentaType: UniqueType;
+    let ServiceLogType: UniqueType;
+    let BussingRecordType: UniqueType;
+    let TimeGraphType: UniqueType;
 
-    const typeDefs = `
-        type ${ServiceLogType} {
-            id: ID
-            records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
-        }
-        type ${BussingRecordType} implements Record {
-            id: ID!
-            attendance: Int
-            markedAttendance: Boolean!
-                @cypher(
-                    statement: """
-                    MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
-                    RETURN COUNT(member) > 0 AS markedAttendance
-                    """,
-                    columnName: "markedAttendance"
-                )
-            serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
-        }
+    let typeDefs: string;
 
-        interface Church {
-            id: ID
-            name: String!
-            serviceLogs: [${ServiceLogType}!]! @declareRelationship
-        }
+    beforeEach(async () => {
+        testHelper = new TestHelper();
 
-        type ${BacentaType} implements Church @authentication {
-            id: ID @id @unique
-            name: String!
-            serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
-            bussing(limit: Int!): [${BussingRecordType}!]!
-                @cypher(
-                    statement: """
-                    MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
-                    WITH DISTINCT records, date LIMIT $limit
-                    RETURN records ORDER BY date.date DESC
-                    """
-                    columnName: "records"
-                )
-        }
+        BacentaType = testHelper.createUniqueType("Bacenta");
+        ServiceLogType = testHelper.createUniqueType("ServiceLog");
+        BussingRecordType = testHelper.createUniqueType("BussingRecord");
+        TimeGraphType = testHelper.createUniqueType("TimeGraph");
 
-        type ${TimeGraphType} @authentication {
-            date: Date
-        }
+        typeDefs = `
+            type ${ServiceLogType} {
+                id: ID
+                records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
+            }
+            type ${BussingRecordType} implements Record {
+                id: ID!
+                attendance: Int
+                markedAttendance: Boolean!
+                    @cypher(
+                        statement: """
+                        MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
+                        RETURN COUNT(member) > 0 AS markedAttendance
+                        """,
+                        columnName: "markedAttendance"
+                    )
+                serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
+            }
+    
+            interface Church {
+                id: ID
+                name: String!
+                serviceLogs: [${ServiceLogType}!]! @declareRelationship
+            }
+    
+            type ${BacentaType} implements Church @authentication {
+                id: ID @id @unique
+                name: String!
+                serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
+                bussing(limit: Int!): [${BussingRecordType}!]!
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
+                        WITH DISTINCT records, date LIMIT $limit
+                        RETURN records ORDER BY date.date DESC
+                        """
+                        columnName: "records"
+                    )
+            }
+    
+            type ${TimeGraphType} @authentication {
+                date: Date
+            }
+    
+            interface Record {
+                id: ID!
+                attendance: Int
+                markedAttendance: Boolean!
+                serviceDate: ${TimeGraphType}! @declareRelationship
+            }
+            `;
 
-        interface Record {
-            id: ID!
-            attendance: Int
-            markedAttendance: Boolean!
-            serviceDate: ${TimeGraphType}! @declareRelationship
-        }
-        `;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 CREATE (b:${BacentaType} {id: "1"})
                 SET b.name =  "test"
                 
@@ -101,33 +100,18 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 MERGE p=(b)-[:HAS_HISTORY]->(:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()})
                 RETURN p;
                 `
-            );
-        } finally {
-            await session.close();
-        }
+        );
 
-        token = createBearerToken("secret");
+        token = testHelper.createBearerToken("secret");
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `MATCH (b:${BacentaType} {id: 1})-[:HAS_HISTORY]->(s:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()}) DETACH DELETE b,s, record, date`
-            );
-        } finally {
-            await session.close();
-        }
-
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("Example working", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -148,30 +132,19 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
-            expect(result.errors).toBeFalsy();
-            expect((result?.data as any)[BussingRecordType.plural][0].id).toBe("3");
-            expect((result?.data as any)[BussingRecordType.plural][0].__typename).toBe(BussingRecordType.name);
-            expect((result?.data as any)[BussingRecordType.plural][0].markedAttendance).toBe(false);
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeFalsy();
+        expect((result?.data as any)[BussingRecordType.plural][0].id).toBe("3");
+        expect((result?.data as any)[BussingRecordType.plural][0].__typename).toBe(BussingRecordType.name);
+        expect((result?.data as any)[BussingRecordType.plural][0].markedAttendance).toBe(false);
     });
 
     test("Example 'Variable not found'", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -199,21 +172,15 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: {
-                    id: 1,
-                },
-                contextValue: neo4j.getContextValues({ token }),
-            });
+        const result = await testHelper.runGraphQL(query, {
+            variableValues: {
+                id: 1,
+            },
+            contextValue: await testHelper.getContextValue({ token }),
+        });
 
-            expect(result.errors).toBeFalsy();
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeFalsy();
     });
 });

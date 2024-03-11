@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2662", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -45,17 +38,12 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
 
     const post1Average = (someString1.length + someString2.length) / 2;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        userType = new UniqueType("User");
-        postType = new UniqueType("Post");
-        likesInterface = new UniqueType("Likes");
+        userType = testHelper.createUniqueType("User");
+        postType = testHelper.createUniqueType("Post");
+        likesInterface = testHelper.createUniqueType("Likes");
 
         const typeDefs = `
             type ${userType} {
@@ -70,25 +58,19 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }    
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (p:${postType} { content: "${content1}" })<-[:LIKES { someString: "${someString1}" }]-(:${userType} { name: "${name1}" })
             CREATE (p)<-[:LIKES { someString: "${someString2}" }]-(:${userType} { name: "${name2}" })
             CREATE (:${postType} { content: "${content2}" })<-[:LIKES { someString: "${someString3}" }]-(:${userType} { name: "${name3}" })
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return posts where an edge like String EQUAL", async () => {
@@ -103,11 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -136,11 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -168,11 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -212,11 +182,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -248,11 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -292,11 +254,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -328,11 +286,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -364,11 +318,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -400,11 +350,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -433,11 +379,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -477,11 +419,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -513,11 +451,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -549,11 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -593,11 +523,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -626,11 +552,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -659,11 +581,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -695,11 +613,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -731,11 +645,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -767,11 +677,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -800,11 +706,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -831,11 +733,27 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             ]),
         });
     });
+});
 
-    test("should should apply AVERAGE filter to a string edge property correctly when node has a node has a property with the same name but different type", async () => {
-        userType = new UniqueType("User");
-        postType = new UniqueType("Post");
-        likesInterface = new UniqueType("Likes");
+describe("https://github.com/neo4j/graphql/issues/2662 - alternative typedefs", () => {
+    let testHelper: TestHelper;
+
+    let userType: UniqueType;
+    let postType: UniqueType;
+    let likesInterface: UniqueType;
+
+    const someString1 = "Some like string";
+    const someString2 = "Short str";
+    const someString3 = "A third string example that is very long";
+
+    const post1Average = (someString1.length + someString2.length) / 2;
+
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+
+        userType = testHelper.createUniqueType("User");
+        postType = testHelper.createUniqueType("Post");
+        likesInterface = testHelper.createUniqueType("Likes");
 
         const typeDefs = `
             type ${userType} {
@@ -850,17 +768,22 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }    
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (p:${postType} { someProperty: 1 })<-[:LIKES { someProperty: "${someString1}" }]-(:${userType} { someProperty: 1 })
             CREATE (p)<-[:LIKES { someProperty: "${someString2}" }]-(:${userType} { someProperty: 2 })
             CREATE (:${postType} { someProperty: 2 })<-[:LIKES { someProperty: "${someString3}" }]-(:${userType} { someProperty: 3 })
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
+    });
 
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("should should apply AVERAGE filter to a string edge property correctly when node has a node has a property with the same name but different type", async () => {
         const query = `
             {
                 ${postType.plural}(where: { likesAggregate: { edge: { someProperty_AVERAGE_EQUAL: ${post1Average} } } }) {
@@ -872,11 +795,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({

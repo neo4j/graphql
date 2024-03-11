@@ -17,27 +17,23 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session, Integer } from "neo4j-driver";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { getQuerySource } from "../../utils/get-query-source";
-import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQL } from "../../../src";
+import type { Integer } from "neo4j-driver";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/923", () => {
-    const testBlogpost = new UniqueType("BlogPost");
-    const testCategory = new UniqueType("Category");
+    let testHelper: TestHelper;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testBlogpost: UniqueType;
+    let testCategory: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        testBlogpost = testHelper.createUniqueType("BlogPost");
+        testCategory = testHelper.createUniqueType("Category");
+        // driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type ${testBlogpost.name} @fulltext(indexes: [{ name: "BlogTitle", fields: ["title"] }]) {
@@ -49,27 +45,15 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
                 blogs: [${testBlogpost.name}!]! @relationship(type: "IN_CATEGORY", direction: IN)
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.run(`MATCH (b:${testBlogpost.name}) DETACH DELETE b`);
-        await session.run(`MATCH (c:${testCategory.name}) DETACH DELETE c`);
-
-        await session.close();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query nested connection", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
                 ${testCategory.operations.create}(
                     input: [
@@ -93,10 +77,8 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
             }
         `;
 
-        const result = await graphql({
-            schema,
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues({
+        const result = await testHelper.runGraphQL(query, {
+            contextValue: await testHelper.getContextValue({
                 jwt: {
                     sub: "test",
                 },
@@ -104,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
         });
         expect(result.errors).toBeUndefined();
 
-        const blogPostCount = await session.run(`
+        const blogPostCount = await testHelper.runCypher(`
           MATCH (m:${testBlogpost.name} { slug: "myslug" })
           RETURN COUNT(m) as count
         `);

@@ -17,34 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2574", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let A: UniqueType;
     let B: UniqueType;
     let D: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        A = new UniqueType("A");
-        B = new UniqueType("B");
-        D = new UniqueType("D");
-
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        A = testHelper.createUniqueType("A");
+        B = testHelper.createUniqueType("B");
+        D = testHelper.createUniqueType("D");
 
         const typeDefs = `
             type ${A} {
@@ -66,19 +53,13 @@ describe("https://github.com/neo4j/graphql/issues/2574", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [A, B, D]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should create birectional union relationship without error", async () => {
@@ -94,10 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2574", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const result = await testHelper.runGraphQL(query, {
             variableValues: {
                 input: {
                     child: {

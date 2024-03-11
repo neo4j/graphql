@@ -17,38 +17,26 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { int } from "neo4j-driver";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
+
     let PostalCode: UniqueType;
     let Address: UniqueType;
     let Estate: UniqueType;
     let Mandate: UniqueType;
     let Valuation: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        PostalCode = new UniqueType("PostalCode");
-        Address = new UniqueType("Address");
-        Estate = new UniqueType("Estate");
-        Mandate = new UniqueType("Mandate");
-        Valuation = new UniqueType("Valuation");
-
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        PostalCode = testHelper.createUniqueType("PostalCode");
+        Address = testHelper.createUniqueType("Address");
+        Estate = testHelper.createUniqueType("Estate");
+        Mandate = testHelper.createUniqueType("Mandate");
+        Valuation = testHelper.createUniqueType("Valuation");
 
         const typeDefs = `
         type ${PostalCode.name} {
@@ -112,19 +100,13 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [PostalCode, Address, Estate, Mandate, Valuation]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should creates the correct nodes", async () => {
@@ -184,11 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Mandate.operations.create]: {
@@ -218,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             },
         });
 
-        const dbResult: any = await session.run(`
+        const dbResult: any = await testHelper.runCypher(`
             MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})-[:HAS_POSTAL_CODE]->(postalCode:${PostalCode.name})
             RETURN mandate, valuation, estate, address, postalCode
         `);
@@ -307,11 +285,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Mandate.operations.create]: {
@@ -346,7 +320,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             },
         });
 
-        const dbResult: any = await session.run(`
+        const dbResult: any = await testHelper.runCypher(`
             MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})<-[:HAS_ADDRESS]-(estate2:${Estate.name})
             RETURN mandate, valuation, estate, address, estate2
         `);

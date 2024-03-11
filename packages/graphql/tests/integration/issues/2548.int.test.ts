@@ -17,30 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2548", () => {
     const secret = "secret";
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     let User: UniqueType;
-
-    let schema: GraphQLSchema;
 
     let query: string;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        User = new UniqueType("User");
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
 
         const typeDefs = `
             type JWT @jwt {
@@ -67,37 +58,23 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: { authorization: { key: secret } },
         });
 
-        schema = await neoSchema.getSchema();
-
-        const session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${User} { userId: "1", isPublic: true })
             CREATE (:${User} { userId: "2", isPublic: false })
         `);
-
-        await session.close();
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [User]);
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return public information for unauthenticated request", async () => {
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -112,11 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
     test("should return all records for admin request", async () => {
         const token = createBearerToken(secret, { roles: ["ADMIN"] });
 
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeFalsy();
         expect((result.data as any)[User.plural]).toIncludeSameMembers([

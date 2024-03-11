@@ -17,34 +17,23 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3888", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
+
     const secret = "secret";
 
     let Post: UniqueType;
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Post = new UniqueType("Post");
-        User = new UniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+        User = testHelper.createUniqueType("User");
 
         const typeDefs = `
             type ${User} {
@@ -58,9 +47,8 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -70,12 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Post, User]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not raise cardinality error when connecting on create", async () => {
@@ -108,19 +91,11 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
 
         const token = createBearerToken(secret, { sub: "michel" });
 
-        const createUserResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createUser,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const createUserResult = await testHelper.runGraphQLWithToken(createUser, token);
 
         expect(createUserResult.errors).toBeFalsy();
 
-        const createPostResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createPost,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const createPostResult = await testHelper.runGraphQLWithToken(createPost, token);
 
         expect(createPostResult.errors).toBeFalsy();
         expect(createPostResult.data).toEqual({

@@ -17,32 +17,27 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4004", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    const typeEpisode = new UniqueType("Episode");
-    const typeSeries = new UniqueType("Series");
+    let typeEpisode: UniqueType;
+    let typeSeries: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        typeEpisode = testHelper.createUniqueType("Episode");
+        typeSeries = testHelper.createUniqueType("Series");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query allEpisodes with argument named as options", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = gql`
             type ${typeEpisode.name} {
                 id: ID!
@@ -61,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
         query {
@@ -73,32 +68,24 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
         }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (m:${typeSeries.name} { id: randomUUID() })
                     CREATE (m)<-[:IN_SERIES]-(:${typeEpisode.name} { id: randomUUID() })
                     CREATE (m)<-[:IN_SERIES]-(:${typeEpisode.name} { id: randomUUID() })
                     CREATE (m)<-[:IN_SERIES]-(:${typeEpisode.name} { id: randomUUID() })
                 `
-            );
+        );
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            expect(result.errors).toBeFalsy();
-            expect(result.data?.[typeSeries.plural]).toEqual(
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        allEpisodes: expect.arrayContaining([expect.objectContaining({ id: expect.any(String) })]),
-                    }),
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeFalsy();
+        expect(result.data?.[typeSeries.plural]).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    allEpisodes: expect.arrayContaining([expect.objectContaining({ id: expect.any(String) })]),
+                }),
+            ])
+        );
     });
 });

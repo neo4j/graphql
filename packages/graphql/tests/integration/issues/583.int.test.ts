@@ -17,26 +17,17 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { getQuerySource } from "../../utils/get-query-source";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
-describe("583", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let schema: GraphQLSchema;
+describe("https://github.com/neo4j/graphql/issues/583", () => {
+    let testHelper: TestHelper;
     let typeDefs: string;
     let Series: UniqueType;
     let Actor: UniqueType;
     let Movie: UniqueType;
     let ShortFilm: UniqueType;
-    let testLabel: string;
 
     let actor: { id: string; name: string; awardsGiven: number };
     let series: { title: string; awardsGiven: number };
@@ -44,14 +35,12 @@ describe("583", () => {
     let shortFilm: { title: string };
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Actor = new UniqueType("Actor");
-        Series = new UniqueType("Series");
-        Movie = new UniqueType("Movie");
-        ShortFilm = new UniqueType("ShortFilm");
+        Actor = testHelper.createUniqueType("Actor");
+        Series = testHelper.createUniqueType("Series");
+        Movie = testHelper.createUniqueType("Movie");
+        ShortFilm = testHelper.createUniqueType("ShortFilm");
         actor = {
             id: generate(),
             name: "aaa",
@@ -102,12 +91,11 @@ describe("583", () => {
                 title: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        schema = await neoSchema.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        testLabel = generate({ charset: "alphabetic" });
+        const testLabel = testHelper.createUniqueType("Test");
 
-        await session.run(
+        await testHelper.runCypher(
             `
             CREATE (actor:${Actor}:${testLabel})
             SET actor = $actor
@@ -125,20 +113,14 @@ describe("583", () => {
                 shortFilm,
             }
         );
-        await session.close();
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-
-        await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
-        await session.close();
-
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should project all interfaces of node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             query ($actorId: ID!) {
                 ${Actor.plural}(where: { id: $actorId }) {
                     id
@@ -153,11 +135,8 @@ describe("583", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: getQuerySource(query),
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { actorId: actor.id },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

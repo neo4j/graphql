@@ -17,26 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1320", () => {
-    const riskType = new UniqueType("Risk");
-    const teamType = new UniqueType("Team");
-    const mitigationStateType = new UniqueType("MitigationState");
+    let riskType: UniqueType;
+    let teamType: UniqueType;
+    let mitigationStateType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        riskType = testHelper.createUniqueType("Risk");
+        teamType = testHelper.createUniqueType("Team");
+        mitigationStateType = testHelper.createUniqueType("MitigationState");
 
         const typeDefs = gql`
             type ${riskType.name} {
@@ -57,30 +53,23 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
                 Complete
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("multiple aggregations in the same query should return the same results as if were written separately", async () => {
-        const session = await neo4j.getSession();
         const cypherInsert = `
             CREATE
             (team1: ${teamType.name} {code: 'team-1'}),
             (risk1: ${riskType.name} {code: 'risk-1', mitigationState: 'Accepted'}),
             (team1)-[:OWNS_RISK]->(risk1)
         `;
-        try {
-            await session.run(cypherInsert);
-        } finally {
-            await session.close();
-        }
+        await testHelper.runCypher(cypherInsert);
 
         const query = `
             query getAggreationOnTeams {
@@ -99,11 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
                 }
             }
         `;
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const res = await testHelper.runGraphQL(query);
 
         expect(res.errors).toBeUndefined();
         const expectedReturn = {

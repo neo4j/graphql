@@ -17,30 +17,24 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { getQuerySource } from "../../utils/get-query-source";
-import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQL } from "../../../src";
-import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1050", () => {
-    const testUser = new UniqueType("User");
-    const testInbox = new UniqueType("Inbox");
-    const testMessage = new UniqueType("Message");
-    const testAttachment = new UniqueType("Attachment");
+    let testUser: UniqueType;
+    let testInbox: UniqueType;
+    let testMessage: UniqueType;
+    let testAttachment: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        testUser = testHelper.createUniqueType("User");
+        testInbox = testHelper.createUniqueType("Inbox");
+        testMessage = testHelper.createUniqueType("Message");
+        testAttachment = testHelper.createUniqueType("Attachment");
 
         const typeDefs = gql`
             type ${testUser.name} {
@@ -103,36 +97,25 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
                 ]
             )
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: "secret" } },
+        });
     });
 
     afterEach(async () => {
-        const labelMatches = [testUser, testInbox, testMessage, testAttachment]
-            .map((testNodeType) => `n:${testNodeType.name}`)
-            .join(" OR ");
-        await session.run(`MATCH (n) WHERE ${labelMatches} DETACH DELETE n`);
-
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should handle auth appropriately for nested connection", async () => {
-        await session.run(`
+        await testHelper.runCypher(`
           CREATE (c:${testUser.name} {id: 'abc'})
             -[:OWNS]->(i:${testInbox.name} {ownerId: 'abc'})
             -[:CONTAINS]->(m:${testMessage.name} {ownerId: 'abc', subject: 'Hello', body: 'World'})
             <-[:ATTACHED_TO]-(a:${testAttachment.name} {ownerId: 'abc', contents: 'something interesting'})
         `);
 
-        const query = gql`
+        const query = /* */ `
             query {
                 ${testUser.plural} {
                     inboxes {
@@ -150,11 +133,9 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
             }
         `;
 
-        const result = await graphql({
-            schema,
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues({
-                token: createBearerToken("secret"),
+        const result = await testHelper.runGraphQL(query, {
+            contextValue: await testHelper.getContextValue({
+                token: testHelper.createBearerToken("secret"),
                 user: {
                     id: "abc",
                 },

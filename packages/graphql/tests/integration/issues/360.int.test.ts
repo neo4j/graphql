@@ -17,29 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
-describe("360", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+describe("https://github.com/neo4j/graphql/issues/360", () => {
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return all nodes when AND is used and members are optional", async () => {
-        const session = await neo4j.getSession();
-
-        const type = new UniqueType("Event");
+        const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
             type ${type.name} {
@@ -51,7 +43,7 @@ describe("360", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -63,32 +55,22 @@ describe("360", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `
-            );
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
     });
 
     test("should return all nodes when OR is used and members are optional", async () => {
-        const session = await neo4j.getSession();
-
-        const type = new UniqueType("Event");
+        const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
             type ${type.name} {
@@ -100,7 +82,7 @@ describe("360", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -112,32 +94,22 @@ describe("360", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `
-            );
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
     });
 
     test("should recreate given test in issue and return correct results", async () => {
-        const session = await neo4j.getSession();
-
-        const type = new UniqueType("Event");
+        const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
             type ${type.name} {
@@ -149,7 +121,7 @@ describe("360", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -164,27 +136,20 @@ describe("360", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `,
-                { rangeStart, rangeEnd }
-            );
+            { rangeStart, rangeEnd }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { rangeStart, rangeEnd },
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { rangeStart, rangeEnd },
+        });
 
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
     });
 });
