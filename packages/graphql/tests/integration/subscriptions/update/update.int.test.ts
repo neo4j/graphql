@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
 
 describe("Subscriptions update", () => {
@@ -73,6 +73,7 @@ describe("Subscriptions update", () => {
 
     afterEach(async () => {
         await cleanNodesUsingSession(session, [typeActor, typeMovie]);
+
         await session.close();
     });
 

@@ -17,57 +17,67 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { cleanNodesUsingSession } from "../utils/clean-nodes";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("Nested unions", () => {
-    const typeDefs = gql`
-        type Movie {
-            title: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-        }
-
-        type Series {
-            name: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-        }
-
-        union Production = Movie | Series
-
-        type LeadActor {
-            name: String!
-            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
-        }
-
-        type Extra {
-            name: String
-            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
-        }
-
-        union Actor = LeadActor | Extra
-    `;
-
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Movie: UniqueType;
+    let Series: UniqueType;
+    let LeadActor: UniqueType;
+    let Extra: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        Series = new UniqueType("Series");
+        LeadActor = new UniqueType("LeadActor");
+        Extra = new UniqueType("Extra");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type ${Series} {
+                name: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            union Production = ${Movie} | ${Series}
+
+            type ${LeadActor} {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type ${Extra} {
+                name: String
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            union Actor = ${LeadActor} | ${Extra}
+        `;
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [Movie, Series, LeadActor, Extra]);
         await driver.close();
     });
 
     test("chain multiple connects, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
         const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
@@ -75,24 +85,24 @@ describe("Nested unions", () => {
 
         const source = `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     connect: {
                         actors: {
-                            LeadActor: {
+                            ${LeadActor} : {
                                 where: { node: { name: "${actorName}" } }
-                                connect: { actedIn: { Series: { where: { node: { name: "${seriesName}" } } } } }
+                                connect: { actedIn: { ${Series}: { where: { node: { name: "${seriesName}" } } } } }
                             }
                         }
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
-                            ... on LeadActor {
+                            ... on ${LeadActor} {
                                 name
                                 actedIn {
-                                    ... on Series {
+                                    ... on ${Series} {
                                         name
                                     }
                                 }
@@ -106,9 +116,9 @@ describe("Nested unions", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {title:$movieTitle})
-                    CREATE (:LeadActor {name:$actorName})
-                    CREATE (:Series {name:$seriesName})
+                    CREATE (:${Movie} {title:$movieTitle})
+                    CREATE (:${LeadActor} {name:$actorName})
+                    CREATE (:${Series} {name:$seriesName})
                 `,
                 { movieTitle, seriesName, actorName }
             );
@@ -119,9 +129,13 @@ describe("Nested unions", () => {
                 contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.updateMovies.movies[0].title).toEqual(movieTitle);
-            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
-            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+            expect((gqlResult.data as any)?.[Movie.operations.update][Movie.plural][0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any)?.[Movie.operations.update][Movie.plural][0].actors[0].name).toEqual(
+                actorName
+            );
+            expect(
+                (gqlResult.data as any)?.[Movie.operations.update][Movie.plural][0].actors[0].actedIn
+            ).toContainEqual({
                 name: seriesName,
             });
         } finally {
@@ -130,10 +144,6 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple disconnects, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
         const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
@@ -141,24 +151,24 @@ describe("Nested unions", () => {
 
         const source = `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     disconnect: {
                         actors: {
-                            LeadActor: {
+                            ${LeadActor}: {
                                 where: { node: { name: "${actorName}" } }
-                                disconnect: { actedIn: { Series: { where: { node: { name: "${seriesName}" } } } } }
+                                disconnect: { actedIn: { ${Series} : { where: { node: { name: "${seriesName}" } } } } }
                             }
                         }
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
-                            ... on LeadActor {
+                            ... on ${LeadActor} {
                                 name
                                 actedIn {
-                                    ... on Series {
+                                    ... on ${Series} {
                                         name
                                     }
                                 }
@@ -172,7 +182,7 @@ describe("Nested unions", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN]-(:LeadActor {name:$actorName})-[:ACTED_IN]->(:Series {name:$seriesName})
+                    CREATE (:${Movie} {title:$movieTitle})<-[:ACTED_IN]-(:${LeadActor} {name:$actorName})-[:ACTED_IN]->(:${Series} {name:$seriesName})
                 `,
                 { movieTitle, seriesName, actorName }
             );
@@ -183,7 +193,7 @@ describe("Nested unions", () => {
                 contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.[Movie.operations.update][Movie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actors: [],
@@ -191,9 +201,9 @@ describe("Nested unions", () => {
             ]);
 
             const cypherMovie = `
-                MATCH (:Movie {title: $movieTitle})
+                MATCH (:${Movie} {title: $movieTitle})
                         <-[actedIn:ACTED_IN]-
-                            (:LeadActor {name: $actorName})
+                            (:${LeadActor} {name: $actorName})
                 RETURN actedIn
             `;
 
@@ -201,9 +211,9 @@ describe("Nested unions", () => {
             expect(neo4jResultMovie.records).toHaveLength(0);
 
             const cypherSeries = `
-                MATCH (:Series {name: $seriesName})
+                MATCH (:${Series} {name: $seriesName})
                         <-[actedIn:ACTED_IN]-
-                            (:LeadActor {name: $actorName})
+                            (:${LeadActor} {name: $actorName})
                 RETURN actedIn
             `;
 
@@ -215,10 +225,6 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple deletes, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
         const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
@@ -226,24 +232,24 @@ describe("Nested unions", () => {
 
         const source = `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     delete: {
                         actors: {
-                            LeadActor: {
+                            ${LeadActor}: {
                                 where: { node: { name: "${actorName}" } }
-                                delete: { actedIn: { Series: { where: { node: { name: "${seriesName}" } } } } }
+                                delete: { actedIn: { ${Series}: { where: { node: { name: "${seriesName}" } } } } }
                             }
                         }
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
-                            ... on LeadActor {
+                            ... on ${LeadActor} {
                                 name
                                 actedIn {
-                                    ... on Series {
+                                    ... on ${Series} {
                                         name
                                     }
                                 }
@@ -257,7 +263,7 @@ describe("Nested unions", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN]-(:LeadActor {name:$actorName})-[:ACTED_IN]->(:Series {name:$seriesName})
+                    CREATE (:${Movie} {title:$movieTitle})<-[:ACTED_IN]-(:${LeadActor} {name:$actorName})-[:ACTED_IN]->(:${Series} {name:$seriesName})
                 `,
                 { movieTitle, seriesName, actorName }
             );
@@ -268,7 +274,7 @@ describe("Nested unions", () => {
                 contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.[Movie.operations.update][Movie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actors: [],
@@ -276,7 +282,7 @@ describe("Nested unions", () => {
             ]);
 
             const cypherMovie = `
-                MATCH (m:Movie {title: $movieTitle})
+                MATCH (m:${Movie} {title: $movieTitle})
                 RETURN m
             `;
 
@@ -284,7 +290,7 @@ describe("Nested unions", () => {
             expect(neo4jResultMovie.records).toHaveLength(1);
 
             const cypherActor = `
-                MATCH (a:LeadActor {name: $actorName})
+                MATCH (a:${LeadActor} {name: $actorName})
                 RETURN a
             `;
 
@@ -292,7 +298,7 @@ describe("Nested unions", () => {
             expect(neo4jResultActor.records).toHaveLength(0);
 
             const cypherSeries = `
-                MATCH (s:Series {name: $seriesName})
+                MATCH (s:${Series} {name: $seriesName})
                 RETURN s
             `;
 
@@ -304,10 +310,6 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple creates under update, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
         const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
@@ -315,15 +317,15 @@ describe("Nested unions", () => {
 
         const source = `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     create: {
                         actors: {
-                            LeadActor: {
+                            ${LeadActor}: {
                                 node: {
                                     name: "${actorName}"
                                     actedIn: {
-                                        Series: {
+                                        ${Series}: {
                                             create: [
                                                 {
                                                     node: {
@@ -338,13 +340,13 @@ describe("Nested unions", () => {
                         }
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
-                            ... on LeadActor {
+                            ... on ${LeadActor} {
                                 name
                                 actedIn {
-                                    ... on Series {
+                                    ... on ${Series} {
                                         name
                                     }
                                 }
@@ -358,7 +360,7 @@ describe("Nested unions", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {title:$movieTitle})
+                    CREATE (:${Movie} {title:$movieTitle})
                 `,
                 { movieTitle, seriesName, actorName }
             );
@@ -369,14 +371,18 @@ describe("Nested unions", () => {
                 contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.updateMovies.movies[0].title).toEqual(movieTitle);
-            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
-            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+            expect((gqlResult.data as any)?.[Movie.operations.update][Movie.plural][0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any)?.[Movie.operations.update][Movie.plural][0].actors[0].name).toEqual(
+                actorName
+            );
+            expect(
+                (gqlResult.data as any)?.[Movie.operations.update][Movie.plural][0].actors[0].actedIn
+            ).toContainEqual({
                 name: seriesName,
             });
 
             const cypherMovie = `
-                MATCH (m:Movie {title: $movieTitle})
+                MATCH (m:${Movie} {title: $movieTitle})
                 RETURN m
             `;
 
@@ -384,7 +390,7 @@ describe("Nested unions", () => {
             expect(neo4jResultMovie.records).toHaveLength(1);
 
             const cypherActor = `
-                MATCH (a:LeadActor {name: $actorName})
+                MATCH (a:${LeadActor} {name: $actorName})
                 RETURN a
             `;
 
@@ -392,7 +398,7 @@ describe("Nested unions", () => {
             expect(neo4jResultActor.records).toHaveLength(1);
 
             const cypherSeries = `
-                MATCH (s:Series {name: $seriesName})
+                MATCH (s:${Series} {name: $seriesName})
                 RETURN s
             `;
 
@@ -404,10 +410,6 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple creates under create, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
         const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
@@ -415,18 +417,18 @@ describe("Nested unions", () => {
 
         const source = `
             mutation {
-                createMovies(
+                ${Movie.operations.create}(
                     input: [
                         {
                             title: "${movieTitle}"
                             actors: {
-                                LeadActor: {
+                                ${LeadActor}: {
                                     create: [
                                         {
                                             node: {
                                                 name: "${actorName}"
                                                 actedIn: {
-                                                    Series: {
+                                                    ${Series}: {
                                                         create: [
                                                             {
                                                                 node: {
@@ -444,13 +446,13 @@ describe("Nested unions", () => {
                         }
                     ]
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
-                            ... on LeadActor {
+                            ... on ${LeadActor} {
                                 name
                                 actedIn {
-                                    ... on Series {
+                                    ... on ${Series} {
                                         name
                                     }
                                 }
@@ -468,14 +470,14 @@ describe("Nested unions", () => {
                 contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.createMovies.movies[0].title).toEqual(movieTitle);
-            expect((gqlResult.data as any)?.createMovies.movies[0].actors[0].name).toEqual(actorName);
-            expect((gqlResult.data as any)?.createMovies.movies[0].actors[0].actedIn).toContainEqual({
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0].actors[0].name).toEqual(actorName);
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0].actors[0].actedIn).toContainEqual({
                 name: seriesName,
             });
 
             const cypherMovie = `
-                MATCH (m:Movie {title: $movieTitle})
+                MATCH (m:${Movie} {title: $movieTitle})
                 RETURN m
             `;
 
@@ -483,7 +485,7 @@ describe("Nested unions", () => {
             expect(neo4jResultMovie.records).toHaveLength(1);
 
             const cypherActor = `
-                MATCH (a:LeadActor {name: $actorName})
+                MATCH (a:${LeadActor} {name: $actorName})
                 RETURN a
             `;
 
@@ -491,7 +493,7 @@ describe("Nested unions", () => {
             expect(neo4jResultActor.records).toHaveLength(1);
 
             const cypherSeries = `
-                MATCH (s:Series {name: $seriesName})
+                MATCH (s:${Series} {name: $seriesName})
                 RETURN s
             `;
 

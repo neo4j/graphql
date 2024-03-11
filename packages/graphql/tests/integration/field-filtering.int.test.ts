@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "./neo4j";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("field-filtering", () => {
     let driver: Driver;
@@ -39,19 +40,22 @@ describe("field-filtering", () => {
 
     test("should use connection filter on field", async () => {
         const session = await neo4j.getSession();
+        const Movie = new UniqueType("Movie");
+        const Series = new UniqueType("Series");
+        const Genre = new UniqueType("Genre");
 
         const typeDefs = gql`
-            type Movie {
+            type ${Movie} {
                 title: String!
-                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+                genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
 
-            type Genre {
+            type ${Genre} {
                 name: String!
-                series: [Series!]! @relationship(type: "IN_SERIES", direction: OUT)
+                series: [${Series}!]! @relationship(type: "IN_SERIES", direction: OUT)
             }
 
-            type Series {
+            type ${Series} {
                 name: String!
             }
         `;
@@ -75,7 +79,7 @@ describe("field-filtering", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${Movie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     genres(where: { seriesConnection: { node: { name: "${seriesName}" } } }) {
                         name
@@ -88,8 +92,8 @@ describe("field-filtering", () => {
         `;
 
         const cypher = `
-            CREATE (m:Movie {title:$movieTitle})-[:IN_GENRE]->(:Genre {name:$genreName1})-[:IN_SERIES]->(:Series {name:$seriesName})
-            CREATE (m)-[:IN_GENRE]->(:Genre {name:$genreName2})
+            CREATE (m:${Movie} {title:$movieTitle})-[:IN_GENRE]->(:${Genre} {name:$genreName1})-[:IN_SERIES]->(:${Series} {name:$seriesName})
+            CREATE (m)-[:IN_GENRE]->(:${Genre} {name:$genreName2})
         `;
 
         try {
@@ -107,7 +111,7 @@ describe("field-filtering", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).movies).toEqual([
+            expect((gqlResult.data as any)[Movie.plural]).toEqual([
                 { title: movieTitle, genres: [{ name: genreName1, series: [{ name: seriesName }] }] },
             ]);
         } finally {

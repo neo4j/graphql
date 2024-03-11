@@ -17,37 +17,48 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4jHelper from "../neo4j";
 
 describe("integration/rfc/003", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Director: UniqueType;
+    let Movie: UniqueType;
+    let CoDirector: UniqueType;
+    let Address: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Director = new UniqueType("Director");
+        Movie = new UniqueType("Movie");
+        CoDirector = new UniqueType("CoDirector");
+        Address = new UniqueType("Address");
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [Director, Movie, CoDirector, Address]);
         await driver.close();
     });
 
     describe("one-to-one", () => {
         describe("create", () => {
             test("should throw when creating node without a required relationship", async () => {
-                const typeDefs = gql`
-                    type Director {
+                const typeDefs = /* GraphQL */ `
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type Movie {
+                    type ${Movie} {
                         id: ID!
-                        director: Director! @relationship(type: "DIRECTED", direction: IN)
+                        director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
                 `;
 
@@ -59,7 +70,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        createMovies(input: [{ id: "${movieId}" }]) {
+                        ${Movie.operations.create}(input: [{ id: "${movieId}" }]) {
                             info {
                                 nodesCreated
                             }
@@ -74,24 +85,24 @@ describe("integration/rfc/003", () => {
                 });
 
                 expect(result.errors).toBeTruthy();
-                expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
+                expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
             });
 
             describe("nested mutations", () => {
                 test("should throw when creating node without a required relationship", async () => {
-                    const typeDefs = gql`
-                        type Address {
+                    const typeDefs = /* GraphQL */ `
+                        type ${Address} {
                             street: String!
                         }
 
-                        type Director {
+                        type ${Director} {
                             id: ID!
-                            address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
+                            address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type Movie {
+                        type ${Movie} {
                             id: ID!
-                            director: Director! @relationship(type: "DIRECTED", direction: IN)
+                            director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
                     `;
 
@@ -107,7 +118,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            createMovies(input: [{ id: "${movieId}", director: { create: { node: { id: "${directorId}" } } } }]) {
+                            ${Movie.operations.create}(input: [{ id: "${movieId}", director: { create: { node: { id: "${directorId}" } } } }]) {
                                 info {
                                     nodesCreated
                                 }
@@ -122,7 +133,7 @@ describe("integration/rfc/003", () => {
                     });
 
                     expect(result.errors).toBeTruthy();
-                    expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
+                    expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                 });
             });
         });
@@ -131,14 +142,14 @@ describe("integration/rfc/003", () => {
             test("should throw error when updating a node without a required relationship", async () => {
                 const session = await neo4j.getSession();
 
-                const typeDefs = gql`
-                    type Director {
+                const typeDefs = /* GraphQL */ `
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type Movie {
+                    type ${Movie} {
                         id: ID!
-                        director: Director! @relationship(type: "DIRECTED", direction: IN)
+                        director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
                 `;
 
@@ -150,7 +161,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        updateMovies(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${Movie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
                             info {
                                 nodesCreated
                             }
@@ -160,7 +171,7 @@ describe("integration/rfc/003", () => {
 
                 try {
                     await session.run(`
-                        CREATE (:Movie {id: "${movieId}"})
+                        CREATE (:${Movie} {id: "${movieId}"})
                     `);
 
                     const result = await graphql({
@@ -170,7 +181,7 @@ describe("integration/rfc/003", () => {
                     });
 
                     expect(result.errors).toBeTruthy();
-                    expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
+                    expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
                 } finally {
                     await session.close();
                 }
@@ -180,19 +191,19 @@ describe("integration/rfc/003", () => {
                 test("should throw when creating node without relationship", async () => {
                     const session = await neo4j.getSession();
 
-                    const typeDefs = gql`
-                        type Address {
+                    const typeDefs = /* GraphQL */ `
+                        type ${Address} {
                             street: String!
                         }
 
-                        type Director {
+                        type ${Director} {
                             id: ID!
-                            address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
+                            address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type Movie {
+                        type ${Movie} {
                             id: ID!
-                            director: Director! @relationship(type: "DIRECTED", direction: IN)
+                            director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
                     `;
 
@@ -208,7 +219,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            updateMovies(
+                            ${Movie.operations.update}(
                               where: { id: "${movieId}" }
                               update: { director: { update: { node: { id: "${directorId}" } } } }
                             ) {
@@ -221,7 +232,7 @@ describe("integration/rfc/003", () => {
 
                     try {
                         await session.run(`
-                            CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director { id: "${directorId}" })
+                            CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} { id: "${directorId}" })
                         `);
 
                         const result = await graphql({
@@ -231,7 +242,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
+                        expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                     } finally {
                         await session.close();
                     }
@@ -240,19 +251,19 @@ describe("integration/rfc/003", () => {
                 test("should throw error when creating a node without a required relationship through a nested mutation", async () => {
                     const session = await neo4j.getSession();
 
-                    const typeDefs = gql`
-                        type Address {
+                    const typeDefs = /* GraphQL */ `
+                        type ${Address} {
                             street: String!
                         }
 
-                        type Director {
+                        type ${Director} {
                             id: ID!
-                            address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
+                            address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type Movie {
+                        type ${Movie} {
                             id: ID!
-                            director: Director! @relationship(type: "DIRECTED", direction: IN)
+                            director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
                     `;
 
@@ -268,7 +279,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            updateMovies(
+                            ${Movie.operations.update}(
                               where: { id: "${movieId}" }
                               update: { director: { create: { node: { id: "${directorId}" } } } }
                             ) {
@@ -281,7 +292,7 @@ describe("integration/rfc/003", () => {
 
                     try {
                         await session.run(`
-                            CREATE (:Movie {id: "${movieId}"})
+                            CREATE (:${Movie} {id: "${movieId}"})
                         `);
 
                         const result = await graphql({
@@ -291,7 +302,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
+                        expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                     } finally {
                         await session.close();
                     }
@@ -304,19 +315,19 @@ describe("integration/rfc/003", () => {
                 test("should throw error when deleting a required relationship", async () => {
                     const session = await neo4j.getSession();
 
-                    const typeDefs = gql`
-                        type Director {
+                    const typeDefs = /* GraphQL */ `
+                        type ${Director} {
                             id: ID!
                         }
 
-                        type CoDirector {
+                        type ${CoDirector} {
                             id: ID!
                         }
 
-                        type Movie {
+                        type ${Movie} {
                             id: ID!
-                            director: Director! @relationship(type: "DIRECTED", direction: IN)
-                            coDirector: CoDirector @relationship(type: "CO_DIRECTED", direction: IN)
+                            director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
+                            coDirector: ${CoDirector} @relationship(type: "CO_DIRECTED", direction: IN)
                         }
                     `;
 
@@ -332,7 +343,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            updateMovies(
+                            ${Movie.operations.update}(
                                 where: { id: "${movieId}" },
                                 delete: { director: { where: { node: { id: "${directorId}" } } } }
                             ) {
@@ -345,7 +356,7 @@ describe("integration/rfc/003", () => {
 
                     try {
                         await session.run(`
-                            CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director {id: "${directorId}"})
+                            CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId}"})
                         `);
 
                         const result = await graphql({
@@ -355,7 +366,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
+                        expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
                     } finally {
                         await session.close();
                     }
@@ -365,14 +376,14 @@ describe("integration/rfc/003", () => {
 
         describe("connect", () => {
             test("should throw error when connecting to a required relationship that is not found", async () => {
-                const typeDefs = gql`
-                    type Director {
+                const typeDefs = /* GraphQL */ `
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type Movie {
+                    type ${Movie} {
                         id: ID!
-                        director: Director! @relationship(type: "DIRECTED", direction: IN)
+                        director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
                 `;
 
@@ -388,7 +399,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
+                        ${Movie.operations.create}(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
                             info {
                                 nodesCreated
                             }
@@ -403,26 +414,26 @@ describe("integration/rfc/003", () => {
                 });
 
                 expect(result.errors).toBeTruthy();
-                expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
+                expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
             });
 
             describe("nested mutations", () => {
                 test("should throw error when connecting to a required node that is not found", async () => {
                     const session = await neo4j.getSession();
 
-                    const typeDefs = gql`
-                        type Address {
+                    const typeDefs = /* GraphQL */ `
+                        type ${Address} {
                             street: String!
                         }
 
-                        type Director {
+                        type ${Director} {
                             id: ID!
-                            address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
+                            address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type Movie {
+                        type ${Movie} {
                             id: ID!
-                            director: Director! @relationship(type: "DIRECTED", direction: IN)
+                            director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
                     `;
 
@@ -438,7 +449,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            createMovies(
+                            ${Movie.operations.create}(
                               input: [
                                 {
                                   id: "${movieId}"
@@ -460,7 +471,7 @@ describe("integration/rfc/003", () => {
 
                     try {
                         await session.run(`
-                            CREATE (:Director {id: "${directorId}"})
+                            CREATE (:${Director} {id: "${directorId}"})
                         `);
 
                         const result = await graphql({
@@ -470,7 +481,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
+                        expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                     } finally {
                         await session.close();
                     }
@@ -483,14 +494,14 @@ describe("integration/rfc/003", () => {
                 test("should throw error when disconnecting a required relationship", async () => {
                     const session = await neo4j.getSession();
 
-                    const typeDefs = gql`
-                        type Director {
+                    const typeDefs = /* GraphQL */ `
+                        type ${Director} {
                             id: ID!
                         }
 
-                        type Movie {
+                        type ${Movie} {
                             id: ID!
-                            director: Director! @relationship(type: "DIRECTED", direction: IN)
+                            director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
                     `;
 
@@ -506,7 +517,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            updateMovies(where: { id: "${movieId}" }, disconnect: { director: { where: { node: {  id: "${directorId}" } } } }) {
+                            ${Movie.operations.update}(where: { id: "${movieId}" }, disconnect: { director: { where: { node: {  id: "${directorId}" } } } }) {
                                 info {
                                     nodesCreated
                                 }
@@ -516,7 +527,7 @@ describe("integration/rfc/003", () => {
 
                     try {
                         await session.run(`
-                            CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director {id: "${directorId}"})
+                            CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId}"})
                         `);
 
                         const result = await graphql({
@@ -526,7 +537,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
+                        expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
                     } finally {
                         await session.close();
                     }
@@ -538,14 +549,14 @@ describe("integration/rfc/003", () => {
             test("should disconnect and then reconnect to a new node on a required relationship", async () => {
                 const session = await neo4j.getSession();
 
-                const typeDefs = gql`
-                    type Director {
+                const typeDefs = /* GraphQL */ `
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type Movie {
+                    type ${Movie} {
                         id: ID!
-                        director: Director! @relationship(type: "DIRECTED", direction: IN)
+                        director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
                 `;
 
@@ -565,7 +576,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        updateMovies(
+                        ${Movie.operations.update}(
                             where: { id: "${movieId}" },
                             disconnect: {
                                 director: { where: { node: { id: "${directorId1}" } } }
@@ -574,7 +585,7 @@ describe("integration/rfc/003", () => {
                                 director: { where: { node: { id: "${directorId2}" } } }
                             }
                         ) {
-                            movies {
+                            ${Movie.plural} {
                                 id
                                 director {
                                     id
@@ -586,8 +597,8 @@ describe("integration/rfc/003", () => {
 
                 try {
                     await session.run(`
-                        CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director {id: "${directorId1}"})
-                        CREATE (:Director {id: "${directorId2}"})
+                        CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId1}"})
+                        CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
                     const result = await graphql({
@@ -598,7 +609,7 @@ describe("integration/rfc/003", () => {
 
                     expect(result.errors).toBeUndefined();
 
-                    const movie = (result.data as any).updateMovies.movies[0];
+                    const movie = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
                     expect(movie).toEqual({
                         id: movieId,
@@ -614,14 +625,14 @@ describe("integration/rfc/003", () => {
             test("should disconnect and then reconnect to a new node on a non required relationship", async () => {
                 const session = await neo4j.getSession();
 
-                const typeDefs = gql`
-                    type Director {
+                const typeDefs = /* GraphQL */ `
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type Movie {
+                    type ${Movie} {
                         id: ID!
-                        director: Director @relationship(type: "DIRECTED", direction: IN)
+                        director: ${Director} @relationship(type: "DIRECTED", direction: IN)
                     }
                 `;
 
@@ -641,7 +652,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        updateMovies(
+                        ${Movie.operations.update}(
                             where: { id: "${movieId}" },
                             disconnect: {
                                 director: { where: { node: { id: "${directorId1}" } } }
@@ -650,7 +661,7 @@ describe("integration/rfc/003", () => {
                                 director: { where: { node: { id: "${directorId2}" } } }
                             }
                         ) {
-                            movies {
+                            ${Movie.plural} {
                                 id
                                 director {
                                     id
@@ -662,8 +673,8 @@ describe("integration/rfc/003", () => {
 
                 try {
                     await session.run(`
-                        CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director {id: "${directorId1}"})
-                        CREATE (:Director {id: "${directorId2}"})
+                        CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId1}"})
+                        CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
                     const result = await graphql({
@@ -674,7 +685,7 @@ describe("integration/rfc/003", () => {
 
                     expect(result.errors).toBeUndefined();
 
-                    const movie = (result.data as any).updateMovies.movies[0];
+                    const movie = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
                     expect(movie).toEqual({
                         id: movieId,
@@ -692,14 +703,14 @@ describe("integration/rfc/003", () => {
             test("should throw if connecting to more than one node", async () => {
                 const session = await neo4j.getSession();
 
-                const typeDefs = gql`
-                    type Director {
+                const typeDefs = /* GraphQL */ `
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type Movie {
+                    type ${Movie} {
                         id: ID!
-                        director: Director @relationship(type: "DIRECTED", direction: IN)
+                        director: ${Director} @relationship(type: "DIRECTED", direction: IN)
                     }
                 `;
 
@@ -719,13 +730,13 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        updateMovies(
+                        ${Movie.operations.update}(
                             where: { id: "${movieId}" },
                             connect: {
                                 director: { where: { node: { id_IN: ["${directorId1}", "${directorId2}"] } } }
                             }
                         ) {
-                            movies {
+                            ${Movie.plural} {
                                 id
                                 director {
                                     id
@@ -737,9 +748,9 @@ describe("integration/rfc/003", () => {
 
                 try {
                     await session.run(`
-                        CREATE (:Movie {id: "${movieId}"})
-                        CREATE (:Director {id: "${directorId1}"})
-                        CREATE (:Director {id: "${directorId2}"})
+                        CREATE (:${Movie} {id: "${movieId}"})
+                        CREATE (:${Director} {id: "${directorId1}"})
+                        CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
                     const result = await graphql({
@@ -750,7 +761,7 @@ describe("integration/rfc/003", () => {
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(
-                        "Movie.director must be less than or equal to one"
+                        `${Movie}.director must be less than or equal to one`
                     );
                 } finally {
                     await session.close();
