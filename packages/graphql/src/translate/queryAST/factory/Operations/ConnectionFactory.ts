@@ -65,7 +65,7 @@ export class ConnectionFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): CompositeConnectionReadOperation {
-        const directed = Boolean(resolveTree.args.directed) ?? true;
+        const directed = resolveTree.args.directed as boolean | undefined;
         const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
 
         let nodeWhere: Record<string, any>;
@@ -93,7 +93,6 @@ export class ConnectionFactory {
 
             const connectionPartial = new CompositeConnectionPartial({
                 relationship,
-                directed,
                 target: concreteEntity,
                 selection,
             });
@@ -140,7 +139,6 @@ export class ConnectionFactory {
                 context,
             });
         }
-        const directed = Boolean(resolveTree.args.directed) ?? true;
         const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
         checkEntityAuthentication({
             entity: target.entity,
@@ -152,14 +150,14 @@ export class ConnectionFactory {
         if (relationship) {
             selection = new RelationshipSelection({
                 relationship,
-                directed: Boolean(resolveTree.args?.directed ?? true),
+                directed: resolveTree.args.directed as boolean | undefined,
             });
         } else {
             selection = new NodeSelection({
                 target,
             });
         }
-        const operation = new ConnectionReadOperation({ relationship, directed, target, selection });
+        const operation = new ConnectionReadOperation({ relationship, target, selection });
 
         return this.hydrateConnectionOperationAST({
             relationship: relationship,

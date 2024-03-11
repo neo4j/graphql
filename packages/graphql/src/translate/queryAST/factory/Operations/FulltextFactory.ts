@@ -94,7 +94,6 @@ export class FulltextFactory {
         });
         const operation = new FulltextOperation({
             target: entity,
-            directed: Boolean(resolverArgs.directed ?? true),
             scoreField,
             selection,
         });
