@@ -191,7 +191,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
 
         const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId } }),
+            contextValue: { jwt: { id: myUserId } },
         });
 
         expect(addTenantResponse.errors).toBeUndefined();
@@ -212,7 +212,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
 
         const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId } }),
+            contextValue: { jwt: { id: myUserId } },
         });
 
         expect(addTenantResponse.errors).toBeUndefined();

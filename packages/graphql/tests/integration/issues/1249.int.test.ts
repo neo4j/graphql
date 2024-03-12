@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
         `;
 
         const res = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({ cypherParams: { tenant: "BULK" } }),
+            contextValue: { cypherParams: { tenant: "BULK" } },
         });
 
         expect(res.errors).toBeUndefined();

@@ -82,9 +82,9 @@ export class TestHelper {
 
         return graphqlRuntime({
             schema,
-            source: query,
-            contextValue: await this.getContextValue(),
             ...args,
+            source: query,
+            contextValue: await this.getContextValue(args.contextValue as Partial<Neo4jGraphQLContext> | undefined),
         });
     }
 
@@ -116,7 +116,7 @@ export class TestHelper {
         helperLock = false;
     }
 
-    /** Use this to add values to context value if needed */
+    /** Use this if using graphql() directly */
     public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
         const driver = await this.getDriver();
         return {
@@ -154,6 +154,13 @@ export class TestHelper {
         } else {
             return this.verifyConnectivityToTestDatabase(driver);
         }
+    }
+
+    private async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
+        const driver = await this.getDriver();
+
+        const appliedOptions = { ...options, database: this.database };
+        return driver.session(appliedOptions);
     }
 
     private async checkConnectivityToDefaultDatabase(driver: neo4j.Driver): Promise<string> {

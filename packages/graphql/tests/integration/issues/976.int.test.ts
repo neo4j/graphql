@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { type Integer, type Session } from "neo4j-driver";
+import { type Integer } from "neo4j-driver";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
@@ -25,7 +25,6 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
     let testBibliographicReference: UniqueType;
     let testConcept: UniqueType;
     let testHelper: TestHelper;
-    let session: Session;
 
     beforeAll(async () => {
         testHelper = new TestHelper();

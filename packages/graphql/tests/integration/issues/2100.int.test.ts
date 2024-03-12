@@ -174,11 +174,10 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: {
                 id: 1,
             },
-            contextValue: await testHelper.getContextValue({ token }),
         });
 
         expect(result.errors).toBeFalsy();

@@ -53,9 +53,9 @@ describe("Label cypher injection", () => {
         `;
 
         const res = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 label: "Movie\\u0060) MATCH",
-            }),
+            },
         });
 
         expect(res.errors).toBeUndefined();

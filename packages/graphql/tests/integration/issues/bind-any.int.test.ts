@@ -85,11 +85,11 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
         `;
 
         const result = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 jwt: {
                     sub: "user1",
                 },
-            }),
+            },
         });
 
         expect(result.errors).toBeFalsy();
@@ -144,11 +144,11 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
       `;
 
         const result = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 jwt: {
                     sub: "user1",
                 },
-            }),
+            },
         });
 
         expect(result.errors).toEqual([new GraphQLError("Forbidden")]);

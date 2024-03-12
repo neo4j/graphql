@@ -70,9 +70,9 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         `;
 
         const response = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["admin"] },
-            }),
+            },
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Movie.plural]).toStrictEqual(
@@ -90,9 +90,9 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         `;
 
         const response = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] },
-            }),
+            },
         });
         expect((response.errors as any[])[0].message).toBe("Forbidden");
     });

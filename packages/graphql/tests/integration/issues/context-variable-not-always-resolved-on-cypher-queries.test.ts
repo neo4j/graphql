@@ -103,11 +103,11 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         `;
 
         const gqlResult = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 cypherParams: {
                     tenant: "test",
                 },
-            }),
+            },
         });
 
         expect(gqlResult.errors).toBeFalsy();

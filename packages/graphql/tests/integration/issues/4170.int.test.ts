@@ -157,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
 
         const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId } }),
+            contextValue: { jwt: { id: myUserId } },
         });
 
         expect(addTenantResponse.errors?.[0]?.message).toContain("Forbidden");
@@ -178,7 +178,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
 
         const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId } }),
+            contextValue: { jwt: { id: myUserId } },
         });
 
         expect(addTenantResponse.errors?.[0]?.message).toContain("Forbidden");

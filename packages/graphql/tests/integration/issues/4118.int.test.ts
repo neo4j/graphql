@@ -170,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
 
         const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId, roles: ["overlord"] } }),
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
         expect(addTenantResponse).toMatchObject({
             data: {
@@ -183,7 +183,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
         const addOpeningDaysResponse = await testHelper.runGraphQL(ADD_OPENING_DAYS, {
             variableValues: openingDayInput(settingsId),
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId, roles: ["overlord"] } }),
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
         expect(addOpeningDaysResponse).toMatchObject({
             data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
@@ -225,7 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                     },
                 },
             },
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId, roles: ["overlord"] } }),
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
 
         expect(addLolResponse.errors?.[0]?.message).toContain("Forbidden");
@@ -241,7 +241,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
 
         const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId, roles: ["overlord"] } }),
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
         expect(addTenantResponse).toMatchObject({
             data: {
@@ -254,7 +254,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
         const addOpeningDaysResponse = await testHelper.runGraphQL(ADD_OPENING_DAYS, {
             variableValues: openingDayInput(settingsId),
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId, roles: ["overlord"] } }),
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
         expect(addOpeningDaysResponse).toMatchObject({
             data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
@@ -297,7 +297,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                     },
                 },
             },
-            contextValue: await testHelper.getContextValue({ jwt: { id: myUserId, roles: ["overlord"] } }),
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
 
         expect(addLolResponse.errors?.[0]?.message).toContain("Forbidden");

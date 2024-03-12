@@ -21,13 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
-    let testHelper: TestHelper;
-
     let User: UniqueType;
     let Group: UniqueType;
     let Person: UniqueType;
     let Admin: UniqueType;
     let Contributor: UniqueType;
+
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
         testHelper = new TestHelper();
@@ -171,6 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
         `;
+
         await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
@@ -180,12 +181,10 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             },
         });
 
-        await testHelper.runCypher(
-            `
+        await testHelper.runCypher(`
                 CREATE (m:${Person.name} {title: "SomeTitle", id: "person-1", name: "SomePerson"})<-[:CREATOR_OF]-(u:${User.name} { id: "user-1", email: "email-1", roles: ["admin"]})
                 CREATE (g:${Group.name} { id: "family_id_1", name: "group-1" })<-[:MEMBER_OF]-(m)
-                `
-        );
+                `);
     });
 
     afterAll(async () => {
@@ -216,10 +215,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
         `;
 
         const response = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 jwt: { uid: "user-1", email: "some-email", roles: ["admin"] },
-            }),
+            },
         });
+
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Group.plural]).toStrictEqual(
             expect.arrayContaining([
@@ -256,9 +256,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
         `;
 
         const response = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
-                jwt: { uid: "not-user-1", email: "some-email", roles: ["admin"] },
-            }),
+            contextValue: { jwt: { uid: "not-user-1", email: "some-email", roles: ["admin"] } },
         });
         expect(response.errors?.[0]?.message).toContain("Forbidden");
     });

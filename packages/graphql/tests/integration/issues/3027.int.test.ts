@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
 
         test("should validate cardinality against all the implementations", async () => {
             await testHelper.runCypher(`
-           CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
+           CREATE(:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
             const query = `
         mutation UpdateBooks {

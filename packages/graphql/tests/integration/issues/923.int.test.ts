@@ -78,11 +78,11 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
         `;
 
         const result = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 jwt: {
                     sub: "test",
                 },
-            }),
+            },
         });
         expect(result.errors).toBeUndefined();
 

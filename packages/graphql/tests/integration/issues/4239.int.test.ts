@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
         `;
 
         const response = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({ jwt: { sub: "SOME_ID" } }),
+            contextValue: { jwt: { sub: "SOME_ID" } },
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Movie.plural]).toStrictEqual(
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
         `;
 
         const response = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({ jwt: { sub: "SOME_WRONG_ID" } }),
+            contextValue: { jwt: { sub: "SOME_WRONG_ID" } },
         });
         expect((response.errors as any[])[0].message).toBe("Forbidden");
     });

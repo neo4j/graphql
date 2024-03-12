@@ -134,12 +134,12 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
         `;
 
         const result = await testHelper.runGraphQL(query, {
-            contextValue: await testHelper.getContextValue({
+            contextValue: {
                 token: testHelper.createBearerToken("secret"),
                 user: {
                     id: "abc",
                 },
-            }),
+            },
         });
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
