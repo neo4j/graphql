@@ -24,6 +24,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 import type { SelectionClause } from "../../selection/EntitySelection";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileResult } from "../operations";
+import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 
 export class CompositeReadPartial extends ReadOperation {
     public transpile(context: QueryASTContext) {
@@ -49,7 +50,9 @@ export class CompositeReadPartial extends ReadOperation {
             return f.getSelection(nestedContext);
         });
 
-        if (extraMatches.length > 0) {
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+
+        if (extraMatches.length > 0 || filterSubqueries.length > 0) {
             extraMatches = [matchClause, ...extraMatches];
             matchClause = new Cypher.With("*");
         }
@@ -74,6 +77,7 @@ export class CompositeReadPartial extends ReadOperation {
 
         const clause = Cypher.concat(
             ...extraMatches,
+            ...filterSubqueries,
             matchClause,
             ...authFilterSubqueries,
             subqueries,
@@ -96,7 +100,9 @@ export class CompositeReadPartial extends ReadOperation {
             return f.getSelection(nestedContext);
         });
 
-        if (extraMatches.length > 0) {
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+
+        if (extraMatches.length > 0 || filterSubqueries.length > 0) {
             extraMatches = [matchClause, ...extraMatches];
             matchClause = new Cypher.With("*");
         }
@@ -113,7 +119,14 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
-        const clause = Cypher.concat(...extraMatches, matchClause, ...authFilterSubqueries, subqueries, ret);
+        const clause = Cypher.concat(
+            ...extraMatches,
+            ...filterSubqueries,
+            matchClause,
+            ...authFilterSubqueries,
+            subqueries,
+            ret
+        );
 
         return {
             clauses: [clause],

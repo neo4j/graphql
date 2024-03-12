@@ -99,6 +99,7 @@ export class AggregationFilter extends Filter {
     }
 
     public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        // should this throw instead?
         if (!this.subqueryReturnVariable) return undefined;
         return Cypher.eq(this.subqueryReturnVariable, Cypher.true);
     }
