@@ -19,49 +19,59 @@
 
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
+    let Episode: UniqueType;
+    let Actor: UniqueType;
+    let Movie: UniqueType;
+    let Series: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
-        const typeDefs = gql`
-            type Episode {
+        Episode = new UniqueType("Episode");
+        Actor = new UniqueType("Actor");
+        Movie = new UniqueType("Movie");
+        Series = new UniqueType("Series");
+
+        const typeDefs = /* GraphQL */ `
+            type ${Episode} {
                 runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @declareRelationship
+                actors: [${Actor}!]! @declareRelationship
             }
 
-            type Movie implements Production {
+            type ${Movie} implements Production {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production {
+            type ${Series} implements Production {
                 title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: [${Episode}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            type Actor {
+            type ${Actor} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -73,6 +83,8 @@ describe("interface relationships", () => {
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [Actor, Movie, Series, Episode]);
         await driver.close();
     });
 
@@ -97,7 +109,7 @@ describe("interface relationships", () => {
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
-                createActors(
+                ${Actor.operations.create}(
                     input: [
                         {
                             name: $name1
@@ -113,14 +125,14 @@ describe("interface relationships", () => {
                         }
                     ]
                 ) {
-                    actors {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
                             actors {
                                 name
                             }
-                            ... on Movie {
+                            ... on ${Movie} {
                                 runtime
                             }
                         }
@@ -132,8 +144,8 @@ describe("interface relationships", () => {
         try {
             await session.run(
                 `
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (:Actor { name: $name })
+                CREATE (:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:${Actor} { name: $name })
             `,
                 { movieTitle, movieRuntime, name: actorName2 }
             );
@@ -153,8 +165,8 @@ describe("interface relationships", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult.data).toEqual({
-                createActors: {
-                    actors: [
+                [Actor.operations.create]: {
+                    [Actor.plural]: [
                         {
                             actedIn: [
                                 {
