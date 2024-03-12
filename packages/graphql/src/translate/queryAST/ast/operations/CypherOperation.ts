@@ -33,16 +33,14 @@ export class CypherOperation extends ReadOperation {
         cypherAttributeField,
         target,
         relationship,
-        directed,
         selection,
     }: {
         cypherAttributeField: AttributeAdapter;
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
-        directed?: boolean;
         selection: EntitySelection;
     }) {
-        super({ target, relationship, directed, selection });
+        super({ target, relationship, selection });
         this.cypherAttributeField = cypherAttributeField;
     }
 

@@ -40,19 +40,16 @@ export class FulltextOperation extends ReadOperation {
     constructor({
         target,
         relationship,
-        directed,
         scoreField,
         selection,
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
-        directed?: boolean;
         scoreField: FulltextScoreField | undefined;
         selection: EntitySelection;
     }) {
         super({
             target,
-            directed,
             relationship,
             selection,
         });

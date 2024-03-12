@@ -40,7 +40,6 @@ export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
     public readonly target: ConcreteEntityAdapter;
 
-    protected directed: boolean;
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
     protected filters: Filter[] = [];
@@ -52,18 +51,15 @@ export class ConnectionReadOperation extends Operation {
 
     constructor({
         relationship,
-        directed,
         target,
         selection,
     }: {
         relationship: RelationshipAdapter | undefined;
         target: ConcreteEntityAdapter;
-        directed: boolean;
         selection: EntitySelection;
     }) {
         super();
         this.relationship = relationship;
-        this.directed = directed;
         this.target = target;
         this.selection = selection;
     }
