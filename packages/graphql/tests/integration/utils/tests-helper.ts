@@ -189,7 +189,12 @@ export class TestHelper {
     }
 
     /** Removes all nodes with the given labels from the database */
-    private async cleanNodes(driver: neo4j.Driver, labels: Array<string | UniqueType>): Promise<neo4j.Result> {
+    private async cleanNodes(driver: neo4j.Driver, labels: Array<string | UniqueType>): Promise<void> {
+        if (labels.length === 0) {
+            // We don't want to delete all nodes
+            return;
+        }
+
         const nodeRef = new Cypher.Node({});
 
         const nodeHasLabelPredicates = labels.map((l) => {
@@ -200,6 +205,7 @@ export class TestHelper {
 
         const query = new Cypher.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
         const { cypher } = query.build();
-        return driver.executeQuery(cypher, {}, { database: this.database });
+
+        await driver.executeQuery(cypher, {}, { database: this.database });
     }
 }
