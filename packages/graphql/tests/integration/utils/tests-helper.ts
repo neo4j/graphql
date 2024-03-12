@@ -148,6 +148,16 @@ export class TestHelper {
         return driver;
     }
 
+    /** Use only for tests needing a session, for normal tests use `.runGraphQL` instead.
+     * Note that sessions will **not** be cleaned up with `testHelper.close`
+     * */
+    public async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
+        const driver = await this.getDriver();
+
+        const appliedOptions = { ...options, database: this.database };
+        return driver.session(appliedOptions);
+    }
+
     private async checkConnectivity(driver: neo4j.Driver): Promise<string> {
         if (process.env.USE_DEFAULT_DB) {
             return this.checkConnectivityToDefaultDatabase(driver);
