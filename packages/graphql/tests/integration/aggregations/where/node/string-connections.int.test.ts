@@ -2002,7 +2002,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
                 },
             ]);
         } finally {
-            await session.close();
+            await cleanNodesUsingSession(session, [User, Post]);
         }
     });
 
@@ -2105,7 +2105,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
                 { node: { testString: otherUserString, thingsConnection: { edges: [] } } },
             ]);
         } finally {
-            await session.close();
+            await cleanNodesUsingSession(session, [User, Post]);
         }
     });
 
@@ -2190,7 +2190,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
                 },
             ]);
         } finally {
-            await session.close();
+            await cleanNodesUsingSession(session, [User, Post, Person]);
         }
     });
 
@@ -2261,6 +2261,8 @@ describe("aggregations-where-node-string - connections - relationships of interf
         expect(gqlResult.data).toEqual({
             [Post.operations.connection]: { edges: [{ node: { content: "test" } }] },
         });
+
+        await cleanNodesUsingSession(session, [User, Post, Person]);
     });
 
     describe("SHORTEST - interface relationship", () => {
@@ -2366,7 +2368,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
                         },
                     ]);
                 } finally {
-                    await session.close();
+                    await cleanNodesUsingSession(session, [User, Post, Person]);
                 }
             }
         );

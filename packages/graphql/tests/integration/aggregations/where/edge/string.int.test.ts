@@ -940,7 +940,7 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [User, Post]);
+        await cleanNodesUsingSession(session, [User, Post, Person]);
         await driver.close();
     });
 

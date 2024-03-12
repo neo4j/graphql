@@ -878,6 +878,8 @@ describe("aggregations-where-node-string", () => {
         expect(gqlResult.data).toEqual({
             [Post.plural]: [{ content: "test" }],
         });
+
+        await cleanNodesUsingSession(session, [User, Post]);
     });
 });
 
@@ -1754,6 +1756,8 @@ describe("aggregations-where-node-string interface relationships of concrete typ
         expect(gqlResult.data).toEqual({
             [Post.plural]: [{ content: "test" }],
         });
+
+        await cleanNodesUsingSession(session, [User, Post]);
     });
 });
 
@@ -1801,8 +1805,8 @@ describe("aggregations-where-node-string relationships of interface types", () =
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
@@ -1836,7 +1840,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 },
             ]);
         } finally {
-            await session.close();
+            await cleanNodesUsingSession(session, [User, Post]);
         }
     });
 
@@ -1848,7 +1852,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
         const typeDefs = /* GraphQL */ `
             interface Thing {
                 testString: String!
-                likes: [User!]! @declareRelationship
+                likes: [${User}!]! @declareRelationship
             }
 
             type ${User} {
@@ -1880,15 +1884,15 @@ describe("aggregations-where-node-string relationships of interface types", () =
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
-                    CREATE (:User {testString: "${otherUserString}"})-[:LIKES]->(:Post {testString: "${otherString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
+                    CREATE (:${User} {testString: "${otherUserString}"})-[:LIKES]->(:${Post} {testString: "${otherString}"})
                 `
             );
 
             const query = /* GraphQL */ `
                 {
-                    users {
+                    ${User.plural} {
                         testString
                         things(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
                             testString
@@ -1912,7 +1916,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).users).toEqual([
+            expect((gqlResult.data as any)[User.plural]).toEqual([
                 {
                     testString,
                     things: [
@@ -1925,7 +1929,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 { testString: otherUserString, things: [] },
             ]);
         } finally {
-            await session.close();
+            await cleanNodesUsingSession(session, [User, Post]);
         }
     });
 
@@ -1969,8 +1973,8 @@ describe("aggregations-where-node-string relationships of interface types", () =
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
@@ -2004,7 +2008,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 },
             ]);
         } finally {
-            await session.close();
+            await cleanNodesUsingSession(session, [User, Post, Person]);
         }
     });
 
@@ -2071,6 +2075,8 @@ describe("aggregations-where-node-string relationships of interface types", () =
         expect(gqlResult.data).toEqual({
             [Post.plural]: [{ content: "test" }],
         });
+
+        await cleanNodesUsingSession(session, [User, Post, Person]);
     });
 
     describe("SHORTEST - interface relationship", () => {
@@ -2170,7 +2176,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                         },
                     ]);
                 } finally {
-                    await session.close();
+                    await cleanNodesUsingSession(session, [User, Post, Person]);
                 }
             }
         );

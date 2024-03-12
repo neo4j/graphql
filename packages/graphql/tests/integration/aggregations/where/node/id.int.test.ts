@@ -21,6 +21,7 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import { cleanNodesUsingSession } from "../../../../utils/clean-nodes";
 import { UniqueType } from "../../../../utils/graphql-types";
 import Neo4jHelper from "../../../neo4j";
 
@@ -52,6 +53,8 @@ describe("aggregations-where-node-id", () => {
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [User, Post]);
         await driver.close();
     });
 
@@ -152,6 +155,8 @@ describe("aggregations-where-node-id interface relationships of concrete types",
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [User, Post, Person]);
         await driver.close();
     });
 
