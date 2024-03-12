@@ -1556,6 +1556,7 @@ describe("Algebraic", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               worksInProduction: ProductionWhere @deprecated(reason: \\"Use \`worksInProduction_SOME\` instead.\\")
+              worksInProductionAggregate: PersonWorksInProductionAggregateInput
               worksInProductionConnection: PersonWorksInProductionConnectionWhere @deprecated(reason: \\"Use \`worksInProductionConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
@@ -1583,6 +1584,18 @@ describe("Algebraic", () => {
               worksInProduction_SINGLE: ProductionWhere
               \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
               worksInProduction_SOME: ProductionWhere
+            }
+
+            input PersonWorksInProductionAggregateInput {
+              AND: [PersonWorksInProductionAggregateInput!]
+              NOT: PersonWorksInProductionAggregateInput
+              OR: [PersonWorksInProductionAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PersonWorksInProductionNodeAggregationWhereInput
             }
 
             input PersonWorksInProductionConnectFieldInput {
@@ -1622,6 +1635,37 @@ describe("Algebraic", () => {
             input PersonWorksInProductionFieldInput {
               connect: [PersonWorksInProductionConnectFieldInput!]
               create: [PersonWorksInProductionCreateFieldInput!]
+            }
+
+            input PersonWorksInProductionNodeAggregationWhereInput {
+              AND: [PersonWorksInProductionNodeAggregationWhereInput!]
+              NOT: PersonWorksInProductionNodeAggregationWhereInput
+              OR: [PersonWorksInProductionNodeAggregationWhereInput!]
+              viewers_AVERAGE_EQUAL: Float
+              viewers_AVERAGE_GT: Float
+              viewers_AVERAGE_GTE: Float
+              viewers_AVERAGE_LT: Float
+              viewers_AVERAGE_LTE: Float
+              viewers_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              viewers_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              viewers_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              viewers_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              viewers_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              viewers_MAX_EQUAL: Int
+              viewers_MAX_GT: Int
+              viewers_MAX_GTE: Int
+              viewers_MAX_LT: Int
+              viewers_MAX_LTE: Int
+              viewers_MIN_EQUAL: Int
+              viewers_MIN_GT: Int
+              viewers_MIN_GTE: Int
+              viewers_MIN_LT: Int
+              viewers_MIN_LTE: Int
+              viewers_SUM_EQUAL: Int
+              viewers_SUM_GT: Int
+              viewers_SUM_GTE: Int
+              viewers_SUM_LT: Int
+              viewers_SUM_LTE: Int
             }
 
             type PersonWorksInProductionRelationship {

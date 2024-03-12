@@ -126,6 +126,18 @@ describe("Connection with interfaces", () => {
               Person
             }
 
+            input CreatureMoviesAggregateInput {
+              AND: [CreatureMoviesAggregateInput!]
+              NOT: CreatureMoviesAggregateInput
+              OR: [CreatureMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CreatureMoviesNodeAggregationWhereInput
+            }
+
             input CreatureMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
@@ -161,6 +173,13 @@ describe("Connection with interfaces", () => {
             input CreatureMoviesDisconnectFieldInput {
               disconnect: ProductionDisconnectInput
               where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureMoviesNodeAggregationWhereInput {
+              AND: [CreatureMoviesNodeAggregationWhereInput!]
+              NOT: CreatureMoviesNodeAggregationWhereInput
+              OR: [CreatureMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type CreatureMoviesRelationship {
@@ -217,6 +236,7 @@ describe("Connection with interfaces", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: ProductionWhere
+              moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
               movies_NOT: ProductionWhere
@@ -287,6 +307,18 @@ describe("Connection with interfaces", () => {
               director: [MovieDirectorDeleteFieldInput!]
             }
 
+            input MovieDirectorAggregateInput {
+              AND: [MovieDirectorAggregateInput!]
+              NOT: MovieDirectorAggregateInput
+              OR: [MovieDirectorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieDirectorNodeAggregationWhereInput
+            }
+
             input MovieDirectorConnectFieldInput {
               connect: CreatureConnectInput
               where: CreatureConnectWhere
@@ -309,6 +341,13 @@ describe("Connection with interfaces", () => {
             input MovieDirectorFieldInput {
               connect: [MovieDirectorConnectFieldInput!]
               create: [MovieDirectorCreateFieldInput!]
+            }
+
+            input MovieDirectorNodeAggregationWhereInput {
+              AND: [MovieDirectorNodeAggregationWhereInput!]
+              NOT: MovieDirectorNodeAggregationWhereInput
+              OR: [MovieDirectorNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             input MovieDirectorUpdateConnectionInput {
@@ -365,6 +404,7 @@ describe("Connection with interfaces", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               director: CreatureWhere @deprecated(reason: \\"Use \`director_SOME\` instead.\\")
+              directorAggregate: MovieDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
@@ -480,6 +520,18 @@ describe("Connection with interfaces", () => {
               node: Person!
             }
 
+            input PersonMoviesAggregateInput {
+              AND: [PersonMoviesAggregateInput!]
+              NOT: PersonMoviesAggregateInput
+              OR: [PersonMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
@@ -502,6 +554,13 @@ describe("Connection with interfaces", () => {
             input PersonMoviesFieldInput {
               connect: PersonMoviesConnectFieldInput
               create: PersonMoviesCreateFieldInput
+            }
+
+            input PersonMoviesNodeAggregationWhereInput {
+              AND: [PersonMoviesNodeAggregationWhereInput!]
+              NOT: PersonMoviesNodeAggregationWhereInput
+              OR: [PersonMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             input PersonMoviesUpdateConnectionInput {
@@ -566,6 +625,7 @@ describe("Connection with interfaces", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: ProductionWhere
+              moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
               movies_NOT: ProductionWhere
@@ -597,6 +657,18 @@ describe("Connection with interfaces", () => {
 
             input ProductionDeleteInput {
               director: [ProductionDirectorDeleteFieldInput!]
+            }
+
+            input ProductionDirectorAggregateInput {
+              AND: [ProductionDirectorAggregateInput!]
+              NOT: ProductionDirectorAggregateInput
+              OR: [ProductionDirectorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: ProductionDirectorNodeAggregationWhereInput
             }
 
             input ProductionDirectorConnectFieldInput {
@@ -634,6 +706,13 @@ describe("Connection with interfaces", () => {
             input ProductionDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
+            }
+
+            input ProductionDirectorNodeAggregationWhereInput {
+              AND: [ProductionDirectorNodeAggregationWhereInput!]
+              NOT: ProductionDirectorNodeAggregationWhereInput
+              OR: [ProductionDirectorNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type ProductionDirectorRelationship {
@@ -694,6 +773,7 @@ describe("Connection with interfaces", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               director: CreatureWhere @deprecated(reason: \\"Use \`director_SOME\` instead.\\")
+              directorAggregate: ProductionDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
@@ -812,6 +892,18 @@ describe("Connection with interfaces", () => {
               director: [SeriesDirectorDeleteFieldInput!]
             }
 
+            input SeriesDirectorAggregateInput {
+              AND: [SeriesDirectorAggregateInput!]
+              NOT: SeriesDirectorAggregateInput
+              OR: [SeriesDirectorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: SeriesDirectorNodeAggregationWhereInput
+            }
+
             input SeriesDirectorConnectFieldInput {
               connect: CreatureConnectInput
               where: CreatureConnectWhere
@@ -834,6 +926,13 @@ describe("Connection with interfaces", () => {
             input SeriesDirectorFieldInput {
               connect: [SeriesDirectorConnectFieldInput!]
               create: [SeriesDirectorCreateFieldInput!]
+            }
+
+            input SeriesDirectorNodeAggregationWhereInput {
+              AND: [SeriesDirectorNodeAggregationWhereInput!]
+              NOT: SeriesDirectorNodeAggregationWhereInput
+              OR: [SeriesDirectorNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             input SeriesDirectorUpdateConnectionInput {
@@ -894,6 +993,7 @@ describe("Connection with interfaces", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               director: CreatureWhere @deprecated(reason: \\"Use \`director_SOME\` instead.\\")
+              directorAggregate: SeriesDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
