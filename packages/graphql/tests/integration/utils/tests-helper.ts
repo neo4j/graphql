@@ -116,7 +116,7 @@ export class TestHelper {
         helperLock = false;
     }
 
-    /** Use this if using graphql() directly */
+    /** Use this if using graphql() directly. If possible, use .runGraphQL */
     public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
         const driver = await this.getDriver();
         return {
@@ -154,13 +154,6 @@ export class TestHelper {
         } else {
             return this.verifyConnectivityToTestDatabase(driver);
         }
-    }
-
-    private async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
-        const driver = await this.getDriver();
-
-        const appliedOptions = { ...options, database: this.database };
-        return driver.session(appliedOptions);
     }
 
     private async checkConnectivityToDefaultDatabase(driver: neo4j.Driver): Promise<string> {
