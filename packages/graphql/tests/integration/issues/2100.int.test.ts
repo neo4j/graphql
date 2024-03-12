@@ -29,6 +29,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let BussingRecordType: UniqueType;
     let TimeGraphType: UniqueType;
 
+    let Member: UniqueType;
+
     let typeDefs: string;
 
     beforeEach(async () => {
@@ -38,6 +40,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         ServiceLogType = testHelper.createUniqueType("ServiceLog");
         BussingRecordType = testHelper.createUniqueType("BussingRecord");
         TimeGraphType = testHelper.createUniqueType("TimeGraph");
+
+        Member = testHelper.createUniqueType("Member");
 
         typeDefs = `
             type ${ServiceLogType} {
@@ -50,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 markedAttendance: Boolean!
                     @cypher(
                         statement: """
-                        MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
+                        MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:${Member})
                         RETURN COUNT(member) > 0 AS markedAttendance
                         """,
                         columnName: "markedAttendance"
@@ -71,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 bussing(limit: Int!): [${BussingRecordType}!]!
                     @cypher(
                         statement: """
-                        MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
+                        MATCH (this)-[:HAS_HISTORY]->(:${ServiceLogType})-[:HAS_BUSSING]->(records:${BussingRecordType})-[:BUSSED_ON]->(date:${TimeGraphType})
                         WITH DISTINCT records, date LIMIT $limit
                         RETURN records ORDER BY date.date DESC
                         """

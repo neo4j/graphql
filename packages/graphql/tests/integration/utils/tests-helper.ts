@@ -111,7 +111,7 @@ export class TestHelper {
                 // Ignore error
             }
         }
-        await this.cleanNodes(driver, this.uniqueTypes); // TODO: take the database into account
+        await this.cleanNodes(driver, this.uniqueTypes);
         await driver.close();
         helperLock = false;
     }

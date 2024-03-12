@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
             <-[:ATTACHED_TO]-(a:${testAttachment.name} {ownerId: 'abc', contents: 'something interesting'})
         `);
 
-        const query = /* */ `
+        const query = /* GraphQL */ `
             query {
                 ${testUser.plural} {
                     inboxes {
