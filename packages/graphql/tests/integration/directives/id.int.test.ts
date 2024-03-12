@@ -22,15 +22,22 @@ import isUUID from "is-uuid";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4jHelper from "../neo4j";
 
 describe("@id directive", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
+    let Genre: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        Genre = new UniqueType("Genre");
+        Actor = new UniqueType("Actor");
     });
 
     afterAll(async () => {
@@ -41,7 +48,7 @@ describe("@id directive", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID! @id @unique
               name: String
             }
@@ -51,8 +58,8 @@ describe("@id directive", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{name: "dan"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{name: "dan"}]) {
+                    ${Movie.plural} {
                         id
                         name
                     }
@@ -69,7 +76,7 @@ describe("@id directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const { id, name } = (gqlResult.data as any).createMovies.movies[0];
+            const { id, name } = (gqlResult.data as any)[Movie.operations.create][Movie.plural][0];
 
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toBe(true);
             expect(name).toBe("dan");
@@ -86,7 +93,7 @@ describe("@id directive", () => {
                 id: ID!
             }
 
-            type Movie implements MovieInterface {
+            type ${Movie} implements MovieInterface {
               id: ID! @id
               name: String
             }
@@ -96,8 +103,8 @@ describe("@id directive", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{name: "dan"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{name: "dan"}]) {
+                    ${Movie.plural} {
                         id
                         name
                     }
@@ -114,7 +121,7 @@ describe("@id directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const { id, name } = (gqlResult.data as any).createMovies.movies[0];
+            const { id, name } = (gqlResult.data as any)[Movie.operations.create][Movie.plural][0];
 
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toBe(true);
             expect(name).toBe("dan");
@@ -127,15 +134,15 @@ describe("@id directive", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Genre {
+            type ${Genre} {
                 id: ID! @id @unique
                 name: String!
             }
 
-            type Movie {
+            type ${Movie} {
                 id: ID! @id @unique
                 name: String!
-                genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
         `;
 
@@ -143,7 +150,7 @@ describe("@id directive", () => {
 
         const create = `
             mutation {
-                createMovies(input:
+                ${Movie.operations.create}(input:
                     [
                         {
                             name: "dan",
@@ -153,7 +160,7 @@ describe("@id directive", () => {
                         }
                     ]
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         id
                         name
                         genres {
@@ -173,7 +180,7 @@ describe("@id directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const { id, name, genres } = (gqlResult.data as any).createMovies.movies[0];
+            const { id, name, genres } = (gqlResult.data as any)[Movie.operations.create][Movie.plural][0];
 
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toBe(true);
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](genres[0].id))).toBe(true);
@@ -187,7 +194,7 @@ describe("@id directive", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Actor {
+            type ${Actor} {
                 id: ID! @id @unique
                 name: String!
             }
@@ -197,10 +204,10 @@ describe("@id directive", () => {
                 screenTime: Int!
             }
 
-            type Movie {
+            type ${Movie} {
                 id: ID! @id @unique
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
         `;
 
@@ -215,12 +222,12 @@ describe("@id directive", () => {
 
         const create = /* GraphQL */ `
             mutation ($title: String!, $name: String!) {
-                createMovies(
+                ${Movie.operations.create}(
                     input: [
                         { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
                     ]
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         actorsConnection {
                             edges {
                                 properties {
@@ -243,7 +250,7 @@ describe("@id directive", () => {
 
             expect(result.errors).toBeFalsy();
 
-            const { actorsConnection } = (result.data as any).createMovies.movies[0];
+            const { actorsConnection } = (result.data as any)[Movie.operations.create][Movie.plural][0];
 
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](actorsConnection.edges[0].properties.id))).toBe(
                 true

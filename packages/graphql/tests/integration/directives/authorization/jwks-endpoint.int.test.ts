@@ -17,28 +17,31 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
+import jwksRsa from "jwks-rsa";
+import Koa from "koa";
+import jwt from "koa-jwt";
+import Router from "koa-router";
 import type { JWKSMock } from "mock-jwks";
 import createJWKSMock from "mock-jwks";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import supertest from "supertest";
-import Koa from "koa";
-import Router from "koa-router";
-import jwt from "koa-jwt";
-import jwksRsa from "jwks-rsa";
-import Neo4jHelper from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("auth/jwks-endpoint", () => {
     let jwksMock: JWKSMock;
     let server: any;
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let User: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        User = new UniqueType("User");
     });
 
     afterAll(async () => {
@@ -57,10 +60,10 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
-            extend type User @authentication
+            extend type ${User} @authentication
         `;
 
         const userId = generate({
@@ -69,7 +72,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -91,7 +94,7 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
@@ -107,7 +110,7 @@ describe("auth/jwks-endpoint", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.users).toHaveLength(1);
+            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
         } finally {
             await session.close();
         }
@@ -121,11 +124,11 @@ describe("auth/jwks-endpoint", () => {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
             }
 
-            type User {
+            type ${User} {
                 id: ID
             }
 
-            extend type User @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "standard-user" } } }])
+            extend type ${User} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "standard-user" } } }])
         `;
 
         const userId = generate({
@@ -134,7 +137,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -156,7 +159,7 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
@@ -175,7 +178,7 @@ describe("auth/jwks-endpoint", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.users).toHaveLength(1);
+            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
         } finally {
             await session.close();
         }
@@ -189,10 +192,10 @@ describe("auth/jwks-endpoint", () => {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
             }
 
-            type User {
+            type ${User} {
                 id: ID
             }
-            extend type User @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "editor" } } }])
+            extend type ${User} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "editor" } } }])
         `;
 
         const userId = generate({
@@ -201,7 +204,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -223,7 +226,7 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
@@ -251,10 +254,10 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
-            extend type User @authentication
+            extend type ${User} @authentication
         `;
 
         const userId = generate({
@@ -263,7 +266,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -288,7 +291,7 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
@@ -314,10 +317,10 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
-            extend type User @authentication
+            extend type ${User} @authentication
         `;
 
         const userId = generate({
@@ -326,7 +329,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -351,7 +354,7 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
@@ -368,7 +371,7 @@ describe("auth/jwks-endpoint", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.users).toHaveLength(1);
+            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
         } finally {
             await session.close();
         }
@@ -378,10 +381,10 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
-            extend type User @authentication
+            extend type ${User} @authentication
         `;
 
         const userId = generate({
@@ -390,7 +393,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -404,7 +407,7 @@ describe("auth/jwks-endpoint", () => {
                         url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     },
                     verifyOptions: {
-                        audience: "urn:user",
+                        audience: "urn:${User}",
                     },
                 },
             },
@@ -415,7 +418,7 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
@@ -441,10 +444,10 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
-            extend type User @authentication
+            extend type ${User} @authentication
         `;
 
         const userId = generate({
@@ -453,7 +456,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -467,7 +470,7 @@ describe("auth/jwks-endpoint", () => {
                         url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     },
                     verifyOptions: {
-                        audience: "urn:user",
+                        audience: "urn:${User}",
                     },
                 },
             },
@@ -478,12 +481,12 @@ describe("auth/jwks-endpoint", () => {
             jwksMock.start();
 
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = jwksMock.token({
                 iat: 1600000000,
-                aud: "urn:user",
+                aud: "urn:${User}",
             });
 
             const gqlResult = await graphql({
@@ -495,7 +498,7 @@ describe("auth/jwks-endpoint", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.users).toHaveLength(1);
+            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
         } finally {
             await session.close();
         }

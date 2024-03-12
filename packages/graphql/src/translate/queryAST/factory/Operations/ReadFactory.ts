@@ -87,7 +87,6 @@ export class ReadFactory {
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
-                directed: Boolean(resolveTree.args?.directed ?? true),
                 selection,
             });
 
@@ -119,7 +118,6 @@ export class ReadFactory {
                 const readPartial = new CompositeReadPartial({
                     target: concreteEntity,
                     relationship,
-                    directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
                 });
 

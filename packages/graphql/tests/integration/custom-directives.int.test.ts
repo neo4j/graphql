@@ -17,22 +17,25 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { gql } from "graphql-tag";
+import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
 import type { GraphQLSchema } from "graphql";
-import { graphql, defaultFieldResolver } from "graphql";
-import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
+import { defaultFieldResolver, graphql } from "graphql";
+import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("Custom Directives", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
@@ -74,7 +77,7 @@ describe("Custom Directives", () => {
                 gql`
                     directive @uppercase on FIELD_DEFINITION
 
-                    type Movie {
+                    type ${Movie} {
                         name: String @uppercase
                     }
                 `,
@@ -90,8 +93,8 @@ describe("Custom Directives", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{name: "${name}"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{name: "${name}"}]) {
+                    ${Movie.plural} {
                         name
                     }
                 }
@@ -107,7 +110,7 @@ describe("Custom Directives", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0]).toEqual({
                 name: name.toUpperCase(),
             });
         } finally {

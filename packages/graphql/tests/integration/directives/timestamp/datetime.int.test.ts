@@ -21,15 +21,20 @@ import { graphql } from "graphql";
 import type { DateTime, Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
 
 describe("timestamp/datetime", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
+        Actor = new UniqueType("Actor");
     });
 
     afterAll(async () => {
@@ -41,7 +46,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Movie {
+                type ${Movie} {
                   id: ID
                   createdAt: DateTime @timestamp(operations: [CREATE])
                 }
@@ -57,8 +62,8 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    createMovies(input: [{ id: "${id}" }]) {
-                        movies {
+                    ${Movie.operations.create}(input: [{ id: "${id}" }]) {
+                        ${Movie.plural} {
                             id
                         }
                     }
@@ -75,7 +80,7 @@ describe("timestamp/datetime", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+                    MATCH (m:${Movie}  {id: "${id}"})
                     RETURN m {.id, .createdAt} as m
                 `);
 
@@ -95,7 +100,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Actor {
+                type ${Actor} {
                     name: String!
                 }
 
@@ -104,9 +109,9 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type Movie {
+                type ${Movie} {
                     title: String!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
             `;
 
@@ -121,12 +126,12 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation($title: String!, $name: String!) {
-                    createMovies(
+                    ${Movie.operations.create}(
                         input: [
                             { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
                         ]
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             actorsConnection {
                                 edges {
                                     properties {
@@ -149,7 +154,7 @@ describe("timestamp/datetime", () => {
 
                 expect(result.errors).toBeFalsy();
 
-                const { actorsConnection } = (result.data as any).createMovies.movies[0];
+                const { actorsConnection } = (result.data as any)[Movie.operations.create][Movie.plural][0];
 
                 expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
@@ -163,7 +168,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Movie {
+                type ${Movie} {
                   id: ID
                   updatedAt: DateTime @timestamp(operations: [UPDATE])
                 }
@@ -179,8 +184,8 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    updateMovies(where: {id: "${id}"}, update: { id: "${id}" }) {
-                        movies {
+                    ${Movie.operations.update}(where: {id: "${id}"}, update: { id: "${id}" }) {
+                        ${Movie.plural} {
                             id
                         }
                     }
@@ -189,7 +194,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 await session.run(`
-                    CREATE (m:Movie {id: "${id}"})
+                    CREATE (m:${Movie}  {id: "${id}"})
                 `);
 
                 const gqlResult = await graphql({
@@ -201,7 +206,7 @@ describe("timestamp/datetime", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+                    MATCH (m:${Movie}  {id: "${id}"})
                     RETURN m {.id, .updatedAt} as m
                 `);
 
@@ -221,7 +226,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Actor {
+                type ${Actor} {
                     name: String!
                 }
 
@@ -230,9 +235,9 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type Movie {
+                type ${Movie} {
                     title: String!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
             `;
 
@@ -247,11 +252,11 @@ describe("timestamp/datetime", () => {
 
             const update = `
                 mutation($title: String!) {
-                    updateMovies(
+                    ${Movie.operations.update}(
                         where: { title: $title }
                         update: { actors: [{ update: { edge: { screenTime: 60 } } }] }
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             actorsConnection {
                                 edges {
                                     properties {
@@ -267,7 +272,7 @@ describe("timestamp/datetime", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
+                    CREATE (:${Movie} {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:${Actor}  {name: $name})
                 `,
                     { title, name }
                 );
@@ -281,7 +286,7 @@ describe("timestamp/datetime", () => {
 
                 expect(result.errors).toBeFalsy();
 
-                const { actorsConnection } = (result.data as any).updateMovies.movies[0];
+                const { actorsConnection } = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
                 expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
@@ -295,7 +300,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Movie {
+                type ${Movie} {
                   id: ID
                   createdAt: DateTime @timestamp(operations: [CREATE, UPDATE])
                 }
@@ -311,8 +316,8 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    createMovies(input: [{ id: "${id}" }]) {
-                        movies {
+                    ${Movie.operations.create}(input: [{ id: "${id}" }]) {
+                        ${Movie.plural} {
                             id
                         }
                     }
@@ -329,7 +334,7 @@ describe("timestamp/datetime", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+                    MATCH (m:${Movie}  {id: "${id}"})
                     RETURN m {.id, .createdAt} as m
                 `);
 
@@ -349,7 +354,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Actor {
+                type ${Actor} {
                     name: String!
                 }
 
@@ -358,9 +363,9 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type Movie {
+                type ${Movie} {
                     title: String!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
             `;
 
@@ -375,12 +380,12 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation($title: String!, $name: String!) {
-                    createMovies(
+                    ${Movie.operations.create}(
                         input: [
                             { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
                         ]
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             actorsConnection {
                                 edges {
                                     properties {
@@ -403,7 +408,7 @@ describe("timestamp/datetime", () => {
 
                 expect(result.errors).toBeFalsy();
 
-                const { actorsConnection } = (result.data as any).createMovies.movies[0];
+                const { actorsConnection } = (result.data as any)[Movie.operations.create][Movie.plural][0];
 
                 expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
@@ -415,7 +420,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Actor {
+                type ${Actor} {
                     name: String!
                 }
 
@@ -424,9 +429,9 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type Movie {
+                type ${Movie} {
                     title: String!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
             `;
 
@@ -441,11 +446,11 @@ describe("timestamp/datetime", () => {
 
             const update = `
                 mutation($title: String!) {
-                    updateMovies(
+                    ${Movie.operations.update}(
                         where: { title: $title }
                         update: { actors: [{ update: { edge: { screenTime: 60 } } }] }
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             actorsConnection {
                                 edges {
                                     properties {
@@ -461,7 +466,7 @@ describe("timestamp/datetime", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
+                    CREATE (:${Movie} {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:${Actor}  {name: $name})
                 `,
                     { title, name }
                 );
@@ -475,7 +480,7 @@ describe("timestamp/datetime", () => {
 
                 expect(result.errors).toBeFalsy();
 
-                const { actorsConnection } = (result.data as any).updateMovies.movies[0];
+                const { actorsConnection } = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
                 expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
@@ -487,7 +492,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Movie {
+                type ${Movie} {
                   id: ID
                   updatedAt: DateTime @timestamp(operations: [CREATE, UPDATE])
                 }
@@ -503,8 +508,8 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    updateMovies(where: {id: "${id}"}, update: { id: "${id}" }) {
-                        movies {
+                    ${Movie.operations.update}(where: {id: "${id}"}, update: { id: "${id}" }) {
+                        ${Movie.plural} {
                             id
                         }
                     }
@@ -513,7 +518,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 await session.run(`
-                    CREATE (m:Movie {id: "${id}"})
+                    CREATE (m:${Movie}  {id: "${id}"})
                 `);
 
                 const gqlResult = await graphql({
@@ -525,7 +530,7 @@ describe("timestamp/datetime", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+                    MATCH (m:${Movie}  {id: "${id}"})
                     RETURN m {.id, .updatedAt} as m
                 `);
 
@@ -547,7 +552,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Movie {
+                type ${Movie} {
                   id: ID
                   createdAt: DateTime @timestamp
                 }
@@ -563,8 +568,8 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    createMovies(input: [{ id: "${id}" }]) {
-                        movies {
+                    ${Movie.operations.create}(input: [{ id: "${id}" }]) {
+                        ${Movie.plural} {
                             id
                         }
                     }
@@ -581,7 +586,7 @@ describe("timestamp/datetime", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+                    MATCH (m:${Movie}  {id: "${id}"})
                     RETURN m {.id, .createdAt} as m
                 `);
 
@@ -601,7 +606,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Actor {
+                type ${Actor} {
                     name: String!
                 }
 
@@ -610,9 +615,9 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type Movie {
+                type ${Movie} {
                     title: String!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
             `;
 
@@ -627,12 +632,12 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation($title: String!, $name: String!) {
-                    createMovies(
+                    ${Movie.operations.create}(
                         input: [
                             { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
                         ]
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             actorsConnection {
                                 edges {
                                     properties {
@@ -655,7 +660,7 @@ describe("timestamp/datetime", () => {
 
                 expect(result.errors).toBeFalsy();
 
-                const { actorsConnection } = (result.data as any).createMovies.movies[0];
+                const { actorsConnection } = (result.data as any)[Movie.operations.create][Movie.plural][0];
 
                 expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
@@ -667,7 +672,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Actor {
+                type ${Actor} {
                     name: String!
                 }
 
@@ -676,9 +681,9 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type Movie {
+                type ${Movie} {
                     title: String!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
             `;
 
@@ -693,11 +698,11 @@ describe("timestamp/datetime", () => {
 
             const update = `
                 mutation($title: String!) {
-                    updateMovies(
+                    ${Movie.operations.update}(
                         where: { title: $title }
                         update: { actors: [{ update: { edge: { screenTime: 60 } } }] }
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             actorsConnection {
                                 edges {
                                     properties {
@@ -713,7 +718,7 @@ describe("timestamp/datetime", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
+                    CREATE (:${Movie} {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:${Actor}  {name: $name})
                 `,
                     { title, name }
                 );
@@ -727,7 +732,7 @@ describe("timestamp/datetime", () => {
 
                 expect(result.errors).toBeFalsy();
 
-                const { actorsConnection } = (result.data as any).updateMovies.movies[0];
+                const { actorsConnection } = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
                 expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
@@ -739,7 +744,7 @@ describe("timestamp/datetime", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Movie {
+                type ${Movie} {
                   id: ID
                   updatedAt: DateTime @timestamp
                 }
@@ -755,8 +760,8 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    updateMovies(where: {id: "${id}"}, update: { id: "${id}" }) {
-                        movies {
+                    ${Movie.operations.update}(where: {id: "${id}"}, update: { id: "${id}" }) {
+                        ${Movie.plural} {
                             id
                         }
                     }
@@ -765,7 +770,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 await session.run(`
-                    CREATE (m:Movie {id: "${id}"})
+                    CREATE (m:${Movie}  {id: "${id}"})
                 `);
 
                 const gqlResult = await graphql({
@@ -777,7 +782,7 @@ describe("timestamp/datetime", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+                    MATCH (m:${Movie}  {id: "${id}"})
                     RETURN m {.id, .updatedAt} as m
                 `);
 

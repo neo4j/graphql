@@ -17,19 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("Default values", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
@@ -40,7 +43,7 @@ describe("Default values", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               field(skip: Int = 100): Int
                 @cypher(
@@ -62,7 +65,7 @@ describe("Default values", () => {
 
         const create = `
             {
-                movies(where: {id: "${id}"}){
+                ${Movie.plural}(where: {id: "${id}"}){
                     id
                     field
                 }
@@ -71,7 +74,7 @@ describe("Default values", () => {
 
         try {
             await session.run(`
-                CREATE (:Movie {id: "${id}"})
+                CREATE (:${Movie} {id: "${id}"})
             `);
 
             const gqlResult = await graphql({
@@ -82,7 +85,7 @@ describe("Default values", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).movies[0]).toEqual({
+            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
                 id,
                 field: 100,
             });
@@ -95,7 +98,7 @@ describe("Default values", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
                 id: ID
             }
 

@@ -17,21 +17,25 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import Neo4jHelper from "../../neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("should inject the auth into cypher directive", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     const secret = "secret";
+    let User: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        User = new UniqueType("User");
     });
 
     afterAll(async () => {
@@ -232,7 +236,7 @@ describe("should inject the auth into cypher directive", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
                 userId: ID @cypher(statement: """
                     RETURN $jwt.sub AS a
@@ -255,7 +259,7 @@ describe("should inject the auth into cypher directive", () => {
 
         const query = `
         {
-             users(where: {id: "${userId}"}){
+             ${User.plural}(where: {id: "${userId}"}){
                 userId
             }
         }
@@ -263,7 +267,7 @@ describe("should inject the auth into cypher directive", () => {
 
         try {
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const token = createBearerToken(secret, { sub: userId });
@@ -276,7 +280,7 @@ describe("should inject the auth into cypher directive", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).users[0].userId).toEqual(userId);
+            expect((gqlResult.data as any)[User.plural][0].userId).toEqual(userId);
         } finally {
             await session.close();
         }
@@ -286,7 +290,7 @@ describe("should inject the auth into cypher directive", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
                 userId: ID @cypher(statement: """
                     RETURN $jwt.sub AS a
@@ -308,7 +312,7 @@ describe("should inject the auth into cypher directive", () => {
 
         const query = `
         {
-             users(where: {id: "${userId}"}){
+             ${User.plural}(where: {id: "${userId}"}){
                 userId
             }
         }
@@ -316,7 +320,7 @@ describe("should inject the auth into cypher directive", () => {
 
         try {
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const gqlResult = await graphql({
@@ -327,7 +331,7 @@ describe("should inject the auth into cypher directive", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).users[0].userId).toEqual(userId);
+            expect((gqlResult.data as any)[User.plural][0].userId).toEqual(userId);
         } finally {
             await session.close();
         }

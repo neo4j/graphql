@@ -20,11 +20,14 @@
 import type { GraphQLError } from "graphql";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("Errors", () => {
     test("An error should be thrown if no driver is supplied", async () => {
+        const Movie = new UniqueType("Movie");
+
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
             }
         `;
@@ -33,7 +36,7 @@ describe("Errors", () => {
 
         const query = `
             query {
-                movies {
+                ${Movie.plural} {
                     id
                 }
             }

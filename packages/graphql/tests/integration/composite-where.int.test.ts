@@ -21,15 +21,37 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("composite-where", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Actor: UniqueType;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Actor = new UniqueType("Actor");
+        Movie = new UniqueType("Movie");
+        const typeDefs = `
+            type ${Actor} {
+                name: String
+            }
+    
+            type ${Movie} {
+                id: ID!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+    
+            type ActedIn @relationshipProperties {
+                screenTime: Int
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,23 +61,6 @@ describe("composite-where", () => {
     describe("Delete", () => {
         test("should use composite where to delete", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type Actor {
-                    name: String
-                }
-
-                type Movie {
-                    id: ID!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-                }
-
-                type ActedIn @relationshipProperties {
-                    screenTime: Int
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const actorName1 = generate({
                 charset: "alphabetic",
@@ -70,7 +75,7 @@ describe("composite-where", () => {
 
             const query = `
                 mutation($movieId: ID, $actorName1: String, $screenTime: Int) {
-                    updateMovies(
+                    ${Movie.operations.update}(
                         where: {
                             id: $movieId
                         }
@@ -87,7 +92,7 @@ describe("composite-where", () => {
                             }
                         }
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             id
                             actors {
                                 name
@@ -100,9 +105,9 @@ describe("composite-where", () => {
             try {
                 await session.run(
                     `
-                        CREATE (m:Movie {id: $movieId})
-                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
-                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
+                        CREATE (m:${Movie} {id: $movieId})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName1})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName2})
                     `,
                     { movieId, screenTime, actorName1, actorName2 }
                 );
@@ -116,8 +121,8 @@ describe("composite-where", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect(gqlResult?.data?.updateMovies).toEqual({
-                    movies: [{ id: movieId, actors: [{ name: actorName2 }] }],
+                expect(gqlResult?.data?.[Movie.operations.update]).toEqual({
+                    [Movie.plural]: [{ id: movieId, actors: [{ name: actorName2 }] }],
                 });
             } finally {
                 await session.close();
@@ -128,23 +133,6 @@ describe("composite-where", () => {
     describe("Disconnect", () => {
         test("should use composite where to delete", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type Actor {
-                    name: String
-                }
-
-                type Movie {
-                    id: ID!
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-                }
-
-                type ActedIn @relationshipProperties {
-                    screenTime: Int
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const actorName1 = generate({
                 charset: "alphabetic",
@@ -159,7 +147,7 @@ describe("composite-where", () => {
 
             const query = `
                 mutation($movieId: ID, $actorName1: String, $screenTime: Int) {
-                    updateMovies(
+                    ${Movie.operations.update}(
                         where: {
                             id: $movieId
                         }
@@ -176,7 +164,7 @@ describe("composite-where", () => {
                             }
                         }
                     ) {
-                        movies {
+                        ${Movie.plural} {
                             id
                             actors {
                                 name
@@ -189,9 +177,9 @@ describe("composite-where", () => {
             try {
                 await session.run(
                     `
-                        CREATE (m:Movie {id: $movieId})
-                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
-                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
+                        CREATE (m:${Movie} {id: $movieId})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName1})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName2})
                     `,
                     { movieId, screenTime, actorName1, actorName2 }
                 );
@@ -205,8 +193,8 @@ describe("composite-where", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect(gqlResult?.data?.updateMovies).toEqual({
-                    movies: [{ id: movieId, actors: [{ name: actorName2 }] }],
+                expect(gqlResult?.data?.[Movie.operations.update]).toEqual({
+                    [Movie.plural]: [{ id: movieId, actors: [{ name: actorName2 }] }],
                 });
             } finally {
                 await session.close();

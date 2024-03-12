@@ -17,21 +17,26 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import Neo4jHelper from "../../neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4jHelper from "../../neo4j";
 
 describe("auth/where", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     const secret = "secret";
+    let User: UniqueType;
+    let Post: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
     });
 
     afterAll(async () => {
@@ -43,11 +48,11 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -56,7 +61,7 @@ describe("auth/where", () => {
 
             const query = `
                 {
-                    users {
+                    ${User.plural} {
                         id
                     }
                 }
@@ -73,8 +78,8 @@ describe("auth/where", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:User {id: "anotherUser"})
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${User} {id: "anotherUser"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -87,7 +92,7 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any).users as any[];
+                const users = (gqlResult.data as any)[User.plural] as any[];
                 expect(users).toEqual([{ id: userId }]);
             } finally {
                 await session.close();
@@ -98,17 +103,17 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -124,7 +129,7 @@ describe("auth/where", () => {
 
             const query = `
                 {
-                    posts {
+                    ${Post.plural} {
                         id
                     }
                 }
@@ -141,9 +146,9 @@ describe("auth/where", () => {
 
             try {
                 await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE (p1:Post {id: "${postId1}"})
-                    CREATE (p2:Post {id: "${postId2}"})
+                    CREATE (u:${User} {id: "${userId}"})
+                    CREATE (p1:${Post} {id: "${postId1}"})
+                    CREATE (p2:${Post} {id: "${postId2}"})
                     MERGE (u)-[:HAS_POST]->(p1)
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
@@ -158,7 +163,7 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const posts = (gqlResult.data as any).posts as any[];
+                const posts = (gqlResult.data as any)[Post.plural] as any[];
                 expect(posts).toHaveLength(2);
                 const post1 = posts.find((x) => x.id === postId1);
                 expect(post1).toBeTruthy();
@@ -173,17 +178,17 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -202,7 +207,7 @@ describe("auth/where", () => {
 
             const query = `
                 {
-                    users(where: { id: "${userId}" }) {
+                    ${User.plural}(where: { id: "${userId}" }) {
                         postsConnection {
                             edges {
                                 node {
@@ -225,10 +230,10 @@ describe("auth/where", () => {
 
             try {
                 await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE (p1:Post {id: "${postId1}"})
-                    CREATE (p2:Post {id: "${postId2}"})
-                    CREATE (:Post {id: "${randomPostId}"})
+                    CREATE (u:${User} {id: "${userId}"})
+                    CREATE (p1:${Post} {id: "${postId1}"})
+                    CREATE (p2:${Post} {id: "${postId2}"})
+                    CREATE (:${Post} {id: "${randomPostId}"})
                     MERGE (u)-[:HAS_POST]->(p1)
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
@@ -243,7 +248,9 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const posts = (gqlResult.data as any).users[0].postsConnection as { edges: { node: { id: string } }[] };
+                const posts = (gqlResult.data as any)[User.plural][0].postsConnection as {
+                    edges: { node: { id: string } }[];
+                };
                 expect(posts.edges).toHaveLength(2);
                 const post1 = posts.edges.find((x) => x.node.id === postId1);
                 expect(post1).toBeTruthy();
@@ -259,20 +266,20 @@ describe("auth/where", () => {
                 const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
                 const typeDefs = `
-                    union Content = Post
+                    union Content = ${Post}
 
-                    type User {
+                    type ${User} {
                         id: ID
                         content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
                     }
 
-                    type Post {
+                    type ${Post} {
                         id: ID
-                        creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                        creator: ${User}! @relationship(type: "HAS_CONTENT", direction: IN)
                     }
 
-                    extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
-                    extend type User @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 `;
 
                 const userId = generate({
@@ -288,9 +295,9 @@ describe("auth/where", () => {
 
                 const query = `
                     {
-                        users {
+                        ${User.plural} {
                             content {
-                                ... on Post {
+                                ... on ${Post} {
                                     id
                                 }
                             }
@@ -309,9 +316,9 @@ describe("auth/where", () => {
 
                 try {
                     await session.run(`
-                        CREATE (u:User {id: "${userId}"})
-                        CREATE (p1:Post {id: "${postId1}"})
-                        CREATE (p2:Post {id: "${postId2}"})
+                        CREATE (u:${User} {id: "${userId}"})
+                        CREATE (p1:${Post} {id: "${postId1}"})
+                        CREATE (p2:${Post} {id: "${postId2}"})
                         MERGE (u)-[:HAS_CONTENT]->(p1)
                         MERGE (u)-[:HAS_CONTENT]->(p2)
                     `);
@@ -324,7 +331,7 @@ describe("auth/where", () => {
                         contextValue: neo4j.getContextValues({ token }),
                     });
                     expect(gqlResult.errors).toBeUndefined();
-                    const posts = (gqlResult.data as any).users[0].content as any[];
+                    const posts = (gqlResult.data as any)[User.plural][0].content as any[];
                     expect(posts).toHaveLength(2);
                     const post1 = posts.find((x) => x.id === postId1);
                     expect(post1).toBeTruthy();
@@ -340,20 +347,20 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                union Content = Post
+                union Content = ${Post}
 
-                type User {
+                type ${User} {
                     id: ID
                     content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                    creator: ${User}! @relationship(type: "HAS_CONTENT", direction: IN)
                 }
 
-                extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
-                extend type User @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -369,11 +376,11 @@ describe("auth/where", () => {
 
             const query = `
                 {
-                    users {
+                    ${User.plural} {
                         contentConnection {
                             edges {
                                 node {
-                                    ... on Post {
+                                    ... on ${Post} {
                                         id
                                     }
                                 }
@@ -394,10 +401,10 @@ describe("auth/where", () => {
 
             try {
                 await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE (p1:Post {id: "${postId1}"})
-                    CREATE (p2:Post {id: "${postId2}"})
-                    CREATE (:Post {id: randomUUID()})
+                    CREATE (u:${User} {id: "${userId}"})
+                    CREATE (p1:${Post} {id: "${postId1}"})
+                    CREATE (p2:${Post} {id: "${postId2}"})
+                    CREATE (:${Post} {id: randomUUID()})
                     MERGE (u)-[:HAS_CONTENT]->(p1)
                     MERGE (u)-[:HAS_CONTENT]->(p2)
                 `);
@@ -410,7 +417,7 @@ describe("auth/where", () => {
                     contextValue: neo4j.getContextValues({ token }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
-                const posts = (gqlResult.data as any).users[0].contentConnection as {
+                const posts = (gqlResult.data as any)[User.plural][0].contentConnection as {
                     edges: { node: { id: string } }[];
                 };
                 expect(posts.edges).toHaveLength(2);
@@ -429,11 +436,11 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User @authorization(filter: [{ operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -445,8 +452,8 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${newUserId}" }){
-                        users {
+                    ${User.operations.update}(update: { id: "${newUserId}" }){
+                        ${User.plural} {
                             id
                         }
                     }
@@ -463,7 +470,7 @@ describe("auth/where", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${User} {id: "${userId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -476,7 +483,7 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
                 expect(users).toEqual([{ id: newUserId }]);
             } finally {
                 await session.close();
@@ -489,11 +496,11 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User @authorization(filter: [{ operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -502,7 +509,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(where: { id: "${userId}" }){
+                    ${User.operations.delete}(where: { id: "${userId}" }){
                         nodesDeleted
                     }
                 }
@@ -518,7 +525,7 @@ describe("auth/where", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${User} {id: "${userId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -530,11 +537,11 @@ describe("auth/where", () => {
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
-                const nodesDeleted = (gqlResult.data as any).deleteUsers.nodesDeleted as number;
+                const nodesDeleted = (gqlResult.data as any)[User.operations.delete].nodesDeleted as number;
                 expect(nodesDeleted).toBe(1);
 
                 const reQuery = await session.run(`
-                    MATCH (u:User {id: "${userId}"})
+                    MATCH (u:${User} {id: "${userId}"})
                     RETURN u
                 `);
                 expect(reQuery.records).toHaveLength(0);
@@ -549,17 +556,17 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -571,8 +578,8 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { connect: { where: { node: { id: "${postId}" } } } } }) {
-                        users {
+                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id: "${postId}" } } } } }) {
+                        ${User.plural} {
                             id
                             posts {
                                 id
@@ -592,8 +599,8 @@ describe("auth/where", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:Post {id: "${postId}"})
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -605,7 +612,7 @@ describe("auth/where", () => {
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
                 expect(users).toEqual([{ id: userId, posts: [{ id: postId }] }]);
             } finally {
                 await session.close();
@@ -616,17 +623,17 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -638,8 +645,8 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(connect:{posts:{where:{node:{id: "${postId}"}}}}) {
-                        users {
+                    ${User.operations.update}(connect:{posts:{where:{node:{id: "${postId}"}}}}) {
+                        ${User.plural} {
                             id
                             posts {
                                 id
@@ -659,8 +666,8 @@ describe("auth/where", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:Post {id: "${postId}"})
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -672,7 +679,7 @@ describe("auth/where", () => {
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
                 expect(users).toEqual([{ id: userId, posts: [{ id: postId }] }]);
             } finally {
                 await session.close();
@@ -685,17 +692,17 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -710,8 +717,8 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId1}" } } } } }) {
-                        users {
+                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id: "${postId1}" } } } } }) {
+                        ${User.plural} {
                             id
                             posts {
                                 id
@@ -731,9 +738,9 @@ describe("auth/where", () => {
             });
             try {
                 await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE (u)-[:HAS_POST]->(:Post {id: "${postId1}"})
-                    CREATE (u)-[:HAS_POST]->(:Post {id: "${postId2}"})
+                    CREATE (u:${User} {id: "${userId}"})
+                    CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId1}"})
+                    CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId2}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -745,7 +752,7 @@ describe("auth/where", () => {
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
                 expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
             } finally {
                 await session.close();
@@ -756,17 +763,17 @@ describe("auth/where", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${Post} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -781,8 +788,8 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId1}"}}}}) {
-                        users {
+                    ${User.operations.update}(disconnect: { posts: { where: {node: { id : "${postId1}"}}}}) {
+                        ${User.plural} {
                             id
                             posts {
                                 id
@@ -802,9 +809,9 @@ describe("auth/where", () => {
             });
             try {
                 await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE(u)-[:HAS_POST]->(:Post {id: "${postId1}"})
-                    CREATE(u)-[:HAS_POST]->(:Post {id: "${postId2}"})
+                    CREATE (u:${User} {id: "${userId}"})
+                    CREATE(u)-[:HAS_POST]->(:${Post} {id: "${postId1}"})
+                    CREATE(u)-[:HAS_POST]->(:${Post} {id: "${postId2}"})
                 `);
 
                 const token = createBearerToken(secret, { sub: userId });
@@ -816,7 +823,7 @@ describe("auth/where", () => {
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
                 expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
             } finally {
                 await session.close();
