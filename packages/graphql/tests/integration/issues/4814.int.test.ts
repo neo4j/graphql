@@ -17,33 +17,20 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4814", () => {
-    const AStep = new UniqueType("AStep");
-    const BStep = new UniqueType("BStep");
+    let AStep: UniqueType;
+    let BStep: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        AStep = new UniqueType("AStep");
+        BStep = new UniqueType("BStep");
 
         const typeDefs = /* GraphQL */ `
             interface Step {
@@ -64,10 +51,9 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 prevs: [Step!]! @relationship(type: "FOLLOWED_BY", direction: IN)
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await neo4j.run(`
+        await testHelper.runCypher(`
             CREATE (step0:${AStep} { id: "0"})
             CREATE (step1:${AStep} { id: "1"})
             CREATE (step2:${BStep} { id: "2"})
@@ -80,9 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [AStep, BStep]);
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should use the direction specified in the typeDefs - Connection", async () => {
@@ -111,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
             }
         `;
 
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.runGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             steps: expect.toIncludeSameMembers([
@@ -220,7 +204,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
             }
         `;
 
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.runGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             steps: expect.toIncludeSameMembers([
