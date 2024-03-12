@@ -36,7 +36,7 @@ describe("aggregations-where-node-id", () => {
         driver = await neo4j.getDriver();
         User = new UniqueType("User");
         Post = new UniqueType("Post");
-        
+
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -46,6 +46,106 @@ describe("aggregations-where-node-id", () => {
             type ${Post} {
                 testString: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+            }
+        `;
+        neoSchema = new Neo4jGraphQL({ typeDefs });
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should return posts where a like ID is EQUAL to", async () => {
+        const session = await neo4j.getSession();
+
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const testId = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        try {
+            await session.run(
+                `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", id: "${testId}"})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+            );
+
+            const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                        testString
+                        likes {
+                            id
+                            testString
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValues(),
+            });
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
+                {
+                    testString,
+                    likes: [{ id: testId, testString }],
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+});
+
+describe("aggregations-where-node-id interface relationships of concrete types", () => {
+    let driver: Driver;
+    let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let User: UniqueType;
+    let Post: UniqueType;
+    let Person: UniqueType;
+
+    beforeAll(async () => {
+        neo4j = new Neo4jHelper();
+        driver = await neo4j.getDriver();
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
+        Person = new UniqueType("Person");
+
+        const typeDefs = `
+        interface Human {
+            id: ID
+            testString: String!
+        }
+
+        type ${Person} implements Human {
+            id: ID
+            testString: String!
+        }
+
+            type ${User} implements Human {
+                id: ID
+                testString: String!
+            }
+    
+            type ${Post} {
+                testString: String!
+                likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
         neoSchema = new Neo4jGraphQL({ typeDefs });
