@@ -17,19 +17,40 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("create", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Actor: UniqueType;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Actor = new UniqueType("Actor");
+        Movie = new UniqueType("Movie");
+
+        const typeDefs = `
+            type ${Actor} {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        
+            type ${Movie} {
+                id: ID!
+                title: String
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,26 +60,14 @@ describe("create", () => {
     test("should create a single movie", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Actor {
-                name: String
-            }
-
-            type Movie {
-                id: ID!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         const id = generate({
             charset: "alphabetic",
         });
 
         const query = `
         mutation($id: ID!) {
-            createMovies(input: [{ id: $id }]) {
-                movies {
+            ${Movie.operations.create}(input: [{ id: $id }]) {
+                ${Movie.plural} {
                     id
                 }
             }
@@ -75,11 +84,11 @@ describe("create", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.createMovies).toEqual({ movies: [{ id }] });
+            expect(gqlResult?.data?.[Movie.operations.create]).toEqual({ [Movie.plural]: [{ id }] });
 
             const reFind = await session.run(
                 `
-              MATCH (m:Movie {id: $id})
+              MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
                 { id }
@@ -94,19 +103,6 @@ describe("create", () => {
     test("should create actor and resolve actorsConnection with where clause on movie field", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Actor {
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-
-            type Movie {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
 
         const movieTitle = generate({ charset: "alphabetic" });
@@ -114,13 +110,13 @@ describe("create", () => {
 
         const query = `
             mutation ($movieTitle: String!, $actorName: String!) {
-                createActors(
+                ${Actor.operations.create}(
                     input: {
                         name: $actorName
                         movies: { connect: { where: { node: { title: $movieTitle } } } }
                     }
                 ) {
-                    actors {
+                    ${Actor.plural} {
                         name
                         movies {
                             title
@@ -140,7 +136,7 @@ describe("create", () => {
         try {
             await session.run(
                 `
-                    CREATE (movie:Movie {title: $movieTitle})
+                    CREATE (movie:${Movie} {title: $movieTitle})
                 `,
                 {
                     movieTitle,
@@ -155,8 +151,8 @@ describe("create", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect(result.data?.createActors).toEqual({
-                actors: [
+            expect(result.data?.[Actor.operations.create]).toEqual({
+                [Actor.plural]: [
                     {
                         name: actorName,
                         movies: [
@@ -185,18 +181,6 @@ describe("create", () => {
     test("should create 2 movies", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Actor {
-                name: String
-            }
-
-            type Movie {
-                id: ID!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         const id1 = generate({
             charset: "alphabetic",
         });
@@ -206,8 +190,8 @@ describe("create", () => {
 
         const query = `
         mutation($id1: ID!, $id2: ID!) {
-            createMovies(input: [{ id: $id1 }, {id: $id2}]) {
-                movies {
+            ${Movie.operations.create}(input: [{ id: $id1 }, {id: $id2}]) {
+                ${Movie.plural} {
                     id
                 }
             }
@@ -224,11 +208,11 @@ describe("create", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.createMovies).toEqual({ movies: [{ id: id1 }, { id: id2 }] });
+            expect(gqlResult?.data?.[Movie.operations.create]).toEqual({ [Movie.plural]: [{ id: id1 }, { id: id2 }] });
 
             const reFind = await session.run(
                 `
-              MATCH (m:Movie)
+              MATCH (m:${Movie})
               WHERE m.id = $id1 OR m.id = $id2
               RETURN m
             `,
@@ -243,32 +227,36 @@ describe("create", () => {
 
     test("should create and return pringles product", async () => {
         const session = await neo4j.getSession();
+        const Size = new UniqueType("Size");
+        const Product = new UniqueType("Product");
+        const Color = new UniqueType("Color");
+        const Photo = new UniqueType("Photo");
 
         const typeDefs = `
-            type Product {
+            type ${Product} {
                 id: ID!
                 name: String!
-                sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
-                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
+                sizes: [${Size}!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                colors: [${Color}!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type Size {
+            type ${Size} {
                 id: ID!
                 name: String!
             }
 
-            type Color {
+            type ${Color} {
                 id: ID!
                 name: String!
-                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
+                photos: [${Photo}!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
-            type Photo {
+            type ${Photo} {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+                color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -329,11 +317,11 @@ describe("create", () => {
         ];
 
         const mutation = `
-            mutation($input: [ProductCreateInput!]!) {
-                createProducts(
+            mutation($input: [${Product}CreateInput!]!) {
+                ${Product.operations.create}(
                   input: $input
                 ) {
-                    products {
+                    ${Product.plural} {
                         id
                     }
                 }
@@ -373,23 +361,23 @@ describe("create", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const graphqlProduct = (gqlResult?.data as any)?.createProducts.products[0];
+        const graphqlProduct = (gqlResult?.data as any)[Product.operations.create][Product.plural][0];
         expect(graphqlProduct.id).toEqual(product.id);
 
         const cypher = `
-            MATCH (product:Product {id: $id})
+            MATCH (product:${Product} {id: $id})
             CALL {
-                MATCH (:Product {id: $id})-[:HAS_SIZE]->(size:Size)
+                MATCH (:${Product} {id: $id})-[:HAS_SIZE]->(size:${Color})
                 WITH collect(size.id) AS sizeIds
                 RETURN sizeIds
             }
             CALL {
-                MATCH (:Product {id: $id})-[:HAS_COLOR]->(color:Color)
+                MATCH (:${Product} {id: $id})-[:HAS_COLOR]->(color:${Color})
                 WITH collect(color.id) AS colorIds
                 RETURN colorIds
             }
             CALL {
-                MATCH (:Product {id: $id})-[:HAS_PHOTO]->(photo:Photo)-[:OF_COLOR]->(photoColor)
+                MATCH (:${Product} {id: $id})-[:HAS_PHOTO]->(photo:${Photo})-[:OF_COLOR]->(photoColor)
                 WITH collect(photo.id) AS photoIds, collect(photoColor.id) as photoColorIds
                 RETURN photoIds, photoColorIds
             }

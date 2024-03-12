@@ -21,15 +21,37 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import { UniqueType } from "../../../../utils/graphql-types";
 import Neo4jHelper from "../../../neo4j";
 
 describe("aggregations-where-edge-datetime", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let User: UniqueType;
+    let Post: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
+        const typeDefs = `
+            type ${User} {
+                testString: String!
+            }
+        
+            type ${Post} {
+              testString: String!
+              likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+            }
+        
+            type Likes @relationshipProperties {
+                someDateTime: DateTime
+            }
+        `;
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
@@ -39,21 +61,6 @@ describe("aggregations-where-edge-datetime", () => {
     test("should return posts where a edge like DateTime is EQUAL to", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            type Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -61,19 +68,19 @@ describe("aggregations-where-edge-datetime", () => {
 
         const someDateTime = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someDateTime: dateTime("${someDateTime.toISOString()}")}]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someDateTime: dateTime("${someDateTime.toISOString()}")}]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -94,7 +101,7 @@ describe("aggregations-where-edge-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString }],
@@ -108,21 +115,6 @@ describe("aggregations-where-edge-datetime", () => {
     test("should return posts where a edge like DateTime is GT than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            type Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -132,19 +124,19 @@ describe("aggregations-where-edge-datetime", () => {
         const someDateTimeGT = new Date();
         someDateTimeGT.setDate(someDateTimeGT.getDate() - 1);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -165,7 +157,7 @@ describe("aggregations-where-edge-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString }],
@@ -179,21 +171,6 @@ describe("aggregations-where-edge-datetime", () => {
     test("should return posts where a edge like DateTime is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            type Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -201,19 +178,19 @@ describe("aggregations-where-edge-datetime", () => {
 
         const someDateTime = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -234,7 +211,7 @@ describe("aggregations-where-edge-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString }],
@@ -248,21 +225,6 @@ describe("aggregations-where-edge-datetime", () => {
     test("should return posts where a edge like DateTime is LT than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            type Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -272,19 +234,19 @@ describe("aggregations-where-edge-datetime", () => {
         const someDateTimeLT = new Date();
         someDateTimeLT.setDate(someDateTimeLT.getDate() + 1);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -305,7 +267,7 @@ describe("aggregations-where-edge-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString }],
@@ -319,21 +281,6 @@ describe("aggregations-where-edge-datetime", () => {
     test("should return posts where a edge like DateTime is LTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            type Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -341,19 +288,19 @@ describe("aggregations-where-edge-datetime", () => {
 
         const someDateTime = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:User {testString: "${testString}"})
-                    CREATE (:Post {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someDateTime: datetime("${someDateTime.toISOString()}")}]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -374,7 +321,7 @@ describe("aggregations-where-edge-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any)[Post.plural]).toEqual([
                 {
                     testString,
                     likes: [{ testString }],

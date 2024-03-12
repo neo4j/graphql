@@ -25,6 +25,7 @@ import type {
 } from "../../schema-model/annotation/AuthenticationAnnotation";
 import { applyAuthentication } from "./utils/apply-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import type { Operation } from "../../schema-model/Operation";
 
 export function checkAuthentication({
     context,
@@ -65,12 +66,7 @@ export function checkEntityAuthentication({
 }) {
     const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
     if (schemaLevelAnnotation) {
-        const requiresAuthentication = targetOperations.some(
-            (targetOperation) => schemaLevelAnnotation && schemaLevelAnnotation.operations.has(targetOperation)
-        );
-        if (requiresAuthentication) {
-            applyAuthentication({ context, annotation: schemaLevelAnnotation });
-        }
+        applyAuthentication({ context, annotation: schemaLevelAnnotation, targetOperations });
     }
 
     const annotation: AuthenticationAnnotation | undefined = field
@@ -78,11 +74,29 @@ export function checkEntityAuthentication({
         : entity.annotations.authentication;
 
     if (annotation) {
-        const requiresAuthentication = targetOperations.some(
-            (targetOperation) => annotation && annotation.operations.has(targetOperation)
-        );
-        if (requiresAuthentication) {
-            applyAuthentication({ context, annotation });
-        }
+        applyAuthentication({ context, annotation, targetOperations });
     }
 }
+
+export const isAuthenticated =
+    (targetOperations: AuthenticationOperation[], entity: Operation | undefined) =>
+    (next) =>
+    (root, args, context, info) => {
+        const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
+        if (schemaLevelAnnotation) {
+            applyAuthentication({ context, annotation: schemaLevelAnnotation, targetOperations });
+        }
+
+        if (entity) {
+            const { fieldName } = info;
+            const annotation: AuthenticationAnnotation | undefined =
+                entity.annotations.authentication ||
+                (fieldName && entity.findUserResolvedAttributes(fieldName)?.annotations.authentication);
+
+            if (annotation) {
+                applyAuthentication({ context, annotation, targetOperations });
+            }
+        }
+
+        return next(root, args, context, info);
+    };

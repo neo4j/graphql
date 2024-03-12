@@ -22,15 +22,43 @@ import { offsetToCursor } from "graphql-relay";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("Connection Resolvers", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let neoSchema: Neo4jGraphQL;
+    let Actor: UniqueType;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+
+        Actor = new UniqueType("Actor");
+        Movie = new UniqueType("Movie");
+        const typeDefs = `
+              type ${Actor} {
+                  id: ID
+                  name: String!
+                  movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+              }
+  
+              type ${Movie} {
+                  id: ID
+                  title: String!
+                  actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+              }
+  
+              type ActedIn @relationshipProperties {
+                  screenTime: Int!
+              }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
     });
 
     afterAll(async () => {
@@ -39,28 +67,6 @@ describe("Connection Resolvers", () => {
 
     test("should define a connection field resolver and resolve it", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type Actor {
-                id: ID
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-
-            type Movie {
-                id: ID
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type ActedIn @relationshipProperties {
-                screenTime: Int!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -72,7 +78,7 @@ describe("Connection Resolvers", () => {
 
         const create = /* GraphQL */ `
             mutation {
-                createMovies(input:[{
+                ${Movie.operations.create}(input:[{
                     id: "${movieId}",
                     title: "Point Break",
                     actors: {
@@ -87,7 +93,7 @@ describe("Connection Resolvers", () => {
                         }]
                     }
                 }]) {
-                    movies {
+                    ${Movie.plural} {
                         id
                         actorsConnection {
                             totalCount
@@ -121,7 +127,7 @@ describe("Connection Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0]).toEqual({
                 id: movieId,
                 actorsConnection: {
                     totalCount: 1,
@@ -150,33 +156,10 @@ describe("Connection Resolvers", () => {
     test("it should provide an after offset that correctly results in the next batch of items", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Actor {
-                id: ID
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-
-            type Movie {
-                id: ID
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type ActedIn @relationshipProperties {
-                screenTime: Int!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
-
         const create = /* GraphQL */ `
-            mutation CreateMovie($input: [MovieCreateInput!]!) {
-                createMovies(input: $input) {
-                    movies {
+            mutation CreateMovie($input: [${Movie}CreateInput!]!) {
+                ${Movie.operations.create}(input: $input) {
+                    ${Movie.plural} {
                         id
                         title
                         actorsConnection(first: 5, sort: [{ node: { name: ASC } }]) {
@@ -217,8 +200,6 @@ describe("Connection Resolvers", () => {
         const movieId = generate({ charset: "alphabetic" });
 
         try {
-            await neoSchema.checkNeo4jCompat();
-
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
@@ -238,7 +219,7 @@ describe("Connection Resolvers", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.createMovies?.movies).toEqual([
+            expect((result?.data as any)[Movie.operations.create][Movie.plural]).toEqual([
                 {
                     id: movieId,
                     title: movieTitle,
@@ -260,8 +241,8 @@ describe("Connection Resolvers", () => {
             ]);
 
             const secondQuery = /* GraphQL */ `
-                query Movies($movieId: ID!, $endCursor: String) {
-                    movies(where: { id: $movieId }) {
+                query movies($movieId: ID!, $endCursor: String) {
+                    ${Movie.plural}(where: { id: $movieId }) {
                         id
                         title
                         actorsConnection(sort: [{ node: { name: ASC } }], first: 5, after: $endCursor) {
@@ -293,12 +274,13 @@ describe("Connection Resolvers", () => {
                 contextValue: neo4j.getContextValues(),
                 variableValues: {
                     movieId,
-                    endCursor: (result?.data as any)?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
+                    endCursor: (result?.data as any)[Movie.operations.create][Movie.plural][0].actorsConnection.pageInfo
+                        .endCursor,
                 },
             });
             expect(result2.errors).toBeFalsy();
 
-            expect((result2?.data as any)?.movies[0]).toEqual({
+            expect((result2?.data as any)[Movie.plural][0]).toEqual({
                 id: movieId,
                 title: movieTitle,
                 actorsConnection: {
@@ -323,13 +305,13 @@ describe("Connection Resolvers", () => {
                 contextValue: neo4j.getContextValues(),
                 variableValues: {
                     movieId,
-                    endCursor: (result2?.data as any)?.movies[0].actorsConnection.pageInfo.endCursor,
+                    endCursor: (result2?.data as any)[Movie.plural][0].actorsConnection.pageInfo.endCursor,
                 },
             });
 
             expect(result3.errors).toBeFalsy();
 
-            expect((result3?.data as any)?.movies[0]).toEqual({
+            expect((result3?.data as any)[Movie.plural][0]).toEqual({
                 id: movieId,
                 title: movieTitle,
                 actorsConnection: {
@@ -355,30 +337,13 @@ describe("Connection Resolvers", () => {
     test("should return a total count of zero and correct pageInfo if no edges", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type Actor {
-                id: ID
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-
-            type Movie {
-                id: ID
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-        `;
-
         const movieId = generate({
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
-
         const query = `
             query GetMovie($movieId: ID) {
-                movies(where: { id: $movieId }) {
+                ${Movie.plural}(where: { id: $movieId }) {
                     id
                     actorsConnection {
                         totalCount
@@ -394,7 +359,7 @@ describe("Connection Resolvers", () => {
         `;
 
         try {
-            await session.run("CREATE (:Movie { id: $movieId })", { movieId });
+            await session.run(`CREATE (:${Movie} { id: $movieId })`, { movieId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -409,7 +374,7 @@ describe("Connection Resolvers", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).movies).toEqual([
+            expect((gqlResult.data as any)[Movie.plural]).toEqual([
                 {
                     id: movieId,
                     actorsConnection: {

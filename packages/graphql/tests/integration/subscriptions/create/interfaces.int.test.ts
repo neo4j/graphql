@@ -18,13 +18,13 @@
  */
 
 import { faker } from "@faker-js/faker";
-import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
+import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import { UniqueType } from "../../../utils/graphql-types";
 import Neo4jHelper from "../../neo4j";
 
 describe("interface relationships", () => {
@@ -32,41 +32,50 @@ describe("interface relationships", () => {
     let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
     let subscriptionsPlugin: TestSubscriptionsEngine;
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let session: Session;
+    let Episode: UniqueType;
+    let Movie: UniqueType;
+    let Series: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
 
-        typeDefs = gql`
-            type Episode {
+        Episode = new UniqueType("Episode");
+        Movie = new UniqueType("Movie");
+        Series = new UniqueType("Series");
+        Actor = new UniqueType("Actor");
+
+        typeDefs = /* GraphQL */ `
+            type ${Episode} {
                 runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @declareRelationship
+                actors: [${Actor}!]! @declareRelationship
             }
 
-            type Movie implements Production {
+            type ${Movie} implements Production {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production {
+            type ${Series} implements Production {
                 title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: [${Episode}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            type Actor {
+            type ${Actor} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -92,6 +101,8 @@ describe("interface relationships", () => {
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [Actor, Movie, Series, Episode]);
         await driver.close();
     });
 
@@ -129,7 +140,7 @@ describe("interface relationships", () => {
                 $seriesTitle: String!
                 $episodeRuntime: Int!
             ) {
-                createActors(
+                ${Actor.operations.create}(
                     input: [
                         {
                             name: $name1
@@ -138,7 +149,7 @@ describe("interface relationships", () => {
                                     {
                                         edge: { screenTime: $screenTime }
                                         node: {
-                                            Movie: {
+                                            ${Movie}: {
                                                 title: $movieTitle
                                                 runtime: $movieRuntime
                                                 actors: {
@@ -153,7 +164,7 @@ describe("interface relationships", () => {
                                     {
                                         edge: { screenTime: $screenTime }
                                         node: {
-                                            Series: {
+                                            ${Series}: {
                                                 title: $seriesTitle
                                                 episodes: { create: { node: { runtime: $episodeRuntime } } }
                                             }
@@ -164,17 +175,17 @@ describe("interface relationships", () => {
                         }
                     ]
                 ) {
-                    actors {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
                             actors {
                                 name
                             }
-                            ... on Movie {
+                            ... on ${Movie} {
                                 runtime
                             }
-                            ... on Series {
+                            ... on ${Series} {
                                 episodes {
                                     runtime
                                 }
@@ -203,8 +214,8 @@ describe("interface relationships", () => {
         expect(gqlResult.errors).toBeFalsy();
 
         expect(gqlResult.data).toEqual({
-            createActors: {
-                actors: [
+            [Actor.operations.create]: {
+                [Actor.plural]: expect.toIncludeSameMembers([
                     {
                         actedIn: expect.toIncludeSameMembers([
                             {
@@ -220,7 +231,7 @@ describe("interface relationships", () => {
                         ]),
                         name: name1,
                     },
-                ],
+                ]),
             },
         });
 
@@ -236,7 +247,7 @@ describe("interface relationships", () => {
                         },
                         old: undefined,
                     },
-                    typename: "Actor",
+                    typename: Actor.name,
                     timestamp: expect.any(Number),
                 },
                 {
@@ -249,7 +260,7 @@ describe("interface relationships", () => {
                         },
                         old: undefined,
                     },
-                    typename: "Movie",
+                    typename: Movie.name,
                     timestamp: expect.any(Number),
                 },
                 {
@@ -261,7 +272,7 @@ describe("interface relationships", () => {
                         },
                         old: undefined,
                     },
-                    typename: "Episode",
+                    typename: Episode.name,
                     timestamp: expect.any(Number),
                 },
                 {
@@ -273,7 +284,7 @@ describe("interface relationships", () => {
                         },
                         old: undefined,
                     },
-                    typename: "Series",
+                    typename: Series.name,
                     timestamp: expect.any(Number),
                 },
                 {
@@ -285,7 +296,7 @@ describe("interface relationships", () => {
                         },
                         old: undefined,
                     },
-                    typename: "Actor",
+                    typename: Actor.name,
                     timestamp: expect.any(Number),
                 },
             ])

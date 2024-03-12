@@ -145,7 +145,7 @@ function noDirectivesAllowedAtLocation({
     }
 }
 
-/** only the @cypher directive is valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
+/** only the @cypher and @authentication directives are valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
 function validFieldOfRootTypeLocation({
     directiveNode,
     traversedDef,
@@ -161,20 +161,14 @@ function validFieldOfRootTypeLocation({
             // @cypher is valid
             return;
         }
+        if (directiveNode.name.value === "authentication") {
+            // @authentication is valid
+            return;
+        }
         const isDirectiveCombinedWithCypher = traversedDef.directives?.some(
             (directive) => directive.name.value === "cypher"
         );
-        if (directiveNode.name.value === "authentication" && isDirectiveCombinedWithCypher) {
-            // @cypher @authentication combo is valid
-            return;
-        }
         // explicitly checked for "enhanced" error messages
-        if (directiveNode.name.value === "authentication" && !isDirectiveCombinedWithCypher) {
-            throw new DocumentValidationError(
-                `Invalid directive usage: Directive @authentication is not supported on fields of the ${parentDef.name.value} type unless it is a @cypher field.`,
-                [`@${directiveNode.name.value}`]
-            );
-        }
         if (directiveNode.name.value === "authorization" && isDirectiveCombinedWithCypher) {
             throw new DocumentValidationError(
                 `Invalid directive usage: Directive @authorization is not supported on fields of the ${parentDef.name.value} type. Did you mean to use @authentication?`,

@@ -39,8 +39,6 @@ export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter | undefined;
 
-    protected directed: boolean;
-
     public fields: Field[] = [];
     protected filters: Filter[] = [];
     protected authFilters: AuthorizationFilters[] = [];
@@ -53,17 +51,14 @@ export class ReadOperation extends Operation {
     constructor({
         target,
         relationship,
-        directed,
         selection,
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
-        directed?: boolean;
         selection: EntitySelection;
     }) {
         super();
         this.target = target;
-        this.directed = directed ?? true;
         this.relationship = relationship;
 
         this.selection = selection;

@@ -17,23 +17,29 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { applyMiddleware } from "graphql-middleware";
+import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { cleanNodesUsingSession } from "../utils/clean-nodes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("Middleware Resolvers", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodesUsingSession(session, [Movie]);
         await driver.close();
     });
 
@@ -41,7 +47,7 @@ describe("Middleware Resolvers", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom: String
             }
@@ -66,20 +72,20 @@ describe("Middleware Resolvers", () => {
 
         const schemaWithMiddleware = applyMiddleware(await neoSchema.getSchema(), {
             Query: {
-                movies: middlewareResolver,
+                [Movie.plural]: middlewareResolver,
             },
         });
 
         const query = `
             {
-                movies(where: { custom: "original string" }) { custom }
+                ${Movie.plural}(where: { custom: "original string" }) { custom }
             }
         `;
 
         try {
             await session.run(
                 `
-                CREATE (:Movie {id: $id, custom: $custom})
+                CREATE (:${Movie} {id: $id, custom: $custom})
             `,
                 {
                     id,
@@ -95,7 +101,7 @@ describe("Middleware Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).movies[0].custom).toEqual(custom);
+            expect((gqlResult.data as any)[Movie.plural][0].custom).toEqual(custom);
         } finally {
             await session.close();
         }
@@ -103,7 +109,7 @@ describe("Middleware Resolvers", () => {
 
     test("should allow middleware Mutation resolver to modify arguments", async () => {
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom: String
             }
@@ -131,17 +137,17 @@ describe("Middleware Resolvers", () => {
 
         const schemaWithMiddleware = applyMiddleware(await neoSchema.getSchema(), {
             Mutation: {
-                createMovies: middlewareResolver,
+                [Movie.operations.create]: middlewareResolver,
             },
         });
 
         const mutation = `
             mutation {
-                createMovies(input: [{
+                ${Movie.operations.create}(input: [{
                     id: "${id}"
                     custom: "original string"
                 }]) {
-                    movies {
+                    ${Movie.plural} {
                         custom
                     }
                 }
@@ -156,6 +162,6 @@ describe("Middleware Resolvers", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).createMovies.movies[0].custom).toEqual(custom);
+        expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0].custom).toEqual(custom);
     });
 });

@@ -17,43 +17,46 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4jHelper from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-
-const testLabel = generate({ charset: "alphabetic" });
+import { UniqueType } from "../utils/graphql-types";
+import Neo4jHelper from "./neo4j";
 
 describe("Aliasing", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
     let schema: GraphQLSchema;
-
-    const typeDefs = `
-        type Movie {
-          id: ID!
-          budget: Int!
-          boxOffice: Float!
-        }
-    `;
-
-    const id = generate({ readable: false });
-    const budget = 63;
-    const boxOffice = 465.3;
+    let Movie: UniqueType;
+    let id: string;
+    let budget: number;
+    let boxOffice: number;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
         const session = await neo4j.getSession();
+        Movie = new UniqueType("Movie");
+
+        const typeDefs = `
+        type ${Movie} {
+            id: ID!
+            budget: Int!
+            boxOffice: Float!
+        }
+        `;
+
+        id = generate({ readable: false });
+        budget = 63;
+        boxOffice = 465.3;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
         try {
             await session.run(
                 `
-                    CREATE (movie:Movie)
-                    SET movie:${testLabel}
+                    CREATE (movie:${Movie})
                     SET movie += $properties
                 `,
                 {
@@ -74,7 +77,7 @@ describe("Aliasing", () => {
         try {
             await session.run(
                 `
-                  MATCH(node:${testLabel})
+                  MATCH(node:${Movie})
                   DETACH DELETE node
               `
             );
@@ -87,7 +90,7 @@ describe("Aliasing", () => {
     test("should correctly alias an ID field", async () => {
         const query = `
             query ($id: ID!) {
-                movies(where: { id: $id }) {
+                ${Movie.plural}(where: { id: $id }) {
                     aliased: id
                     budget
                     boxOffice
@@ -103,7 +106,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult?.data as any)?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)[Movie.plural][0]).toEqual({
             aliased: id,
             budget,
             boxOffice,
@@ -113,7 +116,7 @@ describe("Aliasing", () => {
     test("should correctly alias an Int field", async () => {
         const query = `
             query ($id: ID!) {
-                movies(where: { id: $id }) {
+                ${Movie.plural}(where: { id: $id }) {
                     id
                     aliased: budget
                     boxOffice
@@ -129,7 +132,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult?.data as any)?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)[Movie.plural][0]).toEqual({
             id,
             aliased: budget,
             boxOffice,
@@ -139,7 +142,7 @@ describe("Aliasing", () => {
     test("should correctly alias an Float field", async () => {
         const query = `
             query ($id: ID!) {
-                movies(where: { id: $id }) {
+                ${Movie.plural}(where: { id: $id }) {
                     id
                     budget
                     aliased: boxOffice
@@ -155,7 +158,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult?.data as any)?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)[Movie.plural][0]).toEqual({
             id,
             budget,
             aliased: boxOffice,

@@ -21,15 +21,21 @@ import { createSourceEventStream, graphql, parse } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4jHelper from "./neo4j";
 
 describe("Custom Resolvers", () => {
     let driver: Driver;
     let neo4j: Neo4jHelper;
+    let Movie: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4jHelper();
         driver = await neo4j.getDriver();
+    });
+
+    beforeEach(() => {
+        Movie = new UniqueType("Movie");
     });
 
     afterAll(async () => {
@@ -40,7 +46,7 @@ describe("Custom Resolvers", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom: String
             }
@@ -52,7 +58,7 @@ describe("Custom Resolvers", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            resolvers: { Movie: { custom: customResolver } },
+            resolvers: { [Movie.name]: { custom: customResolver } },
         });
 
         const id = generate({
@@ -61,8 +67,8 @@ describe("Custom Resolvers", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}"}]) {
+                    ${Movie.plural} {
                         id
                         custom
                     }
@@ -79,7 +85,7 @@ describe("Custom Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0]).toEqual({
                 id,
                 custom: id.toUpperCase(),
             });
@@ -90,7 +96,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom Query resolver and resolve it", async () => {
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom: String
             }
@@ -132,7 +138,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom Mutation resolver and resolve it", async () => {
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom: String
             }
@@ -174,7 +180,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom Subscription resolver and resolve it", async () => {
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom: String
             }
@@ -219,7 +225,7 @@ describe("Custom Resolvers", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type ${Movie} {
               id: ID
               custom1: String
               custom2: String
@@ -236,7 +242,7 @@ describe("Custom Resolvers", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            resolvers: [{ Movie: { custom1: customResolver1 } }, { Movie: { custom2: customResolver2 } }],
+            resolvers: [{ [Movie.name]: { custom1: customResolver1 } }, { [Movie.name]: { custom2: customResolver2 } }],
         });
 
         const id = generate({
@@ -245,8 +251,8 @@ describe("Custom Resolvers", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}"}]) {
+                    ${Movie.plural} {
                         id
                         custom1
                         custom2
@@ -264,7 +270,7 @@ describe("Custom Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0]).toEqual({
                 id,
                 custom1: id.toUpperCase(),
                 custom2: id.toLowerCase(),
@@ -378,13 +384,13 @@ describe("Custom Resolvers", () => {
 
                     if (type === "Node") {
                         typeDefs = `
-                            type Test {
+                            type ${Movie} {
                                 id: ID
                             }
 
                             type Query {
-                                test(id: ID!): Test! @cypher(statement: """
-                                MATCH (n:Test {id: $id})
+                                test(id: ID!): ${Movie}! @cypher(statement: """
+                                MATCH (n:${Movie} {id: $id})
                                 RETURN n
                                 """, columnName: "n")
                             }
@@ -408,7 +414,7 @@ describe("Custom Resolvers", () => {
                     try {
                         if (type === "Node") {
                             await session.run(`
-                                CREATE (n:Test {id: "${id}"})
+                                CREATE (n:${Movie} {id: "${id}"})
                             `);
                         }
 
@@ -500,7 +506,6 @@ describe("Custom Resolvers", () => {
                     COMPLETED
                 }
 
-
                 type Query {
                     status: Status @cypher(statement: """
                         RETURN 'COMPLETED' as str
@@ -539,13 +544,14 @@ describe("Custom Resolvers", () => {
             const id = generate({
                 charset: "alphabetic",
             });
+            const Trade = new UniqueType("Trade");
 
             const typeDefs = `
                 enum Status {
                     COMPLETED
                 }
 
-                type Trade {
+                type ${Trade} {
                     id: ID
                     status: Status @cypher(statement: """
                         RETURN 'COMPLETED' as res
@@ -555,7 +561,7 @@ describe("Custom Resolvers", () => {
 
             const query = `
                 query {
-                    trades(where: { id: "${id}" }) {
+                    ${Trade.plural}(where: { id: "${id}" }) {
                         id
                         status
                     }
@@ -570,7 +576,7 @@ describe("Custom Resolvers", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Trade {id: "${id}"})
+                    CREATE (:${Trade} {id: "${id}"})
                 `);
 
                 const gqlResult = await graphql({
@@ -581,13 +587,15 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).trades[0]).toEqual({ id, status: "COMPLETED" });
+                expect((gqlResult.data as any)[Trade.plural][0]).toEqual({ id, status: "COMPLETED" });
             } finally {
                 await session.close();
             }
         });
 
         test("should return an array of primitive values from a cypher directive (field level)", async () => {
+            const Type = new UniqueType("Type");
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -602,7 +610,7 @@ describe("Custom Resolvers", () => {
             });
 
             const typeDefs = `
-                type Type {
+                type ${Type} {
                     id: ID
                     strings: [String] @cypher(statement: """
                         RETURN ['${string1}', '${string2}', '${string3}'] as arr
@@ -613,7 +621,7 @@ describe("Custom Resolvers", () => {
 
             const query = `
                 query {
-                    types(where: { id: "${id}" }) {
+                    ${Type.plural}(where: { id: "${id}" }) {
                         id
                         strings
                     }
@@ -628,7 +636,7 @@ describe("Custom Resolvers", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Type {id: "${id}"})
+                    CREATE (:${Type} {id: "${id}"})
                 `);
 
                 const gqlResult = await graphql({
@@ -639,7 +647,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).types[0]).toEqual({ id, strings: [string1, string2, string3] });
+                expect((gqlResult.data as any)[Type.plural][0]).toEqual({ id, strings: [string1, string2, string3] });
             } finally {
                 await session.close();
             }
