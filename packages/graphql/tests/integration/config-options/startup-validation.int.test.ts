@@ -17,15 +17,10 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { GraphQLError } from "graphql";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Startup Validation", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-
     const typePointAlreadyExistsErrors = [
         new GraphQLError(
             'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
@@ -103,19 +98,9 @@ describe("Startup Validation", () => {
         }
     `;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
     test("should not throw an error for valid type defs when running startup validation", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: validTypeDefs,
-            driver,
             validate: true,
         });
 
@@ -125,7 +110,6 @@ describe("Startup Validation", () => {
     test("should throw an error for invalid type defs by default", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidTypeDefs,
-            driver,
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers(typePointAlreadyExistsErrors);
@@ -134,7 +118,6 @@ describe("Startup Validation", () => {
     test("should not throw an error for invalid type defs when validate is false", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidTypeDefs,
-            driver,
             validate: false,
         });
 
@@ -144,7 +127,6 @@ describe("Startup Validation", () => {
     test("should throw an error for invalid type defs when validate is true", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidTypeDefs,
-            driver,
             validate: true,
         });
 
@@ -165,7 +147,6 @@ describe("Startup Validation", () => {
         test("should warn for missing custom resolvers", async () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs: customResolverTypeDefs,
-                driver,
             });
 
             await neoSchema.getSchema();
@@ -176,7 +157,6 @@ describe("Startup Validation", () => {
         test("should throw an error for invalid type defs when validate is true, and warn will not be reached", async () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs: invalidAndCustomResolverTypeDefs,
-                driver,
                 validate: true,
             });
 
@@ -187,7 +167,6 @@ describe("Startup Validation", () => {
         test("should throw no errors when validate is false, but warn for custom resolvers", async () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs: invalidAndCustomResolverTypeDefs,
-                driver,
                 validate: false,
             });
 
@@ -199,7 +178,6 @@ describe("Startup Validation", () => {
     test("should throw an error for duplicate relationship fields when validate is true", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidDuplicateRelationship,
-            driver,
             validate: true,
         });
 
@@ -213,7 +191,6 @@ describe("Startup Validation", () => {
     test("should not throw an error for duplicate relationship fields validate is false", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidDuplicateRelationship,
-            driver,
             validate: false,
         });
 
@@ -223,7 +200,6 @@ describe("Startup Validation", () => {
     test("should throw no errors when validate is false", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidAll,
-            driver,
             validate: false,
         });
 

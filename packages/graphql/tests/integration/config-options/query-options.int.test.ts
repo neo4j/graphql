@@ -17,26 +17,24 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { Neo4jGraphQL } from "../../../src";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("query options", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
     let neoSchema: Neo4jGraphQL;
+
+    let testHelper: TestHelper;
 
     let Actor: UniqueType;
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Actor = new UniqueType("Actor");
-        Movie = new UniqueType("Movie");
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        Actor = testHelper.createUniqueType("Actor");
+        Movie = testHelper.createUniqueType("Movie");
+
         const typeDefs = `
             type ${Actor} {
                 name: String
@@ -50,19 +48,16 @@ describe("query options", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("queries should work with runtime set to interpreted", async () => {
-        const session = await neo4j.getSession();
-
         const id = generate({
             charset: "alphabetic",
         });
@@ -75,28 +70,22 @@ describe("query options", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
               CREATE (:${Movie} {id: $id}), (:${Movie} {id: $id}), (:${Movie} {id: $id})
             `,
-                { id }
-            );
+            { id }
+        );
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id },
-                contextValue: neo4j.getContextValues({ cypherQueryOptions: { runtime: "interpreted" } }),
-            });
+        const result = await testHelper.runGraphQL(query, {
+            variableValues: { id },
+            contextValue: { cypherQueryOptions: { runtime: "interpreted" } },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Movie.plural]).toEqual([{ id }, { id }, { id }]);
-        } finally {
-            await session.close();
-        }
+        expect(result?.data?.[Movie.plural]).toEqual([{ id }, { id }, { id }]);
     });
 });
