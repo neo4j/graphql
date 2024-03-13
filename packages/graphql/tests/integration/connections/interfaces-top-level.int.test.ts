@@ -17,35 +17,15 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Interfaces top level connections", () => {
-    const Movie = new UniqueType("Movie");
-    const Series = new UniqueType("Series");
-    const Actor = new UniqueType("Actor");
-
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    const testHelper = new TestHelper();
+    const Movie = testHelper.createUniqueType("Movie");
+    const Series = testHelper.createUniqueType("Series");
+    const Actor = testHelper.createUniqueType("Actor");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         const typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
@@ -74,10 +54,9 @@ describe("Interfaces top level connections", () => {
                 screenTime: Int
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await neo4j.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${Movie} {title: "The Matrix", cost: 24})
             CREATE (:${Movie} {title: "The Godfather", cost: 20})
             CREATE (:${Series} {title: "The Matrix Series", episodes: 4})
@@ -89,12 +68,8 @@ describe("Interfaces top level connections", () => {
         `);
     });
 
-    afterEach(async () => {
-        await cleanNodes(driver, [Series, Movie, Actor]);
-    });
-
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Top level connection page info", async () => {
@@ -111,7 +86,7 @@ describe("Interfaces top level connections", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             showsConnection: {
@@ -141,7 +116,7 @@ describe("Interfaces top level connections", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             showsConnection: {
@@ -177,7 +152,7 @@ describe("Interfaces top level connections", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             showsConnection: {
@@ -201,7 +176,7 @@ describe("Interfaces top level connections", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             showsConnection: {
@@ -243,7 +218,7 @@ describe("Interfaces top level connections", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             showsConnection: {

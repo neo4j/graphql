@@ -17,15 +17,12 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { Neo4jGraphQL } from "../../../src/classes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Connections -> Unions", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let neoSchema: Neo4jGraphQL;
 
     let authorName: string;
@@ -44,9 +41,9 @@ describe("Connections -> Unions", () => {
     let Journal: UniqueType;
 
     beforeAll(async () => {
-        Author = new UniqueType("Author");
-        Book = new UniqueType("Book");
-        Journal = new UniqueType("Journal");
+        Author = testHelper.createUniqueType("Author");
+        Book = testHelper.createUniqueType("Book");
+        Journal = testHelper.createUniqueType("Journal");
 
         const typeDefs = /* GraphQL */ `
             union Publication = ${Book} | ${Journal}
@@ -70,10 +67,8 @@ describe("Connections -> Unions", () => {
                 words: Int!
             }
         `;
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         await neoSchema.checkNeo4jCompat();
 
         authorName = "Charles Dickens";
@@ -87,58 +82,30 @@ describe("Connections -> Unions", () => {
         journalSubject = "Master Humphrey's Clock";
         journalWordCount = 3413;
 
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (author:${Author} {name: $authorName})
                     CREATE (author)-[:WROTE {words: $book1WordCount}]->(:${Book} {title: $book1Title})
                     CREATE (author)-[:WROTE {words: $book2WordCount}]->(:${Book} {title: $book2Title})
                     CREATE (author)-[:WROTE {words: $journalWordCount}]->(:${Journal} {subject: $journalSubject})
                 `,
-                {
-                    authorName,
-                    book1Title,
-                    book1WordCount,
-                    book2Title,
-                    book2WordCount,
-                    journalSubject,
-                    journalWordCount,
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                authorName,
+                book1Title,
+                book1WordCount,
+                book2Title,
+                book2WordCount,
+                journalSubject,
+                journalWordCount,
+            }
+        );
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(
-                `
-                    MATCH (author:${Author} {name: $authorName})
-                    MATCH (book1:${Book} {title: $book1Title})
-                    MATCH (book2:${Book} {title: $book2Title})
-                    MATCH (journal:${Journal} {subject: $journalSubject})
-                    DETACH DELETE author, book1, book2, journal
-                `,
-                {
-                    authorName,
-                    book1Title,
-                    book2Title,
-                    journalSubject,
-                }
-            );
-        } finally {
-            await session.close();
-        }
-
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -162,54 +129,44 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const schema = await neoSchema.getSchema();
-            const result = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
                             },
-                            {
-                                properties: { words: book2WordCount },
-                                node: {
-                                    title: book2Title,
-                                },
+                        },
+                        {
+                            properties: { words: book2WordCount },
+                            node: {
+                                title: book2Title,
                             },
-                            {
-                                properties: { words: journalWordCount },
-                                node: {
-                                    subject: journalSubject,
-                                },
+                        },
+                        {
+                            properties: { words: journalWordCount },
+                            node: {
+                                subject: journalSubject,
                             },
-                        ]),
-                    },
+                        },
+                    ]),
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("Projecting node and relationship properties with sort argument", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query($authorName: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -233,53 +190,44 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: [
-                            {
-                                properties: { words: journalWordCount },
-                                node: {
-                                    subject: journalSubject,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: [
+                        {
+                            properties: { words: journalWordCount },
+                            node: {
+                                subject: journalSubject,
                             },
-                            {
-                                properties: { words: book2WordCount },
-                                node: {
-                                    title: book2Title,
-                                },
+                        },
+                        {
+                            properties: { words: book2WordCount },
+                            node: {
+                                title: book2Title,
                             },
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+                        },
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("Projecting node and relationship properties with pagination", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query($authorName: String, $after: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -308,85 +256,73 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        pageInfo: {
-                            hasNextPage: true,
-                            hasPreviousPage: false,
-                            endCursor: expect.any(String),
-                        },
-                        edges: [
-                            {
-                                properties: { words: journalWordCount },
-                                node: {
-                                    subject: journalSubject,
-                                },
-                            },
-                            {
-                                properties: { words: book2WordCount },
-                                node: {
-                                    title: book2Title,
-                                },
-                            },
-                        ],
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    pageInfo: {
+                        hasNextPage: true,
+                        hasPreviousPage: false,
+                        endCursor: expect.any(String),
                     },
-                },
-            ]);
-
-            const nextResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    after: (result.data?.[Author.plural] as any)[0].publicationsConnection.pageInfo.endCursor,
-                },
-            });
-
-            expect(nextResult.errors).toBeFalsy();
-
-            expect(nextResult.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        pageInfo: {
-                            hasNextPage: false,
-                            hasPreviousPage: true,
-                            endCursor: expect.any(String),
-                        },
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+                    edges: [
+                        {
+                            properties: { words: journalWordCount },
+                            node: {
+                                subject: journalSubject,
                             },
-                        ],
-                    },
+                        },
+                        {
+                            properties: { words: book2WordCount },
+                            node: {
+                                title: book2Title,
+                            },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
+
+        const nextResult = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                after: (result.data?.[Author.plural] as any)[0].publicationsConnection.pageInfo.endCursor,
+            },
+        });
+
+        expect(nextResult.errors).toBeFalsy();
+
+        expect(nextResult.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    pageInfo: {
+                        hasNextPage: false,
+                        hasPreviousPage: true,
+                        endCursor: expect.any(String),
+                    },
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
+                            },
+                        },
+                    ],
+                },
+            },
+        ]);
     });
 
     test("Projecting node and relationship properties for one union member with no arguments", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -407,51 +343,42 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
                             },
-                            {
-                                properties: { words: book2WordCount },
-                                node: {
-                                    title: book2Title,
-                                },
+                        },
+                        {
+                            properties: { words: book2WordCount },
+                            node: {
+                                title: book2Title,
                             },
-                            {
-                                properties: { words: journalWordCount },
-                                node: {},
-                            },
-                        ]),
-                    },
+                        },
+                        {
+                            properties: { words: journalWordCount },
+                            node: {},
+                        },
+                    ]),
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on node with node in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -472,42 +399,33 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookTitle: book1Title,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookTitle: book1Title,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on node with node not in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -528,42 +446,33 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookTitle: book1Title,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookTitle: book1Title,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: [
-                            {
-                                node: {
-                                    title: "A Christmas Carol",
-                                },
-                                properties: { words: 30953 },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A Christmas Carol",
                             },
-                        ],
-                    },
+                            properties: { words: 30953 },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on all nodes with all in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String, $journalSubject: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -594,52 +503,43 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookTitle: book1Title,
-                    journalSubject,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookTitle: book1Title,
+                journalSubject,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        totalCount: 2,
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    __typename: Book.name,
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    totalCount: 2,
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                __typename: Book.name,
+                                title: book1Title,
                             },
-                            {
-                                properties: { words: journalWordCount },
-                                node: {
-                                    __typename: Journal.name,
-                                    subject: journalSubject,
-                                },
+                        },
+                        {
+                            properties: { words: journalWordCount },
+                            node: {
+                                __typename: Journal.name,
+                                subject: journalSubject,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on all nodes with only one in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String, $journalSubject: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -670,45 +570,36 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookTitle: book1Title,
-                    journalSubject,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookTitle: book1Title,
+                journalSubject,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        totalCount: 1,
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    __typename: Book.name,
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    totalCount: 1,
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                __typename: Book.name,
+                                title: book1Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on relationship with relationship in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -729,42 +620,33 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookWordCount: book1WordCount,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookWordCount: book1WordCount,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on relationship with relationship not in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -785,42 +667,33 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookWordCount: book1WordCount,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookWordCount: book1WordCount,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: [
-                            {
-                                properties: { words: book2WordCount },
-                                node: {
-                                    title: book2Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: [
+                        {
+                            properties: { words: book2WordCount },
+                            node: {
+                                title: book2Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on all edges with all in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -851,52 +724,43 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookWordCount: book1WordCount,
-                    journalWordCount,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookWordCount: book1WordCount,
+                journalWordCount,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        totalCount: 2,
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    __typename: Book.name,
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    totalCount: 2,
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                __typename: Book.name,
+                                title: book1Title,
                             },
-                            {
-                                properties: { words: journalWordCount },
-                                node: {
-                                    __typename: Journal.name,
-                                    subject: journalSubject,
-                                },
+                        },
+                        {
+                            properties: { words: journalWordCount },
+                            node: {
+                                __typename: Journal.name,
+                                subject: journalSubject,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on all edges with only one in database", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -927,45 +791,36 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookWordCount: book1WordCount,
-                    journalWordCount,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookWordCount: book1WordCount,
+                journalWordCount,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        totalCount: 1,
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    __typename: Book.name,
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    totalCount: 1,
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                __typename: Book.name,
+                                title: book1Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("With where argument on relationship and node", async () => {
-        const session = await neo4j.getSession();
-
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int, $bookTitle: String) {
                 ${Author.plural}(where: { name: $authorName }) {
@@ -993,37 +848,30 @@ describe("Connections -> Unions", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    authorName,
-                    bookWordCount: book1WordCount,
-                    bookTitle: book1Title,
-                },
-            });
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                authorName,
+                bookWordCount: book1WordCount,
+                bookTitle: book1Title,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.[Author.plural]).toEqual([
-                {
-                    name: authorName,
-                    publicationsConnection: {
-                        edges: [
-                            {
-                                properties: { words: book1WordCount },
-                                node: {
-                                    title: book1Title,
-                                },
+        expect(result?.data?.[Author.plural]).toEqual([
+            {
+                name: authorName,
+                publicationsConnection: {
+                    edges: [
+                        {
+                            properties: { words: book1WordCount },
+                            node: {
+                                title: book1Title,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 });
