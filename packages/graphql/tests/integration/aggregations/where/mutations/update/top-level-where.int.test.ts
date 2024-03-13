@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../../../../neo4j";
-import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { UniqueType } from "../../../../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../../../../utils/clean-nodes";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Delete using top level aggregate where", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -45,16 +38,10 @@ describe("Delete using top level aggregate where", () => {
     const content5 = "Some more content";
     const updatedContent = "This has been updated;";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        userType = new UniqueType("User");
-        postType = new UniqueType("Post");
-
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        userType = testHelper.createUniqueType("User");
+        postType = testHelper.createUniqueType("Post");
 
         const typeDefs = `
             type ${userType.name} {
@@ -68,7 +55,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (post1:${postType.name} { id: randomUUID(), content: "${content1}" })<-[:LIKES]-(user1:${userType.name} { testString: "${testString1}" })
             CREATE (post2:${postType.name} { id: randomUUID(), content: "${content2}" })<-[:LIKES]-(user2:${userType.name} { testString: "${testString2}" })
             CREATE (post3:${postType.name} { id: randomUUID(), content: "${content3}" })<-[:LIKES]-(user3:${userType.name} { testString: "${testString3}" })
@@ -81,19 +68,13 @@ describe("Delete using top level aggregate where", () => {
             MERGE (post3)<-[:LIKES]-(user1)
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Implicit AND", async () => {
@@ -118,11 +99,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -155,11 +132,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -192,11 +165,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -238,11 +207,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -284,11 +249,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -330,11 +291,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -376,11 +333,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -422,11 +375,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -468,11 +417,7 @@ describe("Delete using top level aggregate where", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

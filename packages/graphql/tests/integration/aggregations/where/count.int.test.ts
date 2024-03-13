@@ -17,25 +17,19 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-where-count", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
-    let neoSchema: Neo4jGraphQL;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        User = new UniqueType("User");
-        Post = new UniqueType("Post");
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
 
         const typeDefs = `
             type ${User} {
@@ -47,30 +41,27 @@ describe("aggregations-where-count", () => {
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return posts where the count of likes equal one", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
                 `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Post.plural}(where: { testString: "${testString}", likesAggregate: { count: 1 } }) {
                         testString
@@ -81,46 +72,36 @@ describe("aggregations-where-count", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Post.plural]).toEqual([
-                {
-                    testString,
-                    likes: [{ testString }],
-                },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString }],
+            },
+        ]);
     });
 
     test("should return posts where the count of likes LT one", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
                 `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Post.plural}(where: { testString: "${testString}", likesAggregate: { count_LT: 1 } }) {
                         testString
@@ -131,46 +112,36 @@ describe("aggregations-where-count", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Post.plural]).toEqual([
-                {
-                    testString,
-                    likes: [],
-                },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [],
+            },
+        ]);
     });
 
     test("should return posts where the count of likes LTE one", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
                 `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Post.plural}(where: { testString: "${testString}", likesAggregate: { count_LTE: 1 } }) {
                         testString
@@ -181,51 +152,41 @@ describe("aggregations-where-count", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                {
-                    testString,
-                    likes: [{ testString }],
-                },
-                {
-                    testString,
-                    likes: [],
-                },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+            {
+                testString,
+                likes: [{ testString }],
+            },
+            {
+                testString,
+                likes: [],
+            },
+        ]);
     });
 
     test("should return posts where the count of likes GT one, regardless of number of likes over 1", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (p:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
                 `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Post.plural}(where: { testString: "${testString}", likesAggregate: { count_GT: 1 } }) {
                         testString
@@ -236,46 +197,36 @@ describe("aggregations-where-count", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Post.plural]).toEqual([
-                {
-                    testString,
-                    likes: [{ testString }, { testString }],
-                },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString }, { testString }],
+            },
+        ]);
     });
 
     test("should return posts where the count of likes GT one", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
                 `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Post.plural}(where: { testString: "${testString}", likesAggregate: { count_GTE: 1 } }) {
                         testString
@@ -286,26 +237,19 @@ describe("aggregations-where-count", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Post.plural]).toEqual([
-                {
-                    testString,
-                    likes: [{ testString }],
-                },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString }],
+            },
+        ]);
     });
 });
