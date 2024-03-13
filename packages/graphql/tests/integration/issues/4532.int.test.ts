@@ -17,25 +17,22 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { type Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import { default as Neo4jHelper } from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4532", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
+    let testHelper: TestHelper;
 
     describe("order-by relationship property", () => {
-        const Inventory = new UniqueType("Inventory");
-        const Scenario = new UniqueType("Scenario");
+        let Inventory: UniqueType;
+        let Scenario: UniqueType;
 
         beforeAll(async () => {
-            neo4j = new Neo4jHelper();
-            driver = await neo4j.getDriver();
+            testHelper = new TestHelper();
+
+            Inventory = testHelper.createUniqueType("Inventory");
+            Scenario = testHelper.createUniqueType("Scenario");
+
             const typeDefs = /* GraphQL */ `
                 type ${Inventory} {
                     id: ID
@@ -51,15 +48,12 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                     order: Int
                 }
             `;
-            neo4jGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
 
-            const session = await neo4j.getSession();
-            try {
-                await session.run(
-                    `
+            await testHelper.runCypher(
+                `
                 CREATE(i:${Inventory} {id: "i1"})
                 CREATE(i)-[:HasChildren { order: 3 }]->(c1:${Scenario} { id: "c3"})
                 CREATE(i)-[:HasChildren { order: 1 }]->(c2:${Scenario} { id: "c1"})
@@ -67,26 +61,15 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
 
                 CREATE(:${Inventory} {id: "i2"})
                 `,
-                    {}
-                );
-            } finally {
-                await session.close();
-            }
+                {}
+            );
         });
 
         afterAll(async () => {
-            const session = await neo4j.getSession();
-            try {
-                await cleanNodesUsingSession(session, [Inventory, Scenario]);
-            } finally {
-                await session.close();
-            }
-            await driver.close();
+            await testHelper.close();
         });
 
         test("should return all elements when ordering by nested connection", async () => {
-            const schema = await neo4jGraphql.getSchema();
-
             const query = /* GraphQL */ `
                 query {
                     ${Inventory.plural} {
@@ -105,11 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 }
             `;
 
-            const response = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const response = await testHelper.runGraphQL(query);
             expect(response.errors).toBeFalsy();
             expect(response.data).toEqual({
                 [Inventory.plural]: expect.toIncludeSameMembers([
@@ -144,13 +123,17 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
     });
 
     describe("order-by relationship property on interface node target", () => {
-        const Inventory = new UniqueType("Inventory");
-        const Image = new UniqueType("Image");
-        const Video = new UniqueType("Video");
+        let Inventory: UniqueType;
+        let Image: UniqueType;
+        let Video: UniqueType;
 
         beforeAll(async () => {
-            neo4j = new Neo4jHelper();
-            driver = await neo4j.getDriver();
+            testHelper = new TestHelper();
+
+            Inventory = testHelper.createUniqueType("Inventory");
+            Image = testHelper.createUniqueType("Image");
+            Video = testHelper.createUniqueType("Video");
+
             const typeDefs = /* GraphQL */ `
                 type ${Inventory} {
                     id: ID
@@ -174,42 +157,27 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                     order: Int
                 }
             `;
-            neo4jGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
 
-            const session = await neo4j.getSession();
-            try {
-                await session.run(
-                    `
+            await testHelper.runCypher(
+                `
                 CREATE(i:${Inventory} {id: "i1"})
                 CREATE(i)-[:HasChildren { order: 3 }]->(c1:${Image} { id: "c3"})
                 CREATE(i)-[:HasChildren { order: 1 }]->(c2:${Video} { id: "c1"})
                 CREATE(i)-[:HasChildren { order: 2 }]->(c3:${Video} { id: "c2"})
 
                 CREATE(:${Inventory} {id: "i2"})
-                `,
-                    {}
-                );
-            } finally {
-                await session.close();
-            }
+                `
+            );
         });
 
         afterAll(async () => {
-            const session = await neo4j.getSession();
-            try {
-                await cleanNodesUsingSession(session, [Inventory, Image, Video]);
-            } finally {
-                await session.close();
-            }
-            await driver.close();
+            await testHelper.close();
         });
 
         test("should return all elements when ordering by nested connection on an interface target", async () => {
-            const schema = await neo4jGraphql.getSchema();
-
             const query = /* GraphQL */ `
                 query {
                     ${Inventory.plural} {
@@ -228,11 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 }
             `;
 
-            const response = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const response = await testHelper.runGraphQL(query);
             expect(response.errors).toBeFalsy();
             expect(response.data).toEqual({
                 [Inventory.plural]: expect.toIncludeSameMembers([

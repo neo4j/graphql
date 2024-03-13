@@ -17,32 +17,20 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2437", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Agent: UniqueType;
     let Valuation: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
-        Agent = new UniqueType("Agent");
-        Valuation = new UniqueType("Valuation");
+        testHelper = new TestHelper();
+        Agent = testHelper.createUniqueType("Agent");
+        Valuation = testHelper.createUniqueType("Valuation");
 
         const typeDefs = `
             type JWT @jwt {
@@ -69,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
         CREATE(a:${Agent} {uuid: "a1"})
         CREATE(:${Valuation} {uuid: "v1"})<-[:IS_VALUATION_AGENT]-(a)
         CREATE(:${Valuation} {uuid: "v2"})<-[:IS_VALUATION_AGENT]-(a)
@@ -84,20 +72,14 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         CREATE(:${Valuation} {uuid: "v11"})<-[:IS_VALUATION_AGENT]-(a)
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: { authorization: { key: "secret" } },
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Agent, Valuation]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return only the first elements", async () => {
@@ -119,11 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"));
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

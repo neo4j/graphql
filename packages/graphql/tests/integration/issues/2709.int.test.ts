@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2709", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Movie: UniqueType;
     let Dishney: UniqueType;
     let Netflix: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Movie = new UniqueType("Movie");
-        Dishney = new UniqueType("Dishney");
-        Netflix = new UniqueType("Netflix");
+        Movie = testHelper.createUniqueType("Movie");
+        Dishney = testHelper.createUniqueType("Dishney");
+        Netflix = testHelper.createUniqueType("Netflix");
 
         const typeDefs = `
             interface Production {
@@ -107,24 +95,18 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:Film { title: "A Netflix movie" })<-[:DISTRIBUTED_BY]-(:${Netflix} { name: "Netflix" })
             CREATE (:Film { title: "A Dishney movie" })<-[:DISTRIBUTED_BY]-(:${Dishney} { name: "Dishney" })
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Netflix, Dishney]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query the correct DistributionHouses when no _on present - Netflix", async () => {
@@ -138,11 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -165,11 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -183,28 +157,20 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 });
 
 describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Movie: UniqueType;
     let Dishney: UniqueType;
     let Netflix: UniqueType;
     let Publisher: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Movie = new UniqueType("Movie");
-        Dishney = new UniqueType("Dishney");
-        Netflix = new UniqueType("Netflix");
-        Publisher = new UniqueType("Publisher");
+        Movie = testHelper.createUniqueType("Movie");
+        Dishney = testHelper.createUniqueType("Dishney");
+        Netflix = testHelper.createUniqueType("Netflix");
+        Publisher = testHelper.createUniqueType("Publisher");
 
         const typeDefs = `
             interface Production {
@@ -274,25 +240,19 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
             ################
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:Film { title: "A Netflix movie" })<-[:DISTRIBUTED_BY]-(:${Netflix} { name: "Netflix" })
             CREATE (:Film { title: "A Dishney movie" })<-[:DISTRIBUTED_BY]-(:${Dishney} { name: "Dishney" })
             CREATE (:Film { title: "A Publisher movie" })<-[:DISTRIBUTED_BY]-(:${Publisher} { name: "The Publisher" })
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Netflix, Dishney, Publisher]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query only DistributionHouse nodes and NOT nodes (Publisher) which are connected by the same rel-type (DISTRIBUTED_BY)", async () => {
@@ -306,11 +266,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({

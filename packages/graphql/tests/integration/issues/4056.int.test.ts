@@ -17,111 +17,115 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import type { GraphQLResponse } from "@apollo/server";
 import { ApolloServer } from "@apollo/server";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4056", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    const User = new UniqueType("User");
-    const Tenant = new UniqueType("Tenant");
-    const Settings = new UniqueType("Settings");
-    const OpeningDay = new UniqueType("OpeningDay");
+    let User: UniqueType;
+    let Tenant: UniqueType;
+    let Settings: UniqueType;
+    let OpeningDay: UniqueType;
 
-    const typeDefs = /* GraphQL */ `
-    type JWT @jwt {
-        id: String
-        roles: [String]
-      }
-      type ${User}
-        @authorization(
-            validate: [
-                { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
-                { where: { jwt: { roles_INCLUDES: "overlord" } } }
-            ]
-        ) {
-        userId: String! @unique
-        adminAccess: [${Tenant}!]! @relationship(type: "ADMIN_IN", direction: OUT)
-      }
-      
-      
-      type ${Tenant}
-        @authorization(
-            validate: [
-                { where: { node: { admins: { userId: "$jwt.id" } } } }
-                { where: { jwt: { roles_INCLUDES: "overlord" } } }
-            ]
-        ) {
-        id: ID! @id
-        settings: ${Settings}! @relationship(type: "HAS_SETTINGS", direction: OUT)
-        admins: [${User}!]! @relationship(type: "ADMIN_IN", direction: IN)
-      }
-      
-      
-      type ${Settings} {
-        id: ID! @id
-        tenant: ${Tenant}! @relationship(type: "HAS_SETTINGS", direction: IN)
-        openingDays: [${OpeningDay}!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
-        name: String
-        updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
-      }
-      
-      type ${OpeningDay}
-        @authorization(
-            validate: [
-            {  where: { node: {settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }
-            { where: { jwt: { roles_INCLUDES: "overlord" } } }
-        ]
-        ) {
-        id: ID! @id
-        settings: ${Settings} @relationship(type: "VALID_OPENING_DAYS", direction: IN)
-        name: String
-        updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
-      }
-    `;
+    let typeDefs: string;
 
-    const ADD_TENANT = /* GraphQL */ `
-        mutation addTenant($input: [${Tenant}CreateInput!]!) {
-            ${Tenant.operations.create}(input: $input) {
-                ${Tenant.plural} {
-                    id
-                    admins {
-                        userId
-                    }
-                    settings {
-                        id
-                    }
-                }
-            }
-        }
-    `;
+    let ADD_TENANT: string;
 
-    const ADD_OPENING_DAYS = /* GraphQL */ `
-        mutation addOpeningDays($input: [${OpeningDay}CreateInput!]!) {
-            ${OpeningDay.operations.create}(input: $input) {
-                ${OpeningDay.plural} {
-                    id
-                }
-            }
-        }
-    `;
+    let ADD_OPENING_DAYS: string;
 
     let tenantVariables: Record<string, any>;
     let openingDayInput: (settingsId: any) => Record<string, any>;
     let myUserId: string;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(() => {
+        testHelper = new TestHelper();
+
+        User = testHelper.createUniqueType("User");
+        Tenant = testHelper.createUniqueType("Tenant");
+        Settings = testHelper.createUniqueType("Settings");
+        OpeningDay = testHelper.createUniqueType("OpeningDay");
+
+        typeDefs = /* GraphQL */ `
+        type JWT @jwt {
+            id: String
+            roles: [String]
+          }
+          type ${User}
+            @authorization(
+                validate: [
+                    { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
+                    { where: { jwt: { roles_INCLUDES: "overlord" } } }
+                ]
+            ) {
+            userId: String! @unique
+            adminAccess: [${Tenant}!]! @relationship(type: "ADMIN_IN", direction: OUT)
+          }
+          
+          
+          type ${Tenant}
+            @authorization(
+                validate: [
+                    { where: { node: { admins: { userId: "$jwt.id" } } } }
+                    { where: { jwt: { roles_INCLUDES: "overlord" } } }
+                ]
+            ) {
+            id: ID! @id
+            settings: ${Settings}! @relationship(type: "HAS_SETTINGS", direction: OUT)
+            admins: [${User}!]! @relationship(type: "ADMIN_IN", direction: IN)
+          }
+          
+          
+          type ${Settings} {
+            id: ID! @id
+            tenant: ${Tenant}! @relationship(type: "HAS_SETTINGS", direction: IN)
+            openingDays: [${OpeningDay}!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
+            name: String
+            updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
+          }
+          
+          type ${OpeningDay}
+            @authorization(
+                validate: [
+                {  where: { node: {settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }
+                { where: { jwt: { roles_INCLUDES: "overlord" } } }
+            ]
+            ) {
+            id: ID! @id
+            settings: ${Settings} @relationship(type: "VALID_OPENING_DAYS", direction: IN)
+            name: String
+            updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
+          }
+        `;
+
+        ADD_TENANT = /* GraphQL */ `
+            mutation addTenant($input: [${Tenant}CreateInput!]!) {
+                ${Tenant.operations.create}(input: $input) {
+                    ${Tenant.plural} {
+                        id
+                        admins {
+                            userId
+                        }
+                        settings {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        ADD_OPENING_DAYS = /* GraphQL */ `
+            mutation addOpeningDays($input: [${OpeningDay}CreateInput!]!) {
+                ${OpeningDay.operations.create}(input: $input) {
+                    ${OpeningDay.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
         myUserId = Math.random().toString(36).slice(2, 7);
         tenantVariables = {
             input: {
@@ -161,18 +165,12 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
     });
 
     afterEach(async () => {
-        const session = driver.session();
-        await cleanNodesUsingSession(session, [User, Tenant, Settings, OpeningDay]);
-        await session.close();
+        await testHelper.close();
     });
 
-    afterAll(async () => {
-        await driver.close();
-    });
     test("create tenant and add opening days - subscriptions disabled", async () => {
-        const neo4jGraphql = new Neo4jGraphQL({
+        const neo4jGraphql = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 populatedBy: {
                     callbacks: {
@@ -228,9 +226,8 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
     });
 
     test("create tenant and add opening days - subscriptions enabled", async () => {
-        const neo4jGraphql = new Neo4jGraphQL({
+        const neo4jGraphql = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: true,
                 populatedBy: {

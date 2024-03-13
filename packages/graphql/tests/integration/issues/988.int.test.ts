@@ -17,26 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/988", () => {
-    const seriesType = new UniqueType("Series");
-    const brandType = new UniqueType("Brand");
-    const manufacturerType = new UniqueType("Manufacturer");
+    let seriesType: UniqueType;
+    let brandType: UniqueType;
+    let manufacturerType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        seriesType = testHelper.createUniqueType("Series");
+        brandType = testHelper.createUniqueType("Brand");
+        manufacturerType = testHelper.createUniqueType("Manufacturer");
 
         const typeDefs = `
             type ${seriesType.name} {
@@ -61,27 +57,14 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 current: Boolean!
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-        await session.run(
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.runCypher(
             `CREATE (:${manufacturerType.name} {name: "C", id: "a"})<-[:MANUFACTURER {current: true}]-(:${seriesType.name} {name: "123", current: true})-[:BRAND {current: true}]->(:${brandType.name} {name: "smart"})<-[:BRAND {current: true}]-(:${seriesType.name} {name: "456", current: true})-[:MANUFACTURER {current: false}]->(:${manufacturerType.name} {name: "AM"})`
         );
     });
 
-    afterEach(async () => {
-        await session.run(`MATCH (s:${seriesType.name}) DETACH DELETE s`);
-        await session.run(`MATCH (b:${brandType.name}) DETACH DELETE b`);
-        await session.run(`MATCH (m:${manufacturerType.name}) DETACH DELETE m`);
-
-        await session.close();
-    });
-
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query nested connection", async () => {
@@ -114,10 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             }
         `;
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const res = await testHelper.runGraphQL(query, {
             variableValues: {
                 where: {
                     current: true,

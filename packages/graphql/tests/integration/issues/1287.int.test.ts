@@ -17,71 +17,58 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1287", () => {
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let session: Session;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    const screeningsType = new UniqueType("Screening");
-    const norwegianScreenable = new UniqueType("NorwegianScreenableMeta");
+    let screeningsType: UniqueType;
+    let norwegianScreenable: UniqueType;
 
-    const typeDefs = `
-        type ${screeningsType} {
-            id: ID! @id @unique
-            title: String
-            beginsAt: DateTime!
-            movie: ${norwegianScreenable}! @relationship(type: "SCREENS_MOVIE", direction: OUT)
-        }
+    let typeDefs: string;
 
-        interface ScreenableMeta {
-            id: ID!
-            spokenLanguage: String!
-            subtitlesLanguage: String!
-            premiere: DateTime!
-            locale: LocalTime!
-        }
+    beforeEach(() => {
+        testHelper = new TestHelper();
 
-        type ${norwegianScreenable} implements ScreenableMeta {
-            id: ID! @id @unique
-            spokenLanguage: String!
-            subtitlesLanguage: String!
-            premiere: DateTime!
-            locale: LocalTime!
-            ediNumber: String!
-        }
-    `;
+        screeningsType = testHelper.createUniqueType("Screening");
+        norwegianScreenable = testHelper.createUniqueType("NorwegianScreenableMeta");
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
+        typeDefs = `
+            type ${screeningsType} {
+                id: ID! @id @unique
+                title: String
+                beginsAt: DateTime!
+                movie: ${norwegianScreenable}! @relationship(type: "SCREENS_MOVIE", direction: OUT)
+            }
+    
+            interface ScreenableMeta {
+                id: ID!
+                spokenLanguage: String!
+                subtitlesLanguage: String!
+                premiere: DateTime!
+                locale: LocalTime!
+            }
+    
+            type ${norwegianScreenable} implements ScreenableMeta {
+                id: ID! @id @unique
+                spokenLanguage: String!
+                subtitlesLanguage: String!
+                premiere: DateTime!
+                locale: LocalTime!
+                ediNumber: String!
+            }
+        `;
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test(`should not throw "Cannot read property 'name' of undefined"`, async () => {
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
 
         const query = `
             query queryScreenings {
@@ -94,11 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
             }
         `;
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const res = await testHelper.runGraphQL(query);
 
         expect(res.errors).toBeUndefined();
         expect(res.data).toEqual({

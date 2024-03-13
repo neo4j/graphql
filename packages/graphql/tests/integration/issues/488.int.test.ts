@@ -17,34 +17,26 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/488", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return correct data based on issue", async () => {
-        const session = await neo4j.getSession();
-
-        const testJournalist = new UniqueType("Journalist");
-        const testEmoji = new UniqueType("Emoji");
-        const testHashtag = new UniqueType("Hashtag");
-        const testText = new UniqueType("Text");
+        const testJournalist = testHelper.createUniqueType("Journalist");
+        const testEmoji = testHelper.createUniqueType("Emoji");
+        const testHashtag = testHelper.createUniqueType("Hashtag");
+        const testText = testHelper.createUniqueType("Text");
 
         const typeDefs = gql`
             type ${testJournalist.name} {
@@ -70,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const journalistId = generate({
             charset: "alphabetic",
@@ -109,39 +101,32 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             },
         };
 
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
                 CREATE (j:${testJournalist.name} { id: "${journalistId}" })-[:HAS_KEYWORD]->(:${testEmoji.name} { id: "${emojiId}", type: "${emojiType}" })
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues,
-            });
+        const result = await testHelper.runGraphQL(query, {
+            variableValues,
+        });
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
-
-            expect(result.errors).toBeFalsy();
-
-            expect(result.data as any).toEqual({
-                [testJournalist.plural]: [
-                    {
-                        id: journalistId,
-                        keywords: [
-                            {
-                                id: emojiId,
-                                type: emojiType,
-                            },
-                        ],
-                    },
-                ],
-            });
-        } finally {
-            await session.close();
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
         }
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data as any).toEqual({
+            [testJournalist.plural]: [
+                {
+                    id: journalistId,
+                    keywords: [
+                        {
+                            id: emojiId,
+                            type: emojiType,
+                        },
+                    ],
+                },
+            ],
+        });
     });
 });

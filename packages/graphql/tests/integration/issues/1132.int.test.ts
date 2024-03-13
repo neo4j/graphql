@@ -17,40 +17,28 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { generate } from "randomstring";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { getQuerySource } from "../../utils/get-query-source";
-import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQL } from "../../../src";
+import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     const secret = "secret";
 
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("CONNECT", () => {
         test("should allow user to connect when associated with the correct node", async () => {
-            const testSource = new UniqueType("Source");
-            const testTarget = new UniqueType("Target");
+            const testSource = testHelper.createUniqueType("Source");
+            const testTarget = testHelper.createUniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} @authorization(validate: [{ when: BEFORE, operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
@@ -63,16 +51,14 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            const neoGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            const schema = await neoGraphql.getSchema();
 
             const sourceId = generate({
                 charset: "alphabetic",
@@ -80,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const targetId = generate({
                 charset: "alphabetic",
             });
-            const query = gql`
+            const query = `
                 mutation {
                     ${testSource.operations.update}(where: { id: "${sourceId}" }, connect: { targets: { where: { node: { id: "${targetId}" } } } }) {
                         ${testSource.plural} {
@@ -93,18 +79,14 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            await session.run(`
+            await testHelper.runCypher(`
                 CREATE (:${testSource.name} { id: "${sourceId}" })
                 CREATE (:${testTarget.name} { id: "${targetId}" })
             `);
 
             const token = createBearerToken(secret, { sub: sourceId });
 
-            const result = await graphql({
-                schema,
-                source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const result = await testHelper.runGraphQLWithToken(query, token);
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
                 [testSource.operations.update]: {
@@ -121,8 +103,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
     describe("DISCONNECT", () => {
         test("should assert that the error is associated with the correct node", async () => {
-            const testSource = new UniqueType("Source");
-            const testTarget = new UniqueType("Target");
+            const testSource = testHelper.createUniqueType("Source");
+            const testTarget = testHelper.createUniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} {
@@ -135,16 +117,14 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            const neoGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            const schema = await neoGraphql.getSchema();
 
             const sourceId = generate({
                 charset: "alphabetic",
@@ -155,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const sub = generate({
                 charset: "alphabetic",
             });
-            const query = gql`
+            const query = `
                 mutation {
                     ${testSource.operations.update}(where: { id: "${sourceId}" }, disconnect: { targets: { where: { node: { id: "${targetId}" } } } }) {
                         ${testSource.plural} {
@@ -165,23 +145,19 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            await session.run(`
+            await testHelper.runCypher(`
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
             const token = createBearerToken(secret, { sub });
 
-            const result = await graphql({
-                schema,
-                source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const result = await testHelper.runGraphQLWithToken(query, token);
             expect((result.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should allow the disconnect when jwt.sub is associated with the correct node", async () => {
-            const testSource = new UniqueType("Source");
-            const testTarget = new UniqueType("Target");
+            const testSource = testHelper.createUniqueType("Source");
+            const testTarget = testHelper.createUniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} {
@@ -194,16 +170,14 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            const neoGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            const schema = await neoGraphql.getSchema();
 
             const sourceId = generate({
                 charset: "alphabetic",
@@ -211,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const targetId = generate({
                 charset: "alphabetic",
             });
-            const query = gql`
+            const query = `
                 mutation {
                     ${testSource.operations.update}(where: { id: "${sourceId}" }, disconnect: { targets: { where: { node: { id: "${targetId}" } } } }) {
                         ${testSource.plural} {
@@ -224,17 +198,13 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            await session.run(`
+            await testHelper.runCypher(`
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
             const token = createBearerToken(secret, { sub: targetId });
 
-            const result = await graphql({
-                schema,
-                source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const result = await testHelper.runGraphQLWithToken(query, token);
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
                 [testSource.operations.update]: {

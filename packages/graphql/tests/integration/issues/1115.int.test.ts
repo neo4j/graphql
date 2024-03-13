@@ -17,26 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import { runCypher } from "../../utils/run-cypher";
-import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1115", () => {
-    const parentType = new UniqueType("Parent");
-    const childType = new UniqueType("Child");
+    let parentType: UniqueType;
+    let childType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        parentType = testHelper.createUniqueType("Parent");
+        childType = testHelper.createUniqueType("Child");
 
         const typeDefs = `
             type JWTPayload @jwt {
@@ -59,27 +52,24 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                     ]
                 )
         `;
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
                 },
             },
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not throw on multiple connectOrCreate with auth", async () => {
-        const session = await neo4j.getSession();
-        await runCypher(session, `CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
+        await testHelper.runCypher(`CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
 
-        const token = createBearerToken("secret", { roles: ["upstream"] });
+        const token = testHelper.createBearerToken("secret", { roles: ["upstream"] });
         const query = `
         mutation {
           ${parentType.operations.update}(
@@ -103,11 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         }
         `;
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const res = await testHelper.runGraphQLWithToken(query, token);
 
         expect(res.errors).toBeUndefined();
         expect(res.data).toEqual({

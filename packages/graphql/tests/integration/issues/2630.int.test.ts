@@ -17,19 +17,12 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2630", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let HasName: UniqueType;
     let Post: UniqueType;
@@ -37,19 +30,14 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
     let Group: UniqueType;
     let PostSubject: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        HasName = new UniqueType("HasName");
-        Post = new UniqueType("Post");
-        User = new UniqueType("User");
-        Group = new UniqueType("Group");
-        PostSubject = new UniqueType("PostSubject");
+        HasName = testHelper.createUniqueType("HasName");
+        Post = testHelper.createUniqueType("Post");
+        User = testHelper.createUniqueType("User");
+        Group = testHelper.createUniqueType("Group");
+        PostSubject = testHelper.createUniqueType("PostSubject");
 
         const typeDefs = `
           interface ${HasName} {
@@ -71,16 +59,11 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
           union ${PostSubject} = ${User} | ${Group}
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Post, User]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be able to get fields in union of common interface", async () => {
@@ -101,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
         const postId = generate({ charset: "alphabetic" });
         const userName = generate({ charset: "alphabetic" });
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (post:${Post} { id: $postId })
                 CREATE (user:${User} { id: $userId, name: $userName })
@@ -110,12 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
             { userId, postId, userName }
         );
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            variableValues: {},
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

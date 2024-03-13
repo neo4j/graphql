@@ -17,28 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2697", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let typeDefs: string;
+    let testHelper: TestHelper;
 
-    const typeMovie = new UniqueType("Movie");
-    const typeActor = new UniqueType("Actor");
-
-    let neoSchema: Neo4jGraphQL;
+    let typeMovie: UniqueType;
+    let typeActor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
 
-        typeDefs = `
+        const typeDefs = `
         type ${typeMovie.name} {
             title: String
             duration: Duration
@@ -55,9 +48,8 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
-        session = await neo4j.getSession();
-        await session.run(`
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.runCypher(`
             CREATE (t1:${typeMovie.name} { title: "Terminator 1", duration: duration("PT1H47M") }),
             (t2:${typeMovie.name} { title: "Terminator 2", duration: duration("PT2H15M") }),
             (arnold:${typeActor.name} { name: "Arnold"}),
@@ -70,8 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Aggregate on node duration", async () => {
@@ -83,21 +74,19 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.plural]).toEqual(expect.toIncludeAllMembers([
-            {
-                name: "Arnold",
-            },
-            {
-                name: "Linda",
-            },
-        ]));
+        expect((gqlResult as any).data[typeActor.plural]).toEqual(
+            expect.toIncludeAllMembers([
+                {
+                    name: "Arnold",
+                },
+                {
+                    name: "Linda",
+                },
+            ])
+        );
     });
 
     test("Aggregate on edge duration", async () => {
@@ -109,11 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.plural]).toEqual([

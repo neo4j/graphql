@@ -17,78 +17,56 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1783", () => {
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    const testMain = new UniqueType("Main");
-    const testSeries = new UniqueType("Series");
-    const testNameDetails = new UniqueType("NameDetails");
-    const testMasterData = new UniqueType("MasterData");
+    let testHelper: TestHelper;
 
-    const typeDefs = `
-        type ${testSeries} {
-            id: ID! @unique
-            current: Boolean!
-            architecture: [${testMasterData}!]!
-                @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
-            nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
-        }
-
-        type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
-            fullName: String!
-        }
-
-        type RelationProps @relationshipProperties {
-            current: Boolean!
-        }
-
-        type ${testMasterData} {
-            id: ID! @unique
-            current: Boolean!
-            nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
-        }
-    `;
+    let testSeries: UniqueType;
+    let testNameDetails: UniqueType;
+    let testMasterData: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+        testHelper = new TestHelper();
+        testSeries = testHelper.createUniqueType("Series");
+        testNameDetails = testHelper.createUniqueType("NameDetails");
+        testMasterData = testHelper.createUniqueType("MasterData");
 
-    afterEach(async () => {
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`MATCH (o:${testMain}) DETACH DELETE o`);
-            await session.run(`MATCH (s:${testSeries}) DETACH DELETE s`);
-            await session.run(`MATCH (n:${testNameDetails}) DETACH DELETE n`);
-            await session.run(`MATCH (m:${testMasterData}) DETACH DELETE m`);
-        } finally {
-            await session.close();
-        }
+        const typeDefs = `
+            type ${testSeries} {
+                id: ID! @unique
+                current: Boolean!
+                architecture: [${testMasterData}!]!
+                    @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
+                nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+            }
+    
+            type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
+                fullName: String!
+            }
+    
+            type RelationProps @relationshipProperties {
+                current: Boolean!
+            }
+    
+            type ${testMasterData} {
+                id: ID! @unique
+                current: Boolean!
+                nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+            }
+        `;
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("missing parameter with implicit AND", async () => {
-        const neoGraphql = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
-        schema = await neoGraphql.getSchema();
-
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "3213" })-[:HAS_NAME { current: true }]->(:${testNameDetails} { fullName: "MHA1" })
                 CREATE (m:${testMasterData} { current: true, id: "323" })
@@ -99,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
 
-            const query = `
+        const query = `
                 query (
                     $where: ${testSeries}Where
                     $connectionWhere: RelationPropsWhere
@@ -130,82 +108,76 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 }
             `;
 
-            const variableValues = {
-                where: {
-                    current: true,
-                    nameDetailsConnection: {
-                        edge: {
-                            current: true,
-                        },
-                        node: {
-                            fullName_CONTAINS: "1",
-                        },
+        const variableValues = {
+            where: {
+                current: true,
+                nameDetailsConnection: {
+                    edge: {
+                        current: true,
                     },
-                    architectureConnection_SINGLE: {
-                        edge: {
-                            current: true,
-                        },
-                        node: {
-                            nameDetailsConnection: {
-                                edge: {
-                                    current: true,
-                                },
-                                node: {
-                                    fullName: "MHA",
-                                },
+                    node: {
+                        fullName_CONTAINS: "1",
+                    },
+                },
+                architectureConnection_SINGLE: {
+                    edge: {
+                        current: true,
+                    },
+                    node: {
+                        nameDetailsConnection: {
+                            edge: {
+                                current: true,
+                            },
+                            node: {
+                                fullName: "MHA",
                             },
                         },
                     },
                 },
-                connectionWhere: {
-                    current: true,
-                },
-            };
+            },
+            connectionWhere: {
+                current: true,
+            },
+        };
 
-            const res = await graphql({
-                schema,
-                source: query,
-                variableValues,
-                contextValue: neo4j.getContextValues(),
-            });
+        const res = await testHelper.runGraphQL(query, {
+            variableValues,
+        });
 
-            expect(res.errors).toBeUndefined();
+        expect(res.errors).toBeUndefined();
 
-            expect(res.data).toEqual({
-                [testSeries.plural]: [
-                    {
-                        nameDetailsConnection: {
-                            edges: [
-                                {
-                                    node: {
-                                        fullName: "MHA1",
-                                    },
+        expect(res.data).toEqual({
+            [testSeries.plural]: [
+                {
+                    nameDetailsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    fullName: "MHA1",
                                 },
-                            ],
-                        },
-                        architectureConnection: {
-                            edges: [
-                                {
-                                    node: {
-                                        nameDetailsConnection: {
-                                            edges: [
-                                                {
-                                                    node: {
-                                                        fullName: "MHA",
-                                                    },
-                                                },
-                                            ],
-                                        },
-                                    },
-                                },
-                            ],
-                        },
-                        id: "3213",
+                            },
+                        ],
                     },
-                ],
-            });
-        } finally {
-            await session.close();
-        }
+                    architectureConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    nameDetailsConnection: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    fullName: "MHA",
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                    id: "3213",
+                },
+            ],
+        });
     });
 });

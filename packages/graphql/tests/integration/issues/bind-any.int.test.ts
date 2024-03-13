@@ -17,35 +17,24 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql, GraphQLError } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import { GraphQLError } from "graphql";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let User: UniqueType;
     let Organization: UniqueType;
     let Group: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        User = new UniqueType("User");
-        Organization = new UniqueType("Organization");
-        Group = new UniqueType("Group");
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
+        Organization = testHelper.createUniqueType("Organization");
+        Group = testHelper.createUniqueType("Group");
 
-        session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.runCypher(`
         CREATE(o:${Organization} { id: "org_1" })
         CREATE(:${User} { id: "user1" })-[:IS_MEMBER_OF]->(o)
         CREATE(:${User} { id: "user2" })-[:IS_MEMBER_OF]->(o)
@@ -53,12 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [User, Organization, Group]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should allow the operation when predicate is any", async () => {
@@ -79,9 +63,8 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: { authorization: { key: "secret" } },
         });
 
@@ -101,14 +84,12 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({
+        const result = await testHelper.runGraphQL(query, {
+            contextValue: {
                 jwt: {
                     sub: "user1",
                 },
-            }),
+            },
         });
 
         expect(result.errors).toBeFalsy();
@@ -141,9 +122,8 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: { authorization: { key: "secret" } },
         });
 
@@ -163,14 +143,12 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
       `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({
+        const result = await testHelper.runGraphQL(query, {
+            contextValue: {
                 jwt: {
                     sub: "user1",
                 },
-            }),
+            },
         });
 
         expect(result.errors).toEqual([new GraphQLError("Forbidden")]);

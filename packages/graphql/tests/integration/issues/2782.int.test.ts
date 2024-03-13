@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2782", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Product: UniqueType;
     let Color: UniqueType;
     let Photo: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Product = new UniqueType("Product");
-        Color = new UniqueType("Color");
-        Photo = new UniqueType("Photo");
+        Product = testHelper.createUniqueType("Product");
+        Color = testHelper.createUniqueType("Color");
+        Photo = testHelper.createUniqueType("Photo");
 
         const typeDefs = `
             type ${Product} {
@@ -66,12 +54,11 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE(p:${Product} {id: "1", name: "NormalConnect"})
             CREATE(p)-[:HAS_COLOR]->(red:${Color} {id: "1", name: "Red"})
             CREATE(red)<-[:OF_COLOR]-(photo:${Photo} {id: "123"})
@@ -87,13 +74,8 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
         `);
     });
 
-    afterEach(async () => {
-        await cleanNodesUsingSession(session, [Product, Color, Photo]);
-        await session.close();
-    });
-
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should update with nested disconnections", async () => {
@@ -139,11 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Product.operations.update]: {
@@ -181,11 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        const result2 = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query2,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result2 = await testHelper.runGraphQL(query2);
 
         expect(result2.errors).toBeFalsy();
         expect(result2.data).toEqual({
@@ -211,11 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        const result3 = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query3,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result3 = await testHelper.runGraphQL(query3);
 
         expect(result3.errors).toBeFalsy();
         expect(result3.data).toEqual({

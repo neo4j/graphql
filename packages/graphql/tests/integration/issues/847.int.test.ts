@@ -17,25 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/847", () => {
-    const personType = new UniqueType("Person");
-    const placeType = new UniqueType("Place");
-    const interactionType = new UniqueType("Interaction");
+    let personType: UniqueType;
+    let placeType: UniqueType;
+    let interactionType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        personType = testHelper.createUniqueType("Person");
+        placeType = testHelper.createUniqueType("Place");
+        interactionType = testHelper.createUniqueType("Interaction");
 
         const typeDefs = `
             interface Entity {
@@ -59,17 +56,11 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 objects  : [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await session.run(`MATCH (person:${personType.name}) DETACH DELETE person`);
-        await session.run(`MATCH (place:${placeType.name}) DETACH DELETE place`);
-        await session.run(`MATCH (interaction:${interactionType.name}) DETACH DELETE interaction`);
-
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be able to query multiple interface relations", async () => {
@@ -99,11 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
         `;
 
-        const mutationRes = await graphql({
-            schema,
-            source: mutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const mutationRes = await testHelper.runGraphQL(mutation);
 
         expect(mutationRes.errors).toBeUndefined();
 
@@ -137,11 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
         `;
 
-        const queryRes = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const queryRes = await testHelper.runGraphQL(query);
 
         expect(queryRes.errors).toBeUndefined();
 

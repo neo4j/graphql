@@ -17,26 +17,20 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Query Converted to Float", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let Movie: UniqueType;
     let Tag: UniqueType;
     let typeDefs: string;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Movie = new UniqueType("Movie");
-        Tag = new UniqueType("Tag");
+        Movie = testHelper.createUniqueType("Movie");
+        Tag = testHelper.createUniqueType("Tag");
 
         typeDefs = `
         type ${Movie} {
@@ -63,36 +57,21 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         }
     `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (m1:${Movie} {title: "M1"}), (m2:${Movie} {title: "M2"}), (t1:${Tag} {name: "T1"}), (t2:${Tag} {name: "T2"})
                     CREATE (m1)-[:HAS]->(t1)<-[:HAS]-(m2)
                     CREATE (m1)-[:HAS]->(t2)
                 `
-            );
-        } finally {
-            await session.close();
-        }
+        );
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`MATCH (m:${Movie}) WHERE m.title IN ["M1", "M2"] DETACH DELETE m`);
-            await session.run(`MATCH (t:${Tag}) WHERE t.name IN ["T1", "T2"] DETACH DELETE t`);
-        } finally {
-            await session.close();
-        }
-
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Query with a limit", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             {
@@ -107,11 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 
@@ -127,6 +102,5 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
                 }),
             ]),
         });
-        await session.close();
     });
 });

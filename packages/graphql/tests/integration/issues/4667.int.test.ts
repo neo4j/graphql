@@ -17,47 +17,28 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { type Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4667", () => {
-    let driver: Driver;
-    let neo4j: Neo4j;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
 
     let MyThing: UniqueType;
     let MyStuff: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        MyThing = new UniqueType("MyThing");
-        MyStuff = new UniqueType("MyStuff");
+        testHelper = new TestHelper();
+        MyThing = testHelper.createUniqueType("MyThing");
+        MyStuff = testHelper.createUniqueType("MyStuff");
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${MyThing} {id: "A"})-[:THE_STUFF]->(b1:${MyStuff} {id: "C"})
             CREATE (:${MyThing} {id: "B"})
         `);
-        } finally {
-            await session.close();
-        }
     });
 
     afterEach(async () => {
-        await cleanNodes(driver, [MyThing, MyStuff]);
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("when passed null as an argument of a relationship filter should check that a relationship does not exist", async () => {
@@ -72,9 +53,8 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
                 thing: ${MyThing} @relationship(type: "THE_STUFF", direction: IN)
             }
         `;
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
         const query = /* GraphQL */ `
             query {
@@ -88,11 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({

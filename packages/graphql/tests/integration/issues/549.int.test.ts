@@ -17,31 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/549", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should throw when creating a node without a mandatory relationship", async () => {
-        const session = await neo4j.getSession();
-
-        const testPerson = new UniqueType("Person");
-        const testMovie = new UniqueType("Movie");
+        const testPerson = testHelper.createUniqueType("Person");
+        const testMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
             type ${testPerson.name} {
@@ -63,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             mutation {
@@ -75,17 +67,9 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required exactly once`);
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeTruthy();
+        expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required exactly once`);
     });
 });

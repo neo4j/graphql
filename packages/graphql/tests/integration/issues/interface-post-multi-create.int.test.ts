@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Projecting interface relationships following create of multiple nodes", () => {
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    const Person = new UniqueType("Person");
-    const Place = new UniqueType("Place");
-    const Interaction = new UniqueType("Interaction");
+    let Person: UniqueType;
+    let Place: UniqueType;
+    let Interaction: UniqueType;
 
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    beforeEach(async () => {
+        testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        Person = testHelper.createUniqueType("Person");
+        Place = testHelper.createUniqueType("Place");
+        Interaction = testHelper.createUniqueType("Interaction");
 
         const typeDefs = `
             interface Entity {
@@ -69,14 +57,9 @@ describe("Projecting interface relationships following create of multiple nodes"
             }
         `;
 
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${Person.name} { id: "adam", name: "Adam" })
             CREATE (:${Person.name} { id: "eve", name: "Eve" })
             CREATE (:${Person.name} { id: "cain", name: "Cain" })
@@ -85,19 +68,7 @@ describe("Projecting interface relationships following create of multiple nodes"
     });
 
     afterEach(async () => {
-        await session.run(`
-            MATCH (p:${Person.name})
-            DETACH DELETE p
-        `);
-        await session.run(`
-            MATCH (i:${Interaction.name})
-            DETACH DELETE i
-        `);
-    });
-
-    afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not throw error", async () => {
@@ -133,7 +104,7 @@ describe("Projecting interface relationships following create of multiple nodes"
             }
         `;
 
-        const mutationResult = await graphqlQuery(mutation);
+        const mutationResult = await testHelper.runGraphQL(mutation);
         expect(mutationResult.errors).toBeUndefined();
     });
 });

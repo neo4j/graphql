@@ -17,39 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Label cypher injection", () => {
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should escape the label name passed in context", async () => {
-        const typeMovie = new UniqueType("Movie");
+        const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             type ${typeMovie} @node(labels: ["$context.label"]) {
@@ -57,11 +40,9 @@ describe("Label cypher injection", () => {
             }
         `;
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
 
         const query = `
         query {
@@ -71,19 +52,17 @@ describe("Label cypher injection", () => {
         }
         `;
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({
+        const res = await testHelper.runGraphQL(query, {
+            contextValue: {
                 label: "Movie\\u0060) MATCH",
-            }),
+            },
         });
 
         expect(res.errors).toBeUndefined();
     });
 
     test("should escape the label name passed through jwt", async () => {
-        const typeMovie = new UniqueType("Movie");
+        const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             type ${typeMovie} @node(labels: ["$jwt.label"]) {
@@ -91,16 +70,14 @@ describe("Label cypher injection", () => {
             }
         `;
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "1234",
                 },
             },
         });
-        schema = await neoGraphql.getSchema();
 
         const query = `
         query {
@@ -112,11 +89,7 @@ describe("Label cypher injection", () => {
 
         const token = createBearerToken("1234", { label: "Movie\\u0060) MATCH" });
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const res = await testHelper.runGraphQLWithToken(query, token);
 
         expect(res.errors).toBeUndefined();
     });

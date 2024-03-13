@@ -21,21 +21,17 @@ import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/349", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     function disallowDirective(directiveName: string) {
@@ -61,8 +57,8 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
     describe("https://github.com/neo4j/graphql/issues/349#issuecomment-885295157", () => {
         let schema: GraphQLSchema;
 
-        beforeAll(async () => {
-            const neoSchema = new Neo4jGraphQL({
+        beforeEach(async () => {
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs: [
                     disallowDirectiveTypeDefs,
                     gql`
@@ -75,11 +71,8 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         }
                     `,
                 ],
-
-                driver,
                 resolvers: { Mutation: { doStuff: () => "OK" } },
             });
-
             schema = disallowDirectiveTransformer(await neoSchema.getSchema());
         });
 
@@ -91,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         doStuff
                     }
                 `,
-                contextValue: neo4j.getContextValues(),
+                contextValue: await testHelper.getContextValue(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -102,8 +95,8 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
     describe("https://github.com/neo4j/graphql/issues/349#issuecomment-885311918", () => {
         let schema: GraphQLSchema;
 
-        beforeAll(async () => {
-            const neoSchema = new Neo4jGraphQL({
+        beforeEach(async () => {
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs: [
                     disallowDirectiveTypeDefs,
                     gql`
@@ -122,8 +115,6 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         }
                     `,
                 ],
-
-                driver,
                 resolvers: {
                     NestedResult: {
                         stuff: (parent: string) => parent,
@@ -152,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         doStuff
                     }
                 `,
-                contextValue: neo4j.getContextValues(),
+                contextValue: await testHelper.getContextValue(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -167,7 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         getStuff
                     }
                 `,
-                contextValue: neo4j.getContextValues(),
+                contextValue: await testHelper.getContextValue(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -184,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         }
                     }
                 `,
-                contextValue: neo4j.getContextValues(),
+                contextValue: await testHelper.getContextValue(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -201,7 +192,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         }
                     }
                 `,
-                contextValue: neo4j.getContextValues(),
+                contextValue: await testHelper.getContextValue(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -210,27 +201,25 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
     });
 
     describe("schemaDirectives can be an empty object", () => {
-        const neo4jGraphQL = new Neo4jGraphQL({
-            typeDefs: [
-                disallowDirectiveTypeDefs,
-                gql`
-                    directive @disallow on FIELD_DEFINITION
-
-                    type Mutation {
-                        doStuff: String! @disallow
-                    }
-
-                    type Query {
-                        noop: Boolean
-                    }
-                `,
-            ],
-
-            driver,
-            resolvers: { Mutation: { doStuff: () => "OK" } },
-        });
-
         test("DisallowDirective", async () => {
+            const neo4jGraphQL = await testHelper.initNeo4jGraphQL({
+                typeDefs: [
+                    disallowDirectiveTypeDefs,
+                    gql`
+                        directive @disallow on FIELD_DEFINITION
+
+                        type Mutation {
+                            doStuff: String! @disallow
+                        }
+
+                        type Query {
+                            noop: Boolean
+                        }
+                    `,
+                ],
+                resolvers: { Mutation: { doStuff: () => "OK" } },
+            });
+
             const gqlResult = await graphql({
                 schema: await neo4jGraphQL.getSchema(),
                 source: /* GraphQL */ `
@@ -238,7 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         doStuff
                     }
                 `,
-                contextValue: neo4j.getContextValues(),
+                contextValue: await testHelper.getContextValue(),
             });
 
             expect(gqlResult.data?.doStuff).toBe("OK");

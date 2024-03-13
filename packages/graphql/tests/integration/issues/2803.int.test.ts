@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2803", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Movie: UniqueType;
     let Actor: UniqueType;
@@ -101,16 +94,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
     const updatedName = "a new name!";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Movie = new UniqueType("Movie");
-        Actor = new UniqueType("Actor");
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
             type ${Movie} {
@@ -129,12 +117,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
-        await session.run(
+        await testHelper.runCypher(
             `
             CREATE (a1:${Actor})-[rel1:ACTED_IN]->(m1:${Movie})
             CREATE (a1)-[rel2:ACTED_IN]->(m2:${Movie})
@@ -175,12 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Actor]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should find movies aggregate within double nested relationships", async () => {
@@ -192,11 +174,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -222,11 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -253,11 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -287,11 +257,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -318,11 +284,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -350,11 +312,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -387,11 +345,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -429,11 +383,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -460,11 +410,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -491,11 +437,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -526,11 +468,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -556,11 +494,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -593,11 +527,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -630,11 +560,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -660,11 +586,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -693,11 +615,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -726,11 +644,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -767,11 +681,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -807,11 +717,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

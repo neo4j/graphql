@@ -17,35 +17,30 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/235", () => {
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
+    let testHelper: TestHelper;
     let A: UniqueType;
     let B: UniqueType;
     let C: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        A = new UniqueType("A");
-        B = new UniqueType("B");
-        C = new UniqueType("C");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+
+        A = testHelper.createUniqueType("A");
+        B = testHelper.createUniqueType("B");
+        C = testHelper.createUniqueType("C");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should create the correct number of nodes following multiple connect", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${A} {
                 ID: ID! @id @unique
                 name: String
@@ -64,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const b1 = generate({ charset: "alphabetic" });
         const b2 = generate({ charset: "alphabetic" });
@@ -81,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
                 }
             }
         }
-    `;
+        `;
 
         const createAs = `
             mutation CreateAS($a: String!, $b1: String!, $b2: String!, $c: String!) {
@@ -105,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
                     }
                 }
             }
-        `;
+         `;
 
         const as = `
             query As($a: String) {
@@ -122,21 +117,15 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             }
         `;
 
-        const createBsResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createBs,
+        const createBsResult = await testHelper.runGraphQL(createBs, {
             variableValues: { b1, b2 },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(createBsResult.errors).toBeFalsy();
         expect((createBsResult.data as any)[B.operations.create][B.plural]).toEqual([{ name: b1 }, { name: b2 }]);
 
-        const createAsResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: createAs,
+        const createAsResult = await testHelper.runGraphQL(createAs, {
             variableValues: { a, b1, b2, c },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(createAsResult.errors).toBeFalsy();
@@ -147,11 +136,8 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         expect((createAsResult.data as any)?.[A.operations.create][A.plural][0].rel_b).toContainEqual({ name: b2 });
         expect((createAsResult.data as any)?.[A.operations.create][A.plural][0].rel_c).toEqual([{ name: c }]);
 
-        const asResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: as,
+        const asResult = await testHelper.runGraphQL(as, {
             variableValues: { a },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(asResult.errors).toBeFalsy();

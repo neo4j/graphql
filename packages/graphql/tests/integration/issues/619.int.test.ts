@@ -17,28 +17,19 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { getQuerySource } from "../../utils/get-query-source";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/619", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
     let typeDefs: string;
     let FooIsARandomName: UniqueType;
     let BarIsACoolName: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        FooIsARandomName = new UniqueType("FooIsARandomName");
-        BarIsACoolName = new UniqueType("BarIsACoolName");
+        testHelper = new TestHelper();
+        FooIsARandomName = testHelper.createUniqueType("FooIsARandomName");
+        BarIsACoolName = testHelper.createUniqueType("BarIsACoolName");
         typeDefs = `
             type ${FooIsARandomName} {
                 id: ID @unique
@@ -54,23 +45,15 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not throw 'input.map is not a function' error on one to many mutations", async () => {
-        const mutation = gql`
+        const mutation = /* GraphQL */ `
             mutation {
                 ${FooIsARandomName.operations.create}(
                     input: {
@@ -89,11 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
             }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(mutation),
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.runGraphQL(mutation);
 
         expect(gqlResult.errors).toBeUndefined();
     });

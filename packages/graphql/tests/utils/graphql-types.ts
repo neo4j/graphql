@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
-import pluralize from "pluralize";
 import camelcase from "camelcase";
-import { upperFirst } from "../../src/utils/upper-first";
+import pluralize from "pluralize";
+import { generate } from "randomstring";
 import { leadingUnderscores } from "../../src/utils/leading-underscore";
+import { upperFirst } from "../../src/utils/upper-first";
 
 type UniqueTypeOperations = {
     create: string;

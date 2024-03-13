@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2981", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Book: UniqueType;
     let BookTitle_SV: UniqueType;
     let BookTitle_EN: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Book = new UniqueType("Book");
-        BookTitle_SV = new UniqueType("BookTitle_SV");
-        BookTitle_EN = new UniqueType("BookTitle_EN");
+        Book = testHelper.createUniqueType("Book");
+        BookTitle_SV = testHelper.createUniqueType("BookTitle_SV");
+        BookTitle_EN = testHelper.createUniqueType("BookTitle_EN");
 
         const typeDefs = `
         type ${Book} {
@@ -66,23 +54,17 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Book, BookTitle_EN, BookTitle_SV]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be able to create a nested translated title", async () => {
-        await session.run(`
+        await testHelper.runCypher(`
            CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})
         `);
         const query = `
@@ -107,11 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
           }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data?.[Book.operations.update]).toEqual({

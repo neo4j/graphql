@@ -17,27 +17,22 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/288", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let USER: UniqueType;
     let COMPANY: UniqueType;
 
     let typeDefs: string;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
 
-        USER = new UniqueType("USER");
-        COMPANY = new UniqueType("COMPANY");
+        USER = testHelper.createUniqueType("USER");
+        COMPANY = testHelper.createUniqueType("COMPANY");
 
         typeDefs = `
             type ${USER} {
@@ -53,13 +48,11 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("COMPANYID can be populated on create and update", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const userid = generate({ charset: "alphabetic" });
         const companyid1 = generate({ charset: "alphabetic" });
@@ -87,36 +80,24 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const createResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        const createResult = await testHelper.runGraphQL(createMutation);
 
-            expect(createResult.errors).toBeFalsy();
+        expect(createResult.errors).toBeFalsy();
 
-            expect((createResult?.data as any)[USER.operations.create][USER.plural]).toEqual([
-                { USERID: userid, COMPANYID: companyid1 },
-            ]);
+        expect((createResult?.data as any)[USER.operations.create][USER.plural]).toEqual([
+            { USERID: userid, COMPANYID: companyid1 },
+        ]);
 
-            const updateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        const updateResult = await testHelper.runGraphQL(updateMutation);
 
-            expect(updateResult.errors).toBeFalsy();
+        expect(updateResult.errors).toBeFalsy();
 
-            expect((updateResult?.data as any)[USER.operations.update][USER.plural]).toEqual([
-                { USERID: userid, COMPANYID: companyid2 },
-            ]);
+        expect((updateResult?.data as any)[USER.operations.update][USER.plural]).toEqual([
+            { USERID: userid, COMPANYID: companyid2 },
+        ]);
 
-            await session.run(`MATCH (u:${USER}) WHERE u.USERID = "${userid}" DELETE u`);
-        } finally {
-            await session.close();
-        }
+        await testHelper.runCypher(`MATCH (u:${USER}) WHERE u.USERID = "${userid}" DELETE u`);
     });
 });

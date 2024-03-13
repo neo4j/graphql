@@ -17,30 +17,23 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1848", () => {
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
+
     let ContentPiece: UniqueType;
     let Project: UniqueType;
     let Community: UniqueType;
 
-    let typeDefs: string;
-
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        ContentPiece = new UniqueType("ContentPiece");
-        Project = new UniqueType("Project");
-        Community = new UniqueType("Community");
-        typeDefs = `
+        testHelper = new TestHelper();
+
+        ContentPiece = testHelper.createUniqueType("ContentPiece");
+        Project = testHelper.createUniqueType("Project");
+        Community = testHelper.createUniqueType("Community");
+        const typeDefs = `
         type ${ContentPiece} @node(labels: ["${ContentPiece}", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
@@ -75,19 +68,16 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
 
         union FeedItem = ${ContentPiece} | ${Project}
     `;
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should resolve union in cypher directive correctly", async () => {
-        const neoGraphql = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
-        schema = await neoGraphql.getSchema();
-
         const query = `
             query {
                 ${Community.plural} {
@@ -104,11 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
             }
         `;
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const res = await testHelper.runGraphQL(query);
 
         expect(res.errors).toBeUndefined();
 

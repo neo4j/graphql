@@ -17,32 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
-describe("369", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+describe("https://github.com/neo4j/graphql/issues/369", () => {
+    let testHelper: TestHelper;
     let Dato: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Dato = new UniqueType("Dato");
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        Dato = testHelper.createUniqueType("Dato");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should recreate issue and return correct data", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = gql`
             type ${Dato} {
                 uuid: ID
@@ -77,7 +70,7 @@ describe("369", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = /* GraphQL */ `
             {
@@ -94,40 +87,30 @@ describe("369", () => {
                 }
             }
         `;
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Dato} {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:${Dato} {uuid: $datoToUUID})
                 `,
-                {
-                    datoUUID,
-                    datoToUUID,
-                    relUUID,
-                }
-            );
+            {
+                datoUUID,
+                datoToUUID,
+                relUUID,
+            }
+        );
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result.data as any).toEqual({
-                getDato: {
-                    uuid: datoUUID,
-                    dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(result.data as any).toEqual({
+            getDato: {
+                uuid: datoUUID,
+                dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
+            },
+        });
     });
 
     test("should recreate issue and return correct data using a where argument on the connection", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = gql`
             type ${Dato} {
                 uuid: ID
@@ -162,7 +145,7 @@ describe("369", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = /* GraphQL */ `
             {
@@ -179,36 +162,28 @@ describe("369", () => {
                 }
             }
         `;
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (d:${Dato} {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:${Dato} {uuid: $datoToUUID})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
                 `,
-                {
-                    datoUUID,
-                    datoToUUID,
-                    relUUID,
-                }
-            );
+            {
+                datoUUID,
+                datoToUUID,
+                relUUID,
+            }
+        );
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result.data as any).toEqual({
-                getDato: {
-                    uuid: datoUUID,
-                    dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(result.data as any).toEqual({
+            getDato: {
+                uuid: datoUUID,
+                dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
+            },
+        });
     });
 });

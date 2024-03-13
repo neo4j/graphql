@@ -17,34 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2267", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Place: UniqueType;
     let Post: UniqueType;
     let Story: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        Place = new UniqueType("Place");
-        Post = new UniqueType("Post");
-        Story = new UniqueType("Story");
-
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        Place = testHelper.createUniqueType("Place");
+        Post = testHelper.createUniqueType("Post");
+        Story = testHelper.createUniqueType("Story");
 
         const typeDefs = `
             type ${Place} {
@@ -68,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
         CREATE(:${Place} {displayName: "786 aa"})<-[:ACTIVITY]-(:${Post} {name: "A post"})
         CREATE(:${Place} {displayName: "8 à Huita"})
         CREATE(:${Place} {displayName: "9ème Sauvagea"})<-[:ACTIVITY]-(:${Story} {name: "A story"})
@@ -76,19 +63,13 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         CREATE(:${Place} {displayName: "zaza"})<-[:ACTIVITY]-(:${Post} {name: "Another post"})
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Place, Post, Story]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should correctly order when requesting only top-level fields", async () => {
@@ -100,11 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
           }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -140,11 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
           }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

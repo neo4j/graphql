@@ -17,32 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1683", () => {
-    const systemType = new UniqueType("System");
-    const governedDataTest = new UniqueType("GovernedData");
+    let systemType: UniqueType;
+    let governedDataTest: UniqueType;
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        systemType = testHelper.createUniqueType("System");
+        governedDataTest = testHelper.createUniqueType("GovernedData");
 
         const typeDefs = `
             type ${systemType} {
@@ -54,15 +41,13 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
                 updatedBy: [${systemType}!]! @relationship(type: "UPDATED_BY", direction: OUT)
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return top level entity, even if no connections exist", async () => {
@@ -85,15 +70,9 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
             CREATE (s:${systemType} { code: "arthur" });
         `;
 
-        const session = await neo4j.getSession();
+        await testHelper.runCypher(cypher);
 
-        try {
-            await session.run(cypher);
-        } finally {
-            await session.close();
-        }
-
-        const result = await graphqlQuery(query);
+        const result = await testHelper.runGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
             [systemType.plural]: [{ code: "arthur", updatesDataConnection: { edges: [] } }],

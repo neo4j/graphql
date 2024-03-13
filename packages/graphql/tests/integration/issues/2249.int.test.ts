@@ -17,32 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2249", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Movie: UniqueType;
     let Person: UniqueType;
     let Influencer: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        Movie = new UniqueType("Movie");
-        Person = new UniqueType("Person");
-        Influencer = new UniqueType("Influencer");
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        Person = testHelper.createUniqueType("Person");
+        Influencer = testHelper.createUniqueType("Influencer");
 
         const typeDefs = `
             type ${Movie} {
@@ -70,22 +59,17 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Update with create on an interface type should return valid Cypher", async () => {
-        await session.run(`CREATE (:${Movie} { title: "John Wick" })`);
+        await testHelper.runCypher(`CREATE (:${Movie} { title: "John Wick" })`);
 
         const mutation = `
             mutation {
@@ -110,11 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             }
         `;
 
-        const mutationResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: mutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const mutationResult = await testHelper.runGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
         expect(mutationResult.data).toEqual({

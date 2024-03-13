@@ -17,26 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("context-variable-not-always-resolved-on-cypher-queries", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    let neoSchema: Neo4jGraphQL;
-
-    const expr = new UniqueType("Expr");
-    const work = new UniqueType("Work");
-    const resourceType = new UniqueType("ResourceType");
+    let expr: UniqueType;
+    let work: UniqueType;
+    let resourceType: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        expr = testHelper.createUniqueType("Expr");
+        work = testHelper.createUniqueType("Work");
+        resourceType = testHelper.createUniqueType("ResourceType");
 
         const typeDefs = `#graphql
                   type ${expr.name}
@@ -65,35 +60,22 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 CREATE(p1:Exprlabel:context:tenant:Resource:test {uri: "stuff"})
                 CREATE (work:WorkLabel:test:Resource {uri: "another-stuff"})
                 CREATE (resource:${resourceType.name} {uri: "uri-to-be-found"})
                 CREATE (p1)-[:realizationOf]->(work)-[:hasResourceType]->(resource)
                 `
-            );
-        } finally {
-            await session.close();
-        }
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
+        );
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be possible to target a node with dynamic labels in a filter", async () => {
@@ -120,14 +102,12 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({
+        const gqlResult = await testHelper.runGraphQL(query, {
+            contextValue: {
                 cypherParams: {
                     tenant: "test",
                 },
-            }),
+            },
         });
 
         expect(gqlResult.errors).toBeFalsy();

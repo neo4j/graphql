@@ -17,31 +17,18 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql, GraphQLError } from "graphql";
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import { GraphQLError } from "graphql";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1551", () => {
-    const testType = new UniqueType("AttribValue");
+    let testType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        testType = testHelper.createUniqueType("AttribValue");
 
         const typeDefs = `
             type ${testType} {
@@ -53,12 +40,11 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should throw an error when trying to set non-nullable field to null", async () => {
@@ -81,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        await graphqlQuery(createMutation);
+        await testHelper.runGraphQL(createMutation);
 
         const updateMutation = `
             mutation {
@@ -96,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        const updateResult = await graphqlQuery(updateMutation);
+        const updateResult = await testHelper.runGraphQL(updateMutation);
         expect(updateResult.errors).toEqual([
             new GraphQLError(`Cannot set non-nullable field ${testType.name}.level to null`),
         ]);
