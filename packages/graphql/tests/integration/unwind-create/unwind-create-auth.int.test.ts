@@ -17,13 +17,9 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../utils/tests-helper";
 
 /*
  * Auth rules are already tested in the auth tests,
@@ -31,24 +27,20 @@ import { createBearerToken } from "../../utils/create-bearer-token";
  */
 
 describe("unwind-create field-level auth rules", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     const secret = "secret";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("bind", () => {
         test("should raise an error if a user is created with the id different from the JWT", async () => {
-            const session = await neo4j.getSession();
-
-            const User = new UniqueType("User");
+            const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${User} {
@@ -59,7 +51,7 @@ describe("unwind-create field-level auth rules", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -86,26 +78,17 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            try {
-                const token = createBearerToken("secret", { sub: id });
+            const token = createBearerToken("secret", { sub: id });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    variableValues: { id, id2 },
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+                variableValues: { id, id2 },
+            });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should not raise an error if a user is created without id", async () => {
-            const session = await neo4j.getSession();
-
-            const User = new UniqueType("User");
+            const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
             type ${User} {
@@ -117,7 +100,7 @@ describe("unwind-create field-level auth rules", () => {
             }
         `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -144,27 +127,18 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            try {
-                const token = createBearerToken("secret", { sub: id });
+            const token = createBearerToken("secret", { sub: id });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    variableValues: { id, name },
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+                variableValues: { id, name },
+            });
 
-                expect(gqlResult.errors).toBeFalsy();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
         });
 
         test("should not raise an error if a nested user is created without id", async () => {
-            const session = await neo4j.getSession();
-
-            const User = new UniqueType("User");
-            const Post = new UniqueType("Post");
+            const User = testHelper.createUniqueType("User");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
             type ${User} {
@@ -180,7 +154,7 @@ describe("unwind-create field-level auth rules", () => {
             }
         `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -216,27 +190,19 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            try {
-                const token = createBearerToken("secret", { sub: id });
+            const token = createBearerToken("secret", { sub: id });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    variableValues: { id, name },
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+                variableValues: { id, name },
+            });
 
-                expect(gqlResult.errors).toBeFalsy();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
         });
     });
 
     describe("role", () => {
         test("should raise an error if a user is created with a role different from the JWT", async () => {
-            const session = await neo4j.getSession();
-            const User = new UniqueType("User");
+            const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
             type JWTPayload @jwt {
@@ -252,7 +218,7 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -279,26 +245,17 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            try {
-                const token = createBearerToken("secret", { roles: ["user"] });
+            const token = createBearerToken("secret", { roles: ["user"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    variableValues: { id, id2 },
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+                variableValues: { id, id2 },
+            });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should not raise an error if a user is created without id", async () => {
-            const session = await neo4j.getSession();
-
-            const User = new UniqueType("User");
+            const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
             type JWTPayload @jwt {
@@ -314,7 +271,7 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -337,20 +294,13 @@ describe("unwind-create field-level auth rules", () => {
             }
             `;
 
-            try {
-                const token = createBearerToken("secret", { roles: ["invalid-role"] });
+            const token = createBearerToken("secret", { roles: ["invalid-role"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    variableValues: { name },
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+                variableValues: { name },
+            });
 
-                expect(gqlResult.errors).toBeFalsy();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
         });
     });
 });
