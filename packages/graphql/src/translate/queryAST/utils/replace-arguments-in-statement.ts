@@ -33,11 +33,11 @@ export function replaceArgumentsInStatement({
     let cypherStatement = statement;
     definedArguments.forEach((arg) => {
         const value = rawArguments[arg.name];
-        if (value) {
+        if (value === undefined || value === null) {
+            cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, "NULL");
+        } else {
             const paramName = new Cypher.Param(value).getCypher(env);
             cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, paramName);
-        } else {
-            cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, "NULL");
         }
     });
 
