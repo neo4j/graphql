@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Empty fields on unions due to escaped labels", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeBlog: UniqueType;
     let typePost: UniqueType;
     let typeUser: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         typeBlog = testHelper.createUniqueType("Blog");
         typePost = testHelper.createUniqueType("Post");
         typeUser = testHelper.createUniqueType("User");

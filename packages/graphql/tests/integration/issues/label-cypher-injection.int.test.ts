@@ -21,11 +21,9 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Label cypher injection", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4477", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Brand: UniqueType;
     let Service: UniqueType;
     let Collection: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Brand = testHelper.createUniqueType("Brand");
         Service = testHelper.createUniqueType("Service");
         Collection = testHelper.createUniqueType("Collection");

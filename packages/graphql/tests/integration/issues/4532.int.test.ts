@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4532", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     describe("order-by relationship property", () => {
         let Inventory: UniqueType;
         let Scenario: UniqueType;
 
         beforeAll(async () => {
-            testHelper = new TestHelper();
-
             Inventory = testHelper.createUniqueType("Inventory");
             Scenario = testHelper.createUniqueType("Scenario");
 
@@ -128,8 +126,6 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
         let Video: UniqueType;
 
         beforeAll(async () => {
-            testHelper = new TestHelper();
-
             Inventory = testHelper.createUniqueType("Inventory");
             Image = testHelper.createUniqueType("Image");
             Video = testHelper.createUniqueType("Video");

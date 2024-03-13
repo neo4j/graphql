@@ -23,7 +23,7 @@ import { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Global authentication - Authorization JWT plugin", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     const secret = "secret";
     const testMovie = new UniqueType("Movie");
@@ -43,9 +43,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
         }
     `;
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

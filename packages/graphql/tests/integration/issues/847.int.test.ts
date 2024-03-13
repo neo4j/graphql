@@ -25,11 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
     let placeType: UniqueType;
     let interactionType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         personType = testHelper.createUniqueType("Person");
         placeType = testHelper.createUniqueType("Place");
         interactionType = testHelper.createUniqueType("Interaction");

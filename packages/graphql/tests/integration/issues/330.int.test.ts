@@ -25,11 +25,10 @@ import { TestHelper } from "../utils/tests-helper";
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
 describe("unauthenticated-requests", () => {
     const secret = "secret";
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let User: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
     });
 

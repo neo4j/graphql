@@ -24,10 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
     let Opportunity: UniqueType;
     let ListOli: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         Opportunity = testHelper.createUniqueType("Opportunity");
         ListOli = testHelper.createUniqueType("ListOli");
 

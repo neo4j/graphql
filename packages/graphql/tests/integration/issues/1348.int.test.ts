@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
     let Season: UniqueType;
     let ProgrammeItem: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Series = testHelper.createUniqueType("Series");
         Season = testHelper.createUniqueType("Season");
         ProgrammeItem = testHelper.createUniqueType("ProgrammeItem");

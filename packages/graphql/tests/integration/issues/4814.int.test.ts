@@ -24,11 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     let AStep: UniqueType;
     let BStep: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         AStep = new UniqueType("AStep");
         BStep = new UniqueType("BStep");
 

@@ -21,12 +21,11 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Filtering Operations", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let personType: UniqueType;
     let movieType: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         personType = testHelper.createUniqueType("Person");
         movieType = testHelper.createUniqueType("Movie");
 

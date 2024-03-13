@@ -23,15 +23,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("array-subscription", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         typeActor = testHelper.createUniqueType("Actor");
         typeMovie = testHelper.createUniqueType("Movie");
 

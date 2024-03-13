@@ -25,7 +25,7 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("Global authentication - Authorization JWKS plugin", () => {
     let jwksMock: JWKSMock;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let testMovie: UniqueType;
 
     let typeDefs: string;
@@ -33,8 +33,6 @@ describe("Global authentication - Authorization JWKS plugin", () => {
     let query: string;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
-
         testMovie = testHelper.createUniqueType("Movie");
 
         typeDefs = `

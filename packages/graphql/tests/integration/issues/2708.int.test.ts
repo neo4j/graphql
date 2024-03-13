@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2708", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let movieType: UniqueType;
     let genreType: UniqueType;
@@ -45,8 +45,6 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     const genre2AverageTitleLength = (movieTitle4.length + movieTitle2.length) / 2;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         movieType = testHelper.createUniqueType("Movie");
         genreType = testHelper.createUniqueType("Genre");
         seriesType = testHelper.createUniqueType("Series");

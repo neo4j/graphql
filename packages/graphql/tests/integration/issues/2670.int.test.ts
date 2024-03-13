@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2670", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let movieType: UniqueType;
     let genreType: UniqueType;
@@ -47,8 +47,6 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     beforeAll(async () => {});
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         movieType = testHelper.createUniqueType("Movie");
         genreType = testHelper.createUniqueType("Genre");
         seriesType = testHelper.createUniqueType("Series");

@@ -22,13 +22,11 @@ import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-id", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Post: UniqueType;
     let User: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Post = testHelper.createUniqueType("Post");
         User = testHelper.createUniqueType("User");
 

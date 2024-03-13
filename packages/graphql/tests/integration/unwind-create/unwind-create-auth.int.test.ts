@@ -27,12 +27,10 @@ import { TestHelper } from "../utils/tests-helper";
  */
 
 describe("unwind-create field-level auth rules", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

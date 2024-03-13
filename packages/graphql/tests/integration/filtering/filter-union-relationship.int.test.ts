@@ -23,14 +23,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("union relationships", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeMovie: UniqueType;
     let typeSeries: UniqueType;
     let typeActor: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeSeries = testHelper.createUniqueType("Series");
         typeActor = testHelper.createUniqueType("Actor");

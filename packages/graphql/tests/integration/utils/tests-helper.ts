@@ -21,7 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ExecutionResult, GraphQLArgs } from "graphql";
 import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
-import { Memoize } from "typescript-memoize";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../../src";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -30,24 +29,19 @@ import { UniqueType } from "../../utils/graphql-types";
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
 
-let helperLock = false;
-
 export class TestHelper {
     private database: string = DEFAULT_DB;
     private neo4jGraphQL: Neo4jGraphQL | undefined;
     private uniqueTypes: UniqueType[] = [];
+    private driver: neo4j.Driver | undefined;
 
     public createBearerToken(secret: string, extraData?: Record<string, any>) {
         return createBearerToken(secret, extraData);
     }
 
     public async initNeo4jGraphQL(options: Omit<Neo4jGraphQLConstructor, "driver">): Promise<Neo4jGraphQL> {
-        if (helperLock) {
-            throw new Error("TestHelper still open. Did you forget calling .close()?");
-        }
-        helperLock = true;
         if (this.neo4jGraphQL) {
-            throw new Error("Neo4jGraphQL already initialized");
+            throw new Error("Neo4jGraphQL already initialized. Did you forget calling .close()?");
         }
         const driver = await this.getDriver();
         this.neo4jGraphQL = new Neo4jGraphQL({
@@ -100,7 +94,7 @@ export class TestHelper {
     }
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
-        if (!helperLock) {
+        if (!this.neo4jGraphQL) {
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
         const driver = await this.getDriver();
@@ -113,7 +107,13 @@ export class TestHelper {
         }
         await this.cleanNodes(driver, this.uniqueTypes);
         await driver.close();
-        helperLock = false;
+        this.reset();
+    }
+
+    private reset() {
+        this.driver = undefined;
+        this.uniqueTypes = [];
+        this.neo4jGraphQL = undefined;
     }
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
@@ -126,8 +126,10 @@ export class TestHelper {
         };
     }
 
-    @Memoize()
     public async getDriver(): Promise<neo4j.Driver> {
+        if (this.driver) {
+            return this.driver;
+        }
         const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
         // if (process.env.NEO_WAIT) {
@@ -145,7 +147,8 @@ export class TestHelper {
             );
         }
 
-        return driver;
+        this.driver = driver;
+        return this.driver;
     }
 
     /** Use only for tests needing a session, for normal tests use `.runGraphQL` instead.

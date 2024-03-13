@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1249", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Bulk: UniqueType;
     let Material: UniqueType;
@@ -29,7 +29,6 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
     let typeDefs: string;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         Bulk = testHelper.createUniqueType("Bulk");
         Material = testHelper.createUniqueType("Material");
         Supplier = testHelper.createUniqueType("Supplier");

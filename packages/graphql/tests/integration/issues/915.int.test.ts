@@ -83,10 +83,9 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
     let MULTIDB_SUPPORT = true;
     let Order: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         driver = await testHelper.getDriver();
         Order = testHelper.createUniqueType("Order");
 

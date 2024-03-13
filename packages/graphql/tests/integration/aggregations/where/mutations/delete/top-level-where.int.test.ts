@@ -21,7 +21,7 @@ import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Delete using top level aggregate where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -38,7 +38,6 @@ describe("Delete using top level aggregate where", () => {
     const content5 = "Some more content";
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
 

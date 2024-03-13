@@ -22,10 +22,9 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Advanced Filtering", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true"; // this may cause race condition
     });
 

@@ -24,10 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
     let systemType: UniqueType;
     let governedDataTest: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         systemType = testHelper.createUniqueType("System");
         governedDataTest = testHelper.createUniqueType("GovernedData");
 

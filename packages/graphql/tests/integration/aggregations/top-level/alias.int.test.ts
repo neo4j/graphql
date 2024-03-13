@@ -22,11 +22,10 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-alias", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeMovie: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
     });
 

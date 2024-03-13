@@ -21,11 +21,9 @@ import { generate } from "randomstring";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-string", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

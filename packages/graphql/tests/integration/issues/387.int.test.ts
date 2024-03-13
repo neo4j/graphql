@@ -24,14 +24,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let name: string;
     let url: string;
     let typeDefs: DocumentNode;
     let Place: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Place = testHelper.createUniqueType("Place");
 
         name = generate({

@@ -23,13 +23,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/326", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
     let User: UniqueType;
     let id: string;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         id = generate({
             charset: "alphabetic",

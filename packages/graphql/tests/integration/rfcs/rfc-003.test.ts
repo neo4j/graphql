@@ -22,14 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("integration/rfc/003", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Director: UniqueType;
     let Movie: UniqueType;
     let CoDirector: UniqueType;
     let Address: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         Director = testHelper.createUniqueType("Director");
         Movie = testHelper.createUniqueType("Movie");
         CoDirector = testHelper.createUniqueType("CoDirector");

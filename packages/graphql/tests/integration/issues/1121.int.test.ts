@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1121", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Food: UniqueType;
     let Banana: UniqueType;
@@ -29,8 +29,6 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
     let Syrup: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Food = testHelper.createUniqueType("Food");
         Banana = testHelper.createUniqueType("Banana");
         Sugar = testHelper.createUniqueType("Sugar");

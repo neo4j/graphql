@@ -21,7 +21,7 @@ import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Connect using aggregate where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let userType: UniqueType;
     let postType: UniqueType;
     let likeInterface: UniqueType;
@@ -37,7 +37,6 @@ describe("Connect using aggregate where", () => {
     const date3 = new Date("2022-08-11T10:06:25.000Z");
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");
@@ -307,7 +306,7 @@ describe("Connect using aggregate where", () => {
 });
 
 describe("Connect UNIONs using aggregate where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let userType: UniqueType;
     let specialUserType: UniqueType;
     let postType: UniqueType;
@@ -329,7 +328,6 @@ describe("Connect UNIONs using aggregate where", () => {
     const content3 = "Post 3 has some long content";
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         specialUserType = testHelper.createUniqueType("SpecialUser");
         postType = testHelper.createUniqueType("Post");

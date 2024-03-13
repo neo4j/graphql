@@ -21,14 +21,13 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("Nested Field Level Aggregations", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
 

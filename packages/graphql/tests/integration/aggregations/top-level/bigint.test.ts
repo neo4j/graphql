@@ -21,13 +21,11 @@ import { generate } from "randomstring";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-bigint", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     const bigInt = "2147483647";
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

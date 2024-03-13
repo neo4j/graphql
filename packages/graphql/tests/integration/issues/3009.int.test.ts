@@ -21,10 +21,9 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3009", () => {
     let User: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
     });
 

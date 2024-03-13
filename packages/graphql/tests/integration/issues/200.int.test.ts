@@ -23,10 +23,9 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/200", () => {
     let Category: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         Category = testHelper.createUniqueType("Category");
     });
 

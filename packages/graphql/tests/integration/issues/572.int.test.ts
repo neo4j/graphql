@@ -21,11 +21,9 @@ import { gql } from "graphql-tag";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

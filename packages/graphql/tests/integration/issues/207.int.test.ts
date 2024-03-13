@@ -23,10 +23,9 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
     let Book: UniqueType;
     let Author: UniqueType;
     let typeDefs: string;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         Book = testHelper.createUniqueType("Book");
         Author = testHelper.createUniqueType("Author");
         typeDefs = `

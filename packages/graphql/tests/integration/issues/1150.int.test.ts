@@ -24,7 +24,7 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Battery: UniqueType;
     let CombustionEngine: UniqueType;
@@ -32,8 +32,6 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     let DriveComposition: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Battery = testHelper.createUniqueType("Battery");
         CombustionEngine = testHelper.createUniqueType("CombustionEngine");
         Drive = testHelper.createUniqueType("Drive");

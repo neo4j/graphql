@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2871", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let FirstLevel: UniqueType;
     let SecondLevel: UniqueType;
@@ -65,8 +65,6 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     };
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         FirstLevel = testHelper.createUniqueType("FirstLevel");
         SecondLevel = testHelper.createUniqueType("SecondLevel");
         ThirdLevel = testHelper.createUniqueType("ThirdLevel");

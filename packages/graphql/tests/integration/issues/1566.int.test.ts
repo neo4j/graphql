@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
     let testProject: UniqueType;
     let testCommunity: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         testContent = testHelper.createUniqueType("Content");
         testProject = testHelper.createUniqueType("Project");
         testCommunity = testHelper.createUniqueType("Community");

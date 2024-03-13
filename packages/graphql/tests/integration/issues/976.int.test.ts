@@ -24,11 +24,9 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/976", () => {
     let testBibliographicReference: UniqueType;
     let testConcept: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         testBibliographicReference = testHelper.createUniqueType("BibliographicReference");
         testConcept = testHelper.createUniqueType("Concept");
 

@@ -25,13 +25,12 @@ import { TestHelper } from "../utils/tests-helper";
 describe("query options", () => {
     let neoSchema: Neo4jGraphQL;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Actor: UniqueType;
     let Movie: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Actor = testHelper.createUniqueType("Actor");
         Movie = testHelper.createUniqueType("Movie");
 

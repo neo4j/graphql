@@ -27,10 +27,9 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     let UserDemographics: UniqueType;
     let typeDefs: DocumentNode;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         UserDemographics = testHelper.createUniqueType("UserDemographics");
 

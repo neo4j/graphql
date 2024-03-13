@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2662", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -39,8 +39,6 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     const post1Average = (someString1.length + someString2.length) / 2;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         likesInterface = testHelper.createUniqueType("Likes");
@@ -736,7 +734,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
 });
 
 describe("https://github.com/neo4j/graphql/issues/2662 - alternative typedefs", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -749,8 +747,6 @@ describe("https://github.com/neo4j/graphql/issues/2662 - alternative typedefs", 
     const post1Average = (someString1.length + someString2.length) / 2;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         likesInterface = testHelper.createUniqueType("Likes");

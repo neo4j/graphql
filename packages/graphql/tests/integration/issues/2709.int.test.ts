@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2709", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Dishney: UniqueType;
     let Netflix: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Dishney = testHelper.createUniqueType("Dishney");
         Netflix = testHelper.createUniqueType("Netflix");
@@ -157,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 });
 
 describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Dishney: UniqueType;
@@ -165,8 +163,6 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     let Publisher: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Dishney = testHelper.createUniqueType("Dishney");
         Netflix = testHelper.createUniqueType("Netflix");

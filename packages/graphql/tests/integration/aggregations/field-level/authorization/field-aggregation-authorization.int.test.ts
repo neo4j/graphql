@@ -32,7 +32,7 @@ describe("Field Level Aggregations Auth", () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`isAuthenticated auth requests ~ $name`, ({ name, selection }) => {
         let token: string;
-        let testHelper: TestHelper;
+        const testHelper = new TestHelper();
 
         let typeMovie: UniqueType;
         let typeActor: UniqueType;
@@ -40,8 +40,6 @@ describe("Field Level Aggregations Auth", () => {
         const secret = "secret";
 
         beforeEach(async () => {
-            testHelper = new TestHelper();
-
             typeMovie = testHelper.createUniqueType("Movie");
             typeActor = testHelper.createUniqueType("Actor");
             typeDefs = `
@@ -141,7 +139,7 @@ describe("Field Level Aggregations Auth", () => {
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`allow requests ~ $name`, ({ name, selection }) => {
-        let testHelper: TestHelper;
+        const testHelper = new TestHelper();
 
         let typeMovie: UniqueType;
         let typeActor: UniqueType;
@@ -149,8 +147,6 @@ describe("Field Level Aggregations Auth", () => {
         const secret = "secret";
 
         beforeEach(async () => {
-            testHelper = new TestHelper();
-
             typeMovie = testHelper.createUniqueType("Movie");
             typeActor = testHelper.createUniqueType("Actor");
             typeDefs = `

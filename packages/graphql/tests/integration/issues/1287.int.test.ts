@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1287", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let screeningsType: UniqueType;
     let norwegianScreenable: UniqueType;
@@ -29,8 +29,6 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
     let typeDefs: string;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
-
         screeningsType = testHelper.createUniqueType("Screening");
         norwegianScreenable = testHelper.createUniqueType("NorwegianScreenableMeta");
 

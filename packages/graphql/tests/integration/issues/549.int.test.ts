@@ -21,11 +21,9 @@ import { gql } from "graphql-tag";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/549", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeAll(() => {
-        testHelper = new TestHelper();
-    });
+    beforeAll(() => {});
 
     afterAll(async () => {
         await testHelper.close();

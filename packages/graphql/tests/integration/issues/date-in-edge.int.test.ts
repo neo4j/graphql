@@ -22,14 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("587: Dates in edges can cause wrongly generated cypher", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
     let Genre: UniqueType;
     let Actor: UniqueType;
     let Movie: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         Genre = testHelper.createUniqueType("Genre");
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");

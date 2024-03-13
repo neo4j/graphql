@@ -23,11 +23,9 @@ import { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("unwind-create", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

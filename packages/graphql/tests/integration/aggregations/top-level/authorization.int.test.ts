@@ -22,12 +22,10 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level authorization", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

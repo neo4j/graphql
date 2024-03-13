@@ -24,7 +24,7 @@ import { TestHelper } from "../utils/tests-helper";
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("https://github.com/neo4j/graphql/issues/4520", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Serie: UniqueType;
@@ -32,8 +32,6 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
     let Actor: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Serie = testHelper.createUniqueType("Serie");
         FxEngineer = testHelper.createUniqueType("FxEngineer");

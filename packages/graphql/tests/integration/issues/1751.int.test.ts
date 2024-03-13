@@ -24,11 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
     let organizationType: UniqueType;
     let adminType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         organizationType = testHelper.createUniqueType("Organization");
         adminType = testHelper.createUniqueType("Admin");
 

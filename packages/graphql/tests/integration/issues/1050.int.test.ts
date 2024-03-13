@@ -27,10 +27,9 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
     let testMessage: UniqueType;
     let testAttachment: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         testUser = testHelper.createUniqueType("User");
         testInbox = testHelper.createUniqueType("Inbox");
         testMessage = testHelper.createUniqueType("Message");

@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4113", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Store: UniqueType;
@@ -30,7 +30,6 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
     let TransactionItem: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Store = testHelper.createUniqueType("Store");
         Transaction = testHelper.createUniqueType("Transaction");
@@ -220,7 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
 });
 
 describe("replicates the test for relationship to interface so that multiple refNodes are target", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Store: UniqueType;
@@ -229,8 +228,6 @@ describe("replicates the test for relationship to interface so that multiple ref
     let TransactionItem2: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Store = testHelper.createUniqueType("Store");
         Transaction = testHelper.createUniqueType("Transaction");

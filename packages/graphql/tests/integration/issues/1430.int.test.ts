@@ -27,11 +27,9 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
     let testChildTwo: UniqueType;
 
     let schema: GraphQLSchema;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         testAbce = testHelper.createUniqueType("ABCE");
         testChildOne = testHelper.createUniqueType("ChildOne");
         testChildTwo = testHelper.createUniqueType("ChildTwo");

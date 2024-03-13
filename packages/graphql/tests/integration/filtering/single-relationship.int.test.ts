@@ -24,10 +24,9 @@ describe("Single relationship (1-*) filtering", () => {
     let Person: UniqueType;
     let Movie: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Person = testHelper.createUniqueType("Person");
         Movie = testHelper.createUniqueType("Movie");
 

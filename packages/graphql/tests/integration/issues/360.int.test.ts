@@ -20,11 +20,9 @@
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/360", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();

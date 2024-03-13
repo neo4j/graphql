@@ -26,10 +26,9 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     let teamType: UniqueType;
     let mitigationStateType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         riskType = testHelper.createUniqueType("Risk");
         teamType = testHelper.createUniqueType("Team");
         mitigationStateType = testHelper.createUniqueType("MitigationState");

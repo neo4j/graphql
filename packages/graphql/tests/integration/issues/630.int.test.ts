@@ -24,10 +24,9 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/630", () => {
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
 

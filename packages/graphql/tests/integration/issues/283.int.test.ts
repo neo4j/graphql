@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/283", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Post: UniqueType;
     let typeDefs: string;
 
@@ -36,7 +36,6 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
     };
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         typeDefs = `
         type Mutation {
             login: String

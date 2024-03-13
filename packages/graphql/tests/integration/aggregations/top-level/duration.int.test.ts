@@ -23,13 +23,11 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-duration", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
     let typeDefs: string;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         typeDefs = `
             type ${Movie} {

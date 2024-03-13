@@ -23,14 +23,13 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2548", () => {
     const secret = "secret";
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
 
     let query: string;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
 
         const typeDefs = `

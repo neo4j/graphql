@@ -22,13 +22,12 @@ import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-bigint", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let bigInt: string;
     let User: UniqueType;
     let Post: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         bigInt = "2147483647";
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");

@@ -25,11 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     let brandType: UniqueType;
     let manufacturerType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         seriesType = testHelper.createUniqueType("Series");
         brandType = testHelper.createUniqueType("Brand");
         manufacturerType = testHelper.createUniqueType("Manufacturer");

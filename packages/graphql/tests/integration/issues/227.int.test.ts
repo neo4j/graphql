@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
     let Member: UniqueType;
     let Gender: UniqueType;
     let Town: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         Member = testHelper.createUniqueType("Member");
         Gender = testHelper.createUniqueType("Gender");
         Town = testHelper.createUniqueType("Town");

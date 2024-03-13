@@ -21,7 +21,7 @@ import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Update using aggregate where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let userType: UniqueType;
     let postType: UniqueType;
     let likeInterface: UniqueType;
@@ -37,7 +37,6 @@ describe("Update using aggregate where", () => {
     const date3 = new Date("2022-08-11T10:06:25.000Z");
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");

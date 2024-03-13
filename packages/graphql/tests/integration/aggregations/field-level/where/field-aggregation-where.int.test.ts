@@ -21,15 +21,13 @@ import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Field Level Aggregations Where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
     let typeMovie: UniqueType;
     let typePerson: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         typeMovie = testHelper.createUniqueType("Movie");
         typePerson = testHelper.createUniqueType("Person");
 

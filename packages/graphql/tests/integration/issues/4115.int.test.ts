@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4115", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
     let User: UniqueType;
@@ -30,8 +30,6 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
     let Person: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Family = testHelper.createUniqueType("Family");
         Person = testHelper.createUniqueType("Person");

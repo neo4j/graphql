@@ -26,10 +26,9 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
 
     let counter = 0;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         testProduct = testHelper.createUniqueType("Product");
         testProgrammeItem = testHelper.createUniqueType("ProgrammeItem");
 

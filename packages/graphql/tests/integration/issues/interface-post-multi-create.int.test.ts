@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Projecting interface relationships following create of multiple nodes", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Person: UniqueType;
     let Place: UniqueType;
     let Interaction: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Person = testHelper.createUniqueType("Person");
         Place = testHelper.createUniqueType("Place");
         Interaction = testHelper.createUniqueType("Interaction");

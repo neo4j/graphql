@@ -23,7 +23,7 @@ import { TestHelper } from "../../../utils/tests-helper";
 
 describe(`Field Level Authorization Where Requests`, () => {
     let token: string;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
@@ -32,8 +32,6 @@ describe(`Field Level Authorization Where Requests`, () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
         typeDefs = `

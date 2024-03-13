@@ -22,7 +22,7 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-string", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeMovie: UniqueType;
 
     const titles = [10, 11, 12, 13, 14].map((length) =>
@@ -34,7 +34,6 @@ describe("aggregations-top_level-string", () => {
     );
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
     });
 

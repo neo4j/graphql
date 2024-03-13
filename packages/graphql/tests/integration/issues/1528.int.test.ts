@@ -26,10 +26,9 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
     let testMovie: UniqueType;
     let testGenre: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         testPerson = testHelper.createUniqueType("Person");
         testMovie = testHelper.createUniqueType("Movie");
         testGenre = testHelper.createUniqueType("Genre");

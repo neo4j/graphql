@@ -24,7 +24,7 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let schema: GraphQLSchema;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
     let ApplicationVariant: UniqueType;
@@ -34,7 +34,6 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let typeDefs: string;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         ApplicationVariant = testHelper.createUniqueType("ApplicationVariant");
         NameDetails = testHelper.createUniqueType("NameDetails");
         Market = testHelper.createUniqueType("Market");

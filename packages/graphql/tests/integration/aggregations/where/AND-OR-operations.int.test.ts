@@ -21,7 +21,7 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("Nested within AND/OR", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -38,7 +38,6 @@ describe("Nested within AND/OR", () => {
     const content5 = "Some more content";
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
 

@@ -24,14 +24,12 @@ import { TestHelper } from "../../../utils/tests-helper";
 describe("Field Level Aggregations Field Authorization", () => {
     const secret = "the-secret";
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Series: UniqueType;
     let Actor: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Series = testHelper.createUniqueType("Series");
         Actor = testHelper.createUniqueType("Actor");
 

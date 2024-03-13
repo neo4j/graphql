@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let token: string;
 
     let BacentaType: UniqueType;
@@ -34,8 +34,6 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let typeDefs: string;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         BacentaType = testHelper.createUniqueType("Bacenta");
         ServiceLogType = testHelper.createUniqueType("ServiceLog");
         BussingRecordType = testHelper.createUniqueType("BussingRecord");

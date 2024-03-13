@@ -23,14 +23,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/923", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let testBlogpost: UniqueType;
     let testCategory: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         testBlogpost = testHelper.createUniqueType("BlogPost");
         testCategory = testHelper.createUniqueType("Category");
         // driver = await neo4j.getDriver();

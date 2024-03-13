@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
     let addressType: UniqueType;
     let postalCodeType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         customerType = testHelper.createUniqueType("Customer");
         addressType = testHelper.createUniqueType("Address");
         postalCodeType = testHelper.createUniqueType("PostalCode");
