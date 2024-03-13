@@ -17,18 +17,13 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-string", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let typeMovie: UniqueType;
-    let session: Session;
 
     const titles = [10, 11, 12, 13, 14].map((length) =>
         generate({
@@ -38,22 +33,13 @@ describe("aggregations-top_level-string", () => {
         })
     );
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        typeMovie = new UniqueType("Movie");
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        typeMovie = testHelper.createUniqueType("Movie");
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return the shortest of node properties", async () => {
@@ -69,9 +55,9 @@ describe("aggregations-top_level-string", () => {
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await session.run(
+        await testHelper.runCypher(
             `
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[0]}"})
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
@@ -93,11 +79,7 @@ describe("aggregations-top_level-string", () => {
                 }
             `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -125,9 +107,9 @@ describe("aggregations-top_level-string", () => {
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (:${typeMovie} {testId: $id, title: "${titles[0]}"})
                 CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
@@ -149,11 +131,7 @@ describe("aggregations-top_level-string", () => {
                 }
             `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -181,9 +159,9 @@ describe("aggregations-top_level-string", () => {
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await session.run(
+        await testHelper.runCypher(
             `
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[0]}"})
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
@@ -206,11 +184,7 @@ describe("aggregations-top_level-string", () => {
                 }
             `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

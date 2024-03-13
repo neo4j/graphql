@@ -17,25 +17,20 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../../src/classes";
-import { UniqueType } from "../../../../utils/graphql-types";
-import Neo4jHelper from "../../../neo4j";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-id", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
     let Post: UniqueType;
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Post = new UniqueType("Post");
-        User = new UniqueType("User");
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+
+        Post = testHelper.createUniqueType("Post");
+        User = testHelper.createUniqueType("User");
 
         const typeDefs = `
             type ${User} {
@@ -52,16 +47,14 @@ describe("aggregations-where-edge-id", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return posts where a edge like ID is EQUAL to", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -72,15 +65,14 @@ describe("aggregations-where-edge-id", () => {
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { testId: "${testId}" }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
                 `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { testId_EQUAL: "${testId}" } } }) {
                         testString
@@ -91,26 +83,19 @@ describe("aggregations-where-edge-id", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Post.plural]).toEqual([
-                {
-                    testString,
-                    likes: [{ testString }],
-                },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString }],
+            },
+        ]);
     });
 });

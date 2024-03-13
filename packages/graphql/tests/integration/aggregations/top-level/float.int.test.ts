@@ -17,58 +17,49 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-float", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
     let Movie: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
             type ${Movie} {
                 testString: String
                 imdbRating: Float
             }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return the min of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
@@ -78,50 +69,36 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                imdbRating: {
-                    min: expect.closeTo(1.1),
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            imdbRating: {
+                min: expect.closeTo(1.1),
+            },
+        });
     });
 
     test("should return the max of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
@@ -131,50 +108,40 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                imdbRating: {
-                    max: expect.closeTo(4.1),
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            imdbRating: {
+                max: expect.closeTo(4.1),
+            },
+        });
     });
 
     test("should return the average of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
@@ -184,50 +151,40 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                imdbRating: {
-                    average: expect.closeTo(2.6),
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            imdbRating: {
+                average: expect.closeTo(2.6),
+            },
+        });
     });
 
     test("should return the sum of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                 ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
@@ -237,50 +194,40 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                imdbRating: {
-                    sum: expect.closeTo(10.4),
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            imdbRating: {
+                sum: expect.closeTo(10.4),
+            },
+        });
     });
 
     test("should return the min, max, sum and average of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4.1})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         imdbRating {
@@ -293,28 +240,21 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                imdbRating: {
-                    min: expect.closeTo(1.1),
-                    max: expect.closeTo(4.1),
-                    average: expect.closeTo(2.6),
-                    sum: expect.closeTo(10.4),
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            imdbRating: {
+                min: expect.closeTo(1.1),
+                max: expect.closeTo(4.1),
+                average: expect.closeTo(2.6),
+                sum: expect.closeTo(10.4),
+            },
+        });
     });
 });

@@ -17,29 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-basic", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should count nodes", async () => {
-        const session = await neo4j.getSession();
-
-        const randomType = new UniqueType("Movie");
+        const randomType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             type ${randomType.name} {
@@ -47,17 +39,14 @@ describe("aggregations-top_level-basic", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        try {
-            await session.run(
-                `
-                    CREATE (:${randomType.name} {id: randomUUID()})
-                    CREATE (:${randomType.name} {id: randomUUID()})
-                `
-            );
+        await testHelper.runCypher(`
+            CREATE (:${randomType.name} {id: randomUUID()})
+            CREATE (:${randomType.name} {id: randomUUID()})
+        `);
 
-            const query = `
+        const query = `
                 {
                     ${randomType.operations.aggregate} {
                         count
@@ -65,23 +54,12 @@ describe("aggregations-top_level-basic", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.operations.aggregate]).toEqual({
-                count: 2,
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[randomType.operations.aggregate]).toEqual({
+            count: 2,
+        });
     });
 });

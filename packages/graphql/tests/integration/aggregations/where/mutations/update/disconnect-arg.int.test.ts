@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../../../utils/clean-nodes";
-import { UniqueType } from "../../../../../utils/graphql-types";
-import Neo4jHelper from "../../../../neo4j";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Disconnect using aggregate where", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
     let userType: UniqueType;
     let postType: UniqueType;
     let likeInterface: UniqueType;
@@ -41,16 +34,11 @@ describe("Disconnect using aggregate where", () => {
     const date2 = new Date("2022-05-01T18:46:40.000Z");
     const date3 = new Date("2022-08-11T10:06:25.000Z");
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-        userType = new UniqueType("User");
-        postType = new UniqueType("Post");
-        likeInterface = new UniqueType("LikeEdge");
+        testHelper = new TestHelper();
+        userType = testHelper.createUniqueType("User");
+        postType = testHelper.createUniqueType("Post");
+        likeInterface = testHelper.createUniqueType("LikeEdge");
         typeDefs = `
             type ${userType.name} {
                 name: String!
@@ -68,7 +56,7 @@ describe("Disconnect using aggregate where", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${postType.name} {id: "${postId1}"})
@@ -76,19 +64,13 @@ describe("Disconnect using aggregate where", () => {
             CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should disconnect by using an aggregation count", async () => {
@@ -119,16 +101,12 @@ describe("Disconnect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([{ name: userName, likedPosts: expect.toIncludeSameMembers([{ id: postId1 }]) }]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -177,16 +155,12 @@ describe("Disconnect using aggregate where", () => {
              }
          `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([{ name: userName, likedPosts: [] }]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
              WHERE u.name = "${userName}" 
@@ -238,16 +212,12 @@ describe("Disconnect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([{ name: userName, likedPosts: [{ id: postId1 }] }]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
              WHERE u.name = "${userName2}" 
@@ -260,10 +230,7 @@ describe("Disconnect using aggregate where", () => {
 });
 
 describe("Disconnect UNIONs using aggregate where", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
     let userType: UniqueType;
     let specialUserType: UniqueType;
     let postType: UniqueType;
@@ -284,18 +251,13 @@ describe("Disconnect UNIONs using aggregate where", () => {
     const content2 = "1234";
     const content3 = "Post 3 has some long content";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-        userType = new UniqueType("User");
-        specialUserType = new UniqueType("SpecialUser");
-        postType = new UniqueType("Post");
-        likeInterface = new UniqueType("LikeEdge");
-        userUnion = new UniqueType("UserUnion");
+        testHelper = new TestHelper();
+        userType = testHelper.createUniqueType("User");
+        specialUserType = testHelper.createUniqueType("SpecialUser");
+        postType = testHelper.createUniqueType("Post");
+        likeInterface = testHelper.createUniqueType("LikeEdge");
+        userUnion = testHelper.createUniqueType("UserUnion");
         typeDefs = `
             type ${userType.name} {
                 name: String!
@@ -320,7 +282,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (u:${specialUserType.name} {specialName: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u3:${userType.name} {name: "${userName3}"})
@@ -337,19 +299,13 @@ describe("Disconnect UNIONs using aggregate where", () => {
             CREATE (u3)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p2)
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType, specialUserType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should disconnect by using an aggregation count", async () => {
@@ -386,18 +342,14 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
         expect(users).toEqual([
             { id: postId2, likes: expect.toIncludeSameMembers([{ name: userName2 }, { name: userName3 }]) },
         ]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
@@ -457,11 +409,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -471,7 +419,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
             },
         ]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
@@ -531,11 +479,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -545,7 +489,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
             },
         ]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
@@ -616,11 +560,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -630,7 +570,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }]),
             },
         ]);
-        const storedValue = await session.run(
+        const storedValue = await testHelper.runCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
