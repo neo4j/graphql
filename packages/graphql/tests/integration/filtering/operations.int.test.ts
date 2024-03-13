@@ -17,23 +17,18 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Filtering Operations", () => {
-    const personType = new UniqueType("Person");
-    const movieType = new UniqueType("Movie");
+    let testHelper: TestHelper;
+    let personType: UniqueType;
+    let movieType: UniqueType;
 
-    let driver: Driver;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
-    let neo4j: Neo4jHelper;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        personType = testHelper.createUniqueType("Person");
+        movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
         type ${personType} {
@@ -49,22 +44,17 @@ describe("Filtering Operations", () => {
         }
     `;
 
-        session = await neo4j.getSession();
-        await session.run(`CREATE (:${movieType} {title: "The Matrix", released: 1999})
+        await testHelper.runCypher(`CREATE (:${movieType} {title: "The Matrix", released: 1999})
                 CREATE (:${movieType} {title: "The Italian Job", released: 1969})
                 CREATE (:${movieType} {title: "The Italian Job", released: 2003})
                 CREATE (:${movieType} {title: "The Lion King", released: 1994})
             `);
 
-        driver = await neo4j.getDriver();
-
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await session.close();
-
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     it("Combine AND and OR operations", async () => {
@@ -77,11 +67,7 @@ describe("Filtering Operations", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 

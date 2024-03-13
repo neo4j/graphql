@@ -18,34 +18,22 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("interface relationships", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
 
     let typeMovie: UniqueType;
     let typeSeries: UniqueType;
     let typeActor: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        typeMovie = new UniqueType("Movie");
-        typeSeries = new UniqueType("Series");
-        typeActor = new UniqueType("Actor");
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeSeries = testHelper.createUniqueType("Series");
+        typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
             interface Production {
@@ -73,17 +61,13 @@ describe("interface relationships", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typeSeries]);
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
@@ -131,7 +115,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -152,10 +136,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { title: movieTitle2 },
         });
 
@@ -217,7 +198,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -239,10 +220,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { title: movieTitle },
         });
 
@@ -308,7 +286,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -329,10 +307,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { title: movieTitle },
         });
 
@@ -388,7 +363,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -411,10 +386,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { title: movieTitle2 },
         });
 
@@ -484,7 +456,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -507,10 +479,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { title: movieTitle2 },
         });
 

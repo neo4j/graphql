@@ -17,58 +17,52 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import type { JWKSMock } from "mock-jwks";
 import createJWKSMock from "mock-jwks";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Global authentication - Authorization JWKS plugin", () => {
     let jwksMock: JWKSMock;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
+    let testMovie: UniqueType;
 
-    const testMovie = new UniqueType("Movie");
+    let typeDefs: string;
 
-    const typeDefs = `
-        type ${testMovie} {
-            name: String
-        }
-        extend schema @authentication
-    `;
-
-    const query = `
-        {
-            ${testMovie.plural} {
-                name
-            }
-        }
-    `;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
+    let query: string;
 
     beforeEach(() => {
+        testHelper = new TestHelper();
+
+        testMovie = testHelper.createUniqueType("Movie");
+
+        typeDefs = `
+            type ${testMovie} {
+                name: String
+            }
+            extend schema @authentication
+        `;
+
+        query = `
+            {
+                ${testMovie.plural} {
+                    name
+                }
+            }
+        `;
+
         // This creates a local Public Key Infrastructure (PKI)
         jwksMock = createJWKSMock("https://myAuthTest.auth0.com");
     });
 
-    afterEach(() => {
+    afterEach(async () => {
+        await testHelper.close();
         jwksMock.stop();
     });
 
     test("should fail if no JWT token is present and global authentication is enabled", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            driver,
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -79,11 +73,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -95,8 +85,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
     });
 
     test("should fail if invalid JWT token is provided and global authentication is enabled", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            driver,
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -107,13 +96,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({
-                token: `Bearer xxx.invalidtoken.xxxx`,
-            }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, `Bearer xxx.invalidtoken.xxxx`);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -125,8 +108,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
     });
 
     test("should not fail if valid JWT token is present and global authentication is enabled", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            driver,
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -143,13 +125,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
             iat: 1600000000,
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({
-                token,
-            }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
