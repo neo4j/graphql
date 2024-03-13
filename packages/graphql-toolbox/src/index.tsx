@@ -24,7 +24,7 @@ import { App } from "./App";
 const container = document.getElementById("root");
 
 if (!container) {
-    throw new Error("Could not find root element");
+    throw new Error("Could not find root element, uh oh");
 }
 
 const root = ReactDOM.createRoot(container);
