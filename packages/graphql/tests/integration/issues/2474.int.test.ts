@@ -166,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Mandate.operations.create]: {
@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             },
         });
 
-        const dbResult: any = await testHelper.runCypher(`
+        const dbResult: any = await testHelper.executeCypher(`
             MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})-[:HAS_POSTAL_CODE]->(postalCode:${PostalCode.name})
             RETURN mandate, valuation, estate, address, postalCode
         `);
@@ -285,7 +285,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Mandate.operations.create]: {
@@ -320,7 +320,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             },
         });
 
-        const dbResult: any = await testHelper.runCypher(`
+        const dbResult: any = await testHelper.executeCypher(`
             MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})<-[:HAS_ADDRESS]-(estate2:${Estate.name})
             RETURN mandate, valuation, estate, address, estate2
         `);

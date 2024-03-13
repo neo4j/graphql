@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
     });
 
     test("missing parameter with implicit AND", async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "3213" })-[:HAS_NAME { current: true }]->(:${testNameDetails} { fullName: "MHA1" })
                 CREATE (m:${testMasterData} { current: true, id: "323" })
@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 

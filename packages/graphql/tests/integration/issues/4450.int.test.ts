@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (:${Actor} {name: "actor-1"})-[:IN_SCENE {cut: true}]->(:${Scene} {number: 1})-[:AT_LOCATION]->(:${Location} {city: "test"})
                 `
@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query);
+        const response = await testHelper.executeGraphQL(query);
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({

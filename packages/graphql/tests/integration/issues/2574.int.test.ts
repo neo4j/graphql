@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2574", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: {
                 input: {
                     child: {

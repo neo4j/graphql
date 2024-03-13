@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
             }
         `;
 
-        const res = await testHelper.runGraphQL(query);
+        const res = await testHelper.executeGraphQL(query);
 
         expect(res.errors).toBeUndefined();
 

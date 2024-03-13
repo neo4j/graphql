@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
     });
 
     test("Update with create on an interface type should return valid Cypher", async () => {
-        await testHelper.runCypher(`CREATE (:${Movie} { title: "John Wick" })`);
+        await testHelper.executeCypher(`CREATE (:${Movie} { title: "John Wick" })`);
 
         const mutation = `
             mutation {
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
         expect(mutationResult.data).toEqual({

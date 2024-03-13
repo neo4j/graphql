@@ -57,7 +57,7 @@ describe("aggregations-top_level-many", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${typeMovie} {testId: "${testId}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${typeMovie} {testId: "${testId}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
@@ -90,7 +90,7 @@ describe("aggregations-top_level-many", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

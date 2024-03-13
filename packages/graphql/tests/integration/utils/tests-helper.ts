@@ -63,12 +63,12 @@ export class TestHelper {
         return uniqueType;
     }
 
-    public async runCypher(query: string, params: Record<string, unknown> = {}): Promise<neo4j.QueryResult> {
+    public async executeCypher(query: string, params: Record<string, unknown> = {}): Promise<neo4j.QueryResult> {
         const driver = await this.getDriver();
         return driver.executeQuery(query, params, { database: this.database });
     }
 
-    public async runGraphQL(
+    public async executeGraphQL(
         query: string,
         args: Pick<GraphQLArgs, "variableValues" | "contextValue"> = {}
     ): Promise<ExecutionResult> {
@@ -88,12 +88,12 @@ export class TestHelper {
         });
     }
 
-    public async runGraphQLWithToken(
+    public async executeGraphQLWithToken(
         query: string,
         token: string,
         args: Partial<Pick<GraphQLArgs, "variableValues">> = {}
     ): Promise<ExecutionResult> {
-        return this.runGraphQL(query, {
+        return this.executeGraphQL(query, {
             ...args,
             contextValue: await this.getContextValue({ token }),
         });

@@ -118,11 +118,11 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
 
         const token = createBearerToken(secret, { uid: "user1_id" });
 
-        const createUsersResult = await testHelper.runGraphQLWithToken(createUsers, token);
+        const createUsersResult = await testHelper.executeGraphQLWithToken(createUsers, token);
 
         expect(createUsersResult.errors).toBeFalsy();
 
-        const createGroupsResult = await testHelper.runGraphQLWithToken(createGroups, token, {
+        const createGroupsResult = await testHelper.executeGraphQLWithToken(createGroups, token, {
             variableValues: {
                 input: [
                     {
@@ -162,7 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
 
         expect(createGroupsResult.errors).toBeFalsy();
 
-        const updateGroupsResult = await testHelper.runGraphQLWithToken(updateGroups, token, {
+        const updateGroupsResult = await testHelper.executeGraphQLWithToken(updateGroups, token, {
             variableValues: {
                 where: {
                     name: "Group 1",

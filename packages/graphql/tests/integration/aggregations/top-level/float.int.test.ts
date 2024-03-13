@@ -47,7 +47,7 @@ describe("aggregations-top_level-float", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
@@ -69,7 +69,7 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -86,7 +86,7 @@ describe("aggregations-top_level-float", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
@@ -108,7 +108,7 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -129,7 +129,7 @@ describe("aggregations-top_level-float", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
@@ -151,7 +151,7 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -172,7 +172,7 @@ describe("aggregations-top_level-float", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
@@ -194,7 +194,7 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -215,7 +215,7 @@ describe("aggregations-top_level-float", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, imdbRating: 1.1})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2.1})
@@ -240,7 +240,7 @@ describe("aggregations-top_level-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

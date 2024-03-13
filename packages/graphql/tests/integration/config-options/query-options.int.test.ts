@@ -72,14 +72,14 @@ describe("query options", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
               CREATE (:${Movie} {id: $id}), (:${Movie} {id: $id}), (:${Movie} {id: $id})
             `,
             { id }
         );
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
             contextValue: { cypherQueryOptions: { runtime: "interpreted" } },
         });

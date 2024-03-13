@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         episodeNr = faker.number.int({ max: 100000 });
         sameTitle = "sameTitle";
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -166,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -222,7 +222,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -285,7 +285,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 

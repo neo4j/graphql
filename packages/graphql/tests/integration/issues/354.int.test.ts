@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeTruthy();
         expect((result.errors as any[])[0].message).toBe(`${testComment.name}.post required exactly once`);

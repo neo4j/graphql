@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
         CREATE (personD:${personType.name} { name: "D", age: 25 })-[:ATTENDS]->(schoolYoung)
     `;
 
-        await testHelper.runCypher(cypher);
+        await testHelper.executeCypher(cypher);
 
         const query = `
             {
@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[personType.plural]).toEqual(

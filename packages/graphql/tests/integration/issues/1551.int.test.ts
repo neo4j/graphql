@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        await testHelper.runGraphQL(createMutation);
+        await testHelper.executeGraphQL(createMutation);
 
         const updateMutation = `
             mutation {
@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        const updateResult = await testHelper.runGraphQL(updateMutation);
+        const updateResult = await testHelper.executeGraphQL(updateMutation);
         expect(updateResult.errors).toEqual([
             new GraphQLError(`Cannot set non-nullable field ${testType.name}.level to null`),
         ]);

@@ -54,7 +54,7 @@ describe("Empty fields on unions due to escaped labels", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`CREATE (u:${typeUser.name} {name: "dan"})
+        await testHelper.executeCypher(`CREATE (u:${typeUser.name} {name: "dan"})
               CREATE (b:${typeBlog.name} {title:"my cool blog"})
               CREATE (p:${typePost.name} {content: "my cool post"})
 
@@ -81,7 +81,7 @@ describe("Empty fields on unions due to escaped labels", () => {
             }
         `;
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
             users: [{ name: "dan", content: [{ title: "my cool blog" }] }],

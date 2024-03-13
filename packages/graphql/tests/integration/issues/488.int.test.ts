@@ -101,11 +101,11 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             },
         };
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (j:${testJournalist.name} { id: "${journalistId}" })-[:HAS_KEYWORD]->(:${testEmoji.name} { id: "${emojiId}", type: "${emojiType}" })
             `);
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 

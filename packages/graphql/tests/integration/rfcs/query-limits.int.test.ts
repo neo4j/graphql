@@ -43,7 +43,7 @@ describe("integration/rfcs/query-limits", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         WITH [1,2,3,4,5] AS iterate
                         UNWIND iterate AS i
@@ -60,7 +60,7 @@ describe("integration/rfcs/query-limits", () => {
                         }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -92,7 +92,7 @@ describe("integration/rfcs/query-limits", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (movie:${randomType1.name} {id: "${movieId}"})
                         WITH movie, [1,2,3,4,5] AS iterate
@@ -113,7 +113,7 @@ describe("integration/rfcs/query-limits", () => {
                         }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -143,7 +143,7 @@ describe("integration/rfcs/query-limits", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (movie:${randomType1.name} {id: "${movieId}"})
                         WITH movie, [1,2,3,4,5] AS iterate
@@ -168,7 +168,7 @@ describe("integration/rfcs/query-limits", () => {
                         }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));

@@ -61,7 +61,7 @@ describe("aggregations-where-edge-bigint", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -79,7 +79,7 @@ describe("aggregations-where-edge-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -104,7 +104,7 @@ describe("aggregations-where-edge-bigint", () => {
         const someBigInt = `${bigInt}1`;
         const someBigIntGt = bigInt.substring(0, bigInt.length - 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someBigInt: ${someBigInt}}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -122,7 +122,7 @@ describe("aggregations-where-edge-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -144,7 +144,7 @@ describe("aggregations-where-edge-bigint", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -162,7 +162,7 @@ describe("aggregations-where-edge-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -186,7 +186,7 @@ describe("aggregations-where-edge-bigint", () => {
 
         const someBigIntLT = `${bigInt}1`;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -204,7 +204,7 @@ describe("aggregations-where-edge-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -226,7 +226,7 @@ describe("aggregations-where-edge-bigint", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -244,7 +244,7 @@ describe("aggregations-where-edge-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

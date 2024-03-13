@@ -50,7 +50,7 @@ describe(`Field Level Authorization Where Requests`, () => {
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }`;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (m:${typeMovie.name}
                 {name: "Terminator",year:1990,createdAt: datetime()})
                 <-[:ACTED_IN]-
@@ -84,7 +84,7 @@ describe(`Field Level Authorization Where Requests`, () => {
             }`;
 
         const token = createBearerToken(secret, { sub: "1234" });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
             count: 1,
@@ -100,7 +100,7 @@ describe(`Field Level Authorization Where Requests`, () => {
                 }
             }`;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data as any).toEqual({
@@ -118,7 +118,7 @@ describe(`Field Level Authorization Where Requests`, () => {
             }`;
 
         const invalidToken = createBearerToken(secret, { sub: "2222" });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, invalidToken);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, invalidToken);
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
             count: 0,

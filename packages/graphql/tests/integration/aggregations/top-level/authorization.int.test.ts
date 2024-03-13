@@ -65,13 +65,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${randomType.name} {id: "${userId}"})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -112,13 +112,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:User {id: "${userId}"})-[:POSTED]->(:Post {content: randomUUID()})
             `);
 
         const token = createBearerToken(secret, { sub: userId });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -170,13 +170,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingInt: rand()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -222,13 +222,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someId: "some-random-string"})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -274,13 +274,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someString: "some-random-string"})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -326,13 +326,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingFloat: rand()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -378,13 +378,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingBigInt: rand()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -430,13 +430,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -482,13 +482,13 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });

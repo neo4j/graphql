@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${JobPlan} {tenantID: $tenantID})
                     CREATE (:${JobPlan} {tenantID: $tenantID})
@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
             tenant_id: tenantID,
         });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeFalsy();
 

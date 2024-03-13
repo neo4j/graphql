@@ -75,10 +75,10 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 }
             }
         `;
-        const createUserResult = await testHelper.runGraphQL(createUserQuery);
+        const createUserResult = await testHelper.executeGraphQL(createUserQuery);
         expect(createUserResult.errors).toBeUndefined();
 
-        const createOrgResult = (await testHelper.runGraphQL(createOrgQuery)) as any;
+        const createOrgResult = (await testHelper.executeGraphQL(createOrgQuery)) as any;
         expect(createOrgResult.errors).toBeUndefined();
         const orgId = createOrgResult?.data[testOrganization.operations.create][testOrganization.plural][0]
             .id as string;
@@ -97,10 +97,10 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 }
             `;
 
-        const swapSidesResult = await testHelper.runGraphQL(swapSidesQuery);
+        const swapSidesResult = await testHelper.executeGraphQL(swapSidesQuery);
         expect(swapSidesResult.errors).toBeUndefined();
 
-        const userOrgs = await testHelper.runCypher(`
+        const userOrgs = await testHelper.executeCypher(`
                 MATCH (user:${testUser.name} { name: "Luke Skywalker" })-[r:ACTIVELY_MANAGING]->(org:${testOrganization.name}) return org.name as orgName
             `);
 

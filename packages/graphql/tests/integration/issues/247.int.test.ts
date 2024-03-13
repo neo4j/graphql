@@ -94,14 +94,14 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             }
         `;
 
-        const createUsersResult = await testHelper.runGraphQL(createUsers, {
+        const createUsersResult = await testHelper.executeGraphQL(createUsers, {
             variableValues: { name },
         });
 
         expect(createUsersResult.errors).toBeFalsy();
         expect((createUsersResult.data as any)[User.operations.create][User.plural]).toEqual([{ name }]);
 
-        const createMoviesResult = await testHelper.runGraphQL(createMovies, {
+        const createMoviesResult = await testHelper.executeGraphQL(createMovies, {
             variableValues: { title1, title2, title3 },
         });
 
@@ -112,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             { title: title3 },
         ]);
 
-        const connectResult = await testHelper.runGraphQL(connect, {
+        const connectResult = await testHelper.executeGraphQL(connect, {
             variableValues: { name, title2, title3 },
         });
 

@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (t1:${typeMovie.name} { title: "Terminator 1", duration: duration("PT1H47M") }),
             (t2:${typeMovie.name} { title: "Terminator 2", duration: duration("PT2H15M") }),
             (arnold:${typeActor.name} { name: "Arnold"}),
@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.plural]).toEqual(
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/2697", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.plural]).toEqual([

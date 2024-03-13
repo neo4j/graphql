@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { catOne, catTwo, exampleImageLocations: [] },
         });
 

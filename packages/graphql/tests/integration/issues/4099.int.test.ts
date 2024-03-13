@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
     });
 
     beforeEach(async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${User} { id: 1 })
             CREATE (:${Person} { id: 1 })
         `);
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: true });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: false });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: false });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: true });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 

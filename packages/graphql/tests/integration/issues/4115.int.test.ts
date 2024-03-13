@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (u:${User} { id:"user1"})
             CREATE (paid:${User} { id:"paid-user", roles: ["plan:paid"]})
             CREATE (f1:${Family} { id: "family1" })<-[:CREATOR_OF]-(u)
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
 
         const token = createBearerToken(secret, { uid: "user1" });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Family.plural]).toIncludeSameMembers([
@@ -150,7 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
 
         const token = createBearerToken(secret, { uid: "paid-user" });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Family.plural]).toIncludeSameMembers([

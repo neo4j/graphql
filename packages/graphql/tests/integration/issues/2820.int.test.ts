@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (a:${Actor} { name: "Actor" })
             CREATE (a)-[:ACTED_IN]->(:${Movie} { title: "House" })
             CREATE (a)-[:ACTED_IN]->(:${Series} { title: "House" })
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -203,7 +203,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -238,7 +238,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -271,7 +271,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -300,7 +300,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -351,7 +351,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -399,7 +399,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 
@@ -434,7 +434,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeFalsy();
 

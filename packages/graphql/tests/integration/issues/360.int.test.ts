@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
                 `
         );
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
                 `
         );
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
@@ -136,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
@@ -145,7 +145,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             { rangeStart, rangeEnd }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { rangeStart, rangeEnd },
         });
 

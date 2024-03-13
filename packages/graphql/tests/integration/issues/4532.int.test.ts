@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 typeDefs,
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                 CREATE(i:${Inventory} {id: "i1"})
                 CREATE(i)-[:HasChildren { order: 3 }]->(c1:${Scenario} { id: "c3"})
@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 }
             `;
 
-            const response = await testHelper.runGraphQL(query);
+            const response = await testHelper.executeGraphQL(query);
             expect(response.errors).toBeFalsy();
             expect(response.data).toEqual({
                 [Inventory.plural]: expect.toIncludeSameMembers([
@@ -161,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 typeDefs,
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                 CREATE(i:${Inventory} {id: "i1"})
                 CREATE(i)-[:HasChildren { order: 3 }]->(c1:${Image} { id: "c3"})
@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 }
             `;
 
-            const response = await testHelper.runGraphQL(query);
+            const response = await testHelper.executeGraphQL(query);
             expect(response.errors).toBeFalsy();
             expect(response.data).toEqual({
                 [Inventory.plural]: expect.toIncludeSameMembers([

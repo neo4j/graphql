@@ -81,9 +81,9 @@ describe("https://github.com/neo4j/graphql/issues/1640", () => {
             CREATE(org2)-[:HAS_ADMINISTRATOR]->(admin2)
         `;
 
-        await testHelper.runCypher(cypher);
+        await testHelper.executeCypher(cypher);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({

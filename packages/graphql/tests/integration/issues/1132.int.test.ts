@@ -79,14 +79,14 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${testSource.name} { id: "${sourceId}" })
                 CREATE (:${testTarget.name} { id: "${targetId}" })
             `);
 
             const token = createBearerToken(secret, { sub: sourceId });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
                 [testSource.operations.update]: {
@@ -145,13 +145,13 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
             const token = createBearerToken(secret, { sub });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect((result.errors as any[])[0].message).toBe("Forbidden");
         });
 
@@ -198,13 +198,13 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 }
             `;
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
             const token = createBearerToken(secret, { sub: targetId });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
                 [testSource.operations.update]: {

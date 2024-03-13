@@ -76,14 +76,14 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {title: $movieTitle})<-[:ACTED_IN]-(:${Person} {name: $personName})
                 `,
             { movieTitle, personName }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

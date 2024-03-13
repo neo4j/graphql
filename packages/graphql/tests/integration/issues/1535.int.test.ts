@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${testTenant} { id: "12", name: "Tenant1" })<-[:HOSTED_BY]-(:${testBooking} { id: "212" })
         `);
 
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({

@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const createMutationResults = await testHelper.runGraphQL(createMutation);
+        const createMutationResults = await testHelper.executeGraphQL(createMutation);
 
         expect(createMutationResults.errors).toHaveLength(1);
         expect(createMutationResults.errors?.[0]?.message).toBe(
@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const createMutationResults = await testHelper.runGraphQL(createMutation);
+        const createMutationResults = await testHelper.executeGraphQL(createMutation);
 
         expect(createMutationResults.errors).toBeUndefined();
         expect(createMutationResults.data as any).toEqual({
@@ -176,7 +176,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const updateMutationResults = await testHelper.runGraphQL(updateMutation);
+        const updateMutationResults = await testHelper.executeGraphQL(updateMutation);
 
         expect(updateMutationResults.errors).toHaveLength(1);
         expect(updateMutationResults.errors?.[0]?.message).toContain(
@@ -214,7 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const createMutationResults = await testHelper.runGraphQL(createMutation);
+        const createMutationResults = await testHelper.executeGraphQL(createMutation);
 
         expect(createMutationResults.errors).toBeUndefined();
         expect(createMutationResults.data as any).toEqual({
@@ -253,7 +253,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const updateMutationResults = await testHelper.runGraphQL(updateMutation);
+        const updateMutationResults = await testHelper.executeGraphQL(updateMutation);
 
         expect(updateMutationResults.errors).toHaveLength(1);
         expect(updateMutationResults.errors?.[0]?.message).toContain(
@@ -291,7 +291,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const createMutationResults = await testHelper.runGraphQL(createMutation);
+        const createMutationResults = await testHelper.executeGraphQL(createMutation);
 
         expect(createMutationResults.errors).toBeUndefined();
         expect(createMutationResults.data as any).toEqual({
@@ -330,7 +330,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
         `;
 
-        const updateMutationResults = await testHelper.runGraphQL(updateMutation);
+        const updateMutationResults = await testHelper.executeGraphQL(updateMutation);
 
         expect(updateMutationResults.errors).toHaveLength(1);
         expect(updateMutationResults.errors?.[0]?.message).toContain(

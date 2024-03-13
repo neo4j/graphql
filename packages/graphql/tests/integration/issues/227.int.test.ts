@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE (t:${Town} {id: $townId})
             MERGE (t)<-[:BELONGS_TO]-(m:${Member} {id: $memberId})
@@ -95,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(source, {
+        const gqlResult = await testHelper.executeGraphQL(source, {
             variableValues: { id: townId },
         });
 

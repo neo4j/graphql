@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect((result.data?.[MyEnumHolder.operations.create] as any)[MyEnumHolder.plural]).toEqual([

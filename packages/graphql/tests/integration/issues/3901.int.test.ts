@@ -137,11 +137,11 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
 
         const token = createBearerToken(secret, { sub: "michel", roles: ["verified", "creator"] });
 
-        const createUserResult = await testHelper.runGraphQLWithToken(createUser, token);
+        const createUserResult = await testHelper.executeGraphQLWithToken(createUser, token);
 
         expect(createUserResult.errors).toBeFalsy();
 
-        const createPostResult = await testHelper.runGraphQLWithToken(createPost, token);
+        const createPostResult = await testHelper.executeGraphQLWithToken(createPost, token);
 
         expect(createPostResult.errors).toBeFalsy();
         expect(createPostResult.data).toEqual({

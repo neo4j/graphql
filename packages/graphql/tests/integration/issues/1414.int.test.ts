@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
             }
         `;
 
-        const createProgrammeItemsResults = await testHelper.runGraphQL(createProgrammeItems);
+        const createProgrammeItemsResults = await testHelper.executeGraphQL(createProgrammeItems);
         expect(createProgrammeItemsResults.errors).toBeUndefined();
         expect(createProgrammeItemsResults.data as any).toEqual({
             [testProgrammeItem.operations.create]: {
@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
             },
         });
 
-        const updateProgrammeItemsResults = await testHelper.runGraphQL(updateProgrammeItems);
+        const updateProgrammeItemsResults = await testHelper.executeGraphQL(updateProgrammeItems);
         expect(updateProgrammeItemsResults.errors).toBeUndefined();
         expect(updateProgrammeItemsResults.data as any).toEqual({
             [testProgrammeItem.operations.update]: {

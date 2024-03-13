@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
           }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE (c:${Actor})
             SET c.name = $name
@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
               }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Actor.plural]: expect.toIncludeSameMembers([

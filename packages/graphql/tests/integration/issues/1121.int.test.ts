@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
         expect(mutationResult.errors).toBeUndefined();
 
         const query = `
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [Food.plural]: [

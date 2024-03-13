@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
     });

@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

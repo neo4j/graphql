@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeTruthy();
         expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required exactly once`);

@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/pull/579", () => {
               }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (product:${Product} {name: "Pringles", id: $productId})
                     CREATE (color:${Color} {name: "Yellow", id: $colorId})
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/pull/579", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {},
         });
 

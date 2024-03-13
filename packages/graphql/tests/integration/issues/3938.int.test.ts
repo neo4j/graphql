@@ -100,13 +100,13 @@ describe("https://github.com/neo4j/graphql/issues/3938", () => {
 
         const token = createBearerToken(secret, {});
 
-        const createGroupsResult = await testHelper.runGraphQLWithToken(createGroups, token, {
+        const createGroupsResult = await testHelper.executeGraphQLWithToken(createGroups, token, {
             variableValues: { input: [{ name: "test" }] },
         });
 
         expect(createGroupsResult.errors).toBeFalsy();
 
-        const updateGroupsResult = await testHelper.runGraphQLWithToken(updateGroups, token, {
+        const updateGroupsResult = await testHelper.executeGraphQLWithToken(updateGroups, token, {
             variableValues: {
                 where: {
                     name: "test",

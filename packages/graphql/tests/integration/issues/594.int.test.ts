@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
+        await testHelper.executeCypher(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
                 CREATE (:${typeMovie.name} {title: "Super Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Super Cool Some Name"})`);
     });
 
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             }
         `;
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.plural]).toEqual(
@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             }
         `;
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[`${typePerson.plural}Aggregate`]).toEqual({ surname: { shortest: null } });

@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: {
                     sub: "test",
@@ -86,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
         });
         expect(result.errors).toBeUndefined();
 
-        const blogPostCount = await testHelper.runCypher(`
+        const blogPostCount = await testHelper.executeCypher(`
           MATCH (m:${testBlogpost.name} { slug: "myslug" })
           RETURN COUNT(m) as count
         `);

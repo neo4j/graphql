@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${Opportunity} {country: "UK"})
             CREATE (o:${Opportunity} {country: "ES"})-[:HAS_LIST]->(:${ListOli} {name: "l1"})
             CREATE (o)-[:HAS_LIST]->(:${ListOli} {name: "l2"})
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
             }
         `;
 
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Opportunity.operations.connection]: {
@@ -104,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
             }
         `;
 
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Opportunity.operations.connection]: {

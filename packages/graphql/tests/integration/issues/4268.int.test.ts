@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             },
         });
 
-        await testHelper.runCypher(`CREATE (m:${Movie.name} {title: "SomeTitle"})`, {});
+        await testHelper.executeCypher(`CREATE (m:${Movie.name} {title: "SomeTitle"})`, {});
     });
 
     afterAll(async () => {
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["admin"] },
             },
@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] },
             },

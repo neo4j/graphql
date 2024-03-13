@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${type.name} { type: "Cat" })-[:EDGE]->(:${type.name} { type: "Dog" })<-[:EDGE]-(:${type.name} { type: "Bird" })-[:EDGE]->(:${type.name} { type: "Fish" })
             `
@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
     });
 
     test("should get all Cats where there exists at least one child Dog that has a Bird parent", async () => {
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
                     type: "Cat",
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
     });
 
     test("should get all Cats where there exists at least one child Dog that has a Bird parent which has a Fish child", async () => {
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
                     type: "Cat",

@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
         }
     `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                     CREATE (user1:${User} {uid: 'user1'}),(user2:${User} {uid: 'user2'}),(female:${UserDemographics}{type:'Gender',value:'Female'}),(male:${UserDemographics}{type:'Gender',value:'Male'}),(age:${UserDemographics}{type:'Age',value:'50+'}),(state:${UserDemographics}{type:'State',value:'VIC'})
                     CREATE (user1)-[:HAS_DEMOGRAPHIC]->(female)
                     CREATE (user2)-[:HAS_DEMOGRAPHIC]->(male)
@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)?.[User.plural][0].uid).toBe("user1");
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (v:${Video} {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const mutationResult = await testHelper.runGraphQL(mutation, {
+        const mutationResult = await testHelper.executeGraphQL(mutation, {
             variableValues,
         });
 
@@ -118,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (v:${Video} {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
@@ -158,7 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const mutationResult = await testHelper.runGraphQL(mutation, {
+        const mutationResult = await testHelper.executeGraphQL(mutation, {
             variableValues,
         });
 
@@ -184,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (v:${Video} {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
@@ -224,7 +224,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const mutationResult = await testHelper.runGraphQL(mutation, {
+        const mutationResult = await testHelper.executeGraphQL(mutation, {
             variableValues,
         });
 

@@ -59,7 +59,7 @@ describe("Projecting interface relationships following create of multiple nodes"
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${Person.name} { id: "adam", name: "Adam" })
             CREATE (:${Person.name} { id: "eve", name: "Eve" })
             CREATE (:${Person.name} { id: "cain", name: "Cain" })
@@ -104,7 +104,7 @@ describe("Projecting interface relationships following create of multiple nodes"
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
         expect(mutationResult.errors).toBeUndefined();
     });
 });

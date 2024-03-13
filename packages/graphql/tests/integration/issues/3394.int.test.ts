@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (e:${Employee} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
                     CREATE (p1:${Product} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Product.plural]).toEqual([
@@ -104,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Employee.plural]).toEqual([
@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[Product.operations.connection]).toEqual({
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[Employee.plural]).toEqual([

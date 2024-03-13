@@ -61,7 +61,7 @@ describe("aggregations-where-edge-int", () => {
 
         const someInt = Number(faker.number.int({ max: 100000 }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { someInt: ${someInt} }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -79,7 +79,7 @@ describe("aggregations-where-edge-int", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -100,7 +100,7 @@ describe("aggregations-where-edge-int", () => {
         const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntGt = someInt - 1;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { someInt: ${someInt} }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-int", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -138,7 +138,7 @@ describe("aggregations-where-edge-int", () => {
 
         const someInt = Number(faker.number.int({ max: 100000 }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { someInt: ${someInt} }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -156,7 +156,7 @@ describe("aggregations-where-edge-int", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -177,7 +177,7 @@ describe("aggregations-where-edge-int", () => {
         const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntLT = someInt + 1;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { someInt: ${someInt} }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -195,7 +195,7 @@ describe("aggregations-where-edge-int", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -215,7 +215,7 @@ describe("aggregations-where-edge-int", () => {
 
         const someInt = Number(faker.number.int({ max: 100000 }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { someInt: ${someInt} }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -233,7 +233,7 @@ describe("aggregations-where-edge-int", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -258,7 +258,7 @@ describe("aggregations-where-edge-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:${User} {testString: "${testString}"})
@@ -279,7 +279,7 @@ describe("aggregations-where-edge-int", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -297,7 +297,7 @@ describe("aggregations-where-edge-int", () => {
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgGT = avg - 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:${User} {testString: "${testString}"})
@@ -318,7 +318,7 @@ describe("aggregations-where-edge-int", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -335,7 +335,7 @@ describe("aggregations-where-edge-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:${User} {testString: "${testString}"})
@@ -356,7 +356,7 @@ describe("aggregations-where-edge-int", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
             const [post] = (gqlResult.data as any)[Post.plural] as any[];
@@ -373,7 +373,7 @@ describe("aggregations-where-edge-int", () => {
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgLT = avg + 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:${User} {testString: "${testString}"})
@@ -394,7 +394,7 @@ describe("aggregations-where-edge-int", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -411,7 +411,7 @@ describe("aggregations-where-edge-int", () => {
 
             const avg = someInt1 + someInt2 + someInt3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:${User} {testString: "${testString}"})
@@ -432,7 +432,7 @@ describe("aggregations-where-edge-int", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -455,7 +455,7 @@ describe("aggregations-where-edge-int", () => {
 
             const sum = someInt1 + someInt2 + someInt3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:${User} {testString: "${testString}"})
@@ -476,7 +476,7 @@ describe("aggregations-where-edge-int", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 

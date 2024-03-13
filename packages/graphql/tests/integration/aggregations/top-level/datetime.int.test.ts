@@ -51,7 +51,7 @@ describe("aggregations-top_level-datetime", () => {
 
         const minDate = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
@@ -73,7 +73,7 @@ describe("aggregations-top_level-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -95,7 +95,7 @@ describe("aggregations-top_level-datetime", () => {
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
@@ -117,7 +117,7 @@ describe("aggregations-top_level-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -139,7 +139,7 @@ describe("aggregations-top_level-datetime", () => {
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
@@ -162,7 +162,7 @@ describe("aggregations-top_level-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

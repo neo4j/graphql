@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (post:${Post} {id: $postId, title: $postTitle, content: $postContent})
                     CREATE (comment1:${Comment} {id: $comment1Id, content: $comment1Content, flagged: true})
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)[Post.plural][0].flaggedComments).toContainEqual({
             content: comment1Content,

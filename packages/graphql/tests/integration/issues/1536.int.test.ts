@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE(:${SomeNodeType} {id: "1"})-[:HAS_OTHER_NODES]->(other:${OtherNodeType} {id: "2"})
             CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} {id: "3"})
         `);
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [SomeNodeType.plural]: [

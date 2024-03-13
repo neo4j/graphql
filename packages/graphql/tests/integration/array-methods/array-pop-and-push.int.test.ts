@@ -65,9 +65,9 @@ describe("array-pop-and-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

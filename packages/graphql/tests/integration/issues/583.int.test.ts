@@ -95,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
 
         const testLabel = testHelper.createUniqueType("Test");
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE (actor:${Actor}:${testLabel})
             SET actor = $actor
@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { actorId: actor.id },
         });
 

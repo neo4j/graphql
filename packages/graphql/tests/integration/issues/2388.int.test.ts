@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         `;
 
         // Initialise data
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (p:${Part})<-[uo:USAGE_OF]-(pu:${PartUsage})-[bt:BELONGS_TO]->(pa:${PartAddress})
             SET pa.id = "123"
         `);
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
 
         const token = createBearerToken(secret, { roles: ["upstream", "downstream"] });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Part.plural]: [

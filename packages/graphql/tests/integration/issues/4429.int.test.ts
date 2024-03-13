@@ -184,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             },
         });
 
-        const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
             contextValue: { jwt: { id: myUserId } },
         });
@@ -205,7 +205,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             },
         });
 
-        const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
             contextValue: { jwt: { id: myUserId } },
         });

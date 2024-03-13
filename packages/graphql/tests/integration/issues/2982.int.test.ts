@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
         const articleId = generate({ charset: "alphabetic" });
         const userName = generate({ charset: "alphabetic" });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (user:${User} { id: $userId })
                 CREATE (article:${BlogArticle} { id: $articleId })
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
             { userId, articleId, userName }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

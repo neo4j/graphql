@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${Person.name} { id: "adam", name: "Adam" })
             CREATE (:${Person.name} { id: "eve", name: "Eve" })
             CREATE (:${Person.name} { id: "cain", name: "Cain" })
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
         `;
 
-        const mutation0Result = await testHelper.runGraphQL(mutation0);
+        const mutation0Result = await testHelper.executeGraphQL(mutation0);
         expect((mutation0Result.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(1);
         expect((mutation0Result.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(3);
 
@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
         `;
 
-        const mutation1Result = await testHelper.runGraphQL(mutation1);
+        const mutation1Result = await testHelper.executeGraphQL(mutation1);
         expect((mutation1Result.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(1);
         expect((mutation1Result.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(3);
     });
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
         expect((mutationResult.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(2);
         expect((mutationResult.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(6);
     });
@@ -183,7 +183,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
         expect((mutationResult.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(2);
         expect((mutationResult.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(2);
     });

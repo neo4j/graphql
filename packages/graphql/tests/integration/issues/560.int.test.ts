@@ -63,11 +63,11 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (j:${testLog.name} { id: "${logId}" })
             `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         if (result.errors) {
             console.log(JSON.stringify(result.errors, null, 2));
@@ -116,11 +116,11 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (j:${testLog.name} { id: "${logId}" })
             `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         if (result.errors) {
             console.log(JSON.stringify(result.errors, null, 2));

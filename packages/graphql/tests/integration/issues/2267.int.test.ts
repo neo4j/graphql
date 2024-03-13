@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE(:${Place} {displayName: "786 aa"})<-[:ACTIVITY]-(:${Post} {name: "A post"})
         CREATE(:${Place} {displayName: "8 à Huita"})
         CREATE(:${Place} {displayName: "9ème Sauvagea"})<-[:ACTIVITY]-(:${Story} {name: "A story"})
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
           }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
           }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

@@ -57,7 +57,7 @@ describe("aggregations-where-edge-duration", () => {
     });
 
     test("should return posts where a edge like Int is EQUAL to", async () => {
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (p1:${Post} {content: "post1"})<-[:LIKES { someDuration: duration({months: 1}) }]-(:${User} {name: "user1"})
                     CREATE (p2:${Post} {content: "post2"})<-[:LIKES { someDuration: duration({months: 2}) }]-(:${User} {name: "user2"})
@@ -73,7 +73,7 @@ describe("aggregations-where-edge-duration", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([{ content: "post2" }, { content: "post3" }]);

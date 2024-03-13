@@ -58,7 +58,7 @@ describe("Update using aggregate where", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${
@@ -111,7 +111,7 @@ describe("Update using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -124,7 +124,7 @@ describe("Update using aggregate where", () => {
                 ]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(post:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -192,7 +192,7 @@ describe("Update using aggregate where", () => {
              }
          `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -205,7 +205,7 @@ describe("Update using aggregate where", () => {
                 ]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(post:${postType.name}) 
              WHERE u.name = "${userName}" 
@@ -270,7 +270,7 @@ describe("Update using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -283,7 +283,7 @@ describe("Update using aggregate where", () => {
                 ]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(post:${postType.name}) 
              WHERE u.name = "${userName}" 

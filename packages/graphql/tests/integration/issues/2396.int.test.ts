@@ -699,7 +699,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             }
         `;
 
-        await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues: { input },
         });
     });
@@ -740,7 +740,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 
@@ -780,7 +780,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 
@@ -823,7 +823,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 

@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             }
         `;
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             contextValue: { cypherParams: { tenant: "BULK" } },
         });
 

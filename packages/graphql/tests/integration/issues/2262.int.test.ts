@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
     });
 
     test("nested update with create while using subscriptions should generate valid Cypher", async () => {
-        await testHelper.runCypher(`CREATE(:${Component} {uuid: "c1"})<-[:OUTPUT]-(:${Process} {uuid: "p1"})`);
+        await testHelper.executeCypher(`CREATE(:${Component} {uuid: "c1"})<-[:OUTPUT]-(:${Process} {uuid: "p1"})`);
         const query = `
             query ComponentsProcesses {
                 ${Component.plural}(where: { uuid: "c1" }) {
@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

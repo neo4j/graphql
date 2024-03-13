@@ -211,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const mutationResult = await testHelper.runGraphQL(mutation, {
+        const mutationResult = await testHelper.executeGraphQL(mutation, {
             variableValues: { input },
         });
 
@@ -225,7 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
             expect(friend.posts).toHaveLength(3);
         });
 
-        const queryResult = await testHelper.runGraphQL(query, {
+        const queryResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 userID,
             },

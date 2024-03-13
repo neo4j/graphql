@@ -50,7 +50,7 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
@@ -72,7 +72,7 @@ describe("aggregations-top_level-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -100,7 +100,7 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
@@ -122,7 +122,7 @@ describe("aggregations-top_level-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -150,7 +150,7 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
@@ -172,7 +172,7 @@ describe("aggregations-top_level-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -200,7 +200,7 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
@@ -222,7 +222,7 @@ describe("aggregations-top_level-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -250,7 +250,7 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
@@ -275,7 +275,7 @@ describe("aggregations-top_level-bigint", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

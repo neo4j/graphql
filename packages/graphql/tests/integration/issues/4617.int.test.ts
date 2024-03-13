@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             charset: "alphabetic",
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `   CREATE (:${Post.name} {title: "Post 1"})
                     CREATE (:${User.name} {id: $id, email: randomUUID()})
                     CREATE (:${Actor.name} {id: $id, email: randomUUID(), name: $actorName })
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -190,7 +190,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -236,7 +236,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -294,7 +294,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -352,7 +352,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -415,7 +415,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -477,7 +477,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 

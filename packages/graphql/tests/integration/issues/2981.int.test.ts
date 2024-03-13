@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
     });
 
     test("should be able to create a nested translated title", async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
            CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})
         `);
         const query = `
@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
           }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data?.[Book.operations.update]).toEqual({

@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     async function queryTest(variableValues: any, userId: string) {
         async function graphqlQuery(query: string) {
-            return testHelper.runGraphQL(query, {
+            return testHelper.executeGraphQL(query, {
                 contextValue: {
                     jwt: {
                         sub: userId,
@@ -171,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u:${userType} {id: $userId, authId: $userId}),
                 (w:${workspaceType} {id: $workspaceId}),
                 (w)-[:HAS_ADMIN]->(u),
@@ -228,7 +228,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u:${userType} {id: $userId, authId: $userId}),
                 (w1:${workspaceType} {id: $w0id}),
                 (w2:${workspaceType} {id: $w1id}),
@@ -301,7 +301,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
         // for now, don't add u0 as member of workspaces so constraint holds
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u0:${userType} {id: $u0id, authId: $u0id}),
                 (u1:${userType} {id: $u1id, authId: $u1id}),
                 (w1:${workspaceType} {id: $w0id}),
@@ -380,7 +380,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
         // for now, don't add u0 as member of workspaces so constraint holds
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u0:${userType} {id: $u0id, authId: $u0id}),
                 (u1:${userType} {id: $u1id, authId: $u1id}),
                 (w1:${workspaceType} {id: $w0id}),
@@ -459,7 +459,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
         // for now, don't add u0 as member of workspaces so constraint holds
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u0:${userType} {id: $u0id, authId: $u0id}),
                 (u1:${userType} {id: $u1id, authId: $u1id}),
                 (w1:${workspaceType} {id: $w0id}),
@@ -538,7 +538,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
         // for now, don't add u0 as member of workspaces so constraint holds
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u0:${userType} {id: $u0id, authId: $u0id}),
                 (u1:${userType} {id: $u1id, authId: $u1id}),
                 (w1:${workspaceType} {id: $w0id}),
@@ -616,7 +616,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
         // for now, don't add u0 as member of workspaces so constraint holds
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u0:${userType} {id: $u0id, authId: $u0id}),
                 (u1:${userType} {id: $u1id, authId: $u1id}),
                 (w1:${workspaceType} {id: $w0id}),
@@ -695,7 +695,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
         // for now, don't add u0 as member of workspaces so constraint holds
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (u0:${userType} {id: $u0id, authId: $u0id}),
                 (u1:${userType} {id: $u1id, authId: $u1id}),
                 (w1:${workspaceType} {id: $w0id}),

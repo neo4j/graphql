@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         const cypher = `CREATE DATABASE ${databaseName} WAIT`;
         try {
-            await testHelper.runCypher(cypher);
+            await testHelper.executeCypher(cypher);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
         if (MULTIDB_SUPPORT) {
             const cypher = `DROP DATABASE ${databaseName}`;
 
-            await testHelper.runCypher(cypher);
+            await testHelper.executeCypher(cypher);
         }
         await testHelper.close();
     });

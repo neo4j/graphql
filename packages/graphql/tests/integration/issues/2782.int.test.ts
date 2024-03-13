@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE(p:${Product} {id: "1", name: "NormalConnect"})
             CREATE(p)-[:HAS_COLOR]->(red:${Color} {id: "1", name: "Red"})
             CREATE(red)<-[:OF_COLOR]-(photo:${Photo} {id: "123"})
@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Product.operations.update]: {
@@ -159,7 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        const result2 = await testHelper.runGraphQL(query2);
+        const result2 = await testHelper.executeGraphQL(query2);
 
         expect(result2.errors).toBeFalsy();
         expect(result2.data).toEqual({
@@ -185,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             }
         `;
 
-        const result3 = await testHelper.runGraphQL(query3);
+        const result3 = await testHelper.executeGraphQL(query3);
 
         expect(result3.errors).toBeFalsy();
         expect(result3.data).toEqual({

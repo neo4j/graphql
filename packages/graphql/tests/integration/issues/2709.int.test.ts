@@ -95,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:Film { title: "A Netflix movie" })<-[:DISTRIBUTED_BY]-(:${Netflix} { name: "Netflix" })
             CREATE (:Film { title: "A Dishney movie" })<-[:DISTRIBUTED_BY]-(:${Dishney} { name: "Dishney" })
         `);
@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -240,7 +240,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
             ################
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:Film { title: "A Netflix movie" })<-[:DISTRIBUTED_BY]-(:${Netflix} { name: "Netflix" })
             CREATE (:Film { title: "A Dishney movie" })<-[:DISTRIBUTED_BY]-(:${Dishney} { name: "Dishney" })
             CREATE (:Film { title: "A Publisher movie" })<-[:DISTRIBUTED_BY]-(:${Publisher} { name: "The Publisher" })
@@ -266,7 +266,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({

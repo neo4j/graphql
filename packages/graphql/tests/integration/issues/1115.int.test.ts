@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
     });
 
     test("should not throw on multiple connectOrCreate with auth", async () => {
-        await testHelper.runCypher(`CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
+        await testHelper.executeCypher(`CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
 
         const token = testHelper.createBearerToken("secret", { roles: ["upstream"] });
         const query = `
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         }
         `;
 
-        const res = await testHelper.runGraphQLWithToken(query, token);
+        const res = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(res.errors).toBeUndefined();
         expect(res.data).toEqual({

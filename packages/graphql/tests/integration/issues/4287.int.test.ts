@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (a:${Actor} { name: "Someone" })
             CREATE (a)-[:ACTED_IN]->(:${Movie} {title: "something"})
             CREATE (a)-[:ACTED_IN]->(:${Series} {title: "whatever"})
@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query);
+        const response = await testHelper.executeGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Actor.plural]).toIncludeSameMembers([
             {

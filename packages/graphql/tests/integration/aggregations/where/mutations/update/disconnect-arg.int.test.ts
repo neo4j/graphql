@@ -56,7 +56,7 @@ describe("Disconnect using aggregate where", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${postType.name} {id: "${postId1}"})
@@ -101,12 +101,12 @@ describe("Disconnect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([{ name: userName, likedPosts: expect.toIncludeSameMembers([{ id: postId1 }]) }]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -155,12 +155,12 @@ describe("Disconnect using aggregate where", () => {
              }
          `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([{ name: userName, likedPosts: [] }]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
              WHERE u.name = "${userName}" 
@@ -212,12 +212,12 @@ describe("Disconnect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([{ name: userName, likedPosts: [{ id: postId1 }] }]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
              WHERE u.name = "${userName2}" 
@@ -282,7 +282,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (u:${specialUserType.name} {specialName: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u3:${userType.name} {name: "${userName3}"})
@@ -342,14 +342,14 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
         expect(users).toEqual([
             { id: postId2, likes: expect.toIncludeSameMembers([{ name: userName2 }, { name: userName3 }]) },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
@@ -409,7 +409,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -419,7 +419,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
@@ -479,7 +479,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -489,7 +489,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"
@@ -560,7 +560,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -570,7 +570,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId2}"

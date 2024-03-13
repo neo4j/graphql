@@ -61,7 +61,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                         `,
@@ -76,7 +76,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -108,7 +108,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                         `,
@@ -123,7 +123,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -151,7 +151,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $randomValue1})
@@ -167,7 +167,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -202,7 +202,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $randomValue1})
@@ -219,7 +219,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -246,7 +246,7 @@ describe("Advanced Filtering", () => {
 
             const superValue = `${value}${value}`;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $superValue})
                             CREATE (:${randomType.name} {property: $superValue})
@@ -263,7 +263,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -293,7 +293,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $notValue})
@@ -310,7 +310,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -337,7 +337,7 @@ describe("Advanced Filtering", () => {
 
             const superValue = `${value}${value}`;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $superValue})
                             CREATE (:${randomType.name} {property: $superValue})
@@ -354,7 +354,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -386,7 +386,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $notValue})
@@ -403,7 +403,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -433,7 +433,7 @@ describe("Advanced Filtering", () => {
 
             const superValue = `${value}${value}`;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $notValue})
@@ -450,7 +450,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -480,7 +480,7 @@ describe("Advanced Filtering", () => {
 
             const superValue = `${value}${value}`;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $notValue})
@@ -497,7 +497,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -535,7 +535,7 @@ describe("Advanced Filtering", () => {
             const matrixReloaded = "The Matrix Reloaded";
             const matrixRevolutions = "The Matrix Revolutions";
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${movieType.name} {title: $animatrix})
                             CREATE (:${movieType.name} {title: $matrix})
@@ -553,7 +553,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -595,7 +595,7 @@ describe("Advanced Filtering", () => {
             const matrixRevolutions = "The Matrix Revolutions";
             const matrixResurrections = "The Matrix Resurrections";
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
@@ -613,7 +613,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -655,7 +655,7 @@ describe("Advanced Filtering", () => {
             const matrixReloaded = "The Matrix Reloaded";
             const matrixRevolutions = "The Matrix Revolutions";
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${movieType.name} {title: $animatrix})
                             CREATE (:${movieType.name} {title: $matrix})
@@ -673,7 +673,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -715,7 +715,7 @@ describe("Advanced Filtering", () => {
             const matrixRevolutions = "The Matrix Revolutions";
             const matrixResurrections = "The Matrix Resurrections";
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
@@ -734,7 +734,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -782,7 +782,7 @@ describe("Advanced Filtering", () => {
                 notProperty = Math.floor(Math.random() * 9999) + 0.5;
             }
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $property})
                             CREATE (:${randomType.name} {property: $notProperty})
@@ -798,7 +798,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -841,7 +841,7 @@ describe("Advanced Filtering", () => {
                 randomValue2 = Math.floor(Math.random() * 9999) + 0.5;
             }
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                         `,
@@ -856,7 +856,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -899,7 +899,7 @@ describe("Advanced Filtering", () => {
                 randomValue2 = Math.floor(Math.random() * 99999) + 0.5;
             }
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $randomValue1})
@@ -916,7 +916,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -945,7 +945,7 @@ describe("Advanced Filtering", () => {
 
             const lessThanValue = value - (value + 1);
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $lessThanValue})
@@ -961,7 +961,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -990,7 +990,7 @@ describe("Advanced Filtering", () => {
 
             const lessThanValue = value - (value + 1);
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $lessThanValue})
@@ -1006,7 +1006,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -1034,7 +1034,7 @@ describe("Advanced Filtering", () => {
 
             const graterThanValue = value + 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $graterThanValue})
@@ -1050,7 +1050,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -1079,7 +1079,7 @@ describe("Advanced Filtering", () => {
 
             const greaterThan = value + 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $greaterThan})
@@ -1095,7 +1095,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -1117,7 +1117,7 @@ describe("Advanced Filtering", () => {
 
             const value = false;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                         `,
@@ -1132,7 +1132,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -1152,7 +1152,7 @@ describe("Advanced Filtering", () => {
 
             const value = false;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (:${randomType.name} {property: $value})
                         `,
@@ -1167,7 +1167,7 @@ describe("Advanced Filtering", () => {
                             }
                         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -1206,7 +1206,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                                 CREATE (root:${randomType1.name} {id: $rootId})
                                 CREATE (:${randomType1.name} {id: $randomId})
@@ -1228,7 +1228,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1261,7 +1261,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                             CREATE (movie:Movie {id: $movieId})-[:IN_GENRE]->(:Genre {id:$genreId})
                         `,
@@ -1279,7 +1279,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1320,7 +1320,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                             CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
                         `,
@@ -1338,7 +1338,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any).movies).toHaveLength(1);
@@ -1378,7 +1378,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                             CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
                         `,
@@ -1396,7 +1396,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1440,7 +1440,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                                 CREATE (root1:${randomType1.name} {id: $rootId1})
                                 CREATE (root2:${randomType1.name} {id: $rootId2})
@@ -1463,7 +1463,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1505,7 +1505,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                             CREATE (root1:${randomType1.name} {id: $rootId1})-[:IN_GENRE]->(relation1:${randomType2.name} {id: $relationId1})
                             CREATE (root2:${randomType1.name} {id: $rootId2})-[:IN_GENRE]->(relation2:${randomType2.name} {id: $relationId2})
@@ -1524,7 +1524,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1573,7 +1573,7 @@ describe("Advanced Filtering", () => {
                     charset: "alphabetic",
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                             CREATE (:${randomType1.name} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2.name} {id: $relationId1})
                             CREATE (:${randomType1.name} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2.name} {id: $relationId2})
@@ -1592,7 +1592,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1638,7 +1638,7 @@ describe("Advanced Filtering", () => {
             `;
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                     CREATE (m1:${Movie}) SET m1 = $movies[0]
                     CREATE (m2:${Movie}) SET m2 = $movies[1]
@@ -1674,7 +1674,7 @@ describe("Advanced Filtering", () => {
                 }
 
                 test("ALL", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("ALL"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1690,7 +1690,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("NONE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("NONE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1706,7 +1706,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SINGLE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SINGLE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1722,7 +1722,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SOME", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SOME"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1760,7 +1760,7 @@ describe("Advanced Filtering", () => {
                 `;
 
                 test("ALL", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("ALL"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1776,7 +1776,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("NONE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("NONE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1792,7 +1792,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SINGLE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SINGLE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1808,7 +1808,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SOME", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SOME"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1846,7 +1846,7 @@ describe("Advanced Filtering", () => {
                 `;
 
                 test("ALL", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("ALL"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1862,7 +1862,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("NONE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("NONE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1878,7 +1878,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SINGLE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SINGLE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1894,7 +1894,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SOME", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SOME"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1932,7 +1932,7 @@ describe("Advanced Filtering", () => {
                 `;
 
                 test("ALL", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("ALL"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1948,7 +1948,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("NONE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("NONE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1964,7 +1964,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SINGLE", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SINGLE"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1980,7 +1980,7 @@ describe("Advanced Filtering", () => {
                 });
 
                 test("SOME", async () => {
-                    const gqlResult = await testHelper.runGraphQL(generateQuery("SOME"), {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -2034,7 +2034,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                             CREATE (root:${randomType1.name} {id: $rootId})
                             CREATE (:${randomType1.name} {id: $randomId})
@@ -2055,7 +2055,7 @@ describe("Advanced Filtering", () => {
 
             // Test null checking (nodes without any related nodes on the specified field)
 
-            const nullResult = await testHelper.runGraphQL(nullQuery);
+            const nullResult = await testHelper.executeGraphQL(nullQuery);
 
             expect(nullResult.errors).toBeUndefined();
 
@@ -2074,7 +2074,7 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-            const notNullResult = await testHelper.runGraphQL(notNullQuery);
+            const notNullResult = await testHelper.executeGraphQL(notNullQuery);
 
             expect(notNullResult.errors).toBeUndefined();
 
@@ -2114,7 +2114,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (:${randomType.name} {id: $id1})
                         CREATE (:${randomType.name} {id: $id2, optional: $optionalValue})
@@ -2132,7 +2132,7 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-            const nullResult = await testHelper.runGraphQL(nullQuery);
+            const nullResult = await testHelper.executeGraphQL(nullQuery);
 
             expect(nullResult.errors).toBeUndefined();
 
@@ -2150,7 +2150,7 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-            const notNullResult = await testHelper.runGraphQL(notNullQuery);
+            const notNullResult = await testHelper.executeGraphQL(notNullQuery);
 
             expect(notNullResult.errors).toBeUndefined();
 

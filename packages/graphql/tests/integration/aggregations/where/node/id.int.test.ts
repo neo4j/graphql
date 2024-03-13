@@ -60,7 +60,7 @@ describe("aggregations-where-node-id", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", id: "${testId}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -79,7 +79,7 @@ describe("aggregations-where-node-id", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

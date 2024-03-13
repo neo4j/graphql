@@ -60,7 +60,7 @@ describe("Field Level Aggregations Field Authorization", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (a:${Actor} {name: "Keanu"})-[:ACTED_ON  {screenTime: 10}]->(:${Series} {title: "Doctor Who", cost: 10.0, episodes: 5000})
         `);
     });
@@ -82,7 +82,7 @@ describe("Field Level Aggregations Field Authorization", () => {
 
         const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader", "series-title-reader"] });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -105,7 +105,7 @@ describe("Field Level Aggregations Field Authorization", () => {
 
         const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader", "series-title-reader"] });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

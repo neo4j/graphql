@@ -54,7 +54,7 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        await testHelper.runCypher(`CREATE (:${User} { id: "ID" })`);
+        await testHelper.executeCypher(`CREATE (:${User} { id: "ID" })`);
 
         await testHelper.initNeo4jGraphQL({
             typeDefs,
@@ -67,7 +67,7 @@ describe("unauthenticated-requests", () => {
 
         const token = createBearerToken(secret);
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -89,7 +89,7 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        await testHelper.runCypher(`CREATE (:${User} { id: "ID" })`);
+        await testHelper.executeCypher(`CREATE (:${User} { id: "ID" })`);
 
         await testHelper.initNeo4jGraphQL({
             typeDefs,
@@ -102,7 +102,7 @@ describe("unauthenticated-requests", () => {
 
         const token = testHelper.createBearerToken(secret);
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
@@ -140,7 +140,7 @@ describe("unauthenticated-requests", () => {
 
         const token = testHelper.createBearerToken(secret);
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -158,7 +158,7 @@ describe("unauthenticated-requests", () => {
             typeDefs,
         });
 
-        await expect(() => testHelper.runCypher(`CREATE (:${User} { shouldFail: {} })`)).rejects.toThrow(
+        await expect(() => testHelper.executeCypher(`CREATE (:${User} { shouldFail: {} })`)).rejects.toThrow(
             "Property values can only be of primitive types or arrays thereof. Encountered: Map{}."
         );
     });

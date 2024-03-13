@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE
                         (m:${Movie}:${testLabel} {title: 'Test Movie'}),
@@ -118,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query);
+        const response = await testHelper.executeGraphQL(query);
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({

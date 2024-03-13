@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 }
             }
       `;
-        const gqlResult1 = await testHelper.runGraphQL(setupCreateUsers);
+        const gqlResult1 = await testHelper.executeGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
         const setupCreateStores = `#graphql
@@ -156,7 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 }
                 }
             }`;
-        const gqlResult2 = await testHelper.runGraphQL(setupCreateStores);
+        const gqlResult2 = await testHelper.executeGraphQL(setupCreateStores);
         expect(gqlResult2.errors).toBeFalsy();
         const storeId = (gqlResult2.data?.[Store.operations.create] as Record<string, any>)[Store.plural][0].id;
 
@@ -194,7 +194,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
         `;
 
         const token = createBearerToken("secret", { roles: ["employee"], store: storeId });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
@@ -357,7 +357,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 }
             }
       `;
-        const gqlResult1 = await testHelper.runGraphQL(setupCreateUsers);
+        const gqlResult1 = await testHelper.executeGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
         const setupCreateStores = `#graphql
@@ -385,7 +385,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 }
                 }
             }`;
-        const gqlResult2 = await testHelper.runGraphQL(setupCreateStores);
+        const gqlResult2 = await testHelper.executeGraphQL(setupCreateStores);
         expect(gqlResult2.errors).toBeFalsy();
         const storeId = (gqlResult2.data?.[Store.operations.create] as Record<string, any>)[Store.plural][0].id;
 
@@ -428,7 +428,7 @@ describe("replicates the test for relationship to interface so that multiple ref
         `;
 
         const token = createBearerToken("secret", { roles: ["employee"], store: storeId });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({

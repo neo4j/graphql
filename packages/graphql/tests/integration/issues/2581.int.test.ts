@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE(a:${Author} {name: "Douglas Adams"})-[:AUTHORED_BOOK]->(:${Book} {name: "The Hitchhiker's Guide to the Galaxy", year:1979, refID:1})
         CREATE(a)-[:AUTHORED_BOOK]->(:${Book} {name: "The Restaurant at the End of the Universe", year:1980, refID:2})
 
@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({

@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/4007", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (m:${typeMovie.name} {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID(), surname: randomUUID()})
@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4007", () => {
             }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 

@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             MERGE (:${Foo} {name: "A"})-[:relatesTo]->(b1:${Bar} {name: "bar1"})
             MERGE (:${Foo} {name: "B"})
             MERGE (:${Foo} {name: "C"})-[:relatesTo]->(b3:${Bar} {name: "bar3"})
@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({

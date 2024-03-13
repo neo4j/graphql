@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
                 },
             },
         ];
-        await testHelper.runGraphQL(source, {
+        await testHelper.executeGraphQL(source, {
             variableValues: { input },
         });
     });
@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         }
       `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[movieType.operations.connection]).toEqual({

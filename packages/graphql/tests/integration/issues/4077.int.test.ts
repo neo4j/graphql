@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${PreviewClip} { id: "clip1", markedAsDone: false})<-[:VIDEO_HAS_PREVIEW_CLIP]-(v:${Video} {id:"1234", processing: "published"})
             CREATE (v)<-[:PUBLISHER]-(:${User} {id:"user1_id"})
 
@@ -122,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
 
         const token = createBearerToken(secret, { sub: "user1_id" });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${PreviewClip} { id: "clip1", markedAsDone: false})<-[:VIDEO_HAS_PREVIEW_CLIP]-(v:${Video} {id:"1234", processing: "published"})
             CREATE (v)<-[:PUBLISHER]-(:${User} {id:"user1_id"})
 
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
 
         const token = createBearerToken(secret, { sub: "user1_id" });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 

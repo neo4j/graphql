@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE(a:${Agent} {uuid: "a1"})
         CREATE(:${Valuation} {uuid: "v1"})<-[:IS_VALUATION_AGENT]-(a)
         CREATE(:${Valuation} {uuid: "v2"})<-[:IS_VALUATION_AGENT]-(a)
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"));
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"));
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

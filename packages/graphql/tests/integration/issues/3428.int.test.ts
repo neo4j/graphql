@@ -185,20 +185,22 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const createWithNestedCreateResult = await testHelper.runGraphQL(createMutationWithNestedCreate);
-            const createWithNestedConnectResult = await testHelper.runGraphQL(createMutationWithNestedConnect);
-            const createWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const createWithNestedCreateResult = await testHelper.executeGraphQL(createMutationWithNestedCreate);
+            const createWithNestedConnectResult = await testHelper.executeGraphQL(createMutationWithNestedConnect);
+            const createWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 createMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedCreateResult = await testHelper.runGraphQL(updateMutationWithNestedCreate);
-            const updateWithNestedConnectResult = await testHelper.runGraphQL(updateMutationWithNestedConnect);
-            const updateWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const updateWithNestedCreateResult = await testHelper.executeGraphQL(updateMutationWithNestedCreate);
+            const updateWithNestedConnectResult = await testHelper.executeGraphQL(updateMutationWithNestedConnect);
+            const updateWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 updateMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedUpdateResult = await testHelper.runGraphQL(updateMutationWithNestedUpdate);
-            const updateWithNestedDisconnectResult = await testHelper.runGraphQL(updateMutationWithNestedDisconnect);
-            const updateWithNestedDeleteResult = await testHelper.runGraphQL(updateMutationWithNestedDelete);
-            const deleteWithNestedDeleteResult = await testHelper.runGraphQL(deleteMutationWithNestedDelete);
+            const updateWithNestedUpdateResult = await testHelper.executeGraphQL(updateMutationWithNestedUpdate);
+            const updateWithNestedDisconnectResult = await testHelper.executeGraphQL(
+                updateMutationWithNestedDisconnect
+            );
+            const updateWithNestedDeleteResult = await testHelper.executeGraphQL(updateMutationWithNestedDelete);
+            const deleteWithNestedDeleteResult = await testHelper.executeGraphQL(deleteMutationWithNestedDelete);
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
             expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
@@ -253,20 +255,22 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const createWithNestedCreateResult = await testHelper.runGraphQL(createMutationWithNestedCreate);
-            const createWithNestedConnectResult = await testHelper.runGraphQL(createMutationWithNestedConnect);
-            const createWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const createWithNestedCreateResult = await testHelper.executeGraphQL(createMutationWithNestedCreate);
+            const createWithNestedConnectResult = await testHelper.executeGraphQL(createMutationWithNestedConnect);
+            const createWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 createMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedCreateResult = await testHelper.runGraphQL(updateMutationWithNestedCreate);
-            const updateWithNestedConnectResult = await testHelper.runGraphQL(updateMutationWithNestedConnect);
-            const updateWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const updateWithNestedCreateResult = await testHelper.executeGraphQL(updateMutationWithNestedCreate);
+            const updateWithNestedConnectResult = await testHelper.executeGraphQL(updateMutationWithNestedConnect);
+            const updateWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 updateMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedUpdateResult = await testHelper.runGraphQL(updateMutationWithNestedUpdate);
-            const updateWithNestedDisconnectResult = await testHelper.runGraphQL(updateMutationWithNestedDisconnect);
-            const updateWithNestedDeleteResult = await testHelper.runGraphQL(updateMutationWithNestedDelete);
-            const deleteWithNestedDeleteResult = await testHelper.runGraphQL(deleteMutationWithNestedDelete);
+            const updateWithNestedUpdateResult = await testHelper.executeGraphQL(updateMutationWithNestedUpdate);
+            const updateWithNestedDisconnectResult = await testHelper.executeGraphQL(
+                updateMutationWithNestedDisconnect
+            );
+            const updateWithNestedDeleteResult = await testHelper.executeGraphQL(updateMutationWithNestedDelete);
+            const deleteWithNestedDeleteResult = await testHelper.executeGraphQL(deleteMutationWithNestedDelete);
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
             expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
@@ -465,20 +469,22 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const createWithNestedCreateResult = await testHelper.runGraphQL(createMutationWithNestedCreate);
-            const createWithNestedConnectResult = await testHelper.runGraphQL(createMutationWithNestedConnect);
-            const createWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const createWithNestedCreateResult = await testHelper.executeGraphQL(createMutationWithNestedCreate);
+            const createWithNestedConnectResult = await testHelper.executeGraphQL(createMutationWithNestedConnect);
+            const createWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 createMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedCreateResult = await testHelper.runGraphQL(updateMutationWithNestedCreate);
-            const updateWithNestedConnectResult = await testHelper.runGraphQL(updateMutationWithNestedConnect);
-            const updateWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const updateWithNestedCreateResult = await testHelper.executeGraphQL(updateMutationWithNestedCreate);
+            const updateWithNestedConnectResult = await testHelper.executeGraphQL(updateMutationWithNestedConnect);
+            const updateWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 updateMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedUpdateResult = await testHelper.runGraphQL(updateMutationWithNestedUpdate);
-            const updateWithNestedDisconnectResult = await testHelper.runGraphQL(updateMutationWithNestedDisconnect);
-            const updateWithNestedDeleteResult = await testHelper.runGraphQL(updateMutationWithNestedDelete);
-            const deleteWithNestedDeleteResult = await testHelper.runGraphQL(deleteMutationWithNestedDelete);
+            const updateWithNestedUpdateResult = await testHelper.executeGraphQL(updateMutationWithNestedUpdate);
+            const updateWithNestedDisconnectResult = await testHelper.executeGraphQL(
+                updateMutationWithNestedDisconnect
+            );
+            const updateWithNestedDeleteResult = await testHelper.executeGraphQL(updateMutationWithNestedDelete);
+            const deleteWithNestedDeleteResult = await testHelper.executeGraphQL(deleteMutationWithNestedDelete);
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
             expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
@@ -538,20 +544,22 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const createWithNestedCreateResult = await testHelper.runGraphQL(createMutationWithNestedCreate);
-            const createWithNestedConnectResult = await testHelper.runGraphQL(createMutationWithNestedConnect);
-            const createWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const createWithNestedCreateResult = await testHelper.executeGraphQL(createMutationWithNestedCreate);
+            const createWithNestedConnectResult = await testHelper.executeGraphQL(createMutationWithNestedConnect);
+            const createWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 createMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedCreateResult = await testHelper.runGraphQL(updateMutationWithNestedCreate);
-            const updateWithNestedConnectResult = await testHelper.runGraphQL(updateMutationWithNestedConnect);
-            const updateWithNestedConnectOrCreateResult = await testHelper.runGraphQL(
+            const updateWithNestedCreateResult = await testHelper.executeGraphQL(updateMutationWithNestedCreate);
+            const updateWithNestedConnectResult = await testHelper.executeGraphQL(updateMutationWithNestedConnect);
+            const updateWithNestedConnectOrCreateResult = await testHelper.executeGraphQL(
                 updateMutationWithNestedConnectOrCreate
             );
-            const updateWithNestedUpdateResult = await testHelper.runGraphQL(updateMutationWithNestedUpdate);
-            const updateWithNestedDisconnectResult = await testHelper.runGraphQL(updateMutationWithNestedDisconnect);
-            const updateWithNestedDeleteResult = await testHelper.runGraphQL(updateMutationWithNestedDelete);
-            const deleteWithNestedDeleteResult = await testHelper.runGraphQL(deleteMutationWithNestedDelete);
+            const updateWithNestedUpdateResult = await testHelper.executeGraphQL(updateMutationWithNestedUpdate);
+            const updateWithNestedDisconnectResult = await testHelper.executeGraphQL(
+                updateMutationWithNestedDisconnect
+            );
+            const updateWithNestedDeleteResult = await testHelper.executeGraphQL(updateMutationWithNestedDelete);
+            const deleteWithNestedDeleteResult = await testHelper.executeGraphQL(deleteMutationWithNestedDelete);
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
             expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(

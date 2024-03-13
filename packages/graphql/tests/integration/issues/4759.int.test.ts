@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE (:${Node1} { uuid: "id0", name: "name0"})
         CREATE (n1:${Node1} { uuid: "id1", name: "name1"})<-[:HAS_NODE]-(:${Node2} { uuid: "id2", name: "name2" , active: true })
         CREATE (n1)<-[:HAS_NODE]-(:${Node2} { uuid: "id3", name: "name3" , active: true })
@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
             }
         `;
 
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Node1.plural]: expect.toIncludeSameMembers([
@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
             }
         `;
 
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Node1.plural]: expect.toIncludeSameMembers([

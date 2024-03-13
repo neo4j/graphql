@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     });
 
     beforeEach(async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (c1:${Company} { id: "example" })
             CREATE (c2:${Company} { id: "another" })
 
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
 
         const token = createBearerToken(secret);
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Company.plural]).toEqual([

@@ -83,12 +83,12 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQL(mutation);
+        const result = await testHelper.executeGraphQL(mutation);
 
         expect(result.errors).toBeFalsy();
 
         expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
 
-        await testHelper.runCypher(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
+        await testHelper.executeCypher(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
     });
 });

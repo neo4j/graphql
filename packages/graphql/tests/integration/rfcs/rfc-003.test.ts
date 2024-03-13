@@ -70,7 +70,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const result = await testHelper.runGraphQL(mutation);
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeTruthy();
                 expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -114,7 +114,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const result = await testHelper.runGraphQL(mutation);
+                    const result = await testHelper.executeGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
@@ -151,11 +151,11 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                await testHelper.runCypher(`
+                await testHelper.executeCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})
                     `);
 
-                const result = await testHelper.runGraphQL(mutation);
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeTruthy();
                 expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -202,11 +202,11 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    await testHelper.runCypher(`
+                    await testHelper.executeCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} { id: "${directorId}" })
                         `);
 
-                    const result = await testHelper.runGraphQL(mutation);
+                    const result = await testHelper.executeGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
@@ -252,11 +252,11 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    await testHelper.runCypher(`
+                    await testHelper.executeCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})
                         `);
 
-                    const result = await testHelper.runGraphQL(mutation);
+                    const result = await testHelper.executeGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
@@ -306,11 +306,11 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    await testHelper.runCypher(`
+                    await testHelper.executeCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId}"})
                         `);
 
-                    const result = await testHelper.runGraphQL(mutation);
+                    const result = await testHelper.executeGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -351,7 +351,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const result = await testHelper.runGraphQL(mutation);
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeTruthy();
                 expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -407,11 +407,11 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    await testHelper.runCypher(`
+                    await testHelper.executeCypher(`
                             CREATE (:${Director} {id: "${directorId}"})
                         `);
 
-                    const result = await testHelper.runGraphQL(mutation);
+                    const result = await testHelper.executeGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
@@ -453,11 +453,11 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    await testHelper.runCypher(`
+                    await testHelper.executeCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId}"})
                         `);
 
-                    const result = await testHelper.runGraphQL(mutation);
+                    const result = await testHelper.executeGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -513,12 +513,12 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                await testHelper.runCypher(`
+                await testHelper.executeCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId1}"})
                         CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
-                const result = await testHelper.runGraphQL(mutation);
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
 
@@ -579,12 +579,12 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                await testHelper.runCypher(`
+                await testHelper.executeCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId1}"})
                         CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
-                const result = await testHelper.runGraphQL(mutation);
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
 
@@ -644,13 +644,13 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                await testHelper.runCypher(`
+                await testHelper.executeCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})
                         CREATE (:${Director} {id: "${directorId1}"})
                         CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
-                const result = await testHelper.runGraphQL(mutation);
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeTruthy();
                 expect((result.errors as any[])[0].message).toBe(`${Movie}.director must be less than or equal to one`);

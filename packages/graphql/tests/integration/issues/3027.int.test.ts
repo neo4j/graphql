@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
         });
 
         test("should validate cardinality against all the implementations", async () => {
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
            CREATE(:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
             const query = `
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
           }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeTruthy();
             expect(result.errors).toEqual(
@@ -152,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
         });
 
         test("should validate cardinality against all the implementations", async () => {
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
            CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
             const query = `
@@ -178,7 +178,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
           }
         `;
 
-            const result = await testHelper.runGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
             expect(result.errors).toBeTruthy();
             expect(result.errors).toEqual(

@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (a:${Genre} { name: "Action" })
             CREATE (:${Genre} { name: "Thriller" })
             CREATE (:${Movie} { name: "TestMovie1" })-[:HAS_GENRE]->(a)
@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toHaveLength(1);
         expect((mutationResult.errors as any)[0]?.message).toBe(`${Movie}.genre required exactly once`);

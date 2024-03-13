@@ -127,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         `;
 
         const token = createBearerToken(secret, { roles: "admin" });
-        const res = await testHelper.runGraphQLWithToken(query, token);
+        const res = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(res.errors).toBeUndefined();
 

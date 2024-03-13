@@ -70,9 +70,9 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
             CREATE (s:${systemType} { code: "arthur" });
         `;
 
-        await testHelper.runCypher(cypher);
+        await testHelper.executeCypher(cypher);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
             [systemType.plural]: [{ code: "arthur", updatesDataConnection: { edges: [] } }],

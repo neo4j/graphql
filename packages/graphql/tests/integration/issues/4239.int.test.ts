@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             },
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (m:${Movie.name} {title: "Matrix"})<-[:DIRECTED]-(p:${Person.name} {id: "SOME_ID"})`
         );
     });
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: { jwt: { sub: "SOME_ID" } },
         });
         expect(response.errors).toBeFalsy();
@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: { jwt: { sub: "SOME_WRONG_ID" } },
         });
         expect((response.errors as any[])[0].message).toBe("Forbidden");

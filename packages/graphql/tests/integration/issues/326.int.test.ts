@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
         id = generate({
             charset: "alphabetic",
         });
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${User.name} {id: $id, email: randomUUID()})
                 `,
@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
 
         const token = testHelper.createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
@@ -127,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });

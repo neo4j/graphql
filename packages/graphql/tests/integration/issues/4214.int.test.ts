@@ -150,7 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE(u1:${User} {roles: ["store-owner"], id: "15cbd399-daaf-4579-ad2e-264bc956094c", email: "a@a.com"})
         CREATE(u2:${User} {roles: ["store-owner"], id: "2856f385-46b4-4136-a608-2d5ad627133c", email: "b@b.com"})
         CREATE(s1:${Store} {name: "Store", id: "8c8bb4bc-07dc-4808-bb20-f69d447a03b0"})
@@ -198,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             store: "8c8bb4bc-07dc-4808-bb20-f69d447a03b0",
         });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
     });
@@ -234,7 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             store: "8c8bb4bc-07dc-4808-bb20-f69d447a03b0",
         });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeDefined();
         expect(result.errors?.[0]?.message).toBe("Forbidden");

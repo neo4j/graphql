@@ -50,7 +50,7 @@ describe("aggregations-where-node-string", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
@@ -68,7 +68,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -107,7 +107,7 @@ describe("aggregations-where-node-string", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
@@ -125,7 +125,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -163,7 +163,7 @@ describe("aggregations-where-node-string", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
@@ -181,7 +181,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -219,7 +219,7 @@ describe("aggregations-where-node-string", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
@@ -237,7 +237,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -275,7 +275,7 @@ describe("aggregations-where-node-string", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
@@ -293,7 +293,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -349,7 +349,7 @@ describe("aggregations-where-node-string", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${shortestTestString}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString2}"})
@@ -368,7 +368,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -426,7 +426,7 @@ describe("aggregations-where-node-string", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${shortestTestString}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString2}"})
@@ -445,7 +445,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -506,7 +506,7 @@ describe("aggregations-where-node-string", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (p:Post {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:User {testString: "${testString1}"})
@@ -527,7 +527,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -582,7 +582,7 @@ describe("aggregations-where-node-string", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:Post {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:User {testString: "${testString1}"})
@@ -603,7 +603,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -656,7 +656,7 @@ describe("aggregations-where-node-string", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:Post {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:User {testString: "${testString1}"})
@@ -677,7 +677,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -731,7 +731,7 @@ describe("aggregations-where-node-string", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:Post {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:User {testString: "${testString1}"})
@@ -752,7 +752,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -805,7 +805,7 @@ describe("aggregations-where-node-string", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:Post {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:User {testString: "${testString1}"})
@@ -826,7 +826,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -865,7 +865,7 @@ describe("aggregations-where-node-string", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE(p:${Post} {content: "test"})<-[:LIKES]-(:${User} {_name: "a"})
             CREATE(p2:${Post} {content: "test2"})<-[:LIKES]-(:${User} {_name: "b"})
@@ -873,7 +873,7 @@ describe("aggregations-where-node-string", () => {
         );
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
         }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (m:${typeSeries.name} { id: randomUUID() })
                     CREATE (m)<-[:IN_SERIES]-(:${typeEpisode.name} { id: randomUUID() })
@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
                 `
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data?.[typeSeries.plural]).toEqual(

@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (:${manufacturerType.name} {name: "C", id: "a"})<-[:MANUFACTURER {current: true}]-(:${seriesType.name} {name: "123", current: true})-[:BRAND {current: true}]->(:${brandType.name} {name: "smart"})<-[:BRAND {current: true}]-(:${seriesType.name} {name: "456", current: true})-[:MANUFACTURER {current: false}]->(:${manufacturerType.name} {name: "AM"})`
         );
     });
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             }
         `;
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
                     current: true,

@@ -108,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
         expect((mutationResult?.data as any)[Test_Item.operations.create].info).toEqual({
@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             nodesCreated: 3,
         });
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
         expect(queryResult.errors).toBeFalsy();
         expect((queryResult?.data as any)[Test_Item.plural]).toHaveLength(2);
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
         expect((mutationResult?.data as any)[Test_Item.operations.create].info).toEqual({
@@ -168,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             nodesCreated: 3,
         });
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
         expect(queryResult.errors).toBeFalsy();
         expect((queryResult?.data as any)[Test_Item.plural]).toHaveLength(2);
@@ -213,7 +213,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)[Test_Item.operations.create].info).toEqual({
@@ -260,7 +260,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)[Test_Item.operations.create].info).toEqual({

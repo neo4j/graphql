@@ -63,7 +63,7 @@ describe("aggregations-where-edge-float", () => {
 
         const someFloat = Math.random() * Math.random() + 10.123;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someFloat: ${someFloat}}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -81,7 +81,7 @@ describe("aggregations-where-edge-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -106,7 +106,7 @@ describe("aggregations-where-edge-float", () => {
         const someFloat = Math.random() * Math.random() + 10.123;
         const someFloatGt = someFloat - 0.1;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someFloat: ${someFloat}}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -124,7 +124,7 @@ describe("aggregations-where-edge-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -148,7 +148,7 @@ describe("aggregations-where-edge-float", () => {
 
         const someFloat = Math.random() * Math.random() + 10.123;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someFloat: ${someFloat}}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -166,7 +166,7 @@ describe("aggregations-where-edge-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -191,7 +191,7 @@ describe("aggregations-where-edge-float", () => {
         const someFloat = Math.random() * Math.random() + 10.123;
         const someFloatLT = someFloat + 0.1;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someFloat: ${someFloat}}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -209,7 +209,7 @@ describe("aggregations-where-edge-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -233,7 +233,7 @@ describe("aggregations-where-edge-float", () => {
 
         const someFloat = Math.random() * Math.random() + 10.123;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES {someFloat: ${someFloat}}]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -251,7 +251,7 @@ describe("aggregations-where-edge-float", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

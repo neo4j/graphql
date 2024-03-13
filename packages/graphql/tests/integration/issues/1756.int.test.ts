@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
           }
       `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[productType.operations.create]).toEqual({
@@ -132,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
         }
     `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[productType.operations.create]).toEqual({
