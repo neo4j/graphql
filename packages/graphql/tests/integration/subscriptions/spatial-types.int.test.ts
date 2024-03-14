@@ -122,14 +122,31 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .filmedIn } as m
             `);
 
-        expect(result.records[0]?.toObject().m.filmedIn.x).toEqual(longitude1);
-        expect(result.records[0]?.toObject().m.filmedIn.y).toEqual(latitude1);
-        expect(result.records[0]?.toObject().m.filmedIn.z).toEqual(height1);
-        expect(result.records[0]?.toObject().m.filmedIn.srid).toEqual(int(4979));
-        expect(result.records[1]?.toObject().m.filmedIn.x).toEqual(longitude2);
-        expect(result.records[1]?.toObject().m.filmedIn.y).toEqual(latitude2);
-        expect(result.records[1]?.toObject().m.filmedIn.z).toEqual(height2);
-        expect(result.records[1]?.toObject().m.filmedIn.srid).toEqual(int(4979));
+        const records = result.records.map((r) => r.toObject());
+        expect(records).toIncludeSameMembers([
+            {
+                m: {
+                    filmedIn: {
+                        x: longitude1,
+                        y: latitude1,
+                        z: height1,
+                        srid: int(4979),
+                    },
+                    title: "As good as it gets",
+                },
+            },
+            {
+                m: {
+                    filmedIn: {
+                        x: longitude2,
+                        y: latitude2,
+                        z: height2,
+                        srid: int(4979),
+                    },
+                    title: "Avatar",
+                },
+            },
+        ]);
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -220,10 +237,18 @@ describe("Subscriptions to spatial types", () => {
                 WHERE m.title = "As good as it gets"
                 RETURN m { .title, .filmedIn } as m
             `);
-        expect(result.records[0]?.toObject().m.filmedIn.x).toEqual(longitude1);
-        expect(result.records[0]?.toObject().m.filmedIn.y).toEqual(newLatitude);
-        expect(result.records[0]?.toObject().m.filmedIn.z).toEqual(height1);
-        expect(result.records[0]?.toObject().m.filmedIn.srid).toEqual(int(4979));
+
+        expect(result.records[0]?.toObject()).toEqual({
+            m: {
+                filmedIn: {
+                    x: longitude1,
+                    y: newLatitude,
+                    z: height1,
+                    srid: int(4979),
+                },
+                title: "As good as it gets",
+            },
+        });
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -437,45 +462,60 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .location } as m
             `);
 
-        expect(result.records[0]?.toObject().m.location.x).toEqual(x1);
-        expect(result.records[0]?.toObject().m.location.y).toEqual(y1);
-        expect(result.records[0]?.toObject().m.location.z).toBeUndefined();
-        expect(result.records[0]?.toObject().m.location.srid).toEqual(int(7203));
-        expect(result.records[1]?.toObject().m.location.x).toEqual(x2);
-        expect(result.records[1]?.toObject().m.location.y).toEqual(y2);
-        expect(result.records[1]?.toObject().m.location.z).toBeUndefined();
-        expect(result.records[1]?.toObject().m.location.srid).toEqual(int(7203));
+        const records = result.records.map((r) => r.toObject());
+        expect(records).toIncludeSameMembers([
+            {
+                m: {
+                    location: {
+                        x: x1,
+                        y: y1,
+                        z: undefined,
+                        srid: int(7203),
+                    },
+                    title: "As good as it gets",
+                },
+            },
+            {
+                m: {
+                    location: {
+                        x: x2,
+                        y: y2,
+                        z: undefined,
+                        srid: int(7203),
+                    },
+                    title: "Avatar",
+                },
+            },
+        ]);
 
-        expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
-                {
-                    id: expect.any(Number),
-                    timestamp: expect.any(Number),
-                    event: "create",
-                    properties: {
-                        old: undefined,
-                        new: {
-                            title: "As good as it gets",
-                            location: { x: x1, y: y1, z: undefined, srid: { high: 0, low: 7203 } },
-                        },
+        expect(plugin.eventList).toIncludeSameMembers([
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: {
+                    old: undefined,
+                    new: {
+                        title: "As good as it gets",
+                        location: { x: x1, y: y1, z: undefined, srid: { high: 0, low: 7203 } },
                     },
-                    typename: typeMovie.name,
                 },
-                {
-                    id: expect.any(Number),
-                    timestamp: expect.any(Number),
-                    event: "create",
-                    properties: {
-                        old: undefined,
-                        new: {
-                            title: "Avatar",
-                            location: { x: x2, y: y2, z: undefined, srid: { high: 0, low: 7203 } },
-                        },
+                typename: typeMovie.name,
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: {
+                    old: undefined,
+                    new: {
+                        title: "Avatar",
+                        location: { x: x2, y: y2, z: undefined, srid: { high: 0, low: 7203 } },
                     },
-                    typename: typeMovie.name,
                 },
-            ])
-        );
+                typename: typeMovie.name,
+            },
+        ]);
     });
     test("update type with CartesianPoint field", async () => {
         const x = faker.number.float();
@@ -535,10 +575,17 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .location } as m
             `);
 
-        expect(result.records[0]?.toObject().m.location.x).toEqual(x);
-        expect(result.records[0]?.toObject().m.location.y).toEqual(newY);
-        expect(result.records[0]?.toObject().m.location.z).toBeUndefined();
-        expect(result.records[0]?.toObject().m.location.srid).toEqual(int(7203));
+        expect(result.records[0]?.toObject()).toEqual({
+            m: {
+                location: {
+                    x: x,
+                    y: newY,
+                    z: undefined,
+                    srid: int(7203),
+                },
+                title: "As good as it gets",
+            },
+        });
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
