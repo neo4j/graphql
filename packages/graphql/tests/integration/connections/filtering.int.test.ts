@@ -17,30 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Connections Filtering", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let schema: GraphQLSchema;
-    let session: Session;
+    const testHelper = new TestHelper();
     let actorType: UniqueType;
     let movieType: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        movieType = new UniqueType("Movie");
-        actorType = new UniqueType("Actor");
+        movieType = testHelper.createUniqueType("Movie");
+        actorType = testHelper.createUniqueType("Actor");
 
         const typeDefs = gql`
             type ${movieType} {
@@ -53,17 +41,11 @@ describe("Connections Filtering", () => {
                 movies: [${movieType}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoSchema.getSchema();
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should allow where clause on relationship property of node", async () => {
@@ -85,7 +67,7 @@ describe("Connections Filtering", () => {
 			}
 		`;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
 					CREATE (movie:${movieType} {title: $movieTitle})
 					CREATE (actorOne:${actorType} {name: $actorOneName})
@@ -98,10 +80,7 @@ describe("Connections Filtering", () => {
                 actorTwoName,
             }
         );
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: {
                 movieTitle,
             },
@@ -134,7 +113,7 @@ describe("Connections Filtering", () => {
 			}
 		`;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
 					CREATE (movie:${movieType} {title: $movieTitle})
 					CREATE (actorOne:${actorType} {name: $actor1Name})
@@ -147,13 +126,9 @@ describe("Connections Filtering", () => {
                 movieTitle,
             }
         );
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
-        expect((result?.data as any)?.[movieType.plural]).toEqual([
+        expect(result?.data?.[movieType.plural]).toEqual([
             {
                 actorsConnection: {
                     edges: expect.toIncludeSameMembers([
@@ -188,7 +163,7 @@ describe("Connections Filtering", () => {
 			}
 		`;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
 					CREATE (movie:${movieType} {title: $movieTitle})
 					CREATE (actorOne:${actorType} {name: $actor1Name})
@@ -201,13 +176,9 @@ describe("Connections Filtering", () => {
                 movieTitle,
             }
         );
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
-        expect((result?.data as any)?.[movieType.plural]).toEqual([
+        expect(result?.data?.[movieType.plural]).toEqual([
             {
                 actorsConnection: {
                     edges: expect.toIncludeSameMembers([
@@ -242,7 +213,7 @@ describe("Connections Filtering", () => {
 			}
 		`;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
 					CREATE (movie:${movieType} {title: $movieTitle})
 					CREATE (actorOne:${actorType} {name: $actor1Name})
@@ -255,13 +226,9 @@ describe("Connections Filtering", () => {
                 movieTitle,
             }
         );
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
-        expect((result?.data as any)?.[movieType.plural]).toEqual([
+        expect(result?.data?.[movieType.plural]).toEqual([
             {
                 actorsConnection: {
                     edges: expect.toIncludeSameMembers([

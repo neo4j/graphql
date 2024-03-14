@@ -17,25 +17,18 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Enum Relationship Properties", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
     let Actor: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
-        Actor = new UniqueType("Actor");
+    beforeEach(async () => {
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
             type ${Actor} {
                 name: String!
@@ -61,19 +54,17 @@ describe("Enum Relationship Properties", () => {
             SUPPORTING: "Supporting",
         };
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: { RoleType: roleTypeResolver },
         });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should create a movie and an actor, with an enum as a relationship property", async () => {
-        const session = await neo4j.getSession();
-
         const title = generate({
             charset: "alphabetic",
         });
@@ -106,36 +97,29 @@ describe("Enum Relationship Properties", () => {
             }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: create,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { title, name },
-            });
+        const gqlResult = await testHelper.executeGraphQL(create, {
+            variableValues: { title, name },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data).toEqual({
-                [Movie.operations.create]: {
-                    [Movie.plural]: [
-                        {
-                            title,
-                            actorsConnection: { edges: [{ properties: { roleType: "LEADING" }, node: { name } }] },
-                        },
-                    ],
-                },
-            });
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.create]: {
+                [Movie.plural]: [
+                    {
+                        title,
+                        actorsConnection: { edges: [{ properties: { roleType: "LEADING" }, node: { name } }] },
+                    },
+                ],
+            },
+        });
 
-            const result = await session.run(`
+        const result = await testHelper.executeCypher(`
                 MATCH (m:${Movie})<-[ai:ACTED_IN]-(a:${Actor})
                 WHERE m.title = "${title}" AND a.name = "${name}"
                 RETURN ai
             `);
 
-            expect((result.records[0]?.toObject() as any).ai.properties).toEqual({ roleType: "Leading" });
-        } finally {
-            await session.close();
-        }
+        expect((result.records[0]?.toObject() as any).ai.properties).toEqual({ roleType: "Leading" });
     });
 });
