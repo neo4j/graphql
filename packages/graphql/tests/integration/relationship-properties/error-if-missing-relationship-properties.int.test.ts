@@ -17,27 +17,12 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { getErrorAsync } from "../../utils/get-error";
-import Neo4jHelper from "../neo4j";
 
 describe("Throw error if missing @relationshipProperties", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
     test("should throw error if the @relationshipProperties directive is not used", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -53,7 +38,7 @@ describe("Throw error if missing @relationshipProperties", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const errors: Error[] = await getErrorAsync(() => neoSchema.getSchema());
         expect(errors).toHaveLength(2);
@@ -70,7 +55,7 @@ describe("Throw error if missing @relationshipProperties", () => {
     });
 
     test("should not throw error if the @relationshipProperties directive is used", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -86,7 +71,7 @@ describe("Throw error if missing @relationshipProperties", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
