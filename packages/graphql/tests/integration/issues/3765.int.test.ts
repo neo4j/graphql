@@ -17,25 +17,19 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3765", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    let neoSchema: Neo4jGraphQL;
-
-    const Post = new UniqueType("Post");
-    const User = new UniqueType("User");
+    let Post: UniqueType;
+    let User: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        Post = testHelper.createUniqueType("Post");
+        User = testHelper.createUniqueType("User");
 
         const typeDefs = `#graphql
             type ${User} {
@@ -47,15 +41,12 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 CREATE(p1:${Post} {content: "p1"})
                ${`CREATE(p1)<-[:LIKES]-(:${User}) `.repeat(2)}
                 CREATE(p2:${Post} {content: "p2"})
@@ -65,21 +56,11 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 CREATE(p4:${Post} {content: "p4"})
                ${`CREATE(p4)<-[:LIKES]-(:${User}) `.repeat(10)}
                 `
-            );
-        } finally {
-            await session.close();
-        }
+        );
     });
 
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
-    });
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("filter + explicit OR which contains an implicit AND", async () => {
@@ -93,11 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Post.plural]).toIncludeSameMembers([{ content: "p1" }, { content: "p3" }]);

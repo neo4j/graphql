@@ -17,24 +17,18 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-datetime", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let typeDefs: string;
-    let neoSchema: Neo4jGraphQL;
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
         typeDefs = `
             type ${Movie} {
                 testString: String
@@ -42,16 +36,14 @@ describe("aggregations-top_level-datetime", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return the min of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -59,20 +51,19 @@ describe("aggregations-top_level-datetime", () => {
 
         const minDate = new Date();
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         createdAt {
@@ -82,31 +73,18 @@ describe("aggregations-top_level-datetime", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                createdAt: {
-                    min: minDate.toISOString(),
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            createdAt: {
+                min: minDate.toISOString(),
+            },
+        });
     });
 
     test("should return the max of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -117,20 +95,19 @@ describe("aggregations-top_level-datetime", () => {
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${maxDate.toISOString()}")})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         createdAt {
@@ -140,31 +117,18 @@ describe("aggregations-top_level-datetime", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                createdAt: {
-                    max: maxDate.toISOString(),
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            createdAt: {
+                max: maxDate.toISOString(),
+            },
+        });
     });
 
     test("should return the min and max of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -175,20 +139,19 @@ describe("aggregations-top_level-datetime", () => {
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${maxDate.toISOString()}")})
                 `,
-                {
-                    testString,
-                }
-            );
+            {
+                testString,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
                     ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
                         createdAt {
@@ -199,26 +162,15 @@ describe("aggregations-top_level-datetime", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-                createdAt: {
-                    min: minDate.toISOString(),
-                    max: maxDate.toISOString(),
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            createdAt: {
+                min: minDate.toISOString(),
+                max: maxDate.toISOString(),
+            },
+        });
     });
 });

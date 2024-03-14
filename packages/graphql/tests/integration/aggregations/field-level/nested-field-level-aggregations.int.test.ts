@@ -17,26 +17,20 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Nested Field Level Aggregations", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
     let typeDefs: string;
 
-    const typeMovie = new UniqueType("Movie");
-    const typeActor = new UniqueType("Actor");
-
-    let neoSchema: Neo4jGraphQL;
+    let typeMovie: UniqueType;
+    let typeActor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
 
         typeDefs = `
         type ${typeMovie.name} {
@@ -57,9 +51,9 @@ describe("Nested Field Level Aggregations", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
-        session = await neo4j.getSession();
-        await session.run(`
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        await testHelper.runCypher(`
         CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
         CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})
         CREATE (:${typeMovie.name} {title: "Total Recall"})<-[:ACTED_IN { screentime: 180, character: "Quaid" }]-(arnold)
@@ -67,8 +61,7 @@ describe("Nested Field Level Aggregations", () => {
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("count actors in movies in actors", async () => {
@@ -86,11 +79,7 @@ describe("Nested Field Level Aggregations", () => {
         }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
         const movies = (gqlResult.data as any)?.actors[0].movies;
         expect(movies).toHaveLength(2);

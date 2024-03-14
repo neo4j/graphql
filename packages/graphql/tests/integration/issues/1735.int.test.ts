@@ -17,24 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1735", () => {
-    const actorType = new UniqueType("Actor");
-    const movieType = new UniqueType("Movie");
+    let actorType: UniqueType;
+    let movieType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        actorType = testHelper.createUniqueType("Actor");
+        movieType = testHelper.createUniqueType("Movie");
+
         const typeDefs = `
           type MovieActorEdgeProperties @relationshipProperties {
             isLead: Boolean
@@ -57,11 +54,8 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
               movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "MovieActorEdgeProperties")
           }
   `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-    beforeEach(async () => {
         const source = `
         mutation($input: [${movieType.name}CreateInput!]!) {
           ${movieType.operations.create}(input: $input) {
@@ -83,25 +77,13 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
                 },
             },
         ];
-        await graphql({
-            source,
-            schema,
-            contextValue: neo4j.getContextValues(),
+        await testHelper.runGraphQL(source, {
             variableValues: { input },
         });
     });
 
-    afterEach(async () => {
-        const session = await neo4j.getSession();
-
-        await session.run(`MATCH (a: ${actorType.name}) DETACH DELETE a`);
-        await session.run(`MATCH (m: ${movieType.name}) DETACH DELETE m`);
-
-        await session.close();
-    });
-
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
     test("root connection queries on nodes with Cypher fields should execute without a sort argument", async () => {
         const query = `
@@ -118,12 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         }
       `;
 
-        const result = await graphql({
-            schema,
-            source: query,
-            variableValues: {},
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[movieType.operations.connection]).toEqual({

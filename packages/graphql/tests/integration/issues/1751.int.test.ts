@@ -17,24 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1735", () => {
-    const organizationType = new UniqueType("Organization");
-    const adminType = new UniqueType("Admin");
+    let organizationType: UniqueType;
+    let adminType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        organizationType = testHelper.createUniqueType("Organization");
+        adminType = testHelper.createUniqueType("Admin");
+
         const typeDefs = `
         type ${organizationType} {
             title: String
@@ -46,25 +43,18 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
             organizations: [${organizationType}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN)
         }
   `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-    beforeEach(async () => {
-        const session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.runCypher(`
         CREATE (a:${adminType} {adminId: "my-admin-to-delete"})<-[:HAS_ADMINISTRATOR]-(o:${organizationType} {title: "Google"})
         CREATE (a2:${adminType} {adminId: "my-admin2"})<-[:HAS_ADMINISTRATOR]-(o2:${organizationType} { title: "Yahoo"})
         CREATE (a3:${adminType} {adminId: "my-admin3"})<-[:HAS_ADMINISTRATOR]-(o3:${organizationType} { title: "Altavista"})
         MERGE (a3)<-[:HAS_ADMINISTRATOR]-(o)
         `);
-
-        await session.close();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should delete the correct node filtered by aggregated count", async () => {
@@ -80,11 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
             }
         `;
 
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data?.[organizationType.operations.delete]).toEqual({
@@ -92,18 +78,15 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
             relationshipsDeleted: 2,
         });
 
-        const session = await neo4j.getSession();
-        const remainingOrgs = await session.run(`
+        const remainingOrgs = await testHelper.runCypher(`
             MATCH(org:${organizationType})
             RETURN org.title as title
             `);
 
-        const remainingAdmins = await session.run(`
+        const remainingAdmins = await testHelper.runCypher(`
             MATCH(admin:${adminType})
             RETURN admin.adminId as adminId
             `);
-
-        await session.close();
 
         expect(remainingOrgs.records.map((r) => r.toObject())).toIncludeSameMembers([
             { title: "Yahoo" },

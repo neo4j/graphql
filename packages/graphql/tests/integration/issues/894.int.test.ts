@@ -17,34 +17,20 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { getQuerySource } from "../../utils/get-query-source";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import { type Session } from "neo4j-driver";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/894", () => {
-    const testUser = new UniqueType("User");
-    const testOrganization = new UniqueType("Organization");
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testUser: UniqueType;
+    let testOrganization: UniqueType;
+    let testHelper: TestHelper;
     let session: Session;
 
-    async function graphqlQuery(query: DocumentNode) {
-        return graphql({
-            schema,
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues(),
-        });
-    }
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        testUser = testHelper.createUniqueType("User");
+        testOrganization = testHelper.createUniqueType("Organization");
 
         const typeDefs = `
         type ${testUser.name} {
@@ -58,27 +44,15 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             name: String!
         }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
-        await session.run(`MATCH (node:${testUser.name}) DETACH DELETE node`);
-        await session.run(`MATCH (org:${testOrganization.name}) DETACH DELETE org`);
-
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query nested connection", async () => {
-        const createUserQuery = gql`
+        const createUserQuery = /* GraphQL */ `
             mutation {
                 ${testUser.operations.create}(
                     input: {
@@ -92,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 }
             }
         `;
-        const createOrgQuery = gql`
+        const createOrgQuery = /* GraphQL */ `
             mutation {
                 ${testOrganization.operations.create}(input: { name: "The Empire" }) {
                     ${testOrganization.plural} {
@@ -101,15 +75,15 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 }
             }
         `;
-        const createUserResult = await graphqlQuery(createUserQuery);
+        const createUserResult = await testHelper.runGraphQL(createUserQuery);
         expect(createUserResult.errors).toBeUndefined();
 
-        const createOrgResult = (await graphqlQuery(createOrgQuery)) as any;
+        const createOrgResult = (await testHelper.runGraphQL(createOrgQuery)) as any;
         expect(createOrgResult.errors).toBeUndefined();
         const orgId = createOrgResult?.data[testOrganization.operations.create][testOrganization.plural][0]
             .id as string;
 
-        const swapSidesQuery = gql`
+        const swapSidesQuery = /* GraphQL*/ `
                 mutation {
                     ${testUser.operations.update}(
                         where: { name: "Luke Skywalker" }
@@ -123,10 +97,10 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 }
             `;
 
-        const swapSidesResult = await graphqlQuery(swapSidesQuery);
+        const swapSidesResult = await testHelper.runGraphQL(swapSidesQuery);
         expect(swapSidesResult.errors).toBeUndefined();
 
-        const userOrgs = await session.run(`
+        const userOrgs = await testHelper.runCypher(`
                 MATCH (user:${testUser.name} { name: "Luke Skywalker" })-[r:ACTIVELY_MANAGING]->(org:${testOrganization.name}) return org.name as orgName
             `);
 

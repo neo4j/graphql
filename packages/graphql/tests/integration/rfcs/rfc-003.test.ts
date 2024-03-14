@@ -17,35 +17,27 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("integration/rfc/003", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let Director: UniqueType;
     let Movie: UniqueType;
     let CoDirector: UniqueType;
     let Address: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Director = new UniqueType("Director");
-        Movie = new UniqueType("Movie");
-        CoDirector = new UniqueType("CoDirector");
-        Address = new UniqueType("Address");
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        Director = testHelper.createUniqueType("Director");
+        Movie = testHelper.createUniqueType("Movie");
+        CoDirector = testHelper.createUniqueType("CoDirector");
+        Address = testHelper.createUniqueType("Address");
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Director, Movie, CoDirector, Address]);
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("one-to-one", () => {
@@ -62,7 +54,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const movieId = generate({
                     charset: "alphabetic",
@@ -78,11 +70,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.runGraphQL(mutation);
 
                 expect(result.errors).toBeTruthy();
                 expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -106,7 +94,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    await testHelper.initNeo4jGraphQL({ typeDefs });
 
                     const movieId = generate({
                         charset: "alphabetic",
@@ -126,11 +114,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const result = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: mutation,
-                        contextValue: neo4j.getContextValues(),
-                    });
+                    const result = await testHelper.runGraphQL(mutation);
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
@@ -140,8 +124,6 @@ describe("integration/rfc/003", () => {
 
         describe("update", () => {
             test("should throw error when updating a node without a required relationship", async () => {
-                const session = await neo4j.getSession();
-
                 const typeDefs = /* GraphQL */ `
                     type ${Director} {
                         id: ID!
@@ -153,7 +135,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const movieId = generate({
                     charset: "alphabetic",
@@ -169,28 +151,18 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                try {
-                    await session.run(`
+                await testHelper.runCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})
                     `);
 
-                    const result = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: mutation,
-                        contextValue: neo4j.getContextValues(),
-                    });
+                const result = await testHelper.runGraphQL(mutation);
 
-                    expect(result.errors).toBeTruthy();
-                    expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
-                } finally {
-                    await session.close();
-                }
+                expect(result.errors).toBeTruthy();
+                expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
             });
 
             describe("nested mutations", () => {
                 test("should throw when creating node without relationship", async () => {
-                    const session = await neo4j.getSession();
-
                     const typeDefs = /* GraphQL */ `
                         type ${Address} {
                             street: String!
@@ -207,7 +179,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    await testHelper.initNeo4jGraphQL({ typeDefs });
 
                     const movieId = generate({
                         charset: "alphabetic",
@@ -230,27 +202,17 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    try {
-                        await session.run(`
+                    await testHelper.runCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} { id: "${directorId}" })
                         `);
 
-                        const result = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source: mutation,
-                            contextValue: neo4j.getContextValues(),
-                        });
+                    const result = await testHelper.runGraphQL(mutation);
 
-                        expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
-                    } finally {
-                        await session.close();
-                    }
+                    expect(result.errors).toBeTruthy();
+                    expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                 });
 
                 test("should throw error when creating a node without a required relationship through a nested mutation", async () => {
-                    const session = await neo4j.getSession();
-
                     const typeDefs = /* GraphQL */ `
                         type ${Address} {
                             street: String!
@@ -267,7 +229,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    await testHelper.initNeo4jGraphQL({ typeDefs });
 
                     const movieId = generate({
                         charset: "alphabetic",
@@ -290,22 +252,14 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    try {
-                        await session.run(`
+                    await testHelper.runCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})
                         `);
 
-                        const result = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source: mutation,
-                            contextValue: neo4j.getContextValues(),
-                        });
+                    const result = await testHelper.runGraphQL(mutation);
 
-                        expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
-                    } finally {
-                        await session.close();
-                    }
+                    expect(result.errors).toBeTruthy();
+                    expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                 });
             });
         });
@@ -313,8 +267,6 @@ describe("integration/rfc/003", () => {
         describe("delete", () => {
             describe("nested mutations", () => {
                 test("should throw error when deleting a required relationship", async () => {
-                    const session = await neo4j.getSession();
-
                     const typeDefs = /* GraphQL */ `
                         type ${Director} {
                             id: ID!
@@ -331,7 +283,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    await testHelper.initNeo4jGraphQL({ typeDefs });
 
                     const movieId = generate({
                         charset: "alphabetic",
@@ -354,22 +306,14 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    try {
-                        await session.run(`
+                    await testHelper.runCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId}"})
                         `);
 
-                        const result = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source: mutation,
-                            contextValue: neo4j.getContextValues(),
-                        });
+                    const result = await testHelper.runGraphQL(mutation);
 
-                        expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
-                    } finally {
-                        await session.close();
-                    }
+                    expect(result.errors).toBeTruthy();
+                    expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
                 });
             });
         });
@@ -387,7 +331,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const movieId = generate({
                     charset: "alphabetic",
@@ -407,11 +351,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.runGraphQL(mutation);
 
                 expect(result.errors).toBeTruthy();
                 expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
@@ -419,8 +359,6 @@ describe("integration/rfc/003", () => {
 
             describe("nested mutations", () => {
                 test("should throw error when connecting to a required node that is not found", async () => {
-                    const session = await neo4j.getSession();
-
                     const typeDefs = /* GraphQL */ `
                         type ${Address} {
                             street: String!
@@ -437,7 +375,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    await testHelper.initNeo4jGraphQL({ typeDefs });
 
                     const movieId = generate({
                         charset: "alphabetic",
@@ -469,22 +407,14 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    try {
-                        await session.run(`
+                    await testHelper.runCypher(`
                             CREATE (:${Director} {id: "${directorId}"})
                         `);
 
-                        const result = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source: mutation,
-                            contextValue: neo4j.getContextValues(),
-                        });
+                    const result = await testHelper.runGraphQL(mutation);
 
-                        expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
-                    } finally {
-                        await session.close();
-                    }
+                    expect(result.errors).toBeTruthy();
+                    expect((result.errors as any[])[0].message).toBe(`${Director}.address required exactly once`);
                 });
             });
         });
@@ -492,8 +422,6 @@ describe("integration/rfc/003", () => {
         describe("disconnect", () => {
             describe("nested mutations", () => {
                 test("should throw error when disconnecting a required relationship", async () => {
-                    const session = await neo4j.getSession();
-
                     const typeDefs = /* GraphQL */ `
                         type ${Director} {
                             id: ID!
@@ -505,7 +433,7 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    await testHelper.initNeo4jGraphQL({ typeDefs });
 
                     const movieId = generate({
                         charset: "alphabetic",
@@ -525,30 +453,20 @@ describe("integration/rfc/003", () => {
                         }
                     `;
 
-                    try {
-                        await session.run(`
+                    await testHelper.runCypher(`
                             CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId}"})
                         `);
 
-                        const result = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source: mutation,
-                            contextValue: neo4j.getContextValues(),
-                        });
+                    const result = await testHelper.runGraphQL(mutation);
 
-                        expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
-                    } finally {
-                        await session.close();
-                    }
+                    expect(result.errors).toBeTruthy();
+                    expect((result.errors as any[])[0].message).toBe(`${Movie}.director required exactly once`);
                 });
             });
         });
 
         describe("reconnect", () => {
             test("should disconnect and then reconnect to a new node on a required relationship", async () => {
-                const session = await neo4j.getSession();
-
                 const typeDefs = /* GraphQL */ `
                     type ${Director} {
                         id: ID!
@@ -560,7 +478,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const movieId = generate({
                     charset: "alphabetic",
@@ -595,36 +513,26 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                try {
-                    await session.run(`
+                await testHelper.runCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId1}"})
                         CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
-                    const result = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: mutation,
-                        contextValue: neo4j.getContextValues(),
-                    });
+                const result = await testHelper.runGraphQL(mutation);
 
-                    expect(result.errors).toBeUndefined();
+                expect(result.errors).toBeUndefined();
 
-                    const movie = (result.data as any)[Movie.operations.update][Movie.plural][0];
+                const movie = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
-                    expect(movie).toEqual({
-                        id: movieId,
-                        director: {
-                            id: directorId2,
-                        },
-                    });
-                } finally {
-                    await session.close();
-                }
+                expect(movie).toEqual({
+                    id: movieId,
+                    director: {
+                        id: directorId2,
+                    },
+                });
             });
 
             test("should disconnect and then reconnect to a new node on a non required relationship", async () => {
-                const session = await neo4j.getSession();
-
                 const typeDefs = /* GraphQL */ `
                     type ${Director} {
                         id: ID!
@@ -636,7 +544,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const movieId = generate({
                     charset: "alphabetic",
@@ -671,38 +579,28 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                try {
-                    await session.run(`
+                await testHelper.runCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})<-[:DIRECTED]-(:${Director} {id: "${directorId1}"})
                         CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
-                    const result = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: mutation,
-                        contextValue: neo4j.getContextValues(),
-                    });
+                const result = await testHelper.runGraphQL(mutation);
 
-                    expect(result.errors).toBeUndefined();
+                expect(result.errors).toBeUndefined();
 
-                    const movie = (result.data as any)[Movie.operations.update][Movie.plural][0];
+                const movie = (result.data as any)[Movie.operations.update][Movie.plural][0];
 
-                    expect(movie).toEqual({
-                        id: movieId,
-                        director: {
-                            id: directorId2,
-                        },
-                    });
-                } finally {
-                    await session.close();
-                }
+                expect(movie).toEqual({
+                    id: movieId,
+                    director: {
+                        id: directorId2,
+                    },
+                });
             });
         });
 
         describe("relationship length", () => {
             test("should throw if connecting to more than one node", async () => {
-                const session = await neo4j.getSession();
-
                 const typeDefs = /* GraphQL */ `
                     type ${Director} {
                         id: ID!
@@ -714,7 +612,7 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const movieId = generate({
                     charset: "alphabetic",
@@ -746,26 +644,16 @@ describe("integration/rfc/003", () => {
                     }
                 `;
 
-                try {
-                    await session.run(`
+                await testHelper.runCypher(`
                         CREATE (:${Movie} {id: "${movieId}"})
                         CREATE (:${Director} {id: "${directorId1}"})
                         CREATE (:${Director} {id: "${directorId2}"})
                     `);
 
-                    const result = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: mutation,
-                        contextValue: neo4j.getContextValues(),
-                    });
+                const result = await testHelper.runGraphQL(mutation);
 
-                    expect(result.errors).toBeTruthy();
-                    expect((result.errors as any[])[0].message).toBe(
-                        `${Movie}.director must be less than or equal to one`
-                    );
-                } finally {
-                    await session.close();
-                }
+                expect(result.errors).toBeTruthy();
+                expect((result.errors as any[])[0].message).toBe(`${Movie}.director must be less than or equal to one`);
             });
         });
     });

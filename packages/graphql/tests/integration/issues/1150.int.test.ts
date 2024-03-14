@@ -17,20 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     let Battery: UniqueType;
     let CombustionEngine: UniqueType;
@@ -38,13 +32,12 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     let DriveComposition: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
 
-        Battery = new UniqueType("Battery");
-        CombustionEngine = new UniqueType("CombustionEngine");
-        Drive = new UniqueType("Drive");
-        DriveComposition = new UniqueType("DriveComposition");
+        Battery = testHelper.createUniqueType("Battery");
+        CombustionEngine = testHelper.createUniqueType("CombustionEngine");
+        Drive = testHelper.createUniqueType("Drive");
+        DriveComposition = testHelper.createUniqueType("DriveComposition");
 
         const typeDefs = gql`
             type JWTPayload @jwt {
@@ -84,20 +77,18 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 current: Boolean!
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
                 },
             },
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should handle union types with auth and connection-where", async () => {
@@ -136,11 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         `;
 
         const token = createBearerToken(secret, { roles: "admin" });
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const res = await testHelper.runGraphQLWithToken(query, token);
 
         expect(res.errors).toBeUndefined();
 

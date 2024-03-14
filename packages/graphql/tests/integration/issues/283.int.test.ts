@@ -17,16 +17,12 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/283", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let Post: UniqueType;
     let typeDefs: string;
 
@@ -39,9 +35,8 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
         },
     };
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
         typeDefs = `
         type Mutation {
             login: String
@@ -68,13 +63,11 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("DateTime values return correctly when using custom resolvers in the schema", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs, resolvers });
 
         const title = generate({ charset: "alphabetic" });
 
@@ -88,22 +81,14 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(mutation);
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
+        expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
 
-            await session.run(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
-        } finally {
-            await session.close();
-        }
+        await testHelper.runCypher(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
     });
 });

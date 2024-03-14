@@ -17,31 +17,19 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2261", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let ProgrammeItem: UniqueType;
     let Edition: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        ProgrammeItem = new UniqueType("ProgrammeItem");
-        Edition = new UniqueType("Edition");
-
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        ProgrammeItem = testHelper.createUniqueType("ProgrammeItem");
+        Edition = testHelper.createUniqueType("Edition");
 
         const typeDefs = `
             interface Product {
@@ -62,9 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: true,
             },
@@ -72,15 +59,13 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("nested query with top level @cypher directive with subscriptions should return valid Cypher", async () => {
-        await session.run(`CREATE (e:${Edition} {id: "ed-id"})<-[:HAS_EDITION]-(p:${ProgrammeItem} {id: "p-id"})`);
+        await testHelper.runCypher(
+            `CREATE (e:${Edition} {id: "ed-id"})<-[:HAS_EDITION]-(p:${ProgrammeItem} {id: "p-id"})`
+        );
 
         const query = `
             query {
@@ -94,11 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

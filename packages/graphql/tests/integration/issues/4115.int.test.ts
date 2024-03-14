@@ -17,19 +17,12 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4115", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
     const secret = "secret";
 
     let User: UniqueType;
@@ -37,14 +30,11 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
     let Person: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
 
-        session = await neo4j.getSession();
-
-        User = new UniqueType("User");
-        Family = new UniqueType("Family");
-        Person = new UniqueType("Person");
+        User = testHelper.createUniqueType("User");
+        Family = testHelper.createUniqueType("Family");
+        Person = testHelper.createUniqueType("Person");
 
         const typeDefs = `
             type ${User} {
@@ -83,9 +73,8 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             extend schema @authentication
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -93,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             },
         });
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (u:${User} { id:"user1"})
             CREATE (paid:${User} { id:"paid-user", roles: ["plan:paid"]})
             CREATE (f1:${Family} { id: "family1" })<-[:CREATOR_OF]-(u)
@@ -111,9 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
     });
 
     afterAll(async () => {
-        await cleanNodesUsingSession(session, [User, Family, Person]);
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return aggregation of families only created by paid user role", async () => {
@@ -130,11 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
 
         const token = createBearerToken(secret, { uid: "user1" });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Family.plural]).toIncludeSameMembers([
@@ -167,11 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
 
         const token = createBearerToken(secret, { uid: "paid-user" });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Family.plural]).toIncludeSameMembers([

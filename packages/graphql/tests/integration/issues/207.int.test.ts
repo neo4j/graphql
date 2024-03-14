@@ -16,24 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/207", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
     let Book: UniqueType;
     let Author: UniqueType;
     let typeDefs: string;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Book = new UniqueType("Book");
-        Author = new UniqueType("Author");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        Book = testHelper.createUniqueType("Book");
+        Author = testHelper.createUniqueType("Author");
         typeDefs = `
             union Result = ${Book} | ${Author}
 
@@ -52,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("__resolveType resolvers are correctly evaluated", async () => {
@@ -73,11 +68,9 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
             },
         };
 
-        const session = await neo4j.getSession();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs, resolvers });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, driver });
-
-        const mutation = `
+        const mutation = /* GraphQL */ `
             query GetSearchResults {
                 search {
                     __typename
@@ -91,29 +84,21 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(mutation);
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.search).toEqual([
-                {
-                    __typename: Book.name,
-                    title: "GraphQL Unions for Dummies",
-                },
-                {
-                    __typename: Author.name,
-                    name: "Darrell",
-                },
-            ]);
-        } finally {
-            await session.close();
-        }
+        expect(result?.data?.search).toEqual([
+            {
+                __typename: Book.name,
+                title: "GraphQL Unions for Dummies",
+            },
+            {
+                __typename: Author.name,
+                name: "Darrell",
+            },
+        ]);
     });
 });

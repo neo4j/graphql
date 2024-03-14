@@ -17,25 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { type Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import { default as Neo4jHelper } from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4615", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
+    let testHelper: TestHelper;
 
-    const Movie = new UniqueType("Movie");
-    const Series = new UniqueType("Series");
-    const Actor = new UniqueType("Actor");
+    let Movie: UniqueType;
+    let Series: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        Movie = testHelper.createUniqueType("Movie");
+        Series = testHelper.createUniqueType("Series");
+        Actor = testHelper.createUniqueType("Actor");
+
         const typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
@@ -66,15 +64,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
                 screenTime: Int
             }
         `;
-        neo4jGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 // Create Movies
                 CREATE (m1:${Movie} { title: "The Movie One", cost: 10000000, runtime: 120, release: dateTime('2007-08-31T16:47+00:00') })
                 CREATE (m2:${Movie} { title: "The Movie Two", cost: 20000000, runtime: 90, release: dateTime('2009-08-31T16:47+00:00') })
@@ -100,27 +95,15 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
                 CREATE (a2)-[:ACTED_IN { screenTime: 728 }]->(s2)
                 CREATE (a2)-[:ACTED_IN { screenTime: 728 }]->(m3)
                 CREATE (a2)-[:ACTED_IN { screenTime: 88 }]->(s3)
-                `,
-                {}
-            );
-        } finally {
-            await session.close();
-        }
+                `
+        );
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Movie, Series, Actor]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return null aggregations", async () => {
-        const schema = await neo4jGraphql.getSchema();
-
         const query = /* GraphQL */ `
             query {
                 showsAggregate(where: { title_STARTS_WITH: "asdasdasd" }) {
@@ -134,11 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const response = await testHelper.runGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
             showsAggregate: {

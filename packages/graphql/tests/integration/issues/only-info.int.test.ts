@@ -17,24 +17,19 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/567", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let typeDefs: string;
     let Movie: UniqueType;
-    let neoSchema: Neo4jGraphQL;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+
         typeDefs = `
         type ${Movie} {
             id: ID!
@@ -42,16 +37,14 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should not throw when only returning info on update", async () => {
-        const session = await neo4j.getSession();
-
         const movieId = generate({
             charset: "alphabetic",
         });
@@ -75,39 +68,29 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
             }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
                 CREATE (:${Movie} { id: "${movieId}", title: "${existingTitle}" })
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
-
-            expect(result.errors).toBeFalsy();
-
-            expect(result.data as any).toEqual({
-                [Movie.operations.update]: {
-                    info: {
-                        nodesCreated: 0,
-                        nodesDeleted: 0,
-                    },
-                },
-            });
-        } finally {
-            await session.close();
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
         }
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data as any).toEqual({
+            [Movie.operations.update]: {
+                info: {
+                    nodesCreated: 0,
+                    nodesDeleted: 0,
+                },
+            },
+        });
     });
 
     test("should not throw when only returning info on create", async () => {
-        const session = await neo4j.getSession();
-
         const movieId = generate({
             charset: "alphabetic",
         });
@@ -126,28 +109,16 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
+        expect(result.errors).toBeFalsy();
 
-            expect(result.errors).toBeFalsy();
-
-            expect(result.data as any).toEqual({
-                [Movie.operations.create]: {
-                    info: {
-                        nodesCreated: 1,
-                    },
+        expect(result.data as any).toEqual({
+            [Movie.operations.create]: {
+                info: {
+                    nodesCreated: 1,
                 },
-            });
-        } finally {
-            await session.close();
-        }
+            },
+        });
     });
 });

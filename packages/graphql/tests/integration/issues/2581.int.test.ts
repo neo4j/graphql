@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2581", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Author: UniqueType;
     let Book: UniqueType;
     let Sales: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Author = new UniqueType("Author");
-        Book = new UniqueType("Book");
-        Sales = new UniqueType("Sales");
+        Author = testHelper.createUniqueType("Author");
+        Book = testHelper.createUniqueType("Book");
+        Sales = testHelper.createUniqueType("Sales");
 
         const typeDefs = `
             type ${Author} {
@@ -85,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
         CREATE(a:${Author} {name: "Douglas Adams"})-[:AUTHORED_BOOK]->(:${Book} {name: "The Hitchhiker's Guide to the Galaxy", year:1979, refID:1})
         CREATE(a)-[:AUTHORED_BOOK]->(:${Book} {name: "The Restaurant at the End of the Universe", year:1980, refID:2})
 
@@ -94,19 +82,13 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
         CREATE(:${Sales} {refID: 2})
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Book, Author, Sales]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query custom cypher in nested query", async () => {
@@ -123,11 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({

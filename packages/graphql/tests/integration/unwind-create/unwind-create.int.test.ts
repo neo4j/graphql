@@ -17,30 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("unwind-create", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should create a batch of movies", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
 
         const typeDefs = `
@@ -49,7 +42,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -69,42 +62,33 @@ describe("unwind-create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, id2 },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { id, id2 },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([{ id }, { id: id2 }])
-            );
+        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+            expect.arrayContaining([{ id }, { id: id2 }])
+        );
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.runCypher(
+            `
               MATCH (m:${Movie})
               RETURN m
             `,
-                {}
-            );
-            const records = reFind.records.map((record) => record.toObject());
-            expect(records).toEqual(
-                expect.arrayContaining([
-                    { m: expect.objectContaining({ properties: { id } }) },
-                    { m: expect.objectContaining({ properties: { id: id2 } }) },
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+            {}
+        );
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.arrayContaining([
+                { m: expect.objectContaining({ properties: { id } }) },
+                { m: expect.objectContaining({ properties: { id: id2 } }) },
+            ])
+        );
     });
 
     test("should create a batch of movies with nested actors", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 
@@ -118,7 +102,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -152,52 +136,43 @@ describe("unwind-create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, id2, actor1Name, actor2Name },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { id, id2, actor1Name, actor2Name },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([
-                    { id, actors: [{ name: actor1Name }] },
-                    { id: id2, actors: [{ name: actor2Name }] },
-                ])
-            );
+        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+            expect.arrayContaining([
+                { id, actors: [{ name: actor1Name }] },
+                { id: id2, actors: [{ name: actor2Name }] },
+            ])
+        );
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.runCypher(
+            `
               MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
               RETURN m,a
             `,
-                {}
-            );
+            {}
+        );
 
-            const records = reFind.records.map((record) => record.toObject());
-            expect(records).toEqual(
-                expect.arrayContaining([
-                    {
-                        m: expect.objectContaining({ properties: { id } }),
-                        a: expect.objectContaining({ properties: { name: actor1Name } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id2 } }),
-                        a: expect.objectContaining({ properties: { name: actor2Name } }),
-                    },
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.arrayContaining([
+                {
+                    m: expect.objectContaining({ properties: { id } }),
+                    a: expect.objectContaining({ properties: { name: actor1Name } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id2 } }),
+                    a: expect.objectContaining({ properties: { name: actor2Name } }),
+                },
+            ])
+        );
     });
 
     test("should create a batch of movies with nested actors with nested movies", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 
@@ -212,7 +187,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -278,60 +253,51 @@ describe("unwind-create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, id2, id3, id4, actor1Name, actor2Name },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { id, id2, id3, id4, actor1Name, actor2Name },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([
-                    { id, actors: [{ name: actor1Name }] },
-                    { id: id2, actors: [{ name: actor2Name }] },
-                ])
-            );
+        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+            expect.arrayContaining([
+                { id, actors: [{ name: actor1Name }] },
+                { id: id2, actors: [{ name: actor2Name }] },
+            ])
+        );
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.runCypher(
+            `
               MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
               RETURN m,a
             `,
-                {}
-            );
+            {}
+        );
 
-            const records = reFind.records.map((record) => record.toObject());
-            expect(records).toEqual(
-                expect.arrayContaining([
-                    {
-                        m: expect.objectContaining({ properties: { id } }),
-                        a: expect.objectContaining({ properties: { name: actor1Name } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id2 } }),
-                        a: expect.objectContaining({ properties: { name: actor2Name } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id3 } }),
-                        a: expect.objectContaining({ properties: { name: actor1Name } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id4 } }),
-                        a: expect.objectContaining({ properties: { name: actor2Name } }),
-                    },
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.arrayContaining([
+                {
+                    m: expect.objectContaining({ properties: { id } }),
+                    a: expect.objectContaining({ properties: { name: actor1Name } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id2 } }),
+                    a: expect.objectContaining({ properties: { name: actor2Name } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id3 } }),
+                    a: expect.objectContaining({ properties: { name: actor1Name } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id4 } }),
+                    a: expect.objectContaining({ properties: { name: actor2Name } }),
+                },
+            ])
+        );
     });
 
     test("should create a batch of movies with nested actors with edge properties", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 
@@ -349,7 +315,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -383,54 +349,45 @@ describe("unwind-create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, id2, actor1Name, actor2Name },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { id, id2, actor1Name, actor2Name },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([
-                    { id, actors: [{ name: actor1Name }] },
-                    { id: id2, actors: [{ name: actor2Name }] },
-                ])
-            );
+        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+            expect.arrayContaining([
+                { id, actors: [{ name: actor1Name }] },
+                { id: id2, actors: [{ name: actor2Name }] },
+            ])
+        );
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.runCypher(
+            `
               MATCH (m:${Movie})<-[r:ACTED_IN]-(a:${Actor})
               RETURN m,r,a
             `,
-                {}
-            );
+            {}
+        );
 
-            const records = reFind.records.map((record) => record.toObject());
-            expect(records).toEqual(
-                expect.arrayContaining([
-                    {
-                        m: expect.objectContaining({ properties: { id } }),
-                        r: expect.objectContaining({ properties: { year: int(2022) } }),
-                        a: expect.objectContaining({ properties: { name: actor1Name } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id2 } }),
-                        r: expect.objectContaining({ properties: { year: int(2021) } }),
-                        a: expect.objectContaining({ properties: { name: actor2Name } }),
-                    },
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.arrayContaining([
+                {
+                    m: expect.objectContaining({ properties: { id } }),
+                    r: expect.objectContaining({ properties: { year: int(2022) } }),
+                    a: expect.objectContaining({ properties: { name: actor1Name } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id2 } }),
+                    r: expect.objectContaining({ properties: { year: int(2021) } }),
+                    a: expect.objectContaining({ properties: { name: actor2Name } }),
+                },
+            ])
+        );
     });
 
     test("should create a batch of movies with nested persons using interface", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
         const Modeler = new UniqueType("Modeler");
@@ -463,7 +420,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -497,54 +454,45 @@ describe("unwind-create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, id2, actorName, modelerName },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { id, id2, actorName, modelerName },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([
-                    { id, workers: [{ name: actorName }] },
-                    { id: id2, workers: [{ name: modelerName }] },
-                ])
-            );
+        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+            expect.arrayContaining([
+                { id, workers: [{ name: actorName }] },
+                { id: id2, workers: [{ name: modelerName }] },
+            ])
+        );
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.runCypher(
+            `
               MATCH (m:${Movie})<-[r:${workedIn}]-(a)
               RETURN m,r,a
             `,
-                {}
-            );
+            {}
+        );
 
-            const records = reFind.records.map((record) => record.toObject());
-            expect(records).toEqual(
-                expect.arrayContaining([
-                    {
-                        m: expect.objectContaining({ properties: { id } }),
-                        r: expect.objectContaining({ properties: { year: int(2022) } }),
-                        a: expect.objectContaining({ properties: { name: actorName } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id2 } }),
-                        r: expect.objectContaining({ properties: { year: int(2021) } }),
-                        a: expect.objectContaining({ properties: { name: modelerName } }),
-                    },
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.arrayContaining([
+                {
+                    m: expect.objectContaining({ properties: { id } }),
+                    r: expect.objectContaining({ properties: { year: int(2022) } }),
+                    a: expect.objectContaining({ properties: { name: actorName } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id2 } }),
+                    r: expect.objectContaining({ properties: { year: int(2021) } }),
+                    a: expect.objectContaining({ properties: { name: modelerName } }),
+                },
+            ])
+        );
     });
 
     test("should set properties defined with the directive @alias", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 
@@ -571,7 +519,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -645,68 +593,59 @@ describe("unwind-create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: {
-                    id,
-                    movieName,
-                    id2,
-                    movie2Name,
-                    actorName,
-                    actorNickname,
-                    actorPay,
-                    actor2Name,
-                    actor2Nickname,
-                    actor2Pay,
-                },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: {
+                id,
+                movieName,
+                id2,
+                movie2Name,
+                actorName,
+                actorNickname,
+                actorPay,
+                actor2Name,
+                actor2Nickname,
+                actor2Pay,
+            },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([
-                    { id, name: movieName, actors: [{ name: actorName, nickname: actorNickname }] },
-                    { id: id2, name: movie2Name, actors: [{ name: actor2Name, nickname: actor2Nickname }] },
-                ])
-            );
+        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+            expect.arrayContaining([
+                { id, name: movieName, actors: [{ name: actorName, nickname: actorNickname }] },
+                { id: id2, name: movie2Name, actors: [{ name: actor2Name, nickname: actor2Nickname }] },
+            ])
+        );
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.runCypher(
+            `
               MATCH (m:${Movie})<-[r:${actedIn}]-(a)
               RETURN m,r,a
             `,
-                {}
-            );
+            {}
+        );
 
-            const records = reFind.records.map((record) => record.toObject());
+        const records = reFind.records.map((record) => record.toObject());
 
-            expect(records).toEqual(
-                expect.arrayContaining([
-                    {
-                        m: expect.objectContaining({ properties: { id, title: movieName } }),
-                        r: expect.objectContaining({ properties: { year: int(2022), salary: int(actorPay) } }),
-                        a: expect.objectContaining({ properties: { name: actorName, alternativeName: actorNickname } }),
-                    },
-                    {
-                        m: expect.objectContaining({ properties: { id: id2, title: movie2Name } }),
-                        r: expect.objectContaining({ properties: { year: int(2021), salary: int(actor2Pay) } }),
-                        a: expect.objectContaining({
-                            properties: { name: actor2Name, alternativeName: actor2Nickname },
-                        }),
-                    },
-                ])
-            );
-        } finally {
-            await session.close();
-        }
+        expect(records).toEqual(
+            expect.arrayContaining([
+                {
+                    m: expect.objectContaining({ properties: { id, title: movieName } }),
+                    r: expect.objectContaining({ properties: { year: int(2022), salary: int(actorPay) } }),
+                    a: expect.objectContaining({ properties: { name: actorName, alternativeName: actorNickname } }),
+                },
+                {
+                    m: expect.objectContaining({ properties: { id: id2, title: movie2Name } }),
+                    r: expect.objectContaining({ properties: { year: int(2021), salary: int(actor2Pay) } }),
+                    a: expect.objectContaining({
+                        properties: { name: actor2Name, alternativeName: actor2Nickname },
+                    }),
+                },
+            ])
+        );
     });
 
     test("should a batch of actors with nested movies and resolve actorsConnection", async () => {
-        const session = await neo4j.getSession();
-
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 
@@ -722,8 +661,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const movieTitle = generate({ charset: "alphabetic" });
         const movie2Title = generate({ charset: "alphabetic" });
@@ -761,51 +699,45 @@ describe("unwind-create", () => {
                 }
             }
         `;
-        try {
-            const result = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { movieTitle, actorName, movie2Title, actor2Name },
-            });
 
-            expect(result.errors).toBeFalsy();
-            expect(result.data?.[Actor.operations.create]).toEqual({
-                [Actor.plural]: expect.arrayContaining([
-                    {
-                        name: actorName,
-                        movies: [
-                            {
-                                title: movieTitle,
-                                actorsConnection: {
-                                    totalCount: 0,
-                                    edges: [],
-                                },
+        const result = await testHelper.runGraphQL(query, {
+            variableValues: { movieTitle, actorName, movie2Title, actor2Name },
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data?.[Actor.operations.create]).toEqual({
+            [Actor.plural]: expect.arrayContaining([
+                {
+                    name: actorName,
+                    movies: [
+                        {
+                            title: movieTitle,
+                            actorsConnection: {
+                                totalCount: 0,
+                                edges: [],
                             },
-                        ],
-                    },
-                    {
-                        name: actor2Name,
-                        movies: [
-                            {
-                                title: movie2Title,
-                                actorsConnection: {
-                                    totalCount: 1,
-                                    edges: [
-                                        {
-                                            node: {
-                                                name: actor2Name,
-                                            },
+                        },
+                    ],
+                },
+                {
+                    name: actor2Name,
+                    movies: [
+                        {
+                            title: movie2Title,
+                            actorsConnection: {
+                                totalCount: 1,
+                                edges: [
+                                    {
+                                        node: {
+                                            name: actor2Name,
                                         },
-                                    ],
-                                },
+                                    },
+                                ],
                             },
-                        ],
-                    },
-                ]),
-            });
-        } finally {
-            await session.close();
-        }
+                        },
+                    ],
+                },
+            ]),
+        });
     });
 });

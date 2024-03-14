@@ -17,33 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1686", () => {
-    const productionType = new UniqueType("Production");
-    const movieType = new UniqueType("Movie");
-    const genreType = new UniqueType("Genre");
+    let productionType: UniqueType;
+    let movieType: UniqueType;
+    let genreType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        productionType = testHelper.createUniqueType("Production");
+        movieType = testHelper.createUniqueType("Movie");
+        genreType = testHelper.createUniqueType("Genre");
 
         const typeDefs = `
             interface ${productionType.name} {
@@ -63,16 +51,13 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
             }
         `;
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be possible to count all the movies connections", async () => {
@@ -90,15 +75,9 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
             CREATE (h:${movieType.name} { id: "2", title: "The Hobbit" })-[:HAS_GENRE]->(g3:${genreType.name} { id: "12", name: "Fantasy" })
         `;
 
-        const session = await neo4j.getSession();
+        await testHelper.runCypher(cypher);
 
-        try {
-            await session.run(cypher);
-        } finally {
-            await session.close();
-        }
-
-        const result = await graphqlQuery(query);
+        const result = await testHelper.runGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
             [movieType.operations.connection]: {

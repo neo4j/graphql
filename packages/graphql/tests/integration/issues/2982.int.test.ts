@@ -17,37 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2982", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let User: UniqueType;
     let Post: UniqueType;
     let Comment: UniqueType;
     let BlogArticle: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        User = new UniqueType("User");
-        Post = new UniqueType("Post");
-        Comment = new UniqueType("Comment");
-        BlogArticle = new UniqueType("BlogArticle");
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+        Comment = testHelper.createUniqueType("Comment");
+        BlogArticle = testHelper.createUniqueType("BlogArticle");
 
         const typeDefs = `
             type ${User} {
@@ -69,16 +57,11 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [User, Post, BlogArticle, Comment]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("count aggregate should work in inline fragments", async () => {
@@ -100,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
         const articleId = generate({ charset: "alphabetic" });
         const userName = generate({ charset: "alphabetic" });
 
-        await session.run(
+        await testHelper.runCypher(
             `
                 CREATE (user:${User} { id: $userId })
                 CREATE (article:${BlogArticle} { id: $articleId })
@@ -109,12 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
             { userId, articleId, userName }
         );
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            variableValues: {},
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

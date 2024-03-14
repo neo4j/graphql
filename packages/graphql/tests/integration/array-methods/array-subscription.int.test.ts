@@ -18,33 +18,22 @@
  */
 
 import { gql } from "graphql-tag";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("array-subscription", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
     let plugin: TestSubscriptionsEngine;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        typeActor = new UniqueType("Actor");
-        typeMovie = new UniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
 
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
@@ -64,7 +53,7 @@ describe("array-subscription", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: plugin,
@@ -73,11 +62,7 @@ describe("array-subscription", () => {
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("push", async () => {
@@ -91,16 +76,12 @@ describe("array-subscription", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tags: [] })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -129,16 +110,12 @@ describe("array-subscription", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tags: ["a tag"] })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -167,16 +144,12 @@ describe("array-subscription", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tags: ["a tag"], moreTags: [] })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

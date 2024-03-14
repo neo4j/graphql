@@ -17,32 +17,24 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/354", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should throw when creating a node without a mandatory relationship", async () => {
-        const session = await neo4j.getSession();
-
-        const testComment = new UniqueType("Comment");
-        const testPost = new UniqueType("Post");
+        const testComment = testHelper.createUniqueType("Comment");
+        const testPost = testHelper.createUniqueType("Post");
 
         const typeDefs = gql`
             type ${testComment.name} {
@@ -55,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const missingNodeId = generate({
             charset: "alphabetic",
@@ -84,17 +76,9 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
             }
         `;
 
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toBe(`${testComment.name}.post required exactly once`);
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeTruthy();
+        expect((result.errors as any[])[0].message).toBe(`${testComment.name}.post required exactly once`);
     });
 });

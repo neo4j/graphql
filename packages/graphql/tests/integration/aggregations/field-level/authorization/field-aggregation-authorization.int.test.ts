@@ -17,55 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../../../neo4j";
-import { Neo4jGraphQL } from "../../../../../src/classes";
-import { UniqueType } from "../../../../utils/graphql-types";
 import { createBearerToken } from "../../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Field Level Aggregations Auth", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    const typeMovie = new UniqueType("Movie");
-    const typeActor = new UniqueType("Actor");
-    const typeDefs = `
-    type ${typeMovie.name} {
-        name: String
-        year: Int
-        createdAt: DateTime
-        testId: String
-        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-    }
-
-    type ${typeActor.name} {
-        name: String
-        year: Int
-        createdAt: DateTime
-        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-    }`;
-    const secret = "secret";
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        session = await neo4j.getSession();
-
-        await session.run(`
-        CREATE (m:${typeMovie.name}
-            {name: "Terminator",testId: "1234",year:1990,createdAt: datetime()})
-            <-[:ACTED_IN]-
-            (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime()})
-
-        CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime()})`);
-    });
-
-    afterAll(async () => {
-        await session.close();
-        await driver.close();
-    });
-
     const testCases = [
         { name: "count", selection: "count" },
         { name: "string", selection: `node {name {longest, shortest}}` },
@@ -76,14 +32,47 @@ describe("Field Level Aggregations Auth", () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`isAuthenticated auth requests ~ $name`, ({ name, selection }) => {
         let token: string;
-        let neoSchema: Neo4jGraphQL;
+        let testHelper: TestHelper;
 
-        beforeAll(() => {
-            const extendedTypeDefs = `${typeDefs}
-                extend type ${typeMovie.name} @authentication(operations: [AGGREGATE])`;
+        let typeMovie: UniqueType;
+        let typeActor: UniqueType;
+        let typeDefs: string;
+        const secret = "secret";
 
-            neoSchema = new Neo4jGraphQL({
-                typeDefs: extendedTypeDefs,
+        beforeEach(async () => {
+            testHelper = new TestHelper();
+
+            typeMovie = testHelper.createUniqueType("Movie");
+            typeActor = testHelper.createUniqueType("Actor");
+            typeDefs = `
+        type ${typeMovie.name} {
+            name: String
+            year: Int
+            createdAt: DateTime
+            testId: String
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+        }
+    
+        type ${typeActor.name} {
+            name: String
+            year: Int
+            createdAt: DateTime
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+        }
+        
+        extend type ${typeMovie.name} @authentication(operations: [AGGREGATE])
+        `;
+
+            await testHelper.runCypher(`
+            CREATE (m:${typeMovie.name}
+                {name: "Terminator",testId: "1234",year:1990,createdAt: datetime()})
+                <-[:ACTED_IN]-
+                (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime()})
+    
+            CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime()})`);
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs: typeDefs,
                 features: {
                     authorization: {
                         key: "secret",
@@ -92,6 +81,10 @@ describe("Field Level Aggregations Auth", () => {
             });
 
             token = createBearerToken(secret);
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
         });
 
         test("accepts authenticated requests to movie -> actorAggregate", async () => {
@@ -103,11 +96,7 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -120,11 +109,7 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -137,11 +122,7 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const gqlResult = await testHelper.runGraphQL(query);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -154,32 +135,64 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const gqlResult = await testHelper.runGraphQL(query);
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`allow requests ~ $name`, ({ name, selection }) => {
-        let neoSchema: Neo4jGraphQL;
+        let testHelper: TestHelper;
 
-        beforeAll(() => {
-            const extendedTypeDefs = `${typeDefs}
+        let typeMovie: UniqueType;
+        let typeActor: UniqueType;
+        let typeDefs: string;
+        const secret = "secret";
+
+        beforeEach(async () => {
+            testHelper = new TestHelper();
+
+            typeMovie = testHelper.createUniqueType("Movie");
+            typeActor = testHelper.createUniqueType("Actor");
+            typeDefs = `
+                type ${typeMovie.name} {
+                    name: String
+                    year: Int
+                    createdAt: DateTime
+                    testId: String
+                    ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            
+                type ${typeActor.name} {
+                    name: String
+                    year: Int
+                    createdAt: DateTime
+                    ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+                
                 extend type ${typeMovie.name} 
-                    @authorization(validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
+                @authorization(validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
                 `;
 
-            neoSchema = new Neo4jGraphQL({
-                typeDefs: extendedTypeDefs,
+            await testHelper.runCypher(`
+            CREATE (m:${typeMovie.name}
+                {name: "Terminator",testId: "1234",year:1990,createdAt: datetime()})
+                <-[:ACTED_IN]-
+                (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime()})
+    
+            CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime()})`);
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
                 features: {
                     authorization: {
                         key: "secret",
                     },
                 },
             });
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
         });
 
         test("authenticated query", async () => {
@@ -192,11 +205,7 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
 
             const token = createBearerToken(secret, { sub: "1234" });
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -209,11 +218,7 @@ describe("Field Level Aggregations Auth", () => {
                         }
                     }`;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const gqlResult = await testHelper.runGraphQL(query);
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
@@ -227,13 +232,7 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
             const invalidToken = createBearerToken(secret, { sub: "2222" });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token: invalidToken,
-                }),
-            });
+            const gqlResult = await testHelper.runGraphQLWithToken(query, invalidToken);
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });

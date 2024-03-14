@@ -17,25 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1127", () => {
-    const customerType = new UniqueType("Customer");
-    const addressType = new UniqueType("Address");
-    const postalCodeType = new UniqueType("PostalCode");
+    let customerType: UniqueType;
+    let addressType: UniqueType;
+    let postalCodeType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        customerType = testHelper.createUniqueType("Customer");
+        addressType = testHelper.createUniqueType("Address");
+        postalCodeType = testHelper.createUniqueType("PostalCode");
 
         const typeDefs = `
             type ${customerType.name} {
@@ -58,12 +54,11 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
                 number: String! @unique
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be able to connectOrCreate under nested create", async () => {
@@ -85,10 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
             }
         `;
 
-        const res = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const res = await testHelper.runGraphQL(query, {
             variableValues: {
                 input: [
                     {

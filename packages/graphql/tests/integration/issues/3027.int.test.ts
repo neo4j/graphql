@@ -17,74 +17,56 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3027", () => {
     describe("union", () => {
-        let driver: Driver;
-        let neo4j: Neo4jHelper;
-        let neoSchema: Neo4jGraphQL;
-        let session: Session;
+        let testHelper: TestHelper;
 
         let Book: UniqueType;
         let BookTitle_SV: UniqueType;
         let BookTitle_EN: UniqueType;
 
-        beforeAll(async () => {
-            neo4j = new Neo4jHelper();
-            driver = await neo4j.getDriver();
-        });
-
         beforeEach(async () => {
-            session = await neo4j.getSession();
+            testHelper = new TestHelper();
 
-            Book = new UniqueType("Book");
-            BookTitle_SV = new UniqueType("BookTitle_SV");
-            BookTitle_EN = new UniqueType("BookTitle_EN");
+            Book = testHelper.createUniqueType("Book");
+            BookTitle_SV = testHelper.createUniqueType("BookTitle_SV");
+            BookTitle_EN = testHelper.createUniqueType("BookTitle_EN");
 
             const typeDefs = `
-        type ${Book} {
-            originalTitle: String!
-            translatedTitle: BookTitle @relationship(type: "TRANSLATED_BOOK_TITLE", direction: IN)
-            isbn: String!
-        }
-    
-        union BookTitle = ${BookTitle_SV} | ${BookTitle_EN}
-    
-        type ${BookTitle_SV} {
-            book: ${Book}! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
-            value: String!
-        }
-    
-        type ${BookTitle_EN} {
-            book: ${Book}! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
-            value: String!
-        }
-        `;
+                type ${Book} {
+                    originalTitle: String!
+                    translatedTitle: BookTitle @relationship(type: "TRANSLATED_BOOK_TITLE", direction: IN)
+                    isbn: String!
+                }
+            
+                union BookTitle = ${BookTitle_SV} | ${BookTitle_EN}
+            
+                type ${BookTitle_SV} {
+                    book: ${Book}! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
+                    value: String!
+                }
+            
+                type ${BookTitle_EN} {
+                    book: ${Book}! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
+                    value: String!
+                }
+                `;
 
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
         });
 
         afterEach(async () => {
-            await cleanNodesUsingSession(session, [Book, BookTitle_EN, BookTitle_SV]);
-            await session.close();
-        });
-
-        afterAll(async () => {
-            await driver.close();
+            await testHelper.close();
         });
 
         test("should validate cardinality against all the implementations", async () => {
-            await session.run(`
-           CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
+            await testHelper.runCypher(`
+           CREATE(:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
             const query = `
         mutation UpdateBooks {
@@ -108,11 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
           }
         `;
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const result = await testHelper.runGraphQL(query);
 
             expect(result.errors).toBeTruthy();
             expect(result.errors).toEqual(
@@ -129,26 +107,18 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
     });
 
     describe("interface", () => {
-        let driver: Driver;
-        let neo4j: Neo4jHelper;
-        let neoSchema: Neo4jGraphQL;
-        let session: Session;
+        let testHelper: TestHelper;
 
         let Book: UniqueType;
         let BookTitle_SV: UniqueType;
         let BookTitle_EN: UniqueType;
 
-        beforeAll(async () => {
-            neo4j = new Neo4jHelper();
-            driver = await neo4j.getDriver();
-        });
-
         beforeEach(async () => {
-            session = await neo4j.getSession();
+            testHelper = new TestHelper();
 
-            Book = new UniqueType("Book");
-            BookTitle_SV = new UniqueType("BookTitle_SV");
-            BookTitle_EN = new UniqueType("BookTitle_EN");
+            Book = testHelper.createUniqueType("Book");
+            BookTitle_SV = testHelper.createUniqueType("BookTitle_SV");
+            BookTitle_EN = testHelper.createUniqueType("BookTitle_EN");
 
             const typeDefs = `
         type ${Book} {
@@ -172,23 +142,17 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
         }
         `;
 
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
         });
 
         afterEach(async () => {
-            await cleanNodesUsingSession(session, [Book, BookTitle_EN, BookTitle_SV]);
-            await session.close();
-        });
-
-        afterAll(async () => {
-            await driver.close();
+            await testHelper.close();
         });
 
         test("should validate cardinality against all the implementations", async () => {
-            await session.run(`
+            await testHelper.runCypher(`
            CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
             const query = `
@@ -214,11 +178,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
           }
         `;
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+            const result = await testHelper.runGraphQL(query);
 
             expect(result.errors).toBeTruthy();
             expect(result.errors).toEqual(

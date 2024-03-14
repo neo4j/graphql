@@ -17,34 +17,24 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4110", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
     const secret = "secret";
 
     let Company: UniqueType;
     let InBetween: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
     });
 
     beforeEach(async () => {
-        session = await neo4j.getSession();
-
-        Company = new UniqueType("User");
-        InBetween = new UniqueType("Person");
+        Company = testHelper.createUniqueType("User");
+        InBetween = testHelper.createUniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
             type ${Company}
@@ -60,9 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -72,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     });
 
     beforeEach(async () => {
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (c1:${Company} { id: "example" })
             CREATE (c2:${Company} { id: "another" })
 
@@ -85,12 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Company, InBetween]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("filters companies on nested auth where", async () => {
@@ -109,11 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
 
         const token = createBearerToken(secret);
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.runGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Company.plural]).toEqual([

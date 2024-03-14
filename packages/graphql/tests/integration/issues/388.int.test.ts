@@ -17,26 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/388", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     let Post: UniqueType;
     let User: UniqueType;
     let typeDefs: string;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Post = new UniqueType("Post");
-        User = new UniqueType("User");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        Post = testHelper.createUniqueType("Post");
+        User = testHelper.createUniqueType("User");
 
         typeDefs = `
             union Content = ${Post}
@@ -76,13 +71,11 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be able to alias union fields of custom cypher", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const userID = generate({ charset: "alphabetic" });
 
@@ -217,43 +210,33 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const mutationResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { input },
-            });
+        const mutationResult = await testHelper.runGraphQL(mutation, {
+            variableValues: { input },
+        });
 
-            expect(mutationResult.errors).toBeFalsy();
+        expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)[User.operations.create][User.plural][0].id).toEqual(userID);
-            expect((mutationResult?.data as any)[User.operations.create][User.plural][0].friends).toHaveLength(3);
-            expect((mutationResult?.data as any)[User.operations.create][User.plural][0].posts).toHaveLength(3);
+        expect((mutationResult?.data as any)[User.operations.create][User.plural][0].id).toEqual(userID);
+        expect((mutationResult?.data as any)[User.operations.create][User.plural][0].friends).toHaveLength(3);
+        expect((mutationResult?.data as any)[User.operations.create][User.plural][0].posts).toHaveLength(3);
 
-            (mutationResult?.data as any)[User.operations.create][User.plural][0].friends.forEach((friend) => {
-                expect(friend.posts).toHaveLength(3);
-            });
+        (mutationResult?.data as any)[User.operations.create][User.plural][0].friends.forEach((friend) => {
+            expect(friend.posts).toHaveLength(3);
+        });
 
-            const queryResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    userID,
-                },
-            });
+        const queryResult = await testHelper.runGraphQL(query, {
+            variableValues: {
+                userID,
+            },
+        });
 
-            expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.errors).toBeFalsy();
 
-            expect(queryResult?.data?.getContent).toHaveLength(12);
-            (queryResult?.data as any)?.getContent.forEach((content) => {
-                expect(content.postContent).toBeTruthy();
-            });
-        } finally {
-            await session.close();
-        }
+        expect(queryResult?.data?.getContent).toHaveLength(12);
+        (queryResult?.data as any)?.getContent.forEach((content) => {
+            expect(content.postContent).toBeTruthy();
+        });
     });
 });

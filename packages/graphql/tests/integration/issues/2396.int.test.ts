@@ -17,19 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let PostalCode: UniqueType;
     let Address: UniqueType;
@@ -37,19 +30,13 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     let Valuation: UniqueType;
     let Estate: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        PostalCode = new UniqueType("PostalCode");
-        Address = new UniqueType("Address");
-        Mandate = new UniqueType("Mandate");
-        Valuation = new UniqueType("Valuation");
-        Estate = new UniqueType("Estate");
-
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        PostalCode = testHelper.createUniqueType("PostalCode");
+        Address = testHelper.createUniqueType("Address");
+        Mandate = testHelper.createUniqueType("Mandate");
+        Valuation = testHelper.createUniqueType("Valuation");
+        Estate = testHelper.createUniqueType("Estate");
 
         const typeDefs = `
             type ${PostalCode} @mutation(operations: [CREATE, UPDATE]) {
@@ -697,9 +684,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         ];
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: { authorization: { key: "secret" } },
         });
 
@@ -713,18 +699,13 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             }
         `;
 
-        await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues: { input },
-            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
         });
     });
 
-    afterAll(async () => {
-        await cleanNodesUsingSession(session, [PostalCode, Address, Mandate, Valuation, Estate]);
-        await session.close();
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return 27 results with no pagination arguments", async () => {
@@ -759,10 +740,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
+        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 
@@ -802,10 +780,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
+        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 
@@ -848,10 +823,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
+        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 

@@ -17,33 +17,20 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4759", () => {
-    const Node1 = new UniqueType("Node1");
-    const Node2 = new UniqueType("Node2");
+    let Node1: UniqueType;
+    let Node2: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        Node1 = testHelper.createUniqueType("Node1");
+        Node2 = testHelper.createUniqueType("Node2");
 
         const typeDefs = /* GraphQL */ `
             type ${Node2} {
@@ -58,10 +45,9 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                 nodes: [${Node2}!]! @relationship(type: "HAS_NODE", direction: IN)
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await neo4j.run(`
+        await testHelper.runCypher(`
         CREATE (:${Node1} { uuid: "id0", name: "name0"})
         CREATE (n1:${Node1} { uuid: "id1", name: "name1"})<-[:HAS_NODE]-(:${Node2} { uuid: "id2", name: "name2" , active: true })
         CREATE (n1)<-[:HAS_NODE]-(:${Node2} { uuid: "id3", name: "name3" , active: true })
@@ -70,8 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
     });
 
     afterAll(async () => {
-        await cleanNodes(driver, [Node1, Node2]);
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return aggregation without alias", async () => {
@@ -87,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
             }
         `;
 
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.runGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Node1.plural]: expect.toIncludeSameMembers([
@@ -122,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
             }
         `;
 
-        const queryResults = await graphqlQuery(query);
+        const queryResults = await testHelper.runGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [Node1.plural]: expect.toIncludeSameMembers([

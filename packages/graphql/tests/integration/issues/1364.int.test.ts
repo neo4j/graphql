@@ -17,34 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1364", () => {
-    const testActor = new UniqueType("Actor");
-    const testMovie = new UniqueType("Movie");
-    const testGenre = new UniqueType("Genre");
+    let testActor: UniqueType;
+    let testMovie: UniqueType;
+    let testGenre: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        testActor = testHelper.createUniqueType("Actor");
+        testMovie = testHelper.createUniqueType("Movie");
+        testGenre = testHelper.createUniqueType("Genre");
 
         const typeDefs = `
             type ${testActor.name} {
@@ -78,21 +65,18 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (m1:${testMovie} { title: "A Movie" })-[:HAS_GENRE]->(:${testGenre} { name: "Genre 1" })
             CREATE (m1)-[:HAS_GENRE]->(:${testGenre} { name: "Genre 2" })
             CREATE (m2:${testMovie} { title: "B Movie" })-[:HAS_GENRE]->(:${testGenre} { name: "Genre 3" })
             CREATE (m3:${testMovie} { title: "C Movie" })
         `);
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Should project cypher fields after applying the sort when sorting on a non-cypher field on a root connection", async () => {
@@ -109,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.runGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({
@@ -152,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.runGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({
@@ -196,7 +180,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.runGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({
@@ -242,7 +226,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.runGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({

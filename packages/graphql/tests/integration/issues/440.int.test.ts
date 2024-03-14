@@ -17,26 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/440", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let typeDefs: string;
     let Video: UniqueType;
     let Category: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Video = new UniqueType("Video");
-        Category = new UniqueType("Category");
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        Video = testHelper.createUniqueType("Video");
+        Category = testHelper.createUniqueType("Category");
 
         typeDefs = `
         type ${Video} {
@@ -51,19 +46,18 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
     `;
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should be able to disconnect 2 nodes while creating one in the same mutation", async () => {
-        const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         const videoID = generate({ charset: "alphabetic" });
         const catIDs = Array(3)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await session.run(
+        await testHelper.runCypher(
             `CREATE (v:${Video} {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
@@ -101,38 +95,30 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const mutationResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-                variableValues,
-            });
+        const mutationResult = await testHelper.runGraphQL(mutation, {
+            variableValues,
+        });
 
-            expect(mutationResult.errors).toBeFalsy();
+        expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
-                catIDs[2]
-            );
-        } finally {
-            await session.close();
-        }
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
+            catIDs[2]
+        );
     });
 
     test("should be able to delete 2 nodes while creating one in the same mutation", async () => {
-        const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         const videoID = generate({ charset: "alphabetic" });
         const catIDs = Array(3)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await session.run(
+        await testHelper.runCypher(
             `CREATE (v:${Video} {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
@@ -170,34 +156,25 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const mutationResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-                variableValues,
-            });
+        const mutationResult = await testHelper.runGraphQL(mutation, {
+            variableValues,
+        });
 
-            expect(mutationResult.errors).toBeFalsy();
+        expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
-                catIDs[2]
-            );
-        } finally {
-            await session.close();
-        }
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
+            catIDs[2]
+        );
     });
 
     test("should be able to delete 2 nodes while creating one in the same mutation - with subscriptions", async () => {
-        const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: new TestSubscriptionsEngine(),
             },
@@ -207,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
 
-        await session.run(
+        await testHelper.runCypher(
             `CREATE (v:${Video} {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:${Category} {id: $c1})`,
@@ -245,26 +222,19 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        await neoSchema.checkNeo4jCompat();
 
-            const mutationResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-                variableValues,
-            });
+        const mutationResult = await testHelper.runGraphQL(mutation, {
+            variableValues,
+        });
 
-            expect(mutationResult.errors).toBeFalsy();
+        expect(mutationResult.errors).toBeFalsy();
 
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
-            expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
-                catIDs[2]
-            );
-        } finally {
-            await session.close();
-        }
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural]).toHaveLength(1);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].id).toEqual(videoID);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories).toHaveLength(1);
+        expect((mutationResult?.data as any)[Video.operations.update][Video.plural][0].categories[0].id).toEqual(
+            catIDs[2]
+        );
     });
 });

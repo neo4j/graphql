@@ -17,28 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../../src";
 import { createBearerToken } from "../../../../utils/create-bearer-token";
-import { UniqueType } from "../../../../utils/graphql-types";
-import Neo4jHelper from "../../../neo4j";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Field Level Aggregations Field Authorization", () => {
     const secret = "the-secret";
 
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    const Series = new UniqueType("Series");
-    const Actor = new UniqueType("Actor");
-
-    let neoSchema: Neo4jGraphQL;
+    let Series: UniqueType;
+    let Actor: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        Series = testHelper.createUniqueType("Series");
+        Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
             type ${Series} {
@@ -58,22 +53,20 @@ describe("Field Level Aggregations Field Authorization", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: { key: secret },
             },
         });
-        session = await neo4j.getSession();
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE (a:${Actor} {name: "Keanu"})-[:ACTED_ON  {screenTime: 10}]->(:${Series} {title: "Doctor Who", cost: 10.0, episodes: 5000})
         `);
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("fail title validation", async () => {
@@ -89,11 +82,7 @@ describe("Field Level Aggregations Field Authorization", () => {
 
         const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader", "series-title-reader"] });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -116,11 +105,7 @@ describe("Field Level Aggregations Field Authorization", () => {
 
         const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader", "series-title-reader"] });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

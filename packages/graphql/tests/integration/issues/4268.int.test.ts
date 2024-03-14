@@ -17,24 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import gql from "graphql-tag";
-import { graphql } from "graphql";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4268", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
-    const Movie = new UniqueType("Movie");
+    let testHelper: TestHelper;
+
+    let Movie: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const typeDefs = gql`
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        const typeDefs = /* GraphQL */ `
         type JWT @jwt {
             id: ID!
             email: String!
@@ -50,9 +44,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             title: String
         }
     `;
-        neo4jGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -60,26 +53,14 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             },
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`CREATE (m:${Movie.name} {title: "SomeTitle"})`, {});
-        } finally {
-            await session.close();
-        }
+        await testHelper.runCypher(`CREATE (m:${Movie.name} {title: "SomeTitle"})`, {});
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Movie.name]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+        await testHelper.close();
     });
 
     test("OR operator in JWT valid condition", async () => {
-        const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -88,10 +69,10 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { id: "some-id", email: "some-email", roles: ["admin"] } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: {
+                jwt: { id: "some-id", email: "some-email", roles: ["admin"] },
+            },
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Movie.plural]).toStrictEqual(
@@ -100,7 +81,6 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     });
 
     test("OR operator in JWT invalid condition", async () => {
-        const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -109,12 +89,10 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] },
-            }),
+            },
         });
         expect((response.errors as any[])[0].message).toBe("Forbidden");
     });

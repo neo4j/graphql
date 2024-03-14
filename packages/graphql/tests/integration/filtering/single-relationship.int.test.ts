@@ -17,23 +17,19 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Single relationship (1-*) filtering", () => {
-    const Person = new UniqueType("Person");
-    const Movie = new UniqueType("Movie");
+    let Person: UniqueType;
+    let Movie: UniqueType;
 
-    let driver: Driver;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        Person = testHelper.createUniqueType("Person");
+        Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
         type ${Person} {
@@ -51,22 +47,17 @@ describe("Single relationship (1-*) filtering", () => {
         }
     `;
 
-        session = await neo4j.getSession();
-        await session.run(`
+        await testHelper.runCypher(`
                 CREATE (:${Movie} {title: "The Matrix", released: 1999})
                 CREATE (:${Movie} {title: "The Italian Job", released: 1969})
                 CREATE (:${Movie} {title: "The Italian Job", released: 2003})
                 CREATE (:${Movie} {title: "The Lion King", released: 1994})
             `);
-
-        driver = await neo4j.getDriver();
-
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await session.close();
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("Filter on required and optional relationships", async () => {
@@ -78,7 +69,7 @@ describe("Single relationship (1-*) filtering", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE(jw:${Person} {name: "Jon Wu"})
             CREATE(:${Movie} {title: "Hard Target"})<-[:DIRECTED]-(jw)
             CREATE(cb:${Movie} {title: "Chi bi"})<-[:DIRECTED]-(jw)
@@ -86,11 +77,7 @@ describe("Single relationship (1-*) filtering", () => {
             CREATE(m:${Movie} {title: "Avatar"})<-[:DIRECTED]-(:${Person} {name: "Richie McFamous"})
         `);
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 
@@ -113,7 +100,7 @@ describe("Single relationship (1-*) filtering", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE(a:${Person} {name: "That actor that you are not so sure what the name is but have seen before"})
             CREATE(a2:${Person} {name: "not so famous one"})
             CREATE(a3:${Person} {name: "don't know this one"})
@@ -133,11 +120,7 @@ describe("Single relationship (1-*) filtering", () => {
             CREATE(a3)-[:ACTED_IN]->(m)
         `);
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Person.plural]).toIncludeSameMembers([
@@ -159,7 +142,7 @@ describe("Single relationship (1-*) filtering", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             CREATE(jw:${Person} {name: "Jon Wu"})
             CREATE(:${Movie} {title: "Hard Target"})<-[:DIRECTED]-(jw)
             CREATE(cb:${Movie} {title: "Chi bi"})<-[:DIRECTED]-(jw)
@@ -167,11 +150,7 @@ describe("Single relationship (1-*) filtering", () => {
             CREATE(m:${Movie} {title: "Avatar"})<-[:DIRECTED]-(:${Person} {name: "Richie McFamous"})
         `);
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 

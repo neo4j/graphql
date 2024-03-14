@@ -17,32 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3355", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return info object when subscriptions enabled", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${Movie} {
                 id: ID!
@@ -50,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: new TestSubscriptionsEngine(),
@@ -80,29 +73,22 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
           }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                 CREATE (:${Movie} {id: $id, name: $initialName})
             `,
-                {
-                    id,
-                    initialName,
-                }
-            );
+            {
+                id,
+                initialName,
+            }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, name: updatedName },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.runGraphQL(query, {
+            variableValues: { id, name: updatedName },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.update]).toEqual({ info: { nodesCreated: 0, nodesDeleted: 0 } });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult?.data?.[Movie.operations.update]).toEqual({ info: { nodesCreated: 0, nodesDeleted: 0 } });
     });
 });

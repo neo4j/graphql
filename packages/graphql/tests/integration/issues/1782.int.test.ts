@@ -17,87 +17,68 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1782", () => {
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    const testMain = new UniqueType("Main");
-    const testSeries = new UniqueType("Series");
-    const testNameDetails = new UniqueType("NameDetails");
-    const testMasterData = new UniqueType("MasterData");
-
-    const typeDefs = `
-        type ${testSeries} {
-            id: ID! @unique
-            current: Boolean!
-            architecture: [${testMasterData}!]!
-                @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
-        }
-
-        type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
-            fullName: String!
-        }
-
-        type RelationProps @relationshipProperties {
-            current: Boolean!
-        }
-
-        type ${testMasterData} {
-            id: ID! @unique
-            current: Boolean!
-            nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
-        }
-    `;
-
-    const extendedTypeDefs = `
-        type ${testMain} {
-            id: ID! @unique
-            current: Boolean!
-            main: [${testSeries}!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
-        }
-
-        ${typeDefs}
-    `;
+    let testMain: UniqueType;
+    let testSeries: UniqueType;
+    let testNameDetails: UniqueType;
+    let testMasterData: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+        testHelper = new TestHelper();
+        testMain = testHelper.createUniqueType("Main");
+        testSeries = testHelper.createUniqueType("Series");
+        testNameDetails = testHelper.createUniqueType("NameDetails");
+        testMasterData = testHelper.createUniqueType("MasterData");
 
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
+        const typeDefs = `
+            type ${testSeries} {
+                id: ID! @unique
+                current: Boolean!
+                architecture: [${testMasterData}!]!
+                    @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
+            }
+    
+            type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
+                fullName: String!
+            }
+    
+            type RelationProps @relationshipProperties {
+                current: Boolean!
+            }
+    
+            type ${testMasterData} {
+                id: ID! @unique
+                current: Boolean!
+                nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+            }
+        `;
 
-    afterEach(async () => {
-        try {
-            await cleanNodesUsingSession(session, [testMain, testSeries, testNameDetails, testMasterData]);
-        } finally {
-            await session.close();
-        }
+        const extendedTypeDefs = `
+            type ${testMain} {
+                id: ID! @unique
+                current: Boolean!
+                main: [${testSeries}!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
+            }
+    
+            ${typeDefs}
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs: extendedTypeDefs,
+        });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should only return the single 'chain' and the multiple nested 'chains', three relations deep, using SOME", async () => {
-        const neoGraphql = new Neo4jGraphQL({
-            typeDefs: extendedTypeDefs,
-            driver,
-        });
-        schema = await neoGraphql.getSchema();
-
-        await session.run(`
+        await testHelper.runCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
                 CREATE (s:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1322" })
@@ -159,11 +140,8 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
             },
         };
 
-        const res = await graphql({
-            schema,
-            source: query,
+        const res = await testHelper.runGraphQL(query, {
             variableValues,
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();

@@ -18,18 +18,13 @@
  */
 
 import type { GraphQLError } from "graphql";
-import { graphql } from "graphql";
-import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4617", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     const secret = "secret";
     let User: UniqueType;
     let Post: UniqueType;
@@ -37,12 +32,11 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
     let id: string;
     let actorName: string;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        User = new UniqueType("User");
-        Post = new UniqueType("Post");
-        Actor = new UniqueType("Actor");
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+        Actor = testHelper.createUniqueType("Actor");
 
         id = generate({
             charset: "alphabetic",
@@ -51,28 +45,17 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             charset: "alphabetic",
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `   CREATE (:${Post.name} {title: "Post 1"})
+        await testHelper.runCypher(
+            `   CREATE (:${Post.name} {title: "Post 1"})
                     CREATE (:${User.name} {id: $id, email: randomUUID()})
                     CREATE (:${Actor.name} {id: $id, email: randomUUID(), name: $actorName })
                 `,
-                { id, actorName }
-            );
-        } finally {
-            await session.close();
-        }
+            { id, actorName }
+        );
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [User, Post]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should not throw forbidden when user does have a correct allow on projection field", async () => {
@@ -93,9 +76,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -115,11 +97,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -143,9 +122,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -165,11 +143,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -194,9 +169,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -216,11 +190,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -244,9 +215,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -266,11 +236,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -306,9 +273,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -328,11 +294,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -367,9 +330,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -390,11 +352,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -427,9 +386,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -457,11 +415,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: id });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -493,9 +448,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
@@ -523,11 +477,8 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
         const token = createBearerToken(secret, { sub: "invalid" });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
             variableValues: { id },
-            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeDefined();

@@ -17,36 +17,29 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("587: Dates in edges can cause wrongly generated cypher", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let typeDefs: string;
     let Genre: UniqueType;
     let Actor: UniqueType;
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Genre = new UniqueType("Genre");
-        Movie = new UniqueType("Movie");
-        Actor = new UniqueType("Actor");
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        Genre = testHelper.createUniqueType("Genre");
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should not throw when returning a date in an edge", async () => {
-        const session = await neo4j.getSession();
-
         typeDefs = `
             type ${Genre} {
                 id: ID!
@@ -65,7 +58,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const genreId = generate({
             charset: "alphabetic",
@@ -95,8 +88,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
         }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
                 CREATE (genre:${Genre} { id: "${genreId}" })
                 CREATE (movie:${Movie} { title: "${title}" })
                 CREATE (actor:${Actor} { name: "${name}", birthday: datetime("2021-11-16T10:53:20.200000000Z")})
@@ -104,15 +96,8 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
                 RETURN actor
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await testHelper.runGraphQL(query);
 
-            expect(result.errors).toBeFalsy();
-        } finally {
-            await session.close();
-        }
+        expect(result.errors).toBeFalsy();
     });
 });

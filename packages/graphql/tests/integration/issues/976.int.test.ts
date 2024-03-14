@@ -17,34 +17,20 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Integer, Session } from "neo4j-driver";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { getQuerySource } from "../../utils/get-query-source";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
+import { type Integer } from "neo4j-driver";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/976", () => {
-    const testBibliographicReference = new UniqueType("BibliographicReference");
-    const testConcept = new UniqueType("Concept");
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-
-    async function graphqlQuery(query: DocumentNode) {
-        return graphql({
-            schema,
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues(),
-        });
-    }
+    let testBibliographicReference: UniqueType;
+    let testConcept: UniqueType;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+
+        testBibliographicReference = testHelper.createUniqueType("BibliographicReference");
+        testConcept = testHelper.createUniqueType("Concept");
 
         const typeDefs = `
             type ${testBibliographicReference.name} @node(labels: ["${testBibliographicReference.name}", "Resource"]){
@@ -58,27 +44,15 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
                 prefLabel: [String!]!
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.run(`MATCH (bibRef:${testBibliographicReference.name}) DETACH DELETE bibRef`);
-        await session.run(`MATCH (concept:${testConcept.name}) DETACH DELETE concept`);
-
-        await session.close();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query nested connection", async () => {
-        const createBibRefQuery = gql`
+        const createBibRefQuery = /* GraphQL */ `
             mutation {
                 ${testBibliographicReference.operations.create}(
                     input: {
@@ -100,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
                 }
             }
         `;
-        const updateBibRefQuery = gql`
+        const updateBibRefQuery = /* GraphQL */ `
             mutation {
                 ${testConcept.operations.delete}(where: { iri: "new-e" }) {
                     nodesDeleted
@@ -137,10 +111,10 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
                 }
             }
         `;
-        const createBibRefResult = await graphqlQuery(createBibRefQuery);
+        const createBibRefResult = await testHelper.runGraphQL(createBibRefQuery);
         expect(createBibRefResult.errors).toBeUndefined();
 
-        const bibRefRes = await session.run(`
+        const bibRefRes = await testHelper.runCypher(`
             MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, concept.uri as conceptUri
         `);
 
@@ -148,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         expect(bibRefRes.records[0]?.toObject().bibRefUri as string).toBe("urn:myiri2");
         expect(bibRefRes.records[0]?.toObject().conceptUri as string).toBe("new-e");
 
-        const updateBibRefResult = await graphqlQuery(updateBibRefQuery);
+        const updateBibRefResult = await testHelper.runGraphQL(updateBibRefQuery);
         expect(updateBibRefResult.errors).toBeUndefined();
         expect(updateBibRefResult?.data).toEqual({
             [testConcept.operations.delete]: {
@@ -170,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
             },
         });
 
-        const conceptCount = await session.run(`
+        const conceptCount = await testHelper.runCypher(`
             MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, COUNT(concept) as conceptCount
         `);
 

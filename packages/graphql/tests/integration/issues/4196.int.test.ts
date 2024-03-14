@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4196", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
     let Foo: UniqueType;
     let Bar: UniqueType;
     let FooBar: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
 
-        Foo = new UniqueType("Foo");
-        Bar = new UniqueType("Bar");
-        FooBar = new UniqueType("FooBar");
+        Foo = testHelper.createUniqueType("Foo");
+        Bar = testHelper.createUniqueType("Bar");
+        FooBar = testHelper.createUniqueType("FooBar");
 
         const typeDefs = /* GraphQL */ `
             type ${Foo} {
@@ -63,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.runCypher(`
             MERGE (:${Foo} {name: "A"})-[:relatesTo]->(b1:${Bar} {name: "bar1"})
             MERGE (:${Foo} {name: "B"})
             MERGE (:${Foo} {name: "C"})-[:relatesTo]->(b3:${Bar} {name: "bar3"})
@@ -71,19 +59,13 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
             MERGE (b3)-[:relatesTo]->(:${FooBar} {name: "b"})
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Foo, Bar, FooBar]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("querying multiple nested nodes should be sorted correctly", async () => {
@@ -101,11 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({

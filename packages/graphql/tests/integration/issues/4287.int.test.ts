@@ -17,27 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import gql from "graphql-tag";
-import { type Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4287", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
+    let testHelper: TestHelper;
 
-    const Actor = new UniqueType("Actor");
-    const Movie = new UniqueType("Movie");
-    const Series = new UniqueType("Series");
+    let Actor: UniqueType;
+    let Movie: UniqueType;
+    let Series: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const typeDefs = gql`
+        testHelper = new TestHelper();
+        Actor = testHelper.createUniqueType("Actor");
+        Movie = testHelper.createUniqueType("Movie");
+        Series = testHelper.createUniqueType("Series");
+
+        const typeDefs = /* GraphQL */ `
             type ${Actor} {
                 name: String
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
@@ -57,37 +53,24 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
                 episodes: Int
             }
         `;
-        neo4jGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await testHelper.runCypher(`
             CREATE (a:${Actor} { name: "Someone" })
             CREATE (a)-[:ACTED_IN]->(:${Movie} {title: "something"})
             CREATE (a)-[:ACTED_IN]->(:${Series} {title: "whatever"})
             CREATE (a)-[:ACTED_IN]->(:${Movie} {title: "whatever 2"})
             CREATE (a)-[:ACTED_IN]->(:${Series} {title: "something 2"})
             `);
-        } finally {
-            await session.close();
-        }
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Movie, Actor, Series]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+        await testHelper.close();
     });
 
     test("filter by logical operator on interface connection", async () => {
-        const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
@@ -105,11 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const response = await testHelper.runGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Actor.plural]).toIncludeSameMembers([
             {

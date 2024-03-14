@@ -17,49 +17,41 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import type { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3165", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    let testHelper: TestHelper;
 
-    let Book: UniqueType;
-    let BookTitle_SV: UniqueType;
-    let BookTitle_EN: UniqueType;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+    let A: UniqueType;
+    let B: UniqueType;
+    let Related: UniqueType;
 
     beforeEach(async () => {
-        session = await neo4j.getSession();
+        testHelper = new TestHelper();
+
+        A = testHelper.createUniqueType("A");
+        B = testHelper.createUniqueType("B");
+        Related = testHelper.createUniqueType("Related");
 
         const typeDefs = `
-            type A {
+            type ${A} {
                 name: String!
-                related: [Related!]! @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: IN)
+                related: [${Related}!]! @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: IN)
             }
 
-            type B {
+            type ${B} {
                 name: String!
-                related: [Related!]! @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: IN)
+                related: [${Related}!]! @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: IN)
             }
 
-            union RelatedTarget = A | B
+            union RelatedTarget = ${A} | ${B}
 
             type RelatedProperties @relationshipProperties {
                 prop: String!
             }
 
-            type Related {
+            type ${Related} {
                 name: String!
                 value: String!
                 target: RelatedTarget!
@@ -67,31 +59,25 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [Book, BookTitle_EN, BookTitle_SV]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("create and query by edge property over an union", async () => {
         const mutation = /* GraphQL */ `
             mutation CreateA {
-                createAs(
+                ${A.operations.create}(
                     input: {
                         name: "A"
                         related: { create: { edge: { prop: "propvalue" }, node: { name: "Related", value: "value" } } }
                     }
                 ) {
-                    as {
+                    ${A.plural} {
                         name
                         relatedConnection {
                             edges {
@@ -110,11 +96,11 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
 
         const query = /* GraphQL */ `
             query Relateds {
-                relateds(
+                ${Related.plural}(
                     where: {
                         OR: [
-                            { targetConnection: { A: { edge: { prop: "propvalue" } } } }
-                            { targetConnection: { B: { edge: { prop: "propvalue" } } } }
+                            { targetConnection: { ${A}: { edge: { prop: "propvalue" } } } }
+                            { targetConnection: { ${B}: { edge: { prop: "propvalue" } } } }
                         ]
                     }
                 ) {
@@ -123,25 +109,15 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
             }
         `;
 
-        const schema = await neoSchema.getSchema();
-
-        const mutationResult = await graphql({
-            schema,
-            source: mutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const mutationResult = await testHelper.runGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
 
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            relateds: [
+            [Related.plural]: [
                 {
                     name: "Related",
                 },

@@ -17,38 +17,24 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
 describe("unauthenticated-requests", () => {
     const secret = "secret";
-    let driver: Driver;
-    let session: Session;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-        User = new UniqueType("User");
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
     });
 
     afterEach(async () => {
-        await session.close();
+        await testHelper.close();
     });
 
     test("should throw Unauthenticated when trying to pluck undefined value with allow", async () => {
@@ -68,9 +54,9 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        await session.run(`CREATE (:${User} { id: "ID" })`);
+        await testHelper.runCypher(`CREATE (:${User} { id: "ID" })`);
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -81,11 +67,7 @@ describe("unauthenticated-requests", () => {
 
         const token = createBearerToken(secret);
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
@@ -107,9 +89,9 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        await session.run(`CREATE (:${User} { id: "ID" })`);
+        await testHelper.runCypher(`CREATE (:${User} { id: "ID" })`);
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -118,13 +100,9 @@ describe("unauthenticated-requests", () => {
             },
         });
 
-        const token = createBearerToken(secret);
+        const token = testHelper.createBearerToken(secret);
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
@@ -151,7 +129,7 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -160,20 +138,27 @@ describe("unauthenticated-requests", () => {
             },
         });
 
-        const token = createBearerToken(secret);
+        const token = testHelper.createBearerToken(secret);
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
 
     // If the below test starts failing, we will need to change the default value that we use for non-existent JWT claims
     test("maps are not supported in the database and can be used as JWT default value", async () => {
-        await expect(() => session.run(`CREATE (:${User} { shouldFail: {} })`)).rejects.toThrow(
+        const typeDefs = `
+            type ${User} {
+                id: ID
+            }
+        `;
+
+        // This is not really used, only needed to execute runCypher afterwards
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(() => testHelper.runCypher(`CREATE (:${User} { shouldFail: {} })`)).rejects.toThrow(
             "Property values can only be of primitive types or arrays thereof. Encountered: Map{}."
         );
     });

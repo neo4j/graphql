@@ -18,24 +18,19 @@
  */
 
 import { gql } from "graphql-tag";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQL } from "../../../src";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/594", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let testHelper: TestHelper;
 
-    const typeMovie = new UniqueType("Movie");
-    const typePerson = new UniqueType("Person");
+    let typeMovie: UniqueType;
+    let typePerson: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        typeMovie = testHelper.createUniqueType("Movie");
+        typePerson = testHelper.createUniqueType("Person");
         const typeDefs = gql`
             type ${typeMovie.name} {
                 title: String!
@@ -49,16 +44,14 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        session = await neo4j.getSession();
-        await session.run(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
+        await testHelper.runCypher(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
                 CREATE (:${typeMovie.name} {title: "Super Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Super Cool Some Name"})`);
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should support nullable fields in field aggregations", async () => {
@@ -76,11 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.plural]).toEqual(
@@ -102,11 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[`${typePerson.plural}Aggregate`]).toEqual({ surname: { shortest: null } });

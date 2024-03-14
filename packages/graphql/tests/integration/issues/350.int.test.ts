@@ -17,32 +17,26 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/350", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let Post: UniqueType;
     let Comment: UniqueType;
     let typeDefs: string;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeAll(() => {
+        testHelper = new TestHelper();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Retain attributes when aliasing the same field multiple times in a single query", async () => {
-        const session = await neo4j.getSession();
-        Post = new UniqueType("Post");
+        Post = testHelper.createUniqueType("Post");
         typeDefs = `
             type ${Post} {
                 id: ID!
@@ -59,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const postId = generate({
             charset: "alphabetic",
@@ -100,9 +94,8 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.runCypher(
+            `
                     CREATE (post:${Post} {id: $postId, title: $postTitle, content: $postContent})
                     CREATE (comment1:${Comment} {id: $comment1Id, content: $comment1Content, flagged: true})
                     CREATE (comment2:${Comment} {id: $comment2Id, content: $comment2Content, flagged: false})
@@ -110,33 +103,26 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
                     MERGE (post)-[:HAS_COMMENT]->(comment2)
 
                 `,
-                {
-                    postId,
-                    postTitle,
-                    postContent,
-                    comment1Id,
-                    comment1Content,
-                    comment2Id,
-                    comment2Content,
-                }
-            );
+            {
+                postId,
+                postTitle,
+                postContent,
+                comment1Id,
+                comment1Content,
+                comment2Id,
+                comment2Content,
+            }
+        );
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
-            expect(result.errors).toBeFalsy();
-            expect((result?.data as any)[Post.plural][0].flaggedComments).toContainEqual({
-                content: comment1Content,
-                flagged: true,
-            });
-            expect((result?.data as any)[Post.plural][0].unflaggedComments).toContainEqual({
-                content: comment2Content,
-                flagged: false,
-            });
-        } finally {
-            await session.close();
-        }
+        const result = await testHelper.runGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect((result?.data as any)[Post.plural][0].flaggedComments).toContainEqual({
+            content: comment1Content,
+            flagged: true,
+        });
+        expect((result?.data as any)[Post.plural][0].unflaggedComments).toContainEqual({
+            content: comment2Content,
+            flagged: false,
+        });
     });
 });

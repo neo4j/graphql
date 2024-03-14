@@ -17,26 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/200", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
     let Category: UniqueType;
+    let testHelper: TestHelper;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Category = new UniqueType("Category");
+    beforeAll(() => {
+        testHelper = new TestHelper();
+        Category = testHelper.createUniqueType("Category");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should successfully execute given mutation", async () => {
@@ -49,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const catOne = generate({ charset: "alphabetic" });
         const catTwo = generate({ charset: "alphabetic" });
@@ -70,11 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.runGraphQL(query, {
             variableValues: { catOne, catTwo, exampleImageLocations: [] },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

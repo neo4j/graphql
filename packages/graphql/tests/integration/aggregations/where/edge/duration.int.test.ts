@@ -17,28 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../../src/classes";
-import { UniqueType } from "../../../../utils/graphql-types";
-import Neo4jHelper from "../../../neo4j";
+import type { Session } from "neo4j-driver";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-duration", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
     let session: Session;
 
-    const User = new UniqueType("User");
-    const Post = new UniqueType("Post");
-
-    let neoSchema: Neo4jGraphQL;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+    let User: UniqueType;
+    let Post: UniqueType;
 
     beforeEach(async () => {
+        testHelper = new TestHelper();
+
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+
         const typeDefs = `
         type ${User} {
             name: String
@@ -54,22 +49,15 @@ describe("aggregations-where-edge-duration", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should return posts where a edge like Int is EQUAL to", async () => {
-        const session = await neo4j.getSession();
-
-        await session.run(
+        await testHelper.runCypher(
             `
                     CREATE (p1:${Post} {content: "post1"})<-[:LIKES { someDuration: duration({months: 1}) }]-(:${User} {name: "user1"})
                     CREATE (p2:${Post} {content: "post2"})<-[:LIKES { someDuration: duration({months: 2}) }]-(:${User} {name: "user2"})
@@ -85,11 +73,7 @@ describe("aggregations-where-edge-duration", () => {
                 }
             `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.runGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([{ content: "post2" }, { content: "post3" }]);

@@ -17,24 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1756", () => {
-    const productType = new UniqueType("Product");
-    const genreType = new UniqueType("Genre");
+    let productType: UniqueType;
+    let genreType: UniqueType;
 
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        testHelper = new TestHelper();
+        productType = testHelper.createUniqueType("Product");
+        genreType = testHelper.createUniqueType("Genre");
         const typeDefs = `
         interface INode {
             id: ID! 
@@ -56,12 +51,11 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             return `callback_value`;
         };
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { populatedBy: { callbacks: { nanoid } } } });
-        schema = await neoGraphql.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs, features: { populatedBy: { callbacks: { nanoid } } } });
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not raise a GraphQL validation error if invoked without passing the id field", async () => {
@@ -93,12 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
           }
       `;
 
-        const result = await graphql({
-            schema,
-            source: query,
-            variableValues: {},
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[productType.operations.create]).toEqual({
@@ -143,12 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
         }
     `;
 
-        const result = await graphql({
-            schema,
-            source: query,
-            variableValues: {},
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.runGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[productType.operations.create]).toEqual({

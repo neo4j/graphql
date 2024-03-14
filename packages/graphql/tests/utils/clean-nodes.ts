@@ -22,7 +22,6 @@ import type { Driver, Result, Session } from "neo4j-driver";
 import type { UniqueType } from "./graphql-types";
 import { runCypher } from "./run-cypher";
 
-/** Removes all nodes with the given labels from the database */
 export async function cleanNodes(driver: Driver, labels: Array<string | UniqueType>): Promise<Result> {
     const nodeRef = new Cypher.Node({});
 
@@ -37,10 +36,6 @@ export async function cleanNodes(driver: Driver, labels: Array<string | UniqueTy
     return driver.executeQuery(cypher);
 }
 
-/**
- * Removes all nodes with the given labels from the database
- * @deprecated Use {@link cleanNodes} instead
- */
 export async function cleanNodesUsingSession(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
     const nodeRef = new Cypher.Node({});
 

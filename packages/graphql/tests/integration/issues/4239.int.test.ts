@@ -17,24 +17,21 @@
  * limitations under the License.
  */
 
-import { type Driver } from "neo4j-driver";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import gql from "graphql-tag";
-import { graphql } from "graphql";
-import { UniqueType } from "../../utils/graphql-types";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4239", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neo4jGraphql: Neo4jGraphQL;
-    const Movie = new UniqueType("Movie");
-    const Person = new UniqueType("Person");
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const typeDefs = gql`
+    let testHelper: TestHelper;
+
+    let Movie: UniqueType;
+    let Person: UniqueType;
+
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        Person = testHelper.createUniqueType("Person");
+
+        const typeDefs = `
                 type ${Movie.name}
                 @authorization(
                     validate: [
@@ -49,9 +46,8 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
                 id: ID
             }
         `;
-        neo4jGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -59,29 +55,16 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             },
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (m:${Movie.name} {title: "Matrix"})<-[:DIRECTED]-(p:${Person.name} {id: "SOME_ID"})`,
-                {}
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.runCypher(
+            `CREATE (m:${Movie.name} {title: "Matrix"})<-[:DIRECTED]-(p:${Person.name} {id: "SOME_ID"})`
+        );
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Movie.name]);
-        } finally {
-            await session.close();
-        }
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should return Matrix if the JWT.sub matches", async () => {
-        const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -90,10 +73,8 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { sub: "SOME_ID" } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: { jwt: { sub: "SOME_ID" } },
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Movie.plural]).toStrictEqual(
@@ -102,7 +83,6 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     });
 
     test("should return a Forbidden error if the JWT.sub do not matches", async () => {
-        const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -111,10 +91,8 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             }
         `;
 
-        const response = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ jwt: { sub: "SOME_WRONG_ID" } }),
+        const response = await testHelper.runGraphQL(query, {
+            contextValue: { jwt: { sub: "SOME_WRONG_ID" } },
         });
         expect((response.errors as any[])[0].message).toBe("Forbidden");
     });
