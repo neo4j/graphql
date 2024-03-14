@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
 
     let neoSchema: Neo4jGraphQL;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     const bookId = generate({
         charset: "alphabetic",
@@ -58,7 +58,6 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     let queryBooks: string;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         typeAuthor = testHelper.createUniqueType("Author");
         typeBook = testHelper.createUniqueType("Book");
 

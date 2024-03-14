@@ -23,13 +23,11 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-duration", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
     let typeDefs: string;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         typeDefs = `
             type ${Movie} {
@@ -56,7 +54,7 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
                     CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
@@ -78,7 +76,7 @@ describe("aggregations-top_level-duration", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -100,7 +98,7 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
                     CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
@@ -122,7 +120,7 @@ describe("aggregations-top_level-duration", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -144,7 +142,7 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
                     CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
@@ -167,7 +165,7 @@ describe("aggregations-top_level-duration", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

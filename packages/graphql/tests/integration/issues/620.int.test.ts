@@ -22,13 +22,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/620", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeUser: UniqueType;
     let typeBusiness: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         typeUser = testHelper.createUniqueType("User");
         typeBusiness = testHelper.createUniqueType("Business");
 
@@ -44,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
               CREATE (u:${typeUser.name} {id: "1234", name: "arthur"})
               CREATE (b:${typeBusiness.name} {id: "1234", name: "ford"})
             `);
@@ -68,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
             }
         `;
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

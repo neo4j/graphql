@@ -24,14 +24,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let name: string;
     let url: string;
     let typeDefs: DocumentNode;
     let Place: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Place = testHelper.createUniqueType("Place");
 
         name = generate({
@@ -80,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             }
     `;
 
-        await testHelper.runCypher(`CREATE (:${Place.name} { name: "${name}" })`);
+        await testHelper.executeCypher(`CREATE (:${Place.name} { name: "${name}" })`);
     });
 
     afterEach(async () => {
@@ -100,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 
@@ -125,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

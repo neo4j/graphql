@@ -23,14 +23,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4112", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Category: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Category = testHelper.createUniqueType("Category");
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Category} {name: "test"});
                 `
@@ -67,14 +66,14 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             groups: ["user"],
         });
 
-        const gqlResultUser = await testHelper.runGraphQLWithToken(query, nonAdminToken);
+        const gqlResultUser = await testHelper.executeGraphQLWithToken(query, nonAdminToken);
 
         expect((gqlResultUser.errors as any[])[0].message).toBe("Unauthenticated");
 
         const adminToken = createBearerToken(secret, {
             groups: ["user", "admin"],
         });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, adminToken);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, adminToken);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -113,14 +112,14 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             myApplication: { roles: ["user"] },
         });
 
-        const gqlResultUser = await testHelper.runGraphQLWithToken(query, nonAdminToken);
+        const gqlResultUser = await testHelper.executeGraphQLWithToken(query, nonAdminToken);
 
         expect((gqlResultUser.errors as any[])[0].message).toBe("Unauthenticated");
 
         const adminToken = createBearerToken(secret, {
             myApplication: { roles: ["user", "admin"] },
         });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, adminToken);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, adminToken);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -159,14 +158,14 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             "https://github.com/claims": { "https://github.com/claims/roles": ["user"] },
         });
 
-        const gqlResultUser = await testHelper.runGraphQLWithToken(query, nonAdminToken);
+        const gqlResultUser = await testHelper.executeGraphQLWithToken(query, nonAdminToken);
 
         expect((gqlResultUser.errors as any[])[0].message).toBe("Unauthenticated");
 
         const adminToken = createBearerToken(secret, {
             "https://github.com/claims": { "https://github.com/claims/roles": ["admin"] },
         });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, adminToken);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, adminToken);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -213,14 +212,14 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             myApplication: { roles: ["user"] },
         });
 
-        const gqlResultUser = await testHelper.runGraphQLWithToken(query, nonAdminToken);
+        const gqlResultUser = await testHelper.executeGraphQLWithToken(query, nonAdminToken);
 
         expect((gqlResultUser.errors as any[])[0].message).toBe("Unauthenticated");
 
         const adminToken = createBearerToken(secret, {
             myApplication: { roles: ["user", "admin"] },
         });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, adminToken);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, adminToken);
 
         expect(gqlResult.errors).toBeUndefined();
 

@@ -20,11 +20,9 @@
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-basic", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeAll(() => {
-        testHelper = new TestHelper();
-    });
+    beforeAll(() => {});
 
     afterAll(async () => {
         await testHelper.close();
@@ -41,7 +39,7 @@ describe("aggregations-top_level-basic", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${randomType.name} {id: randomUUID()})
             CREATE (:${randomType.name} {id: randomUUID()})
         `);
@@ -54,7 +52,7 @@ describe("aggregations-top_level-basic", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

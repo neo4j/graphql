@@ -22,11 +22,10 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("aggregations-top_level-id", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
         type ${Movie} {
@@ -48,7 +47,7 @@ describe("aggregations-top_level-id", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testId: $id, id: "1"})
                     CREATE (:${Movie} {testId: $id, id: "22"})
@@ -70,7 +69,7 @@ describe("aggregations-top_level-id", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -91,7 +90,7 @@ describe("aggregations-top_level-id", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testId: $id, id: "1"})
                     CREATE (:${Movie} {testId: $id, id: "22"})
@@ -113,7 +112,7 @@ describe("aggregations-top_level-id", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -134,7 +133,7 @@ describe("aggregations-top_level-id", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testId: $id, id: "1"})
                     CREATE (:${Movie} {testId: $id, id: "22"})
@@ -157,7 +156,7 @@ describe("aggregations-top_level-id", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2630", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let HasName: UniqueType;
     let Post: UniqueType;
@@ -31,8 +31,6 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
     let PostSubject: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         HasName = testHelper.createUniqueType("HasName");
         Post = testHelper.createUniqueType("Post");
         User = testHelper.createUniqueType("User");
@@ -84,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
         const postId = generate({ charset: "alphabetic" });
         const userName = generate({ charset: "alphabetic" });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (post:${Post} { id: $postId })
                 CREATE (user:${User} { id: $userId, name: $userName })
@@ -93,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
             { userId, postId, userName }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2812", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     const secret = "secret";
 
@@ -30,8 +30,6 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
     let Actor: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
 
@@ -89,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         `;
             const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeFalsy();
         });
 
@@ -113,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         `;
             const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeFalsy();
         });
 
@@ -137,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         `;
             const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeFalsy();
         });
     });
@@ -163,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         `;
             const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeTruthy();
         });
 
@@ -187,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         `;
             const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeTruthy();
         });
 
@@ -211,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         `;
             const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
-            const result = await testHelper.runGraphQLWithToken(query, token);
+            const result = await testHelper.executeGraphQLWithToken(query, token);
             expect(result.errors).toBeFalsy();
         });
     });

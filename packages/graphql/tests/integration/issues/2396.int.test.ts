@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let PostalCode: UniqueType;
     let Address: UniqueType;
@@ -31,7 +31,6 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     let Estate: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         PostalCode = testHelper.createUniqueType("PostalCode");
         Address = testHelper.createUniqueType("Address");
         Mandate = testHelper.createUniqueType("Mandate");
@@ -699,7 +698,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             }
         `;
 
-        await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues: { input },
         });
     });
@@ -740,7 +739,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 
@@ -780,7 +779,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 
@@ -823,7 +822,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             },
         };
 
-        const result = await testHelper.runGraphQLWithToken(query, createBearerToken("secret"), {
+        const result = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"), {
             variableValues,
         });
 

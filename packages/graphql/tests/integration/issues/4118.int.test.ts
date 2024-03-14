@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4118", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Tenant: UniqueType;
@@ -38,8 +38,6 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
     let myUserId: string;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Tenant = testHelper.createUniqueType("Tenant");
         Settings = testHelper.createUniqueType("Settings");
@@ -168,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             typeDefs,
         });
 
-        const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
             contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
@@ -181,7 +179,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         });
 
         const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
-        const addOpeningDaysResponse = await testHelper.runGraphQL(ADD_OPENING_DAYS, {
+        const addOpeningDaysResponse = await testHelper.executeGraphQL(ADD_OPENING_DAYS, {
             variableValues: openingDayInput(settingsId),
             contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
@@ -202,7 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 }
             }`;
 
-        const addLolResponse = await testHelper.runGraphQL(addLolsQuery, {
+        const addLolResponse = await testHelper.executeGraphQL(addLolsQuery, {
             variableValues: {
                 input: {
                     host: {
@@ -239,7 +237,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             },
         });
 
-        const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
             contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
@@ -252,7 +250,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         });
 
         const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
-        const addOpeningDaysResponse = await testHelper.runGraphQL(ADD_OPENING_DAYS, {
+        const addOpeningDaysResponse = await testHelper.executeGraphQL(ADD_OPENING_DAYS, {
             variableValues: openingDayInput(settingsId),
             contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
         });
@@ -274,7 +272,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             }
         `;
 
-        const addLolResponse = await testHelper.runGraphQL(addLolsSource, {
+        const addLolResponse = await testHelper.executeGraphQL(addLolsSource, {
             variableValues: {
                 input: {
                     host: {

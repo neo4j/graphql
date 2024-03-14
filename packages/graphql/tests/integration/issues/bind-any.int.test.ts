@@ -22,19 +22,18 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Organization: UniqueType;
     let Group: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Organization = testHelper.createUniqueType("Organization");
         Group = testHelper.createUniqueType("Group");
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE(o:${Organization} { id: "org_1" })
         CREATE(:${User} { id: "user1" })-[:IS_MEMBER_OF]->(o)
         CREATE(:${User} { id: "user2" })-[:IS_MEMBER_OF]->(o)
@@ -84,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: {
                     sub: "user1",
@@ -143,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           }
       `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: {
                     sub: "user1",

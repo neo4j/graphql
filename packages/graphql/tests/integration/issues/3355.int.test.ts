@@ -23,11 +23,10 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3355", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
     });
 
@@ -73,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
           }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (:${Movie} {id: $id, name: $initialName})
             `,
@@ -83,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, name: updatedName },
         });
 

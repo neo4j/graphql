@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3901", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     const secret = "secret";
 
@@ -31,8 +31,6 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
     let User: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Serie = testHelper.createUniqueType("Serie");
         Season = testHelper.createUniqueType("Season");
         User = testHelper.createUniqueType("User");
@@ -137,11 +135,11 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
 
         const token = createBearerToken(secret, { sub: "michel", roles: ["verified", "creator"] });
 
-        const createUserResult = await testHelper.runGraphQLWithToken(createUser, token);
+        const createUserResult = await testHelper.executeGraphQLWithToken(createUser, token);
 
         expect(createUserResult.errors).toBeFalsy();
 
-        const createPostResult = await testHelper.runGraphQLWithToken(createPost, token);
+        const createPostResult = await testHelper.executeGraphQLWithToken(createPost, token);
 
         expect(createPostResult.errors).toBeFalsy();
         expect(createPostResult.data).toEqual({

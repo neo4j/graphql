@@ -25,11 +25,9 @@ import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("array-pop-and-push", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -68,9 +66,9 @@ describe("array-pop-and-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"] })
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -112,7 +110,7 @@ describe("array-pop-and-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b'], moreTags: []})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
         const token = "not valid token";
 
@@ -120,7 +118,7 @@ describe("array-pop-and-push", () => {
         const req = new IncomingMessage(socket);
         req.headers.authorization = `Bearer ${token}`;
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
@@ -160,9 +158,9 @@ describe("array-pop-and-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(

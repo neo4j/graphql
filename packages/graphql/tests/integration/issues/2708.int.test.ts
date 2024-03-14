@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2708", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let movieType: UniqueType;
     let genreType: UniqueType;
@@ -45,8 +45,6 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     const genre2AverageTitleLength = (movieTitle4.length + movieTitle2.length) / 2;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         movieType = testHelper.createUniqueType("Movie");
         genreType = testHelper.createUniqueType("Genre");
         seriesType = testHelper.createUniqueType("Series");
@@ -78,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (m1:${movieType.name} { title: "${movieTitle1}" })-[:IN_GENRE { intValue: ${intValue1} }]->(g1:${genreType.name} { name: "${genreName1}" })
             CREATE (m2:${movieType.name} { title: "${movieTitle2}" })-[:IN_GENRE { intValue: ${intValue2} }]->(g1)
             CREATE (m3:${movieType.name} { title: "${movieTitle3}" })-[:IN_GENRE { intValue: ${intValue3} }]->(g1)
@@ -103,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -127,7 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -151,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -178,7 +176,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -205,7 +203,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -229,7 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -253,7 +251,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -280,7 +278,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -304,7 +302,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -331,7 +329,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -352,7 +350,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -376,7 +374,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -403,7 +401,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -420,7 +418,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -444,7 +442,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -474,7 +472,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -498,7 +496,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/283", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Post: UniqueType;
     let typeDefs: string;
 
@@ -36,7 +36,6 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
     };
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         typeDefs = `
         type Mutation {
             login: String
@@ -83,12 +82,12 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQL(mutation);
+        const result = await testHelper.executeGraphQL(mutation);
 
         expect(result.errors).toBeFalsy();
 
         expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
 
-        await testHelper.runCypher(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
+        await testHelper.executeCypher(`MATCH (p:${Post}) WHERE p.title = "${title}" DELETE p`);
     });
 });

@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1782", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let testMain: UniqueType;
     let testSeries: UniqueType;
@@ -29,7 +29,6 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
     let testMasterData: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         testMain = testHelper.createUniqueType("Main");
         testSeries = testHelper.createUniqueType("Series");
         testNameDetails = testHelper.createUniqueType("NameDetails");
@@ -78,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
     });
 
     test("should only return the single 'chain' and the multiple nested 'chains', three relations deep, using SOME", async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
                 CREATE (s:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1322" })
@@ -140,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 

@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
     let testProject: UniqueType;
     let testCommunity: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         testContent = testHelper.createUniqueType("Content");
         testProject = testHelper.createUniqueType("Project");
         testCommunity = testHelper.createUniqueType("Community");
@@ -95,9 +94,9 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             CREATE (c:${testCommunity.name} { id: 111111 })-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES]->(:${testContent.name} { name: "content1" })
         `;
 
-        await testHelper.runCypher(cypher);
+        await testHelper.executeCypher(cypher);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)?.[testCommunity.plural]?.[0]).toEqual({
@@ -133,9 +132,9 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             CREATE (c)-[:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]->(:${testProject.name} { name: "project2" })
         `;
 
-        await testHelper.runCypher(cypher);
+        await testHelper.executeCypher(cypher);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({

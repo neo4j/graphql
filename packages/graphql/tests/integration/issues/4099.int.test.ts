@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4099", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
     let User: UniqueType;
     let Person: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Person = testHelper.createUniqueType("Person");
 
@@ -58,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
     });
 
     beforeEach(async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${User} { id: 1 })
             CREATE (:${Person} { id: 1 })
         `);
@@ -79,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: true });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -101,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: false });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -119,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: false });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 
@@ -141,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
 
         const token = testHelper.createBearerToken(secret, { isAdmin: true });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
 

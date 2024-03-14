@@ -25,11 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
     let placeType: UniqueType;
     let interactionType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         personType = testHelper.createUniqueType("Person");
         placeType = testHelper.createUniqueType("Place");
         interactionType = testHelper.createUniqueType("Interaction");
@@ -90,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
         `;
 
-        const mutationRes = await testHelper.runGraphQL(mutation);
+        const mutationRes = await testHelper.executeGraphQL(mutation);
 
         expect(mutationRes.errors).toBeUndefined();
 
@@ -124,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
         `;
 
-        const queryRes = await testHelper.runGraphQL(query);
+        const queryRes = await testHelper.executeGraphQL(query);
 
         expect(queryRes.errors).toBeUndefined();
 

@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4450", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Actor: UniqueType;
     let Scene: UniqueType;
     let Location: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Actor = testHelper.createUniqueType("Actor");
         Scene = testHelper.createUniqueType("Scene");
         Location = testHelper.createUniqueType("Location");
@@ -60,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (:${Actor} {name: "actor-1"})-[:IN_SCENE {cut: true}]->(:${Scene} {number: 1})-[:AT_LOCATION]->(:${Location} {city: "test"})
                 `
@@ -80,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query);
+        const response = await testHelper.executeGraphQL(query);
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({

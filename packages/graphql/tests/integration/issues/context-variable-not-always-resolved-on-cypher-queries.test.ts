@@ -21,14 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("context-variable-not-always-resolved-on-cypher-queries", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let expr: UniqueType;
     let work: UniqueType;
     let resourceType: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         expr = testHelper.createUniqueType("Expr");
         work = testHelper.createUniqueType("Work");
         resourceType = testHelper.createUniqueType("ResourceType");
@@ -64,7 +63,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE(p1:Exprlabel:context:tenant:Resource:test {uri: "stuff"})
                 CREATE (work:WorkLabel:test:Resource {uri: "another-stuff"})
@@ -102,7 +101,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             contextValue: {
                 cypherParams: {
                     tenant: "test",

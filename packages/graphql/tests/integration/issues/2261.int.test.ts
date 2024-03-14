@@ -21,13 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2261", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let ProgrammeItem: UniqueType;
     let Edition: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         ProgrammeItem = testHelper.createUniqueType("ProgrammeItem");
         Edition = testHelper.createUniqueType("Edition");
 
@@ -63,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
     });
 
     test("nested query with top level @cypher directive with subscriptions should return valid Cypher", async () => {
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `CREATE (e:${Edition} {id: "ed-id"})<-[:HAS_EDITION]-(p:${ProgrammeItem} {id: "p-id"})`
         );
 
@@ -79,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

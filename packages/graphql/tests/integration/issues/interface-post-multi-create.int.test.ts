@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Projecting interface relationships following create of multiple nodes", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Person: UniqueType;
     let Place: UniqueType;
     let Interaction: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Person = testHelper.createUniqueType("Person");
         Place = testHelper.createUniqueType("Place");
         Interaction = testHelper.createUniqueType("Interaction");
@@ -59,7 +57,7 @@ describe("Projecting interface relationships following create of multiple nodes"
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${Person.name} { id: "adam", name: "Adam" })
             CREATE (:${Person.name} { id: "eve", name: "Eve" })
             CREATE (:${Person.name} { id: "cain", name: "Cain" })
@@ -104,7 +102,7 @@ describe("Projecting interface relationships following create of multiple nodes"
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
         expect(mutationResult.errors).toBeUndefined();
     });
 });

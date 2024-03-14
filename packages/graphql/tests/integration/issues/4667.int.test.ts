@@ -21,17 +21,16 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4667", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let MyThing: UniqueType;
     let MyStuff: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         MyThing = testHelper.createUniqueType("MyThing");
         MyStuff = testHelper.createUniqueType("MyStuff");
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${MyThing} {id: "A"})-[:THE_STUFF]->(b1:${MyStuff} {id: "C"})
             CREATE (:${MyThing} {id: "B"})
         `);
@@ -68,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({

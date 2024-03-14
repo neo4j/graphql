@@ -23,14 +23,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/923", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let testBlogpost: UniqueType;
     let testCategory: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         testBlogpost = testHelper.createUniqueType("BlogPost");
         testCategory = testHelper.createUniqueType("Category");
         // driver = await neo4j.getDriver();
@@ -77,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: {
                     sub: "test",
@@ -86,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
         });
         expect(result.errors).toBeUndefined();
 
-        const blogPostCount = await testHelper.runCypher(`
+        const blogPostCount = await testHelper.executeCypher(`
           MATCH (m:${testBlogpost.name} { slug: "myslug" })
           RETURN COUNT(m) as count
         `);

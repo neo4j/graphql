@@ -24,11 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
     let actorType: UniqueType;
     let movieType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         actorType = testHelper.createUniqueType("Actor");
         movieType = testHelper.createUniqueType("Movie");
 
@@ -77,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
                 },
             },
         ];
-        await testHelper.runGraphQL(source, {
+        await testHelper.executeGraphQL(source, {
             variableValues: { input },
         });
     });
@@ -100,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         }
       `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[movieType.operations.connection]).toEqual({

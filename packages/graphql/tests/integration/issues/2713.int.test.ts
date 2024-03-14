@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2713", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let movieType: UniqueType;
     let genreType: UniqueType;
@@ -40,8 +40,6 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     const intValue5 = 42;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         movieType = testHelper.createUniqueType("Movie");
         genreType = testHelper.createUniqueType("Genre");
         inGenreInterface = testHelper.createUniqueType("InGenre");
@@ -65,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (m1:${movieType.name} { title: "${movieTitle1}" })-[:IN_GENRE { intValue: ${intValue1} }]->(g1:${genreType.name} { name: "${genreName1}" })
             CREATE (m2:${movieType.name} { title: "${movieTitle2}" })-[:IN_GENRE { intValue: ${intValue2} }]->(g1)
             CREATE (m3:${movieType.name} { title: "${movieTitle3}" })-[:IN_GENRE { intValue: ${intValue3} }]->(g1)
@@ -87,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

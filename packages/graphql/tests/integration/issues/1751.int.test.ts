@@ -24,11 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
     let organizationType: UniqueType;
     let adminType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         organizationType = testHelper.createUniqueType("Organization");
         adminType = testHelper.createUniqueType("Admin");
 
@@ -45,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
   `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE (a:${adminType} {adminId: "my-admin-to-delete"})<-[:HAS_ADMINISTRATOR]-(o:${organizationType} {title: "Google"})
         CREATE (a2:${adminType} {adminId: "my-admin2"})<-[:HAS_ADMINISTRATOR]-(o2:${organizationType} { title: "Yahoo"})
         CREATE (a3:${adminType} {adminId: "my-admin3"})<-[:HAS_ADMINISTRATOR]-(o3:${organizationType} { title: "Altavista"})
@@ -70,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data?.[organizationType.operations.delete]).toEqual({
@@ -78,12 +76,12 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
             relationshipsDeleted: 2,
         });
 
-        const remainingOrgs = await testHelper.runCypher(`
+        const remainingOrgs = await testHelper.executeCypher(`
             MATCH(org:${organizationType})
             RETURN org.title as title
             `);
 
-        const remainingAdmins = await testHelper.runCypher(`
+        const remainingAdmins = await testHelper.executeCypher(`
             MATCH(admin:${adminType})
             RETURN admin.adminId as adminId
             `);

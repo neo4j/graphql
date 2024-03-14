@@ -22,15 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4110", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
     let Company: UniqueType;
     let InBetween: UniqueType;
 
-    beforeAll(() => {
-        testHelper = new TestHelper();
-    });
+    beforeAll(() => {});
 
     beforeEach(async () => {
         Company = testHelper.createUniqueType("User");
@@ -61,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     });
 
     beforeEach(async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (c1:${Company} { id: "example" })
             CREATE (c2:${Company} { id: "another" })
 
@@ -93,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
 
         const token = createBearerToken(secret);
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Company.plural]).toEqual([

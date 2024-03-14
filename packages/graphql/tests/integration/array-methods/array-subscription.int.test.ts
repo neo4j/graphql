@@ -23,15 +23,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("array-subscription", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         typeActor = testHelper.createUniqueType("Actor");
         typeMovie = testHelper.createUniqueType("Movie");
 
@@ -76,12 +74,12 @@ describe("array-subscription", () => {
         }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tags: [] })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -110,12 +108,12 @@ describe("array-subscription", () => {
         }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tags: ["a tag"] })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -144,12 +142,12 @@ describe("array-subscription", () => {
         }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tags: ["a tag"], moreTags: [] })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await testHelper.runGraphQL(query);
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

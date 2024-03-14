@@ -22,12 +22,11 @@ import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-node-datetime", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let User: UniqueType;
     let Post: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         const typeDefs = `
@@ -56,7 +55,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: dateTime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -77,7 +76,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -103,7 +102,7 @@ describe("aggregations-where-node-datetime", () => {
         const someDateTimeGT = new Date();
         someDateTimeGT.setDate(someDateTimeGT.getDate() - 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -124,7 +123,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -148,7 +147,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -169,7 +168,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -195,7 +194,7 @@ describe("aggregations-where-node-datetime", () => {
         const someDateTimeLT = new Date();
         someDateTimeLT.setDate(someDateTimeLT.getDate() + 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -216,7 +215,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -240,7 +239,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -261,7 +260,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

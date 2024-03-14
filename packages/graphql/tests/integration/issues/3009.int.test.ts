@@ -21,10 +21,9 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3009", () => {
     let User: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
     });
 
@@ -50,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({ [User.plural]: [{ joinedAt: "2020-01-01" }] });
@@ -74,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({ [User.plural]: [{ joinedAt: "2020-01-01T00:00:00.000Z" }] });

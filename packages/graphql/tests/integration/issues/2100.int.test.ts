@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let token: string;
 
     let BacentaType: UniqueType;
@@ -34,8 +34,6 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let typeDefs: string;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         BacentaType = testHelper.createUniqueType("Bacenta");
         ServiceLogType = testHelper.createUniqueType("ServiceLog");
         BussingRecordType = testHelper.createUniqueType("BussingRecord");
@@ -95,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
             `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (b:${BacentaType} {id: "1"})
                 SET b.name =  "test"
@@ -138,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)[BussingRecordType.plural][0].id).toBe("3");
@@ -178,7 +176,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQLWithToken(query, token, {
+        const result = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: {
                 id: 1,
             },

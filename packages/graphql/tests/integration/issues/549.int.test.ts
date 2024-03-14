@@ -21,11 +21,9 @@ import { gql } from "graphql-tag";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/549", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeAll(() => {
-        testHelper = new TestHelper();
-    });
+    beforeAll(() => {});
 
     afterAll(async () => {
         await testHelper.close();
@@ -67,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeTruthy();
         expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required exactly once`);

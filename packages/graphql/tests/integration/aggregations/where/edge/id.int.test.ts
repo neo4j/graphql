@@ -22,13 +22,11 @@ import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-id", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Post: UniqueType;
     let User: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Post = testHelper.createUniqueType("Post");
         User = testHelper.createUniqueType("User");
 
@@ -65,7 +63,7 @@ describe("aggregations-where-edge-id", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { testId: "${testId}" }]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -83,7 +81,7 @@ describe("aggregations-where-edge-id", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

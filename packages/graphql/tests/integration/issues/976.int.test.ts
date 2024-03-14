@@ -24,11 +24,9 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/976", () => {
     let testBibliographicReference: UniqueType;
     let testConcept: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         testBibliographicReference = testHelper.createUniqueType("BibliographicReference");
         testConcept = testHelper.createUniqueType("Concept");
 
@@ -111,10 +109,10 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
                 }
             }
         `;
-        const createBibRefResult = await testHelper.runGraphQL(createBibRefQuery);
+        const createBibRefResult = await testHelper.executeGraphQL(createBibRefQuery);
         expect(createBibRefResult.errors).toBeUndefined();
 
-        const bibRefRes = await testHelper.runCypher(`
+        const bibRefRes = await testHelper.executeCypher(`
             MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, concept.uri as conceptUri
         `);
 
@@ -122,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         expect(bibRefRes.records[0]?.toObject().bibRefUri as string).toBe("urn:myiri2");
         expect(bibRefRes.records[0]?.toObject().conceptUri as string).toBe("new-e");
 
-        const updateBibRefResult = await testHelper.runGraphQL(updateBibRefQuery);
+        const updateBibRefResult = await testHelper.executeGraphQL(updateBibRefQuery);
         expect(updateBibRefResult.errors).toBeUndefined();
         expect(updateBibRefResult?.data).toEqual({
             [testConcept.operations.delete]: {
@@ -144,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
             },
         });
 
-        const conceptCount = await testHelper.runCypher(`
+        const conceptCount = await testHelper.executeCypher(`
             MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, COUNT(concept) as conceptCount
         `);
 

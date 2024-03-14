@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/583", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
     let Series: UniqueType;
     let Actor: UniqueType;
@@ -35,8 +35,6 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
     let shortFilm: { title: string };
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Actor = testHelper.createUniqueType("Actor");
         Series = testHelper.createUniqueType("Series");
         Movie = testHelper.createUniqueType("Movie");
@@ -95,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
 
         const testLabel = testHelper.createUniqueType("Test");
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE (actor:${Actor}:${testLabel})
             SET actor = $actor
@@ -135,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { actorId: actor.id },
         });
 

@@ -22,14 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("587: Dates in edges can cause wrongly generated cypher", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
     let Genre: UniqueType;
     let Actor: UniqueType;
     let Movie: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         Genre = testHelper.createUniqueType("Genre");
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
@@ -88,7 +87,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
         }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (genre:${Genre} { id: "${genreId}" })
                 CREATE (movie:${Movie} { title: "${title}" })
                 CREATE (actor:${Actor} { name: "${name}", birthday: datetime("2021-11-16T10:53:20.200000000Z")})
@@ -96,7 +95,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
                 RETURN actor
             `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
     });

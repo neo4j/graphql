@@ -23,14 +23,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1761", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
     let myType: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         myType = testHelper.createUniqueType("MyType");
 
         const typeDefs = `
@@ -66,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/1761", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(mutation);
+        const result = await testHelper.executeGraphQL(mutation);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

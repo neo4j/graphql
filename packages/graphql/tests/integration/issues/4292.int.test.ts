@@ -27,11 +27,9 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     let Admin: UniqueType;
     let Contributor: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Group = testHelper.createUniqueType("Group");
         Person = testHelper.createUniqueType("Person");
@@ -181,7 +179,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (m:${Person.name} {title: "SomeTitle", id: "person-1", name: "SomePerson"})<-[:CREATOR_OF]-(u:${User.name} { id: "user-1", email: "email-1", roles: ["admin"]})
                 CREATE (g:${Group.name} { id: "family_id_1", name: "group-1" })<-[:MEMBER_OF]-(m)
                 `);
@@ -214,7 +212,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: { uid: "user-1", email: "some-email", roles: ["admin"] },
             },
@@ -255,7 +253,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: { jwt: { uid: "not-user-1", email: "some-email", roles: ["admin"] } },
         });
         expect(response.errors?.[0]?.message).toContain("Forbidden");

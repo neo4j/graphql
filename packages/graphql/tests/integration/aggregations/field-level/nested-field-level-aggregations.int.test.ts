@@ -21,14 +21,13 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("Nested Field Level Aggregations", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
 
@@ -53,7 +52,7 @@ describe("Nested Field Level Aggregations", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
         CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
         CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})
         CREATE (:${typeMovie.name} {title: "Total Recall"})<-[:ACTED_IN { screentime: 180, character: "Quaid" }]-(arnold)
@@ -79,7 +78,7 @@ describe("Nested Field Level Aggregations", () => {
         }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
         const movies = (gqlResult.data as any)?.actors[0].movies;
         expect(movies).toHaveLength(2);

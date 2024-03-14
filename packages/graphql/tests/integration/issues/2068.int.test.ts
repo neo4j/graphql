@@ -22,11 +22,9 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -146,13 +144,13 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${actorType.name} { name: "${actorName}", age: ${actorAge} })
                 CREATE (:${tvShowType.name} { title: "${sharedTitle}", numSeasons: ${numberOfSeasons} })
                 CREATE (:${movieType.name} { title: "${sharedTitle}" })
             `);
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)?.[actorType.plural]?.[0].movieOrTVShow).toIncludeSameMembers([
@@ -232,14 +230,14 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${userType.name} {id: "${userID}"})
                 CREATE (:${contentType.name} {id: "${contentID}"})
             `);
 
             const token = createBearerToken(secret, { sub: userID });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -267,7 +265,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${userType.name} {id: "${userID1}"})
                 CREATE (:${userType.name} {id: "${userID2}"})
                 CREATE (:${contentType.name} {id: "${contentID}"})
@@ -275,7 +273,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const token = createBearerToken(secret, { sub: userID1 });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -302,13 +300,13 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${userType.name} {id: "${userID}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentID}"})
             `);
 
             const token = createBearerToken(secret, { sub: userID });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -334,13 +332,13 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
                 CREATE (:${userType.name} {id: "${userID}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentID}"})
             `);
 
             const token = createBearerToken(secret, { sub: userID });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -425,7 +423,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 validToken
             );
@@ -450,7 +448,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 invalidToken
             );
@@ -466,7 +464,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 validToken
             );
@@ -491,7 +489,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 invalidToken
             );
@@ -507,7 +505,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 validToken
             );
@@ -532,7 +530,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 invalidToken
             );
@@ -548,7 +546,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(createOperation, movieType.plural),
                 validToken
             );
@@ -573,9 +571,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 validToken
             );
@@ -600,9 +598,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 invalidToken
             );
@@ -618,9 +616,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 validToken
             );
@@ -646,9 +644,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 invalidToken
             );
@@ -664,9 +662,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 validToken
             );
@@ -691,9 +689,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 invalidToken
             );
@@ -709,9 +707,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 features: { authorization: { key: secret } },
             });
 
-            await testHelper.runCypher(`CREATE (:${movieType.name})`);
+            await testHelper.executeCypher(`CREATE (:${movieType.name})`);
 
-            const gqlResult = await testHelper.runGraphQLWithToken(
+            const gqlResult = await testHelper.executeGraphQLWithToken(
                 getQuery(updateOperation, movieType.plural),
                 validToken
             );
@@ -782,7 +780,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
             expect(gqlResult.data).toEqual({
@@ -830,7 +828,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
             expect(gqlResult.data).toEqual({

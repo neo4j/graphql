@@ -22,12 +22,11 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/567", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
     let Movie: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
 
         typeDefs = `
@@ -68,11 +67,11 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${Movie} { id: "${movieId}", title: "${existingTitle}" })
             `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         if (result.errors) {
             console.log(JSON.stringify(result.errors, null, 2));
@@ -109,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

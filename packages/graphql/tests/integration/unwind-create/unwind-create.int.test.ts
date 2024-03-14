@@ -23,11 +23,9 @@ import { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("unwind-create", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -62,7 +60,7 @@ describe("unwind-create", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, id2 },
         });
 
@@ -72,7 +70,7 @@ describe("unwind-create", () => {
             expect.arrayContaining([{ id }, { id: id2 }])
         );
 
-        const reFind = await testHelper.runCypher(
+        const reFind = await testHelper.executeCypher(
             `
               MATCH (m:${Movie})
               RETURN m
@@ -136,7 +134,7 @@ describe("unwind-create", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, id2, actor1Name, actor2Name },
         });
 
@@ -149,7 +147,7 @@ describe("unwind-create", () => {
             ])
         );
 
-        const reFind = await testHelper.runCypher(
+        const reFind = await testHelper.executeCypher(
             `
               MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
               RETURN m,a
@@ -253,7 +251,7 @@ describe("unwind-create", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, id2, id3, id4, actor1Name, actor2Name },
         });
 
@@ -266,7 +264,7 @@ describe("unwind-create", () => {
             ])
         );
 
-        const reFind = await testHelper.runCypher(
+        const reFind = await testHelper.executeCypher(
             `
               MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
               RETURN m,a
@@ -349,7 +347,7 @@ describe("unwind-create", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, id2, actor1Name, actor2Name },
         });
 
@@ -362,7 +360,7 @@ describe("unwind-create", () => {
             ])
         );
 
-        const reFind = await testHelper.runCypher(
+        const reFind = await testHelper.executeCypher(
             `
               MATCH (m:${Movie})<-[r:ACTED_IN]-(a:${Actor})
               RETURN m,r,a
@@ -454,7 +452,7 @@ describe("unwind-create", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, id2, actorName, modelerName },
         });
 
@@ -467,7 +465,7 @@ describe("unwind-create", () => {
             ])
         );
 
-        const reFind = await testHelper.runCypher(
+        const reFind = await testHelper.executeCypher(
             `
               MATCH (m:${Movie})<-[r:${workedIn}]-(a)
               RETURN m,r,a
@@ -593,7 +591,7 @@ describe("unwind-create", () => {
           }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 id,
                 movieName,
@@ -617,7 +615,7 @@ describe("unwind-create", () => {
             ])
         );
 
-        const reFind = await testHelper.runCypher(
+        const reFind = await testHelper.executeCypher(
             `
               MATCH (m:${Movie})<-[r:${actedIn}]-(a)
               RETURN m,r,a
@@ -700,7 +698,7 @@ describe("unwind-create", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { movieTitle, actorName, movie2Title, actor2Name },
         });
 

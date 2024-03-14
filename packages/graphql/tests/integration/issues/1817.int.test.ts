@@ -21,14 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1817", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let TypeContainerType: UniqueType;
     let TypeContainer: UniqueType;
     let TypeMaterial: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         TypeContainerType = testHelper.createUniqueType("ContainerType");
         TypeContainer = testHelper.createUniqueType("Container");
         TypeMaterial = testHelper.createUniqueType("Material");
@@ -87,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1817", () => {
               }
             `;
 
-        const res = await testHelper.runGraphQL(query);
+        const res = await testHelper.executeGraphQL(query);
 
         expect(res.errors).toBeUndefined();
 

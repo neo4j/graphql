@@ -21,14 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/556 - Input Object type ArticleCreateInput must define one or more fields", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
     let User: UniqueType;
     let Thing: UniqueType;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Thing = testHelper.createUniqueType("Thing");
 
@@ -66,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

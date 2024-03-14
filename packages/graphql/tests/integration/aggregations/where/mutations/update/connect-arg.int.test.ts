@@ -21,7 +21,7 @@ import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Connect using aggregate where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let userType: UniqueType;
     let postType: UniqueType;
     let likeInterface: UniqueType;
@@ -37,7 +37,6 @@ describe("Connect using aggregate where", () => {
     const date3 = new Date("2022-08-11T10:06:25.000Z");
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");
@@ -58,7 +57,7 @@ describe("Connect using aggregate where", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u3:${userType.name} {name: "${userName3}"})
@@ -107,14 +106,14 @@ describe("Connect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([
             { name: userName, likedPosts: expect.toIncludeSameMembers([{ id: postId1 }, { id: postId2 }]) },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -160,7 +159,7 @@ describe("Connect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -170,7 +169,7 @@ describe("Connect using aggregate where", () => {
                 likedPosts: expect.toIncludeSameMembers([{ id: postId1 }, { id: postId2 }, { id: postId3 }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -222,7 +221,7 @@ describe("Connect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -232,7 +231,7 @@ describe("Connect using aggregate where", () => {
                 likedPosts: expect.toIncludeSameMembers([{ id: postId1 }, { id: postId2 }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -284,7 +283,7 @@ describe("Connect using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -294,7 +293,7 @@ describe("Connect using aggregate where", () => {
                 likedPosts: expect.toIncludeSameMembers([{ id: postId1 }, { id: postId2 }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
             WHERE u.name = "${userName}" 
@@ -307,7 +306,7 @@ describe("Connect using aggregate where", () => {
 });
 
 describe("Connect UNIONs using aggregate where", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let userType: UniqueType;
     let specialUserType: UniqueType;
     let postType: UniqueType;
@@ -329,7 +328,6 @@ describe("Connect UNIONs using aggregate where", () => {
     const content3 = "Post 3 has some long content";
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         userType = testHelper.createUniqueType("User");
         specialUserType = testHelper.createUniqueType("SpecialUser");
         postType = testHelper.createUniqueType("Post");
@@ -359,7 +357,7 @@ describe("Connect UNIONs using aggregate where", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (u:${specialUserType.name} {specialName: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u3:${userType.name} {name: "${userName3}"})
@@ -419,12 +417,12 @@ describe("Connect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
         expect(users).toEqual([{ id: postId3, likes: expect.toIncludeSameMembers([{ specialName: userName }]) }]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId3}"
@@ -484,7 +482,7 @@ describe("Connect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -498,7 +496,7 @@ describe("Connect UNIONs using aggregate where", () => {
                 ]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId1}"
@@ -569,7 +567,7 @@ describe("Connect UNIONs using aggregate where", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
@@ -579,7 +577,7 @@ describe("Connect UNIONs using aggregate where", () => {
                 likes: expect.toIncludeSameMembers([{ specialName: userName }, { specialName: userName4 }]),
             },
         ]);
-        const storedValue = await testHelper.runCypher(
+        const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId1}"

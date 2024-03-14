@@ -21,13 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4405", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Actor: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
 
@@ -59,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             },
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (m:${Movie.name} {title: "Matrix" })<-[:ACTED_IN]-(a:${Actor.name} { name: "Keanu"})
                 CREATE (a)-[:ACTED_IN]->(:${Movie.name} {title: "John Wick" })
@@ -82,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: { jwt: { uid: "user-1" } },
         });
         expect(response.errors).toBeFalsy();
@@ -104,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: { jwt: { uid: "user-1" } },
         });
         expect(response.errors?.[0]?.message).toContain("Forbidden");

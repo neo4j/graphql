@@ -21,12 +21,11 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3912", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Event: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         Event = testHelper.createUniqueType("Event");
 
         const typeDefs = /* GraphQL */ `
@@ -65,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/3912", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({

@@ -25,11 +25,9 @@ import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("array-pop-errors", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -67,9 +65,9 @@ describe("array-pop-errors", () => {
             CREATE (m:${typeMovie} {title:$movieTitle})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -113,9 +111,9 @@ describe("array-pop-errors", () => {
             CREATE (m:${typeMovie} {title:$movieTitle})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -160,7 +158,7 @@ describe("array-pop-errors", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b']})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
         const token = "not valid token";
 
@@ -168,7 +166,7 @@ describe("array-pop-errors", () => {
         const req = new IncomingMessage(socket);
         req.headers.authorization = `Bearer ${token}`;
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
@@ -206,9 +204,9 @@ describe("array-pop-errors", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc", "xyz"]})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -251,9 +249,9 @@ describe("array-pop-errors", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags:["existing value"]})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -323,7 +321,7 @@ describe("array-pop-errors", () => {
         `;
 
         // Create new movie
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
                 `,
@@ -333,7 +331,7 @@ describe("array-pop-errors", () => {
             }
         );
         // Update movie
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, numberToPop: 1 },
         });
 

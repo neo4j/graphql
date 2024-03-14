@@ -32,7 +32,7 @@ describe("Field Level Aggregations Auth", () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`isAuthenticated auth requests ~ $name`, ({ name, selection }) => {
         let token: string;
-        let testHelper: TestHelper;
+        const testHelper = new TestHelper();
 
         let typeMovie: UniqueType;
         let typeActor: UniqueType;
@@ -40,8 +40,6 @@ describe("Field Level Aggregations Auth", () => {
         const secret = "secret";
 
         beforeEach(async () => {
-            testHelper = new TestHelper();
-
             typeMovie = testHelper.createUniqueType("Movie");
             typeActor = testHelper.createUniqueType("Actor");
             typeDefs = `
@@ -63,7 +61,7 @@ describe("Field Level Aggregations Auth", () => {
         extend type ${typeMovie.name} @authentication(operations: [AGGREGATE])
         `;
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
             CREATE (m:${typeMovie.name}
                 {name: "Terminator",testId: "1234",year:1990,createdAt: datetime()})
                 <-[:ACTED_IN]-
@@ -96,7 +94,7 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -109,7 +107,7 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -122,7 +120,7 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -135,13 +133,13 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`allow requests ~ $name`, ({ name, selection }) => {
-        let testHelper: TestHelper;
+        const testHelper = new TestHelper();
 
         let typeMovie: UniqueType;
         let typeActor: UniqueType;
@@ -149,8 +147,6 @@ describe("Field Level Aggregations Auth", () => {
         const secret = "secret";
 
         beforeEach(async () => {
-            testHelper = new TestHelper();
-
             typeMovie = testHelper.createUniqueType("Movie");
             typeActor = testHelper.createUniqueType("Actor");
             typeDefs = `
@@ -173,7 +169,7 @@ describe("Field Level Aggregations Auth", () => {
                 @authorization(validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
                 `;
 
-            await testHelper.runCypher(`
+            await testHelper.executeCypher(`
             CREATE (m:${typeMovie.name}
                 {name: "Terminator",testId: "1234",year:1990,createdAt: datetime()})
                 <-[:ACTED_IN]-
@@ -205,7 +201,7 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
 
             const token = createBearerToken(secret, { sub: "1234" });
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
         });
 
@@ -218,7 +214,7 @@ describe("Field Level Aggregations Auth", () => {
                         }
                     }`;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
@@ -232,7 +228,7 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
             const invalidToken = createBearerToken(secret, { sub: "2222" });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, invalidToken);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, invalidToken);
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });

@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2022", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let ArtPiece: UniqueType;
     let AuctionItem: UniqueType;
     let Organization: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         ArtPiece = testHelper.createUniqueType("ArtItem");
         AuctionItem = testHelper.createUniqueType("Auction");
         Organization = testHelper.createUniqueType("Organization");
@@ -97,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
     });
 });
