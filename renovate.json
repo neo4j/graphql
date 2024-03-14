@@ -24,19 +24,6 @@
     "ignoreDeps": ["neo4j"],
     "packageRules": [
         {
-            "matchPackageNames": ["@neo4j/graphql-toolbox"],
-            "extends": [":pinAllExceptPeerDependencies"]
-        },
-        {
-            "matchPackagePatterns": ["*"],
-            "excludePackageNames": ["@neo4j/graphql-toolbox"],
-            "extends": [":pinOnlyDevDependencies"]
-        },
-        {
-            "groupName": "neo4j-ndl",
-            "matchPackagePatterns": ["^@neo4j-ndl/"]
-        },
-        {
             "matchPackagePatterns": ["graphql"],
             "matchFileNames": [
                 "packages/package-tests/graphql-15/package.json"

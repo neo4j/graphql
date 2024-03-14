@@ -81,7 +81,7 @@ jobs:
           node-version: ${{ matrix.node.name }}
           cache: yarn
       - name: Login to ECR
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3
         with:
           registry: 535893049302.dkr.ecr.eu-west-1.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}

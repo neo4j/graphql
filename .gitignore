@@ -98,5 +98,4 @@ tsconfig.*.tsbuildinfo.gz
 performance.json
 .history
 
-packages/graphql-toolbox/tests/artifacts
 package-lock.json
