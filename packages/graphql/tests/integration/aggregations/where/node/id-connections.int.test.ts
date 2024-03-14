@@ -18,7 +18,7 @@
  */
 
 import { generate } from "randomstring";
-import { UniqueType } from "../../../../utils/graphql-types";
+import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-node-id - connections", () => {
