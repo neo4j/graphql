@@ -57,7 +57,7 @@ describe("aggregations-where-node-bigint - connections", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -80,7 +80,7 @@ describe("aggregations-where-node-bigint - connections", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -109,7 +109,7 @@ describe("aggregations-where-node-bigint - connections", () => {
         const someBigInt = `${bigInt}1`;
         const someBigIntGt = bigInt.substring(0, bigInt.length - 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: ${someBigInt}})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -132,7 +132,7 @@ describe("aggregations-where-node-bigint - connections", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -158,7 +158,7 @@ describe("aggregations-where-node-bigint - connections", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -181,7 +181,7 @@ describe("aggregations-where-node-bigint - connections", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -209,7 +209,7 @@ describe("aggregations-where-node-bigint - connections", () => {
 
         const someBigIntLT = `${bigInt}1`;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -232,7 +232,7 @@ describe("aggregations-where-node-bigint - connections", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -258,7 +258,7 @@ describe("aggregations-where-node-bigint - connections", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -281,7 +281,7 @@ describe("aggregations-where-node-bigint - connections", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -350,7 +350,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -373,7 +373,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -402,7 +402,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
         const someBigInt = `${bigInt}1`;
         const someBigIntGt = bigInt.substring(0, bigInt.length - 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: ${someBigInt}})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -425,7 +425,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -451,7 +451,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -474,7 +474,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -502,7 +502,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
 
         const someBigIntLT = `${bigInt}1`;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -525,7 +525,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -551,7 +551,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -574,7 +574,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

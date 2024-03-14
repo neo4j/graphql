@@ -22,12 +22,11 @@ import { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-node-id", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let User: UniqueType;
     let Post: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
 
@@ -60,7 +59,7 @@ describe("aggregations-where-node-id", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", id: "${testId}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -79,7 +78,7 @@ describe("aggregations-where-node-id", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -147,7 +146,7 @@ describe("aggregations-where-node-id interface relationships of concrete types",
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", id: "${testId}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -166,7 +165,7 @@ describe("aggregations-where-node-id interface relationships of concrete types",
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -233,7 +232,7 @@ describe("aggregations-where-node-id interface relationships of concrete types",
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", id: "${testId}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -252,7 +251,7 @@ describe("aggregations-where-node-id interface relationships of concrete types",
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));

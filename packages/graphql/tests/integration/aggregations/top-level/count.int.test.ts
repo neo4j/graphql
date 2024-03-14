@@ -21,11 +21,9 @@ import { generate } from "randomstring";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("Aggregate -> count", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -42,7 +40,7 @@ describe("Aggregate -> count", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${randomType.name} {id: randomUUID()})
                     CREATE (:${randomType.name} {id: randomUUID()})
@@ -57,7 +55,7 @@ describe("Aggregate -> count", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
@@ -82,7 +80,7 @@ describe("Aggregate -> count", () => {
             charset: "alphabetic",
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (:${randomType.name} {id: $id1})
                 CREATE (:${randomType.name} {id: $id2})
@@ -98,7 +96,7 @@ describe("Aggregate -> count", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

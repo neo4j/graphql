@@ -22,14 +22,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/235", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let A: UniqueType;
     let B: UniqueType;
     let C: UniqueType;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
-
         A = testHelper.createUniqueType("A");
         B = testHelper.createUniqueType("B");
         C = testHelper.createUniqueType("C");
@@ -117,14 +115,14 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             }
         `;
 
-        const createBsResult = await testHelper.runGraphQL(createBs, {
+        const createBsResult = await testHelper.executeGraphQL(createBs, {
             variableValues: { b1, b2 },
         });
 
         expect(createBsResult.errors).toBeFalsy();
         expect((createBsResult.data as any)[B.operations.create][B.plural]).toEqual([{ name: b1 }, { name: b2 }]);
 
-        const createAsResult = await testHelper.runGraphQL(createAs, {
+        const createAsResult = await testHelper.executeGraphQL(createAs, {
             variableValues: { a, b1, b2, c },
         });
 
@@ -136,7 +134,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         expect((createAsResult.data as any)?.[A.operations.create][A.plural][0].rel_b).toContainEqual({ name: b2 });
         expect((createAsResult.data as any)?.[A.operations.create][A.plural][0].rel_c).toEqual([{ name: c }]);
 
-        const asResult = await testHelper.runGraphQL(as, {
+        const asResult = await testHelper.executeGraphQL(as, {
             variableValues: { a },
         });
 

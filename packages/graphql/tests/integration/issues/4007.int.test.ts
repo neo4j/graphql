@@ -23,13 +23,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4007", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
     });
@@ -71,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/4007", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (m:${typeMovie.name} {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
@@ -83,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/4007", () => {
             }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 

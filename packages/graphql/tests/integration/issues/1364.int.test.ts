@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
     let testMovie: UniqueType;
     let testGenre: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         testActor = testHelper.createUniqueType("Actor");
         testMovie = testHelper.createUniqueType("Movie");
         testGenre = testHelper.createUniqueType("Genre");
@@ -65,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (m1:${testMovie} { title: "A Movie" })-[:HAS_GENRE]->(:${testGenre} { name: "Genre 1" })
             CREATE (m1)-[:HAS_GENRE]->(:${testGenre} { name: "Genre 2" })
             CREATE (m2:${testMovie} { title: "B Movie" })-[:HAS_GENRE]->(:${testGenre} { name: "Genre 3" })
@@ -93,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({
@@ -136,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({
@@ -180,7 +179,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({
@@ -226,7 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data as any).toEqual({

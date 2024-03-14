@@ -21,12 +21,11 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Filtering Operations", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let personType: UniqueType;
     let movieType: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         personType = testHelper.createUniqueType("Person");
         movieType = testHelper.createUniqueType("Movie");
 
@@ -44,7 +43,7 @@ describe("Filtering Operations", () => {
         }
     `;
 
-        await testHelper.runCypher(`CREATE (:${movieType} {title: "The Matrix", released: 1999})
+        await testHelper.executeCypher(`CREATE (:${movieType} {title: "The Matrix", released: 1999})
                 CREATE (:${movieType} {title: "The Italian Job", released: 1969})
                 CREATE (:${movieType} {title: "The Italian Job", released: 2003})
                 CREATE (:${movieType} {title: "The Lion King", released: 1994})
@@ -67,7 +66,7 @@ describe("Filtering Operations", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 

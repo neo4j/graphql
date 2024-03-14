@@ -21,13 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3394", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Product: UniqueType;
     let Employee: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Product = testHelper.createUniqueType("Product");
         Employee = testHelper.createUniqueType("Employee");
 
@@ -47,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (e:${Employee} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
                     CREATE (p1:${Product} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
@@ -74,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Product.plural]).toEqual([
@@ -104,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Employee.plural]).toEqual([
@@ -141,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[Product.operations.connection]).toEqual({
@@ -181,7 +180,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[Employee.plural]).toEqual([

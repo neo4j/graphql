@@ -22,11 +22,9 @@ import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/487", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -114,12 +112,12 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${typeMovie.name} { id: "${movieId}" })<-[:DIRECTED]-(:${typeDirector.name} {id: "${directorId}"})
                 CREATE (:${typeBook.name} { id: "${bookId}" })<-[:WROTE]-(:${typeAuthor.name} {id: "${authorId}"})
             `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         if (result.errors) {
             console.log(JSON.stringify(result.errors, null, 2));
@@ -231,12 +229,12 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${typeMovie.name} { id: "${movieId}" })<-[:DIRECTED]-(:${typeDirector.name} {id: "${directorId}"})
                 CREATE (:${typeBook.name} { id: "${bookId}" })<-[:WROTE]-(:${typeAuthor.name} {id: "${authorId}"})
             `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         if (result.errors) {
             console.log(JSON.stringify(result.errors, null, 2));

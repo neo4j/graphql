@@ -21,14 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Query Converted to Float", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
     let Tag: UniqueType;
     let typeDefs: string;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Tag = testHelper.createUniqueType("Tag");
 
@@ -57,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         }
     `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (m1:${Movie} {title: "M1"}), (m2:${Movie} {title: "M2"}), (t1:${Tag} {name: "T1"}), (t2:${Tag} {name: "T2"})
                     CREATE (m1)-[:HAS]->(t1)<-[:HAS]-(m2)
@@ -86,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
 
         await neoSchema.checkNeo4jCompat();
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

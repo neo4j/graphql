@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4477", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Brand: UniqueType;
     let Service: UniqueType;
     let Collection: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Brand = testHelper.createUniqueType("Brand");
         Service = testHelper.createUniqueType("Service");
         Collection = testHelper.createUniqueType("Collection");
@@ -53,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE
                         (brand1:${Brand} {name: 'brand1'}),
@@ -94,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query);
+        const response = await testHelper.executeGraphQL(query);
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({

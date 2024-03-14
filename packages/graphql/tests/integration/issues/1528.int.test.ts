@@ -26,10 +26,9 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
     let testMovie: UniqueType;
     let testGenre: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         testPerson = testHelper.createUniqueType("Person");
         testMovie = testHelper.createUniqueType("Movie");
         testGenre = testHelper.createUniqueType("Genre");
@@ -59,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (g:${testGenre} {name: "Western"})
             CREATE (m1:${testMovie} { title: "A Movie" })-[:IS_GENRE]->(g)
             CREATE (m2:${testMovie} { title: "B Movie" })-[:IS_GENRE]->(g)
@@ -91,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             }
         `;
 
-        const queryResult = await testHelper.runGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data as any).toEqual({

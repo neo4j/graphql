@@ -21,13 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3765", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Post: UniqueType;
     let User: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         Post = testHelper.createUniqueType("Post");
         User = testHelper.createUniqueType("User");
 
@@ -45,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE(p1:${Post} {content: "p1"})
                ${`CREATE(p1)<-[:LIKES]-(:${User}) `.repeat(2)}
@@ -74,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Post.plural]).toIncludeSameMembers([{ content: "p1" }, { content: "p3" }]);

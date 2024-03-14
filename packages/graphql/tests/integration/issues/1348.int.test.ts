@@ -25,10 +25,9 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
     let Season: UniqueType;
     let ProgrammeItem: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Series = testHelper.createUniqueType("Series");
         Season = testHelper.createUniqueType("Season");
         ProgrammeItem = testHelper.createUniqueType("ProgrammeItem");
@@ -116,10 +115,10 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             }
         `;
 
-        const createProgrammeItemsResults = await testHelper.runGraphQL(createProgrammeItems);
+        const createProgrammeItemsResults = await testHelper.executeGraphQL(createProgrammeItems);
         expect(createProgrammeItemsResults.errors).toBeUndefined();
 
-        const updateProgrammeItemsResults = await testHelper.runGraphQL(updateProgrammeItems);
+        const updateProgrammeItemsResults = await testHelper.executeGraphQL(updateProgrammeItems);
         expect(updateProgrammeItemsResults.errors).toBeUndefined();
 
         const query = /* GraphQL */ `
@@ -134,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 }
             }
         `;
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             [ProgrammeItem.plural]: expect.toIncludeSameMembers([

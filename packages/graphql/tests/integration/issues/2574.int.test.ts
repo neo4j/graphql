@@ -21,14 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2574", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let A: UniqueType;
     let B: UniqueType;
     let D: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         A = testHelper.createUniqueType("A");
         B = testHelper.createUniqueType("B");
         D = testHelper.createUniqueType("D");
@@ -75,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/2574", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: {
                 input: {
                     child: {

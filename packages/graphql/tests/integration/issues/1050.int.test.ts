@@ -27,10 +27,9 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
     let testMessage: UniqueType;
     let testAttachment: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         testUser = testHelper.createUniqueType("User");
         testInbox = testHelper.createUniqueType("Inbox");
         testMessage = testHelper.createUniqueType("Message");
@@ -108,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
     });
 
     test("should handle auth appropriately for nested connection", async () => {
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
           CREATE (c:${testUser.name} {id: 'abc'})
             -[:OWNS]->(i:${testInbox.name} {ownerId: 'abc'})
             -[:CONTAINS]->(m:${testMessage.name} {ownerId: 'abc', subject: 'Hello', body: 'World'})
@@ -133,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             contextValue: {
                 token: testHelper.createBearerToken("secret"),
                 user: {

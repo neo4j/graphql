@@ -21,12 +21,11 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4268", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = /* GraphQL */ `
         type JWT @jwt {
@@ -53,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             },
         });
 
-        await testHelper.runCypher(`CREATE (m:${Movie.name} {title: "SomeTitle"})`, {});
+        await testHelper.executeCypher(`CREATE (m:${Movie.name} {title: "SomeTitle"})`, {});
     });
 
     afterAll(async () => {
@@ -69,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["admin"] },
             },
@@ -89,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query, {
+        const response = await testHelper.executeGraphQL(query, {
             contextValue: {
                 jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] },
             },

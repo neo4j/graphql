@@ -25,11 +25,9 @@ import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("array-push", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -67,9 +65,9 @@ describe("array-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -112,7 +110,7 @@ describe("array-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
         const token = "not valid token";
 
@@ -120,7 +118,7 @@ describe("array-push", () => {
         const req = new IncomingMessage(socket);
         req.headers.authorization = `Bearer ${token}`;
 
-        const gqlResult = await testHelper.runGraphQL(update, {
+        const gqlResult = await testHelper.executeGraphQL(update, {
             contextValue: { req },
         });
 
@@ -160,9 +158,9 @@ describe("array-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags:[]})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -204,9 +202,9 @@ describe("array-push", () => {
             CREATE (m:${typeMovie} {title:$movieTitle, tags:["existing value"]})
         `;
 
-        await testHelper.runCypher(cypher, { movieTitle });
+        await testHelper.executeCypher(cypher, { movieTitle });
 
-        const gqlResult = await testHelper.runGraphQL(update);
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -277,7 +275,7 @@ describe("array-push", () => {
         `;
 
         // Create new movie
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
                 `,
@@ -287,7 +285,7 @@ describe("array-push", () => {
             }
         );
         // Update movie
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, payIncrement },
         });
 

@@ -25,13 +25,12 @@ import { TestHelper } from "../utils/tests-helper";
 describe("query options", () => {
     let neoSchema: Neo4jGraphQL;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Actor: UniqueType;
     let Movie: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Actor = testHelper.createUniqueType("Actor");
         Movie = testHelper.createUniqueType("Movie");
 
@@ -72,14 +71,14 @@ describe("query options", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
               CREATE (:${Movie} {id: $id}), (:${Movie} {id: $id}), (:${Movie} {id: $id})
             `,
             { id }
         );
 
-        const result = await testHelper.runGraphQL(query, {
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
             contextValue: { cypherQueryOptions: { runtime: "interpreted" } },
         });

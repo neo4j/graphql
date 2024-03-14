@@ -23,10 +23,9 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/200", () => {
     let Category: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         Category = testHelper.createUniqueType("Category");
     });
 
@@ -65,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { catOne, catTwo, exampleImageLocations: [] },
         });
 

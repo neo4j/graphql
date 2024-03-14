@@ -21,14 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3015", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let NodeA: UniqueType;
     let NodeB: UniqueType;
     let Connected: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         NodeA = testHelper.createUniqueType("NodeA");
         NodeB = testHelper.createUniqueType("NodeB");
         Connected = testHelper.createUniqueType("Connected");
@@ -59,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (a:${NodeA} {name: "testA"})
             CREATE (b:${NodeB} {name: "testB"})
             CREATE (c:${Connected} {name: "connectedB"})
@@ -91,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

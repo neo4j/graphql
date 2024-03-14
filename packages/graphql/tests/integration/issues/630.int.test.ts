@@ -24,10 +24,9 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/630", () => {
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
 
@@ -71,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
             title: "The Matrix",
         };
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE (movie:${typeMovie}:${testLabel}) SET movie = $movie
             CREATE (actor1:${typeActor}:${testLabel}) SET actor1 = $actors[0]
@@ -103,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(source, {
+        const gqlResult = await testHelper.executeGraphQL(source, {
             variableValues: { actorId: actors[0]?.id },
         });
 

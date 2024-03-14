@@ -21,14 +21,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2766", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Actor: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
 
@@ -55,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (a:${Actor} {name: "arthur"})-[:ACTED_IN]->(:${Movie} { title: "some title"})
                 CREATE (a)-[:ACTED_IN]->(:${Movie} { title: "another title"})
         `);
@@ -83,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Actor.plural]: [

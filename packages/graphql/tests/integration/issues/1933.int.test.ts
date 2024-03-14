@@ -24,10 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     let employeeType: UniqueType;
     let projectType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         employeeType = testHelper.createUniqueType("Employee");
         projectType = testHelper.createUniqueType("Project");
 
@@ -65,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CREATE (e2)-[:PARTICIPATES { allocation: 20.0 }]->(p2)
         `;
 
-        await testHelper.runCypher(cypher);
+        await testHelper.executeCypher(cypher);
     });
 
     afterAll(async () => {
@@ -94,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[employeeType.plural]).toEqual([]);
@@ -122,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[employeeType.plural]).toEqual([
@@ -158,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[employeeType.plural]).toEqual([

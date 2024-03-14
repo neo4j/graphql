@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4615", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Series: UniqueType;
     let Actor: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Series = testHelper.createUniqueType("Series");
         Actor = testHelper.createUniqueType("Actor");
@@ -68,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 // Create Movies
                 CREATE (m1:${Movie} { title: "The Movie One", cost: 10000000, runtime: 120, release: dateTime('2007-08-31T16:47+00:00') })
@@ -117,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
         `;
 
-        const response = await testHelper.runGraphQL(query);
+        const response = await testHelper.executeGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
             showsAggregate: {

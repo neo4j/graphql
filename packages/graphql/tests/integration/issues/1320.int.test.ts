@@ -26,10 +26,9 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     let teamType: UniqueType;
     let mitigationStateType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         riskType = testHelper.createUniqueType("Risk");
         teamType = testHelper.createUniqueType("Team");
         mitigationStateType = testHelper.createUniqueType("MitigationState");
@@ -69,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
             (risk1: ${riskType.name} {code: 'risk-1', mitigationState: 'Accepted'}),
             (team1)-[:OWNS_RISK]->(risk1)
         `;
-        await testHelper.runCypher(cypherInsert);
+        await testHelper.executeCypher(cypherInsert);
 
         const query = `
             query getAggreationOnTeams {
@@ -88,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
                 }
             }
         `;
-        const res = await testHelper.runGraphQL(query);
+        const res = await testHelper.executeGraphQL(query);
 
         expect(res.errors).toBeUndefined();
         const expectedReturn = {

@@ -24,11 +24,9 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     let AStep: UniqueType;
     let BStep: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         AStep = new UniqueType("AStep");
         BStep = new UniqueType("BStep");
 
@@ -53,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (step0:${AStep} { id: "0"})
             CREATE (step1:${AStep} { id: "1"})
             CREATE (step2:${BStep} { id: "2"})
@@ -95,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
             }
         `;
 
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             steps: expect.toIncludeSameMembers([
@@ -204,7 +202,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
             }
         `;
 
-        const queryResults = await testHelper.runGraphQL(query);
+        const queryResults = await testHelper.executeGraphQL(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             steps: expect.toIncludeSameMembers([

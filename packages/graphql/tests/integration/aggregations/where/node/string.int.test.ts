@@ -54,7 +54,7 @@ describe("aggregations-where-node-string", () => {
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -72,7 +72,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -98,7 +98,7 @@ describe("aggregations-where-node-string", () => {
             length,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -116,7 +116,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -140,7 +140,7 @@ describe("aggregations-where-node-string", () => {
             readable: true,
             length,
         });
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -158,7 +158,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -183,7 +183,7 @@ describe("aggregations-where-node-string", () => {
             length: length - 1,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -201,7 +201,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -226,7 +226,7 @@ describe("aggregations-where-node-string", () => {
             length,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -244,7 +244,7 @@ describe("aggregations-where-node-string", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -287,7 +287,7 @@ describe("aggregations-where-node-string", () => {
                     length: 12,
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
@@ -306,7 +306,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -351,7 +351,7 @@ describe("aggregations-where-node-string", () => {
                     length: 12,
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
@@ -370,7 +370,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -418,7 +418,7 @@ describe("aggregations-where-node-string", () => {
 
                 const avg = (10 + 11 + 12) / 3;
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -439,7 +439,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
@@ -480,7 +480,7 @@ describe("aggregations-where-node-string", () => {
             const avg = (10 + 11 + 12) / 3;
             const avgGT = avg - 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -501,7 +501,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -541,7 +541,7 @@ describe("aggregations-where-node-string", () => {
 
             const avg = (10 + 11 + 12) / 3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -562,7 +562,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -603,7 +603,7 @@ describe("aggregations-where-node-string", () => {
             const avg = (10 + 11 + 12) / 3;
             const avgLT = avg + 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -624,7 +624,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -664,7 +664,7 @@ describe("aggregations-where-node-string", () => {
 
             const avg = (10 + 11 + 12) / 3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -685,7 +685,7 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -743,7 +743,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             readable: true,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -761,7 +761,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -787,7 +787,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             length,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -805,7 +805,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -830,7 +830,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             length,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -848,7 +848,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -873,7 +873,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             length: length - 1,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -891,7 +891,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -916,7 +916,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             length,
         });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -934,7 +934,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -977,7 +977,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     length: 12,
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
@@ -996,7 +996,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1041,7 +1041,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     length: 12,
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
@@ -1060,7 +1060,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1108,7 +1108,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 const avg = (10 + 11 + 12) / 3;
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -1129,7 +1129,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
 
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1171,7 +1171,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             const avg = (10 + 11 + 12) / 3;
             const avgGT = avg - 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -1192,7 +1192,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1232,7 +1232,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const avg = (10 + 11 + 12) / 3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -1253,7 +1253,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1294,7 +1294,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
             const avg = (10 + 11 + 12) / 3;
             const avgLT = avg + 1;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -1315,7 +1315,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1355,7 +1355,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const avg = (10 + 11 + 12) / 3;
 
-            await testHelper.runCypher(
+            await testHelper.executeCypher(
                 `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
@@ -1376,7 +1376,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
@@ -1431,14 +1431,14 @@ describe("EQUAL with alias", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE(p:${Post} {content: "test"})<-[:LIKES]-(:${User} {_name: "a"})
             CREATE(p2:${Post} {content: "test2"})<-[:LIKES]-(:${User} {_name: "b"})
             `
         );
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -1482,14 +1482,14 @@ describe("EQUAL with alias", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE(p:${Post} {content: "test"})<-[:LIKES]-(:${User} {_name: "a", _other: "a"})
             CREATE(p2:${Post} {content: "test2"})<-[:LIKES]-(:${User} {_name: "b"})
             `
         );
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1543,7 +1543,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -1561,7 +1561,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1610,7 +1610,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -1632,7 +1632,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1686,7 +1686,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -1704,7 +1704,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1757,14 +1757,14 @@ describe("aggregations-where-node-string relationships of interface types", () =
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE(p:${Post} {content: "test"})<-[:LIKES]-(:${User} {_name: "a", _other: "a"})
             CREATE(p2:${Post} {content: "test2"})<-[:LIKES]-(:${User} {_name: "b"})
             `
         );
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -1829,7 +1829,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                     length: 12,
                 });
 
-                await testHelper.runCypher(
+                await testHelper.executeCypher(
                     `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {user_testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {user_testString: "${testString2}"})
@@ -1848,7 +1848,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                     }
                 `;
 
-                const gqlResult = await testHelper.runGraphQL(query);
+                const gqlResult = await testHelper.executeGraphQL(query);
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }

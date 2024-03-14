@@ -22,7 +22,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4113", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Store: UniqueType;
@@ -30,7 +30,6 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
     let TransactionItem: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Store = testHelper.createUniqueType("Store");
         Transaction = testHelper.createUniqueType("Transaction");
@@ -128,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 }
             }
       `;
-        const gqlResult1 = await testHelper.runGraphQL(setupCreateUsers);
+        const gqlResult1 = await testHelper.executeGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
         const setupCreateStores = `#graphql
@@ -156,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 }
                 }
             }`;
-        const gqlResult2 = await testHelper.runGraphQL(setupCreateStores);
+        const gqlResult2 = await testHelper.executeGraphQL(setupCreateStores);
         expect(gqlResult2.errors).toBeFalsy();
         const storeId = (gqlResult2.data?.[Store.operations.create] as Record<string, any>)[Store.plural][0].id;
 
@@ -194,7 +193,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
         `;
 
         const token = createBearerToken("secret", { roles: ["employee"], store: storeId });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
@@ -220,7 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
 });
 
 describe("replicates the test for relationship to interface so that multiple refNodes are target", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Store: UniqueType;
@@ -229,8 +228,6 @@ describe("replicates the test for relationship to interface so that multiple ref
     let TransactionItem2: UniqueType;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Store = testHelper.createUniqueType("Store");
         Transaction = testHelper.createUniqueType("Transaction");
@@ -357,7 +354,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 }
             }
       `;
-        const gqlResult1 = await testHelper.runGraphQL(setupCreateUsers);
+        const gqlResult1 = await testHelper.executeGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
         const setupCreateStores = `#graphql
@@ -385,7 +382,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                 }
                 }
             }`;
-        const gqlResult2 = await testHelper.runGraphQL(setupCreateStores);
+        const gqlResult2 = await testHelper.executeGraphQL(setupCreateStores);
         expect(gqlResult2.errors).toBeFalsy();
         const storeId = (gqlResult2.data?.[Store.operations.create] as Record<string, any>)[Store.plural][0].id;
 
@@ -428,7 +425,7 @@ describe("replicates the test for relationship to interface so that multiple ref
         `;
 
         const token = createBearerToken("secret", { roles: ["employee"], store: storeId });
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({

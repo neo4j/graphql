@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4429", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
     let Tenant: UniqueType;
@@ -36,8 +36,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
     let myUserId: string;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
-
         User = testHelper.createUniqueType("User");
         Tenant = testHelper.createUniqueType("Tenant");
         Settings = testHelper.createUniqueType("Settings");
@@ -184,7 +182,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             },
         });
 
-        const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
             contextValue: { jwt: { id: myUserId } },
         });
@@ -205,7 +203,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             },
         });
 
-        const addTenantResponse = await testHelper.runGraphQL(ADD_TENANT, {
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
             variableValues: tenantVariables,
             contextValue: { jwt: { id: myUserId } },
         });

@@ -24,10 +24,9 @@ describe("Single relationship (1-*) filtering", () => {
     let Person: UniqueType;
     let Movie: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Person = testHelper.createUniqueType("Person");
         Movie = testHelper.createUniqueType("Movie");
 
@@ -47,7 +46,7 @@ describe("Single relationship (1-*) filtering", () => {
         }
     `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${Movie} {title: "The Matrix", released: 1999})
                 CREATE (:${Movie} {title: "The Italian Job", released: 1969})
                 CREATE (:${Movie} {title: "The Italian Job", released: 2003})
@@ -69,7 +68,7 @@ describe("Single relationship (1-*) filtering", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE(jw:${Person} {name: "Jon Wu"})
             CREATE(:${Movie} {title: "Hard Target"})<-[:DIRECTED]-(jw)
             CREATE(cb:${Movie} {title: "Chi bi"})<-[:DIRECTED]-(jw)
@@ -77,7 +76,7 @@ describe("Single relationship (1-*) filtering", () => {
             CREATE(m:${Movie} {title: "Avatar"})<-[:DIRECTED]-(:${Person} {name: "Richie McFamous"})
         `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 
@@ -100,7 +99,7 @@ describe("Single relationship (1-*) filtering", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE(a:${Person} {name: "That actor that you are not so sure what the name is but have seen before"})
             CREATE(a2:${Person} {name: "not so famous one"})
             CREATE(a3:${Person} {name: "don't know this one"})
@@ -120,7 +119,7 @@ describe("Single relationship (1-*) filtering", () => {
             CREATE(a3)-[:ACTED_IN]->(m)
         `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
         expect((result.data as any)[Person.plural]).toIncludeSameMembers([
@@ -142,7 +141,7 @@ describe("Single relationship (1-*) filtering", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE(jw:${Person} {name: "Jon Wu"})
             CREATE(:${Movie} {title: "Hard Target"})<-[:DIRECTED]-(jw)
             CREATE(cb:${Movie} {title: "Chi bi"})<-[:DIRECTED]-(jw)
@@ -150,7 +149,7 @@ describe("Single relationship (1-*) filtering", () => {
             CREATE(m:${Movie} {title: "Avatar"})<-[:DIRECTED]-(:${Person} {name: "Richie McFamous"})
         `);
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
 

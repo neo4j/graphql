@@ -23,14 +23,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("interface relationships", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeMovie: UniqueType;
     let typeSeries: UniqueType;
     let typeActor: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         typeMovie = testHelper.createUniqueType("Movie");
         typeSeries = testHelper.createUniqueType("Series");
         typeActor = testHelper.createUniqueType("Actor");
@@ -115,7 +114,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -136,7 +135,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { title: movieTitle2 },
         });
 
@@ -198,7 +197,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -220,7 +219,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { title: movieTitle },
         });
 
@@ -286,7 +285,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -307,7 +306,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { title: movieTitle },
         });
 
@@ -363,7 +362,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -386,7 +385,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { title: movieTitle2 },
         });
 
@@ -456,7 +455,7 @@ describe("interface relationships", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${typeActor} { name: $actorName })
                 CREATE (m:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
@@ -479,7 +478,7 @@ describe("interface relationships", () => {
             }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query, {
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { title: movieTitle2 },
         });
 

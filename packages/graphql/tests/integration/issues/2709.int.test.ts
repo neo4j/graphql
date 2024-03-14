@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2709", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Dishney: UniqueType;
     let Netflix: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Dishney = testHelper.createUniqueType("Dishney");
         Netflix = testHelper.createUniqueType("Netflix");
@@ -95,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:Film { title: "A Netflix movie" })<-[:DISTRIBUTED_BY]-(:${Netflix} { name: "Netflix" })
             CREATE (:Film { title: "A Dishney movie" })<-[:DISTRIBUTED_BY]-(:${Dishney} { name: "Dishney" })
         `);
@@ -120,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -143,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -157,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 });
 
 describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Dishney: UniqueType;
@@ -165,8 +163,6 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     let Publisher: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Dishney = testHelper.createUniqueType("Dishney");
         Netflix = testHelper.createUniqueType("Netflix");
@@ -240,7 +236,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
             ################
         `;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:Film { title: "A Netflix movie" })<-[:DISTRIBUTED_BY]-(:${Netflix} { name: "Netflix" })
             CREATE (:Film { title: "A Dishney movie" })<-[:DISTRIBUTED_BY]-(:${Dishney} { name: "Dishney" })
             CREATE (:Film { title: "A Publisher movie" })<-[:DISTRIBUTED_BY]-(:${Publisher} { name: "The Publisher" })
@@ -266,7 +262,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
             }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({

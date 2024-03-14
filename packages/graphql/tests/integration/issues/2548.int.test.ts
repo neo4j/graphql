@@ -23,14 +23,13 @@ import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2548", () => {
     const secret = "secret";
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let User: UniqueType;
 
     let query: string;
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
 
         const typeDefs = `
@@ -63,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
             features: { authorization: { key: secret } },
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (:${User} { userId: "1", isPublic: true })
             CREATE (:${User} { userId: "2", isPublic: false })
         `);
@@ -74,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
     });
 
     test("should return public information for unauthenticated request", async () => {
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -89,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
     test("should return all records for admin request", async () => {
         const token = createBearerToken(secret, { roles: ["ADMIN"] });
 
-        const result = await testHelper.runGraphQLWithToken(query, token);
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeFalsy();
         expect((result.data as any)[User.plural]).toIncludeSameMembers([

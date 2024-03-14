@@ -22,14 +22,12 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/402", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Event: UniqueType;
     let Area: UniqueType;
     let typeDefs: string;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
-
         Event = testHelper.createUniqueType("Event");
         Area = testHelper.createUniqueType("Area");
     });
@@ -80,14 +78,14 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
             }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Event} {id: $eventId})-[:HAPPENS_IN]->(:${Area} {id: $areaId})
                 `,
             { eventId, areaId }
         );
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

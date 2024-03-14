@@ -21,11 +21,9 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Label cypher injection", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -52,7 +50,7 @@ describe("Label cypher injection", () => {
         }
         `;
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             contextValue: {
                 label: "Movie\\u0060) MATCH",
             },
@@ -89,7 +87,7 @@ describe("Label cypher injection", () => {
 
         const token = createBearerToken("1234", { label: "Movie\\u0060) MATCH" });
 
-        const res = await testHelper.runGraphQLWithToken(query, token);
+        const res = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(res.errors).toBeUndefined();
     });

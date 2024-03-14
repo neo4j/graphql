@@ -22,15 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3938", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
     let Group: UniqueType;
     let Invitee: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Group = testHelper.createUniqueType("Group");
         Invitee = testHelper.createUniqueType("Invitee");
 
@@ -100,13 +98,13 @@ describe("https://github.com/neo4j/graphql/issues/3938", () => {
 
         const token = createBearerToken(secret, {});
 
-        const createGroupsResult = await testHelper.runGraphQLWithToken(createGroups, token, {
+        const createGroupsResult = await testHelper.executeGraphQLWithToken(createGroups, token, {
             variableValues: { input: [{ name: "test" }] },
         });
 
         expect(createGroupsResult.errors).toBeFalsy();
 
-        const updateGroupsResult = await testHelper.runGraphQLWithToken(updateGroups, token, {
+        const updateGroupsResult = await testHelper.executeGraphQLWithToken(updateGroups, token, {
             variableValues: {
                 where: {
                     name: "test",

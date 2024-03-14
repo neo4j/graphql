@@ -23,7 +23,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4704", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Series: UniqueType;
@@ -46,7 +46,6 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
     let episodeNr;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         Series = testHelper.createUniqueType("Series");
         Actor = testHelper.createUniqueType("Actor");
@@ -109,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
         seriesScreenTime = faker.number.int({ max: 100000 });
         episodeNr = faker.number.int({ max: 100000 });
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -161,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Actor.plural]).toEqual(
@@ -186,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Actor.plural]).toEqual([
@@ -211,7 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             }
         `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[Actor.plural]).toEqual(

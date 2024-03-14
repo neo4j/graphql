@@ -21,14 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2249", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Person: UniqueType;
     let Influencer: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         Person = testHelper.createUniqueType("Person");
         Influencer = testHelper.createUniqueType("Influencer");
@@ -69,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
     });
 
     test("Update with create on an interface type should return valid Cypher", async () => {
-        await testHelper.runCypher(`CREATE (:${Movie} { title: "John Wick" })`);
+        await testHelper.executeCypher(`CREATE (:${Movie} { title: "John Wick" })`);
 
         const mutation = `
             mutation {
@@ -94,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
         expect(mutationResult.data).toEqual({

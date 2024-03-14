@@ -27,12 +27,10 @@ import { TestHelper } from "../utils/tests-helper";
  */
 
 describe("unwind-create field-level auth rules", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -80,7 +78,7 @@ describe("unwind-create field-level auth rules", () => {
 
             const token = createBearerToken("secret", { sub: id });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
                 variableValues: { id, id2 },
             });
 
@@ -129,7 +127,7 @@ describe("unwind-create field-level auth rules", () => {
 
             const token = createBearerToken("secret", { sub: id });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
                 variableValues: { id, name },
             });
 
@@ -192,7 +190,7 @@ describe("unwind-create field-level auth rules", () => {
 
             const token = createBearerToken("secret", { sub: id });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
                 variableValues: { id, name },
             });
 
@@ -247,7 +245,7 @@ describe("unwind-create field-level auth rules", () => {
 
             const token = createBearerToken("secret", { roles: ["user"] });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
                 variableValues: { id, id2 },
             });
 
@@ -296,7 +294,7 @@ describe("unwind-create field-level auth rules", () => {
 
             const token = createBearerToken("secret", { roles: ["invalid-role"] });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token, {
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
                 variableValues: { name },
             });
 

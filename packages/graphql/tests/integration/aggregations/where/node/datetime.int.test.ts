@@ -25,20 +25,33 @@ describe("aggregations-where-node-datetime", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
+    let Person: UniqueType;
 
     beforeEach(async () => {
         testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
+        Person = testHelper.createUniqueType("Person");
+
         const typeDefs = `
-            type ${User} {
+        interface Human {
+            testString: String!
+            someDateTime: DateTime!
+        }
+
+        type ${Person} implements Human {
+            testString: String!
+            someDateTime: DateTime!
+        }
+
+            type ${User} implements Human {
                 testString: String!
                 someDateTime: DateTime!
             }
     
             type ${Post} {
               testString: String!
-              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -56,7 +69,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: dateTime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -77,7 +90,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -103,7 +116,7 @@ describe("aggregations-where-node-datetime", () => {
         const someDateTimeGT = new Date();
         someDateTimeGT.setDate(someDateTimeGT.getDate() - 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -124,7 +137,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -147,7 +160,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -168,7 +181,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -193,7 +206,7 @@ describe("aggregations-where-node-datetime", () => {
         const someDateTimeLT = new Date();
         someDateTimeLT.setDate(someDateTimeLT.getDate() + 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -214,7 +227,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -237,7 +250,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -258,7 +271,7 @@ describe("aggregations-where-node-datetime", () => {
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -321,7 +334,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: dateTime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -342,7 +355,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -367,7 +380,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const someDateTimeGT = new Date();
         someDateTimeGT.setDate(someDateTimeGT.getDate() - 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -388,7 +401,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -411,7 +424,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -432,7 +445,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -457,7 +470,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const someDateTimeLT = new Date();
         someDateTimeLT.setDate(someDateTimeLT.getDate() + 1);
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -478,7 +491,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -501,7 +514,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
 
         const someDateTime = new Date();
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:${Post} {testString: "${testString}"})
@@ -522,7 +535,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 }
             `;
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }

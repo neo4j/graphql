@@ -23,7 +23,7 @@ import { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("Global authentication - Authorization JWT plugin", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     const secret = "secret";
     const testMovie = new UniqueType("Movie");
@@ -43,9 +43,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
         }
     `;
 
-    beforeEach(() => {
-        testHelper = new TestHelper();
-    });
+    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -61,7 +59,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
             },
         });
 
-        const gqlResult = await testHelper.runGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -82,7 +80,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
             },
         });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, "Bearer xxx.invalidtoken.xxx");
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, "Bearer xxx.invalidtoken.xxx");
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -105,7 +103,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
 
         const token = createBearerToken("wrong-secret", { sub: "test" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -129,7 +127,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
                 },
             });
 
-            const gqlResult = await testHelper.runGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
             expect(gqlResult.errors).toBeUndefined();
         } catch (error) {
             initError = error;
@@ -153,7 +151,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
 
             const token = createBearerToken(secret, { sub: "test" });
 
-            const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
         } catch (error) {
@@ -175,7 +173,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
 
         const token = createBearerToken(secret, { sub: "test" });
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);

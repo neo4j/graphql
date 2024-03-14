@@ -41,9 +41,6 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_NEO4J_DEV_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_NEO4J_DEV_SECRET_ACCESS_KEY }}
 
-  toolbox-tests:
-    uses: ./.github/workflows/reusable-toolbox-tests.yml
-
   notification:
     runs-on: ubuntu-latest
 
@@ -54,7 +51,6 @@ jobs:
       - package-tests
       - integration-tests-on-prem
       - integration-tests-on-prem-nightly
-      - toolbox-tests
 
     if: always()
 

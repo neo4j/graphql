@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1221", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let testMain: UniqueType;
     let testSeries: UniqueType;
@@ -33,7 +33,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     let extendedTypeDefs: string;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         testMain = testHelper.createUniqueType("Main");
         testSeries = testHelper.createUniqueType("Series");
         testNameDetails = testHelper.createUniqueType("NameDetails");
@@ -82,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m:${testMasterData} { current: true, id: "323" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "421" })
@@ -134,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 
@@ -171,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "323" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
 
@@ -221,7 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 
@@ -278,7 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })
@@ -329,7 +328,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 
@@ -386,7 +385,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs: extendedTypeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
                 CREATE (s:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
@@ -448,7 +447,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 
@@ -493,7 +492,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             typeDefs: extendedTypeDefs,
         });
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(s:${testSeries} { current: true, id: "921" })
@@ -556,7 +555,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             },
         };
 
-        const res = await testHelper.runGraphQL(query, {
+        const res = await testHelper.executeGraphQL(query, {
             variableValues,
         });
 

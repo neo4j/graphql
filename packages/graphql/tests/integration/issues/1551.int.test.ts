@@ -24,10 +24,9 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/1551", () => {
     let testType: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
         testType = testHelper.createUniqueType("AttribValue");
 
         const typeDefs = `
@@ -67,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        await testHelper.runGraphQL(createMutation);
+        await testHelper.executeGraphQL(createMutation);
 
         const updateMutation = `
             mutation {
@@ -82,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             }
         `;
 
-        const updateResult = await testHelper.runGraphQL(updateMutation);
+        const updateResult = await testHelper.executeGraphQL(updateMutation);
         expect(updateResult.errors).toEqual([
             new GraphQLError(`Cannot set non-nullable field ${testType.name}.level to null`),
         ]);

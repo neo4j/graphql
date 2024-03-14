@@ -22,15 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/288", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let USER: UniqueType;
     let COMPANY: UniqueType;
 
     let typeDefs: string;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
-
         USER = testHelper.createUniqueType("USER");
         COMPANY = testHelper.createUniqueType("COMPANY");
 
@@ -82,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const createResult = await testHelper.runGraphQL(createMutation);
+        const createResult = await testHelper.executeGraphQL(createMutation);
 
         expect(createResult.errors).toBeFalsy();
 
@@ -90,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             { USERID: userid, COMPANYID: companyid1 },
         ]);
 
-        const updateResult = await testHelper.runGraphQL(updateMutation);
+        const updateResult = await testHelper.executeGraphQL(updateMutation);
 
         expect(updateResult.errors).toBeFalsy();
 
@@ -98,6 +96,6 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             { USERID: userid, COMPANYID: companyid2 },
         ]);
 
-        await testHelper.runCypher(`MATCH (u:${USER}) WHERE u.USERID = "${userid}" DELETE u`);
+        await testHelper.executeCypher(`MATCH (u:${USER}) WHERE u.USERID = "${userid}" DELETE u`);
     });
 });

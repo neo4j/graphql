@@ -22,14 +22,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/315", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
     let Post: UniqueType;
     let User: UniqueType;
 
     beforeAll(() => {
-        testHelper = new TestHelper();
         Post = testHelper.createUniqueType("Post");
         User = testHelper.createUniqueType("User");
         typeDefs = `
@@ -211,7 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
 
         await neoSchema.checkNeo4jCompat();
 
-        const mutationResult = await testHelper.runGraphQL(mutation, {
+        const mutationResult = await testHelper.executeGraphQL(mutation, {
             variableValues: { input },
         });
 
@@ -225,7 +224,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
             expect(friend.posts).toHaveLength(3);
         });
 
-        const queryResult = await testHelper.runGraphQL(query, {
+        const queryResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 userID,
             },

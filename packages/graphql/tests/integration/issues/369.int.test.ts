@@ -23,11 +23,10 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/369", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
     let Dato: UniqueType;
 
     beforeEach(() => {
-        testHelper = new TestHelper();
         Dato = testHelper.createUniqueType("Dato");
     });
 
@@ -87,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
                 }
             }
         `;
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (:${Dato} {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:${Dato} {uuid: $datoToUUID})
                 `,
@@ -98,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
             }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 
@@ -162,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
                 }
             }
         `;
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
                     CREATE (d:${Dato} {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:${Dato} {uuid: $datoToUUID})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
@@ -175,7 +174,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
             }
         );
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
 

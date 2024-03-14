@@ -23,7 +23,7 @@ import { TestHelper } from "../../../utils/tests-helper";
 
 describe(`Field Level Authorization Where Requests`, () => {
     let token: string;
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
@@ -32,8 +32,6 @@ describe(`Field Level Authorization Where Requests`, () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        testHelper = new TestHelper();
-
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
         typeDefs = `
@@ -52,7 +50,7 @@ describe(`Field Level Authorization Where Requests`, () => {
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }`;
 
-        await testHelper.runCypher(`
+        await testHelper.executeCypher(`
             CREATE (m:${typeMovie.name}
                 {name: "Terminator",year:1990,createdAt: datetime()})
                 <-[:ACTED_IN]-
@@ -99,7 +97,7 @@ describe(`Field Level Authorization Where Requests`, () => {
                 }
             }`;
 
-        const gqlResult = await testHelper.runGraphQLWithToken(query, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
             count: 1,

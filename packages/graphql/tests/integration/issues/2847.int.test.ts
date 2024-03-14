@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2847", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Actor: UniqueType;
     let Product: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
         Product = testHelper.createUniqueType("Product");
@@ -49,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
           }
         `;
 
-        await testHelper.runCypher(
+        await testHelper.executeCypher(
             `
             CREATE (c:${Actor})
             SET c.name = $name
@@ -78,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
               }
         `;
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Actor.plural]: expect.toIncludeSameMembers([

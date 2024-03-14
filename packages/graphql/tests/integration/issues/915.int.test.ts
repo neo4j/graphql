@@ -83,10 +83,9 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
     let MULTIDB_SUPPORT = true;
     let Order: UniqueType;
 
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
         driver = await testHelper.getDriver();
         Order = testHelper.createUniqueType("Order");
 
@@ -94,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         const cypher = `CREATE DATABASE ${databaseName} WAIT`;
         try {
-            await testHelper.runCypher(cypher);
+            await testHelper.executeCypher(cypher);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
@@ -113,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
         if (MULTIDB_SUPPORT) {
             const cypher = `DROP DATABASE ${databaseName}`;
 
-            await testHelper.runCypher(cypher);
+            await testHelper.executeCypher(cypher);
         }
         await testHelper.close();
     });

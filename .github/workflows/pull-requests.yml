@@ -78,9 +78,6 @@ jobs:
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
 
-  toolbox-tests:
-    uses: ./.github/workflows/reusable-toolbox-tests.yml
-
   integration-tests-on-prem:
     uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
 
@@ -96,7 +93,6 @@ jobs:
       - unit-tests
       - e2e-tests-plugins
       - api-library-tests
-      - toolbox-tests
       - integration-tests-on-prem
       - federation-tests
 
@@ -111,7 +107,6 @@ jobs:
             [ ${{ needs.unit-tests.result }} != 'success' ] ||
             [ ${{ needs.e2e-tests-plugins.result }} != 'success' ] ||
             [ ${{ needs.api-library-tests.result }} != 'success' ] ||
-            [ ${{ needs.toolbox-tests.result }} != 'success' ] ||
             [ ${{ needs.federation-tests.result }} != 'success' ] ||
             [ ${{ needs.integration-tests-on-prem.result }} != 'success' ]; then
             echo "One or more jobs failed"

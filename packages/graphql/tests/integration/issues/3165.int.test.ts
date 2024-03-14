@@ -21,15 +21,13 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3165", () => {
-    let testHelper: TestHelper;
+    const testHelper = new TestHelper();
 
     let A: UniqueType;
     let B: UniqueType;
     let Related: UniqueType;
 
     beforeEach(async () => {
-        testHelper = new TestHelper();
-
         A = testHelper.createUniqueType("A");
         B = testHelper.createUniqueType("B");
         Related = testHelper.createUniqueType("Related");
@@ -109,11 +107,11 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
             }
         `;
 
-        const mutationResult = await testHelper.runGraphQL(mutation);
+        const mutationResult = await testHelper.executeGraphQL(mutation);
 
         expect(mutationResult.errors).toBeFalsy();
 
-        const result = await testHelper.runGraphQL(query);
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
