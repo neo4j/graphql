@@ -17,35 +17,24 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { applyMiddleware } from "graphql-middleware";
-import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { cleanNodesUsingSession } from "../utils/clean-nodes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Middleware Resolvers", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+    beforeEach(() => {
+        Movie = testHelper.createUniqueType("Movie");
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie]);
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should allow middleware Query resolver to modify arguments", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${Movie} {
               id: ID
@@ -68,7 +57,7 @@ describe("Middleware Resolvers", () => {
             return resolve(root, newArgs, context, info);
         }
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const schemaWithMiddleware = applyMiddleware(await neoSchema.getSchema(), {
             Query: {
@@ -82,29 +71,23 @@ describe("Middleware Resolvers", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                 CREATE (:${Movie} {id: $id, custom: $custom})
             `,
-                {
-                    id,
-                    custom,
-                }
-            );
+            {
+                id,
+                custom,
+            }
+        );
 
-            const gqlResult = await graphql({
-                schema: schemaWithMiddleware,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            schema: schemaWithMiddleware,
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[Movie.plural][0].custom).toEqual(custom);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.plural][0].custom).toEqual(custom);
     });
 
     test("should allow middleware Mutation resolver to modify arguments", async () => {
@@ -133,7 +116,7 @@ describe("Middleware Resolvers", () => {
             return resolve(root, newArgs, context, info);
         }
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const schemaWithMiddleware = applyMiddleware(await neoSchema.getSchema(), {
             Mutation: {
@@ -154,10 +137,8 @@ describe("Middleware Resolvers", () => {
             }
         `;
 
-        const gqlResult = await graphql({
+        const gqlResult = await testHelper.executeGraphQL(mutation, {
             schema: schemaWithMiddleware,
-            source: mutation,
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

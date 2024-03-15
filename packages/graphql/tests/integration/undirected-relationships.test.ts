@@ -17,34 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4jHelper from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
-import { getQuerySource } from "../utils/get-query-source";
 import { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("undirected relationships", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
+    const testHelper = new TestHelper();
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("query for an undirected relationship", async () => {
@@ -56,10 +37,10 @@ describe("undirected relationships", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 ${userType.plural}(where: {name: "Ford"}) {
                     name
@@ -72,16 +53,12 @@ describe("undirected relationships", () => {
                 }
             }
         `;
-        await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (a:${userType.name} {name: "Arthur"})
                 CREATE (b:${userType.name} {name: "Ford"})
                 CREATE (a)-[:FRIENDS_WITH]->(b)
             `);
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
@@ -109,10 +86,10 @@ describe("undirected relationships", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
-        const query = gql`
+        const query = /* GraphQL */ `
             query {
                 ${userType.plural}(where: {name: "Ford"}) {
                     name
@@ -125,16 +102,12 @@ describe("undirected relationships", () => {
                 }
             }
         `;
-        await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (a:${userType.name} {name: "Arthur"})
                 CREATE (b:${userType.name} {name: "Ford"})
                 CREATE (a)-[:FRIENDS_WITH]->(b)
             `);
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({

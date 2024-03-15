@@ -35,19 +35,23 @@ export class TestHelper {
     private uniqueTypes: UniqueType[] = [];
     private driver: neo4j.Driver | undefined;
 
+    private lock: boolean = false; // Lock to avoid race condition between initNeo4jGraphQL
+
     public createBearerToken(secret: string, extraData?: Record<string, any>) {
         return createBearerToken(secret, extraData);
     }
 
     public async initNeo4jGraphQL(options: Omit<Neo4jGraphQLConstructor, "driver">): Promise<Neo4jGraphQL> {
-        if (this.neo4jGraphQL) {
+        if (this.neo4jGraphQL || this.lock) {
             throw new Error("Neo4jGraphQL already initialized. Did you forget calling .close()?");
         }
+        this.lock = true;
         const driver = await this.getDriver();
         this.neo4jGraphQL = new Neo4jGraphQL({
             ...options,
             driver,
         });
+
         return this.neo4jGraphQL;
     }
 
@@ -64,7 +68,7 @@ export class TestHelper {
 
     public async executeGraphQL(
         query: string,
-        args: Pick<GraphQLArgs, "variableValues" | "contextValue"> = {}
+        args: Partial<Pick<GraphQLArgs, "variableValues" | "contextValue" | "schema">> = {}
     ): Promise<ExecutionResult> {
         if (!this.neo4jGraphQL) {
             throw new Error("Neo4j GraphQL not ready. Did you forget calling 'initNeo4jGraphQL'?");
@@ -114,6 +118,7 @@ export class TestHelper {
         this.driver = undefined;
         this.uniqueTypes = [];
         this.neo4jGraphQL = undefined;
+        this.lock = false;
     }
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */

@@ -17,26 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "./neo4j";
-import { Neo4jGraphQL } from "../../src";
-import { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1628", () => {
-    const workType = new UniqueType("Work");
-    const titleType = new UniqueType("Title");
-
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-    let session: Session;
+    const testHelper = new TestHelper();
+    const workType = testHelper.createUniqueType("Work");
+    const titleType = testHelper.createUniqueType("Title");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         const typeDefs = `
             type ${workType} @node(labels: ["${workType}", "Resource"]) @mutation(operations: []) {
                 """
@@ -50,23 +38,13 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 value: String
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Nested filter with limit cypher should be composed correctly", async () => {
@@ -80,16 +58,12 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
             }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (t:${workType}:Resource)-[:title]->(:${titleType}:property {value: "bond0777"})
             CREATE (t)-[:title]->(:${titleType}:property {value: "bond0777"})
         `);
 
-        const result = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
             [workType.plural]: [

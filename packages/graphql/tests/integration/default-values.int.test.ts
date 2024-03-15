@@ -17,31 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Default values", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+    beforeEach(() => {
+        Movie = testHelper.createUniqueType("Movie");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should allow default value on custom @cypher node field", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${Movie} {
               id: ID
@@ -55,7 +47,7 @@ describe("Default values", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -72,31 +64,21 @@ describe("Default values", () => {
             }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${Movie} {id: "${id}"})
             `);
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: create,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(create);
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
-                id,
-                field: 100,
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
+            id,
+            field: 100,
+        });
     });
 
     test("should allow default value on custom @cypher custom resolver field", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${Movie} {
                 id: ID
@@ -113,7 +95,7 @@ describe("Default values", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -123,18 +105,10 @@ describe("Default values", () => {
             }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: create,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(create);
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).field).toBe(100);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).field).toBe(100);
     });
 });

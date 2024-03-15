@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { OGM } from "../../src";
 import { cleanNodes } from "../utils/clean-nodes";

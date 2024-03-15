@@ -21,30 +21,23 @@ import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
 import type { GraphQLSchema } from "graphql";
 import { defaultFieldResolver, graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Custom Directives", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
+    beforeAll(() => {
+        Movie = testHelper.createUniqueType("Movie");
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should define a custom schemaDirective and resolve it", async () => {
-        const session = await neo4j.getSession();
-
         function upperDirective(directiveName: string) {
             return {
                 upperDirectiveTypeDefs: `directive @${directiveName} on FIELD_DEFINITION`,
@@ -71,7 +64,7 @@ describe("Custom Directives", () => {
 
         const { upperDirectiveTypeDefs, upperDirectiveTransformer } = upperDirective("uppercase");
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs: [
                 upperDirectiveTypeDefs,
                 gql`
@@ -82,7 +75,6 @@ describe("Custom Directives", () => {
                     }
                 `,
             ],
-            driver,
         });
 
         const schema = upperDirectiveTransformer(await neoSchema.getSchema());
@@ -101,20 +93,17 @@ describe("Custom Directives", () => {
             }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema,
-                source: create,
-                contextValue: neo4j.getContextValues(),
-            });
+        // Using graphql directly here as part of the test
+        const gqlResult = await graphql({
+            schema,
+            source: create,
+            contextValue: await testHelper.getContextValue(),
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0]).toEqual({
-                name: name.toUpperCase(),
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[Movie.operations.create][Movie.plural][0]).toEqual({
+            name: name.toUpperCase(),
+        });
     });
 });

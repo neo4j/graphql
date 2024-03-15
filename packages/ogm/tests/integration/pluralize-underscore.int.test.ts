@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
+import { type Driver, type Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { OGM } from "../../src";
 import { UniqueType } from "../utils/utils";

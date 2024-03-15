@@ -17,25 +17,18 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("create", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let Actor: UniqueType;
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Actor = new UniqueType("Actor");
-        Movie = new UniqueType("Movie");
+    beforeEach(async () => {
+        Actor = testHelper.createUniqueType("Actor");
+        Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             type ${Actor} {
@@ -50,16 +43,14 @@ describe("create", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should create a single movie", async () => {
-        const session = await neo4j.getSession();
-
         const id = generate({
             charset: "alphabetic",
         });
@@ -74,37 +65,26 @@ describe("create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]).toEqual({ [Movie.plural]: [{ id }] });
+        expect(gqlResult?.data?.[Movie.operations.create]).toEqual({ [Movie.plural]: [{ id }] });
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.executeCypher(
+            `
               MATCH (m:${Movie} {id: $id})
               RETURN m
             `,
-                { id }
-            );
+            { id }
+        );
 
-            expect((reFind.records[0]?.toObject() as any).m.properties).toMatchObject({ id });
-        } finally {
-            await session.close();
-        }
+        expect(reFind.records[0]?.toObject().m.properties).toMatchObject({ id });
     });
 
     test("should create actor and resolve actorsConnection with where clause on movie field", async () => {
-        const session = await neo4j.getSession();
-
-        const schema = await neoSchema.getSchema();
-
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
 
@@ -133,54 +113,45 @@ describe("create", () => {
                 }
             }
         `;
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (movie:${Movie} {title: $movieTitle})
                 `,
+            {
+                movieTitle,
+            }
+        );
+
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: { movieTitle, actorName },
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data?.[Actor.operations.create]).toEqual({
+            [Actor.plural]: [
                 {
-                    movieTitle,
-                }
-            );
-
-            const result = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { movieTitle, actorName },
-            });
-
-            expect(result.errors).toBeFalsy();
-            expect(result.data?.[Actor.operations.create]).toEqual({
-                [Actor.plural]: [
-                    {
-                        name: actorName,
-                        movies: [
-                            {
-                                title: movieTitle,
-                                actorsConnection: {
-                                    totalCount: 1,
-                                    edges: [
-                                        {
-                                            node: {
-                                                name: actorName,
-                                            },
+                    name: actorName,
+                    movies: [
+                        {
+                            title: movieTitle,
+                            actorsConnection: {
+                                totalCount: 1,
+                                edges: [
+                                    {
+                                        node: {
+                                            name: actorName,
                                         },
-                                    ],
-                                },
+                                    },
+                                ],
                             },
-                        ],
-                    },
-                ],
-            });
-        } finally {
-            await session.close();
-        }
+                        },
+                    ],
+                },
+            ],
+        });
     });
 
     test("should create 2 movies", async () => {
-        const session = await neo4j.getSession();
-
         const id1 = generate({
             charset: "alphabetic",
         });
@@ -198,39 +169,31 @@ describe("create", () => {
           }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id1, id2 },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id1, id2 },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[Movie.operations.create]).toEqual({ [Movie.plural]: [{ id: id1 }, { id: id2 }] });
+        expect(gqlResult?.data?.[Movie.operations.create]).toEqual({ [Movie.plural]: [{ id: id1 }, { id: id2 }] });
 
-            const reFind = await session.run(
-                `
+        const reFind = await testHelper.executeCypher(
+            `
               MATCH (m:${Movie})
               WHERE m.id = $id1 OR m.id = $id2
               RETURN m
             `,
-                { id1, id2 }
-            );
+            { id1, id2 }
+        );
 
-            expect(reFind.records.map((r) => r.toObject().m.properties.id)).toIncludeSameMembers([id1, id2]);
-        } finally {
-            await session.close();
-        }
+        expect(reFind.records.map((r) => r.toObject().m.properties.id)).toIncludeSameMembers([id1, id2]);
     });
 
     test("should create and return pringles product", async () => {
-        const session = await neo4j.getSession();
-        const Size = new UniqueType("Size");
-        const Product = new UniqueType("Product");
-        const Color = new UniqueType("Color");
-        const Photo = new UniqueType("Photo");
+        const Size = testHelper.createUniqueType("Size");
+        const Product = testHelper.createUniqueType("Product");
+        const Color = testHelper.createUniqueType("Color");
+        const Photo = testHelper.createUniqueType("Photo");
 
         const typeDefs = `
             type ${Product} {
@@ -260,7 +223,8 @@ describe("create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.close();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const product = {
             id: generate({
@@ -328,9 +292,7 @@ describe("create", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: mutation,
+        const gqlResult = await testHelper.executeGraphQL(mutation, {
             variableValues: {
                 input: [
                     {
@@ -356,13 +318,19 @@ describe("create", () => {
                     },
                 ],
             },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const graphqlProduct = (gqlResult?.data as any)[Product.operations.create][Product.plural][0];
-        expect(graphqlProduct.id).toEqual(product.id);
+        expect(gqlResult.data).toEqual({
+            [Product.operations.create]: {
+                [Product.plural]: [
+                    {
+                        id: product.id,
+                    },
+                ],
+            },
+        });
 
         const cypher = `
             MATCH (product:${Product} {id: $id})
@@ -384,7 +352,7 @@ describe("create", () => {
             RETURN product {.id, .name, sizes: sizeIds, colors: colorIds, photos: {ids: photoIds, colors: photoColorIds} } as product
         `;
 
-        const neo4jResult = await session.run(cypher, { id: product.id });
+        const neo4jResult = await testHelper.executeCypher(cypher, { id: product.id });
         const neo4jProduct = neo4jResult.records[0]?.toObject().product;
 
         expect(neo4jProduct.id).toMatch(product.id);

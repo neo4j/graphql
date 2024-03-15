@@ -17,38 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../src";
 import { createBearerToken } from "../utils/create-bearer-token";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Interfaces tests", () => {
     const secret = "the-secret";
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-    let session: Session;
+    const testHelper = new TestHelper();
 
-    const SomeNodeType = new UniqueType("SomeNode");
-    const OtherNodeType = new UniqueType("OtherNode");
-    const MyImplementationType = new UniqueType("MyImplementation");
-
-    async function graphqlQuery(query: string, token: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
-    }
+    const SomeNodeType = testHelper.createUniqueType("SomeNode");
+    const OtherNodeType = testHelper.createUniqueType("OtherNode");
+    const MyImplementationType = testHelper.createUniqueType("MyImplementation");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         const typeDefs = `
             type ${SomeNodeType} {
                 id: ID! @id @unique
@@ -70,28 +51,23 @@ describe("Interfaces tests", () => {
             extend type ${OtherNodeType} @authentication
         `;
 
-        session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE(:${SomeNodeType} { id: "1" })-[:HAS_OTHER_NODES]->(other:${OtherNodeType} { id: "2" })
             CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} { id: "3" })
         `);
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
                 },
             },
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should not throw error when querying nested interfaces having auth rules", async () => {
@@ -109,7 +85,7 @@ describe("Interfaces tests", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [SomeNodeType.plural]: [
