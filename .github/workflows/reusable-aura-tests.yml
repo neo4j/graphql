@@ -72,7 +72,7 @@ jobs:
         run: yarn --immutable
       - name: Run @neo4j/graphql integration tests
         run: |
-          yarn test:int --runInBand
+          yarn test:int
         working-directory: packages/${{ matrix.package }}
         env:
           USE_DEFAULT_DB: true
