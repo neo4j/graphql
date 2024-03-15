@@ -18,36 +18,17 @@
  */
 
 import type { GraphQLError } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Mathematical operations tests", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    const testHelper = new TestHelper();
     const largestSafeSigned32BitInteger = Number(2 ** 31 - 1);
     const largestSafeSigned64BitBigInt = BigInt(2 ** 63 - 1).toString();
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
     afterEach(async () => {
-        await session?.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test.each([
@@ -64,7 +45,7 @@ describe("Mathematical operations tests", () => {
     ])(
         "Simple operations on numberical fields: on $type, $operation($initialValue, $value) should return $expected",
         async ({ initialValue, type, value, operation, expected }) => {
-            const movie = new UniqueType("Movie");
+            const movie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
             type ${movie.name} {
@@ -73,7 +54,7 @@ describe("Mathematical operations tests", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -91,7 +72,7 @@ describe("Mathematical operations tests", () => {
             `;
 
             // Create new movie
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (:${movie.name} {id: $id, viewers: $initialViewers})
                 `,
@@ -101,11 +82,8 @@ describe("Mathematical operations tests", () => {
                 }
             );
             // Update movie
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
                 variableValues: { id, value },
-                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -141,7 +119,7 @@ describe("Mathematical operations tests", () => {
     ])(
         "Should raise an error in case of $expectedError on $type, initialValue: $initialValue, value: $value",
         async ({ initialValue, type, value, operation, expectedError }) => {
-            const movie = new UniqueType("Movie");
+            const movie = testHelper.createUniqueType("Movie");
             const typeDefs = `
             type ${movie.name} {
                 id: ID!
@@ -149,7 +127,7 @@ describe("Mathematical operations tests", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -167,7 +145,7 @@ describe("Mathematical operations tests", () => {
             `;
 
             // Create new movie
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (:${movie.name} {id: $id, viewers: $initialViewers})
                 `,
@@ -177,17 +155,14 @@ describe("Mathematical operations tests", () => {
                 }
             );
             // Update movie
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
                 variableValues: { id, value },
-                contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeDefined();
             expect(
                 (gqlResult.errors as GraphQLError[]).some((el) => el.message.toLowerCase().includes(expectedError))
             ).toBeTruthy();
-            const storedValue = await session.run(
+            const storedValue = await testHelper.executeCypher(
                 `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
                 `,
@@ -201,7 +176,7 @@ describe("Mathematical operations tests", () => {
 
     test("Should raise an error if the input fields are ambiguous", async () => {
         const initialViewers = int(100);
-        const movie = new UniqueType("Movie");
+        const movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
             id: ID!
@@ -209,7 +184,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -227,7 +202,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (:${movie.name} {id: $id, viewers: $initialViewers})
                 `,
@@ -237,11 +212,8 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValues(),
         });
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -249,7 +221,7 @@ describe("Mathematical operations tests", () => {
                 el.message.includes("Cannot mutate the same field multiple times in one Mutation")
             )
         ).toBeTruthy();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
                 `,
@@ -263,7 +235,7 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to do multiple operations in the same mutation", async () => {
         const initialViewers = int(100);
         const initialLength = int(100);
-        const movie = new UniqueType("Movie");
+        const movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
             id: ID!
@@ -272,7 +244,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -291,7 +263,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (:${movie.name} {id: $id, viewers: $initialViewers, length: $initialLength})
                 `,
@@ -302,15 +274,12 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers, n.length AS length
                 `,
@@ -325,8 +294,8 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to update nested nodes", async () => {
         const initialViewers = int(100);
         const name = "Luigino";
-        const movie = new UniqueType("Movie");
-        const actor = new UniqueType("Actor");
+        const movie = testHelper.createUniqueType("Movie");
+        const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
         type ${movie.name} {
             viewers: Int!
@@ -339,7 +308,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -371,7 +340,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b) RETURN a, worksInMovies, b
                 `,
@@ -382,15 +351,12 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
                 `,
@@ -405,9 +371,9 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to update nested nodes using interfaces", async () => {
         const initialViewers = int(100);
         const name = "Luigino";
-        const movie = new UniqueType("Movie");
-        const production = new UniqueType("Production");
-        const actor = new UniqueType("Actor");
+        const movie = testHelper.createUniqueType("Movie");
+        const production = testHelper.createUniqueType("Production");
+        const actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
         interface ${production.name} {
@@ -424,7 +390,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -456,7 +422,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
                 `,
@@ -467,15 +433,12 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
                 `,
@@ -489,7 +452,7 @@ describe("Mathematical operations tests", () => {
 
     test("Should throws an error if the property holds Nan values", async () => {
         const increment = 10;
-        const movie = new UniqueType("Movie");
+        const movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
             id: ID!
@@ -497,7 +460,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -515,7 +478,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (:${movie.name} {id: $id})
                 `,
@@ -524,11 +487,8 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, value: increment },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -537,7 +497,7 @@ describe("Mathematical operations tests", () => {
                 el.message.includes(`Cannot _INCREMENT ${increment} to Nan`)
             )
         ).toBeTruthy();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
                 `,
@@ -551,8 +511,8 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to update relationship properties", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = new UniqueType("Movie");
-        const actor = new UniqueType("Actor");
+        const movie = testHelper.createUniqueType("Movie");
+        const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
         type ${movie.name} {
             title: String
@@ -570,7 +530,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -607,7 +567,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
                 `,
@@ -617,15 +577,12 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
                 `,
@@ -639,8 +596,8 @@ describe("Mathematical operations tests", () => {
     test("Should raise in case of ambiguous properties on relationships", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = new UniqueType("Movie");
-        const actor = new UniqueType("Actor");
+        const movie = testHelper.createUniqueType("Movie");
+        const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
         type ${movie.name} {
             title: String
@@ -659,7 +616,7 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -698,7 +655,7 @@ describe("Mathematical operations tests", () => {
         `;
 
         // Create new movie
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
                 `,
@@ -708,11 +665,8 @@ describe("Mathematical operations tests", () => {
             }
         );
         // Update movie
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -721,7 +675,7 @@ describe("Mathematical operations tests", () => {
                 el.message.includes("Cannot mutate the same field multiple times in one Mutation")
             )
         ).toBeTruthy();
-        const storedValue = await session.run(
+        const storedValue = await testHelper.executeCypher(
             `
                 MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
                 `,

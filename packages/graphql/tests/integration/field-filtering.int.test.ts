@@ -17,32 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("field-filtering", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+    const testHelper = new TestHelper();
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should use connection filter on field", async () => {
-        const session = await neo4j.getSession();
-        const Movie = new UniqueType("Movie");
-        const Series = new UniqueType("Series");
-        const Genre = new UniqueType("Genre");
+        const Movie = testHelper.createUniqueType("Movie");
+        const Series = testHelper.createUniqueType("Series");
+        const Genre = testHelper.createUniqueType("Genre");
 
         const typeDefs = gql`
             type ${Movie} {
@@ -60,7 +49,7 @@ describe("field-filtering", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const movieTitle = generate({
             charset: "alphabetic",
@@ -96,26 +85,18 @@ describe("field-filtering", () => {
             CREATE (m)-[:IN_GENRE]->(:${Genre} {name:$genreName2})
         `;
 
-        try {
-            await session.run(cypher, { movieTitle, genreName1, seriesName, genreName2 });
+        await testHelper.executeCypher(cypher, { movieTitle, genreName1, seriesName, genreName2 });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[Movie.plural]).toEqual([
-                { title: movieTitle, genres: [{ name: genreName1, series: [{ name: seriesName }] }] },
-            ]);
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Movie.plural]).toEqual([
+            { title: movieTitle, genres: [{ name: genreName1, series: [{ name: seriesName }] }] },
+        ]);
     });
 });

@@ -17,28 +17,20 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Aliasing", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let schema: GraphQLSchema;
+    const testHelper = new TestHelper();
+
     let Movie: UniqueType;
     let id: string;
     let budget: number;
     let boxOffice: number;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
-        Movie = new UniqueType("Movie");
+        Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
         type ${Movie} {
@@ -51,40 +43,25 @@ describe("Aliasing", () => {
         id = generate({ readable: false });
         budget = 63;
         boxOffice = 465.3;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        schema = await neoSchema.getSchema();
-        try {
-            await session.run(
-                `
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        await testHelper.executeCypher(
+            `
                     CREATE (movie:${Movie})
                     SET movie += $properties
                 `,
-                {
-                    properties: {
-                        id,
-                        boxOffice,
-                        budget,
-                    },
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                properties: {
+                    id,
+                    boxOffice,
+                    budget,
+                },
+            }
+        );
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
-                  MATCH(node:${Movie})
-                  DETACH DELETE node
-              `
-            );
-        } finally {
-            await session.close();
-            await driver.close();
-        }
+        await testHelper.close();
     });
 
     test("should correctly alias an ID field", async () => {
@@ -98,10 +75,7 @@ describe("Aliasing", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id },
         });
 
@@ -124,10 +98,7 @@ describe("Aliasing", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id },
         });
 
@@ -150,10 +121,7 @@ describe("Aliasing", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id },
         });
 

@@ -18,7 +18,7 @@
  */
 
 import { generate } from "randomstring";
-import { UniqueType } from "../utils/graphql-types";
+import type { UniqueType } from "../utils/graphql-types";
 import { TestHelper } from "./utils/tests-helper";
 
 describe("root-connections", () => {
@@ -28,8 +28,8 @@ describe("root-connections", () => {
     let aircraftType: UniqueType;
 
     beforeEach(async () => {
-        pilotType = new UniqueType("Pilot");
-        aircraftType = new UniqueType("Aircraft");
+        pilotType = testHelper.createUniqueType("Pilot");
+        aircraftType = testHelper.createUniqueType("Aircraft");
 
         const typeDefs = `
             type ${pilotType.name} {

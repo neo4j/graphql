@@ -17,34 +17,23 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("cypherParams", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(() => {
-        Movie = new UniqueType("Movie");
+        Movie = testHelper.createUniqueType("Movie");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should inject cypherParams on top-level cypher query", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${Movie} {
               id: ID
@@ -55,7 +44,7 @@ describe("cypherParams", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -69,24 +58,16 @@ describe("cypherParams", () => {
             }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValues({ cypherParams: { id } }),
-            });
+        const gqlResult = await testHelper.executeGraphQL(source, {
+            contextValue: { cypherParams: { id } },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).id).toEqual(id);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).id).toEqual(id);
     });
 
     test("should inject cypherParams on field level nested query", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type CypherParams {
                 id: ID
@@ -98,7 +79,7 @@ describe("cypherParams", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -120,39 +101,31 @@ describe("cypherParams", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                 CREATE (:${Movie} {id: $movieId})
             `,
-                { movieId }
-            );
+            { movieId }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                variableValues: {
-                    id: movieId,
-                },
-                contextValue: neo4j.getContextValues({ cypherParams: { cypherParams: { id: cypherParamsId } } }),
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
+        const gqlResult = await testHelper.executeGraphQL(source, {
+            variableValues: {
                 id: movieId,
-                cypherParams: {
-                    id: cypherParamsId,
-                },
-            });
-        } finally {
-            await session.close();
-        }
+            },
+            contextValue: { cypherParams: { cypherParams: { id: cypherParamsId } } },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
+            id: movieId,
+            cypherParams: {
+                id: cypherParamsId,
+            },
+        });
     });
 
     test("should inject cypherParams on top-level cypher mutation", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${Movie} {
               id: ID
@@ -163,7 +136,7 @@ describe("cypherParams", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -177,18 +150,12 @@ describe("cypherParams", () => {
             }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValues({ cypherParams: { id } }),
-            });
+        const gqlResult = await testHelper.executeGraphQL(source, {
+            contextValue: { cypherParams: { id } },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).id).toEqual(id);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).id).toEqual(id);
     });
 });
