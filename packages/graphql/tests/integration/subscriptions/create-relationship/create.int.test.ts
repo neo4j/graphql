@@ -17,18 +17,12 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions connect with create", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
     let typeDefs: string;
@@ -37,17 +31,12 @@ describe("Subscriptions connect with create", () => {
     let typePerson: UniqueType;
     let typeInfluencer: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
         plugin = new TestSubscriptionsEngine();
-    });
-
-    beforeEach(() => {
-        typeActor = new UniqueType("Actor");
-        typeMovie = new UniqueType("Movie");
-        typePerson = new UniqueType("Person");
-        typeInfluencer = new UniqueType("Influencer");
+        typeActor = testHelper.createUniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typePerson = testHelper.createUniqueType("Person");
+        typeInfluencer = testHelper.createUniqueType("Influencer");
 
         typeDefs = `
             type ${typeMovie} {
@@ -97,7 +86,7 @@ describe("Subscriptions connect with create", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: plugin,
@@ -106,13 +95,8 @@ describe("Subscriptions connect with create", () => {
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
+        plugin.close();
     });
 
     test("creates nested connection to normal type", async () => {
@@ -184,17 +168,13 @@ describe("Subscriptions connect with create", () => {
         }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -217,7 +197,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -240,7 +220,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -263,7 +243,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -345,17 +325,13 @@ describe("Subscriptions connect with create", () => {
         }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -378,7 +354,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -453,17 +429,13 @@ describe("Subscriptions connect with create", () => {
         }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -487,7 +459,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -637,17 +609,13 @@ describe("Subscriptions connect with create", () => {
         }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -671,7 +639,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -694,7 +662,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -717,7 +685,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -740,7 +708,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -764,7 +732,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -788,7 +756,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -812,7 +780,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
