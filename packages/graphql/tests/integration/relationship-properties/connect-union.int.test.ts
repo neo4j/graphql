@@ -21,28 +21,36 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
-describe("Relationship properties - connect", () => {
+describe("Relationship properties - connect on union", () => {
     let Movie: UniqueType;
     let Actor: UniqueType;
+    let Show: UniqueType;
     let testHelper: TestHelper;
 
     beforeAll(async () => {
         testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
+        Show = testHelper.createUniqueType("Show");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} {
                 title: String!
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type ${Show} {
+                name: String!
             }
 
             type ${Actor} {
                 name: String!
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [ActedInUnion!]!
+                    @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
             }
 
-            type ActedIn @relationshipProperties {
+            union ActedInUnion = ${Movie} | ${Show}
+
+            type ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -53,86 +61,82 @@ describe("Relationship properties - connect", () => {
         await testHelper.close();
     });
 
-    test("should create a movie while connecting a relationship that has properties", async () => {
+    test("should create an actor while connecting a relationship that has properties", async () => {
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
-                ${Movie.operations.create}(
+                ${Actor.operations.create}(
                     input: [
                         {
-                            title: $movieTitle
-                            actors: {
-                                connect: [{ where: { node: { name: $actorName } }, edge: { screenTime: $screenTime } }]
+                            name: $actorName
+                            actedIn: {
+                                ${Movie}: {
+                                    connect: {
+                                        where: { node: { title: $movieTitle } }
+                                        edge: { screenTime: $screenTime }
+                                    }
+                                }
                             }
                         }
                     ]
                 ) {
-                    ${Movie.plural} {
-                        title
-                        actorsConnection {
-                            edges {
-                                properties {
-                                    screenTime
-                                }
-                                node {
-                                    name
-                                }
-                            }
-                        }
+                    ${Actor.plural} {
+                        name
                     }
                 }
             }
         `;
 
-        await testHelper.executeCypher(`CREATE (:${Actor} {name:$actorName})`, { actorName });
-        const gqlResult = await testHelper.executeGraphQL(source, {
-            variableValues: { movieTitle, screenTime, actorName },
-        });
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Movie} {title:$movieTitle})
+                `,
+            { movieTitle }
+        );
 
+        const gqlResult = await testHelper.executeGraphQL(source, {
+            variableValues: { movieTitle, actorName, screenTime },
+        });
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Movie.operations.create][Movie.plural]).toEqual([
+        expect((gqlResult.data as any)[Actor.operations.create][Actor.plural]).toEqual([
             {
-                title: movieTitle,
-                actorsConnection: { edges: [{ properties: { screenTime }, node: { name: actorName } }] },
+                name: actorName,
             },
         ]);
 
         const neo4jResult = await testHelper.executeCypher(
             `
-                MATCH (m:${Movie} {title: $movieTitle})<-[:ACTED_IN {screenTime: $screenTime}]-(:${Actor} {name: $actorName})
-                RETURN m
+                MATCH (a:${Actor} {name: $actorName})-[:ACTED_IN {screenTime: $screenTime}]->(:${Movie} {title: $movieTitle})
+                RETURN a
             `,
             { movieTitle, screenTime, actorName }
         );
         expect(neo4jResult.records).toHaveLength(1);
     });
 
-    test("should update a movie while connecting a relationship that has properties", async () => {
+    test("should update an actor while connecting a relationship that has properties(with Union)", async () => {
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = /* GraphQL */ `
-            mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
-                ${Movie.operations.update}(
-                    where: { title: $movieTitle }
-                    connect: { actors: { where: { node: { name: $actorName } }, edge: { screenTime: $screenTime } } }
-                ) {
-                    ${Movie.plural} {
-                        title
-                        actorsConnection {
-                            edges {
-                                properties {
-                                    screenTime
-                                }
-                                node {
-                                    name
-                                }
+            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                ${Actor.operations.update}(
+                    where: { name: $actorName }
+                    connect: {
+                        actedIn: {
+                            ${Movie}: {
+                                where: { node: { title: $movieTitle } }
+                                edge: { screenTime: $screenTime }
                             }
                         }
+                    }
+                ) {
+                    ${Actor.plural} {
+                        name
                     }
                 }
             }
@@ -147,20 +151,21 @@ describe("Relationship properties - connect", () => {
         );
 
         const gqlResult = await testHelper.executeGraphQL(source, {
-            variableValues: { movieTitle, screenTime, actorName },
+            variableValues: { movieTitle, actorName, screenTime },
         });
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual([
             {
-                title: movieTitle,
-                actorsConnection: { edges: [{ properties: { screenTime }, node: { name: actorName } }] },
+                name: actorName,
             },
         ]);
 
-        const neo4jResult = await testHelper.executeCypher(
-            `MATCH (m:${Movie} {title: $movieTitle})<-[:ACTED_IN {screenTime: $screenTime}]-(:${Actor} {name: $actorName}) RETURN m`,
-            { movieTitle, screenTime, actorName }
-        );
+        const cypher = `
+                MATCH (a:${Actor} {name: $actorName})-[:ACTED_IN {screenTime: $screenTime}]->(:${Movie} {title: $movieTitle})
+                RETURN a
+            `;
+
+        const neo4jResult = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
         expect(neo4jResult.records).toHaveLength(1);
     });
 });
