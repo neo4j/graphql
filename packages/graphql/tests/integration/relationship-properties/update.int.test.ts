@@ -17,85 +17,64 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Relationship properties - update", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    const typeDefs = gql`
-        type Movie {
-            title: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-        }
-
-        type Actor {
-            name: String!
-            movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-        }
-
-        type ActedIn @relationshipProperties {
-            screenTime: Int!
-        }
-    `;
-    const movieTitle = generate({ charset: "alphabetic" });
-    const actor1 = generate({ charset: "alphabetic" });
-    const actor2 = generate({ charset: "alphabetic" });
-    const actor3 = generate({ charset: "alphabetic" });
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+    let testHelper: TestHelper;
+    let Movie: UniqueType;
+    let Actor: UniqueType;
+    let movieTitle: string;
+    let actor1: string;
+    let actor2: string;
+    let actor3: string;
 
     beforeEach(async () => {
-        const session = await neo4j.getSession();
+        testHelper = new TestHelper();
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} {
+                title: String!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
 
-        try {
-            await session.run(
-                `
-                    CREATE (:Actor { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(m:Movie { title: '${movieTitle}'})
-                    CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:Actor { name: '${actor2}' })
-                `
-            );
-        } finally {
-            await session.close();
-        }
+            type ${Actor} {
+                name: String!
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+        `;
+        movieTitle = generate({ charset: "alphabetic" });
+        actor1 = generate({ charset: "alphabetic" });
+        actor2 = generate({ charset: "alphabetic" });
+        actor3 = generate({ charset: "alphabetic" });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        await testHelper.executeCypher(
+            `
+                CREATE (:${Actor} { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(m:${Movie} { title: '${movieTitle}'})
+                CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:${Actor} { name: '${actor2}' })
+            `
+        );
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actor1}' DETACH DELETE a`);
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actor2}' DETACH DELETE a`);
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actor3}' DETACH DELETE a`);
-            await session.run(`MATCH (m:Movie) WHERE m.title = '${movieTitle}' DETACH DELETE m`);
-        } finally {
-            await session.close();
-        }
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Update a relationship property on a relationship between two specified nodes (update -> update)", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     update: { actors: [{ where: { node: { name: "${actor1}" } }, update: { edge: { screenTime: 60 } } }] }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: DESC }}) {
                             edges {
@@ -112,51 +91,36 @@ describe("Relationship properties - update", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        const result = await testHelper.executeGraphQL(mutation);
+        expect(result.errors).toBeFalsy();
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-            });
-
-            expect(result.errors).toBeFalsy();
-
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: {
-                        edges: [
-                            {
-                                properties: { screenTime: 100 },
-                                node: {
-                                    name: actor2,
-                                },
+        expect((result?.data as any)[Movie.operations.update][Movie.plural]).toEqual([
+            {
+                title: movieTitle,
+                actorsConnection: {
+                    edges: [
+                        {
+                            properties: { screenTime: 100 },
+                            node: {
+                                name: actor2,
                             },
-                            {
-                                properties: { screenTime: 60 },
-                                node: {
-                                    name: actor1,
-                                },
+                        },
+                        {
+                            properties: { screenTime: 60 },
+                            node: {
+                                name: actor1,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("Update properties on both the relationship and end node in a nested update (update -> update)", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     update: {
                         actors: [
@@ -170,7 +134,7 @@ describe("Relationship properties - update", () => {
                         ]
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
@@ -187,51 +151,37 @@ describe("Relationship properties - update", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        const result = await testHelper.executeGraphQL(mutation);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        expect(result.errors).toBeFalsy();
 
-            expect(result.errors).toBeFalsy();
-
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: {
-                        edges: [
-                            {
-                                properties: { screenTime: 60 },
-                                node: {
-                                    name: actor3,
-                                },
+        expect((result?.data as any)[Movie.operations.update][Movie.plural]).toEqual([
+            {
+                title: movieTitle,
+                actorsConnection: {
+                    edges: [
+                        {
+                            properties: { screenTime: 60 },
+                            node: {
+                                name: actor3,
                             },
-                            {
-                                properties: { screenTime: 105 },
-                                node: {
-                                    name: actor1,
-                                },
+                        },
+                        {
+                            properties: { screenTime: 105 },
+                            node: {
+                                name: actor1,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("Create relationship node through update field on end node in a nested update (update -> update)", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     update: {
                         actors: [
@@ -244,7 +194,7 @@ describe("Relationship properties - update", () => {
                         ]
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
@@ -261,57 +211,43 @@ describe("Relationship properties - update", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        const result = await testHelper.executeGraphQL(mutation);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        expect(result.errors).toBeFalsy();
 
-            expect(result.errors).toBeFalsy();
-
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: {
-                        edges: [
-                            {
-                                properties: { screenTime: 60 },
-                                node: {
-                                    name: actor3,
-                                },
+        expect((result?.data as any)[Movie.operations.update][Movie.plural]).toEqual([
+            {
+                title: movieTitle,
+                actorsConnection: {
+                    edges: [
+                        {
+                            properties: { screenTime: 60 },
+                            node: {
+                                name: actor3,
                             },
-                            {
-                                properties: { screenTime: 100 },
-                                node: {
-                                    name: actor2,
-                                },
+                        },
+                        {
+                            properties: { screenTime: 100 },
+                            node: {
+                                name: actor2,
                             },
-                            {
-                                properties: { screenTime: 105 },
-                                node: {
-                                    name: actor1,
-                                },
+                        },
+                        {
+                            properties: { screenTime: 105 },
+                            node: {
+                                name: actor1,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 
     test("Create a relationship node with relationship properties on end node in a nested update (update -> create)", async () => {
-        const session = await neo4j.getSession();
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation {
-                updateMovies(
+                ${Movie.operations.update}(
                     where: { title: "${movieTitle}" }
                     create: {
                         actors: [
@@ -322,7 +258,7 @@ describe("Relationship properties - update", () => {
                         ]
                     }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
@@ -339,46 +275,36 @@ describe("Relationship properties - update", () => {
             }
         `;
 
-        try {
-            await neoSchema.checkNeo4jCompat();
+        const result = await testHelper.executeGraphQL(mutation);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                contextValue: neo4j.getContextValues(),
-            });
+        expect(result.errors).toBeFalsy();
 
-            expect(result.errors).toBeFalsy();
-
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: {
-                        edges: [
-                            {
-                                properties: { screenTime: 60 },
-                                node: {
-                                    name: actor3,
-                                },
+        expect((result?.data as any)[Movie.operations.update][Movie.plural]).toEqual([
+            {
+                title: movieTitle,
+                actorsConnection: {
+                    edges: [
+                        {
+                            properties: { screenTime: 60 },
+                            node: {
+                                name: actor3,
                             },
-                            {
-                                properties: { screenTime: 100 },
-                                node: {
-                                    name: actor2,
-                                },
+                        },
+                        {
+                            properties: { screenTime: 100 },
+                            node: {
+                                name: actor2,
                             },
-                            {
-                                properties: { screenTime: 105 },
-                                node: {
-                                    name: actor1,
-                                },
+                        },
+                        {
+                            properties: { screenTime: 105 },
+                            node: {
+                                name: actor1,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
-            ]);
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 });

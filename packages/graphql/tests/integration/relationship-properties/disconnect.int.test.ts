@@ -17,60 +17,57 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Relationship properties - disconnect", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    let testHelper: TestHelper;
+    let Movie: UniqueType;
+    let Actor: UniqueType;
+    let Show: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testHelper = new TestHelper();
+        Show = testHelper.createUniqueType("Show");
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should disconnect a relationship that has properties", async () => {
-        const typeDefs = gql`
-            type Movie {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type ${Actor} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
-        const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName1 = generate({ charset: "alphabetic" });
         const actorName2 = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
-        const source = `
-            mutation($movieTitle: String!, $actorName1: String!) {
-                updateMovies(
+        const source = /* GraphQL */ `
+            mutation ($movieTitle: String!, $actorName1: String!) {
+                ${Movie.operations.update}(
                     where: { title: $movieTitle }
                     disconnect: { actors: { where: { node: { name: $actorName1 } } } }
                 ) {
-                    movies {
+                    ${Movie.plural} {
                         title
                         actors {
                             name
@@ -80,89 +77,69 @@ describe("Relationship properties - disconnect", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
-                    CREATE (m:Movie {title:$movieTitle})
-                    CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
-                    CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
+        await testHelper.executeCypher(
+            `
+                    CREATE (m:${Movie} {title:$movieTitle})
+                    CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName1})
+                    CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName2})
                 `,
-                { movieTitle, screenTime, actorName1, actorName2 }
-            );
+            { movieTitle, screenTime, actorName1, actorName2 }
+        );
+        const gqlResult = await testHelper.executeGraphQL(source, { variableValues: { movieTitle, actorName1 } });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { movieTitle, actorName1 },
-            });
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actors: [{ name: actorName2 }],
-                },
-            ]);
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
+            {
+                title: movieTitle,
+                actors: [{ name: actorName2 }],
+            },
+        ]);
 
-            const cypher = `
-                MATCH (:Movie {title: $movieTitle})
-                        <-[actedIn:ACTED_IN {screenTime: $screenTime}]-
-                            (:Actor {name: $actorName1})
-                RETURN actedIn
-            `;
-
-            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName1 });
-            expect(neo4jResult.records).toHaveLength(0);
-        } finally {
-            await session.close();
-        }
+        const neo4jResult = await testHelper.executeCypher(
+            `
+            MATCH (:${Movie} {title: $movieTitle})<-[actedIn:ACTED_IN {screenTime: $screenTime}]-(:${Actor} {name: $actorName1})
+            RETURN actedIn
+            `,
+            { movieTitle, screenTime, actorName1 }
+        );
+        expect(neo4jResult.records).toHaveLength(0);
     });
 
     test("should disconnect a relationship that has properties (with Union)", async () => {
-        const typeDefs = gql`
-            type Movie {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} {
                 title: String!
             }
 
-            type Show {
+            type ${Show} {
                 name: String!
             }
 
-            type Actor {
+            type ${Actor} {
                 name: String!
                 actedIn: [ActedInUnion!]!
                     @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
             }
 
-            union ActedInUnion = Movie | Show
+            union ActedInUnion = ${Movie} | ${Show}
 
             type ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
-        const session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
-        const source = `
-            mutation($screenTime: Int!, $actorName: String!) {
-                updateActors(
+        const source = /* GraphQL */ `
+            mutation ($screenTime: Int!, $actorName: String!) {
+                ${Actor.operations.update}(
                     where: { name: $actorName }
-                    disconnect: {
-                        actedIn: {
-                            Movie: {
-                                where: { edge: { screenTime: $screenTime } }
-                            }
-                        }
-                    }
+                    disconnect: { actedIn: { ${Movie}: { where: { edge: { screenTime: $screenTime } } } } }
                 ) {
-                    actors {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             __typename
@@ -172,39 +149,29 @@ describe("Relationship properties - disconnect", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
-                    CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName})
-                `,
-                { movieTitle, screenTime, actorName }
-            );
+        await testHelper.executeCypher(
+            `
+                CREATE (:${Movie} {title:$movieTitle})<-[:ACTED_IN {screenTime:$screenTime}]-(:${Actor} {name:$actorName})
+            `,
+            { movieTitle, screenTime, actorName }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { actorName, screenTime },
-            });
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.updateActors.actors).toEqual([
-                {
-                    name: actorName,
-                    actedIn: [],
-                },
-            ]);
+        const gqlResult = await testHelper.executeGraphQL(source, { variableValues: { actorName, screenTime } });
 
-            const cypher = `
-                MATCH (:Actor {name: $actorName})
-                        -[actedIn:ACTED_IN {screenTime: $screenTime}]->
-                            (:Movie {title: $movieTitle})
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual([
+            {
+                name: actorName,
+                actedIn: [],
+            },
+        ]);
+        const neo4jResult = await testHelper.executeCypher(
+            `
+                MATCH (:${Actor} {name: $actorName})-[actedIn:ACTED_IN {screenTime: $screenTime}]->(:${Movie} {title: $movieTitle})
                 RETURN actedIn
-            `;
-
-            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName });
-            expect(neo4jResult.records).toHaveLength(0);
-        } finally {
-            await session.close();
-        }
+            `,
+            { movieTitle, screenTime, actorName }
+        );
+        expect(neo4jResult.records).toHaveLength(0);
     });
 });
