@@ -18,32 +18,20 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { cleanNodesUsingSession } from "../utils/clean-nodes";
-import { Neo4jGraphQL } from "../../src";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
 import { gql } from "graphql-tag";
+import type { UniqueType } from "../utils/graphql-types";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("Mass Delete", () => {
-    let driver: Driver;
-    let session: Session;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
 
     let typeDefs: DocumentNode;
     let personType: UniqueType;
     let movieType: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        personType = new UniqueType("Person");
-        movieType = new UniqueType("Movie");
+        personType = testHelper.createUniqueType("Person");
+        movieType = testHelper.createUniqueType("Movie");
 
         typeDefs = gql`
             type ${personType.name} {
@@ -59,14 +47,11 @@ describe("Mass Delete", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
-        session = await neo4j.getSession();
-
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m:${movieType.name} { title: "Sharknado", released: 2013 })
             WITH *
             UNWIND range(0, 100) AS x
@@ -78,12 +63,7 @@ describe("Mass Delete", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [movieType, personType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Should successfully delete many nodes in the same query", async () => {
@@ -105,11 +85,7 @@ describe("Mass Delete", () => {
         });
         expectedMovies.push({ title: "Sharknado" });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: mutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(mutation);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [movieType.operations.update]: {

@@ -20,11 +20,10 @@
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { OGM } from "../../src";
-import { UniqueType } from "../utils/utils";
 import neo4j from "./neo4j";
 
 describe("pluralize with underscore", () => {
-    const taskType = new UniqueType("super_task");
+    const taskType = testHelper.createUniqueType("super_task");
 
     const typeDefs = /* GraphQL */ `
         type ${taskType.name} {
@@ -48,7 +47,7 @@ describe("pluralize with underscore", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should create super_task", async () => {
@@ -64,7 +63,7 @@ describe("pluralize with underscore", () => {
         const result = await Task.create({ input: [{ string: testString }] });
         expect(result[taskType.plural]).toEqual([{ string: testString }]);
 
-        const reFind = await session.run(
+        const reFind = await testHelper.executeCypher(
             `
                 MATCH (m:${taskType.name} {string: $str})
                 RETURN m
@@ -85,7 +84,7 @@ describe("pluralize with underscore", () => {
             charset: "alphabetic",
         });
 
-        await session.run(`
+        await testHelper.executeCypher(`
                     CREATE (:${taskType.name} {string: "${testString}"})
                 `);
 

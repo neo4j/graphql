@@ -20,11 +20,10 @@
 import type { Driver, Session } from "neo4j-driver";
 import { DateTime, Duration, LocalDateTime, LocalTime, Date as Neo4jDate, Time } from "neo4j-driver";
 import { OGM } from "../../src";
-import { UniqueType } from "../utils/utils";
 import neo4j from "./neo4j";
 
 describe("Neo4j native types used with OGM", () => {
-    const TestType = new UniqueType("TestType");
+    const TestType = testHelper.createUniqueType("TestType");
 
     const typeDefs = /* GraphQL */ `
         type ${TestType.name} {
@@ -53,7 +52,7 @@ describe("Neo4j native types used with OGM", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("variables can be passed in as Neo4j objects", async () => {

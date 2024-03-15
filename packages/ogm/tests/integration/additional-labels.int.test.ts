@@ -19,12 +19,11 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { OGM } from "../../src";
-import { UniqueType } from "../utils/utils";
 import neo4j from "./neo4j";
 
 describe("Additional Labels", () => {
     const secret = "secret";
-    const taskType = new UniqueType("Task");
+    const taskType = testHelper.createUniqueType("Task");
     const typeDefs = /* GraphQL */ `
         type ${taskType.name} @node(labels: ["${taskType.name}", "$jwt.tenant_id"]) {
             id: ID! @id
@@ -41,7 +40,7 @@ describe("Additional Labels", () => {
         driver = await neo4j();
         session = driver.session();
         try {
-            await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${taskType.name}:${tenantID} {id: "${expectedId}", string: "String"})
                     CREATE (:${taskType.name}:AnotherTenant {id: "bad_id", string: "String"})
                 `);
@@ -59,7 +58,7 @@ describe("Additional Labels", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should find nodes with jwt labels passed as part of context", async () => {

@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { OGM } from "../../src";
 import { cleanNodes } from "../utils/clean-nodes";
-import { UniqueType } from "../utils/utils";
+import type { UniqueType } from "../utils/utils";
 import neo4j from "./neo4j";
 
 describe("OGM", () => {
@@ -39,17 +39,17 @@ describe("OGM", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     beforeEach(() => {
-        typeMovie = new UniqueType("Movie");
-        typeActor = new UniqueType("Actor");
-        typeGenre = new UniqueType("Genre");
-        typeProduct = new UniqueType("Product");
-        typeSize = new UniqueType("Size");
-        typeColor = new UniqueType("Color");
-        typePhoto = new UniqueType("Photo");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
+        typeGenre = testHelper.createUniqueType("Genre");
+        typeProduct = testHelper.createUniqueType("Product");
+        typeSize = testHelper.createUniqueType("Size");
+        typeColor = testHelper.createUniqueType("Color");
+        typePhoto = testHelper.createUniqueType("Photo");
     });
 
     afterEach(async () => {
@@ -96,7 +96,7 @@ describe("OGM", () => {
         try {
             await ogm.checkNeo4jCompat();
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${typeMovie} {id: "${id}"})
             `);
 
@@ -132,7 +132,7 @@ describe("OGM", () => {
             try {
                 await ogm.checkNeo4jCompat();
 
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${typeMovie} {id: "${id}"})
                 `);
 
@@ -164,7 +164,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${typeMovie} {id: "${id}"})
                     CREATE (:${typeMovie} {id: "${id}"})
                     CREATE (:${typeMovie} {id: "${id}"})
@@ -214,7 +214,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (m:${typeMovie} {id: "${id}"})
                     CREATE (g:${typeGenre} {id: "${id}"})
                     MERGE (m)-[:HAS_GENRE]->(g)
@@ -256,7 +256,7 @@ describe("OGM", () => {
 
                 expect(createResult[typeMovie.plural]).toEqual([{ id }]);
 
-                const reFind = await session.run(
+                const reFind = await testHelper.executeCypher(
                     `
                         MATCH (m:${typeMovie} {id: $id})
                         RETURN m
@@ -441,7 +441,7 @@ describe("OGM", () => {
                 RETURN product {.id, .name, sizes: sizeIds, colors: colorIds, photos: {ids: photoIds, colors: photoColorIds} } as product
             `;
 
-            const neo4jResult = await session.run(cypher, { id: product.id });
+            const neo4jResult = await testHelper.executeCypher(cypher, { id: product.id });
             const neo4jProduct = neo4jResult.records[0].toObject().product;
 
             expect(neo4jProduct.id).toMatch(product.id);
@@ -489,7 +489,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(
+                await testHelper.executeCypher(
                     `
                     CREATE (:${typeMovie} {id: $id, name: $initialName})
                 `,
@@ -540,7 +540,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(
+                await testHelper.executeCypher(
                     `
                     CREATE (:${typeMovie} {id: $id1, name: $initialName})
                     CREATE (:${typeMovie} {id: $id2, name: $initialName})
@@ -597,7 +597,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(
+                await testHelper.executeCypher(
                     `
                     CREATE (:${typeMovie} {id: $movieId})
                     CREATE (:${typeActor} {id: $actorId})
@@ -661,7 +661,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(
+                await testHelper.executeCypher(
                     `
                     CREATE (:${typeMovie} {id: $movieId})
                 `,
@@ -723,7 +723,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(
+                await testHelper.executeCypher(
                     `
                     CREATE (m:${typeMovie} {id: $movieId})
                     CREATE (a:${typeActor} {id: $actorId})
@@ -779,7 +779,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${typeMovie} {id: "${id}"})
                 `);
 
@@ -819,7 +819,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${typeMovie} {id: "${movieId}"})-[:IN_GENRE]->(:${typeGenre} {id: "${genreId}"})
                 `);
 
@@ -893,7 +893,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${typeMovie} {testId: "${testId}"})
                     CREATE (:${typeMovie} {testId: "${testId}"})
                     CREATE (:${typeMovie} {testId: "${testId}"})
@@ -937,7 +937,7 @@ describe("OGM", () => {
             });
 
             try {
-                await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${typeMovie} {testId: "${testId}", title: "1", imdbRating: 1})
                     CREATE (:${typeMovie} {testId: "${testId}", title: "22", imdbRating: 2})
                     CREATE (:${typeMovie} {testId: "${testId}", title: "333", imdbRating: 3})
@@ -1000,7 +1000,7 @@ describe("OGM", () => {
 
             try {
                 // ensure the constraint does not exist
-                await session.run(`DROP CONSTRAINT Book_isbn IF EXISTS`);
+                await testHelper.executeCypher(`DROP CONSTRAINT Book_isbn IF EXISTS`);
 
                 // assert
                 await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow("Missing constraint for Book.isbn");

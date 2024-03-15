@@ -18,25 +18,17 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src";
-import { cleanNodesUsingSession } from "../utils/clean-nodes";
-import { UniqueType } from "../utils/graphql-types";
-import Neo4jHelper from "./neo4j";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("delete interface relationships", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    const testHelper = new TestHelper();
 
-    const episodeType = new UniqueType("Episode");
-    const movieType = new UniqueType("Movie");
-    const seriesType = new UniqueType("Series");
-    const actorType = new UniqueType("Actor");
+    const episodeType = testHelper.createUniqueType("Episode");
+    const movieType = testHelper.createUniqueType("Movie");
+    const seriesType = testHelper.createUniqueType("Series");
+    const actorType = testHelper.createUniqueType("Actor");
 
     let actorName1: string;
     let actorName2: string;
@@ -55,9 +47,7 @@ describe("delete interface relationships", () => {
 
     let nestedMovieActorScreenTime: number;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
         const typeDefs = gql`
             type ${episodeType.name} {
                 runtime: Int!
@@ -91,13 +81,10 @@ describe("delete interface relationships", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-    });
 
-    beforeEach(async () => {
         actorName1 = generate({
             readable: true,
             charset: "alphabetic",
@@ -139,8 +126,7 @@ describe("delete interface relationships", () => {
         seriesScreenTime3 = faker.number.int({ max: 100000 });
         nestedMovieActorScreenTime = faker.number.int({ max: 100000 });
 
-        session = await neo4j.getSession();
-        await session.run(
+        await testHelper.executeCypher(
             `
             CREATE (a:${actorType.name} { name: $actorName1 })
             CREATE (a2:${actorType.name} { name: $actorName2 })
@@ -172,12 +158,7 @@ describe("delete interface relationships", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [episodeType, movieType, seriesType, actorType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should delete one nested concrete entity", async () => {
@@ -190,10 +171,7 @@ describe("delete interface relationships", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { name: actorName1, title: movieTitle1 },
         });
 
@@ -224,10 +202,7 @@ describe("delete interface relationships", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { name1: actorName1, movieScreenTime1: movieScreenTime1 },
         });
 
@@ -258,10 +233,7 @@ describe("delete interface relationships", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 name1: actorName1,
                 movieScreenTime1: movieScreenTime1,
@@ -301,10 +273,7 @@ describe("delete interface relationships", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { name1: actorName1, movieTitle2: movieTitle2, name2: actorName2 },
         });
 
