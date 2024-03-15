@@ -19,13 +19,13 @@
 
 import type {
     GraphQLField,
+    GraphQLInputType,
     GraphQLInterfaceType,
+    GraphQLList,
     GraphQLNamedType,
     GraphQLNonNull,
     GraphQLObjectType,
     GraphQLResolveInfo,
-    GraphQLInputType,
-    GraphQLList,
     GraphQLSchema,
 } from "graphql";
 import { GraphQLInputObjectType, GraphQLScalarType, Kind } from "graphql";
@@ -50,6 +50,10 @@ function getNeo4jArgumentValue({ argument, type }: { argument: unknown; type: Gr
 
     if (type instanceof GraphQLInputObjectType) {
         return Object.entries(argument as Record<string, unknown>).reduce((res, [key, value]) => {
+            // Ignore meta field _emptyInput
+            if (key === "_emptyInput") {
+                return res;
+            }
             const field = Object.values(type.getFields()).find((f) => f.name === key);
 
             if (!field) {
