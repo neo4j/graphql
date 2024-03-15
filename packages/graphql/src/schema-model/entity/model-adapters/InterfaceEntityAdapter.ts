@@ -86,6 +86,18 @@ export class InterfaceEntityAdapter {
         return upperFirst(this.plural);
     }
 
+    public getImplementationToAliasMapWhereAliased(attribute: AttributeAdapter): Map<string, string> {
+        const concreteLabelsToAttributeAlias = new Map<string, string>();
+        const attributeNameInInterface = attribute.databaseName;
+        for (const concreteEntity of this.concreteEntities) {
+            const attributeDatabaseName = concreteEntity.findAttribute(attributeNameInInterface)?.databaseName;
+            if (attributeDatabaseName && attributeDatabaseName !== attributeNameInInterface) {
+                concreteLabelsToAttributeAlias.set(concreteEntity.getLabels().join(":"), attributeDatabaseName);
+            }
+        }
+        return concreteLabelsToAttributeAlias;
+    }
+
     public get isReadable(): boolean {
         return this.annotations.query === undefined || this.annotations.query.read === true;
     }

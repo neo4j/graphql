@@ -65,9 +65,9 @@ export class AggregationPropertyFilter extends Filter {
     }
 
     private getPropertyRefOrAliasesCase(queryASTContext: QueryASTContext): Cypher.Property | Cypher.Case {
-        const implementationsWithAlias = this.shouldResolveAlias();
+        const implementationsWithAlias = this.getAliasesToResolve();
         if (implementationsWithAlias) {
-            return this.resolveDatabaseName(queryASTContext, implementationsWithAlias);
+            return this.generateCaseForAliasedFields(queryASTContext, implementationsWithAlias);
         }
         return this.getPropertyRef(queryASTContext);
     }
@@ -107,30 +107,20 @@ export class AggregationPropertyFilter extends Filter {
         });
     }
 
-    private shouldResolveAlias() {
+    private getAliasesToResolve(): Map<string, string> | undefined {
         if (!this.relationship || !(this.relationship.target instanceof InterfaceEntityAdapter)) {
             return;
         }
-        const aliasedImplementationsMap = this.getImplementationsWithAliasedAttribute(this.relationship.target);
+        const aliasedImplementationsMap = this.relationship.target.getImplementationToAliasMapWhereAliased(
+            this.attribute
+        );
         if (!aliasedImplementationsMap.size) {
             return;
         }
         return aliasedImplementationsMap;
     }
 
-    private getImplementationsWithAliasedAttribute(interfaceTarget: InterfaceEntityAdapter): Map<string, string> {
-        const concreteLabelsToAttributeAlias = new Map<string, string>();
-        const attributeNameInInterface = this.attribute.databaseName;
-        for (const concreteEntity of interfaceTarget.concreteEntities) {
-            const attributeDatabaseName = concreteEntity.findAttribute(attributeNameInInterface)?.databaseName;
-            if (attributeDatabaseName && attributeDatabaseName !== attributeNameInInterface) {
-                concreteLabelsToAttributeAlias.set(concreteEntity.getLabels().join(":"), attributeDatabaseName);
-            }
-        }
-        return concreteLabelsToAttributeAlias;
-    }
-
-    private resolveDatabaseName(
+    private generateCaseForAliasedFields(
         queryASTContext: QueryASTContext,
         concreteLabelsToAttributeAlias: Map<string, string>
     ): Cypher.Case {
