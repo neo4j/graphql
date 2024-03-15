@@ -18,25 +18,21 @@
  */
 
 import { gql } from "graphql-tag";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions create", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
-    const typeActor = new UniqueType("Actor");
-    const typeMovie = new UniqueType("Movie");
+    let typeActor: UniqueType;
+    let typeMovie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        typeActor = testHelper.createUniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
+
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
             type ${typeActor.name} {
@@ -50,7 +46,7 @@ describe("Subscriptions create", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: plugin,
@@ -58,8 +54,8 @@ describe("Subscriptions create", () => {
         });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("creates complex create with subscriptions enabled", async () => {
@@ -84,14 +80,13 @@ describe("Subscriptions create", () => {
         }
         `;
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([{ id: "1" }, { id: "3" }]);
+        expect((gqlResult.data as any)[typeMovie.operations.create][typeMovie.plural]).toEqual([
+            { id: "1" },
+            { id: "3" },
+        ]);
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
