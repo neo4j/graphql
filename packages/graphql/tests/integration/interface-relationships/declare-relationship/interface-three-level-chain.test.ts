@@ -18,35 +18,23 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("interface implementing interface with declared relationships - three level interface chain", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let Series: UniqueType;
     let Actor: UniqueType;
     let Episode: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        Movie = new UniqueType("Movie");
-        Series = new UniqueType("Series");
-        Actor = new UniqueType("Actor");
-        Episode = new UniqueType("Episode");
-        session = await neo4j.getSession();
+        Movie = testHelper.createUniqueType("Movie");
+        Series = testHelper.createUniqueType("Series");
+        Actor = testHelper.createUniqueType("Actor");
+        Episode = testHelper.createUniqueType("Episode");
 
         const typeDefs = gql`
             type ${Episode} {
@@ -102,28 +90,13 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
     afterEach(async () => {
-        await session.run(
-            `
-                MATCH(a:${Movie})
-                MATCH(b:${Series})
-                MATCH(c:${Actor})
-
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-            `
-        );
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("WATCHABLE THING should read connection and return interface relationship fields", async () => {
@@ -179,7 +152,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -204,12 +177,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -433,7 +401,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -458,12 +426,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -766,7 +729,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -791,12 +754,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1020,7 +978,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -1045,12 +1003,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1353,7 +1306,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -1378,12 +1331,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1607,7 +1555,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
@@ -1632,12 +1580,7 @@ describe("interface implementing interface with declared relationships - three l
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 

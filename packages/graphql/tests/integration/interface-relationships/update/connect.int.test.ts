@@ -18,31 +18,22 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("interface relationships", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let Episode: UniqueType;
     let Actor: UniqueType;
     let Movie: UniqueType;
     let Series: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
-        Episode = new UniqueType("Episode");
-        Actor = new UniqueType("Actor");
-        Movie = new UniqueType("Movie");
-        Series = new UniqueType("Series");
+    beforeEach(async () => {
+        Episode = testHelper.createUniqueType("Episode");
+        Actor = testHelper.createUniqueType("Actor");
+        Movie = testHelper.createUniqueType("Movie");
+        Series = testHelper.createUniqueType("Series");
 
         const typeDefs = /* GraphQL */ `
             type ${Episode} {
@@ -77,20 +68,16 @@ describe("interface relationships", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Actor, Movie, Series, Episode]);
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should connect using interface relationship fields", async () => {
-        const session = await neo4j.getSession();
-
         const actorName = generate({
             readable: true,
             charset: "alphabetic",
@@ -128,51 +115,42 @@ describe("interface relationships", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (:${Movie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle })
             `,
-                { actorName, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
-            );
+            { actorName, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { name: actorName, title: movieTitle, screenTime: movieScreenTime },
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { name: actorName, title: movieTitle, screenTime: movieScreenTime },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data).toEqual({
-                [Actor.operations.update]: {
-                    [Actor.plural]: [
-                        {
-                            actedIn: expect.toIncludeSameMembers([
-                                {
-                                    runtime: movieRuntime,
-                                    title: movieTitle,
-                                },
-                                {
-                                    title: seriesTitle,
-                                },
-                            ]),
-                            name: actorName,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.data).toEqual({
+            [Actor.operations.update]: {
+                [Actor.plural]: [
+                    {
+                        actedIn: expect.toIncludeSameMembers([
+                            {
+                                runtime: movieRuntime,
+                                title: movieTitle,
+                            },
+                            {
+                                title: seriesTitle,
+                            },
+                        ]),
+                        name: actorName,
+                    },
+                ],
+            },
+        });
     });
 
     test("should nested connect using interface relationship fields", async () => {
-        const session = await neo4j.getSession();
-
         const actorName1 = generate({
             readable: true,
             charset: "alphabetic",
@@ -225,53 +203,46 @@ describe("interface relationships", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                 CREATE (a:${Actor} { name: $actorName1 })
                 CREATE (:${Actor} { name: $actorName2 })
                 CREATE (:${Movie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle })
             `,
-                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
-            );
+            { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    name1: actorName1,
-                    name2: actorName2,
-                    title: movieTitle,
-                    screenTime: movieScreenTime,
-                },
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                name1: actorName1,
+                name2: actorName2,
+                title: movieTitle,
+                screenTime: movieScreenTime,
+            },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data).toEqual({
-                [Actor.operations.update]: {
-                    [Actor.plural]: [
-                        {
-                            actedIn: expect.toIncludeSameMembers([
-                                {
-                                    runtime: movieRuntime,
-                                    title: movieTitle,
-                                    actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
-                                },
-                                {
-                                    title: seriesTitle,
-                                    actors: [{ name: actorName1 }],
-                                },
-                            ]),
-                            name: actorName1,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.data).toEqual({
+            [Actor.operations.update]: {
+                [Actor.plural]: [
+                    {
+                        actedIn: expect.toIncludeSameMembers([
+                            {
+                                runtime: movieRuntime,
+                                title: movieTitle,
+                                actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
+                            },
+                            {
+                                title: seriesTitle,
+                                actors: [{ name: actorName1 }],
+                            },
+                        ]),
+                        name: actorName1,
+                    },
+                ],
+            },
+        });
     });
 });
