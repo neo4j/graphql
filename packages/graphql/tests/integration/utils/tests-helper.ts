@@ -98,7 +98,7 @@ export class TestHelper {
     }
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
-        if (!this.neo4jGraphQL) {
+        if (!this.neo4jGraphQL && !this.driver) {
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
         const driver = await this.getDriver();
