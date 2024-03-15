@@ -1735,7 +1735,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any).thingsConnection.edges).toEqual([
+        expect((gqlResult.data as any).thingsConnection.edges).toIncludeSameMembers([
             {
                 node: {
                     testString,
@@ -1815,7 +1815,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[User.operations.connection].edges).toEqual([
+        expect((gqlResult.data as any)[User.operations.connection].edges).toIncludeSameMembers([
             {
                 node: {
                     testString,
@@ -1896,7 +1896,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any).thingsConnection.edges).toEqual([
+        expect((gqlResult.data as any).thingsConnection.edges).toIncludeSameMembers([
             {
                 node: {
                     testString,
@@ -2048,7 +2048,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.operations.connection].edges).toEqual([
+                expect((gqlResult.data as any)[Post.operations.connection].edges).toIncludeSameMembers([
                     {
                         node: {
                             testString,

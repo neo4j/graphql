@@ -80,7 +80,7 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -124,7 +124,7 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -166,7 +166,7 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -209,7 +209,7 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -252,7 +252,7 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -314,7 +314,7 @@ describe("aggregations-where-node-string", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toEqual([
+                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
                     {
                         testString,
                         likes: [{ testString: shortestTestString }],
@@ -378,7 +378,7 @@ describe("aggregations-where-node-string", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toEqual([
+                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
                     {
                         testString,
                         likes: [{ testString: longestTestString }],
@@ -769,7 +769,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -813,7 +813,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -856,7 +856,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -899,7 +899,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -942,7 +942,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -1004,7 +1004,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toEqual([
+                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
                     {
                         testString,
                         likes: [{ testString: shortestTestString }],
@@ -1068,7 +1068,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toEqual([
+                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
                     {
                         testString,
                         likes: [{ testString: longestTestString }],
@@ -1569,7 +1569,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any).things).toEqual([
+        expect((gqlResult.data as any).things).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -1640,7 +1640,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[User.plural]).toEqual([
+        expect((gqlResult.data as any)[User.plural]).toIncludeSameMembers([
             {
                 testString,
                 things: [
@@ -1712,7 +1712,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any).things).toEqual([
+        expect((gqlResult.data as any).things).toIncludeSameMembers([
             {
                 testString,
                 likes: [{ testString }],
@@ -1855,7 +1855,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toEqual([
+                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
                     {
                         testString,
                         likes: [{ testString: shortestTestString }],

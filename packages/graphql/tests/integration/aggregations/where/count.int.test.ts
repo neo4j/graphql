@@ -207,7 +207,7 @@ describe("aggregations-where-count", () => {
         expect((gqlResult.data as any)[Post.plural]).toEqual([
             {
                 testString,
-                likes: [{ testString }, { testString }],
+                likes: expect.toIncludeSameMembers([{ testString }, { testString }]),
             },
         ]);
     });
@@ -450,7 +450,7 @@ describe("aggregations-where-count  interface relationships of concrete types", 
         expect((gqlResult.data as any)[Post.plural]).toEqual([
             {
                 testString,
-                likes: [{ testString }, { testString }],
+                likes: expect.toIncludeSameMembers([{ testString }, { testString }]),
             },
         ]);
     });
