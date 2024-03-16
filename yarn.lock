@@ -104,20 +104,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/federation-internals@npm:2.5.5":
-  version: 2.5.5
-  resolution: "@apollo/federation-internals@npm:2.5.5"
-  dependencies:
-    "@types/uuid": "npm:^9.0.0"
-    chalk: "npm:^4.1.0"
-    js-levenshtein: "npm:^1.1.6"
-    uuid: "npm:^9.0.0"
-  peerDependencies:
-    graphql: ^16.5.0
-  checksum: 10c0/d38aa7628978fe5d7b63562ce26b5cafbd1f69fc636a3be67fe09f9032e07bdef9897f77f16e114c9e66413aceffba151d70ca2c7985f8f9b06ecf6ab8c07f9a
-  languageName: node
-  linkType: hard
-
 "@apollo/federation-internals@npm:2.7.1":
   version: 2.7.1
   resolution: "@apollo/federation-internals@npm:2.7.1"
@@ -271,7 +257,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:4.10.1":
+"@apollo/server@npm:4.10.1, @apollo/server@npm:^4.7.0":
   version: 4.10.1
   resolution: "@apollo/server@npm:4.10.1"
   dependencies:
@@ -306,51 +292,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:^4.7.0":
-  version: 4.9.3
-  resolution: "@apollo/server@npm:4.9.3"
-  dependencies:
-    "@apollo/cache-control-types": "npm:^1.0.3"
-    "@apollo/server-gateway-interface": "npm:^1.1.1"
-    "@apollo/usage-reporting-protobuf": "npm:^4.1.1"
-    "@apollo/utils.createhash": "npm:^2.0.0"
-    "@apollo/utils.fetcher": "npm:^2.0.0"
-    "@apollo/utils.isnodelike": "npm:^2.0.0"
-    "@apollo/utils.keyvaluecache": "npm:^2.1.0"
-    "@apollo/utils.logger": "npm:^2.0.0"
-    "@apollo/utils.usagereporting": "npm:^2.1.0"
-    "@apollo/utils.withrequired": "npm:^2.0.0"
-    "@graphql-tools/schema": "npm:^9.0.0"
-    "@josephg/resolvable": "npm:^1.0.0"
-    "@types/express": "npm:^4.17.13"
-    "@types/express-serve-static-core": "npm:^4.17.30"
-    "@types/node-fetch": "npm:^2.6.1"
-    async-retry: "npm:^1.2.1"
-    body-parser: "npm:^1.20.0"
-    cors: "npm:^2.8.5"
-    express: "npm:^4.17.1"
-    loglevel: "npm:^1.6.8"
-    lru-cache: "npm:^7.10.1"
-    negotiator: "npm:^0.6.3"
-    node-abort-controller: "npm:^3.1.1"
-    node-fetch: "npm:^2.6.7"
-    uuid: "npm:^9.0.0"
-    whatwg-mimetype: "npm:^3.0.0"
-  peerDependencies:
-    graphql: ^16.6.0
-  checksum: 10c0/983412052c8584b623637a49e526d3ac6e1a80aa74b47180503e89b3ca0345207864fe5dd632ddab649057ccc253a63032f3b189d45db15f6b6b0b50d07570ec
-  languageName: node
-  linkType: hard
-
 "@apollo/subgraph@npm:^2.2.3":
-  version: 2.5.5
-  resolution: "@apollo/subgraph@npm:2.5.5"
+  version: 2.7.1
+  resolution: "@apollo/subgraph@npm:2.7.1"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.2"
-    "@apollo/federation-internals": "npm:2.5.5"
+    "@apollo/federation-internals": "npm:2.7.1"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/7cd8250a7363973b2c13eafd4a37e0ce24c874fb5f95fb57b6d44efb77811ed21244d422a93b59afe85a9f78dcecaee0320c37c59c8776ce91e990b6a6d1d51d
+  checksum: 10c0/51a38b0de265e6636d5d81c491617e40276e2d31b310f2386342fb67a38e5f18407924dd9f93ffe6267d4ebc38e879f3475695cdc6dcf92191e950771bec8dc3
   languageName: node
   linkType: hard
 
@@ -6613,7 +6563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:1.20.2, body-parser@npm:^1.20.0, body-parser@npm:^1.20.2":
+"body-parser@npm:1.20.2, body-parser@npm:^1.20.2":
   version: 1.20.2
   resolution: "body-parser@npm:1.20.2"
   dependencies:
