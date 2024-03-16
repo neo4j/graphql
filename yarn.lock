@@ -13595,16 +13595,16 @@ __metadata:
   linkType: hard
 
 "jose@npm:^4.14.6":
-  version: 4.15.2
-  resolution: "jose@npm:4.15.2"
-  checksum: 10c0/d5fbd7f07719b6098c071cd29889283a5813f6fd59c7134a5db22fae8ae2e447de38a4d5adb5ba84506b2be1ea66cf2b2a587f149a9a7acfc8b05e86873f1b59
+  version: 4.15.5
+  resolution: "jose@npm:4.15.5"
+  checksum: 10c0/9f208492f55ae9c547fd407c36f67ec3385051b5ca390e24f5449740f17359640b3f96fabfd38bc132cc4292b964c31b921bf356253373b1bd3eb6df799b7433
   languageName: node
   linkType: hard
 
 "jose@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "jose@npm:5.0.1"
-  checksum: 10c0/19435a27217126b8a52fae164fd72aa83fafe43c6949c1b8407f069e2d8ccc355bf4c7e3d8ab46b20248aecd416cb3020a8a0bc37f56e8c23d7df2efc57355ae
+  version: 5.2.3
+  resolution: "jose@npm:5.2.3"
+  checksum: 10c0/7cf02e1d1d6226b6ee136fb6c53fd4dde9cfdaf1613ceaab3a5629803eaa80cbfd77cddc38a54c55c82b8f63428677660c93fc87493818a07adc9c0c77ef16ff
   languageName: node
   linkType: hard
 
