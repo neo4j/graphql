@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("aggregations-where-node-string", () => {
+describe("aggregations-where-node-string - connections", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -61,12 +61,16 @@ describe("aggregations-where-node-string", () => {
                 `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -80,12 +84,16 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is GT than", async () => {
@@ -107,10 +115,14 @@ describe("aggregations-where-node-string", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -124,12 +136,16 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is GTE than", async () => {
@@ -140,6 +156,7 @@ describe("aggregations-where-node-string", () => {
             readable: true,
             length,
         });
+
         await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
@@ -149,10 +166,14 @@ describe("aggregations-where-node-string", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -166,12 +187,16 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is LT than", async () => {
@@ -192,10 +217,14 @@ describe("aggregations-where-node-string", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -209,12 +238,16 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is LTE than", async () => {
@@ -235,10 +268,14 @@ describe("aggregations-where-node-string", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -252,12 +289,16 @@ describe("aggregations-where-node-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     describe("SHORTEST", () => {
@@ -297,10 +338,14 @@ describe("aggregations-where-node-string", () => {
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -314,12 +359,16 @@ describe("aggregations-where-node-string", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
-                    },
-                ]);
+                expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+                    edges: [
+                        {
+                            node: {
+                                testString,
+                                likes: [{ testString: shortestTestString }],
+                            },
+                        },
+                    ],
+                });
             }
         );
     });
@@ -361,10 +410,14 @@ describe("aggregations-where-node-string", () => {
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -378,12 +431,16 @@ describe("aggregations-where-node-string", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: longestTestString }],
-                    },
-                ]);
+                expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+                    edges: [
+                        {
+                            node: {
+                                testString,
+                                likes: [{ testString: longestTestString }],
+                            },
+                        },
+                    ],
+                });
             }
         );
     });
@@ -430,25 +487,30 @@ describe("aggregations-where-node-string", () => {
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
                 `;
 
                 const gqlResult = await testHelper.executeGraphQL(query);
+
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any)[Post.plural] as any[];
-                expect(post.testString).toEqual(testString);
-                expect(post.likes).toHaveLength(3);
+                const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+                expect(post.node.testString).toEqual(testString);
+                expect(post.node.likes).toHaveLength(3);
             }
         );
 
@@ -492,10 +554,14 @@ describe("aggregations-where-node-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -509,9 +575,9 @@ describe("aggregations-where-node-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Strings is GTE than", async () => {
@@ -553,10 +619,14 @@ describe("aggregations-where-node-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -570,9 +640,9 @@ describe("aggregations-where-node-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Strings is LT than", async () => {
@@ -615,10 +685,14 @@ describe("aggregations-where-node-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -632,9 +706,9 @@ describe("aggregations-where-node-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Strings is LTE than", async () => {
@@ -676,10 +750,14 @@ describe("aggregations-where-node-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -693,14 +771,14 @@ describe("aggregations-where-node-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
     });
 });
 
-describe("aggregations-where-node-string interface relationships of concrete types", () => {
+describe("aggregations-where-node-string - connections - interface relationships of concrete types", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -752,10 +830,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -769,12 +851,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is GT than", async () => {
@@ -796,10 +882,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
+                       edges {
+                        node {
+                             testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -813,12 +903,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is GTE than", async () => {
@@ -839,10 +933,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -856,12 +954,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is LT than", async () => {
@@ -882,10 +984,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -899,12 +1005,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like String is LTE than", async () => {
@@ -925,10 +1035,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
-                        testString
-                        likes {
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
+                       edges {
+                        node {
+                             testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -942,12 +1056,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString }],
+                    },
+                },
+            ],
+        });
     });
 
     describe("SHORTEST", () => {
@@ -987,10 +1105,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                           edges {
+                            node {
+                                 testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -1004,12 +1126,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
-                    },
-                ]);
+                expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+                    edges: [
+                        {
+                            node: {
+                                testString,
+                                likes: [{ testString: shortestTestString }],
+                            },
+                        },
+                    ],
+                });
             }
         );
     });
@@ -1051,10 +1177,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -1068,12 +1198,16 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: longestTestString }],
-                    },
-                ]);
+                expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+                    edges: [
+                        {
+                            node: {
+                                testString,
+                                likes: [{ testString: longestTestString }],
+                            },
+                        },
+                    ],
+                });
             }
         );
     });
@@ -1120,10 +1254,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -1137,9 +1275,9 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const [post] = (gqlResult.data as any)[Post.plural] as any[];
-                expect(post.testString).toEqual(testString);
-                expect(post.likes).toHaveLength(3);
+                const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+                expect(post.node.testString).toEqual(testString);
+                expect(post.node.likes).toHaveLength(3);
             }
         );
 
@@ -1183,10 +1321,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -1200,9 +1342,9 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Strings is GTE than", async () => {
@@ -1244,10 +1386,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -1261,9 +1407,9 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Strings is LT than", async () => {
@@ -1306,10 +1452,14 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
@@ -1323,9 +1473,9 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Strings is LTE than", async () => {
@@ -1367,25 +1517,30 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
                 `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
+
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
     });
 });
@@ -1425,8 +1580,12 @@ describe("EQUAL with alias", () => {
 
         const query = `
             {
-                ${Post.plural}(where: { likesAggregate: { node: {name_EQUAL: "a"  } } }) {
-                    content
+                ${Post.operations.connection}(where: { likesAggregate: { node: {name_EQUAL: "a"  } } }) {
+                   edges {
+                        node {
+                            content
+                        }
+                   } 
                 }
             }
         `;
@@ -1439,13 +1598,14 @@ describe("EQUAL with alias", () => {
         );
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
-            [Post.plural]: [{ content: "test" }],
+            [Post.operations.connection]: { edges: [{ node: { content: "test" } }] },
         });
     });
 
@@ -1470,14 +1630,17 @@ describe("EQUAL with alias", () => {
             interface Likes {
                 someString: String
             }
-        `;
-
+            `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             {
-                ${Post.plural}(where: { likesAggregate: { node: {name_EQUAL: "a", other_EQUAL: "a"  } } }) {
-                    content
+                ${Post.operations.connection}(where: { likesAggregate: { node: {name_EQUAL: "a", other_EQUAL: "a"  } } }) {
+                    edges {
+                        node {
+                            content
+                        }
+                    }
                 }
             }
         `;
@@ -1497,12 +1660,12 @@ describe("EQUAL with alias", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
-            [Post.plural]: [{ content: "test" }],
+            [Post.operations.connection]: { edges: [{ node: { content: "test" } }] },
         });
     });
 });
 
-describe("aggregations-where-node-string relationships of interface types", () => {
+describe("aggregations-where-node-string - connections - relationships of interface types", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -1535,13 +1698,12 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(
             `
@@ -1552,10 +1714,14 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         const query = `
                 {
-                    things(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
-                        testString
-                        likes {
-                            testString
+                    thingsConnection(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -1569,10 +1735,12 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any).things).toIncludeSameMembers([
+        expect((gqlResult.data as any).thingsConnection.edges).toIncludeSameMembers([
             {
-                testString,
-                likes: [{ testString }],
+                node: {
+                    testString,
+                    likes: [{ testString }],
+                },
             },
         ]);
     });
@@ -1594,6 +1762,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const testString = generate({
             charset: "alphabetic",
@@ -1608,8 +1777,6 @@ describe("aggregations-where-node-string relationships of interface types", () =
             readable: true,
         });
 
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
         await testHelper.executeCypher(
             `
                     CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
@@ -1620,12 +1787,20 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         const query = /* GraphQL */ `
                 {
-                    ${User.plural} {
-                        testString
-                        things(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
-                            testString
-                            likes {
+                    ${User.operations.connection} {
+                        edges {
+                            node {
                                 testString
+                                thingsConnection(where: { node: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } } }) {
+                                    edges {
+                                        node {
+                                            testString
+                                            likes {
+                                                testString
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1640,17 +1815,23 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[User.plural]).toIncludeSameMembers([
+        expect((gqlResult.data as any)[User.operations.connection].edges).toIncludeSameMembers([
             {
-                testString,
-                things: [
-                    {
-                        testString,
-                        likes: [{ testString }],
+                node: {
+                    testString,
+                    thingsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    testString,
+                                    likes: [{ testString }],
+                                },
+                            },
+                        ],
                     },
-                ],
+                },
             },
-            { testString: otherUserString, things: [] },
+            { node: { testString: otherUserString, thingsConnection: { edges: [] } } },
         ]);
     });
 
@@ -1678,13 +1859,12 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(
             `
@@ -1695,10 +1875,14 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         const query = `
                 {
-                    things(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
-                        testString
-                        likes {
-                            testString
+                    thingsConnection(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -1712,10 +1896,12 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any).things).toIncludeSameMembers([
+        expect((gqlResult.data as any).thingsConnection.edges).toIncludeSameMembers([
             {
-                testString,
-                likes: [{ testString }],
+                node: {
+                    testString,
+                    likes: [{ testString }],
+                },
             },
         ]);
     });
@@ -1748,11 +1934,14 @@ describe("aggregations-where-node-string relationships of interface types", () =
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-
         const query = `
             {
-                ${Post.plural}(where: { likesAggregate: { node: {name_EQUAL: "a", other_EQUAL: "a"  } } }) {
-                    content
+                ${Post.operations.connection}(where: { likesAggregate: { node: {name_EQUAL: "a", other_EQUAL: "a"  } } }) {
+                    edges {
+                        node {
+                            content
+                        }
+                    }
                 }
             }
         `;
@@ -1772,7 +1961,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({
-            [Post.plural]: [{ content: "test" }],
+            [Post.operations.connection]: { edges: [{ node: { content: "test" } }] },
         });
     });
 
@@ -1803,7 +1992,6 @@ describe("aggregations-where-node-string relationships of interface types", () =
                         likes: [Human!]! @relationship(type: "LIKES", direction: IN)
                     }
                 `;
-
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const testString = generate({
@@ -1839,26 +2027,33 @@ describe("aggregations-where-node-string relationships of interface types", () =
 
                 const query = `
                     {
-                        ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
-                            testString
-                            likes {
-                                testString
+                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                    }
+                                }
                             }
                         }
                     }
                 `;
 
                 const gqlResult = await testHelper.executeGraphQL(query);
+
                 if (gqlResult.errors) {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+                expect((gqlResult.data as any)[Post.operations.connection].edges).toIncludeSameMembers([
                     {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
+                        node: {
+                            testString,
+                            likes: [{ testString: shortestTestString }],
+                        },
                     },
                 ]);
             }

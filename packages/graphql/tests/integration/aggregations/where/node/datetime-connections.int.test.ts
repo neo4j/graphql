@@ -21,37 +21,24 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("aggregations-where-node-datetime", () => {
+describe("aggregations-where-node-datetime - connections", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
-    let Person: UniqueType;
 
     beforeEach(async () => {
         testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
-        Person = testHelper.createUniqueType("Person");
-
         const typeDefs = `
-        interface Human {
-            testString: String!
-            someDateTime: DateTime!
-        }
-
-        type ${Person} implements Human {
-            testString: String!
-            someDateTime: DateTime!
-        }
-
-            type ${User} implements Human {
+            type ${User} {
                 testString: String!
                 someDateTime: DateTime!
             }
     
             type ${Post} {
               testString: String!
-              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
+              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -79,12 +66,16 @@ describe("aggregations-where-node-datetime", () => {
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
@@ -98,12 +89,16 @@ describe("aggregations-where-node-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is GT than", async () => {
@@ -126,30 +121,39 @@ describe("aggregations-where-node-datetime", () => {
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is GTE than", async () => {
@@ -170,30 +174,39 @@ describe("aggregations-where-node-datetime", () => {
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is LT than", async () => {
@@ -216,12 +229,16 @@ describe("aggregations-where-node-datetime", () => {
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
@@ -234,12 +251,16 @@ describe("aggregations-where-node-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is LTE than", async () => {
@@ -260,33 +281,42 @@ describe("aggregations-where-node-datetime", () => {
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 });
-describe("aggregations-where-node-datetime interface relationships of concrete types", () => {
+describe("aggregations-where-node-datetime - connections - interface relationships of concrete types", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -297,7 +327,6 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         Person = testHelper.createUniqueType("Person");
-
         const typeDefs = `
         interface Human {
             testString: String!
@@ -344,30 +373,39 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is GT than", async () => {
@@ -390,30 +428,39 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is GTE than", async () => {
@@ -434,30 +481,39 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is LT than", async () => {
@@ -480,30 +536,39 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like DateTime is LTE than", async () => {
@@ -524,29 +589,38 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
         const query = `
                 {
                     ${
-                        Post.plural
+                        Post.operations.connection
                     }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
-                        testString
-                        likes {
-                            testString
-                            someDateTime
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someDateTime
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+                    },
+                },
+            ],
+        });
     });
 });

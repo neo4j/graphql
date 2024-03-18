@@ -28,7 +28,7 @@ import type {
 import { AGGREGATION_COMPARISON_OPERATORS, DEPRECATED } from "../../constants";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
@@ -87,7 +87,7 @@ export function withAggregateInputType({
     userDefinedDirectivesOnTargetFields,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    entityAdapter: ConcreteEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     composer: SchemaComposer;
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
 }): InputTypeComposer {
@@ -139,12 +139,16 @@ function withAggregationWhereInputType({
     userDefinedDirectivesOnTargetFields,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    entityAdapter: ConcreteEntityAdapter | RelationshipAdapter | RelationshipDeclarationAdapter;
+    entityAdapter:
+        | ConcreteEntityAdapter
+        | RelationshipAdapter
+        | RelationshipDeclarationAdapter
+        | InterfaceEntityAdapter;
     composer: SchemaComposer;
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
 }): InputTypeComposer | undefined {
     const aggregationInputName =
-        entityAdapter instanceof ConcreteEntityAdapter
+        entityAdapter instanceof ConcreteEntityAdapter || entityAdapter instanceof InterfaceEntityAdapter
             ? relationshipAdapter.operations.nodeAggregationWhereInputTypeName
             : relationshipAdapter.operations.edgeAggregationWhereInputTypeName;
     if (composer.has(aggregationInputName)) {

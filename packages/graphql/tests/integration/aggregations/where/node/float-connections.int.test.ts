@@ -21,12 +21,13 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("aggregations-where-node-float", () => {
-    const testHelper = new TestHelper();
+describe("aggregations-where-node-float - connections", () => {
+    let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
 
     beforeEach(async () => {
+        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         const typeDefs = `
@@ -64,11 +65,15 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -82,12 +87,16 @@ describe("aggregations-where-node-float", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is GT than", async () => {
@@ -108,11 +117,15 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -126,12 +139,16 @@ describe("aggregations-where-node-float", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is GTE than", async () => {
@@ -151,11 +168,15 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -169,12 +190,16 @@ describe("aggregations-where-node-float", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is LT than", async () => {
@@ -195,11 +220,15 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -213,12 +242,16 @@ describe("aggregations-where-node-float", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is LTE than", async () => {
@@ -238,11 +271,15 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -256,16 +293,20 @@ describe("aggregations-where-node-float", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 });
 
-describe("aggregations-where-node-float interface relationships of concrete types", () => {
+describe("aggregations-where-node-float - connections - interface relationships of concrete types", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -276,7 +317,6 @@ describe("aggregations-where-node-float interface relationships of concrete type
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         Person = testHelper.createUniqueType("Person");
-
         const typeDefs = `
         interface Human {
             testString: String!
@@ -322,11 +362,15 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -340,12 +384,16 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is GT than", async () => {
@@ -366,11 +414,15 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -384,12 +436,16 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is GTE than", async () => {
@@ -409,11 +465,15 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -427,12 +487,16 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is LT than", async () => {
@@ -453,11 +517,15 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -471,12 +539,16 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like Float is LTE than", async () => {
@@ -496,11 +568,15 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someFloat
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someFloat
+                                }
+                            }
                         }
                     }
                 }
@@ -514,11 +590,15 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someFloat }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someFloat }],
+                    },
+                },
+            ],
+        });
     });
 });

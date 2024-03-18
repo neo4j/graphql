@@ -21,13 +21,14 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("aggregations-where-node-bigint", () => {
-    const testHelper = new TestHelper();
+describe("aggregations-where-node-bigint - connections", () => {
+    let testHelper: TestHelper;
     let bigInt: string;
     let User: UniqueType;
     let Post: UniqueType;
 
     beforeEach(async () => {
+        testHelper = new TestHelper();
         bigInt = "2147483647";
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
@@ -65,11 +66,15 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -83,12 +88,16 @@ describe("aggregations-where-node-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is GT than", async () => {
@@ -109,11 +118,15 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -127,12 +140,16 @@ describe("aggregations-where-node-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is GTE than", async () => {
@@ -150,11 +167,15 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -168,12 +189,16 @@ describe("aggregations-where-node-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is LT than", async () => {
@@ -193,11 +218,15 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -211,12 +240,16 @@ describe("aggregations-where-node-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is LTE than", async () => {
@@ -234,11 +267,15 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                       edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -252,16 +289,20 @@ describe("aggregations-where-node-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 });
 
-describe("aggregations-where-node-bigint interface relationships of concrete types", () => {
+describe("aggregations-where-node-bigint - connections - interface relationships of concrete types", () => {
     let testHelper: TestHelper;
     let bigInt: string;
     let User: UniqueType;
@@ -274,7 +315,6 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         Person = testHelper.createUniqueType("Person");
-
         const typeDefs = `
         interface Human {
             testString: String!
@@ -319,11 +359,15 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -337,12 +381,16 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is GT than", async () => {
@@ -363,11 +411,15 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                       edges {
+                        node {
+                             testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -381,12 +433,16 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is GTE than", async () => {
@@ -404,11 +460,15 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -422,12 +482,16 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is LT than", async () => {
@@ -447,11 +511,15 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -465,12 +533,16 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 
     test("should return posts where a like BigInt is LTE than", async () => {
@@ -488,11 +560,15 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
-                        testString
-                        likes {
-                            testString
-                            someBigInt
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    testString
+                                    someBigInt
+                                }
+                            }
                         }
                     }
                 }
@@ -506,11 +582,15 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString, someBigInt: bigInt }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ testString, someBigInt: bigInt }],
+                    },
+                },
+            ],
+        });
     });
 });

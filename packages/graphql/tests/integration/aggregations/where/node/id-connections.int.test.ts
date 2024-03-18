@@ -21,12 +21,13 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("aggregations-where-node-id", () => {
-    const testHelper = new TestHelper();
+describe("aggregations-where-node-id - connections", () => {
+    let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
 
     beforeEach(async () => {
+        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
 
@@ -68,11 +69,15 @@ describe("aggregations-where-node-id", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
-                        testString
-                        likes {
-                            id
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    id
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
@@ -86,16 +91,20 @@ describe("aggregations-where-node-id", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ id: testId, testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ id: testId, testString }],
+                    },
+                },
+            ],
+        });
     });
 });
 
-describe("aggregations-where-node-id interface relationships of concrete types", () => {
+describe("aggregations-where-node-id - connections - interface relationships of concrete types", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -155,28 +164,37 @@ describe("aggregations-where-node-id interface relationships of concrete types",
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
-                        testString
-                        likes {
-                            id
-                            testString
+                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                        edges {
+                            node {
+                                testString
+                                likes {
+                                    id
+                                    testString
+                                }
+                            }
                         }
                     }
                 }
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ id: testId, testString }],
-            },
-        ]);
+        expect((gqlResult.data as any)[Post.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        testString,
+                        likes: [{ id: testId, testString }],
+                    },
+                },
+            ],
+        });
     });
 });

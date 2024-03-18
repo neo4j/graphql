@@ -19,6 +19,8 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
 import { hasTarget } from "../../../utils/context-has-target";
 import type { QueryASTContext } from "../../QueryASTContext";
@@ -27,6 +29,7 @@ import { Filter } from "../Filter";
 
 export class AggregationPropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
+    protected relationship: RelationshipAdapter | undefined;
     protected comparisonValue: unknown;
 
     protected logicalOperator: AggregationLogicalOperator;
@@ -35,12 +38,14 @@ export class AggregationPropertyFilter extends Filter {
 
     constructor({
         attribute,
+        relationship,
         logicalOperator,
         comparisonValue,
         aggregationOperator,
         attachedTo,
     }: {
         attribute: AttributeAdapter;
+        relationship?: RelationshipAdapter;
         logicalOperator: AggregationLogicalOperator;
         comparisonValue: unknown;
         aggregationOperator: AggregationOperator | undefined;
@@ -48,6 +53,7 @@ export class AggregationPropertyFilter extends Filter {
     }) {
         super();
         this.attribute = attribute;
+        this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.logicalOperator = logicalOperator;
         this.aggregationOperator = aggregationOperator;
@@ -58,9 +64,17 @@ export class AggregationPropertyFilter extends Filter {
         return [];
     }
 
+    private getPropertyRefOrAliasesCase(queryASTContext: QueryASTContext): Cypher.Property | Cypher.Case {
+        const implementationsWithAlias = this.getAliasesToResolve();
+        if (implementationsWithAlias) {
+            return this.generateCaseForAliasedFields(queryASTContext, implementationsWithAlias);
+        }
+        return this.getPropertyRef(queryASTContext);
+    }
+
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const comparisonVar = new Cypher.Variable();
-        const property = this.getPropertyRef(queryASTContext);
+        const property = this.getPropertyRefOrAliasesCase(queryASTContext);
 
         if (this.aggregationOperator) {
             let propertyExpr: Cypher.Expr = property;
@@ -93,6 +107,34 @@ export class AggregationPropertyFilter extends Filter {
         });
     }
 
+    private getAliasesToResolve(): [string[], string][] | undefined {
+        if (!this.relationship || !(this.relationship.target instanceof InterfaceEntityAdapter)) {
+            return;
+        }
+        const aliasedImplementationsMap = this.relationship.target.getImplementationToAliasMapWhereAliased(
+            this.attribute
+        );
+        if (!aliasedImplementationsMap.length) {
+            return;
+        }
+        return aliasedImplementationsMap;
+    }
+
+    private generateCaseForAliasedFields(
+        queryASTContext: QueryASTContext,
+        concreteLabelsToAttributeAlias: [string[], string][]
+    ): Cypher.Case {
+        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        const aliasesCase = new Cypher.Case();
+        for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
+            aliasesCase
+                .when(queryASTContext.target.hasLabels(...labels))
+                .then(queryASTContext.target.property(databaseName));
+        }
+        aliasesCase.else(queryASTContext.target.property(this.attribute.databaseName));
+        return aliasesCase;
+    }
+
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
             if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
@@ -105,7 +147,7 @@ export class AggregationPropertyFilter extends Filter {
     }
 
     private getAggregateOperation(
-        property: Cypher.Property | Cypher.Function,
+        property: Cypher.Property | Cypher.Function | Cypher.Case,
         aggregationOperator: string
     ): Cypher.Function {
         switch (aggregationOperator) {

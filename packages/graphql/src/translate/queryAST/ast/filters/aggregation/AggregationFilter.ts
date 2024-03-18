@@ -27,6 +27,7 @@ import type { RelationshipAdapter } from "../../../../../schema-model/relationsh
 import type { QueryASTNode } from "../../QueryASTNode";
 import { hasTarget } from "../../../utils/context-has-target";
 import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export class AggregationFilter extends Filter {
     private relationship: RelationshipAdapter;
@@ -52,8 +53,19 @@ export class AggregationFilter extends Filter {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         this.subqueryReturnVariable = new Cypher.Variable();
         const relatedEntity = this.relationship.target;
-        const relatedNode = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
 
+        let relatedNode: Cypher.Node;
+        let labelsFilter: Cypher.Predicate | undefined;
+
+        if (relatedEntity instanceof InterfaceEntityAdapter) {
+            relatedNode = new Cypher.Node();
+            const labelsForImplementations = relatedEntity.concreteEntities.map((e) =>
+                relatedNode.hasLabel(e.getLabels().join(":"))
+            );
+            labelsFilter = Cypher.or(...labelsForImplementations);
+        } else {
+            relatedNode = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
+        }
         const relationshipTarget = new Cypher.Relationship({
             type: this.relationship.type,
         });
@@ -79,12 +91,15 @@ export class AggregationFilter extends Filter {
 
         if (returnColumns.length === 0) return []; // Maybe throw?
 
-        const subquery = new Cypher.Match(pattern).return(...returnColumns);
+        const subquery = labelsFilter
+            ? new Cypher.Match(pattern).where(labelsFilter).return(...returnColumns)
+            : new Cypher.Match(pattern).return(...returnColumns);
 
         return [subquery];
     }
 
     public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        // should this throw instead?
         if (!this.subqueryReturnVariable) return undefined;
         return Cypher.eq(this.subqueryReturnVariable, Cypher.true);
     }

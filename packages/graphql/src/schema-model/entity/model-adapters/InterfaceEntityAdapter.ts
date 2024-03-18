@@ -86,6 +86,18 @@ export class InterfaceEntityAdapter {
         return upperFirst(this.plural);
     }
 
+    public getImplementationToAliasMapWhereAliased(attribute: AttributeAdapter): [string[], string][] {
+        const concreteLabelsToAttributeAlias: [string[], string][] = [];
+        const attributeNameInInterface = attribute.databaseName;
+        for (const concreteEntity of this.concreteEntities) {
+            const attributeDatabaseName = concreteEntity.findAttribute(attributeNameInInterface)?.databaseName;
+            if (attributeDatabaseName && attributeDatabaseName !== attributeNameInInterface) {
+                concreteLabelsToAttributeAlias.push([concreteEntity.getLabels(), attributeDatabaseName]);
+            }
+        }
+        return concreteLabelsToAttributeAlias;
+    }
+
     public get isReadable(): boolean {
         return this.annotations.query === undefined || this.annotations.query.read === true;
     }
@@ -110,6 +122,10 @@ export class InterfaceEntityAdapter {
 
     public get whereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
+    public get aggregationWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
     }
 
     public get aggregableFields(): AttributeAdapter[] {

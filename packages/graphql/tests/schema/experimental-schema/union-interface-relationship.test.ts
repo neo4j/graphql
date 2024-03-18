@@ -1104,6 +1104,19 @@ describe("Union Interface Relationships", () => {
               reviewerId: IntAggregateSelection!
             }
 
+            input MovieReviewersAggregateInput {
+              AND: [MovieReviewersAggregateInput!]
+              NOT: MovieReviewersAggregateInput
+              OR: [MovieReviewersAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ReviewAggregationWhereInput
+              node: MovieReviewersNodeAggregationWhereInput
+            }
+
             input MovieReviewersConnectFieldInput {
               edge: ReviewCreateInput!
               where: ReviewerConnectWhere
@@ -1146,6 +1159,62 @@ describe("Union Interface Relationships", () => {
             input MovieReviewersFieldInput {
               connect: [MovieReviewersConnectFieldInput!]
               create: [MovieReviewersCreateFieldInput!]
+            }
+
+            input MovieReviewersNodeAggregationWhereInput {
+              AND: [MovieReviewersNodeAggregationWhereInput!]
+              NOT: MovieReviewersNodeAggregationWhereInput
+              OR: [MovieReviewersNodeAggregationWhereInput!]
+              reputation_AVERAGE_EQUAL: Float
+              reputation_AVERAGE_GT: Float
+              reputation_AVERAGE_GTE: Float
+              reputation_AVERAGE_LT: Float
+              reputation_AVERAGE_LTE: Float
+              reputation_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reputation_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reputation_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reputation_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reputation_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reputation_MAX_EQUAL: Int
+              reputation_MAX_GT: Int
+              reputation_MAX_GTE: Int
+              reputation_MAX_LT: Int
+              reputation_MAX_LTE: Int
+              reputation_MIN_EQUAL: Int
+              reputation_MIN_GT: Int
+              reputation_MIN_GTE: Int
+              reputation_MIN_LT: Int
+              reputation_MIN_LTE: Int
+              reputation_SUM_EQUAL: Int
+              reputation_SUM_GT: Int
+              reputation_SUM_GTE: Int
+              reputation_SUM_LT: Int
+              reputation_SUM_LTE: Int
+              reviewerId_AVERAGE_EQUAL: Float
+              reviewerId_AVERAGE_GT: Float
+              reviewerId_AVERAGE_GTE: Float
+              reviewerId_AVERAGE_LT: Float
+              reviewerId_AVERAGE_LTE: Float
+              reviewerId_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reviewerId_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reviewerId_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reviewerId_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reviewerId_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              reviewerId_MAX_EQUAL: Int
+              reviewerId_MAX_GT: Int
+              reviewerId_MAX_GTE: Int
+              reviewerId_MAX_LT: Int
+              reviewerId_MAX_LTE: Int
+              reviewerId_MIN_EQUAL: Int
+              reviewerId_MIN_GT: Int
+              reviewerId_MIN_GTE: Int
+              reviewerId_MIN_LT: Int
+              reviewerId_MIN_LTE: Int
+              reviewerId_SUM_EQUAL: Int
+              reviewerId_SUM_GT: Int
+              reviewerId_SUM_GTE: Int
+              reviewerId_SUM_LT: Int
+              reviewerId_SUM_LTE: Int
             }
 
             type MovieReviewersRelationship {
@@ -1260,6 +1329,7 @@ describe("Union Interface Relationships", () => {
               imdbId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               imdbId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reviewers: ReviewerWhere @deprecated(reason: \\"Use \`reviewers_SOME\` instead.\\")
+              reviewersAggregate: MovieReviewersAggregateInput
               reviewersConnection: MovieReviewersConnectionWhere @deprecated(reason: \\"Use \`reviewersConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
