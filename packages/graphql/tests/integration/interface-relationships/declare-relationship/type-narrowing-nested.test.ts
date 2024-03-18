@@ -18,19 +18,13 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql, type Source } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("type narrowing nested connections", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
-    let gqlQuery: string | Source;
+    const testHelper = new TestHelper();
+    let gqlQuery: string;
 
     let Movie: UniqueType;
     let AmatureProduction: UniqueType;
@@ -48,10 +42,7 @@ describe("type narrowing nested connections", () => {
     let seriesScreenTime: number;
     let sceneNr: number;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
+    beforeEach(async () => {
         actorName = "actor1";
         untrainedPersonName = "anyone";
         movieTitle = "movie1";
@@ -63,13 +54,12 @@ describe("type narrowing nested connections", () => {
         seriesScreenTime = faker.number.int({ max: 100000 });
         sceneNr = faker.number.int({ max: 100000 });
 
-        Movie = new UniqueType("Movie");
-        AmatureProduction = new UniqueType("AmatureProduction");
-        Actor = new UniqueType("Actor");
-        UntrainedPerson = new UniqueType("UntrainedPerson");
-        session = await neo4j.getSession();
+        Movie = testHelper.createUniqueType("Movie");
+        AmatureProduction = testHelper.createUniqueType("AmatureProduction");
+        Actor = testHelper.createUniqueType("Actor");
+        UntrainedPerson = testHelper.createUniqueType("UntrainedPerson");
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -143,21 +133,8 @@ describe("type narrowing nested connections", () => {
     `;
     });
 
-    afterAll(async () => {
-        await session.run(
-            `
-                MATCH(a:${Movie})
-                MATCH(b:${AmatureProduction})
-                MATCH(c:${Actor})
-                MATCH(d:${UntrainedPerson})
-
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-                DETACH DELETE d
-            `
-        );
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("connection field has relationship to one narrowed type only", async () => {
@@ -205,16 +182,11 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: gqlQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(gqlQuery);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(
@@ -290,16 +262,11 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: gqlQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(gqlQuery);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(
@@ -375,16 +342,11 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: gqlQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(gqlQuery);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(
@@ -469,7 +431,7 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -502,12 +464,7 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: filterQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(filterQuery);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[UntrainedPerson.plural]).toIncludeSameMembers([
@@ -564,7 +521,7 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -597,12 +554,7 @@ describe("type narrowing nested connections", () => {
         }
     `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: filterQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(filterQuery);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[UntrainedPerson.plural]).toIncludeSameMembers([
