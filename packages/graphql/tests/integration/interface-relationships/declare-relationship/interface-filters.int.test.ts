@@ -340,7 +340,6 @@ describe("interface filters of declared interface relationships", () => {
     let seriesScreenTime;
     let episodeNr;
 
-    beforeAll(async () => {});
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
