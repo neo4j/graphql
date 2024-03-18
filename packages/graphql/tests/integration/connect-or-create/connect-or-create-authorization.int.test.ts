@@ -17,35 +17,23 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { Driver, Session, Integer } from "neo4j-driver";
-import type { DocumentNode } from "graphql";
-import { graphql } from "graphql";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
-import { getQuerySource } from "../../utils/get-query-source";
-import { UniqueType } from "../../utils/graphql-types";
+import { type Integer } from "neo4j-driver";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("connectOrCreate", () => {
     describe("Update -> ConnectOrCreate", () => {
-        let driver: Driver;
-        let neo4j: Neo4jHelper;
-        let session: Session;
-        let typeDefs: DocumentNode;
-        let queryUpdate: DocumentNode;
-        let queryCreate: DocumentNode;
+        const testHelper = new TestHelper();
+        let typeDefs: string;
+        let queryUpdate: string;
+        let queryCreate: string;
 
-        const typeMovie = new UniqueType("Movie");
-        const typeGenre = new UniqueType("Genre");
+        const typeMovie = testHelper.createUniqueType("Movie");
+        const typeGenre = testHelper.createUniqueType("Genre");
         const secret = "secret";
-        let neoSchema: Neo4jGraphQL;
 
-        beforeAll(async () => {
-            neo4j = new Neo4jHelper();
-            driver = await neo4j.getDriver();
-
-            typeDefs = gql`
+        beforeEach(async () => {
+            typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]!
             }
@@ -60,7 +48,7 @@ describe("connectOrCreate", () => {
             }
             `;
 
-            queryUpdate = gql`
+            queryUpdate = `
                 mutation {
                   ${typeMovie.operations.update}(
                     update: {
@@ -80,7 +68,7 @@ describe("connectOrCreate", () => {
                 }
                 `;
 
-            queryCreate = gql`
+            queryCreate = `
                 mutation {
                     ${typeMovie.operations.create}(
                         input: [
@@ -102,7 +90,7 @@ describe("connectOrCreate", () => {
                 }
                 `;
 
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -112,44 +100,25 @@ describe("connectOrCreate", () => {
             });
         });
 
-        beforeEach(async () => {
-            session = await neo4j.getSession();
-        });
-
         afterEach(async () => {
-            await session.run(`MATCH (m:${typeMovie.name}) DETACH DELETE m`);
-            await session.run(`MATCH (g:${typeGenre.name}) DETACH DELETE g`);
-
-            await session.close();
-        });
-
-        afterAll(async () => {
-            await driver.close();
+            await testHelper.close();
         });
 
         test("cannot update with ConnectOrCreate auth", async () => {
-            await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValues(),
-            });
+            await testHelper.executeCypher(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
+            const gqlResult = await testHelper.executeGraphQL(queryUpdate);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("update with ConnectOrCreate auth", async () => {
-            await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
+            await testHelper.executeCypher(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
             const token = createBearerToken(secret, { roles: ["admin"] });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(queryUpdate, token);
             expect(gqlResult.errors).toBeUndefined();
 
-            const genreCount: any = await session.run(`
+            const genreCount: any = await testHelper.executeCypher(`
               MATCH (m:${typeGenre.name} { name: "Horror" })
               RETURN COUNT(m) as count
             `);
@@ -159,14 +128,10 @@ describe("connectOrCreate", () => {
         test("create with ConnectOrCreate auth", async () => {
             const token = createBearerToken(secret, { roles: ["admin"] });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: getQuerySource(queryCreate),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(queryCreate, token);
             expect(gqlResult.errors).toBeUndefined();
 
-            const genreCount: any = await session.run(`
+            const genreCount: any = await testHelper.executeCypher(`
               MATCH (m:${typeGenre.name} { name: "Comedy" })
               RETURN COUNT(m) as count
             `);
@@ -175,23 +140,17 @@ describe("connectOrCreate", () => {
     });
 
     describe("authorization rules on source and target types", () => {
-        let driver: Driver;
-        let neo4j: Neo4jHelper;
-        let session: Session;
-        let typeDefs: DocumentNode;
-        let queryUpdate: DocumentNode;
-        let queryCreate: DocumentNode;
+        const testHelper = new TestHelper();
+        let typeDefs: string;
+        let queryUpdate: string;
+        let queryCreate: string;
 
-        const typeMovie = new UniqueType("Movie");
-        const typeGenre = new UniqueType("Genre");
+        const typeMovie = testHelper.createUniqueType("Movie");
+        const typeGenre = testHelper.createUniqueType("Genre");
         const secret = "secret";
-        let neoSchema: Neo4jGraphQL;
 
-        beforeAll(async () => {
-            neo4j = new Neo4jHelper();
-            driver = await neo4j.getDriver();
-
-            typeDefs = gql`
+        beforeEach(async () => {
+            typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]!
             }
@@ -206,7 +165,7 @@ describe("connectOrCreate", () => {
             }
             `;
 
-            queryUpdate = gql`
+            queryUpdate = `
                 mutation {
                   ${typeMovie.operations.update}(
                     update: {
@@ -226,7 +185,7 @@ describe("connectOrCreate", () => {
                 }
                 `;
 
-            queryCreate = gql`
+            queryCreate = `
                 mutation {
                     ${typeMovie.operations.create}(
                         input: [
@@ -248,7 +207,7 @@ describe("connectOrCreate", () => {
                 }
                 `;
 
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -258,44 +217,25 @@ describe("connectOrCreate", () => {
             });
         });
 
-        beforeEach(async () => {
-            session = await neo4j.getSession();
-        });
-
         afterEach(async () => {
-            await session.run(`MATCH (m:${typeMovie.name}) DETACH DELETE m`);
-            await session.run(`MATCH (g:${typeGenre.name}) DETACH DELETE g`);
-
-            await session.close();
-        });
-
-        afterAll(async () => {
-            await driver.close();
+            await testHelper.close();
         });
 
         test("cannot update with ConnectOrCreate auth", async () => {
-            await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValues(),
-            });
+            await testHelper.executeCypher(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
+            const gqlResult = await testHelper.executeGraphQL(queryUpdate);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("update with ConnectOrCreate auth", async () => {
-            await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
+            await testHelper.executeCypher(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
             const token = createBearerToken(secret, { roles: ["admin"] });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(queryUpdate, token);
             expect(gqlResult.errors).toBeUndefined();
 
-            const genreCount: any = await session.run(`
+            const genreCount: any = await testHelper.executeCypher(`
               MATCH (m:${typeGenre.name} { name: "Horror" })
               RETURN COUNT(m) as count
             `);
@@ -305,14 +245,10 @@ describe("connectOrCreate", () => {
         test("create with ConnectOrCreate auth", async () => {
             const token = createBearerToken(secret, { roles: ["admin"] });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: getQuerySource(queryCreate),
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(queryCreate, token);
             expect(gqlResult.errors).toBeUndefined();
 
-            const genreCount: any = await session.run(`
+            const genreCount: any = await testHelper.executeCypher(`
               MATCH (m:${typeGenre.name} { name: "Comedy" })
               RETURN COUNT(m) as count
             `);

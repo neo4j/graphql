@@ -18,35 +18,23 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("type narrowing - simple case", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
 
     let Movie: UniqueType;
     let AmatureProduction: UniqueType;
     let Actor: UniqueType;
     let UntrainedPerson: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        Movie = new UniqueType("Movie");
-        AmatureProduction = new UniqueType("AmatureProduction");
-        Actor = new UniqueType("Actor");
-        UntrainedPerson = new UniqueType("UntrainedPerson");
-        session = await neo4j.getSession();
+        Movie = testHelper.createUniqueType("Movie");
+        AmatureProduction = testHelper.createUniqueType("AmatureProduction");
+        Actor = testHelper.createUniqueType("Actor");
+        UntrainedPerson = testHelper.createUniqueType("UntrainedPerson");
 
         const typeDefs = gql`
             interface Production {
@@ -92,30 +80,13 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
     afterEach(async () => {
-        await session.run(
-            `
-                MATCH(a:${Movie})
-                MATCH(b:${AmatureProduction})
-                MATCH(c:${Actor})
-                MATCH(d:${UntrainedPerson})
-
-                DETACH DELETE a
-                DETACH DELETE b
-                DETACH DELETE c
-                DETACH DELETE d
-            `
-        );
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("get narrowed connection field", async () => {
@@ -161,7 +132,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -186,12 +157,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -305,7 +271,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -330,12 +296,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -499,7 +460,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -524,12 +485,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -641,7 +597,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -666,12 +622,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -765,7 +716,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -789,12 +740,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -902,7 +848,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -928,12 +874,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1067,7 +1008,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -1093,12 +1034,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1232,7 +1168,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -1258,12 +1194,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1372,7 +1303,7 @@ describe("type narrowing - simple case", () => {
             }
         `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
                 CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
                 CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -1398,12 +1329,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -1471,7 +1397,7 @@ describe("type narrowing - simple case", () => {
         }
     `;
 
-        await session.run(
+        await testHelper.executeCypher(
             `
             CREATE (a:${Actor} { name: $actorName, moviesCnt: 1 })
             CREATE (up:${UntrainedPerson} { name: $untrainedPersonName, age: 20 })
@@ -1497,12 +1423,7 @@ describe("type narrowing - simple case", () => {
             }
         );
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-            variableValues: {},
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 

@@ -147,9 +147,7 @@ export class TestHelper {
             this.database = await this.checkConnectivity(driver);
         } catch (error: any) {
             await driver.close();
-            throw new Error(
-                `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
-            );
+            throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
         }
 
         this.driver = driver;
