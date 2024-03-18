@@ -17,21 +17,16 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("cypher targeting interface", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
     let Actor: UniqueType;
     let Series: UniqueType;
-    let neoSchema: Neo4jGraphQL;
+
     let actorName: string;
     let movieTitle: string;
     let movieTitle2: string;
@@ -40,11 +35,9 @@ describe("cypher targeting interface", () => {
     let episodes: number;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
-        Actor = new UniqueType("Actor");
-        Series = new UniqueType("Series");
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
+        Series = testHelper.createUniqueType("Series");
 
         movieTitle = generate({
             charset: "alphabetic",
@@ -68,27 +61,22 @@ describe("cypher targeting interface", () => {
             charset: "alphabetic",
         });
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (:${Movie} {title: $title1})<-[:ACTED_IN]-(a:${Actor} {name: $name})
                     CREATE (:${Movie} {title: $title2})<-[:ACTED_IN]-(a)
                     CREATE (:${Movie} {title: $title3})<-[:ACTED_IN]-(a)
                     CREATE (:${Series} {title: $title4, episodes: $episodes})<-[:ACTED_IN]-(a)
                 `,
-                {
-                    title1: movieTitle,
-                    title2: movieTitle2,
-                    title3: movieTitle3,
-                    title4: movieTitle4,
-                    episodes,
-                    name: actorName,
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                title1: movieTitle,
+                title2: movieTitle2,
+                title3: movieTitle3,
+                title4: movieTitle4,
+                episodes,
+                name: actorName,
+            }
+        );
 
         const typeDefs = `
             type ${Movie} implements Production {
@@ -153,13 +141,11 @@ describe("cypher targeting interface", () => {
                     )
             }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie, Actor]);
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should query custom query and return relationship data (top-level cypher)", async () => {
@@ -177,10 +163,7 @@ describe("cypher targeting interface", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(source, {
             variableValues: { title: movieTitle },
         });
 
@@ -209,10 +192,7 @@ describe("cypher targeting interface", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(source, {
             variableValues: { title: movieTitle, name: actorName },
         });
 
@@ -238,10 +218,7 @@ describe("cypher targeting interface", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(source, {
             variableValues: { title: movieTitle },
         });
 
@@ -271,10 +248,7 @@ describe("cypher targeting interface", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source,
-            contextValue: neo4j.getContextValues(),
+        const gqlResult = await testHelper.executeGraphQL(source, {
             variableValues: { title: movieTitle, name: actorName },
         });
 

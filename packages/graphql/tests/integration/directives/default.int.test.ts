@@ -18,21 +18,13 @@
  */
 
 import { GraphQLError } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("@default directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("with primitive fields", () => {
@@ -44,7 +36,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 
@@ -60,7 +52,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 
@@ -76,7 +68,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 
@@ -93,7 +85,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 
@@ -116,7 +108,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 
@@ -139,7 +131,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 
@@ -162,7 +154,7 @@ describe("@default directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
 

@@ -17,31 +17,20 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Node directive labels", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    const testHelper = new TestHelper();
 
-    const typeFilm = new UniqueType("Film");
+    const typeFilm = testHelper.createUniqueType("Film");
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        session = await neo4j.getSession();
-
-        await session.run(`CREATE (m:${typeFilm.name} {title: "The Matrix",year:1999})`);
+    beforeEach(async () => {
+        await testHelper.executeCypher(`CREATE (m:${typeFilm.name} {title: "The Matrix",year:1999})`);
     });
 
-    afterAll(async () => {
-        await driver.close();
-        await session.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("custom labels", async () => {
@@ -50,7 +39,7 @@ describe("Node directive labels", () => {
             title: String
         }`;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -60,11 +49,7 @@ describe("Node directive labels", () => {
                 }
             }`;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({
             title: "The Matrix",
@@ -81,7 +66,7 @@ describe("Node directive labels", () => {
 
         const token = createBearerToken(secret, { filmLabel: typeFilm.name });
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -96,11 +81,7 @@ describe("Node directive labels", () => {
                 }
             }`;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({
             title: "The Matrix",
@@ -113,7 +94,7 @@ describe("Node directive labels", () => {
             title: String
         }`;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -123,12 +104,10 @@ describe("Node directive labels", () => {
                 }
             }`;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: {
                 filmLabel: typeFilm.name,
-            }),
+            },
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({

@@ -17,34 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
-import { toGlobalId } from "../../../../src/utils/global-ids";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { generate } from "randomstring";
+import { toGlobalId } from "../../../../src/utils/global-ids";
+import { TestHelper } from "../../utils/tests-helper";
 
 // used to confirm the issue: https://github.com/neo4j/graphql/issues/4158
 describe("RelayId projection with GraphQL field alias", () => {
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
-    let session: Session;
+    const testHelper = new TestHelper();
     let movieDatabaseID: string;
     let genreDatabaseID: string;
     let actorDatabaseID: string;
 
-    const Movie = new UniqueType("Movie");
-    const Genre = new UniqueType("Genre");
-    const Actor = new UniqueType("Actor");
+    const Movie = testHelper.createUniqueType("Movie");
+    const Genre = testHelper.createUniqueType("Genre");
+    const Actor = testHelper.createUniqueType("Actor");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         const typeDefs = `
             type ${Movie} {
                 dbId: ID! @id @unique @relayId
@@ -64,24 +52,12 @@ describe("RelayId projection with GraphQL field alias", () => {
             }
         `;
 
-        session = await neo4j.getSession();
-
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = await neoGraphql.getSchema();
-    });
-
-    afterAll(async () => {
-        await session.close();
-        await driver.close();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const randomID = generate({ charset: "alphabetic" });
         const randomID2 = generate({ charset: "alphabetic" });
         const randomID3 = generate({ charset: "alphabetic" });
-        await session.run(`
+        await testHelper.executeCypher(`
         CREATE (m:${Movie.name} { title: "Movie1", dbId: "${randomID}" })
         CREATE (g:${Genre.name} { name: "Action", dbId: "${randomID2}" })
         CREATE (o:${Actor.name} { name: "Keanu", dbId: "${randomID3}" })
@@ -93,9 +69,8 @@ describe("RelayId projection with GraphQL field alias", () => {
         actorDatabaseID = randomID3;
     });
 
-    afterEach(async () => {
-        await cleanNodesUsingSession(session, [Movie, Genre, Actor]);
-        await session.close();
+    afterAll(async () => {
+        await testHelper.close();
     });
 
     test("should return the correct relayId ids using the simple API", async () => {
@@ -119,11 +94,7 @@ describe("RelayId projection with GraphQL field alias", () => {
         }
     `;
 
-        const queryResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
         expect(queryResult.data?.[Movie.plural]).toEqual([
@@ -187,11 +158,7 @@ describe("RelayId projection with GraphQL field alias", () => {
             }
         `;
 
-        const connectionQueryResult = await graphql({
-            schema,
-            source: connectionQuery,
-            contextValue: neo4j.getContextValues(),
-        });
+        const connectionQueryResult = await testHelper.executeGraphQL(connectionQuery);
 
         expect(connectionQueryResult.errors).toBeUndefined();
         expect(connectionQueryResult.data).toBeDefined();

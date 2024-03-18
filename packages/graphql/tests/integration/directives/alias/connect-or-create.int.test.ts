@@ -17,31 +17,18 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@alias directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
-        typeMovie = new UniqueType("Movie");
-        typeActor = new UniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
             type ${typeActor} {
@@ -58,18 +45,13 @@ describe("@alias directive", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [typeMovie, typeActor]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Update mutation with top-level connectOrCreate alias referring to existing field, include both fields as inputs", async () => {
@@ -94,11 +76,7 @@ describe("@alias directive", () => {
             }
             `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
@@ -126,11 +104,7 @@ describe("@alias directive", () => {
         }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult?.data as any)?.[typeActor.operations.create]?.info.nodesCreated).toBe(2);
@@ -154,11 +128,7 @@ describe("@alias directive", () => {
         }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult?.data as any)?.[typeActor.operations.create]?.info.nodesCreated).toBe(2);
@@ -182,11 +152,7 @@ describe("@alias directive", () => {
         }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
@@ -227,11 +193,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeUndefined();
     });
@@ -266,11 +228,7 @@ describe("@alias directive", () => {
                 }
             }`;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
@@ -328,11 +286,7 @@ describe("@alias directive", () => {
                 }
             }`;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
@@ -389,11 +343,7 @@ describe("@alias directive", () => {
                 }
             }`;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeUndefined();
     });

@@ -17,26 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
-describe("cypher with columnName argument", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+describe("cypher directive", () => {
+    const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe(`Top level cypher`, () => {
@@ -46,14 +36,12 @@ describe("cypher with columnName argument", () => {
             let Director: UniqueType;
 
             beforeEach(() => {
-                Movie = new UniqueType("Movie");
-                Actor = new UniqueType("Actor");
-                Director = new UniqueType("Director");
+                Movie = testHelper.createUniqueType("Movie");
+                Actor = testHelper.createUniqueType("Actor");
+                Director = testHelper.createUniqueType("Director");
             });
 
             test("should query custom query and return relationship data", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle = generate({
                     charset: "alphabetic",
                 });
@@ -84,7 +72,7 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($title: String!) {
@@ -97,37 +85,28 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                        {
-                            title: movieTitle,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title: movieTitle,
+                        name: actorName,
+                    }
+                );
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { title: movieTitle },
-                    });
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { title: movieTitle },
+                });
 
-                    expect(gqlResult.errors).toBeFalsy();
+                expect(gqlResult.errors).toBeFalsy();
 
-                    expect((gqlResult?.data as any).customMovies).toEqual([
-                        { title: movieTitle, actors: [{ name: actorName }] },
-                    ]);
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult?.data as any).customMovies).toEqual([
+                    { title: movieTitle, actors: [{ name: actorName }] },
+                ]);
             });
 
             test("should query custom query and return relationship data with custom where on field", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle = generate({
                     charset: "alphabetic",
                 });
@@ -156,7 +135,7 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($title: String!, $name: String) {
@@ -169,37 +148,28 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                        {
-                            title: movieTitle,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title: movieTitle,
+                        name: actorName,
+                    }
+                );
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { title: movieTitle, name: actorName },
-                    });
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { title: movieTitle, name: actorName },
+                });
 
-                    expect(gqlResult.errors).toBeFalsy();
+                expect(gqlResult.errors).toBeFalsy();
 
-                    expect((gqlResult?.data as any).customMovies).toEqual([
-                        { title: movieTitle, actors: [{ name: actorName }] },
-                    ]);
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult?.data as any).customMovies).toEqual([
+                    { title: movieTitle, actors: [{ name: actorName }] },
+                ]);
             });
 
             test("should query custom query and return relationship data with auth", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle = generate({
                     charset: "alphabetic",
                 });
@@ -233,7 +203,7 @@ describe("cypher with columnName argument", () => {
 
                 const secret = "secret";
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: { authorization: { key: "secret" } },
                 });
@@ -249,35 +219,26 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                        {
-                            title: movieTitle,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title: movieTitle,
+                        name: actorName,
+                    }
+                );
 
-                    const token = createBearerToken(secret);
+                const token = createBearerToken(secret);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues({ token }),
-                        variableValues: { title: movieTitle, name: actorName },
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(source, token, {
+                    variableValues: { title: movieTitle, name: actorName },
+                });
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });
 
             test("should query multiple nodes and return relationship data", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle1 = generate({
                     charset: "alphabetic",
                 });
@@ -314,7 +275,7 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($titles: [String!]!) {
@@ -327,51 +288,42 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title1})<-[:ACTED_IN]-(a:${Actor} {name: $name})
                             CREATE (:${Movie} {title: $title2})<-[:ACTED_IN]-(a)
                             CREATE (:${Movie} {title: $title3})<-[:ACTED_IN]-(a)
                         `,
-                        {
-                            title1: movieTitle1,
-                            title2: movieTitle2,
-                            title3: movieTitle3,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title1: movieTitle1,
+                        title2: movieTitle2,
+                        title3: movieTitle3,
+                        name: actorName,
+                    }
+                );
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
-                    });
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
+                });
 
-                    expect(gqlResult.errors).toBeFalsy();
+                expect(gqlResult.errors).toBeFalsy();
 
-                    expect((gqlResult?.data as any).customMovies).toHaveLength(3);
-                    expect((gqlResult?.data as any).customMovies).toContainEqual({
-                        title: movieTitle1,
-                        actors: [{ name: actorName }],
-                    });
-                    expect((gqlResult?.data as any).customMovies).toContainEqual({
-                        title: movieTitle2,
-                        actors: [{ name: actorName }],
-                    });
-                    expect((gqlResult?.data as any).customMovies).toContainEqual({
-                        title: movieTitle3,
-                        actors: [{ name: actorName }],
-                    });
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult?.data as any).customMovies).toHaveLength(3);
+                expect((gqlResult?.data as any).customMovies).toContainEqual({
+                    title: movieTitle1,
+                    actors: [{ name: actorName }],
+                });
+                expect((gqlResult?.data as any).customMovies).toContainEqual({
+                    title: movieTitle2,
+                    actors: [{ name: actorName }],
+                });
+                expect((gqlResult?.data as any).customMovies).toContainEqual({
+                    title: movieTitle3,
+                    actors: [{ name: actorName }],
+                });
             });
 
             test("should query multiple connection fields on a type", async () => {
-                const session = await neo4j.getSession();
-
                 const title = generate({
                     charset: "alphabetic",
                 });
@@ -413,7 +365,7 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($title: String!) {
@@ -437,40 +389,33 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (m:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $actorName})
                             CREATE (m)<-[:DIRECTED]-(:${Director} {name: $directorName})
                         `,
-                        {
-                            title,
-                            actorName,
-                            directorName,
-                        }
-                    );
-
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { title },
-                    });
-
-                    expect(gqlResult.errors).toBeFalsy();
-
-                    expect(gqlResult?.data?.movie).toEqual({
+                    {
                         title,
-                        actorsConnection: {
-                            edges: [{ node: { name: actorName } }],
-                        },
-                        directorsConnection: {
-                            edges: [{ node: { name: directorName } }],
-                        },
-                    });
-                } finally {
-                    await session.close();
-                }
+                        actorName,
+                        directorName,
+                    }
+                );
+
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { title },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect(gqlResult?.data?.movie).toEqual({
+                    title,
+                    actorsConnection: {
+                        edges: [{ node: { name: actorName } }],
+                    },
+                    directorsConnection: {
+                        edges: [{ node: { name: directorName } }],
+                    },
+                });
             });
         });
 
@@ -479,13 +424,11 @@ describe("cypher with columnName argument", () => {
             let Actor: UniqueType;
 
             beforeEach(() => {
-                Movie = new UniqueType("Movie");
-                Actor = new UniqueType("Actor");
+                Movie = testHelper.createUniqueType("Movie");
+                Actor = testHelper.createUniqueType("Actor");
             });
 
             test("should query custom mutation and return relationship data", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle = generate({
                     charset: "alphabetic",
                 });
@@ -516,7 +459,7 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const source = `
                     mutation($title: String!) {
@@ -529,37 +472,28 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                        {
-                            title: movieTitle,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title: movieTitle,
+                        name: actorName,
+                    }
+                );
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { title: movieTitle },
-                    });
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { title: movieTitle },
+                });
 
-                    expect(gqlResult.errors).toBeFalsy();
+                expect(gqlResult.errors).toBeFalsy();
 
-                    expect((gqlResult?.data as any).customMovies).toEqual([
-                        { title: movieTitle, actors: [{ name: actorName }] },
-                    ]);
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult?.data as any).customMovies).toEqual([
+                    { title: movieTitle, actors: [{ name: actorName }] },
+                ]);
             });
 
             test("should query custom mutation and return relationship data with custom where on field", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle = generate({
                     charset: "alphabetic",
                 });
@@ -587,7 +521,7 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const source = `
                     mutation($title: String!, $name: String) {
@@ -600,37 +534,28 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                        {
-                            title: movieTitle,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title: movieTitle,
+                        name: actorName,
+                    }
+                );
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { title: movieTitle },
-                    });
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { title: movieTitle },
+                });
 
-                    expect(gqlResult.errors).toBeFalsy();
+                expect(gqlResult.errors).toBeFalsy();
 
-                    expect((gqlResult?.data as any).customMovies).toEqual([
-                        { title: movieTitle, actors: [{ name: actorName }] },
-                    ]);
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult?.data as any).customMovies).toEqual([
+                    { title: movieTitle, actors: [{ name: actorName }] },
+                ]);
             });
 
             test("should query custom mutation and return relationship data with auth", async () => {
-                const session = await neo4j.getSession();
-
                 const movieTitle = generate({
                     charset: "alphabetic",
                 });
@@ -662,7 +587,10 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: { authorization: { key: "secret" } },
+                });
 
                 const source = `
                     mutation($title: String!, $name: String) {
@@ -675,94 +603,70 @@ describe("cypher with columnName argument", () => {
                     }
                 `;
 
-                try {
-                    await session.run(
-                        `
+                await testHelper.executeCypher(
+                    `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                        {
-                            title: movieTitle,
-                            name: actorName,
-                        }
-                    );
+                    {
+                        title: movieTitle,
+                        name: actorName,
+                    }
+                );
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { title: movieTitle },
-                    });
+                const gqlResult = await testHelper.executeGraphQL(source, {
+                    variableValues: { title: movieTitle },
+                });
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });
         });
     });
 
     describe("Field level cypher", () => {
         // Reproduces https://github.com/neo4j/graphql/issues/444 with default value test
-        describe("Null Values", () => {
-            let schemaWithDefaultValue: GraphQLSchema;
-            let schemaWithMissingValue: GraphQLSchema;
-
-            const testLabel = generate({ charset: "alphabetic" });
-
+        describe("Null Values with default value", () => {
             const townId = generate({ charset: "alphabetic" });
             const destinationId = generate({ charset: "alphabetic" });
 
             const defaultPreposition = generate({ charset: "alphabetic" });
             const testCaseName = generate({ charset: "alphabetic" });
+            let Destination: UniqueType;
+            let Town: UniqueType;
 
-            const generateTypeDefs = (withDefaultValue: boolean) => `
-                type Destination {
+            beforeEach(async () => {
+                Destination = testHelper.createUniqueType("Destination");
+                Town = testHelper.createUniqueType("Town");
+
+                const typeDefs = `
+                type ${Destination} {
                     id: ID!
-                    preposition(caseName: String${
-                        withDefaultValue ? "= null" : ""
-                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
+                    preposition(caseName: String = null): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
                 }
 
                 type Query {
-                    townDestinationList(id: ID!): [Destination] @cypher(statement: """
-                        MATCH (town:Town {id:$id})
-                        OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:Destination)
+                    townDestinationList(id: ID!): [${Destination}] @cypher(statement: """
+                        MATCH (town:${Town} {id:$id})
+                        OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:${Destination})
                         RETURN destination
                     """,
                     columnName: "destination")
                 }
             `;
 
-            beforeAll(async () => {
-                const session = await neo4j.getSession();
-
-                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
-                    typeDefs: generateTypeDefs(true),
-                });
-                const neoSchemaWithMissingValue = new Neo4jGraphQL({
-                    typeDefs: generateTypeDefs(false),
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
                 });
 
-                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
-                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
-
-                await session.run(
+                await testHelper.executeCypher(
                     `
-                        CREATE (t:Town:${testLabel} {id: $townId})
-                        MERGE (t)<-[:BELONGS_TO]-(:Destination:${testLabel} {id: $destinationId})
+                        CREATE (t:${Town} {id: $townId})
+                        MERGE (t)<-[:BELONGS_TO]-(:${Destination} {id: $destinationId})
                     `,
                     {
                         townId,
                         destinationId,
                     }
                 );
-                await session.close();
-            });
-
-            afterAll(async () => {
-                const session = await neo4j.getSession();
-                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
-                await session.close();
             });
 
             test("should return default value", async () => {
@@ -775,27 +679,106 @@ describe("cypher with columnName argument", () => {
                         }
                 `;
 
-                const gqlResult = (schema: GraphQLSchema) =>
-                    graphql({
-                        schema,
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { id: townId },
-                    });
-
                 const expectedTownDestinationList = [{ id: destinationId, preposition: defaultPreposition }];
 
                 // Schema with default value
-                const gqlResultWithDefaultValue = await gqlResult(schemaWithDefaultValue);
+                const gqlResultWithDefaultValue = await testHelper.executeGraphQL(source, {
+                    variableValues: { id: townId },
+                });
 
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
                 expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
                     expectedTownDestinationList
                 );
+            });
 
-                // Schema with missing value
-                const gqlResultWithMissingValue = await gqlResult(schemaWithMissingValue);
+            test("should return test value", async () => {
+                const source = `
+                        query($id: ID!, $caseName: String) {
+                            townDestinationList(id: $id) {
+                                id
+                                preposition(caseName: $caseName)
+                            }
+                        }
+                    `;
+
+                const expectedTownDestinationList = [{ id: destinationId, preposition: testCaseName }];
+
+                // Schema with default value
+                const gqlResultWithDefaultValue = await testHelper.executeGraphQL(source, {
+                    variableValues: { id: townId, caseName: testCaseName },
+                });
+
+                expect(gqlResultWithDefaultValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
+                    expectedTownDestinationList
+                );
+            });
+        });
+
+        describe("Null Values without default value", () => {
+            const townId = generate({ charset: "alphabetic" });
+            const destinationId = generate({ charset: "alphabetic" });
+
+            const defaultPreposition = generate({ charset: "alphabetic" });
+            const testCaseName = generate({ charset: "alphabetic" });
+            let Destination: UniqueType;
+            let Town: UniqueType;
+
+            beforeEach(async () => {
+                Destination = testHelper.createUniqueType("Destination");
+                Town = testHelper.createUniqueType("Town");
+
+                const typeDefs = `
+                type ${Destination} {
+                    id: ID!
+                    preposition(caseName: String): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
+                }
+
+                type Query {
+                    townDestinationList(id: ID!): [${Destination}] @cypher(statement: """
+                        MATCH (town:${Town} {id:$id})
+                        OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:${Destination})
+                        RETURN destination
+                    """,
+                    columnName: "destination")
+                }
+            `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                });
+
+                await testHelper.executeCypher(
+                    `
+                        CREATE (t:${Town} {id: $townId})
+                        MERGE (t)<-[:BELONGS_TO]-(:${Destination} {id: $destinationId})
+                    `,
+                    {
+                        townId,
+                        destinationId,
+                    }
+                );
+            });
+
+            test("should return default value", async () => {
+                const source = `
+                        query($id: ID!) {
+                            townDestinationList(id: $id) {
+                                id
+                                preposition
+                            }
+                        }
+                `;
+
+                const expectedTownDestinationList = [{ id: destinationId, preposition: defaultPreposition }];
+
+                // Schema with default value
+                const gqlResultWithMissingValue = await testHelper.executeGraphQL(source, {
+                    variableValues: { id: townId },
+                });
 
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
@@ -814,27 +797,12 @@ describe("cypher with columnName argument", () => {
                         }
                     `;
 
-                const gqlResult = (schema: GraphQLSchema) =>
-                    graphql({
-                        schema,
-                        source,
-                        contextValue: neo4j.getContextValues(),
-                        variableValues: { id: townId, caseName: testCaseName },
-                    });
-
                 const expectedTownDestinationList = [{ id: destinationId, preposition: testCaseName }];
 
                 // Schema with default value
-                const gqlResultWithDefaultValue = await gqlResult(schemaWithDefaultValue);
-
-                expect(gqlResultWithDefaultValue.errors).toBeFalsy();
-
-                expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
-                );
-
-                // Schema with missing value
-                const gqlResultWithMissingValue = await gqlResult(schemaWithMissingValue);
+                const gqlResultWithMissingValue = await testHelper.executeGraphQL(source, {
+                    variableValues: { id: townId, caseName: testCaseName },
+                });
 
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
@@ -845,29 +813,36 @@ describe("cypher with columnName argument", () => {
         });
 
         describe("Union type", () => {
-            let schema: GraphQLSchema;
             const secret = "secret";
 
-            const testLabel = generate({ charset: "alphabetic" });
             const userId = generate({ charset: "alphabetic" });
 
-            const typeDefs = `
-                union PostMovieUser = Post | Movie | User
+            let Post: UniqueType;
+            let Movie: UniqueType;
+            let User: UniqueType;
 
-                type Post {
+            beforeEach(async () => {
+                Post = new UniqueType("Post");
+                Movie = new UniqueType("Movie");
+                User = new UniqueType("User");
+
+                const typeDefs = `
+                union PostMovieUser = ${Post} | ${Movie} | ${User}
+
+                type ${Post} {
                     name: String
                 }
 
-                type Movie {
+                type ${Movie} {
                     name: String
                 }
 
-                type User {
+                type ${User} {
                     id: ID @id @unique
                     updates: [PostMovieUser!]!
                         @cypher(
                             statement: """
-                            MATCH (this:User)-[:WROTE]->(wrote:Post)
+                            MATCH (this:${User})-[:WROTE]->(wrote:${Post})
                             RETURN wrote
                             LIMIT 5
                             """,
@@ -876,37 +851,26 @@ describe("cypher with columnName argument", () => {
                 }
             `;
 
-            beforeAll(async () => {
-                const session = await neo4j.getSession();
-
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: { authorization: { key: "secret" } },
                 });
-                schema = await neoSchema.getSchema();
 
-                await session.run(
+                await testHelper.executeCypher(
                     `
-                        CREATE (p:Post:${testLabel} {name: "Postname"})
-                        CREATE (m:Movie:${testLabel} {name: "Moviename"})
-                        CREATE (u:User:${testLabel} {id: "${userId}"})
+                        CREATE (p:${Post} {name: "Postname"})
+                        CREATE (m:${Movie} {name: "Moviename"})
+                        CREATE (u:${User} {id: "${userId}"})
                         CREATE (u)-[:WROTE]->(p)
                         CREATE (u)-[:WATCHED]->(m)
                     `
                 );
-                await session.close();
-            });
-
-            afterAll(async () => {
-                const session = await neo4j.getSession();
-                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
-                await session.close();
             });
 
             test("should return __typename", async () => {
                 const source = `
                         query {
-                            users (where: { id: "${userId}" }) {
+                            ${User.plural} (where: { id: "${userId}" }) {
                                 updates {
                                     __typename
                                 }
@@ -915,19 +879,15 @@ describe("cypher with columnName argument", () => {
                 `;
 
                 const token = createBearerToken(secret);
-                const gqlResult = await graphql({
-                    schema,
-                    source,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+                const gqlResult = await testHelper.executeGraphQLWithToken(source, token);
 
                 expect(gqlResult.errors).toBeUndefined();
-                expect(gqlResult?.data as any).toEqual({
-                    users: [
+                expect(gqlResult?.data).toEqual({
+                    [User.plural]: [
                         {
                             updates: [
                                 {
-                                    __typename: "Post",
+                                    __typename: `${Post}`,
                                 },
                             ],
                         },

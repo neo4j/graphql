@@ -17,35 +17,28 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Integer } from "neo4j-driver";
+import type { Integer } from "neo4j-driver";
 import { isTime } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("timestamp/time", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Movie: UniqueType;
     let Actor: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Movie = new UniqueType("Movie");
-        Actor = new UniqueType("Actor");
+    beforeEach(() => {
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("create", () => {
         test("should create a movie (with timestamps)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Movie} {
                       id: ID
@@ -53,8 +46,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -70,36 +62,27 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { id },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { id },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (movie:${Movie} {id: $id})
                             RETURN movie {.id, .createdAt} as movie
                         `,
-                    { id }
-                );
+                { id }
+            );
 
-                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
+            const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
-                expect(neo4jMovie.id).toEqual(id);
-                expect(isTime(neo4jMovie.createdAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jMovie.id).toEqual(id);
+            expect(isTime(neo4jMovie.createdAt)).toBe(true);
         });
 
         test("create timestamp on relationship property", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Actor} {
                         name: String!
@@ -116,8 +99,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -147,39 +129,30 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { title, name, screenTime },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { title, name, screenTime },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (:${Actor}{name: $name})-[r:ACTED_IN]->(:${Movie} {title: $title})
                             RETURN r { .createdAt, .screenTime} as relationship
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0]?.toObject().relationship;
+            const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
+                neo4jResult.records[0]?.toObject().relationship;
 
-                expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
-                expect(isTime(neo4jRelationship.createdAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
+            expect(isTime(neo4jRelationship.createdAt)).toBe(true);
         });
     });
 
     describe("update", () => {
         test("should update a movie (with timestamps)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Movie} {
                       id: ID
@@ -187,8 +160,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -204,37 +176,28 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                         CREATE (m:${Movie} {id: "${id}"})
                     `);
 
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { id },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { id },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(`
+            const neo4jResult = await testHelper.executeCypher(`
                         MATCH (m:${Movie} {id: "${id}"})
                         RETURN m {.id, .updatedAt} as m
                     `);
 
-                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().m;
+            const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().m;
 
-                expect(neo4jMovie.id).toEqual(id);
-                expect(isTime(neo4jMovie.updatedAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jMovie.id).toEqual(id);
+            expect(isTime(neo4jMovie.updatedAt)).toBe(true);
         });
 
         test("update timestamp on relationship property", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Actor} {
                         name: String!
@@ -251,8 +214,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -281,46 +243,37 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                await session.run(
-                    `
+            await testHelper.executeCypher(
+                `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:${Actor}{name: $name})
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const graphqlResult = await graphql({
-                    schema,
-                    source: update,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { title, screenTime },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(update, {
+                variableValues: { title, screenTime },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (:${Actor}{name: $name})-[r:ACTED_IN]->(:${Movie} {title: $title})
                             RETURN r { .updatedAt, .screenTime} as relationship
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0]?.toObject().relationship;
+            const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
+                neo4jResult.records[0]?.toObject().relationship;
 
-                expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
-                expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
+            expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
         });
     });
 
     describe("create/update (explicit)", () => {
         test("should create a movie (with timestamps)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Movie} {
                       id: ID
@@ -328,8 +281,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -345,32 +297,22 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create);
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(`
+            const neo4jResult = await testHelper.executeCypher(`
                         MATCH (m:${Movie} {id: "${id}"})
                         RETURN m {.id, .createdAt} as movie
                     `);
 
-                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
+            const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
-                expect(neo4jMovie.id).toEqual(id);
-                expect(isTime(neo4jMovie.createdAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jMovie.id).toEqual(id);
+            expect(isTime(neo4jMovie.createdAt)).toBe(true);
         });
 
         test("create timestamp on relationship property", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Actor} {
                         name: String!
@@ -387,8 +329,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -418,37 +359,28 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { title, name, screenTime },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { title, name, screenTime },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (:${Actor}{name: $name})-[r:ACTED_IN]->(:${Movie} {title: $title})
                             RETURN r { .createdAt, .screenTime } as relationship
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0]?.toObject().relationship;
+            const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
+                neo4jResult.records[0]?.toObject().relationship;
 
-                expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
-                expect(isTime(neo4jRelationship.createdAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
+            expect(isTime(neo4jRelationship.createdAt)).toBe(true);
         });
 
         test("update timestamp on relationship property", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Actor} {
                         name: String!
@@ -465,8 +397,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -495,44 +426,35 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                await session.run(
-                    `
+            await testHelper.executeCypher(
+                `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:${Actor}{name: $name})
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const graphqlResult = await graphql({
-                    schema,
-                    source: update,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { title, screenTime },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(update, {
+                variableValues: { title, screenTime },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (:${Actor}{name: $name})-[r:ACTED_IN]->(:${Movie} {title: $title})
                             RETURN r { .updatedAt, .screenTime } as relationship
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0]?.toObject().relationship;
+            const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
+                neo4jResult.records[0]?.toObject().relationship;
 
-                expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
-                expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
+            expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
         });
 
         test("should update a movie (with timestamps)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Movie} {
                       id: ID
@@ -540,8 +462,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -557,39 +478,30 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                         CREATE (m:${Movie} {id: "${id}"})
                     `);
 
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { id },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { id },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(`
+            const neo4jResult = await testHelper.executeCypher(`
                         MATCH (m:${Movie} {id: "${id}"})
                         RETURN m {.id, .updatedAt} as movie
                     `);
 
-                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().movie;
+            const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
-                expect(neo4jMovie.id).toEqual(id);
-                expect(isTime(neo4jMovie.updatedAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jMovie.id).toEqual(id);
+            expect(isTime(neo4jMovie.updatedAt)).toBe(true);
         });
     });
 
     describe("create/update (implicit)", () => {
         test("should create a movie (with timestamps)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Movie} {
                       id: ID
@@ -597,8 +509,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -614,32 +525,22 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create);
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(`
+            const neo4jResult = await testHelper.executeCypher(`
                         MATCH (m:${Movie} {id: "${id}"})
                         RETURN m { .id, .createdAt } as movie
                     `);
 
-                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
+            const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
-                expect(neo4jMovie.id).toEqual(id);
-                expect(isTime(neo4jMovie.createdAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jMovie.id).toEqual(id);
+            expect(isTime(neo4jMovie.createdAt)).toBe(true);
         });
 
         test("create timestamp on relationship property", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Actor} {
                         name: String!
@@ -656,7 +557,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -686,37 +587,28 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                const graphqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { title, name, screenTime },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { title, name, screenTime },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (:${Actor}{name: $name})-[r:ACTED_IN]->(:${Movie} {title: $title})
                             RETURN r { .createdAt, .screenTime } as relationship
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0]?.toObject().relationship;
+            const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
+                neo4jResult.records[0]?.toObject().relationship;
 
-                expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
-                expect(isTime(neo4jRelationship.createdAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
+            expect(isTime(neo4jRelationship.createdAt)).toBe(true);
         });
 
         test("update timestamp on relationship property", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Actor} {
                         name: String!
@@ -733,8 +625,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -763,44 +654,35 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                await session.run(
-                    `
+            await testHelper.executeCypher(
+                `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:${Actor}{name: $name})
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const graphqlResult = await graphql({
-                    schema,
-                    source: update,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { title, screenTime },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(update, {
+                variableValues: { title, screenTime },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(
-                    `
+            const neo4jResult = await testHelper.executeCypher(
+                `
                             MATCH (:${Actor}{name: $name})-[r:ACTED_IN]->(:${Movie} {title: $title})
                             RETURN r { .updatedAt, .screenTime } as relationship
                         `,
-                    { title, name }
-                );
+                { title, name }
+            );
 
-                const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0]?.toObject().relationship;
+            const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
+                neo4jResult.records[0]?.toObject().relationship;
 
-                expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
-                expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
+            expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
         });
 
         test("should update a movie (with timestamps)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                     type ${Movie} {
                       id: ID
@@ -808,8 +690,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema();
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
@@ -825,32 +706,25 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                         CREATE (m:${Movie} {id: "${id}"})
                     `);
 
-                const graphqlResult = await graphql({
-                    schema,
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                    variableValues: { id },
-                });
+            const graphqlResult = await testHelper.executeGraphQL(create, {
+                variableValues: { id },
+            });
 
-                expect(graphqlResult.errors).toBeFalsy();
+            expect(graphqlResult.errors).toBeFalsy();
 
-                const neo4jResult = await session.run(`
+            const neo4jResult = await testHelper.executeCypher(`
                         MATCH (m:${Movie} {id: "${id}"})
                         RETURN m { .id, .updatedAt } as movie
                     `);
 
-                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().movie;
+            const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
-                expect(neo4jMovie.id).toEqual(id);
-                expect(isTime(neo4jMovie.updatedAt)).toBe(true);
-            } finally {
-                await session.close();
-            }
+            expect(neo4jMovie.id).toEqual(id);
+            expect(isTime(neo4jMovie.updatedAt)).toBe(true);
         });
     });
 });

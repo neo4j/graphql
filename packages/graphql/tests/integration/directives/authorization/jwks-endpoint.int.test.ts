@@ -17,48 +17,34 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import jwksRsa from "jwks-rsa";
 import Koa from "koa";
 import jwt from "koa-jwt";
 import Router from "koa-router";
 import type { JWKSMock } from "mock-jwks";
 import createJWKSMock from "mock-jwks";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/jwks-endpoint", () => {
     let jwksMock: JWKSMock;
     let server: any;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        User = new UniqueType("User");
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
     beforeEach(() => {
+        User = testHelper.createUniqueType("User");
         ({ jwksMock, server } = createContext());
     });
 
     afterEach(async () => {
+        await testHelper.close();
         await tearDown({ jwksMock, server });
     });
 
     test("tests the config path that uses JWKS Endpoint", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -78,7 +64,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -89,36 +75,24 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                iat: 1600000000,
-            });
+        const token = jwksMock.token({
+            iat: 1600000000,
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[User.plural]).toHaveLength(1);
     });
 
     test("tests the config path that uses JWKS Endpoint with Roles Path enabling read for standard-user", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
@@ -143,7 +117,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -154,39 +128,27 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                "https://myAuthTest.auth0.com/jwt/claims": {
-                    "my-auth-roles": ["standard-user"],
-                },
-                iat: 1600000000,
-            });
+        const token = jwksMock.token({
+            "https://myAuthTest.auth0.com/jwt/claims": {
+                "my-auth-roles": ["standard-user"],
+            },
+            iat: 1600000000,
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[User.plural]).toHaveLength(1);
     });
 
     test("show throw forbidden when JWT with JWKS Endpoint verification not on Roles Path", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
@@ -210,7 +172,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -221,38 +183,26 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                "https://myAuthTest.auth0.com/jwt/claims": {
-                    "my-auth-roles": ["standard-user"],
-                },
-                iat: 1600000000,
-            });
+        const token = jwksMock.token({
+            "https://myAuthTest.auth0.com/jwt/claims": {
+                "my-auth-roles": ["standard-user"],
+            },
+            iat: 1600000000,
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
 
     test("should throw Unauthenticated if the issuer in the JWT token does not match the issuer provided in the Neo4jGraphQLAuthJWKSPlugin", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -272,7 +222,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -286,36 +236,24 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                iat: 1600000000,
-                iss: "https://anothercompany.com",
-            });
+        const token = jwksMock.token({
+            iat: 1600000000,
+            iss: "https://anothercompany.com",
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
 
     test("should verify the issuer in the JWT token against the provided issuer in the Neo4jGraphQLAuthJWKSPlugin", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -335,7 +273,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -349,37 +287,25 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                iat: 1600000000,
-                iss: "https://company.com",
-            });
+        const token = jwksMock.token({
+            iat: 1600000000,
+            iss: "https://company.com",
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[User.plural]).toHaveLength(1);
     });
 
     test("should throw Unauthenticated if the audience in the JWT token does not match the audience provided in the Neo4jGraphQLAuthJWKSPlugin", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -399,7 +325,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -413,36 +339,24 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                iat: 1600000000,
-                aud: "urn:anotheruser",
-            });
+        const token = jwksMock.token({
+            iat: 1600000000,
+            aud: "urn:anotheruser",
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
 
     test("should verify the audience in the JWT token against the provided audience in the Neo4jGraphQLAuthJWKSPlugin", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -462,7 +376,7 @@ describe("auth/jwks-endpoint", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -476,32 +390,22 @@ describe("auth/jwks-endpoint", () => {
             },
         });
 
-        try {
-            // Start the JWKS Mock Server Application
-            jwksMock.start();
+        // Start the JWKS Mock Server Application
+        jwksMock.start();
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = jwksMock.token({
-                iat: 1600000000,
-                aud: "urn:${User}",
-            });
+        const token = jwksMock.token({
+            iat: 1600000000,
+            aud: "urn:${User}",
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    token,
-                }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[User.plural]).toHaveLength(1);
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[User.plural]).toHaveLength(1);
     });
 });
 
