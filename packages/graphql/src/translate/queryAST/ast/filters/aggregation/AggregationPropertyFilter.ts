@@ -107,14 +107,14 @@ export class AggregationPropertyFilter extends Filter {
         });
     }
 
-    private getAliasesToResolve(): Map<string, string> | undefined {
+    private getAliasesToResolve(): [string[], string][] | undefined {
         if (!this.relationship || !(this.relationship.target instanceof InterfaceEntityAdapter)) {
             return;
         }
         const aliasedImplementationsMap = this.relationship.target.getImplementationToAliasMapWhereAliased(
             this.attribute
         );
-        if (!aliasedImplementationsMap.size) {
+        if (!aliasedImplementationsMap.length) {
             return;
         }
         return aliasedImplementationsMap;
@@ -122,13 +122,13 @@ export class AggregationPropertyFilter extends Filter {
 
     private generateCaseForAliasedFields(
         queryASTContext: QueryASTContext,
-        concreteLabelsToAttributeAlias: Map<string, string>
+        concreteLabelsToAttributeAlias: [string[], string][]
     ): Cypher.Case {
         if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
         const aliasesCase = new Cypher.Case();
-        for (const [label, databaseName] of concreteLabelsToAttributeAlias) {
+        for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
             aliasesCase
-                .when(queryASTContext.target.hasLabel(label))
+                .when(queryASTContext.target.hasLabels(...labels))
                 .then(queryASTContext.target.property(databaseName));
         }
         aliasesCase.else(queryASTContext.target.property(this.attribute.databaseName));
