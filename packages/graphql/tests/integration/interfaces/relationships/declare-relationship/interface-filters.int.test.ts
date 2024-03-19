@@ -19,8 +19,8 @@
 
 import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("interface filters of declared relationships", () => {
     const testHelper = new TestHelper();
@@ -339,7 +339,6 @@ describe("interface filters of declared interface relationships", () => {
     let seriesEpisodes;
     let seriesScreenTime;
     let episodeNr;
-
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");

@@ -19,8 +19,8 @@
 
 import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("type narrowing nested connections", () => {
     const testHelper = new TestHelper();

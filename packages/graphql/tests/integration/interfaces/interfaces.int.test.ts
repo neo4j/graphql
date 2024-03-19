@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { createBearerToken } from "../utils/create-bearer-token";
-import { TestHelper } from "./utils/tests-helper";
+import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Interfaces tests", () => {
     const secret = "the-secret";
