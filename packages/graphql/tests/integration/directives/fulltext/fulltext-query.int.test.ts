@@ -17,19 +17,16 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
+import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
+import type { Neo4jGraphQL } from "../../../../src/classes";
 import { SCORE_FIELD } from "../../../../src/graphql/directives/fulltext";
 import { upperFirst } from "../../../../src/utils/upper-first";
-import { delay } from "../../../../src/utils/utils";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
+import type { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import Neo4jHelper from "../../neo4j";
+import { TestHelper } from "../../utils/tests-helper";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -49,62 +46,49 @@ function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): strin
 
 describe("@fulltext directive", () => {
     let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
-        const session = driver.session();
-
         try {
-            await session.run(cypher);
+            await testHelper.createDatabase(databaseName);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
+                    await testHelper.close();
                 } else {
                     throw e;
                 }
             }
-        } finally {
-            await session.close();
         }
+    });
 
-        await delay(5000);
+    beforeEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            driver = await testHelper.getDriver();
+        }
+    });
+
+    afterEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            await testHelper.close();
+        }
     });
 
     afterAll(async () => {
         if (MULTIDB_SUPPORT) {
-            const cypher = `DROP DATABASE ${databaseName}`;
-
-            const session = await neo4j.getSession();
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.dropDatabase();
+            await testHelper.close();
         }
-
-        await driver.close();
     });
 
     describe("Query Tests", () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        let session: Session;
         let neoSchema: Neo4jGraphQL;
-        let generatedSchema: GraphQLSchema;
         let personType: UniqueType;
         let movieType: UniqueType;
         let personTypeLowerFirst: string;
@@ -140,29 +124,25 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            personType = new UniqueType("Person");
-            movieType = new UniqueType("Movie");
+            personType = testHelper.createUniqueType("Person");
+            movieType = testHelper.createUniqueType("Movie");
             queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
             personTypeLowerFirst = personType.singular;
 
             const typeDefs = generatedTypeDefs(personType, movieType);
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
-            session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    `
+            await testHelper.executeCypher(
+                `
                     CREATE (person1:${personType.name})-[:ACTED_IN]->(movie1:${movieType.name})
                     CREATE (person1)-[:ACTED_IN]->(movie2:${movieType.name})
                     CREATE (person2:${personType.name})-[:ACTED_IN]->(movie1)
@@ -173,11 +153,8 @@ describe("@fulltext directive", () => {
                     SET movie1 = $movie1
                     SET movie2 = $movie2
                 `,
-                    { person1, person2, person3, movie1, movie2 }
-                );
-            } finally {
-                await session.close();
-            }
+                { person1, person2, person3, movie1, movie2 }
+            );
         });
 
         test("Orders by score DESC as default", async () => {
@@ -197,14 +174,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
@@ -241,14 +211,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
@@ -285,14 +248,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
@@ -315,14 +271,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
@@ -346,14 +295,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -388,14 +330,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
@@ -418,14 +353,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
@@ -450,14 +378,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
@@ -485,14 +406,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
@@ -515,14 +429,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
@@ -547,14 +454,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
@@ -578,14 +478,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect((gqlResult.errors as any[])[0].message).toBe(
                 `Float cannot represent non numeric value: "${nonNumberScoreInput}"`
@@ -613,14 +506,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
@@ -667,14 +553,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -713,14 +592,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
@@ -748,14 +620,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect((gqlResult.errors as any[])[0].message).toBe(
                 `String cannot represent a non string value: ${nonStringValue}`
@@ -784,14 +649,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect((gqlResult.errors as any[])[0].message).toStartWith(
                 `Field "${invalidField}" is not defined by type`
@@ -815,14 +673,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
@@ -853,14 +704,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
@@ -888,14 +732,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -924,21 +761,15 @@ describe("@fulltext directive", () => {
                 born: 234,
             };
 
-            session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    `
+            await testHelper.executeCypher(
+                `
                 CREATE (person1:${personType.name})
                 CREATE (person2:${personType.name})
                 SET person1 = $person1
                 SET person2 = $person2
             `,
-                    { person1, person2 }
-                );
-            } finally {
-                await session.close();
-            }
+                { person1, person2 }
+            );
 
             const query1 = `
                 query {
@@ -960,22 +791,8 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult1 = await graphql({
-                schema: generatedSchema,
-                source: query1,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
-            const gqlResult2 = await graphql({
-                schema: generatedSchema,
-                source: query2,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult1 = await testHelper.executeGraphQL(query1);
+            const gqlResult2 = await testHelper.executeGraphQL(query2);
 
             expect(gqlResult1.errors).toBeFalsy();
             expect(gqlResult2.errors).toBeFalsy();
@@ -1005,21 +822,15 @@ describe("@fulltext directive", () => {
                 born: 234,
             };
 
-            session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    `
+            await testHelper.executeCypher(
+                `
                 CREATE (person1:${personType.name})
                 CREATE (person2:${personType.name})
                 SET person1 = $person1
                 SET person2 = $person2
             `,
-                    { person1, person2 }
-                );
-            } finally {
-                await session.close();
-            }
+                { person1, person2 }
+            );
 
             const query1 = `
                 query {
@@ -1043,22 +854,8 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult1 = await graphql({
-                schema: generatedSchema,
-                source: query1,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
-            const gqlResult2 = await graphql({
-                schema: generatedSchema,
-                source: query2,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult1 = await testHelper.executeGraphQL(query1);
+            const gqlResult2 = await testHelper.executeGraphQL(query2);
 
             expect(gqlResult1.errors).toBeFalsy();
             expect(gqlResult2.errors).toBeFalsy();
@@ -1092,14 +889,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -1161,14 +951,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
@@ -1196,14 +979,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toBeArrayOfSize(2);
@@ -1226,14 +1002,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -1261,14 +1030,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
@@ -1292,14 +1054,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -1335,14 +1090,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
@@ -1366,14 +1114,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
@@ -1397,14 +1138,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
@@ -1420,6 +1154,64 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+    });
+    describe("Query tests with auth", () => {
+        let neoSchema: Neo4jGraphQL;
+        let personType: UniqueType;
+        let movieType: UniqueType;
+        let personTypeLowerFirst: string;
+        let queryType: string;
+
+        const person1 = {
+            name: "this is a name",
+            born: 1984,
+        };
+        const person2 = {
+            name: "This is a different name",
+            born: 1985,
+        };
+        const person3 = {
+            name: "Another name",
+            born: 1986,
+        };
+        const movie1 = {
+            title: "Some Title",
+            description: "some other description",
+            released: 2001,
+        };
+        const movie2 = {
+            title: "Another Title",
+            description: "this is a description",
+            released: 2002,
+        };
+
+        beforeEach(async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            personType = testHelper.createUniqueType("Person");
+            movieType = testHelper.createUniqueType("Movie");
+            queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+            personTypeLowerFirst = personType.singular;
+
+            await testHelper.executeCypher(
+                `
+                    CREATE (person1:${personType.name})-[:ACTED_IN]->(movie1:${movieType.name})
+                    CREATE (person1)-[:ACTED_IN]->(movie2:${movieType.name})
+                    CREATE (person2:${personType.name})-[:ACTED_IN]->(movie1)
+                    CREATE (person3:${personType.name})-[:ACTED_IN]->(movie2)
+                    SET person1 = $person1
+                    SET person2 = $person2
+                    SET person3 = $person3
+                    SET movie1 = $movie1
+                    SET movie2 = $movie2
+                `,
+                { person1, person2, person3, movie1, movie2 }
+            );
+        });
 
         test("Works with @auth 'where' when authenticated", async () => {
             // Skip if multi-db not supported
@@ -1429,31 +1221,30 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1461,27 +1252,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { name: person1.name });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
@@ -1499,31 +1282,30 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1531,27 +1313,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { name: "Not a name" });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(0);
@@ -1565,35 +1339,34 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type JWTPayload @jwt {
-                    roles: [String!]!
-                }
-
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type JWTPayload @jwt {
+                        roles: [String!]!
+                    }
+    
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1601,27 +1374,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { roles: ["admin"] });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
@@ -1650,35 +1415,34 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type JWTPayload @jwt {
-                    roles: [String!]!
-                }
-
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type JWTPayload @jwt {
+                        roles: [String!]!
+                    }
+    
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1686,27 +1450,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { roles: ["not_admin"] });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -1719,31 +1475,30 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1751,27 +1506,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${person2.name}" } }) {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${person2.name}" } }) {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { name: person2.name });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
@@ -1787,31 +1534,30 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1819,27 +1565,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { name: person2.name });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -1852,35 +1590,34 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type JWTPayload @jwt {
-                    roles: [String!]!
-                }
-
-                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
+                    type JWTPayload @jwt {
+                        roles: [String!]!
+                    }
+    
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} {
+                        title: String!
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
             const secret = "This is a secret";
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1888,27 +1625,19 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
 
             const token = createBearerToken(secret, { roles: ["not_admin"] });
 
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    token,
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -1923,25 +1652,24 @@ describe("@fulltext directive", () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = `${movieType.plural}Fulltext${upperFirst(movieType.name)}Index`;
             const typeDefs = `
-                type ${personType.name} {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
+                    type ${personType.name} {
+                        name: String!
+                        born: Int!
+                        actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+    
+                    type ${movieType.name} @fulltext(indexes: [{ indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                        title: String!
+                        description: String
+                        released: Int!
+                        actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
 
-                type ${movieType.name} @fulltext(indexes: [{ indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
-                    title: String!
-                    description: String
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
-
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -1949,24 +1677,17 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "some description") {
-                        score
-                        ${moveTypeLowerFirst} {
-                            title
-                            description
-                        } 
+                    query {
+                        ${queryType}(phrase: "some description") {
+                            score
+                            ${moveTypeLowerFirst} {
+                                title
+                                description
+                            } 
+                        }
                     }
-                }
-            `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+                `;
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][moveTypeLowerFirst]).toEqual({
@@ -1989,40 +1710,33 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            personType = new UniqueType("Person");
+            personType = testHelper.createUniqueType("Person");
             personTypeLowerFirst = personType.singular;
             queryType = "CustomQueryName";
 
-            session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    `
-                    CREATE (person1:${personType.name})
-                    CREATE (person2:${personType.name})
-                    CREATE (person3:${personType.name})
-                    SET person1 = $person1
-                    SET person2 = $person2
-                    SET person3 = $person3
-                `,
-                    { person1, person2, person3 }
-                );
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(
+                `
+                        CREATE (person1:${personType.name})
+                        CREATE (person2:${personType.name})
+                        CREATE (person3:${personType.name})
+                        SET person1 = $person1
+                        SET person2 = $person2
+                        SET person3 = $person3
+                    `,
+                { person1, person2, person3 }
+            );
 
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
-                    name: String!
-                    born: Int!
-                }
-            `;
+                    type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
+                        name: String!
+                        born: Int!
+                    }
+                `;
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -2030,23 +1744,16 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "a different name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    query {
+                        ${queryType}(phrase: "a different name") {
+                            score
+                            ${personTypeLowerFirst} {
+                                name
+                            } 
+                        }
                     }
-                }
-            `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+                `;
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
@@ -2076,18 +1783,17 @@ describe("@fulltext directive", () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = "SomeCustomQueryName";
             const typeDefs = `
-                type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
-                    title: String!
-                    description: String
-                    released: Int!
-                }
-            `;
+                    type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                        title: String!
+                        description: String
+                        released: Int!
+                    }
+                `;
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -2095,24 +1801,17 @@ describe("@fulltext directive", () => {
             });
 
             const query = `
-                query {
-                    ${queryType}(phrase: "some description") {
-                        score
-                        ${moveTypeLowerFirst} {
-                            title
-                            description
-                        } 
+                    query {
+                        ${queryType}(phrase: "some description") {
+                            score
+                            ${moveTypeLowerFirst} {
+                                title
+                                description
+                            } 
+                        }
                     }
-                }
-            `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+                `;
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][moveTypeLowerFirst]).toEqual({
@@ -2135,42 +1834,35 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            movieType = new UniqueType("Movie");
+            movieType = testHelper.createUniqueType("Movie");
             const movieTypeLowerFirst = movieType.singular;
             const queryType1 = "CustomQueryName";
             const queryType2 = "CustomQueryName2";
 
-            session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    `
-                    CREATE (movie1:${movieType.name})
-                    CREATE (movie2:${movieType.name})
-                    SET movie1 = $movie1
-                    SET movie2 = $movie2
-                `,
-                    { movie1, movie2 }
-                );
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(
+                `
+                        CREATE (movie1:${movieType.name})
+                        CREATE (movie2:${movieType.name})
+                        SET movie1 = $movie1
+                        SET movie2 = $movie2
+                    `,
+                { movie1, movie2 }
+            );
 
             const typeDefs = `
-                type ${movieType.name} @fulltext(indexes: [
-                        { queryName: "${queryType1}", indexName: "${movieType.name}CustomIndex", fields: ["title"] },
-                        { queryName: "${queryType2}", indexName: "${movieType.name}CustomIndex2", fields: ["description"] }
-                    ]) {
-                    title: String!
-                    description: String!
-                }
-            `;
+                    type ${movieType.name} @fulltext(indexes: [
+                            { queryName: "${queryType1}", indexName: "${movieType.name}CustomIndex", fields: ["title"] },
+                            { queryName: "${queryType2}", indexName: "${movieType.name}CustomIndex2", fields: ["description"] }
+                        ]) {
+                        title: String!
+                        description: String!
+                    }
+                `;
 
-            neoSchema = new Neo4jGraphQL({
+            neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
             });
-            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
@@ -2178,41 +1870,27 @@ describe("@fulltext directive", () => {
             });
 
             const query1 = `
-                query {
-                    ${queryType1}(phrase: "some title") {
-                        score
-                        ${movieTypeLowerFirst} {
-                            title
-                        } 
+                    query {
+                        ${queryType1}(phrase: "some title") {
+                            score
+                            ${movieTypeLowerFirst} {
+                                title
+                            } 
+                        }
                     }
-                }
-            `;
+                `;
             const query2 = `
-                query {
-                    ${queryType2}(phrase: "some description") {
-                        score
-                        ${movieTypeLowerFirst} {
-                            title
-                        } 
+                    query {
+                        ${queryType2}(phrase: "some description") {
+                            score
+                            ${movieTypeLowerFirst} {
+                                title
+                            } 
+                        }
                     }
-                }
-            `;
-            const gqlResult1 = await graphql({
-                schema: generatedSchema,
-                source: query1,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
-            const gqlResult2 = await graphql({
-                schema: generatedSchema,
-                source: query2,
-                contextValue: {
-                    executionContext: driver,
-                    sessionConfig: { database: databaseName },
-                },
-            });
+                `;
+            const gqlResult1 = await testHelper.executeGraphQL(query1);
+            const gqlResult2 = await testHelper.executeGraphQL(query2);
 
             expect(gqlResult1.errors).toBeFalsy();
             expect((gqlResult1.data?.[queryType1] as any[])[0][movieTypeLowerFirst]).toEqual({
@@ -2238,12 +1916,6 @@ describe("@fulltext directive", () => {
         });
     });
     describe("Index Creation", () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
         let type: UniqueType;
 
         const indexName1 = "indexCreationName1";
@@ -2277,7 +1949,7 @@ describe("@fulltext directive", () => {
         `;
 
         beforeEach(() => {
-            type = new UniqueType("Movie");
+            type = testHelper.createUniqueType("Movie");
         });
 
         afterEach(async () => {
@@ -2287,14 +1959,8 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(deleteIndex1Cypher);
-                await session.run(deleteIndex2Cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(deleteIndex1Cypher);
+            await testHelper.executeCypher(deleteIndex2Cypher);
         });
 
         test("Creates index if it doesn't exist", async () => {
@@ -2310,7 +1976,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2321,21 +1987,15 @@ describe("@fulltext directive", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
+            const result = await testHelper.executeCypher(indexQueryCypher);
 
-            try {
-                const result = await session.run(indexQueryCypher);
-
-                expect(result.records[0]?.get("result")).toEqual({
-                    name: indexName1,
-                    type: "FULLTEXT",
-                    entityType: "NODE",
-                    labelsOrTypes: [type.name],
-                    properties: ["title"],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(result.records[0]?.get("result")).toEqual({
+                name: indexName1,
+                type: "FULLTEXT",
+                entityType: "NODE",
+                labelsOrTypes: [type.name],
+                properties: ["title"],
+            });
         });
 
         test("Creates two index's if they dont exist", async () => {
@@ -2352,7 +2012,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2363,28 +2023,22 @@ describe("@fulltext directive", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
+            const result = await testHelper.executeCypher(indexQueryCypher);
 
-            try {
-                const result = await session.run(indexQueryCypher);
-
-                expect(result.records[0]?.get("result")).toEqual({
-                    name: indexName1,
-                    type: "FULLTEXT",
-                    entityType: "NODE",
-                    labelsOrTypes: [type.name],
-                    properties: ["title"],
-                });
-                expect(result.records[1]?.get("result")).toEqual({
-                    name: indexName2,
-                    type: "FULLTEXT",
-                    entityType: "NODE",
-                    labelsOrTypes: [type.name],
-                    properties: ["description"],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(result.records[0]?.get("result")).toEqual({
+                name: indexName1,
+                type: "FULLTEXT",
+                entityType: "NODE",
+                labelsOrTypes: [type.name],
+                properties: ["title"],
+            });
+            expect(result.records[1]?.get("result")).toEqual({
+                name: indexName2,
+                type: "FULLTEXT",
+                entityType: "NODE",
+                labelsOrTypes: [type.name],
+                properties: ["description"],
+            });
         });
 
         test("When using the node label, creates index if it doesn't exist", async () => {
@@ -2400,7 +2054,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2411,21 +2065,15 @@ describe("@fulltext directive", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
+            const result = await testHelper.executeCypher(indexQueryCypher);
 
-            try {
-                const result = await session.run(indexQueryCypher);
-
-                expect(result.records[0]?.get("result")).toEqual({
-                    name: indexName1,
-                    type: "FULLTEXT",
-                    entityType: "NODE",
-                    labelsOrTypes: [label],
-                    properties: ["title"],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(result.records[0]?.get("result")).toEqual({
+                name: indexName1,
+                type: "FULLTEXT",
+                entityType: "NODE",
+                labelsOrTypes: [label],
+                properties: ["title"],
+            });
         });
 
         test("When using the field alias, creates index if it doesn't exist", async () => {
@@ -2441,7 +2089,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2452,21 +2100,15 @@ describe("@fulltext directive", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
+            const result = await testHelper.executeCypher(indexQueryCypher);
 
-            try {
-                const result = await session.run(indexQueryCypher);
-
-                expect(result.records[0]?.get("result")).toEqual({
-                    name: indexName1,
-                    type: "FULLTEXT",
-                    entityType: "NODE",
-                    labelsOrTypes: [label],
-                    properties: [aliasName],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(result.records[0]?.get("result")).toEqual({
+                name: indexName1,
+                type: "FULLTEXT",
+                entityType: "NODE",
+                labelsOrTypes: [label],
+                properties: [aliasName],
+            });
         });
 
         test("Throws when missing index (create index and constraint option not true)", async () => {
@@ -2482,7 +2124,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2507,22 +2149,14 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
-            const session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    [
-                        `CREATE FULLTEXT INDEX ${indexName1}`,
-                        `IF NOT EXISTS FOR (n:${type.name})`,
-                        `ON EACH [n.title]`,
-                    ].join(" ")
-                );
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(
+                [`CREATE FULLTEXT INDEX ${indexName1}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
+                    " "
+                )
+            );
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -2546,22 +2180,16 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
-            const session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    [
-                        `CREATE FULLTEXT INDEX ${indexName1}`,
-                        `IF NOT EXISTS FOR (n:${type.name})`,
-                        `ON EACH [n.title, n.description]`,
-                    ].join(" ")
-                );
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(
+                [
+                    `CREATE FULLTEXT INDEX ${indexName1}`,
+                    `IF NOT EXISTS FOR (n:${type.name})`,
+                    `ON EACH [n.title, n.description]`,
+                ].join(" ")
+            );
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -2586,7 +2214,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2619,22 +2247,14 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
-            const session = driver.session({ database: databaseName });
-
-            try {
-                await session.run(
-                    [
-                        `CREATE FULLTEXT INDEX ${indexName1}`,
-                        `IF NOT EXISTS FOR (n:${type.name})`,
-                        `ON EACH [n.title]`,
-                    ].join(" ")
-                );
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(
+                [`CREATE FULLTEXT INDEX ${indexName1}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
+                    " "
+                )
+            );
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -2660,7 +2280,7 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -2671,21 +2291,15 @@ describe("@fulltext directive", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
+            const result = await testHelper.executeCypher(indexQueryCypher);
 
-            try {
-                const result = await session.run(indexQueryCypher);
-
-                expect(result.records[0]?.get("result")).toEqual({
-                    name: indexName1,
-                    type: "FULLTEXT",
-                    entityType: "NODE",
-                    labelsOrTypes: [type.name],
-                    properties: ["id"],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(result.records[0]?.get("result")).toEqual({
+                name: indexName1,
+                type: "FULLTEXT",
+                entityType: "NODE",
+                labelsOrTypes: [type.name],
+                properties: ["id"],
+            });
         });
 
         test("should not throw if index exists on an additional label", async () => {
@@ -2695,8 +2309,8 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2709,23 +2323,17 @@ describe("@fulltext directive", () => {
                 ON EACH [n.title]
             `;
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createIndexCypher);
 
-            try {
-                await session.run(createIndexCypher);
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                await neoSchema.getSchema();
-
-                await expect(
-                    neoSchema.assertIndexesAndConstraints({
-                        driver,
-                        sessionConfig: { database: databaseName },
-                    })
-                ).resolves.not.toThrow();
-            } finally {
-                await session.close();
-            }
+            await expect(
+                neoSchema.assertIndexesAndConstraints({
+                    driver,
+                    sessionConfig: { database: databaseName },
+                })
+            ).resolves.not.toThrow();
         });
 
         test("should not create new constraint if constraint exists on an additional label", async () => {
@@ -2735,8 +2343,8 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2749,41 +2357,35 @@ describe("@fulltext directive", () => {
                 ON EACH [n.title]
             `;
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createIndexCypher);
 
-            try {
-                await session.run(createIndexCypher);
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                await neoSchema.getSchema();
+            await expect(
+                neoSchema.assertIndexesAndConstraints({
+                    driver,
+                    sessionConfig: { database: databaseName },
+                    options: { create: true },
+                })
+            ).resolves.not.toThrow();
 
-                await expect(
-                    neoSchema.assertIndexesAndConstraints({
-                        driver,
-                        sessionConfig: { database: databaseName },
-                        options: { create: true },
-                    })
-                ).resolves.not.toThrow();
+            const dbConstraintsResult = (await testHelper.executeCypher(indexQueryCypher)).records.map((record) => {
+                return record.toObject().result;
+            });
 
-                const dbConstraintsResult = (await session.run(indexQueryCypher)).records.map((record) => {
-                    return record.toObject().result;
-                });
+            expect(
+                dbConstraintsResult.filter(
+                    (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
+                )
+            ).toHaveLength(0);
 
-                expect(
-                    dbConstraintsResult.filter(
-                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
-                    )
-                ).toHaveLength(0);
-
-                expect(
-                    dbConstraintsResult.filter(
-                        (record) =>
-                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
-                    )
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                dbConstraintsResult.filter(
+                    (record) =>
+                        record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
+                )
+            ).toHaveLength(1);
         });
     });
 });
