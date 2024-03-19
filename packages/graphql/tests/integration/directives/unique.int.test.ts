@@ -49,19 +49,23 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             }
         }
-
-        // await new Promise((x) => setTimeout(x, 5000));
     });
 
-    afterAll(async () => {
+    beforeEach(async () => {
         if (MULTIDB_SUPPORT) {
-            await testHelper.dropDatabase();
-            await testHelper.close();
+            driver = await testHelper.getDriver();
         }
     });
 
     afterEach(async () => {
         if (MULTIDB_SUPPORT) {
+            await testHelper.close();
+        }
+    });
+
+    afterAll(async () => {
+        if (MULTIDB_SUPPORT) {
+            await testHelper.dropDatabase();
             await testHelper.close();
         }
     });
