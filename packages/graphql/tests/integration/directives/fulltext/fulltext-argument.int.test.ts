@@ -53,7 +53,9 @@ describe("@fulltext directive", () => {
     });
 
     afterEach(async () => {
-        await testHelper.close();
+        if (MULTIDB_SUPPORT) {
+            await testHelper.close();
+        }
     });
 
     afterAll(async () => {
