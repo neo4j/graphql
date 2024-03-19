@@ -131,12 +131,14 @@ export class AuthFilterFactory extends FilterFactory {
         operator,
         isNot,
         attachedTo,
+        relationship,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: WhereOperator | undefined;
         isNot: boolean;
         attachedTo?: "node" | "relationship";
+        relationship?: RelationshipAdapter;
     }): PropertyFilter {
         const filterOperator = operator || "EQ";
 
@@ -144,6 +146,7 @@ export class AuthFilterFactory extends FilterFactory {
         if (typeof comparisonValue === "boolean") {
             return new ParamPropertyFilter({
                 attribute,
+                relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
                 isNot,
                 operator: filterOperator,
@@ -159,6 +162,7 @@ export class AuthFilterFactory extends FilterFactory {
         if (isCypherVariable) {
             return new ParamPropertyFilter({
                 attribute,
+                relationship,
                 comparisonValue: comparisonValue,
                 isNot,
                 operator: filterOperator,
@@ -168,6 +172,7 @@ export class AuthFilterFactory extends FilterFactory {
             if (comparisonValue === null) {
                 return new PropertyFilter({
                     attribute,
+                    relationship,
                     comparisonValue: comparisonValue,
                     isNot,
                     operator: filterOperator,
@@ -176,6 +181,7 @@ export class AuthFilterFactory extends FilterFactory {
             }
             return new ParamPropertyFilter({
                 attribute,
+                relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
                 isNot,
                 operator: filterOperator,

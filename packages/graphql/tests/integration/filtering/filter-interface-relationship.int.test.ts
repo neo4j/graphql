@@ -19,6 +19,7 @@
 
 import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
+import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
@@ -498,6 +499,314 @@ describe("interface relationships", () => {
                         },
                     ]),
                     name: actorName,
+                },
+            ],
+        });
+    });
+});
+
+describe("interface relationships aliased fields", () => {
+    const testHelper = new TestHelper();
+    const secret = "secret";
+
+    let typeMovie: UniqueType;
+    let typeSeries: UniqueType;
+    let typeActor: UniqueType;
+    let ProtectedActor: UniqueType;
+
+    beforeEach(async () => {
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeSeries = testHelper.createUniqueType("Series");
+        typeActor = testHelper.createUniqueType("Actor");
+        ProtectedActor = testHelper.createUniqueType("ProtectedActor");
+
+        const typeDefs = /* GraphQL */ `
+            interface Production {
+                title: String!
+            }
+
+            type ${typeMovie} implements Production {
+                title: String! @alias(property: "movieTitle")
+                runtime: Int!
+            }
+
+            type ${typeSeries} implements Production {
+                title: String! @alias(property: "seriesTitle")
+                episodes: Int!
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+
+            type ${typeActor} {
+                name: String!
+                currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type ${ProtectedActor} @authorization(validate: [{ where: { node: { actedInConnection: { node: { title: "$jwt.title"  } } } } }]) {
+                name: String! @alias(property: "dbName")
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+    });
+
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            query Actors($title: String) {
+                 ${typeActor.plural}(where: { actedInConnection: { node: { title: $title } } }) {
+                #${typeActor.plural}(where: { actedIn: { title: $title } }) {
+                    name
+                    actedIn {
+                        title
+                        ... on ${typeMovie} {
+                            runtime
+                        }
+                        ... on ${typeSeries} {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { movieTitle: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { seriesTitle: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { movieTitle: $movieTitle2, runtime:$movieRuntime })
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { title: movieTitle2 },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [typeActor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle2,
+                        },
+                    ]),
+                    name: actorName2,
+                },
+            ],
+        });
+    });
+
+    test("delete", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            mutation deleteActors($title: String) {
+                 ${typeActor.operations.delete}(where: { actedInConnection: { node: { title: $title } } }) {
+                    nodesDeleted
+                    relationshipsDeleted
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { movieTitle: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { seriesTitle: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { movieTitle: $movieTitle2, runtime:$movieRuntime })
+            `,
+            {
+                actorName,
+                actorName2,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { title: movieTitle2 },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data?.[typeActor.operations.delete]).toEqual({
+            nodesDeleted: 1,
+            relationshipsDeleted: 1,
+        });
+    });
+
+    test("auth", async () => {
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const protectedActorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
+        const query = `
+            query ProtectedActors {
+                 ${ProtectedActor.plural} {
+                    name
+                    actedIn {
+                        title
+                        ... on ${typeMovie} {
+                            runtime
+                        }
+                        ... on ${typeSeries} {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                CREATE (a:${typeActor} { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { movieTitle: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { seriesTitle: $seriesTitle, episodes: $seriesEpisodes })
+                CREATE (a2:${typeActor} { name: $actorName2 })
+                CREATE (m:${typeMovie} { movieTitle: $movieTitle2, runtime:$movieRuntime })
+                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+                CREATE (pa:${ProtectedActor} { dbName: $protectedActorName })
+                CREATE (pa)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+            `,
+            {
+                actorName,
+                actorName2,
+                protectedActorName,
+                movieTitle,
+                movieTitle2,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
+        );
+
+        const tokenTitle = movieTitle2;
+        const token = createBearerToken(secret, { roles: ["reader"], title: tokenTitle });
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [ProtectedActor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            runtime: movieRuntime,
+                            title: movieTitle2,
+                        },
+                    ]),
+                    name: protectedActorName,
                 },
             ],
         });
