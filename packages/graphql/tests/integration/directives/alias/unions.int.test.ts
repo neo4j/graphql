@@ -17,35 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@alias directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
 
     let typeMovie: UniqueType;
     let typeSeries: UniqueType;
     let typeActor: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
-
-        typeMovie = new UniqueType("Movie");
-        typeSeries = new UniqueType("Series");
-        typeActor = new UniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeSeries = testHelper.createUniqueType("Series");
+        typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -72,18 +58,13 @@ describe("@alias directive", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [typeMovie, typeSeries, typeActor]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Create mutation with alias referring to existing field, include both fields as inputs - first rel type", async () => {
@@ -127,11 +108,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
@@ -182,11 +159,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
@@ -236,11 +209,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeUndefined();
     });
@@ -283,11 +252,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
     });
     test("Create mutation with top-level connectOrCreate, alias referring to existing field, include both fields as inputs - first rel type", async () => {
@@ -328,18 +293,14 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(
             `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
-        expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
+        expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
     test("Create mutation with top-level connectOrCreate, alias referring to existing field, include both fields as inputs - second rel type", async () => {
         const movieIsan = "0000-0000-03B6-0000-O-0000-0006-P";
@@ -380,18 +341,14 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(
             `Conflicting modification of [[title]], [[titleAgain]] on type ${typeSeries.name}`
         );
-        expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
+        expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
     test("Create mutation with top-level connectOrCreate, alias referring to existing field, include both fields as inputs - update type", async () => {
         const movieIsan = "0000-0000-03B6-0000-O-0000-0006-P";
@@ -432,18 +389,14 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(
             `Conflicting modification of [[name]], [[nameAgain]] on type ${typeActor.name}`
         );
-        expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
+        expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
 
     test("Update mutation alias referring to existing field, include only one field as inputs", async () => {
@@ -487,11 +440,7 @@ describe("@alias directive", () => {
         }
     `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeUndefined();
     });
@@ -536,18 +485,14 @@ describe("@alias directive", () => {
         }
     `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(
             `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
-        expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
+        expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
     test("Update mutation alias referring to existing field, include both fields as inputs - second rel type", async () => {
         const movieIsan = "0000-0000-03B6-0000-O-0000-0006-P";
@@ -591,18 +536,14 @@ describe("@alias directive", () => {
         }
     `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(
             `Conflicting modification of [[title]], [[titleAgain]] on type ${typeSeries.name}`
         );
-        expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
+        expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
     test("Update mutation alias referring to existing field, include both fields as inputs - update type", async () => {
         const movieIsan = "0000-0000-03B6-0000-O-0000-0006-P";
@@ -646,17 +587,13 @@ describe("@alias directive", () => {
         }
     `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(
             `Conflicting modification of [[name]], [[nameAgain]] on type ${typeActor.name}`
         );
-        expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
+        expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
 });

@@ -17,53 +17,38 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { runCypher } from "../../../utils/run-cypher";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/is-authenticated", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
     let Product: UniqueType;
     let User: UniqueType;
 
     const secret = "secret";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        Product = new UniqueType("Product");
-        User = new UniqueType("User");
-        const session = await neo4j.getSession();
-        await runCypher(
-            session,
+        Product = testHelper.createUniqueType("Product");
+        User = testHelper.createUniqueType("User");
+        await testHelper.executeCypher(
             `CREATE(p:${Product} {id: "1", name: "Marvin"})
             CREATE(u:${User} {id: "1", password: "dontpanic42", name: "Arthur"})
         `
         );
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("read", () => {
         test("should throw if not authenticated type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type ${Product} @authentication(operations: [READ]) {
                     id: ID
@@ -71,7 +56,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -90,26 +75,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if authenticated type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type ${Product} @authentication(operations: [READ]) {
                     id: ID
@@ -117,7 +92,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -134,24 +109,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -162,7 +127,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -179,24 +144,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if authenticated with incorrect role type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -207,7 +162,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -224,24 +179,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type ${User}  {
                     id: ID
@@ -249,7 +194,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -268,28 +213,18 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("create", () => {
         test("should not throw if authenticated on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} @authentication(operations: [CREATE]) {
                     id: ID
@@ -297,7 +232,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -316,24 +251,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -345,7 +270,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -364,24 +289,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} @authentication(operations: [CREATE]) {
                     id: ID
@@ -389,7 +304,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -410,26 +325,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -440,7 +345,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -458,24 +363,15 @@ describe("auth/is-authenticated", () => {
                     }
                 }
             `;
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated on nested create type", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -488,7 +384,7 @@ describe("auth/is-authenticated", () => {
                 }   
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -509,26 +405,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on nested create type", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -545,7 +431,7 @@ describe("auth/is-authenticated", () => {
                 }   
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -564,24 +450,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on nested create type - not unwind-create", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -598,7 +474,7 @@ describe("auth/is-authenticated", () => {
                 }   
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -618,24 +494,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if authenticated on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -643,7 +509,10 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: { authorization: { key: secret } },
+            });
 
             const query = `
                 mutation {
@@ -655,23 +524,13 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
         test("should not throw if authenticated with correct role on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -683,7 +542,10 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: { authorization: { key: secret } },
+            });
 
             const query = `
                 mutation {
@@ -695,24 +557,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -720,7 +572,10 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: { authorization: { key: secret } },
+            });
 
             const query = `
                 mutation {
@@ -734,26 +589,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -765,7 +610,10 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: { authorization: { key: secret } },
+            });
 
             const query = `
                 mutation {
@@ -777,24 +625,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on field definition - not unwind-create", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -806,7 +644,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: { authorization: { key: secret }, subscriptions: new TestSubscriptionsEngine() },
             });
@@ -821,24 +659,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated on nested create field", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -851,7 +679,7 @@ describe("auth/is-authenticated", () => {
                 }   
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -872,26 +700,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on nested create field", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -908,7 +726,7 @@ describe("auth/is-authenticated", () => {
                 }   
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -927,24 +745,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on nested create field - not unwind-create", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -961,7 +769,7 @@ describe("auth/is-authenticated", () => {
                 }   
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -981,26 +789,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("update", () => {
         test("should not throw if authenticated on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User}  @authentication(operations: [UPDATE])  {
                     id: ID
@@ -1008,7 +806,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1027,24 +825,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1056,7 +844,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1075,24 +863,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User}  @authentication(operations: [UPDATE])  {
                     id: ID
@@ -1100,7 +878,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1121,26 +899,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1151,7 +919,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1170,24 +938,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if authenticated on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -1195,7 +953,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1214,24 +972,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1243,7 +991,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1262,24 +1010,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -1287,7 +1025,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1308,26 +1046,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on field definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1338,7 +1066,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1357,26 +1085,17 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("connect", () => {
         test("should not throw if authenticated", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -1405,7 +1124,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1424,29 +1143,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1479,7 +1189,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1498,29 +1208,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1550,7 +1251,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1569,29 +1270,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -1620,7 +1312,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1642,31 +1334,22 @@ describe("auth/is-authenticated", () => {
             // missing super-admin
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -1692,7 +1375,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1714,31 +1397,22 @@ describe("auth/is-authenticated", () => {
             // missing super-admin
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1771,7 +1445,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1790,29 +1464,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1842,7 +1507,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1861,31 +1526,22 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("connectOrCreate", () => {
         test("should not throw if authenticated", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -1914,7 +1570,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1933,29 +1589,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1988,7 +1635,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2007,29 +1654,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2059,7 +1697,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2078,29 +1716,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -2129,7 +1758,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2151,31 +1780,22 @@ describe("auth/is-authenticated", () => {
             // missing super-admin
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -2201,7 +1821,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2223,31 +1843,22 @@ describe("auth/is-authenticated", () => {
             // missing super-admin
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2280,7 +1891,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2299,29 +1910,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2351,7 +1953,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2370,31 +1972,22 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("disconnect", () => {
         test("should not throw if authenticated", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -2423,7 +2016,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2442,29 +2035,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2497,7 +2081,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2516,29 +2100,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2568,7 +2143,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2587,29 +2162,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -2638,7 +2204,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2660,31 +2226,22 @@ describe("auth/is-authenticated", () => {
             // missing super-admin
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -2710,7 +2267,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2732,31 +2289,22 @@ describe("auth/is-authenticated", () => {
             // missing super-admin
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2789,7 +2337,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2808,29 +2356,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles at nested level", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = new UniqueType("Post");
+            const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -2860,7 +2399,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2879,31 +2418,21 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("delete", () => {
         test("should not throw if authenticated on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} @authentication(operations: [DELETE])  {
                     id: ID
@@ -2911,7 +2440,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2928,24 +2457,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -2957,7 +2476,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -2974,24 +2493,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} @authentication(operations: [DELETE])  {
                     id: ID
@@ -2999,7 +2508,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3018,26 +2527,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated on type definition (with nested delete)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -3051,7 +2550,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3078,30 +2577,20 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles on type definition", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -3113,7 +2602,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3130,24 +2619,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect roles on type definition (with nested delete)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -3165,7 +2644,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3190,28 +2669,18 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if not authenticated on type definition (with nested delete) on field", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -3225,7 +2694,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3252,32 +2721,22 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("custom-resolvers", () => {
         test("should not throw if authenticated on custom Query with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
@@ -3289,7 +2748,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3306,24 +2765,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct roles on custom Query with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -3339,7 +2788,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3356,24 +2805,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on custom Query with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
@@ -3385,7 +2824,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3404,26 +2843,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on custom Query with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -3439,7 +2868,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3456,24 +2885,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if authenticated on custom Mutation with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -3485,7 +2904,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3502,24 +2921,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role on custom Mutation with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -3535,7 +2944,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3552,24 +2961,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on custom Mutation with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -3581,7 +2980,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3600,26 +2999,16 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on custom Mutation with @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -3635,7 +3024,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3652,24 +3041,15 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if authenticated on Field definition @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const History = new UniqueType("History");
+            const History = testHelper.createUniqueType("History");
 
             const typeDefs = `
                 type ${History} {
@@ -3684,7 +3064,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3703,24 +3083,15 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should not throw if authenticated with correct role on Field definition @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const History = new UniqueType("History");
+            const History = testHelper.createUniqueType("History");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -3739,7 +3110,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3758,24 +3129,15 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["admin"] });
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
         });
 
         test("should throw if not authenticated on Field definition @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const History = new UniqueType("History");
+            const History = testHelper.createUniqueType("History");
 
             const typeDefs = `
                 type ${History} {
@@ -3790,7 +3152,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3811,26 +3173,17 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on Field definition @cypher", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const History = new UniqueType("History");
+            const History = testHelper.createUniqueType("History");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -3849,7 +3202,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3868,24 +3221,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            try {
-                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
+            const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if decoded JWT passed in context", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type ${Product} @authentication(operations: [READ])  {
                     id: ID
@@ -3893,7 +3236,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3916,22 +3259,14 @@ describe("auth/is-authenticated", () => {
                 iat: 1516239022,
             };
 
-            try {
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ jwt }),
-                });
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { jwt },
+            });
 
-                expect(gqlResult.errors).toBeFalsy();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
         });
 
         test("should not throw if decoded JWT passed in context matches claim", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     name: String!
@@ -3943,7 +3278,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -3966,22 +3301,14 @@ describe("auth/is-authenticated", () => {
                 iat: 1516239022,
             };
 
-            try {
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ jwt }),
-                });
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { jwt },
+            });
 
-                expect(gqlResult.errors).toBeFalsy();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
         });
 
         test("should throw if decoded JWT passed in context does not matches claim", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     name: String!
@@ -3993,7 +3320,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -4016,25 +3343,17 @@ describe("auth/is-authenticated", () => {
                 iat: 1516239022,
             };
 
-            try {
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ jwt }),
-                });
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { jwt },
+            });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
 
     describe("schema", () => {
         describe("read", () => {
-            let neoSchema: Neo4jGraphQL;
-
-            beforeEach(() => {
+            beforeEach(async () => {
                 const typeDefs = `
                 type ${Product} {
                     id: ID
@@ -4043,9 +3362,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [READ])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4054,14 +3372,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [Product]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                     {
                         ${Product.plural} {
@@ -4072,26 +3383,16 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                     {
                         ${Product.plural} {
@@ -4100,25 +3401,15 @@ describe("auth/is-authenticated", () => {
                     }
                 `;
 
-                try {
-                    const token = createBearerToken(secret);
+                const token = createBearerToken(secret);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("create", () => {
-            let neoSchema: Neo4jGraphQL;
-
-            beforeEach(() => {
+            beforeEach(async () => {
                 const typeDefs = `
                 type ${User} {
                     id: ID
@@ -4127,9 +3418,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [CREATE])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4138,14 +3428,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1" }]) {
@@ -4158,26 +3441,16 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1" }]) {
@@ -4188,25 +3461,15 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-                try {
-                    const token = createBearerToken(secret);
+                const token = createBearerToken(secret);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("update", () => {
-            let neoSchema: Neo4jGraphQL;
-
-            beforeEach(() => {
+            beforeEach(async () => {
                 const typeDefs = `
                 type ${User} {
                     id: ID
@@ -4215,9 +3478,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [UPDATE])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4226,14 +3488,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const query = `
                 mutation {
                     ${User.operations.update}(update: { id: "1" }) {
@@ -4246,26 +3501,16 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const query = `
                 mutation {
                     ${User.operations.update}(update: { id: "1" }) {
@@ -4276,27 +3521,18 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-                try {
-                    const token = createBearerToken(secret);
+                const token = createBearerToken(secret);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("connect", () => {
-            let neoSchema: Neo4jGraphQL;
             let Post: UniqueType;
 
-            beforeEach(() => {
-                Post = new UniqueType("Post");
+            beforeEach(async () => {
+                Post = testHelper.createUniqueType("Post");
 
                 const typeDefs = `
                 type ${Post} {
@@ -4313,9 +3549,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [CREATE_RELATIONSHIP])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4324,14 +3559,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User, Post]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const userId = generate({
                     charset: "alphabetic",
                 });
@@ -4352,31 +3580,21 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const userId = generate({
                     charset: "alphabetic",
                 });
@@ -4394,32 +3612,24 @@ describe("auth/is-authenticated", () => {
                     }
                 }
             `;
-                try {
-                    const token = createBearerToken(secret);
 
-                    await session.run(`
+                const token = createBearerToken(secret);
+
+                await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("connectOrCreate", () => {
-            let neoSchema: Neo4jGraphQL;
             let Post: UniqueType;
 
-            beforeEach(() => {
-                Post = new UniqueType("Post");
+            beforeEach(async () => {
+                Post = testHelper.createUniqueType("Post");
 
                 const typeDefs = `
                 type ${Post} {
@@ -4436,9 +3646,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [CREATE_RELATIONSHIP])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4447,14 +3656,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User, Post]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const userId = generate({
                     charset: "alphabetic",
                 });
@@ -4475,31 +3677,21 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const userId = generate({
                     charset: "alphabetic",
                 });
@@ -4517,32 +3709,24 @@ describe("auth/is-authenticated", () => {
                     }
                 }
             `;
-                try {
-                    const token = createBearerToken(secret);
 
-                    await session.run(`
+                const token = createBearerToken(secret);
+
+                await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("disconnect", () => {
-            let neoSchema: Neo4jGraphQL;
             let Post: UniqueType;
 
-            beforeEach(() => {
-                Post = new UniqueType("Post");
+            beforeEach(async () => {
+                Post = testHelper.createUniqueType("Post");
 
                 const typeDefs = `
                 type ${Post} {
@@ -4559,9 +3743,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [DELETE_RELATIONSHIP])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4570,14 +3753,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User, Post]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const userId = generate({
                     charset: "alphabetic",
                 });
@@ -4598,31 +3774,21 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const userId = generate({
                     charset: "alphabetic",
                 });
@@ -4640,30 +3806,21 @@ describe("auth/is-authenticated", () => {
                     }
                 }
             `;
-                try {
-                    const token = createBearerToken(secret);
 
-                    await session.run(`
+                const token = createBearerToken(secret);
+
+                await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("delete", () => {
-            let neoSchema: Neo4jGraphQL;
-
-            beforeEach(() => {
+            beforeEach(async () => {
                 const typeDefs = `
                 type ${User} {
                     id: ID
@@ -4672,9 +3829,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication(operations: [DELETE])
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4683,14 +3839,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                 mutation {
                     ${User.operations.delete} {
@@ -4701,26 +3850,16 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                 mutation {
                     ${User.operations.delete} {
@@ -4729,25 +3868,15 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-                try {
-                    const token = createBearerToken(secret);
+                const token = createBearerToken(secret);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
         describe("custom-resolvers", () => {
-            let neoSchema: Neo4jGraphQL;
-
-            beforeEach(() => {
+            beforeEach(async () => {
                 const typeDefs = `
                 type ${User} {
                     id: ID
@@ -4759,9 +3888,8 @@ describe("auth/is-authenticated", () => {
                 extend schema @authentication
             `;
 
-                neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
-                    driver,
                     features: {
                         authorization: {
                             key: secret,
@@ -4770,14 +3898,7 @@ describe("auth/is-authenticated", () => {
                 });
             });
 
-            afterEach(async () => {
-                const session = driver.session();
-                await cleanNodesUsingSession(session, [User]);
-            });
-
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                 query {
                     allUsers {
@@ -4788,26 +3909,16 @@ describe("auth/is-authenticated", () => {
 
                 const token = "not valid token";
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-                } finally {
-                    await session.close();
-                }
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
-
                 const query = `
                 query {
                     allUsers {
@@ -4816,19 +3927,11 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-                try {
-                    const token = createBearerToken(secret);
+                const token = createBearerToken(secret);
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                    expect(gqlResult.errors).toBeUndefined();
-                } finally {
-                    await session.close();
-                }
+                expect(gqlResult.errors).toBeUndefined();
             });
         });
     });

@@ -17,24 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql, GraphQLError } from "graphql";
+import { GraphQLError } from "graphql";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("@coalesce directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("on non-primitive field should throw an error", async () => {
@@ -45,7 +36,7 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -62,7 +53,7 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -78,7 +69,7 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -88,7 +79,7 @@ describe("@coalesce directive", () => {
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             type ${type.name} {
@@ -97,7 +88,7 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -110,36 +101,26 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const session = await neo4j.getSession();
-
         const id = generate({
             charset: "alphabetic",
         });
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${type.name} {id: "${id}"})
             `);
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[type.plural][0]).toEqual({
-                id,
-                classification: null,
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[type.plural][0]).toEqual({
+            id,
+            classification: null,
+        });
     });
 
     test("with enum values", async () => {
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             enum Status {
@@ -152,7 +133,7 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -165,36 +146,26 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const session = await neo4j.getSession();
-
         const id = generate({
             charset: "alphabetic",
         });
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${type.name} {id: "${id}"})
             `);
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[type.plural][0]).toEqual({
-                id,
-                status: null,
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[type.plural][0]).toEqual({
+            id,
+            status: null,
+        });
     });
 
     test("with enum list values", async () => {
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
             enum Status {
@@ -208,7 +179,7 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
 
@@ -221,31 +192,21 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        const session = await neo4j.getSession();
-
         const id = generate({
             charset: "alphabetic",
         });
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${type.name} {id: "${id}"})
             `);
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[type.plural][0]).toEqual({
-                id,
-                statuses: null,
-            });
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[type.plural][0]).toEqual({
+            id,
+            statuses: null,
+        });
     });
 });

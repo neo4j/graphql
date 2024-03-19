@@ -17,20 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
 import gql from "graphql-tag";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("@customResolver directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
     const user = {
         id: "An-ID",
@@ -38,55 +32,43 @@ describe("@customResolver directive", () => {
         lastName: "a second name!",
     };
 
-    const testType = new UniqueType("User");
+    let testType: UniqueType;
     const customResolverField = "fullName";
 
-    const typeDefs = `
-        type ${testType} {
-            id: ID!
-            firstName: String!
-            lastName: String!
-            ${customResolverField}: String @customResolver(requires: "firstName lastName")
-        }
-    `;
+    let typeDefs: string;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        testType = testHelper.createUniqueType("User");
+
+        typeDefs = `
+            type ${testType} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                ${customResolverField}: String @customResolver(requires: "firstName lastName")
+            }
+        `;
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("Scalar fields", () => {
-        let schema: GraphQLSchema;
-
         const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
 
-        const resolvers = {
-            [testType.name]: { [customResolverField]: fullName },
-        };
+        beforeEach(async () => {
+            const resolvers = {
+                [testType.name]: { [customResolverField]: fullName },
+            };
+            await testHelper.initNeo4jGraphQL({ typeDefs, resolvers });
 
-        beforeAll(async () => {
-            const session = await neo4j.getSession();
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-            schema = await neoSchema.getSchema();
-
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (user:${testType.name}) SET user = $user
             `,
                 { user }
             );
-            await session.close();
-        });
-
-        afterAll(async () => {
-            const session = await neo4j.getSession();
-            await session.run(`MATCH (n:${testType}) DETACH DELETE n`);
-            await session.close();
         });
 
         test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
@@ -101,10 +83,7 @@ describe("@customResolver directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema,
-                source,
-                contextValue: neo4j.getContextValues(),
+            const gqlResult = await testHelper.executeGraphQL(source, {
                 variableValues: { userId: user.id },
             });
 
@@ -125,10 +104,7 @@ describe("@customResolver directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema,
-                source,
-                contextValue: neo4j.getContextValues(),
+            const gqlResult = await testHelper.executeGraphQL(source, {
                 variableValues: { userId: user.id },
             });
 
@@ -150,10 +126,7 @@ describe("@customResolver directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema,
-                source,
-                contextValue: neo4j.getContextValues(),
+            const gqlResult = await testHelper.executeGraphQL(source, {
                 variableValues: { userId: user.id },
             });
 
@@ -166,42 +139,28 @@ describe("@customResolver directive", () => {
         });
     });
     describe("Cypher fields", () => {
-        const typeDefs = `
-            type ${testType.name} {
-                id: ID!
-                firstName: String! @cypher(statement: "RETURN '${user.firstName}' as x", columnName: "x")
-                lastName: String! @cypher(statement: "RETURN '${user.lastName}' as x", columnName: "x")
-                fullName: String @customResolver(requires: "firstName lastName")
-            }
-        `;
-
         const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
 
-        const resolvers = {
-            [testType.name]: { [customResolverField]: fullName },
-        };
+        beforeEach(async () => {
+            const typeDefs = `
+                type ${testType.name} {
+                    id: ID!
+                    firstName: String! @cypher(statement: "RETURN '${user.firstName}' as x", columnName: "x")
+                    lastName: String! @cypher(statement: "RETURN '${user.lastName}' as x", columnName: "x")
+                    fullName: String @customResolver(requires: "firstName lastName")
+                }
+            `;
+            const resolvers = {
+                [testType.name]: { [customResolverField]: fullName },
+            };
+            await testHelper.initNeo4jGraphQL({ typeDefs, resolvers });
 
-        let schema: GraphQLSchema;
-
-        beforeAll(async () => {
-            const session = await neo4j.getSession();
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-            schema = await neoSchema.getSchema();
-
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (user:${testType.name}) SET user.id = $userId
             `,
                 { userId: user.id }
             );
-            await session.close();
-        });
-
-        afterAll(async () => {
-            const session = await neo4j.getSession();
-            await session.run(`MATCH (n:${testType.name}) DETACH DELETE n`);
-            await session.close();
         });
 
         test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
@@ -216,10 +175,7 @@ describe("@customResolver directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema,
-                source,
-                contextValue: neo4j.getContextValues(),
+            const gqlResult = await testHelper.executeGraphQL(source, {
                 variableValues: { userId: user.id },
             });
 
@@ -240,10 +196,7 @@ describe("@customResolver directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema,
-                source,
-                contextValue: neo4j.getContextValues(),
+            const gqlResult = await testHelper.executeGraphQL(source, {
                 variableValues: { userId: user.id },
             });
 
@@ -265,10 +218,7 @@ describe("@customResolver directive", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema,
-                source,
-                contextValue: neo4j.getContextValues(),
+            const gqlResult = await testHelper.executeGraphQL(source, {
                 variableValues: { userId: user.id },
             });
 
@@ -293,7 +243,7 @@ describe("@customResolver directive", () => {
         });
 
         test("Check throws error if customResolver is not provided", async () => {
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
@@ -302,8 +252,7 @@ describe("@customResolver directive", () => {
 });
 
 describe("Related Fields", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
     let Publication: UniqueType;
     let Author: UniqueType;
@@ -367,45 +316,26 @@ describe("Related Fields", () => {
     };
     const secret = "secret";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(() => {
-        Publication = new UniqueType("Publication");
-        Author = new UniqueType("Author");
-        Book = new UniqueType("Book");
-        Journal = new UniqueType("Journal");
-        User = new UniqueType("User");
-        Address = new UniqueType("Address");
-        City = new UniqueType("City");
-        State = new UniqueType("State");
+        Publication = testHelper.createUniqueType("Publication");
+        Author = testHelper.createUniqueType("Author");
+        Book = testHelper.createUniqueType("Book");
+        Journal = testHelper.createUniqueType("Journal");
+        User = testHelper.createUniqueType("User");
+        Address = testHelper.createUniqueType("Address");
+        City = testHelper.createUniqueType("City");
+        State = testHelper.createUniqueType("State");
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-        try {
-            await cleanNodesUsingSession(session, [Publication, Author, Book, Journal, User, Address, City, State]);
-        } finally {
-            await session.close();
-        }
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should be able to require a field from a related type", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+            { userInput1, addressInput1 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -430,7 +360,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -443,11 +373,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -464,15 +390,10 @@ describe("Related Fields", () => {
     });
 
     test("should throw an error if requiring a field that does not exist", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+            { userInput1, addressInput1 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -497,7 +418,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -508,15 +429,10 @@ describe("Related Fields", () => {
     });
 
     test("should throw an error if requiring a related field that does not exist", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+            { userInput1, addressInput1 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -541,7 +457,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -552,15 +468,10 @@ describe("Related Fields", () => {
     });
 
     test("should fetch required fields when other fields are also selected", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+            { userInput1, addressInput1 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -585,7 +496,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -603,11 +514,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -626,18 +533,13 @@ describe("Related Fields", () => {
     });
 
     test("should fetch customResolver fields over multiple users", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address}) SET user1 = $userInput1, addr1 = $addressInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address}) SET user2 = $userInput2, addr2 = $addressInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2 }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, addressInput1, userInput2, addressInput2 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -662,7 +564,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -680,11 +582,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -712,18 +610,13 @@ describe("Related Fields", () => {
     });
 
     test("should select related fields when not selected last", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address}) SET user1 = $userInput1, addr1 = $addressInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address}) SET user2 = $userInput2, addr2 = $addressInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2 }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, addressInput1, userInput2, addressInput2 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -748,7 +641,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -766,11 +659,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -798,20 +687,15 @@ describe("Related Fields", () => {
     });
 
     test("should select fields from double nested related nodes", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2 }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2 }
+        );
 
         const typeDefs = gql`
             type ${City} {
@@ -846,7 +730,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -862,11 +746,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -896,10 +776,8 @@ describe("Related Fields", () => {
     });
 
     test("should select fields from triple nested related nodes", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                         -[:IN_STATE]->(state:${State})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1, state = $stateInput
@@ -907,11 +785,8 @@ describe("Related Fields", () => {
                         -[:IN_STATE]->(state)
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2, stateInput }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2, stateInput }
+        );
 
         const typeDefs = gql`
             type ${State} {
@@ -951,7 +826,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -967,11 +842,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1013,21 +884,16 @@ describe("Related Fields", () => {
     });
 
     test("should be able to require fields from a related union", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (author1:${Author})-[:WROTE]->(book1:${Book}) SET author1 = $authorInput1, book1 = $bookInput1
                     CREATE (author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author2)-[:WROTE]->(journal2:${Journal}) SET journal2 = $journalInput2
                     CREATE (author2)-[:WROTE]->(book2:${Book}) SET book2 = $bookInput2
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { authorInput1, authorInput2, bookInput1, bookInput2, journalInput1, journalInput2 }
-            );
-        } finally {
-            await session.close();
-        }
+            { authorInput1, authorInput2, bookInput1, bookInput2, journalInput1, journalInput2 }
+        );
 
         const typeDefs = gql`
             union ${Publication} = ${Book} | ${Journal}
@@ -1059,7 +925,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -1072,11 +938,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1102,27 +964,22 @@ describe("Related Fields", () => {
     });
 
     test("should select @alias fields", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                {
-                    userInput1: { id: userInput1.id, first: userInput1.firstName, lastName: userInput1.lastName },
-                    addressInput1,
-                    userInput2: { id: userInput2.id, first: userInput2.firstName, lastName: userInput2.lastName },
-                    addressInput2,
-                    cityInput1: { name: cityInput1.name, cityPopulation: cityInput1.population },
-                    cityInput2: { name: cityInput2.name, cityPopulation: cityInput2.population },
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                userInput1: { id: userInput1.id, first: userInput1.firstName, lastName: userInput1.lastName },
+                addressInput1,
+                userInput2: { id: userInput2.id, first: userInput2.firstName, lastName: userInput2.lastName },
+                addressInput2,
+                cityInput1: { name: cityInput1.name, cityPopulation: cityInput1.population },
+                cityInput2: { name: cityInput2.name, cityPopulation: cityInput2.population },
+            }
+        );
 
         const typeDefs = gql` 
             type ${City} {
@@ -1157,7 +1014,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -1174,11 +1031,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1210,27 +1063,22 @@ describe("Related Fields", () => {
     });
 
     test("should still prevent access to @auth fields when not authenticated", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                {
-                    userInput1,
-                    addressInput1,
-                    userInput2,
-                    addressInput2,
-                    cityInput1,
-                    cityInput2,
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                userInput1,
+                addressInput1,
+                userInput2,
+                addressInput2,
+                cityInput1,
+                cityInput2,
+            }
+        );
 
         const typeDefs = gql`
             type JWT @jwt {
@@ -1269,7 +1117,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
             features: { authorization: { key: "secret" } },
@@ -1287,37 +1135,28 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect((result.errors as any[])[0].message).toBe("Forbidden");
     });
 
     test("should prevent access to top-level @auth fields when rules are not met", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                {
-                    userInput1,
-                    addressInput1,
-                    userInput2,
-                    addressInput2,
-                    cityInput1,
-                    cityInput2,
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                userInput1,
+                addressInput1,
+                userInput2,
+                addressInput2,
+                cityInput1,
+                cityInput2,
+            }
+        );
 
         const typeDefs = gql`
             type JWT @jwt {
@@ -1356,7 +1195,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
             features: { authorization: { key: "secret" } },
@@ -1376,37 +1215,28 @@ describe("Related Fields", () => {
 
         const token = createBearerToken(secret, { sub: "not 1", roles: ["admin"] });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((result.errors as any[])[0].message).toBe("Forbidden");
     });
 
     test("should prevent access to nested @auth fields when rules are not met", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                {
-                    userInput1,
-                    addressInput1,
-                    userInput2,
-                    addressInput2,
-                    cityInput1,
-                    cityInput2,
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                userInput1,
+                addressInput1,
+                userInput2,
+                addressInput2,
+                cityInput1,
+                cityInput2,
+            }
+        );
 
         const typeDefs = gql`
             type JWT @jwt {
@@ -1445,7 +1275,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
             features: { authorization: { key: "secret" } },
@@ -1465,37 +1295,28 @@ describe("Related Fields", () => {
 
         const token = createBearerToken(secret, { sub: "1", roles: ["not-admin"] });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect((result.errors as any[])[0].message).toBe("Forbidden");
     });
 
     test("should allow access to @auth fields when rules are met", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
                     SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                {
-                    userInput1,
-                    addressInput1,
-                    userInput2,
-                    addressInput2,
-                    cityInput1,
-                    cityInput2,
-                }
-            );
-        } finally {
-            await session.close();
-        }
+            {
+                userInput1,
+                addressInput1,
+                userInput2,
+                addressInput2,
+                cityInput1,
+                cityInput2,
+            }
+        );
 
         const typeDefs = gql`
             type JWT @jwt {
@@ -1534,7 +1355,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
             features: { authorization: { key: "secret" } },
@@ -1554,11 +1375,7 @@ describe("Related Fields", () => {
 
         const token = createBearerToken(secret, { sub: "1", roles: ["admin"] });
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const result = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1579,19 +1396,14 @@ describe("Related Fields", () => {
     });
 
     test("should be able to require fields from a related interface", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (author1:${Author})-[:WROTE]->(book1:${Book}) SET author1 = $authorInput1, book1 = $bookInput1
                     CREATE (author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { authorInput1, authorInput2, bookInput1, journalInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+            { authorInput1, authorInput2, bookInput1, journalInput1 }
+        );
 
         const typeDefs = gql`
             interface ${Publication} {
@@ -1632,7 +1444,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -1645,11 +1457,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1675,20 +1483,15 @@ describe("Related Fields", () => {
     });
 
     test("should be able to require fields from a nested related interface", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:FOLLOWS]->(author1:${Author})-[:WROTE]->(book1:${Book})
                     SET user1 = $userInput1, author1 = $authorInput1, book1 = $bookInput1
                     CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+        );
 
         const typeDefs = gql`
             interface ${Publication} {
@@ -1741,7 +1544,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -1754,11 +1557,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1783,20 +1582,15 @@ describe("Related Fields", () => {
     });
 
     test("should be able to require fields from a nested related union", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:FOLLOWS]->(author1:${Author})-[:WROTE]->(book1:${Book})
                     SET user1 = $userInput1, author1 = $authorInput1, book1 = $bookInput1
                     CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+        );
 
         const typeDefs = gql`
             type ${User} {
@@ -1844,7 +1638,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -1857,11 +1651,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -1886,20 +1676,15 @@ describe("Related Fields", () => {
     });
 
     test("should throw an error if not using ...on for related unions", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (user1:${User})-[:FOLLOWS]->(author1:${Author})-[:WROTE]->(book1:${Book})
                     SET user1 = $userInput1, author1 = $authorInput1, book1 = $bookInput1
                     CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+            { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+        );
 
         const typeDefs = gql`
             type ${User} {
@@ -1947,7 +1732,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2010,7 +1795,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2073,7 +1858,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2136,7 +1921,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2199,7 +1984,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2260,7 +2045,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2323,7 +2108,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2332,15 +2117,10 @@ describe("Related Fields", () => {
     });
 
     test("should receive undefined for related fields that are not selected", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+            { userInput1, addressInput1 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -2367,7 +2147,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2380,11 +2160,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -2401,15 +2177,10 @@ describe("Related Fields", () => {
     });
 
     test("should be able to require a @cypher field on a related type", async () => {
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+            { userInput1, addressInput1 }
+        );
 
         const typeDefs = gql`
             type ${Address} {
@@ -2436,7 +2207,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
         });
@@ -2449,11 +2220,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
@@ -2500,7 +2267,7 @@ describe("Related Fields", () => {
             },
         };
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers,
             validate: false,
@@ -2514,11 +2281,7 @@ describe("Related Fields", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
     });

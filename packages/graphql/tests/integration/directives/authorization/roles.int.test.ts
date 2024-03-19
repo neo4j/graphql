@@ -17,19 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import { runCypher } from "../../../utils/run-cypher";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/roles", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
     let typeUser: UniqueType;
@@ -38,25 +32,14 @@ describe("auth/roles", () => {
     let typeComment: UniqueType;
     let typeHistory: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
     beforeEach(async () => {
-        typeUser = new UniqueType("User");
-        typeProduct = new UniqueType("Product");
-        typePost = new UniqueType("Post");
-        typeComment = new UniqueType("Comment");
-        typeHistory = new UniqueType("History");
+        typeUser = testHelper.createUniqueType("User");
+        typeProduct = testHelper.createUniqueType("Product");
+        typePost = testHelper.createUniqueType("Post");
+        typeComment = testHelper.createUniqueType("Comment");
+        typeHistory = testHelper.createUniqueType("History");
 
-        const session = await neo4j.getSession();
-        await runCypher(
-            session,
+        await testHelper.executeCypher(
             `
                 CREATE (:${typeProduct} { name: 'p1', id:123 })
                 CREATE (:${typeUser} { id: 1234, password:'dontpanic' })
@@ -65,14 +48,11 @@ describe("auth/roles", () => {
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [typeProduct, typeUser]);
+        await testHelper.close();
     });
 
     describe("read", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -96,7 +76,7 @@ describe("auth/roles", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -105,24 +85,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw if missing role on field definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -146,7 +116,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -155,24 +125,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("Read Node & Cypher Field", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -219,7 +179,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -228,42 +188,32 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                 MATCH (u:${typeUser} { id: 1234 })
                 CREATE(h:${typeHistory} { url: 'http://some.url' })<-[:HAS_HISTORY]-(u)
             `);
 
-                const token = createBearerToken(secret, { sub: "super_admin", roles: ["admin", "super-admin"] });
+            const token = createBearerToken(secret, { sub: "super_admin", roles: ["admin", "super-admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-                expect(gqlResult.data).toEqual({
-                    [typeUser.plural]: [
-                        {
-                            history: [
-                                {
-                                    url: "http://some.url",
-                                },
-                            ],
-                        },
-                    ],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.data).toEqual({
+                [typeUser.plural]: [
+                    {
+                        history: [
+                            {
+                                url: "http://some.url",
+                            },
+                        ],
+                    },
+                ],
+            });
         });
 
         // This tests reproduces the security issue related to authorization without match #195
         // eslint-disable-next-line jest/no-disabled-tests
         test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -286,7 +236,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -295,26 +245,16 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("create", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -340,7 +280,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -349,24 +289,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw if missing role on field definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -392,7 +322,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -401,24 +331,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should not throw if missing role on field definition if is not specified in the request", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -444,7 +364,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -453,26 +373,16 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeFalsy();
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
         });
     });
 
     describe("update", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -498,7 +408,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -507,24 +417,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw if missing role on field definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -550,7 +450,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -559,26 +459,16 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret);
+            const token = createBearerToken(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("connect", () => {
         test("should throw if missing role", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -628,7 +518,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -637,29 +527,19 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${typeUser} {id: "${userId}"})
                     CREATE (:${typePost} {id: "${postId}"})
                 `);
-                // missing super-admin
-                const token = createBearerToken(secret, { roles: ["admin"] });
+            // missing super-admin
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw if missing role on nested connect", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -725,7 +605,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -734,31 +614,21 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})
                     CREATE (:${typeUser} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: [""] });
+            const token = createBearerToken(secret, { roles: [""] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("disconnect", () => {
         test("should throw if missing role", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -808,7 +678,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -817,29 +687,19 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${typeUser} {id: "${userId}"})
                     CREATE (:${typePost} {id: "${userId}"})
                 `);
-                // missing super-admin
-                const token = createBearerToken(secret, { roles: ["admin"] });
+            // missing super-admin
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw if missing role on nested disconnect", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -905,7 +765,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -914,30 +774,20 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})<-[:HAS_POST]-(:${typeUser} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: [""] });
+            const token = createBearerToken(secret, { roles: [""] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("delete", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -961,7 +811,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -970,24 +820,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret, { roles: [] });
+            const token = createBearerToken(secret, { roles: [] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw if missing role on type definition (with nested delete)", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1025,7 +865,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1033,31 +873,22 @@ describe("auth/roles", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (:${typeUser} {id: "${userId}"})-[:HAS_POST]->(:${typePost} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { roles: [] });
+            const token = createBearerToken(secret, { roles: [] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     // TODO: Move these checks into JavaScript! Fun!
     describe("custom-resolvers", () => {
         test("should throw if missing role on custom Query with @cypher", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1081,7 +912,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1090,24 +921,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret, { roles: [] });
+            const token = createBearerToken(secret, { roles: [] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if missing role on custom Mutation with @cypher", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1131,7 +952,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1140,24 +961,14 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret, { roles: [] });
+            const token = createBearerToken(secret, { roles: [] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if missing role on Field definition @cypher", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type JWTPayload @jwt {
                     roles: [String!]!
@@ -1188,7 +999,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1197,27 +1008,17 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret, { roles: [] });
+            const token = createBearerToken(secret, { roles: [] });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("combining roles with where", () => {
         test("combines where with roles", async () => {
-            const session = await neo4j.getSession();
-
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1262,7 +1063,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1271,50 +1072,36 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${type.name} {id: "${userId}", name: "User1", password: "password" })
                     CREATE (:${type.name} {id: "${userId2}", name: "User2", password: "password" })
                 `);
-                // request with role "user" - should only return details of user
-                const userToken = createBearerToken(secret, { roles: ["user"], id: userId });
+            // request with role "user" - should only return details of user
+            const userToken = createBearerToken(secret, { roles: ["user"], id: userId });
 
-                const gqlResultUser = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token: userToken }),
-                });
+            const gqlResultUser = await testHelper.executeGraphQLWithToken(query, userToken);
 
-                expect(gqlResultUser.data).toEqual({
-                    [type.plural]: [{ id: userId, name: "User1", password: "password" }],
-                });
+            expect(gqlResultUser.data).toEqual({
+                [type.plural]: [{ id: userId, name: "User1", password: "password" }],
+            });
 
-                // request with role "admin" - should return all users
-                const adminToken = createBearerToken(secret, { roles: ["admin"], id: userId2 });
+            // request with role "admin" - should return all users
+            const adminToken = createBearerToken(secret, { roles: ["admin"], id: userId2 });
 
-                const gqlResultAdmin = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token: adminToken }),
-                });
+            const gqlResultAdmin = await testHelper.executeGraphQLWithToken(query, adminToken);
 
-                expect(gqlResultAdmin.data).toEqual({
-                    [type.plural]: expect.toIncludeSameMembers([
-                        { id: userId, name: "User1", password: "password" },
-                        { id: userId2, name: "User2", password: "password" },
-                    ]),
-                });
-            } finally {
-                await session.close();
-            }
+            expect(gqlResultAdmin.data).toEqual({
+                [type.plural]: expect.toIncludeSameMembers([
+                    { id: userId, name: "User1", password: "password" },
+                    { id: userId2, name: "User2", password: "password" },
+                ]),
+            });
         });
     });
 
     describe("rolesPath with dots", () => {
         test("can read role from path containing dots", async () => {
-            const session = await neo4j.getSession();
-
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type JWTPayload @jwt {
@@ -1352,7 +1139,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1361,44 +1148,30 @@ describe("auth/roles", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${type.name} {id: "${userId}", name: "User1", password: "password" })
                 `);
-                // request without role "admin" - should return all users
-                const nonAdminToken = createBearerToken(secret, {
-                    "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["user"] },
-                    id: userId,
-                });
+            // request without role "admin" - should return all users
+            const nonAdminToken = createBearerToken(secret, {
+                "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["user"] },
+                id: userId,
+            });
 
-                const gqlResultUser = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({
-                        token: nonAdminToken,
-                    }),
-                });
+            const gqlResultUser = await testHelper.executeGraphQLWithToken(query, nonAdminToken);
 
-                expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
+            expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
 
-                // request with role "admin" - should return all users
-                const adminToken = createBearerToken(secret, {
-                    "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["admin"] },
-                    id: userId,
-                });
+            // request with role "admin" - should return all users
+            const adminToken = createBearerToken(secret, {
+                "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["admin"] },
+                id: userId,
+            });
 
-                const gqlResultAdmin = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token: adminToken }),
-                });
+            const gqlResultAdmin = await testHelper.executeGraphQLWithToken(query, adminToken);
 
-                expect(gqlResultAdmin.data).toEqual({
-                    [type.plural]: [{ id: userId, name: "User1", password: "password" }],
-                });
-            } finally {
-                await session.close();
-            }
+            expect(gqlResultAdmin.data).toEqual({
+                [type.plural]: [{ id: userId, name: "User1", password: "password" }],
+            });
         });
     });
 });
