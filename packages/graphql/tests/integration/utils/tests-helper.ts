@@ -177,7 +177,7 @@ export class TestHelper {
         if (this.customDB) {
             throw new Error("Cannot create new database. Did you forget to call dropDatabase?");
         }
-        await this.executeCypher(`CREATE DATABASE ${db} WAIT`);
+        await this.executeCypher(`CREATE DATABASE ${Cypher.utils.escapeVariable(db)} WAIT`);
         this.customDB = db;
     }
 
@@ -185,7 +185,7 @@ export class TestHelper {
         if (!this.customDB) {
             throw new Error("Cannot drop database. Did you forget to call createDatabase?");
         }
-        await this.executeCypher(`DROP DATABASE  ${this.customDB}`);
+        await this.executeCypher(`DROP DATABASE  ${Cypher.utils.escapeVariable(this.customDB)}`);
         this.customDB = undefined;
     }
 
