@@ -19,8 +19,8 @@
 
 import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("interface relationships", () => {
     const testHelper = new TestHelper();
@@ -77,7 +77,7 @@ describe("interface relationships", () => {
         await testHelper.close();
     });
 
-    test("update through relationship field", async () => {
+    test("should delete using interface relationship fields", async () => {
         const actorName = generate({
             readable: true,
             charset: "alphabetic",
@@ -90,11 +90,6 @@ describe("interface relationships", () => {
         const movieRuntime = faker.number.int({ max: 100000 });
         const movieScreenTime = faker.number.int({ max: 100000 });
 
-        const movieNewTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
@@ -102,13 +97,8 @@ describe("interface relationships", () => {
         const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
-            mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
-                ${Actor.operations.update}(
-                    where: { name: $name }
-                    update: {
-                        actedIn: { where: { node: { title: $oldTitle } }, update: { node: { title: $newTitle } } }
-                    }
-                ) {
+            mutation DeleteMovie($name: String, $title: String) {
+                ${Actor.operations.update}(where: { name: $name }, delete: { actedIn: { where: { node: { title: $title } } } }) {
                     ${Actor.plural} {
                         name
                         actedIn {
@@ -139,11 +129,7 @@ describe("interface relationships", () => {
         );
 
         const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: {
-                name: actorName,
-                oldTitle: movieTitle,
-                newTitle: movieNewTitle,
-            },
+            variableValues: { name: actorName, title: movieTitle },
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -152,15 +138,11 @@ describe("interface relationships", () => {
             [Actor.operations.update]: {
                 [Actor.plural]: [
                     {
-                        actedIn: expect.toIncludeSameMembers([
-                            {
-                                runtime: movieRuntime,
-                                title: movieNewTitle,
-                            },
+                        actedIn: [
                             {
                                 title: seriesTitle,
                             },
-                        ]),
+                        ],
                         name: actorName,
                     },
                 ],
@@ -168,12 +150,12 @@ describe("interface relationships", () => {
         });
     });
 
-    test("nested update through relationship field", async () => {
-        const actorName = generate({
+    test("should nested delete using interface relationship fields", async () => {
+        const actorName1 = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const actorNewName = generate({
+        const actorName2 = generate({
             readable: true,
             charset: "alphabetic",
         });
@@ -185,11 +167,6 @@ describe("interface relationships", () => {
         const movieRuntime = faker.number.int({ max: 100000 });
         const movieScreenTime = faker.number.int({ max: 100000 });
 
-        const movieNewTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
@@ -197,13 +174,13 @@ describe("interface relationships", () => {
         const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
-            mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
+            mutation DeleteMovie($name1: String, $name2: String, $title: String) {
                 ${Actor.operations.update}(
-                    where: { name: $name }
-                    update: {
+                    where: { name: $name1 }
+                    delete: {
                         actedIn: {
-                            where: { node: { title: $oldTitle } }
-                            update: { node: { title: $newTitle, actors: { update: { node: { name: $newName } } } } }
+                            where: { node: { title: $title } }
+                            delete: { actors: { where: { node: { name: $name2 } } } }
                         }
                     }
                 ) {
@@ -211,6 +188,9 @@ describe("interface relationships", () => {
                         name
                         actedIn {
                             title
+                            actors {
+                                name
+                            }
                             ... on ${Movie} {
                                 runtime
                             }
@@ -222,12 +202,13 @@ describe("interface relationships", () => {
 
         await testHelper.executeCypher(
             `
-                CREATE (a:${Actor} { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${Movie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle })
+                CREATE (a:${Actor} { name: $actorName1 })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${Movie} { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN]-(aa:${Actor} { name: $actorName2 })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle })<-[:ACTED_IN]-(aa)
             `,
             {
-                actorName,
+                actorName1,
+                actorName2,
                 movieTitle,
                 movieRuntime,
                 movieScreenTime,
@@ -237,12 +218,7 @@ describe("interface relationships", () => {
         );
 
         const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: {
-                name: actorName,
-                newName: actorNewName,
-                oldTitle: movieTitle,
-                newTitle: movieNewTitle,
-            },
+            variableValues: { name1: actorName1, name2: actorName2, title: movieTitle },
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -251,16 +227,13 @@ describe("interface relationships", () => {
             [Actor.operations.update]: {
                 [Actor.plural]: [
                     {
-                        actedIn: expect.toIncludeSameMembers([
-                            {
-                                runtime: movieRuntime,
-                                title: movieNewTitle,
-                            },
+                        actedIn: [
                             {
                                 title: seriesTitle,
+                                actors: [{ name: actorName1 }],
                             },
-                        ]),
-                        name: actorNewName,
+                        ],
+                        name: actorName1,
                     },
                 ],
             },

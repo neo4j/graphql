@@ -19,8 +19,8 @@
 
 import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("interface relationships", () => {
     const testHelper = new TestHelper();
@@ -29,7 +29,7 @@ describe("interface relationships", () => {
     let Movie: UniqueType;
     let Series: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         Episode = testHelper.createUniqueType("Episode");
         Actor = testHelper.createUniqueType("Actor");
         Movie = testHelper.createUniqueType("Movie");
@@ -73,11 +73,11 @@ describe("interface relationships", () => {
         });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
-    test("should create create using interface relationship fields", async () => {
+    test("should disconnect using interface relationship fields", async () => {
         const actorName = generate({
             readable: true,
             charset: "alphabetic",
@@ -90,21 +90,15 @@ describe("interface relationships", () => {
         const movieRuntime = faker.number.int({ max: 100000 });
         const movieScreenTime = faker.number.int({ max: 100000 });
 
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
+
         const query = `
-            mutation CreateActorConnectMovie($name: String!, $title: String!, $runtime: Int!, $screenTime: Int!) {
-                ${Actor.operations.create}(
-                    input: [
-                        {
-                            name: $name
-                            actedIn: {
-                                create: {
-                                    edge: { screenTime: $screenTime }
-                                    node: { ${Movie}: { title: $title, runtime: $runtime } }
-                                }
-                            }
-                        }
-                    ]
-                ) {
+            mutation DisconnectMovie($name: String, $title: String) {
+                ${Actor.operations.update}(where: { name: $name }, disconnect: { actedIn: { where: { node: { title: $title } } } }) {
                     ${Actor.plural} {
                         name
                         actedIn {
@@ -118,25 +112,35 @@ describe("interface relationships", () => {
             }
         `;
 
+        await testHelper.executeCypher(
+            `
+                CREATE (a:${Actor} { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle })
+            `,
+            {
+                actorName,
+                movieTitle,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesScreenTime,
+            }
+        );
+
         const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: {
-                name: actorName,
-                title: movieTitle,
-                runtime: movieRuntime,
-                screenTime: movieScreenTime,
-            },
+            variableValues: { name: actorName, title: movieTitle },
         });
 
         expect(gqlResult.errors).toBeFalsy();
 
         expect(gqlResult.data).toEqual({
-            [Actor.operations.create]: {
+            [Actor.operations.update]: {
                 [Actor.plural]: [
                     {
                         actedIn: [
                             {
-                                runtime: movieRuntime,
-                                title: movieTitle,
+                                title: seriesTitle,
                             },
                         ],
                         name: actorName,
@@ -146,12 +150,12 @@ describe("interface relationships", () => {
         });
     });
 
-    test("should create create nested nodes using interface relationship fields", async () => {
-        const name1 = generate({
+    test("should nested disconnect using interface relationship fields", async () => {
+        const actorName1 = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const name2 = generate({
+        const actorName2 = generate({
             readable: true,
             charset: "alphabetic",
         });
@@ -161,59 +165,24 @@ describe("interface relationships", () => {
             charset: "alphabetic",
         });
         const movieRuntime = faker.number.int({ max: 100000 });
-        const screenTime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-
-        const episodeRuntime = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
-            mutation CreateActorConnectMovie(
-                $name1: String!
-                $name2: String!
-                $movieTitle: String!
-                $movieRuntime: Int!
-                $screenTime: Int!
-                $seriesTitle: String!
-                $episodeRuntime: Int!
-            ) {
-                ${Actor.operations.create}(
-                    input: [
-                        {
-                            name: $name1
-                            actedIn: {
-                                create: [
-                                    {
-                                        edge: { screenTime: $screenTime }
-                                        node: {
-                                            ${Movie}: {
-                                                title: $movieTitle
-                                                runtime: $movieRuntime
-                                                actors: {
-                                                    create: {
-                                                        edge: { screenTime: $screenTime }
-                                                        node: { name: $name2 }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    {
-                                        edge: { screenTime: $screenTime }
-                                        node: {
-                                            ${Series}: {
-                                                title: $seriesTitle
-                                                episodes: { create: { node: { runtime: $episodeRuntime } } }
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
+            mutation DisconnectMovie($name1: String, $name2: String, $title: String) {
+                ${Actor.operations.update}(
+                    where: { name: $name1 }
+                    disconnect: {
+                        actedIn: {
+                            where: { node: { title: $title } }
+                            disconnect: { actors: { where: { node: { name: $name2 } } } }
                         }
-                    ]
+                    }
                 ) {
                     ${Actor.plural} {
                         name
@@ -225,48 +194,46 @@ describe("interface relationships", () => {
                             ... on ${Movie} {
                                 runtime
                             }
-                            ... on ${Series} {
-                                episodes {
-                                    runtime
-                                }
-                            }
                         }
                     }
                 }
             }
         `;
 
-        const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: {
-                name1,
-                name2,
+        await testHelper.executeCypher(
+            `
+                CREATE (a:${Actor} { name: $actorName1 })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${Movie} { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN]-(aa:${Actor} { name: $actorName2 })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle })<-[:ACTED_IN]-(aa)
+            `,
+            {
+                actorName1,
+                actorName2,
                 movieTitle,
                 movieRuntime,
-                screenTime,
+                movieScreenTime,
                 seriesTitle,
-                episodeRuntime,
-            },
+                seriesScreenTime,
+            }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { name1: actorName1, name2: actorName2, title: movieTitle },
         });
 
         expect(gqlResult.errors).toBeFalsy();
 
         expect(gqlResult.data).toEqual({
-            [Actor.operations.create]: {
+            [Actor.operations.update]: {
                 [Actor.plural]: [
                     {
-                        actedIn: expect.toIncludeSameMembers([
-                            {
-                                runtime: movieRuntime,
-                                title: movieTitle,
-                                actors: expect.toIncludeSameMembers([{ name: name2 }, { name: name1 }]),
-                            },
+                        actedIn: [
                             {
                                 title: seriesTitle,
-                                actors: [{ name: name1 }],
-                                episodes: [{ runtime: episodeRuntime }],
+                                actors: expect.toIncludeSameMembers([{ name: actorName1 }, { name: actorName2 }]),
                             },
-                        ]),
-                        name: name1,
+                        ],
+                        name: actorName1,
                     },
                 ],
             },
