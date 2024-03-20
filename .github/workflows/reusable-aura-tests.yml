@@ -56,7 +56,7 @@ jobs:
       matrix:
         package:
           - graphql
-          - introspector
+          # - introspector  # Skipped as all tests require CREATE DATABASE at the moment
           - ogm
 
     runs-on: ubuntu-latest
