@@ -113,8 +113,7 @@ describe("sort", () => {
     ] as const;
 
     beforeAll(async () => {
-        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-        schema = await neoSchema.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(
             `
