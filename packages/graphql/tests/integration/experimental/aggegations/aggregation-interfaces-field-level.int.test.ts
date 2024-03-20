@@ -17,29 +17,18 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Interface Field Level Aggregations", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
-    const Production = new UniqueType("Production");
-    const Movie = new UniqueType("Movie");
-    const Actor = new UniqueType("Actor");
-    const Series = new UniqueType("Series");
-
-    let neoSchema: Neo4jGraphQL;
+    const Production = testHelper.createUniqueType("Production");
+    const Movie = testHelper.createUniqueType("Movie");
+    const Actor = testHelper.createUniqueType("Actor");
+    const Series = testHelper.createUniqueType("Series");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         typeDefs = /* GraphQL */ `
             interface ${Production} {
                 title: String!
@@ -69,10 +58,9 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await session.run(`
+        await testHelper.executeCypher(`
             // Create Movies
             CREATE (m1:${Movie} { title: "Movie One", cost: 10000000, runtime: 120 })
             CREATE (m2:${Movie} { title: "Movie Two", cost: 20000000, runtime: 90 })
@@ -102,8 +90,7 @@ describe("Interface Field Level Aggregations", () => {
     });
 
     afterAll(async () => {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Count", async () => {
@@ -117,11 +104,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[Actor.plural][0][`actedInAggregate`]).toEqual({
@@ -157,11 +140,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -202,11 +181,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -247,11 +222,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -296,11 +267,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -346,11 +313,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -383,11 +346,7 @@ describe("Interface Field Level Aggregations", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

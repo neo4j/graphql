@@ -17,39 +17,26 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Top-level interface query fields", () => {
     const secret = "the-secret";
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
-    const SomeNodeType = new UniqueType("SomeNode");
-    const OtherNodeType = new UniqueType("OtherNode");
-    const MyImplementationType = new UniqueType("MyImplementation");
-    const MyOtherImplementationType = new UniqueType("MyOtherImplementation");
+    let SomeNodeType: UniqueType;
+    let OtherNodeType: UniqueType;
+    let MyImplementationType: UniqueType;
+    let MyOtherImplementationType: UniqueType;
 
-    async function graphqlQuery(query: string, token: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
-    }
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
+        SomeNodeType = testHelper.createUniqueType("SomeNode");
+        OtherNodeType = testHelper.createUniqueType("OtherNode");
+        MyImplementationType = testHelper.createUniqueType("MyImplementation");
+        MyOtherImplementationType = testHelper.createUniqueType("MyOtherImplementation");
 
         typeDefs = `
             type ${SomeNodeType} implements MyOtherInterface & MyInterface {
@@ -84,45 +71,28 @@ describe("Top-level interface query fields", () => {
             extend type ${OtherNodeType} @authentication
         `;
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
             CREATE(:${SomeNodeType} { id: "1", something:"somenode",somethingElse:"test"  })-[:HAS_OTHER_NODES]->(other:${OtherNodeType} { id: "2" })
             CREATE(s:${SomeNodeType} { id: "10", something:"someothernode",somethingElse:"othertest"  })
             MERGE (s)-[:HAS_OTHER_NODES]->(other)
             CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} { id: "3" })
             CREATE(:${MyOtherImplementationType} { id: "4", someField: "bla" })
         `);
-        } finally {
-            await session.close();
-        }
+    });
 
-        const neoGraphql = new Neo4jGraphQL({
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("should return results on top-level simple query on interface target to a relationship", async () => {
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: secret,
                 },
             },
         });
-        schema = await neoGraphql.getSchema();
-    });
-
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [
-            SomeNodeType,
-            OtherNodeType,
-            MyImplementationType,
-            MyOtherImplementationType,
-        ]);
-        await session.close();
-        await driver.close();
-    });
-
-    test("should return results on top-level simple query on interface target to a relationship", async () => {
         const query = `
             query {
                 myInterfaces {
@@ -141,7 +111,7 @@ describe("Top-level interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             myInterfaces: expect.toIncludeSameMembers([
@@ -166,6 +136,14 @@ describe("Top-level interface query fields", () => {
         });
     });
     test("should return results on top-level simple query on simple interface", async () => {
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
         const query = `
             query {
                 myOtherInterfaces {
@@ -181,7 +159,7 @@ describe("Top-level interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             myOtherInterfaces: expect.toIncludeSameMembers([
@@ -206,6 +184,14 @@ describe("Top-level interface query fields", () => {
     });
 
     test("should return results on top-level simple query on simple interface sorted", async () => {
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
         const query = `
             query {
                 myOtherInterfaces(options: {sort: [{ something: DESC }] }) {
@@ -222,7 +208,7 @@ describe("Top-level interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             myOtherInterfaces: [
@@ -249,6 +235,14 @@ describe("Top-level interface query fields", () => {
     });
 
     test("should return results on top-level simple query on simple interface sorted with limit", async () => {
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
         const query = `
             query {
                 myOtherInterfaces(options: {sort: [{ something: DESC }], limit: 1 }) {
@@ -265,7 +259,7 @@ describe("Top-level interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             myOtherInterfaces: [
@@ -283,7 +277,7 @@ describe("Top-level interface query fields", () => {
     });
 
     describe("add authorization", () => {
-        beforeAll(async () => {
+        beforeEach(async () => {
             typeDefs =
                 typeDefs +
                 `
@@ -301,16 +295,14 @@ describe("Top-level interface query fields", () => {
             ) 
             extend type ${MyImplementationType} @authorization(validate: [{ operations: [READ], where: { jwt: { groups_INCLUDES: "a" } } }])
             `;
-            const neoGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            schema = await neoGraphql.getSchema();
         });
         test("should return authorized results on top-level simple query on interface target to a relationship", async () => {
             const query = `
@@ -335,7 +327,7 @@ describe("Top-level interface query fields", () => {
                 groups: ["a"],
                 jwtAllowedNamesExample: "somenode",
             });
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toBeUndefined();
             expect(queryResult.data).toEqual({
                 myInterfaces: expect.toIncludeSameMembers([
@@ -374,7 +366,7 @@ describe("Top-level interface query fields", () => {
             `;
 
             const token = createBearerToken(secret, { jwtAllowedNamesExample: "somenode" });
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors?.[0]?.message).toBe("Forbidden");
         });
 
@@ -394,7 +386,7 @@ describe("Top-level interface query fields", () => {
             `;
 
             const token = createBearerToken(secret, {});
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toBeUndefined();
             expect(queryResult.data).toEqual({
                 myOtherInterfaces: [],
@@ -417,7 +409,7 @@ describe("Top-level interface query fields", () => {
             `;
 
             const token = createBearerToken(secret, { roles: ["admin"], jwtAllowedNamesExample: "somenode" });
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toBeUndefined();
             expect(queryResult.data).toEqual({
                 myOtherInterfaces: expect.toIncludeSameMembers([
@@ -435,18 +427,16 @@ describe("Top-level interface query fields", () => {
     });
 
     describe("add limit directive", () => {
-        beforeAll(async () => {
+        beforeEach(async () => {
             typeDefs = typeDefs + `extend interface MyInterface @limit(default: 1, max: 3) `;
-            const neoGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            schema = await neoGraphql.getSchema();
         });
 
         test("Limit from directive on Interface", async () => {
@@ -475,7 +465,7 @@ describe("Top-level interface query fields", () => {
                 groups: ["a"],
                 jwtAllowedNamesExample: "somenode",
             });
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toBeUndefined();
             expect(queryResult.data?.myInterfaces).toHaveLength(1);
         });
@@ -506,7 +496,7 @@ describe("Top-level interface query fields", () => {
                 groups: ["a"],
                 jwtAllowedNamesExample: "somenode",
             });
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toBeUndefined();
             expect(queryResult.data?.myInterfaces).toHaveLength(3);
         });
@@ -537,25 +527,23 @@ describe("Top-level interface query fields", () => {
                 groups: ["a"],
                 jwtAllowedNamesExample: "somenode",
             });
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toBeUndefined();
             expect(queryResult.data?.myInterfaces).toHaveLength(2);
         });
     });
 
     describe("add schema configuration", () => {
-        beforeAll(async () => {
+        beforeEach(async () => {
             typeDefs = typeDefs + `extend interface MyInterface @query(read: false)`;
-            const neoGraphql = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
                     },
                 },
             });
-            schema = await neoGraphql.getSchema();
         });
         test("should throw error on top-level simple query on interface target to a relationship", async () => {
             const query = `
@@ -576,7 +564,7 @@ describe("Top-level interface query fields", () => {
             `;
 
             const token = createBearerToken(secret, {});
-            const queryResult = await graphqlQuery(query, token);
+            const queryResult = await testHelper.executeGraphQLWithToken(query, token);
             expect(queryResult.errors).toHaveLength(1);
             expect(queryResult.errors?.[0]).toHaveProperty(
                 "message",

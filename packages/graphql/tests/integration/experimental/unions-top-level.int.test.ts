@@ -17,30 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Top-level union query fields", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
     let GenreType: UniqueType;
     let MovieType: UniqueType;
-    let schema: GraphQLSchema;
     let typeDefs: string;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    beforeAll(async () => {
-        GenreType = new UniqueType("Genre");
-        MovieType = new UniqueType("Movie");
+        GenreType = testHelper.createUniqueType("Genre");
+        MovieType = testHelper.createUniqueType("Movie");
 
         typeDefs = `
         union Search = ${GenreType} | ${MovieType}
@@ -55,28 +44,21 @@ describe("Top-level union query fields", () => {
         }
         `;
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (m:${MovieType} {title: "The Matrix"})
                 CREATE (g:${GenreType} {name: "Action"})
                 MERGE (m)-[:SEARCH]->(m)
                 MERGE (m)-[:SEARCH]->(g)
             `);
-        } finally {
-            await session.close();
-        }
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {},
         });
-        schema = await neoSchema.getSchema();
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should read top-level simple query on union", async () => {
@@ -98,11 +80,7 @@ describe("Top-level union query fields", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -131,11 +109,7 @@ describe("Top-level union query fields", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -161,11 +135,7 @@ describe("Top-level union query fields", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -191,11 +161,7 @@ describe("Top-level union query fields", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -223,11 +189,7 @@ describe("Top-level union query fields", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -235,220 +197,270 @@ describe("Top-level union query fields", () => {
             { title: "The Matrix", search: [{ name: "Action" }, {}] },
         ]);
     });
+});
 
-    describe("add authorization", () => {
-        beforeAll(async () => {
-            typeDefs =
-                typeDefs +
-                `
-                type JWT @jwt {
-                    jwtAllowedNamesExample: String
-                    roles: [String]
-                }
-                extend type ${GenreType.name} @authorization(
-                    validate: [
-                        { when: [BEFORE], operations: [READ], where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }
-                    ])
-                extend type ${MovieType.name} @authorization(
-                    filter: [
-                        { operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }
-                    ]) 
-                `;
-            const neoGraphql = new Neo4jGraphQL({
-                typeDefs,
-                driver,
-            });
-            schema = await neoGraphql.getSchema();
-        });
+describe("add authorization", () => {
+    const testHelper = new TestHelper();
 
-        test("should read top-level simple query on union when jwt correct", async () => {
-            const query = `
-                query {
-                    searches {
-                        ... on ${GenreType} {
-                            name
-                        }
-                        ... on ${MovieType} {
-                            title
-                            search {
-                                ... on ${GenreType} {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
+    let GenreType: UniqueType;
+    let MovieType: UniqueType;
+    let typeDefs: string;
+
+    beforeAll(async () => {
+        GenreType = testHelper.createUniqueType("Genre");
+        MovieType = testHelper.createUniqueType("Movie");
+
+        typeDefs = `
+        union Search = ${GenreType} | ${MovieType}
+
+        type ${GenreType} {
+            name: String
+        }
+
+        type ${MovieType} {
+            title: String
+            search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+        }
+        `;
+
+        await testHelper.executeCypher(`
+                CREATE (m:${MovieType} {title: "The Matrix"})
+                CREATE (g:${GenreType} {name: "Action"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+
+        typeDefs =
+            typeDefs +
+            `
+            type JWT @jwt {
+                jwtAllowedNamesExample: String
+                roles: [String]
+            }
+            extend type ${GenreType.name} @authorization(
+                validate: [
+                    { when: [BEFORE], operations: [READ], where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }
+                ])
+            extend type ${MovieType.name} @authorization(
+                filter: [
+                    { operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }
+                ]) 
             `;
-
-            const gqlResult = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    jwt: {
-                        jwtAllowedNamesExample: "Action",
-                        roles: ["admin"],
-                    },
-                }),
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect((gqlResult.data as any).searches).toIncludeSameMembers([
-                { name: "Action" },
-                { title: "The Matrix", search: [{ name: "Action" }, {}] },
-            ]);
-        });
-
-        test("should throw forbidden when jwt incorrect", async () => {
-            const query = `
-                query {
-                    searches {
-                        ... on ${GenreType} {
-                            name
-                        }
-                        ... on ${MovieType} {
-                            title
-                            search {
-                                ... on ${GenreType} {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const gqlResult = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    jwt: {
-                        jwtAllowedNamesExample: "somenode",
-                        roles: ["admin"],
-                    },
-                }),
-            });
-
-            expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
-        });
-
-        test("should not throw forbidden when jwt incorrect if filtering-out the authorized constituent", async () => {
-            const query = `
-                query {
-                    searches(where: {${MovieType.name}: {title: "The Matrix"}}) {
-                        ... on ${GenreType} {
-                            name
-                        }
-                        ... on ${MovieType} {
-                            title
-                            
-                        }
-                    }
-                }
-            `;
-
-            const gqlResult = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    jwt: {
-                        jwtAllowedNamesExample: "somenode",
-                        roles: ["admin"],
-                    },
-                }),
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect((gqlResult.data as any).searches).toIncludeSameMembers([
-                {
-                    title: "The Matrix",
-                },
-            ]);
-        });
-
-        test("should combine filter with authorization filter", async () => {
-            const query = `
-                query {
-                    searches(where: {
-                        ${MovieType.name}: {
-                            searchConnection: {
-                                ${GenreType.name}: {
-                                    node: { name: "Action"} 
-                                }
-                            }
-                        }, 
-                        ${GenreType.name}: {}
-                    }) {
-                        ... on ${GenreType} {
-                            name
-                        }
-                        ... on ${MovieType} {
-                            title
-                            search {
-                                ... on ${GenreType} {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const gqlResult = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues({
-                    jwt: {
-                        roles: [],
-                        jwtAllowedNamesExample: "Action",
-                    },
-                }),
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect((gqlResult.data as any).searches).toIncludeSameMembers([{ name: "Action" }]);
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
         });
     });
 
-    describe("add schema configuration", () => {
-        beforeAll(async () => {
-            typeDefs = typeDefs + `extend union Search @query(read: false)`;
-            const neoGraphql = new Neo4jGraphQL({
-                typeDefs,
-                driver,
-            });
-            schema = await neoGraphql.getSchema();
-        });
+    afterAll(async () => {
+        await testHelper.close();
+    });
 
-        test("should throw an error when trying to read top-level simple query on union", async () => {
-            const query = `
-                query {
-                    searches {
-                        ... on ${GenreType} {
-                            name
-                        }
-                        ... on ${MovieType} {
-                            title
-                            search {
-                                ... on ${GenreType} {
-                                    name
-                                }
+    test("should read top-level simple query on union when jwt correct", async () => {
+        const query = `
+            query {
+                searches {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
                             }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
-            const gqlResult = await graphql({
-                schema,
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
-
-            expect(gqlResult.errors).toHaveLength(1);
-            expect(gqlResult.errors?.[0]).toHaveProperty("message", 'Cannot query field "searches" on type "Query".');
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: {
+                jwt: {
+                    jwtAllowedNamesExample: "Action",
+                    roles: ["admin"],
+                },
+            },
         });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([
+            { name: "Action" },
+            { title: "The Matrix", search: [{ name: "Action" }, {}] },
+        ]);
+    });
+
+    test("should throw forbidden when jwt incorrect", async () => {
+        const query = `
+            query {
+                searches {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: {
+                jwt: {
+                    jwtAllowedNamesExample: "somenode",
+                    roles: ["admin"],
+                },
+            },
+        });
+
+        expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
+    });
+
+    test("should not throw forbidden when jwt incorrect if filtering-out the authorized constituent", async () => {
+        const query = `
+            query {
+                searches(where: {${MovieType.name}: {title: "The Matrix"}}) {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: {
+                jwt: {
+                    jwtAllowedNamesExample: "somenode",
+                    roles: ["admin"],
+                },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([
+            {
+                title: "The Matrix",
+            },
+        ]);
+    });
+
+    test("should combine filter with authorization filter", async () => {
+        const query = `
+            query {
+                searches(where: {
+                    ${MovieType.name}: {
+                        searchConnection: {
+                            ${GenreType.name}: {
+                                node: { name: "Action"} 
+                            }
+                        }
+                    }, 
+                    ${GenreType.name}: {}
+                }) {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: {
+                jwt: {
+                    roles: [],
+                    jwtAllowedNamesExample: "Action",
+                },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([{ name: "Action" }]);
+    });
+});
+
+describe("add schema configuration", () => {
+    const testHelper = new TestHelper();
+
+    let GenreType: UniqueType;
+    let MovieType: UniqueType;
+    let typeDefs: string;
+
+    beforeAll(async () => {
+        GenreType = testHelper.createUniqueType("Genre");
+        MovieType = testHelper.createUniqueType("Movie");
+
+        typeDefs = `
+        union Search = ${GenreType} | ${MovieType}
+
+        type ${GenreType} {
+            name: String
+        }
+
+        type ${MovieType} {
+            title: String
+            search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+        }
+        `;
+
+        await testHelper.executeCypher(`
+                CREATE (m:${MovieType} {title: "The Matrix"})
+                CREATE (g:${GenreType} {name: "Action"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+
+        typeDefs = typeDefs + `extend union Search @query(read: false)`;
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+    });
+
+    afterAll(async () => {
+        await testHelper.close();
+    });
+
+    test("should throw an error when trying to read top-level simple query on union", async () => {
+        const query = `
+            query {
+                searches {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]).toHaveProperty("message", 'Cannot query field "searches" on type "Query".');
     });
 });

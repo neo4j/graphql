@@ -17,36 +17,23 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("typename_IN", () => {
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
-    const Movie = new UniqueType("Movie");
-    const Actor = new UniqueType("Actor");
-    const Series = new UniqueType("Series");
-    const Cartoon = new UniqueType("Cartoon");
-
-    async function graphqlQuery(query: string, token?: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
-    }
+    let Movie: UniqueType;
+    let Actor: UniqueType;
+    let Series: UniqueType;
+    let Cartoon: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+        Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
+        Series = testHelper.createUniqueType("Series");
+        Cartoon = testHelper.createUniqueType("Cartoon");
 
         typeDefs = `
         interface Production {
@@ -82,31 +69,20 @@ describe("typename_IN", () => {
         }
         `;
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
             CREATE(a:${Actor.name} { name: "Keanu" })
             CREATE(a)-[:ACTED_IN]->(m:${Movie.name} { title: "The Matrix" })
             CREATE(a)-[:ACTED_IN]->(s:${Series.name} { title: "The Matrix animated series" })
             CREATE(a)-[:ACTED_IN]->(c:${Cartoon.name} { title: "Matrix the cartoon" })
         `);
-        } finally {
-            await session.close();
-        }
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie, Series, Cartoon]);
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("top-level", async () => {
@@ -119,7 +95,7 @@ describe("typename_IN", () => {
         }  
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             productions: expect.toIncludeSameMembers([
@@ -150,7 +126,7 @@ describe("typename_IN", () => {
         } 
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [Actor.plural]: [
@@ -179,7 +155,7 @@ describe("typename_IN", () => {
         }  
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             productionsAggregate: {
@@ -199,7 +175,7 @@ describe("typename_IN", () => {
         } 
         `;
 
-        const queryResult = await graphqlQuery(query);
+        const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [Actor.plural]: expect.arrayContaining([

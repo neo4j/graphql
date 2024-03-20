@@ -17,38 +17,19 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Top-level filter interface query fields", () => {
     const secret = "the-secret";
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
-    const Movie = new UniqueType("Movie");
-    const Series = new UniqueType("Series");
-
-    async function graphqlQuery(query: string, token: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
-    }
+    const Movie = testHelper.createUniqueType("Movie");
+    const Series = testHelper.createUniqueType("Series");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         typeDefs = `
             interface Production {
                 title: String!
@@ -68,32 +49,21 @@ describe("Top-level filter interface query fields", () => {
             }
         `;
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
             CREATE(m1:${Movie} {title: "A Movie", cost: 10})
             CREATE(m2:${Movie} {title: "The Matrix is a very interesting movie: The Documentary", cost: 20})
             
             CREATE(s1:${Series} {title: "The Show", cost: 1})
             CREATE(s2:${Series} {title: "A Series 2", cost: 2})
         `);
-        } finally {
-            await session.close();
-        }
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie, Series]);
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("top level count", async () => {
@@ -106,7 +76,7 @@ describe("Top-level filter interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             productionsAggregate: {
@@ -125,7 +95,7 @@ describe("Top-level filter interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             productionsAggregate: {
@@ -148,7 +118,7 @@ describe("Top-level filter interface query fields", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             productionsAggregate: {

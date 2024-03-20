@@ -17,40 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLError, GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
+import type { GraphQLError } from "graphql";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Top-level filter interface query fields with authorization", () => {
     const secret = "the-secret";
 
-    let schema: GraphQLSchema;
-    let neo4j: Neo4jHelper;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let typeDefs: string;
 
-    const Production = new UniqueType("Production");
-    const Movie = new UniqueType("Movie");
-    const Actor = new UniqueType("Actor");
-    const Series = new UniqueType("Series");
-
-    async function graphqlQuery(query: string, token: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
-    }
+    const Production = testHelper.createUniqueType("Production");
+    const Movie = testHelper.createUniqueType("Movie");
+    const Actor = testHelper.createUniqueType("Actor");
+    const Series = testHelper.createUniqueType("Series");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 roles: [String!]!
@@ -84,10 +66,7 @@ describe("Top-level filter interface query fields with authorization", () => {
             }
         `;
 
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
             // Create Movies
             CREATE (m1:${Movie} { title: "The Movie One", cost: 10000000, runtime: 120 })
             CREATE (m2:${Movie} { title: "The Movie Two", cost: 20000000, runtime: 90 })
@@ -114,25 +93,17 @@ describe("Top-level filter interface query fields with authorization", () => {
             CREATE (a2)-[:ACTED_IN { screenTime: 728 }]->(m3)
             CREATE (a2)-[:ACTED_IN { screenTime: 88 }]->(s3)
         `);
-        } finally {
-            await session.close();
-        }
 
-        const neoGraphql = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: { key: secret },
             },
         });
-        schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie, Series]);
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("aggregation with auth should succeed", async () => {
@@ -147,7 +118,7 @@ describe("Top-level filter interface query fields with authorization", () => {
         `;
 
         const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect((queryResult as any).data[Production.operations.aggregate]["title"]["longest"]).toBe("The Series Three");
     });
@@ -164,7 +135,7 @@ describe("Top-level filter interface query fields with authorization", () => {
         `;
 
         const token = createBearerToken(secret, { roles: [] });
-        const queryResult = await graphqlQuery(query, token);
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeDefined();
         expect((queryResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
         expect(queryResult.data).toBeNull();
