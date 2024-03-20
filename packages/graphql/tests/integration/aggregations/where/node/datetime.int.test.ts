@@ -22,22 +22,36 @@ import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-node-datetime", () => {
-    const testHelper = new TestHelper();
+    let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
+    let Person: UniqueType;
 
     beforeEach(async () => {
+        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
+        Person = testHelper.createUniqueType("Person");
+
         const typeDefs = `
-            type ${User} {
+        interface Human {
+            testString: String!
+            someDateTime: DateTime!
+        }
+
+        type ${Person} implements Human {
+            testString: String!
+            someDateTime: DateTime!
+        }
+
+            type ${User} implements Human {
                 testString: String!
                 someDateTime: DateTime!
             }
     
             type ${Post} {
               testString: String!
-              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -124,7 +138,6 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -169,7 +182,6 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -216,7 +228,6 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
@@ -261,7 +272,270 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+            },
+        ]);
+    });
+});
+describe("aggregations-where-node-datetime interface relationships of concrete types", () => {
+    let testHelper: TestHelper;
+    let User: UniqueType;
+    let Post: UniqueType;
+    let Person: UniqueType;
+
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+        Person = testHelper.createUniqueType("Person");
+
+        const typeDefs = `
+        interface Human {
+            testString: String!
+            someDateTime: DateTime!
+        }
+
+        type ${Person} implements Human {
+            testString: String!
+            someDateTime: DateTime!
+        }
+
+            type ${User} implements Human {
+                testString: String!
+                someDateTime: DateTime!
+            }
+    
+            type ${Post} {
+              testString: String!
+              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
+            }
+        `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+    });
+
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("should return posts where a like DateTime is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someDateTime = new Date();
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: dateTime("${someDateTime.toISOString()}")})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                        testString
+                        likes {
+                            testString
+                            someDateTime
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like DateTime is GT than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someDateTime = new Date();
+        const someDateTimeGT = new Date();
+        someDateTimeGT.setDate(someDateTimeGT.getDate() - 1);
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                        testString
+                        likes {
+                            testString
+                            someDateTime
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like DateTime is GTE than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someDateTime = new Date();
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                        testString
+                        likes {
+                            testString
+                            someDateTime
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like DateTime is LT than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someDateTime = new Date();
+        const someDateTimeLT = new Date();
+        someDateTimeLT.setDate(someDateTimeLT.getDate() + 1);
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                        testString
+                        likes {
+                            testString
+                            someDateTime
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someDateTime: someDateTime.toISOString() }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like DateTime is LTE than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someDateTime = new Date();
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${
+                        Post.plural
+                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                        testString
+                        likes {
+                            testString
+                            someDateTime
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
             console.log(JSON.stringify(gqlResult.errors, null, 2));
         }

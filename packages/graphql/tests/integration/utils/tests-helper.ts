@@ -23,6 +23,8 @@ import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../../src";
 import { Neo4jGraphQL } from "../../../src";
+import { Neo4jDatabaseInfo } from "../../../src/classes";
+import type { Neo4jEdition } from "../../../src/classes/Neo4jDatabaseInfo";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 
@@ -30,12 +32,18 @@ const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
 
 export class TestHelper {
-    private database: string = DEFAULT_DB;
+    private _database: string = DEFAULT_DB;
     private neo4jGraphQL: Neo4jGraphQL | undefined;
     private uniqueTypes: UniqueType[] = [];
     private driver: neo4j.Driver | undefined;
 
     private lock: boolean = false; // Lock to avoid race condition between initNeo4jGraphQL
+
+    private customDB: string | undefined;
+
+    private get database(): string {
+        return this.customDB ?? this._database;
+    }
 
     public createBearerToken(secret: string, extraData?: Record<string, any>) {
         return createBearerToken(secret, extraData);
@@ -98,7 +106,7 @@ export class TestHelper {
     }
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
-        if (!this.neo4jGraphQL && !this.driver) {
+        if (!this.driver) {
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
         const driver = await this.getDriver();
@@ -144,12 +152,10 @@ export class TestHelper {
         const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
         const driver = neo4j.driver(NEO_URL, auth);
         try {
-            this.database = await this.checkConnectivity(driver);
+            this._database = await this.checkConnectivity(driver);
         } catch (error: any) {
             await driver.close();
-            throw new Error(
-                `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
-            );
+            throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
         }
 
         this.driver = driver;
@@ -164,6 +170,32 @@ export class TestHelper {
 
         const appliedOptions = { ...options, database: this.database };
         return driver.session(appliedOptions);
+    }
+
+    /** Creates a new database, need to call `dropDatabase` afterwards */
+    public async createDatabase(db: string): Promise<void> {
+        if (this.customDB) {
+            throw new Error("Cannot create new database. Did you forget to call dropDatabase?");
+        }
+        await this.executeCypher(`CREATE DATABASE ${Cypher.utils.escapeVariable(db)} WAIT`);
+        this.customDB = db;
+    }
+
+    public async dropDatabase(): Promise<void> {
+        if (!this.customDB) {
+            throw new Error("Cannot drop database. Did you forget to call createDatabase?");
+        }
+        await this.executeCypher(`DROP DATABASE  ${Cypher.utils.escapeVariable(this.customDB)}`);
+        this.customDB = undefined;
+    }
+
+    public async getDatabaseInfo(): Promise<Neo4jDatabaseInfo> {
+        const DBMS_COMPONENTS_QUERY =
+            "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
+        const { records } = await this.executeCypher(DBMS_COMPONENTS_QUERY);
+        const rawRow = records[0] as any;
+        const [rawVersion, edition] = rawRow as [string, Neo4jEdition];
+        return new Neo4jDatabaseInfo(rawVersion, edition);
     }
 
     private async checkConnectivity(driver: neo4j.Driver): Promise<string> {

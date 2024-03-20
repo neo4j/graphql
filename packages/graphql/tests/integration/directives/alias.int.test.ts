@@ -17,33 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import * as neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("@alias directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
+
     const dbName = generate({ charset: "alphabetic" });
     const dbComment = generate({ charset: "alphabetic" });
     const dbTitle = generate({ charset: "alphabetic" });
     const year = neo4jDriver.int(2015);
     const secret = "secret";
 
-    const AliasDirectiveTestUser = new UniqueType("AliasDirectiveTestUser");
-    const AliasDirectiveTestMovie = new UniqueType("AliasDirectiveTestMovie");
-    const ProtectedUser = new UniqueType("ProtectedUser");
+    const AliasDirectiveTestUser = testHelper.createUniqueType("AliasDirectiveTestUser");
+    const AliasDirectiveTestMovie = testHelper.createUniqueType("AliasDirectiveTestMovie");
+    const ProtectedUser = testHelper.createUniqueType("ProtectedUser");
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(async () => {
         const typeDefs = `
             type JWTPayload @jwt {
                 roles: [String!]!
@@ -78,7 +70,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -86,12 +78,10 @@ describe("@alias directive", () => {
                 },
             },
         });
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-        await session.run(`MATCH (n:${AliasDirectiveTestUser})-[]-(m:${AliasDirectiveTestMovie}) DETACH DELETE n, m`);
-        await session.run(
+        await testHelper.executeCypher(
+            `MATCH (n:${AliasDirectiveTestUser})-[]-(m:${AliasDirectiveTestMovie}) DETACH DELETE n, m`
+        );
+        await testHelper.executeCypher(
             `CREATE (:${AliasDirectiveTestUser} {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:${AliasDirectiveTestMovie} {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})
             CREATE (:${ProtectedUser} {dbName: $dbName})`,
             { dbName, dbComment, dbTitle, year }
@@ -99,14 +89,7 @@ describe("@alias directive", () => {
     });
 
     afterEach(async () => {
-        await session.run(
-            `MATCH (n:${AliasDirectiveTestUser}), (m:${AliasDirectiveTestMovie}), (o:${ProtectedUser}) DETACH DELETE n, m, o`
-        );
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Aliased fields on nodes through simple relationships (using STARTS_WITH filter)", async () => {
@@ -127,11 +110,7 @@ describe("@alias directive", () => {
         // For the @auth
         const token = createBearerToken(secret, { roles: ["reader"] });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: usersQuery,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(usersQuery, token);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -161,11 +140,7 @@ describe("@alias directive", () => {
         const tokenSub = dbName;
         const token = createBearerToken(secret, { roles: ["reader"], sub: tokenSub });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: protectedUsersQuery,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(protectedUsersQuery, token);
 
         expect(gqlResult.errors).toBeFalsy();
         expect((gqlResult.data as any)[ProtectedUser.plural][0]).toEqual({ name: dbName });
@@ -190,11 +165,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: usersQuery,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(usersQuery);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -230,11 +201,7 @@ describe("@alias directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: usersQuery,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(usersQuery);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -278,11 +245,7 @@ describe("@alias directive", () => {
         }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -318,7 +281,7 @@ describe("@alias directive", () => {
         const name = "Stella";
         const title = "Interstellar 2";
         const comment = "Yes!";
-        await session.run(
+        await testHelper.executeCypher(
             `CREATE (m:${AliasDirectiveTestMovie} {dbTitle: "${title}", year: toInteger(2015), dbCreatedAt: "2021-08-25"})`
         );
         const userMutation = `
@@ -349,11 +312,7 @@ describe("@alias directive", () => {
         }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(userMutation);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(
@@ -405,11 +364,7 @@ describe("@alias directive", () => {
           }
         `;
 
-        await graphql({
-            schema: await neoSchema.getSchema(),
-            source: create,
-            contextValue: neo4j.getContextValues(),
-        });
+        await testHelper.executeGraphQL(create);
 
         const update = `
         mutation UpdateAll {
@@ -439,11 +394,7 @@ describe("@alias directive", () => {
             }
         }
         `;
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toBeFalsy();
 

@@ -33,7 +33,9 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             return f.getSelection(nestedContext);
         });
 
-        if (extraMatches.length > 0) {
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+
+        if (extraMatches.length > 0 || filterSubqueries.length > 0) {
             extraMatches = [clause, ...extraMatches];
             clause = new Cypher.With("*");
         }
@@ -117,6 +119,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         const subClause = Cypher.concat(
             // ...preSelection,
             ...extraMatches,
+            ...filterSubqueries,
             clause,
             ...authFilterSubqueries,
             withWhere,

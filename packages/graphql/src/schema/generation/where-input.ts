@@ -170,7 +170,7 @@ export function withSourceWhereInputType({
     whereInput.addFields(connectionFields);
 
     // TODO: Current unions are not supported as relationship targets beyond the above fields
-    if (relationshipTarget instanceof UnionEntityAdapter || relationshipTarget instanceof InterfaceEntityAdapter) {
+    if (relationshipTarget instanceof UnionEntityAdapter) {
         return;
     }
 

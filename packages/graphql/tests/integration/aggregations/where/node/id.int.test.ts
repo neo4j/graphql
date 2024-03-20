@@ -94,3 +94,89 @@ describe("aggregations-where-node-id", () => {
         ]);
     });
 });
+
+describe("aggregations-where-node-id interface relationships of concrete types", () => {
+    let testHelper: TestHelper;
+    let User: UniqueType;
+    let Post: UniqueType;
+    let Person: UniqueType;
+
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+        Person = testHelper.createUniqueType("Person");
+
+        const typeDefs = `
+        interface Human {
+            id: ID
+            testString: String!
+        }
+
+        type ${Person} implements Human {
+            id: ID
+            testString: String!
+        }
+
+            type ${User} implements Human {
+                id: ID
+                testString: String!
+            }
+    
+            type ${Post} {
+                testString: String!
+                likes: [Human!]! @relationship(type: "LIKES", direction: IN)
+            }
+        `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+    });
+
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("should return posts where a like ID is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const testId = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", id: "${testId}"})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                        testString
+                        likes {
+                            id
+                            testString
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ id: testId, testString }],
+            },
+        ]);
+    });
+});

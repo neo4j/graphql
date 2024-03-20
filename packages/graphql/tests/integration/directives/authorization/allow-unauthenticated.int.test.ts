@@ -17,35 +17,26 @@
  * limitations under the License.
  */
 
-import { Socket } from "net";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { IncomingMessage } from "http";
+import { Socket } from "net";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345
 // Reference: https://github.com/neo4j/graphql/pull/342#issuecomment-884061188
 describe("auth/allow-unauthenticated", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
     let Post: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(() => {
-        Post = new UniqueType("Post");
+        Post = testHelper.createUniqueType("Post");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("allowUnauthenticated with allow", () => {
@@ -76,8 +67,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -86,17 +76,15 @@ describe("auth/allow-unauthenticated", () => {
                 },
             });
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${Post} {id: "${postId}", publisher: "nop", published: true})
             `);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that no errors have been throwed
@@ -133,8 +121,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -143,17 +130,15 @@ describe("auth/allow-unauthenticated", () => {
                 },
             });
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
             `);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that a Forbidden error have been throwed
@@ -192,8 +177,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -202,7 +186,7 @@ describe("auth/allow-unauthenticated", () => {
                 },
             });
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
                 CREATE (:${Post} {id: "${postId2}", publisher: "nop", published: true})
             `);
@@ -210,10 +194,8 @@ describe("auth/allow-unauthenticated", () => {
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that a Forbidden error have been throwed
@@ -252,8 +234,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -262,17 +243,15 @@ describe("auth/allow-unauthenticated", () => {
                 },
             });
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${Post} {id: "${postId}", publisher: "nop", published: true})
             `);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that no errors have been throwed
@@ -308,8 +287,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -318,17 +296,15 @@ describe("auth/allow-unauthenticated", () => {
                 },
             });
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
             `);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that no errors have been throwed
@@ -365,8 +341,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -375,7 +350,7 @@ describe("auth/allow-unauthenticated", () => {
                 },
             });
 
-            await session.run(`
+            await testHelper.executeCypher(`
                 CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
                 CREATE (:${Post} {id: "${postId2}", publisher: "nop", published: true})
             `);
@@ -383,10 +358,8 @@ describe("auth/allow-unauthenticated", () => {
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that no errors have been throwed
@@ -400,7 +373,7 @@ describe("auth/allow-unauthenticated", () => {
 
     describe("allowUnauthenticated with bind", () => {
         test("should throw Forbiden error only", async () => {
-            const User = new UniqueType("User");
+            const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${User} {
@@ -423,7 +396,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -435,10 +408,8 @@ describe("auth/allow-unauthenticated", () => {
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
-            const gqlResult = await graphql({
-                contextValue: neo4j.getContextValues({ req }),
-                schema: await neoSchema.getSchema(),
-                source: query,
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { req },
             });
 
             // Check that a Forbidden error have been throwed

@@ -17,34 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("should inject the auth into cypher directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
-        User = new UniqueType("User");
+    beforeEach(() => {
+        User = testHelper.createUniqueType("User");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("query", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type Query {
                 userId: ID @cypher(statement: """
@@ -57,7 +48,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -72,26 +63,16 @@ describe("should inject the auth into cypher directive", () => {
             }
         `;
 
-        try {
-            const token = createBearerToken(secret, { sub: userId });
+        const token = createBearerToken(secret, { sub: userId });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query as string,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).userId).toEqual(userId);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).userId).toEqual(userId);
     });
 
     test("query (decoded JWT)", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type Query {
                 userId: ID @cypher(statement: """
@@ -104,7 +85,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             {
@@ -118,24 +99,16 @@ describe("should inject the auth into cypher directive", () => {
             iat: 1516239022,
         };
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query as string,
-                contextValue: neo4j.getContextValues({ jwt }),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: { jwt },
+        });
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).userId).toEqual(userId);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).userId).toEqual(userId);
     });
 
     test("mutation", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type User {
                 id: ID
@@ -152,7 +125,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -167,26 +140,16 @@ describe("should inject the auth into cypher directive", () => {
             }
         `;
 
-        try {
-            const token = createBearerToken(secret, { sub: userId });
+        const token = createBearerToken(secret, { sub: userId });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query as string,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).userId).toEqual(userId);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).userId).toEqual(userId);
     });
 
     test("mutation (decoded JWT)", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type User {
                 id: ID
@@ -209,7 +172,7 @@ describe("should inject the auth into cypher directive", () => {
             iat: 1516239022,
         };
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             mutation {
@@ -217,24 +180,16 @@ describe("should inject the auth into cypher directive", () => {
             }
         `;
 
-        try {
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query as string,
-                contextValue: neo4j.getContextValues({ jwt }),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: { jwt },
+        });
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).userId).toEqual(userId);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).userId).toEqual(userId);
     });
 
     test("should inject the auth into cypher directive on fields", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -248,7 +203,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -265,30 +220,20 @@ describe("should inject the auth into cypher directive", () => {
         }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const token = createBearerToken(secret, { sub: userId });
+        const token = createBearerToken(secret, { sub: userId });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[User.plural][0].userId).toEqual(userId);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[User.plural][0].userId).toEqual(userId);
     });
 
     test("should inject the auth into cypher directive on fields (decoded JWT)", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${User} {
                 id: ID
@@ -308,7 +253,7 @@ describe("should inject the auth into cypher directive", () => {
             iat: 1516239022,
         };
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
         {
@@ -318,22 +263,16 @@ describe("should inject the auth into cypher directive", () => {
         }
         `;
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ jwt }),
-            });
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            contextValue: { jwt },
+        });
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[User.plural][0].userId).toEqual(userId);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any)[User.plural][0].userId).toEqual(userId);
     });
 });

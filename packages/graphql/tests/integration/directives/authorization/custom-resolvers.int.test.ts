@@ -17,36 +17,34 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/custom-resolvers", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    let User: UniqueType;
+
+    beforeEach(() => {
+        User = testHelper.createUniqueType("User");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("auth-injection", () => {
         test("should inject auth in context of custom Query", async () => {
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
                 type Query {
-                    me: User
+                    me: ${User}
                 }
             `;
 
@@ -62,7 +60,7 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: {
@@ -78,11 +76,7 @@ describe("auth/custom-resolvers", () => {
 
             const token = createBearerToken(secret, { sub: userId });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.id).toEqual(userId);
@@ -90,12 +84,12 @@ describe("auth/custom-resolvers", () => {
 
         test("should inject auth in context of custom Mutation", async () => {
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
                 type Mutation {
-                    me: User
+                    me: ${User}
                 }
             `;
 
@@ -111,7 +105,7 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.jwt.sub }) } },
                 features: {
@@ -123,11 +117,7 @@ describe("auth/custom-resolvers", () => {
 
             const token = createBearerToken(secret, { sub: userId });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.id).toEqual(userId);
@@ -135,12 +125,12 @@ describe("auth/custom-resolvers", () => {
 
         test("should inject auth in context of custom Field resolver", async () => {
             const typeDefs = `
-                type User {
+                type ${User} {
                     customId: ID
                 }
 
                 type Query {
-                    me: User
+                    me: ${User}
                 }
             `;
 
@@ -156,11 +146,11 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: { me: () => ({}) },
-                    User: { customId: (_, __, ctx) => ctx.jwt.sub },
+                    [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
                 },
                 features: {
                     authorization: {
@@ -171,11 +161,7 @@ describe("auth/custom-resolvers", () => {
 
             const token = createBearerToken(secret, { sub: userId });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.customId).toEqual(userId);
@@ -183,12 +169,12 @@ describe("auth/custom-resolvers", () => {
 
         test("should inject auth in context of custom Query when decoded JWT passed in", async () => {
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
                 type Query {
-                    me: User
+                    me: ${User}
                 }
             `;
 
@@ -210,7 +196,7 @@ describe("auth/custom-resolvers", () => {
                 iat: 1516239022,
             };
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: {
@@ -219,10 +205,8 @@ describe("auth/custom-resolvers", () => {
                 },
             });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ jwt }),
+            const gqlResult = await testHelper.executeGraphQL(query, {
+                contextValue: { jwt },
             });
 
             expect(gqlResult.errors).toBeUndefined();

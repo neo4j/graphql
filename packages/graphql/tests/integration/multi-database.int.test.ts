@@ -17,18 +17,15 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../src/classes";
-import { cleanNodesUsingSession } from "../utils/clean-nodes";
-import { UniqueType } from "../utils/graphql-types";
+import type { UniqueType } from "../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
-import Neo4jHelper from "./neo4j";
+import { TestHelper } from "./utils/tests-helper";
 
 describe("multi-database", () => {
     let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const id = generate({
         charset: "alphabetic",
     });
@@ -37,48 +34,41 @@ describe("multi-database", () => {
     let Movie: UniqueType;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
-        Movie = new UniqueType("Movie");
         try {
-            // Create DB
-            const createSession = await neo4j.getSession();
-            await createSession.executeWrite((tx) => tx.run(`CREATE DATABASE \`${dbName}\` WAIT`));
-            await createSession.close();
-
-            // Write data
-            const writeSession = driver.session({ database: dbName, bookmarks: createSession.lastBookmarks() });
-            await writeSession.executeWrite((tx) => tx.run(`CREATE (:${Movie} {id: $id})`, { id }));
-            await writeSession.close();
-
-            // Make sure it's written before we continue
-            const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmarks() });
-            await waitSession.executeRead((tx) => tx.run(`MATCH (m:${Movie}) RETURN COUNT(m)`));
-            await waitSession.close();
+            await testHelper.createDatabase(dbName);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
+                    await testHelper.close();
                 } else {
                     throw e;
                 }
-            } else {
-                throw e;
             }
+        }
+    });
+
+    beforeEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            driver = await testHelper.getDriver();
+            Movie = testHelper.createUniqueType("Movie");
+
+            await testHelper.executeCypher(`CREATE (:${Movie} {id: $id})`, { id });
+        }
+    });
+
+    afterEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            await testHelper.close();
         }
     });
 
     afterAll(async () => {
         if (MULTIDB_SUPPORT) {
-            const dropSession = await neo4j.getSession();
-            await dropSession.writeTransaction((tx) => tx.run(`DROP DATABASE \`${dbName}\``));
-            await dropSession.close();
+            await testHelper.dropDatabase();
+            await testHelper.close();
         }
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Movie]);
-        await driver.close();
     });
 
     test("should fail for non-existing database specified via context", async () => {
@@ -94,7 +84,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -104,9 +94,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
             contextValue: { executionContext: driver, sessionConfig: { database: "non-existing-db" } },
         });
@@ -125,7 +113,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -135,9 +123,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
             contextValue: { executionContext: driver, sessionConfig: { database: dbName } },
         });
@@ -157,10 +143,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -170,9 +153,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
             contextValue: { sessionConfig: { database: "non-existing-db" } }, // This is needed, otherwise the context in resolvers will be undefined
         });
@@ -194,11 +175,7 @@ describe("multi-database", () => {
                 id: ID!
             }
         `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -208,9 +185,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
+        const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
             contextValue: { sessionConfig: { database: dbName } }, // This is needed, otherwise the context in resolvers will be undefined
         });

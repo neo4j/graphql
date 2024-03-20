@@ -5776,6 +5776,18 @@ describe("Subscriptions", () => {
               Person
             }
 
+            input CreatureMoviesAggregateInput {
+              AND: [CreatureMoviesAggregateInput!]
+              NOT: CreatureMoviesAggregateInput
+              OR: [CreatureMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CreatureMoviesNodeAggregationWhereInput
+            }
+
             input CreatureMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
@@ -5813,6 +5825,13 @@ describe("Subscriptions", () => {
               where: CreatureMoviesConnectionWhere
             }
 
+            input CreatureMoviesNodeAggregationWhereInput {
+              AND: [CreatureMoviesNodeAggregationWhereInput!]
+              NOT: CreatureMoviesNodeAggregationWhereInput
+              OR: [CreatureMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+            }
+
             type CreatureMoviesRelationship {
               cursor: String!
               node: Production!
@@ -5845,6 +5864,7 @@ describe("Subscriptions", () => {
               NOT: CreatureWhere
               OR: [CreatureWhere!]
               movies: ProductionWhere
+              moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
               movies_NOT: ProductionWhere
@@ -5916,6 +5936,17 @@ describe("Subscriptions", () => {
 
             input MovieDeleteInput {
               director: MovieDirectorDeleteFieldInput
+            }
+
+            input MovieDirectorAggregateInput {
+              AND: [MovieDirectorAggregateInput!]
+              NOT: MovieDirectorAggregateInput
+              OR: [MovieDirectorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input MovieDirectorConnectFieldInput {
@@ -5996,6 +6027,7 @@ describe("Subscriptions", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               director: CreatureWhere
+              directorAggregate: MovieDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               director_NOT: CreatureWhere
@@ -6098,6 +6130,18 @@ describe("Subscriptions", () => {
               node: Person!
             }
 
+            input PersonMoviesAggregateInput {
+              AND: [PersonMoviesAggregateInput!]
+              NOT: PersonMoviesAggregateInput
+              OR: [PersonMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
@@ -6124,6 +6168,13 @@ describe("Subscriptions", () => {
             input PersonMoviesFieldInput {
               connect: PersonMoviesConnectFieldInput
               create: PersonMoviesCreateFieldInput
+            }
+
+            input PersonMoviesNodeAggregationWhereInput {
+              AND: [PersonMoviesNodeAggregationWhereInput!]
+              NOT: PersonMoviesNodeAggregationWhereInput
+              OR: [PersonMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             input PersonMoviesRelationshipSubscriptionWhere {
@@ -6205,6 +6256,7 @@ describe("Subscriptions", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               movies: ProductionWhere
+              moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
               movies_NOT: ProductionWhere
@@ -6236,6 +6288,17 @@ describe("Subscriptions", () => {
 
             input ProductionDeleteInput {
               director: ProductionDirectorDeleteFieldInput
+            }
+
+            input ProductionDirectorAggregateInput {
+              AND: [ProductionDirectorAggregateInput!]
+              NOT: ProductionDirectorAggregateInput
+              OR: [ProductionDirectorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input ProductionDirectorConnectFieldInput {
@@ -6350,6 +6413,7 @@ describe("Subscriptions", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               director: CreatureWhere
+              directorAggregate: ProductionDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               director_NOT: CreatureWhere
@@ -6441,6 +6505,17 @@ describe("Subscriptions", () => {
               deletedSeries: SeriesEventPayload!
               event: EventType!
               timestamp: Float!
+            }
+
+            input SeriesDirectorAggregateInput {
+              AND: [SeriesDirectorAggregateInput!]
+              NOT: SeriesDirectorAggregateInput
+              OR: [SeriesDirectorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input SeriesDirectorConnectFieldInput {
@@ -6600,6 +6675,7 @@ describe("Subscriptions", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               director: CreatureWhere
+              directorAggregate: SeriesDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               director_NOT: CreatureWhere

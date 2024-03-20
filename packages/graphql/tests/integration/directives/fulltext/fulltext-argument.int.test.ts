@@ -19,60 +19,50 @@
 
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import { delay } from "../../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@fulltext directive", () => {
     let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
-        const session = driver.session();
-
         try {
-            await session.run(cypher);
+            await testHelper.createDatabase(databaseName);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
+                    await testHelper.close();
                 } else {
                     throw e;
                 }
             }
-        } finally {
-            await session.close();
         }
+    });
 
-        await delay(5000);
+    beforeEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            driver = await testHelper.getDriver();
+        }
+    });
+
+    afterEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            await testHelper.close();
+        }
     });
 
     afterAll(async () => {
         if (MULTIDB_SUPPORT) {
-            const cypher = `DROP DATABASE ${databaseName}`;
-
-            const session = await neo4j.getSession();
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.dropDatabase();
+            await testHelper.close();
         }
-
-        await driver.close();
     });
 
     test("should create index if it doesn't exist and then query using the index", async () => {
@@ -84,16 +74,16 @@ describe("@fulltext directive", () => {
 
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -102,8 +92,6 @@ describe("@fulltext directive", () => {
                 options: { create: true },
             })
         ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
 
         const cypher = `
             SHOW INDEXES yield
@@ -122,29 +110,25 @@ describe("@fulltext directive", () => {
             } as result
         `;
 
-        try {
-            const result = await session.run(cypher);
+        const result = await testHelper.executeCypher(cypher);
 
-            const record = result.records[0]?.get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+        const record = result.records[0]?.get("result") as {
+            name: string;
+            type: string;
+            entityType: string;
+            labelsOrTypes: string[];
+            properties: string[];
+        };
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
+        expect(record.name).toEqual(indexName);
+        expect(record.type).toBe("FULLTEXT");
+        expect(record.entityType).toBe("NODE");
+        expect(record.labelsOrTypes).toEqual([type.name]);
+        expect(record.properties).toEqual(["title"]);
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${type.name} { title: "${title}" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
             query {
@@ -154,14 +138,7 @@ describe("@fulltext directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -180,17 +157,17 @@ describe("@fulltext directive", () => {
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName1 = generate({ readable: true, charset: "alphabetic" });
         const indexName2 = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
                 title: String!
                 description: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -208,14 +185,7 @@ describe("@fulltext directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors && gqlResult.errors[0]?.message).toBe("Can only call one search at any given time");
     });
@@ -230,17 +200,17 @@ describe("@fulltext directive", () => {
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -249,8 +219,6 @@ describe("@fulltext directive", () => {
                 options: { create: true },
             })
         ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
 
         const cypher = `
             SHOW INDEXES yield
@@ -269,29 +237,25 @@ describe("@fulltext directive", () => {
             } as result
         `;
 
-        try {
-            const result = await session.run(cypher);
+        const result = await testHelper.executeCypher(cypher);
 
-            const record = result.records[0]?.get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+        const record = result.records[0]?.get("result") as {
+            name: string;
+            type: string;
+            entityType: string;
+            labelsOrTypes: string[];
+            properties: string[];
+        };
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["title"]);
+        expect(record.name).toEqual(indexName);
+        expect(record.type).toBe("FULLTEXT");
+        expect(record.entityType).toBe("NODE");
+        expect(record.labelsOrTypes).toEqual([label]);
+        expect(record.properties).toEqual(["title"]);
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${label} { title: "${title}" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
             query {
@@ -301,14 +265,7 @@ describe("@fulltext directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -327,17 +284,17 @@ describe("@fulltext directive", () => {
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String! @alias(property: "newTitle")
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -346,8 +303,6 @@ describe("@fulltext directive", () => {
                 options: { create: true },
             })
         ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
 
         const cypher = `
             SHOW INDEXES yield
@@ -366,29 +321,25 @@ describe("@fulltext directive", () => {
             } as result
         `;
 
-        try {
-            const result = await session.run(cypher);
+        const result = await testHelper.executeCypher(cypher);
 
-            const record = result.records[0]?.get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+        const record = result.records[0]?.get("result") as {
+            name: string;
+            type: string;
+            entityType: string;
+            labelsOrTypes: string[];
+            properties: string[];
+        };
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["newTitle"]);
+        expect(record.name).toEqual(indexName);
+        expect(record.type).toBe("FULLTEXT");
+        expect(record.entityType).toBe("NODE");
+        expect(record.labelsOrTypes).toEqual([label]);
+        expect(record.properties).toEqual(["newTitle"]);
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${label} { newTitle: "${title}" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
             query {
@@ -398,14 +349,7 @@ describe("@fulltext directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -422,15 +366,15 @@ describe("@fulltext directive", () => {
         }
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         await neoSchema.getSchema();
 
         await expect(
@@ -449,29 +393,21 @@ describe("@fulltext directive", () => {
         }
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         await neoSchema.getSchema();
 
-        const session = driver.session({ database: databaseName });
-
-        try {
-            await session.run(
-                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(" ")
+        );
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -490,31 +426,25 @@ describe("@fulltext directive", () => {
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const alias = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String! @alias(property: "${alias}")
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         await neoSchema.getSchema();
 
-        const session = driver.session({ database: databaseName });
-
-        try {
-            await session.run(
-                [
-                    `CREATE FULLTEXT INDEX ${indexName}`,
-                    `IF NOT EXISTS FOR (n:${type.name})`,
-                    `ON EACH [n.title, n.description]`,
-                ].join(" ")
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            [
+                `CREATE FULLTEXT INDEX ${indexName}`,
+                `IF NOT EXISTS FOR (n:${type.name})`,
+                `ON EACH [n.title, n.description]`,
+            ].join(" ")
+        );
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -535,15 +465,15 @@ describe("@fulltext directive", () => {
 
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         await neoSchema.getSchema();
 
         await expect(
@@ -563,8 +493,6 @@ describe("@fulltext directive", () => {
             })
         ).resolves.not.toThrow();
 
-        const session = driver.session({ database: databaseName });
-
         const cypher = `
             SHOW INDEXES yield
                 name AS name,
@@ -582,29 +510,25 @@ describe("@fulltext directive", () => {
             } as result
         `;
 
-        try {
-            const result = await session.run(cypher);
+        const result = await testHelper.executeCypher(cypher);
 
-            const record = result.records[0]?.get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+        const record = result.records[0]?.get("result") as {
+            name: string;
+            type: string;
+            entityType: string;
+            labelsOrTypes: string[];
+            properties: string[];
+        };
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
+        expect(record.name).toEqual(indexName);
+        expect(record.type).toBe("FULLTEXT");
+        expect(record.entityType).toBe("NODE");
+        expect(record.labelsOrTypes).toEqual([type.name]);
+        expect(record.properties).toEqual(["title"]);
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${type.name} { title: "${title}" })
             `);
-        } finally {
-            await session.close();
-        }
     });
 
     test("should throw when index is missing fields when used with create option", async () => {
@@ -615,29 +539,21 @@ describe("@fulltext directive", () => {
         }
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
         await neoSchema.getSchema();
 
-        const session = driver.session({ database: databaseName });
-
-        try {
-            await session.run(
-                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
-            );
-        } finally {
-            await session.close();
-        }
+        await testHelper.executeCypher(
+            [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(" ")
+        );
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -659,16 +575,16 @@ describe("@fulltext directive", () => {
 
         const id = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = new UniqueType("Movie");
+        const type = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) {
                 id: ID!
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -677,8 +593,6 @@ describe("@fulltext directive", () => {
                 options: { create: true },
             })
         ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
 
         const cypher = `
             SHOW INDEXES yield
@@ -697,29 +611,25 @@ describe("@fulltext directive", () => {
             } as result
         `;
 
-        try {
-            const result = await session.run(cypher);
+        const result = await testHelper.executeCypher(cypher);
 
-            const record = result.records[0]?.get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+        const record = result.records[0]?.get("result") as {
+            name: string;
+            type: string;
+            entityType: string;
+            labelsOrTypes: string[];
+            properties: string[];
+        };
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["id"]);
+        expect(record.name).toEqual(indexName);
+        expect(record.type).toBe("FULLTEXT");
+        expect(record.entityType).toBe("NODE");
+        expect(record.labelsOrTypes).toEqual([type.name]);
+        expect(record.properties).toEqual(["id"]);
 
-            await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${type.name} { id: "${id}" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
             query {
@@ -729,14 +639,7 @@ describe("@fulltext directive", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
 

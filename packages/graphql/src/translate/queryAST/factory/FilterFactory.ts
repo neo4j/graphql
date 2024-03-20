@@ -527,7 +527,8 @@ export class FilterFactory {
                 if (fieldName === "node") {
                     return this.createAggregationNodeFilters(
                         value as Record<string, any>,
-                        relationship.target as ConcreteEntityAdapter
+                        relationship.target as InterfaceEntityAdapter | ConcreteEntityAdapter,
+                        relationship
                     );
                 }
 
@@ -552,11 +553,12 @@ export class FilterFactory {
 
     private createAggregationNodeFilters(
         where: Record<string, any>,
-        entity: ConcreteEntityAdapter | RelationshipAdapter
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
+        relationship?: RelationshipAdapter
     ): Array<AggregationPropertyFilter | LogicalFilter> {
         const filters = Object.entries(where).map(([key, value]) => {
             if (isLogicalOperator(key)) {
-                return this.createAggregateLogicalFilter(key, value, entity);
+                return this.createAggregateLogicalFilter(key, value, entity, relationship);
             }
             // NOTE: if aggregationOperator is undefined, maybe we could return a normal PropertyFilter instead
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);
@@ -578,6 +580,7 @@ export class FilterFactory {
 
             return new AggregationPropertyFilter({
                 attribute: attr,
+                relationship,
                 comparisonValue: value,
                 logicalOperator: logicalOperator || "EQUAL",
                 aggregationOperator: aggregationOperator,
@@ -612,10 +615,11 @@ export class FilterFactory {
     private createAggregateLogicalFilter(
         operation: "OR" | "AND" | "NOT",
         where: GraphQLWhereArg[] | GraphQLWhereArg,
-        entity: ConcreteEntityAdapter | RelationshipAdapter
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
+        relationship?: RelationshipAdapter
     ): LogicalFilter {
         const filters = asArray(where).flatMap((nestedWhere) => {
-            return this.createAggregationNodeFilters(nestedWhere, entity);
+            return this.createAggregationNodeFilters(nestedWhere, entity, relationship);
         });
         return new LogicalFilter({
             operation,

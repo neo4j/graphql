@@ -260,3 +260,257 @@ describe("aggregations-where-node-bigint", () => {
         ]);
     });
 });
+
+describe("aggregations-where-node-bigint interface relationships of concrete types", () => {
+    let testHelper: TestHelper;
+    let bigInt: string;
+    let User: UniqueType;
+    let Post: UniqueType;
+    let Person: UniqueType;
+
+    beforeEach(async () => {
+        testHelper = new TestHelper();
+        bigInt = "2147483647";
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
+        Person = testHelper.createUniqueType("Person");
+
+        const typeDefs = `
+        interface Human {
+            testString: String!
+            someBigInt: BigInt
+        }
+
+        type ${Person} implements Human {
+            testString: String!
+            someBigInt: BigInt
+        }
+
+
+            type ${User} implements Human {
+                testString: String!
+                someBigInt: BigInt
+            }
+    
+            type ${Post} {
+              testString: String!
+              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
+            }
+        `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+    });
+
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("should return posts where a like BigInt is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                        testString
+                        likes {
+                            testString
+                            someBigInt
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someBigInt: bigInt }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like BigInt is GT than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someBigInt = `${bigInt}1`;
+        const someBigIntGt = bigInt.substring(0, bigInt.length - 1);
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: ${someBigInt}})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                        testString
+                        likes {
+                            testString
+                            someBigInt
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someBigInt }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like BigInt is GTE than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                        testString
+                        likes {
+                            testString
+                            someBigInt
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someBigInt: bigInt }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like BigInt is LT than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const someBigIntLT = `${bigInt}1`;
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                        testString
+                        likes {
+                            testString
+                            someBigInt
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someBigInt: bigInt }],
+            },
+        ]);
+    });
+
+    test("should return posts where a like BigInt is LTE than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}", someBigInt: toInteger(${bigInt})})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = `
+                {
+                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                        testString
+                        likes {
+                            testString
+                            someBigInt
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString, someBigInt: bigInt }],
+            },
+        ]);
+    });
+});
