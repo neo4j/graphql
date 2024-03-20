@@ -370,7 +370,7 @@ describe("[Point]", () => {
             }
         `;
 
-        const routesIncludesResult = await testHelper.executeGraphQL(routesQuery, {
+        const routesIncludesResult = await testHelper.executeGraphQL(routesIncludesQuery, {
             variableValues: { waypoint: waypoints[0] },
         });
 

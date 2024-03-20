@@ -17,13 +17,11 @@
  * limitations under the License.
  */
 
-import type { Session } from "neo4j-driver";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-where-edge-duration", () => {
     const testHelper = new TestHelper();
-    let session: Session;
 
     let User: UniqueType;
     let Post: UniqueType;

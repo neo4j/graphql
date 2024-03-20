@@ -33,7 +33,7 @@ describe("aggregations-top_level-string", () => {
         })
     );
 
-    beforeEach(async () => {
+    beforeEach(() => {
         typeMovie = testHelper.createUniqueType("Movie");
     });
 

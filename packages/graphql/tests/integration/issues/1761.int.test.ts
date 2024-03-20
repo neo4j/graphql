@@ -17,15 +17,11 @@
  * limitations under the License.
  */
 
-import type { Session } from "neo4j-driver";
-import type { Neo4jGraphQL } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1761", () => {
     const testHelper = new TestHelper();
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
 
     let myType: UniqueType;
 
@@ -44,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/1761", () => {
             }
         `;
 
-        neoSchema = await testHelper.initNeo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
     });
