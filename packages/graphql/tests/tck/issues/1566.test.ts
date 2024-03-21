@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                     WITH this
                     WITH this AS this
                     Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
-                       return pag SKIP ($param1 * $param2Index) LIMIT $param1
+                       return pag SKIP ($param1 * $pageIndex) LIMIT $param1
                 }
                 WITH pag AS this0
                 CALL {
@@ -120,10 +120,6 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                 },
                 \\"param1\\": {
                     \\"low\\": 10,
-                    \\"high\\": 0
-                },
-                \\"param2\\": {
-                    \\"low\\": 0,
                     \\"high\\": 0
                 }
             }"
