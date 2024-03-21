@@ -31,7 +31,7 @@ export function replaceArgumentsInStatement({
     statement: string;
 }): string {
     let cypherStatement = statement;
-    definedArguments.forEach((arg) => {
+    sortArgumentsByLength(definedArguments).forEach((arg) => {
         const value = rawArguments[arg.name];
         if (value === undefined || value === null) {
             cypherStatement = cypherStatement.replaceAll(`$${arg.name}`, "NULL");
@@ -42,4 +42,11 @@ export function replaceArgumentsInStatement({
     });
 
     return cypherStatement;
+}
+
+// This sorting is needed to make sure that replace replace first the longer names #4908
+function sortArgumentsByLength(args: Argument[]): Argument[] {
+    return args.sort((a, b) => {
+        return b.name.length - a.name.length;
+    });
 }
