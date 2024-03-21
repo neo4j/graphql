@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
     let Supplier: UniqueType;
     let typeDefs: string;
 
-    beforeAll(async () => {
+    beforeAll( () => {
         Bulk = testHelper.createUniqueType("Bulk");
         Material = testHelper.createUniqueType("Material");
         Supplier = testHelper.createUniqueType("Supplier");

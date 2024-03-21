@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
@@ -26,7 +25,6 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
     let testChildOne: UniqueType;
     let testChildTwo: UniqueType;
 
-    let schema: GraphQLSchema;
     const testHelper = new TestHelper();
 
     beforeAll(async () => {

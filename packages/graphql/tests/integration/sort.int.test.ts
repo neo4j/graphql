@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "./utils/tests-helper";
@@ -26,8 +25,6 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("sort", () => {
     const testHelper = new TestHelper();
-    let schema: GraphQLSchema;
-
     const movieType = testHelper.createUniqueType("Movie");
     const seriesType = testHelper.createUniqueType("Series");
     const actorType = testHelper.createUniqueType("Actor");
@@ -116,8 +113,7 @@ describe("sort", () => {
     ] as const;
 
     beforeAll(async () => {
-        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-        schema = await neoSchema.getSchema();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(
             `

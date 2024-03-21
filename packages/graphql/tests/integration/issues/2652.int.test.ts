@@ -23,20 +23,20 @@ import { TestHelper } from "../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/2652", () => {
     const testHelper = new TestHelper();
 
-    let locationType: UniqueType;
-    let reviewType: UniqueType;
+    let Location: UniqueType;
+    let Review: UniqueType;
 
     beforeEach(async () => {
-        locationType = testHelper.createUniqueType("Location");
-        reviewType = testHelper.createUniqueType("Review");
+        Location = testHelper.createUniqueType("Location");
+        Review = testHelper.createUniqueType("Review");
 
         const typeDefs = `
-            type Location {
+            type ${Location} {
                 id: ID!
-                reviews: [LocationReview!]! @relationship(type: "HAS_REVIEW", direction: OUT)
+                reviews: [${Review}!]! @relationship(type: "HAS_REVIEW", direction: OUT)
             }
 
-            type LocationReview {
+            type ${Review} {
                 id: ID!
                 rating: Int!
             }
@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2652", () => {
     test("Does not throw error when count and node aggregations in selection set", async () => {
         const query = `
             query ReviewsAggregate {
-                locations {
+                ${Location.plural} {
                     reviewsAggregate {
                         count
                         node {

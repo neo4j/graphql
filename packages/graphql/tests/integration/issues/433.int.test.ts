@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
     let Person: UniqueType;
     let typeDefs: string;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         Movie = testHelper.createUniqueType("Movie");
         Person = testHelper.createUniqueType("Person");
     });

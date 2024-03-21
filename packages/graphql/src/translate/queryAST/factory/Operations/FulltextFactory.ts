@@ -45,7 +45,6 @@ export class FulltextFactory {
         let resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
         let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
         let fieldsByTypeName = resolveTree.fieldsByTypeName;
-        let resolverArgs = resolveTree.args;
         const fulltextOptions = this.getFulltextOptions(context);
         let scoreField: FulltextScoreField | undefined;
         let scoreFilter: FulltextScoreFilter | undefined;
@@ -61,7 +60,6 @@ export class FulltextFactory {
             const scoreRawField = fulltextOperationDeprecatedFields.score;
 
             const nestedResolveTree: Record<string, any> = fulltextOperationDeprecatedFields[entity.singular] || {};
-            resolverArgs = { ...(nestedResolveTree?.args || {}), ...resolveTree.args };
 
             sortOptions = {
                 limit: sortOptions.limit,

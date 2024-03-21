@@ -17,13 +17,11 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
-    let schema: GraphQLSchema;
     const testHelper = new TestHelper();
     const secret = "secret";
 
