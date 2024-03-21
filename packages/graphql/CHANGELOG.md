@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 5.3.0
+
+### Minor Changes
+
+-   [#4856](https://github.com/neo4j/graphql/pull/4856) [`1b52f83`](https://github.com/neo4j/graphql/commit/1b52f8372bbaa54048c56badc99420e4ae3f31fd) Thanks [@a-alle](https://github.com/a-alle)! - Add aggregate filter for relationships to interface types
+
+### Patch Changes
+
+-   [#4879](https://github.com/neo4j/graphql/pull/4879) [`8eb952c`](https://github.com/neo4j/graphql/commit/8eb952cc63263e57e52d950f7d3badb155c89d17) Thanks [@angrykoala](https://github.com/angrykoala)! - Ignores \_emptyField from input arguments
+
 ## 5.2.0
 
 ### Minor Changes
