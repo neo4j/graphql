@@ -36,6 +36,13 @@ describe("https://github.com/neo4j/graphql/issues/4908", () => {
                         """
                         columnName: "result"
                     )
+                topicUpdate2(thisIsLong: String, param: String): String
+                    @cypher(
+                        statement: """
+                        RETURN $param + "-" + $thisIsLong AS result
+                        """
+                        columnName: "result"
+                    )
             }
         `;
 
@@ -73,6 +80,20 @@ describe("https://github.com/neo4j/graphql/issues/4908", () => {
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
             topicUpdate: null,
+        });
+    });
+
+    test("Parameters with param as a name", async () => {
+        const query = /* GraphQL */ `
+            mutation {
+                topicUpdate2(param: "my-param", thisIsLong: "my-thing")
+            }
+        `;
+
+        const response = await testHelper.executeGraphQL(query);
+        expect(response.errors).toBeFalsy();
+        expect(response.data).toEqual({
+            topicUpdate2: "my-param-my-thing",
         });
     });
 });
