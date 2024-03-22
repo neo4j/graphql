@@ -2944,7 +2944,6 @@ __metadata:
     "@types/ws": "npm:8.5.10"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
-    dedent: "npm:1.5.1"
     dot-prop: "npm:^6.0.1"
     graphql-compose: "npm:^9.0.8"
     graphql-middleware: "npm:6.1.35"
@@ -8672,7 +8671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:1.5.1, dedent@npm:^1.0.0":
+"dedent@npm:^1.0.0":
   version: 1.5.1
   resolution: "dedent@npm:1.5.1"
   peerDependencies:
