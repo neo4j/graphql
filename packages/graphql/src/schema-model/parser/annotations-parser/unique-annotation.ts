@@ -22,7 +22,7 @@ import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { parseArguments } from "../parse-arguments";
 
 export function parseUniqueAnnotation(directive: DirectiveNode): UniqueAnnotation {
-    const { constraintName } = parseArguments<{ constraintName: string }>(uniqueDirective, directive);
+    const { constraintName } = parseArguments<{ constraintName?: string }>(uniqueDirective, directive);
 
     return new UniqueAnnotation({
         constraintName,
