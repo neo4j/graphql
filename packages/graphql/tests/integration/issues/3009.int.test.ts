@@ -23,7 +23,7 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
     let User: UniqueType;
     const testHelper = new TestHelper();
 
-    beforeEach(async () => {
+    beforeEach(() => {
         User = testHelper.createUniqueType("User");
     });
 

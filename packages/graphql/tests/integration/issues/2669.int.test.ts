@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQL } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
@@ -26,8 +25,6 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;
-
-    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
@@ -50,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         }
         `;
 
-        neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
         CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);

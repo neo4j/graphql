@@ -17,33 +17,27 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import neo4jDriver from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("DateTime", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
+    let Movie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
+    beforeEach(() => {
+        Movie = testHelper.createUniqueType("Movie");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("create", () => {
         test("should create a movie (with a DateTime)", async () => {
-            const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type Movie {
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} {
                   id: ID
                   datetime: DateTime
                 }
@@ -51,55 +45,43 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
             });
 
-            const create = `
+            const create = /* GraphQL */ `
                 mutation {
-                    createMovies(input: [{ id: "${id}", datetime: "${date.toISOString()}" }]) {
-                        movies {
+                    ${Movie.operations.create}(input: [{ id: "${id}", datetime: "${date.toISOString()}" }]) {
+                        ${Movie.plural} {
                             datetime
                         }
                     }
                 }
             `;
 
-            try {
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const gqlResult = await testHelper.executeGraphQL(create);
 
-                expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.errors).toBeFalsy();
 
-                const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+            const result = await testHelper.executeCypher(`
+                    MATCH (m:${Movie} {id: "${id}"})
                     RETURN m {.id, .datetime} as m
                 `);
 
-                const movie: {
-                    id: string;
-                    datetime: typeof neo4jDriver.types.DateTime;
-                } = (result.records[0]?.toObject() as any).m;
+            const movie: {
+                id: string;
+                datetime: typeof neo4jDriver.types.DateTime;
+            } = (result.records[0] as any).toObject().m;
 
-                expect(movie.id).toEqual(id);
-                expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
-            } finally {
-                await session.close();
-            }
+            expect(movie.id).toEqual(id);
+            expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
         });
 
         test("should create a movie (with many DateTime)", async () => {
-            const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type Movie {
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} {
                   id: ID
                   datetimes: [DateTime]
                 }
@@ -107,75 +89,61 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
             });
 
-            const create = `
+            const create = /* GraphQL */ `
                 mutation {
-                    createMovies(input: [{ id: "${id}", datetimes: ["${date.toISOString()}", "${date.toISOString()}", "${date.toISOString()}"] }]) {
-                        movies {
+                    ${
+                        Movie.operations.create
+                    }(input: [{ id: "${id}", datetimes: ["${date.toISOString()}", "${date.toISOString()}", "${date.toISOString()}"] }]) {
+                        ${Movie.plural} {
                             datetimes
                         }
                     }
                 }
             `;
 
-            try {
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const gqlResult = await testHelper.executeGraphQL(create);
 
-                expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.errors).toBeFalsy();
 
-                const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+            const result = await testHelper.executeCypher(`
+                    MATCH (m:${Movie} {id: "${id}"})
                     RETURN m {.id, .datetimes} as m
                 `);
 
-                const movie: {
-                    id: string;
-                    datetimes: (typeof neo4jDriver.types.DateTime)[];
-                } = (result.records[0]?.toObject() as any).m;
+            const movie: {
+                id: string;
+                datetimes: (typeof neo4jDriver.types.DateTime)[];
+            } = (result.records[0] as any).toObject().m;
 
-                expect(movie.id).toEqual(id);
+            expect(movie.id).toEqual(id);
 
-                movie.datetimes.forEach((dt) => {
-                    expect(new Date(dt.toString()).toISOString()).toEqual(date.toISOString());
-                });
-            } finally {
-                await session.close();
-            }
+            movie.datetimes.forEach((dt) => {
+                expect(new Date(dt.toString()).toISOString()).toEqual(date.toISOString());
+            });
         });
     });
 
     describe("find", () => {
         test("should find a movie (with a DateTime)", async () => {
-            const session = await neo4j.getSession();
-
-            const randomType = new UniqueType("Movie");
-
-            const typeDefs = `
-                type ${randomType.name} {
+            const typeDefs = /* GraphQL */ `
+                type ${Movie.name} {
                     datetime: DateTime
                 }
             `;
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const query = `
                 query {
-                    ${randomType.plural}(where: { datetime: "${date.toISOString()}" }) {
+                    ${Movie.plural}(where: { datetime: "${date.toISOString()}" }) {
                         datetime
                     }
                 }
@@ -183,35 +151,23 @@ describe("DateTime", () => {
 
             const nDateTime = neo4jDriver.types.DateTime.fromStandardDate(date);
 
-            try {
-                await session.run(
-                    `
-                   CREATE (m:${randomType.name})
+            await testHelper.executeCypher(
+                `
+                   CREATE (m:${Movie.name})
                    SET m.datetime = $nDateTime
                `,
-                    { nDateTime }
-                );
+                { nDateTime }
+            );
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
-                expect(gqlResult.errors).toBeFalsy();
-                expect((gqlResult.data as any)[randomType.plural][0]).toEqual({ datetime: date.toISOString() });
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({ datetime: date.toISOString() });
         });
 
         test("should find a movie (with a DateTime created with a timezone)", async () => {
-            const session = await neo4j.getSession();
-
-            const randomType = new UniqueType("Movie");
-
-            const typeDefs = `
-                type ${randomType.name} {
+            const typeDefs = /* GraphQL */ `
+                type ${Movie.name} {
                     name: String
                     datetime: DateTime
                 }
@@ -219,45 +175,33 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const query = `
+            const query = /* GraphQL */ `
                 query {
-                    ${randomType.plural}(where: { name: "${randomType.name}" }) {
+                    ${Movie.plural}(where: { name: "${Movie.name}" }) {
                         datetime
                     }
                 }
             `;
 
-            try {
-                await session.run(`
-                   CREATE (m:${randomType.name})
-                   SET m.name = "${randomType.name}"
+            await testHelper.executeCypher(`
+                   CREATE (m:${Movie.name})
+                   SET m.name = "${Movie.name}"
                    SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
                `);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const gqlResult = await testHelper.executeGraphQL(query);
 
-                expect(gqlResult.errors).toBeFalsy();
-                expect((gqlResult.data as any)[randomType.plural][0]).toEqual({ datetime: date.toISOString() });
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({ datetime: date.toISOString() });
         });
     });
 
     describe("update", () => {
         test("should update a movie (with a DateTime)", async () => {
-            const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type Movie {
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} {
                   id: ID
                   datetime: DateTime
                 }
@@ -265,18 +209,16 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({
                 charset: "alphabetic",
             });
 
-            const create = `
+            const create = /* GraphQL */ `
                 mutation {
-                    updateMovies(where: {id: "${id}"}, update: {datetime: "${date.toISOString()}"}) {
-                        movies {
+                    ${Movie.operations.update}(where: {id: "${id}"}, update: {datetime: "${date.toISOString()}"}) {
+                        ${Movie.plural} {
                             id
                             datetime
                         }
@@ -284,34 +226,26 @@ describe("DateTime", () => {
                 }
             `;
 
-            try {
-                await session.run(`
-                    CREATE (m:Movie {id: "${id}"})
+            await testHelper.executeCypher(`
+                    CREATE (m:${Movie} {id: "${id}"})
                 `);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: create,
-                    contextValue: neo4j.getContextValues(),
-                });
+            const gqlResult = await testHelper.executeGraphQL(create);
 
-                expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.errors).toBeFalsy();
 
-                const result = await session.run(`
-                    MATCH (m:Movie {id: "${id}"})
+            const result = await testHelper.executeCypher(`
+                    MATCH (m:${Movie} {id: "${id}"})
                     RETURN m {.id, .datetime} as m
                 `);
 
-                const movie: {
-                    id: string;
-                    datetime: typeof neo4jDriver.types.DateTime;
-                } = (result.records[0]?.toObject() as any).m;
+            const movie: {
+                id: string;
+                datetime: typeof neo4jDriver.types.DateTime;
+            } = (result.records[0] as any).toObject().m;
 
-                expect(movie.id).toEqual(id);
-                expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
-            } finally {
-                await session.close();
-            }
+            expect(movie.id).toEqual(id);
+            expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
         });
     });
 });
