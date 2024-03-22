@@ -116,7 +116,7 @@ async function createIndexesAndConstraints({
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        return attribute.databaseName || field;
+                        return attribute.databaseName;
                     });
 
                     const entityAdapter = new ConcreteEntityAdapter(entity);
@@ -133,9 +133,7 @@ async function createIndexesAndConstraints({
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        const fieldName = attribute.databaseName || field;
-
-                        const property = existingIndex.properties.find((p) => p === fieldName);
+                        const property = existingIndex.properties.find((p) => p === attribute.databaseName);
                         if (!property) {
                             const aliasError =
                                 attribute.databaseName !== attribute.name
@@ -228,9 +226,7 @@ async function checkIndexesAndConstraints({
                         throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                     }
 
-                    const fieldName = attribute.databaseName || field;
-
-                    const property = existingIndex.properties.find((p) => p === fieldName);
+                    const property = existingIndex.properties.find((p) => p === attribute.databaseName);
                     if (!property) {
                         const aliasError =
                             attribute.databaseName !== attribute.name
