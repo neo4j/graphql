@@ -133,8 +133,8 @@ async function createIndexesAndConstraints({
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        const property = existingIndex.properties.find((p) => p === attribute.databaseName);
-                        if (!property) {
+                        const propertyIsInIndex = existingIndex.properties.some((p) => p === attribute.databaseName);
+                        if (!propertyIsInIndex) {
                             const aliasError =
                                 attribute.databaseName !== attribute.name
                                     ? ` aliased to field '${attribute.databaseName}'`
@@ -226,8 +226,8 @@ async function checkIndexesAndConstraints({
                         throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                     }
 
-                    const property = existingIndex.properties.find((p) => p === attribute.databaseName);
-                    if (!property) {
+                    const propertyIsInIndex = existingIndex.properties.some((p) => p === attribute.databaseName);
+                    if (!propertyIsInIndex) {
                         const aliasError =
                             attribute.databaseName !== attribute.name
                                 ? ` aliased to field '${attribute.databaseName}'`
