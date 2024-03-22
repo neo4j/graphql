@@ -18,32 +18,21 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Integer, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
+import type { Integer } from "neo4j-driver";
 import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { getQuerySource } from "../../../utils/get-query-source";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Create -> ConnectOrCreate", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    const testHelper = new TestHelper();
     let typeDefs: DocumentNode;
     let plugin: Neo4jGraphQLSubscriptionsEngine;
 
-    const typeMovie = new UniqueType("Movie");
-    const typeActor = new UniqueType("Actor");
+    const typeMovie = testHelper.createUniqueType("Movie");
+    const typeActor = testHelper.createUniqueType("Actor");
 
-    let neoSchema: Neo4jGraphQL;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
+    beforeAll(() => {
         typeDefs = gql`
         type ${typeMovie.name} {
             title: String!
@@ -63,21 +52,16 @@ describe("Create -> ConnectOrCreate", () => {
     });
 
     beforeEach(async () => {
-        session = await neo4j.getSession();
         plugin = new TestSubscriptionsEngine();
-        neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: plugin } });
+        await testHelper.initNeo4jGraphQL({ typeDefs, features: { subscriptions: plugin } });
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("ConnectOrCreate creates new node", async () => {
-        const query = gql`
+        const query = /* GraphQL */ `
             mutation {
               ${typeActor.operations.create}(
                 input: [
@@ -99,11 +83,7 @@ describe("Create -> ConnectOrCreate", () => {
             }
             `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(query),
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.operations.create][`${typeActor.plural}`]).toEqual([
             {
@@ -111,7 +91,7 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const movieTitleAndId = await session.run(`
+        const movieTitleAndId = await testHelper.executeCypher(`
           MATCH (m:${typeMovie.name} {id: 5})
           RETURN m.title as title, m.id as id
         `);
@@ -120,7 +100,7 @@ describe("Create -> ConnectOrCreate", () => {
         expect(movieTitleAndId.records[0]?.toObject().title).toBe("The Terminal");
         expect((movieTitleAndId.records[0]?.toObject().id as Integer).toNumber()).toBe(5);
 
-        const actedInRelation = await session.run(`
+        const actedInRelation = await testHelper.executeCypher(`
             MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
             RETURN r.screentime as screentime
             `);

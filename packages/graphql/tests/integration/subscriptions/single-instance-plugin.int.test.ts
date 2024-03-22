@@ -18,25 +18,17 @@
  */
 
 import { gql } from "graphql-tag";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
 import type { EventMeta } from "../../../src/types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Subscriptions Single Instance Plugin", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let plugin: Neo4jGraphQLSubscriptionsDefaultEngine;
 
-    const typeMovie = new UniqueType("Movie");
+    const typeMovie = testHelper.createUniqueType("Movie");
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
         plugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -44,7 +36,7 @@ describe("Subscriptions Single Instance Plugin", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: plugin,
@@ -53,7 +45,7 @@ describe("Subscriptions Single Instance Plugin", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("simple create with subscriptions enabled with single instance plugin", async () => {
@@ -79,11 +71,7 @@ describe("Subscriptions Single Instance Plugin", () => {
             });
         });
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([{ id: "1" }]);

@@ -17,25 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3746", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should apply field-level authentication to root field on Query - pass", async () => {
@@ -62,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -77,11 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
         const token = createBearerToken(secret, { sub: userId });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any).me.customId).toEqual(userId);
@@ -107,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -120,11 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({}),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
@@ -154,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -169,11 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
         const token = createBearerToken(secret, { sub: userId });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any).me.customId).toEqual(userId);
@@ -199,7 +178,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -212,11 +191,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({}),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
@@ -246,7 +221,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -260,11 +235,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({}),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
@@ -294,7 +265,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -308,11 +279,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({}),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
@@ -340,7 +307,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -353,11 +320,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({}),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
@@ -389,7 +352,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -403,11 +366,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
         });
 
         const token = createBearerToken(secret, { sub: userId });
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any).me.customId).toEqual(userId);
@@ -439,7 +398,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
@@ -453,11 +412,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues({}),
-        });
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");

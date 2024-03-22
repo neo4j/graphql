@@ -17,35 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions update", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
-
-        typeActor = new UniqueType("Actor");
-        typeMovie = new UniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
 
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
@@ -63,7 +49,7 @@ describe("Subscriptions update", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: plugin,
@@ -72,37 +58,10 @@ describe("Subscriptions update", () => {
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [typeActor, typeMovie]);
-
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
-        const session = await neo4j.getSession();
-
-        const typeDefs = gql`
-                type ${typeActor.name} {
-                    name: String
-                    movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-    
-                type ${typeMovie.name} {
-                    id: ID
-                    actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
-
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            features: {
-                subscriptions: plugin,
-            },
-        });
-
         const movieId1 = "movieId1";
         const movieId2 = "movieId2";
 
@@ -127,9 +86,8 @@ describe("Subscriptions update", () => {
                 }
             `;
 
-        try {
-            await session.run(
-                `
+        await testHelper.executeCypher(
+            `
                     CREATE (m1:${typeMovie.name} {id: $movieId1})
                     CREATE (m2:${typeMovie.name} {id: $movieId2})
     
@@ -142,39 +100,33 @@ describe("Subscriptions update", () => {
                     MERGE (a2)-[:ACTED_IN]->(m1)
                     MERGE (a2)-[:ACTED_IN]->(m2)
                 `,
-                {
-                    movieId1,
-                    actorName1,
-                    actorName2,
-                    movieId2,
-                }
-            );
+            {
+                movieId1,
+                actorName1,
+                actorName2,
+                movieId2,
+            }
+        );
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: mutation,
-                variableValues: { movieId1, actorName1, movieId2 },
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await testHelper.executeGraphQL(mutation, {
+            variableValues: { movieId1, actorName1, movieId2 },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.[typeMovie.operations.update]).toEqual({
-                [typeMovie.plural]: [{ id: movieId1, actors: [{ name: actorName2 }] }],
-            });
+        expect(gqlResult?.data?.[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: movieId1, actors: [{ name: actorName2 }] }],
+        });
 
-            const movie2 = await session.run(
-                `
+        const movie2 = await testHelper.executeCypher(
+            `
                   MATCH (m:${typeMovie.name} {id: $id})
                   RETURN m
                 `,
-                { id: movieId2 }
-            );
+            { id: movieId2 }
+        );
 
-            expect(movie2.records).toHaveLength(0);
-        } finally {
-            await session.close();
-        }
+        expect(movie2.records).toHaveLength(0);
     });
 
     test("simple update with subscriptions enabled", async () => {
@@ -188,16 +140,12 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -223,16 +171,12 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -285,7 +229,7 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (m2:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
             CREATE (m3:${typeMovie.name} { id: "3", name: "Terminator 2" })
@@ -298,11 +242,7 @@ describe("Subscriptions update", () => {
             CREATE(a2)-[:ACTED_IN]->(m4)
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -375,7 +315,7 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (m2:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
             CREATE (m3:${typeMovie.name} { id: "3", name: "Terminator 2" })
@@ -390,11 +330,7 @@ describe("Subscriptions update", () => {
             CREATE(a2)-[:ACTED_IN]->(m4)
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -471,15 +407,11 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -538,16 +470,12 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (m1)<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -611,16 +539,12 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (m1)<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -711,17 +635,13 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
             CREATE (m1)<-[:ACTED_IN]-(a1:${typeActor.name} { name: "Arnold" })
             CREATE (a1)-[:ACTED_IN]->(:${typeMovie.name} { name: "Predator" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -793,15 +713,11 @@ describe("Subscriptions update", () => {
             }
             `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tagline: "I'll be back" })
             `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -831,15 +747,11 @@ describe("Subscriptions update", () => {
             }
             `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${typeMovie.name} { id: "1", length: 0 })
             `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -874,15 +786,11 @@ describe("Subscriptions update", () => {
             }
             `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
                 CREATE (:${typeMovie.name} { id: "1", name: "The Matrix", length: 0 })
             `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -936,16 +844,12 @@ describe("Subscriptions update", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE(m1:${typeMovie.name} { id: "1", length: 0, name: "The wrong Matrix" })
             CREATE(a1:${typeActor.name} {name: "Keanu_wrong"})-[:ACTED_IN]->(m1)
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 

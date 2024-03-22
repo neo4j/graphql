@@ -18,33 +18,20 @@
  */
 
 import { gql } from "graphql-tag";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions delete", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        session = await neo4j.getSession();
-
-        typeActor = new UniqueType("Actor");
-        typeMovie = new UniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
 
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
@@ -59,7 +46,7 @@ describe("Subscriptions delete", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: plugin,
@@ -68,11 +55,7 @@ describe("Subscriptions delete", () => {
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("simple delete with subscriptions enabled", async () => {
@@ -84,16 +67,12 @@ describe("Subscriptions delete", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (:${typeMovie.name} { id: "1" })
             CREATE (:${typeMovie.name} { id: "2" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(2);
@@ -125,17 +104,13 @@ describe("Subscriptions delete", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1" })<-[:ACTED_IN]-(:${typeActor.name} { id: "3" })
             CREATE (m2:${typeMovie.name} { id: "2" })<-[:ACTED_IN]-(:${typeActor.name} { id: "4" })
             CREATE (m2)<-[:ACTED_IN]-(:${typeActor.name} { id: "5" })
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(5);
@@ -203,17 +178,13 @@ describe("Subscriptions delete", () => {
         }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (m1:${typeMovie.name} { id: "1" })<-[:ACTED_IN]-(a:${typeActor.name} { id: "3" })
             CREATE (m2:${typeMovie.name} { id: "2" })<-[:ACTED_IN]-(:${typeActor.name} { id: "4" })
             CREATE (m2)<-[:ACTED_IN]-(a)
         `);
 
-        const gqlResult: any = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(4);
