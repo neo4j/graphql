@@ -49,8 +49,8 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
-import checkNeo4jCompat from "./utils/verify-database";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
+import checkNeo4jCompat from "./utils/verify-database";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -184,10 +184,14 @@ class Neo4jGraphQL {
             this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
+        if (!this.schemaModel) {
+            throw new Error("Schema Model is not defined");
+        }
+
         await assertIndexesAndConstraints({
             driver: neo4jDriver,
             sessionConfig,
-            nodes: this.nodes,
+            schemaModel: this.schemaModel,
             options: options,
         });
     }
