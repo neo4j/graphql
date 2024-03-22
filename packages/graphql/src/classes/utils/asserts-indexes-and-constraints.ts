@@ -137,7 +137,10 @@ async function createIndexesAndConstraints({
 
                         const property = existingIndex.properties.find((p) => p === fieldName);
                         if (!property) {
-                            const aliasError = attribute.databaseName ? ` aliased to field '${fieldName}'` : "";
+                            const aliasError =
+                                attribute.databaseName !== attribute.name
+                                    ? ` aliased to field '${attribute.databaseName}'`
+                                    : "";
 
                             indexErrors.push(
                                 `@fulltext index '${indexName}' on Node '${entity.name}' already exists, but is missing field '${field}'${aliasError}`
@@ -229,7 +232,10 @@ async function checkIndexesAndConstraints({
 
                     const property = existingIndex.properties.find((p) => p === fieldName);
                     if (!property) {
-                        const aliasError = attribute.databaseName ? ` aliased to field '${fieldName}'` : "";
+                        const aliasError =
+                            attribute.databaseName !== attribute.name
+                                ? ` aliased to field '${attribute.databaseName}'`
+                                : "";
 
                         indexErrors.push(
                             `@fulltext index '${indexName}' on Node '${entity.name}' is missing field '${field}'${aliasError}`
