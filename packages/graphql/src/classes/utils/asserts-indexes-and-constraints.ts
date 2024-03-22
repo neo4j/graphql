@@ -111,12 +111,12 @@ async function createIndexesAndConstraints({
                 const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
                     const properties = index.fields.map((field) => {
-                        const attributeAdapter = entity.findAttribute(field);
-                        if (!attributeAdapter) {
+                        const attribute = entity.findAttribute(field);
+                        if (!attribute) {
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        return attributeAdapter.databaseName || field;
+                        return attribute.databaseName || field;
                     });
 
                     const entityAdapter = new ConcreteEntityAdapter(entity);
@@ -128,16 +128,16 @@ async function createIndexesAndConstraints({
                     });
                 } else {
                     index.fields.forEach((field) => {
-                        const attributeAdapter = entity.findAttribute(field);
-                        if (!attributeAdapter) {
+                        const attribute = entity.findAttribute(field);
+                        if (!attribute) {
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        const fieldName = attributeAdapter.databaseName || field;
+                        const fieldName = attribute.databaseName || field;
 
                         const property = existingIndex.properties.find((p) => p === fieldName);
                         if (!property) {
-                            const aliasError = attributeAdapter.databaseName ? ` aliased to field '${fieldName}'` : "";
+                            const aliasError = attribute.databaseName ? ` aliased to field '${fieldName}'` : "";
 
                             indexErrors.push(
                                 `@fulltext index '${indexName}' on Node '${entity.name}' already exists, but is missing field '${field}'${aliasError}`
@@ -220,16 +220,16 @@ async function checkIndexesAndConstraints({
                 }
 
                 index.fields.forEach((field) => {
-                    const attributeAdapter = entity.findAttribute(field);
-                    if (!attributeAdapter) {
+                    const attribute = entity.findAttribute(field);
+                    if (!attribute) {
                         throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                     }
 
-                    const fieldName = attributeAdapter.databaseName || field;
+                    const fieldName = attribute.databaseName || field;
 
                     const property = existingIndex.properties.find((p) => p === fieldName);
                     if (!property) {
-                        const aliasError = attributeAdapter.databaseName ? ` aliased to field '${fieldName}'` : "";
+                        const aliasError = attribute.databaseName ? ` aliased to field '${fieldName}'` : "";
 
                         indexErrors.push(
                             `@fulltext index '${indexName}' on Node '${entity.name}' is missing field '${field}'${aliasError}`
