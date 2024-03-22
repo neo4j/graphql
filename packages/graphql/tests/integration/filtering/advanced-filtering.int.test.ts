@@ -1239,13 +1239,16 @@ describe("Advanced Filtering", () => {
             });
 
             test("should find using equality on node using connection", async () => {
+                const Movie = testHelper.createUniqueType("Movie");
+                const Genre = testHelper.createUniqueType("Genre");
+
                 const typeDefs = `
-                        type Movie {
+                        type ${Movie} {
                             id: ID
-                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+                            genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type Genre {
+                        type ${Genre} {
                             id: ID
                         }
                 `;
@@ -1262,14 +1265,14 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                            CREATE (movie:Movie {id: $movieId})-[:IN_GENRE]->(:Genre {id:$genreId})
+                            CREATE (:${Movie} {id: $movieId})-[:IN_GENRE]->(:${Genre} {id:$genreId})
                         `,
                     { movieId, genreId }
                 );
 
                 const query = `
                         {
-                            movies(where: { genresConnection: { node: { id: "${genreId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection: { node: { id: "${genreId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1282,21 +1285,27 @@ describe("Advanced Filtering", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any).movies).toHaveLength(1);
-                expect((gqlResult.data as any).movies[0]).toMatchObject({
-                    id: movieId,
-                    genres: [{ id: genreId }],
+                expect(gqlResult.data as any).toEqual({
+                    [Movie.plural]: [
+                        {
+                            id: movieId,
+                            genres: [{ id: genreId }],
+                        },
+                    ],
                 });
             });
 
             test("should find using equality on relationship using connection", async () => {
+                const Movie = testHelper.createUniqueType("Movie");
+                const Genre = testHelper.createUniqueType("Genre");
+
                 const typeDefs = `
-                        type Movie {
+                        type ${Movie} {
                             id: ID
-                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Genre {
+                        type ${Genre} {
                             id: ID
                         }
 
@@ -1321,14 +1330,14 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                            CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
+                            CREATE (movie:${Movie} {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:${Genre} {id:$genreId})
                         `,
                     { movieId, genreId, actedInId }
                 );
 
                 const query = `
                         {
-                            movies(where: { genresConnection: { edge: { id: "${actedInId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection: { edge: { id: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1340,21 +1349,27 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await testHelper.executeGraphQL(query);
 
                 expect(gqlResult.errors).toBeUndefined();
-                expect((gqlResult.data as any).movies).toHaveLength(1);
-                expect((gqlResult.data as any).movies[0]).toMatchObject({
-                    id: movieId,
-                    genres: [{ id: genreId }],
+                expect(gqlResult.data as any).toEqual({
+                    [Movie.plural]: [
+                        {
+                            id: movieId,
+                            genres: [{ id: genreId }],
+                        },
+                    ],
                 });
             });
 
             test("should find relationship and node property equality using connection", async () => {
+                const Movie = testHelper.createUniqueType("Movie");
+                const Genre = testHelper.createUniqueType("Genre");
+
                 const typeDefs = `
-                        type Movie {
+                        type ${Movie} {
                             id: ID
-                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Genre {
+                        type ${Genre} {
                             id: ID
                         }
 
@@ -1379,14 +1394,14 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                            CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
+                            CREATE (:${Movie} {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:${Genre} {id:$genreId})
                         `,
                     { movieId, genreId, actedInId }
                 );
 
                 const query = `
                         {
-                            movies(where: { genresConnection: { node: { id: "${genreId}" } edge: { id: "${actedInId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection: { node: { id: "${genreId}" } edge: { id: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1399,10 +1414,13 @@ describe("Advanced Filtering", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any).movies).toHaveLength(1);
-                expect((gqlResult.data as any).movies[0]).toMatchObject({
-                    id: movieId,
-                    genres: [{ id: genreId }],
+                expect(gqlResult.data as any).toEqual({
+                    [Movie.plural]: [
+                        {
+                            id: movieId,
+                            genres: [{ id: genreId }],
+                        },
+                    ],
                 });
             });
         });
