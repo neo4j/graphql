@@ -3005,7 +3005,7 @@ __metadata:
   resolution: "@neo4j/package-tests@workspace:packages/package-tests"
   dependencies:
     rimraf: "npm:5.0.5"
-    upper-case-first: "npm:^2.0.2"
+    upper-case-first: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
 
@@ -20828,6 +20828,13 @@ __metadata:
   dependencies:
     tslib: "npm:^2.0.3"
   checksum: 10c0/ccad6a0b143310ebfba2b5841f30bef71246297385f1329c022c902b2b5fc5aee009faf1ac9da5ab3ba7f615b88f5dc1cd80461b18a8f38cb1d4c3eb92538ea9
+  languageName: node
+  linkType: hard
+
+"upper-case-first@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "upper-case-first@npm:3.0.0"
+  checksum: 10c0/9fe3b5fac9e8bb0d3014f7873070d71b4b4001c480ffc6f9c428920f7ed2f6f1e814396612f8fd69af56e2aea8439ab104b00c294a8ba75bda2d9b05ac4cf81a
   languageName: node
   linkType: hard
 

@@ -28,6 +28,6 @@
         "rimraf": "5.0.5"
     },
     "dependencies": {
-        "upper-case-first": "^2.0.2"
+        "upper-case-first": "^3.0.0"
     }
 }
