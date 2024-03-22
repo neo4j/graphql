@@ -110,13 +110,14 @@ async function createIndexesAndConstraints({
                 }
                 const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
+                    // An index with the same name does not exist, so we will create it
                     const properties = index.fields.map((field) => {
-                        const attributeAdapter = entity.findAttribute(field);
-                        if (!attributeAdapter) {
+                        const attribute = entity.findAttribute(field);
+                        if (!attribute) {
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        return attributeAdapter.databaseName || field;
+                        return attribute.databaseName;
                     });
 
                     const entityAdapter = new ConcreteEntityAdapter(entity);
@@ -127,17 +128,19 @@ async function createIndexesAndConstraints({
                         properties,
                     });
                 } else {
+                    // An index with the same name already exists, so we check that all index fields are included in the existing index
                     index.fields.forEach((field) => {
-                        const attributeAdapter = entity.findAttribute(field);
-                        if (!attributeAdapter) {
+                        const attribute = entity.findAttribute(field);
+                        if (!attribute) {
                             throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                         }
 
-                        const fieldName = attributeAdapter.databaseName || field;
-
-                        const property = existingIndex.properties.find((p) => p === fieldName);
-                        if (!property) {
-                            const aliasError = attributeAdapter.databaseName ? ` aliased to field '${fieldName}'` : "";
+                        const propertyIsInIndex = existingIndex.properties.some((p) => p === attribute.databaseName);
+                        if (!propertyIsInIndex) {
+                            const aliasError =
+                                attribute.databaseName !== attribute.name
+                                    ? ` aliased to field '${attribute.databaseName}'`
+                                    : "";
 
                             indexErrors.push(
                                 `@fulltext index '${indexName}' on Node '${entity.name}' already exists, but is missing field '${field}'${aliasError}`
@@ -212,6 +215,7 @@ async function checkIndexesAndConstraints({
                 if (indexName === undefined) {
                     throw new Error("The name of the fulltext index should be defined using the indexName argument.");
                 }
+
                 const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
                     indexErrors.push(`Missing @fulltext index '${indexName}' on Node '${entity.name}'`);
@@ -219,17 +223,19 @@ async function checkIndexesAndConstraints({
                     return;
                 }
 
+                // An index with the same name already exists, so we check that all index fields are included in the existing index
                 index.fields.forEach((field) => {
-                    const attributeAdapter = entity.findAttribute(field);
-                    if (!attributeAdapter) {
+                    const attribute = entity.findAttribute(field);
+                    if (!attribute) {
                         throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
                     }
 
-                    const fieldName = attributeAdapter.databaseName || field;
-
-                    const property = existingIndex.properties.find((p) => p === fieldName);
-                    if (!property) {
-                        const aliasError = attributeAdapter.databaseName ? ` aliased to field '${fieldName}'` : "";
+                    const propertyIsInIndex = existingIndex.properties.some((p) => p === attribute.databaseName);
+                    if (!propertyIsInIndex) {
+                        const aliasError =
+                            attribute.databaseName !== attribute.name
+                                ? ` aliased to field '${attribute.databaseName}'`
+                                : "";
 
                         indexErrors.push(
                             `@fulltext index '${indexName}' on Node '${entity.name}' is missing field '${field}'${aliasError}`
@@ -296,7 +302,10 @@ async function getMissingConstraints({
                     break;
                 }
             }
+
             if (anyLabelHasConstraint === false) {
+                // TODO: The fallback value of `${entity.name}_${uniqueField.databaseName}` should be changed to use the main label of the entity
+                // But this can only be done once the translation layer has been updated to use the schema model instead of the Node class
                 const constraintName =
                     uniqueField.annotations.unique.constraintName || `${entity.name}_${uniqueField.databaseName}`;
 
