@@ -257,9 +257,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:4.10.1, @apollo/server@npm:^4.7.0":
-  version: 4.10.1
-  resolution: "@apollo/server@npm:4.10.1"
+"@apollo/server@npm:4.10.2, @apollo/server@npm:^4.7.0":
+  version: 4.10.2
+  resolution: "@apollo/server@npm:4.10.2"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^1.1.1"
@@ -288,7 +288,7 @@ __metadata:
     whatwg-mimetype: "npm:^3.0.0"
   peerDependencies:
     graphql: ^16.6.0
-  checksum: 10c0/6a9ab267f8e38e4a7149c5079eda1236dceabd217f241e99beafb8090f233802fc89853e61c7e0740d6f0a648da14590381270a5894891ef7618b81e8c2c4850
+  checksum: 10c0/3aaf9e9bdedd7da59578fd7cc75b238bd7f08f8c97365b3423a2b6228c8020e7a88435746481c81237c02c276a0fc1b49304b4c79fadb99ee2c212645f5402a3
   languageName: node
   linkType: hard
 
@@ -2815,7 +2815,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
-    "@apollo/server": "npm:4.10.1"
+    "@apollo/server": "npm:4.10.2"
     "@neo4j/graphql": "npm:^5.0.0"
     "@types/amqplib": "npm:0.10.5"
     "@types/body-parser": "npm:1.19.5"
@@ -2878,7 +2878,7 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": "npm:2.7.2"
-    "@apollo/server": "npm:4.10.1"
+    "@apollo/server": "npm:4.10.2"
     "@apollo/subgraph": "npm:^2.2.3"
     "@faker-js/faker": "npm:8.4.1"
     "@graphql-tools/merge": "npm:^9.0.0"

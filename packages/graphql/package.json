@@ -50,7 +50,7 @@
     "author": "Neo4j Inc.",
     "devDependencies": {
         "@apollo/gateway": "2.7.2",
-        "@apollo/server": "4.10.1",
+        "@apollo/server": "4.10.2",
         "@faker-js/faker": "8.4.1",
         "@types/deep-equal": "1.0.4",
         "@types/is-uuid": "1.0.2",
