@@ -705,4 +705,53 @@ describe("array-push", () => {
             ])
         );
     });
+
+    test("should push a single LocalTime element on to an existing array with time ending in 0, which is rounded in response", async () => {
+        const localTime = "09:36:55.000";
+        const expectedOutputValue = ["09:36:55"];
+
+        const typeMovie = testHelper.createUniqueType("Movie");
+
+        const typeDefs = gql`
+        type ${typeMovie} {
+            title: String
+            tags: [LocalTime]
+        }
+    `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const update = `
+        mutation {
+            ${typeMovie.operations.update} (update: { tags_PUSH: "${localTime}" }) {
+                ${typeMovie.plural} {
+                    title
+                    tags
+                }
+            }
+        }
+    `;
+
+        const cypher = `
+        CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
+    `;
+
+        await testHelper.executeCypher(cypher, { movieTitle });
+
+        const gqlResult = await testHelper.executeGraphQL(update);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            { title: movieTitle, tags: expectedOutputValue },
+        ]);
+    });
 });
