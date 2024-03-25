@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
@@ -25,18 +24,17 @@ import { TestHelper } from "../utils/tests-helper";
 describe("array-push", () => {
     const testHelper = new TestHelper();
 
-    beforeEach(() => {});
-
     afterEach(async () => {
         await testHelper.close();
     });
 
-    const date = new Date().toISOString();
+    const date = "2024-03-25T11:07:37.122Z";
     const expectedDateOutput = date.split("T")[0];
-    const time = faker.date.past().toISOString().split("T")[1] as string;
+    const time = "11:38:56.222Z";
+
     const expectedTimeOutput = `${time.slice(0, -1)}000000Z`;
-    const localTime = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}`;
-    const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}`;
+    const localTime = "22:53:54.955";
+    const localDateTime = "2023-05-23T16:26:45.826";
     // Expected localTime and localDateTime may cause flakiness with the ms precision.
     const expectedLocalTime = expect.stringContaining(localTime);
     const expectedLocalDateTime = expect.stringContaining(localDateTime);
@@ -267,9 +265,9 @@ describe("array-push", () => {
     );
 
     const point = {
-        longitude: parseFloat(faker.location.longitude().toString()),
-        latitude: parseFloat(faker.location.latitude().toString()),
-        height: faker.number.float(),
+        longitude: 142.2235,
+        latitude: -36.7462,
+        height: 0.06816366873681545,
     };
 
     test.each([
@@ -346,10 +344,7 @@ describe("array-push", () => {
         }
     );
 
-    const cartesianPoint = {
-        x: faker.number.float(),
-        y: faker.number.float(),
-    };
+    const cartesianPoint = { x: 0.2822351506911218, y: 0.6583783773239702 };
 
     test.each([
         {
@@ -709,5 +704,54 @@ describe("array-push", () => {
                 },
             ])
         );
+    });
+
+    test("should push a single LocalTime element on to an existing array with time ending in 0, which is rounded in response", async () => {
+        const localTime = "09:36:55.000";
+        const expectedOutputValue = ["09:36:55"];
+
+        const typeMovie = testHelper.createUniqueType("Movie");
+
+        const typeDefs = gql`
+        type ${typeMovie} {
+            title: String
+            tags: [LocalTime]
+        }
+    `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const update = `
+        mutation {
+            ${typeMovie.operations.update} (update: { tags_PUSH: "${localTime}" }) {
+                ${typeMovie.plural} {
+                    title
+                    tags
+                }
+            }
+        }
+    `;
+
+        const cypher = `
+        CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
+    `;
+
+        await testHelper.executeCypher(cypher, { movieTitle });
+
+        const gqlResult = await testHelper.executeGraphQL(update);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            { title: movieTitle, tags: expectedOutputValue },
+        ]);
     });
 });
