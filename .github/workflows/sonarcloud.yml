@@ -1,9 +1,9 @@
 name: "SonarCloud"
 
 on:
-  push:
-    branches:
-      - dev
+ # push:
+    # branches:
+    #   - dev
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -37,4 +37,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets[env.SONAR_TOKEN_SECRET] }}
- 
