@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
@@ -25,18 +24,17 @@ import { TestHelper } from "../utils/tests-helper";
 describe("array-push", () => {
     const testHelper = new TestHelper();
 
-    beforeEach(() => {});
-
     afterEach(async () => {
         await testHelper.close();
     });
 
-    const date = new Date().toISOString();
+    const date = "2024-03-25T11:07:37.122Z";
     const expectedDateOutput = date.split("T")[0];
-    const time = faker.date.past().toISOString().split("T")[1] as string;
+    const time = "11:38:56.222Z";
+
     const expectedTimeOutput = `${time.slice(0, -1)}000000Z`;
-    const localTime = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}`;
-    const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}`;
+    const localTime = "22:53:54.955";
+    const localDateTime = "2023-05-23T16:26:45.826";
     // Expected localTime and localDateTime may cause flakiness with the ms precision.
     const expectedLocalTime = expect.stringContaining(localTime);
     const expectedLocalDateTime = expect.stringContaining(localDateTime);
@@ -267,9 +265,9 @@ describe("array-push", () => {
     );
 
     const point = {
-        longitude: parseFloat(faker.location.longitude().toString()),
-        latitude: parseFloat(faker.location.latitude().toString()),
-        height: faker.number.float(),
+        longitude: 142.2235,
+        latitude: -36.7462,
+        height: 0.06816366873681545,
     };
 
     test.each([
@@ -346,10 +344,7 @@ describe("array-push", () => {
         }
     );
 
-    const cartesianPoint = {
-        x: faker.number.float(),
-        y: faker.number.float(),
-    };
+    const cartesianPoint = { x: 0.2822351506911218, y: 0.6583783773239702 };
 
     test.each([
         {
