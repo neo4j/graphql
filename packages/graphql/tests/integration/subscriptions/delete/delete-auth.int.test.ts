@@ -17,36 +17,25 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import Neo4jHelper from "../../neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions delete", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
-
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
 
     beforeEach(() => {
         plugin = new TestSubscriptionsEngine();
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     test("should throw Forbidden when deleting a node with invalid allow", async () => {
-        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-        const typeUser = new UniqueType("User");
+        const typeUser = testHelper.createUniqueType("User");
         const typeDefs = `
         type ${typeUser.name} {
             id: ID
@@ -69,7 +58,7 @@ describe("Subscriptions delete", () => {
         }
     `;
 
-        const neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
@@ -79,22 +68,14 @@ describe("Subscriptions delete", () => {
             },
         });
 
-        try {
-            await session.run(`
+        await testHelper.executeCypher(`
             CREATE (:${typeUser.name} {id: "${userId}"})
         `);
 
-            const token = createBearerToken("secret", { sub: "invalid" });
+        const token = createBearerToken("secret", { sub: "invalid" });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues({ token }),
-            });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
 });
