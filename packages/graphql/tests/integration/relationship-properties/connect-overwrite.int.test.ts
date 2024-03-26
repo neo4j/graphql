@@ -18,35 +18,22 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Relationship properties - connect with and without `overwrite` argument", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
-    beforeEach(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     afterEach(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     describe("Effect on other relationships", () => {
-        let session: Session;
-
         let movieTitle: string;
         let actorName: string;
         let directorName: string;
@@ -55,8 +42,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         let screenTimeUpdate: number;
 
         beforeEach(async () => {
-            typeActor = new UniqueType("Actor");
-            typeMovie = new UniqueType("Movie");
+            typeActor = testHelper.createUniqueType("Actor");
+            typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
                 type ${typeMovie.name} {
@@ -78,10 +65,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     year: Int!
                 }
             `;
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
-            session = await neo4j.getSession();
 
             movieTitle = "Movie 1";
             actorName = "Actor 1";
@@ -90,7 +76,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             screenTime = 123;
             screenTimeUpdate = 134;
 
-            await session.run(
+            await testHelper.executeCypher(
                 `
                         CREATE (:${typeActor.name} {name:$actorName})
                         CREATE (:${typeActor.name} {name:$directorName})
@@ -99,13 +85,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
         });
 
-        afterEach(async () => {
-            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
-            await session.close();
-        });
-
         test("should return error when overwrite is false, other field does not get updated because of error even if it's first", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 MATCH (actor:${typeActor.name} {name: $actorName})
                 MATCH (director:${typeActor.name} {name: $directorName})
@@ -173,24 +154,21 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, directorName, year: 2011, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
             });
             expect(neo4jResultOverwritten.records).toHaveLength(0);
-            const directorOverwritten = await session.run(
+            const directorOverwritten = await testHelper.executeCypher(
                 `MATCH (m:${typeMovie.name} {title: $movieTitle})
                             <-[:DIRECTED {year: $year}]-
                                 (d:${typeActor.name} {name: $directorName})
@@ -201,7 +179,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should return error when overwrite is false, other field does not get connected because of error", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 MATCH (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -268,24 +246,21 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, directorName, year, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
             });
             expect(neo4jResultOverwritten.records).toHaveLength(0);
-            const directorOverwritten = await session.run(
+            const directorOverwritten = await testHelper.executeCypher(
                 `MATCH (m:${typeMovie.name} {title: $movieTitle})
                             <-[:DIRECTED {year: $year}]-
                                 (d:${typeActor.name} {name: $directorName})
@@ -297,8 +272,6 @@ describe("Relationship properties - connect with and without `overwrite` argumen
     });
 
     describe("Relationships of type 1:n", () => {
-        let session: Session;
-
         let movieTitle: string;
         let movieOtherTitle: string;
         let actorName: string;
@@ -307,8 +280,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         let screenTimeOther: number;
 
         beforeEach(async () => {
-            typeActor = new UniqueType("Actor");
-            typeMovie = new UniqueType("Movie");
+            typeActor = testHelper.createUniqueType("Actor");
+            typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
                 type ${typeMovie.name} {
@@ -325,10 +298,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     screenTime: Int!
                 }
             `;
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
-            session = await neo4j.getSession();
 
             movieTitle = "Movie 1";
             movieOtherTitle = "Movie 2";
@@ -336,7 +308,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             screenTime = 123;
             screenTimeUpdate = 134;
             screenTimeOther = 156;
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -344,11 +316,6 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             `,
                 { movieTitle, actorName, screenTime }
             );
-        });
-
-        afterEach(async () => {
-            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
-            await session.close();
         });
 
         // update + update + connect
@@ -393,10 +360,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -409,9 +373,17 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 },
             ]);
 
-            const neo4jResultOverwritten = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
+                movieTitle,
+                screenTime,
+                actorName,
+            });
             expect(neo4jResultOverwritten.records).toHaveLength(0);
-            const neo4jResult = await session.run(cypher, { movieTitle, screenTime: screenTimeUpdate, actorName });
+            const neo4jResult = await testHelper.executeCypher(cypher, {
+                movieTitle,
+                screenTime: screenTimeUpdate,
+                actorName,
+            });
             expect(neo4jResult.records).toHaveLength(1);
         });
 
@@ -457,18 +429,15 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -517,18 +486,15 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -576,10 +542,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -592,9 +555,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 },
             ]);
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -642,10 +605,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -653,9 +613,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -702,112 +662,19 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
             });
             expect(neo4jResultOverwritten.records).toHaveLength(1);
-        });
-
-        // update + update + connectOrCreate
-        test("update with connectOrCreate is a no-op when relationship field has cardinality 1, overwrite not an option", async () => {
-            typeDefs = gql`
-                type ${typeMovie.name} {
-                    title: String!
-                    actors: ${typeActor.name}! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-                }
-
-                type ${typeActor.name} {
-                    name: String!
-                    id: Int! @unique
-                    movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-                }
-
-                type ActedIn @relationshipProperties {
-                    screenTime: Int!
-                }
-            `;
-            const actorId = 1;
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
-
-            await session.run(
-                `
-                MATCH (actor:${typeActor.name} {name: $actorName})
-                SET actor.id=$actorId
-            `,
-                { actorName, actorId }
-            );
-            const update = `
-                mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!, $actorId: Int!) {
-                    ${typeMovie.operations.update}(
-                        where: {
-                            title: $movieTitle
-                        },
-                        update: {
-                            actors: {
-                                connectOrCreate: {
-                                    where: { node: { id: $actorId } },
-                                    onCreate: { edge: { screenTime: $screenTime }, node: { name: $actorName, id: $actorId } },
-                                }
-                            }
-                        }
-                        
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                            actorsConnection {
-                                edges {
-                                   properties {
-                                     screenTime
-                                   }
-                                    node {
-                                        name
-                                        id
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const cypher = `
-                MATCH (m:${typeMovie.name} {title: $movieTitle})
-                        <-[:ACTED_IN {screenTime: $screenTime}]-
-                            (:${typeActor.name} {name: $actorName, id: $actorId})
-                RETURN m
-            `;
-
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, actorId },
-            });
-            expect(gqlResultUpdate.errors).toBeFalsy();
-
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName, actorId });
-            expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
-                movieTitle,
-                screenTime: screenTimeUpdate,
-                actorName,
-                actorId,
-            });
-            expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
         // create + connect
@@ -852,18 +719,15 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -919,10 +783,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -930,9 +791,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -986,17 +847,14 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -1056,17 +914,14 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -1127,18 +982,15 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 RETURN m
             `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
@@ -1191,23 +1043,20 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwrittenOnce = await session.run(cypher, {
+            const neo4jResultOverwrittenOnce = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
             });
             expect(neo4jResultOverwrittenOnce.records).toHaveLength(0);
-            const neo4jResultOverwrittenTwice = await session.run(cypher, {
+            const neo4jResultOverwrittenTwice = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeOther,
                 actorName,
@@ -1260,10 +1109,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1271,15 +1117,15 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwrittenOnce = await session.run(cypher, {
+            const neo4jResultOverwrittenOnce = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeUpdate,
                 actorName,
             });
             expect(neo4jResultOverwrittenOnce.records).toHaveLength(0);
-            const neo4jResultOverwrittenTwice = await session.run(cypher, {
+            const neo4jResultOverwrittenTwice = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeOther,
                 actorName,
@@ -1343,10 +1189,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: {
                     movieTitle,
                     actorName,
@@ -1360,9 +1203,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 screenTime: screenTimeOther,
                 actorName,
@@ -1371,8 +1214,125 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
     });
 
+    describe("Relationships type 1:n with @unique", () => {
+        let movieTitle: string;
+        let actorName: string;
+        let screenTime: number;
+        let screenTimeUpdate: number;
+
+        beforeEach(async () => {
+            typeActor = testHelper.createUniqueType("Actor");
+            typeMovie = testHelper.createUniqueType("Movie");
+
+            typeDefs = gql`
+                        type ${typeMovie.name} {
+                            title: String!
+                            actors: ${typeActor.name}! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                        }
+        
+                        type ${typeActor.name} {
+                            name: String!
+                            id: Int! @unique
+                            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                        }
+        
+                        type ActedIn @relationshipProperties {
+                            screenTime: Int!
+                        }
+                    `;
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
+
+            movieTitle = "Movie 1";
+            actorName = "Actor 1";
+            screenTime = 123;
+            screenTimeUpdate = 134;
+            await testHelper.executeCypher(
+                `
+                CREATE (actor:${typeActor.name} {name: $actorName})
+                CREATE (m:${typeMovie.name} { title: $movieTitle })
+                MERGE (actor)-[:ACTED_IN { screenTime: $screenTime }]->(m)
+            `,
+                { movieTitle, actorName, screenTime }
+            );
+        });
+
+        // update + update + connectOrCreate
+        test("update with connectOrCreate is a no-op when relationship field has cardinality 1, overwrite not an option", async () => {
+            const actorId = 1;
+
+            await testHelper.executeCypher(
+                `
+                        MATCH (actor:${typeActor.name} {name: $actorName})
+                        SET actor.id=$actorId
+                    `,
+                { actorName, actorId }
+            );
+            const update = `
+                        mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!, $actorId: Int!) {
+                            ${typeMovie.operations.update}(
+                                where: {
+                                    title: $movieTitle
+                                },
+                                update: {
+                                    actors: {
+                                        connectOrCreate: {
+                                            where: { node: { id: $actorId } },
+                                            onCreate: { edge: { screenTime: $screenTime }, node: { name: $actorName, id: $actorId } },
+                                        }
+                                    }
+                                }
+                                
+                            ) {
+                                ${typeMovie.plural} {
+                                    title
+                                    actorsConnection {
+                                        edges {
+                                           properties {
+                                             screenTime
+                                           }
+                                            node {
+                                                name
+                                                id
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `;
+
+            const cypher = `
+                        MATCH (m:${typeMovie.name} {title: $movieTitle})
+                                <-[:ACTED_IN {screenTime: $screenTime}]-
+                                    (:${typeActor.name} {name: $actorName, id: $actorId})
+                        RETURN m
+                    `;
+
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
+                variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, actorId },
+            });
+            expect(gqlResultUpdate.errors).toBeFalsy();
+
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, {
+                movieTitle,
+                screenTime,
+                actorName,
+                actorId,
+            });
+            expect(neo4jResultInitial.records).toHaveLength(1);
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
+                movieTitle,
+                screenTime: screenTimeUpdate,
+                actorName,
+                actorId,
+            });
+            expect(neo4jResultOverwritten.records).toHaveLength(0);
+        });
+    });
+
     describe("Relationships of type n:n", () => {
-        let session: Session;
         let movieTitle: string;
         let movieOtherTitle: string;
         let actorName: string;
@@ -1381,8 +1341,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         let yearOther: number;
 
         beforeEach(async () => {
-            typeActor = new UniqueType("Actor");
-            typeMovie = new UniqueType("Movie");
+            typeActor = testHelper.createUniqueType("Actor");
+            typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
                 type ${typeMovie.name} {
@@ -1399,10 +1359,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     year: Int!
                 }
             `;
-            neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
-            session = await neo4j.getSession();
 
             movieTitle = "Movie 1";
             movieOtherTitle = "Movie 2";
@@ -1412,14 +1371,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             yearOther = 2011;
         });
 
-        afterEach(async () => {
-            await cleanNodesUsingSession(session, [typeActor, typeMovie]);
-            await session.close();
-        });
-
         // update + update + connect
         test("should return error because overwrite set to false", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1467,10 +1421,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1478,9 +1429,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1489,7 +1440,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should overwrite existing relationship with new properties", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1536,17 +1487,14 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1556,7 +1504,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
 
         // update + connect
         test("should overwrite existing relationship with new properties: connect in update", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1601,17 +1549,14 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1620,7 +1565,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should return error because overwrite set to false: connect in update", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1666,10 +1611,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1677,9 +1619,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1689,7 +1631,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
 
         // create + connect
         test("should return error because overwrite set to false: connect in create", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1743,10 +1685,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                         RETURN m
                     `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1754,9 +1693,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1765,7 +1704,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should overwrite existing relationship with new properties: connect in create", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1818,17 +1757,18 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                         RETURN m
                     `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName: actorNameOther });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, {
+                movieTitle,
+                year,
+                actorName: actorNameOther,
+            });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName: actorNameOther,
@@ -1838,7 +1778,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
 
         // nested connect-connect
         test("should return error because overwrite set to false: nested connect in create", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1898,10 +1838,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1909,9 +1846,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1920,7 +1857,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should overwrite existing relationship with new properties: nested connect in create", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -1979,17 +1916,14 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                         RETURN m
                     `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -1999,7 +1933,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
 
         // update connect-connect
         test("should return error because overwrite set to false on last level: nested connect in update", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -2051,10 +1985,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -2062,9 +1993,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -2073,7 +2004,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should return error because overwrite set to false on inner level: nested connect in update", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -2125,10 +2056,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     RETURN m
                 `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -2136,9 +2064,9 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,
@@ -2147,7 +2075,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         });
 
         test("should overwrite existing relationship with new properties: nested connect in update", async () => {
-            await session.run(
+            await testHelper.executeCypher(
                 `
                 CREATE (actor:${typeActor.name} {name: $actorName})
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
@@ -2198,17 +2126,14 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                         RETURN m
                     `;
 
-            const gqlResultUpdate = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValues(),
+            const gqlResultUpdate = await testHelper.executeGraphQL(update, {
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
 
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
+            const neo4jResultInitial = await testHelper.executeCypher(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
-            const neo4jResultOverwritten = await session.run(cypher, {
+            const neo4jResultOverwritten = await testHelper.executeCypher(cypher, {
                 movieTitle,
                 year: yearOther,
                 actorName,

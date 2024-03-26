@@ -17,19 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
-import { Neo4jGraphQL } from "../../../../src";
-import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Delete using top level aggregate where - subscriptions enabled", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let neoSchema: Neo4jGraphQL;
-    let session: Session;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
 
     let userType: UniqueType;
@@ -46,16 +39,10 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     const content4 = "Baz";
     const content5 = "Some more content";
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
     beforeEach(async () => {
-        userType = new UniqueType("User");
-        postType = new UniqueType("Post");
+        userType = testHelper.createUniqueType("User");
+        postType = testHelper.createUniqueType("Post");
 
-        session = await neo4j.getSession();
         plugin = new TestSubscriptionsEngine();
 
         const typeDefs = `
@@ -69,7 +56,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        await session.run(`
+        await testHelper.executeCypher(`
             CREATE (post1:${postType.name} { content: "${content1}" })<-[:LIKES]-(user1:${userType.name} { testString: "${testString1}" })
             CREATE (post2:${postType.name} { content: "${content2}" })<-[:LIKES]-(user2:${userType.name} { testString: "${testString2}" })
             CREATE (post3:${postType.name} { content: "${content3}" })<-[:LIKES]-(user3:${userType.name} { testString: "${testString3}" })
@@ -82,9 +69,8 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             MERGE (post3)<-[:LIKES]-(user1)
         `);
 
-        neoSchema = new Neo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: plugin,
             },
@@ -92,12 +78,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("Implicit AND", async () => {
@@ -116,11 +97,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -150,11 +127,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -184,11 +157,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -227,11 +196,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -270,11 +235,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -313,11 +274,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
@@ -356,11 +313,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
             }
         `;
 
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
+        const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({

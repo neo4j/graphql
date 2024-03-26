@@ -17,65 +17,57 @@
  * limitations under the License.
  */
 
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { graphql } from "graphql";
-import { gql } from "graphql-tag";
-import Neo4jHelper from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import { getNeo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import { Executor } from "../../../src/classes/Executor";
+import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("assertIndexesAndConstraints/unique", () => {
+    const testHelper = new TestHelper();
     let driver: Driver;
-    let neo4j: Neo4jHelper;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
     let dbInfo: Neo4jDatabaseInfo;
 
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        dbInfo = await getNeo4jDatabaseInfo(new Executor({ executionContext: driver }));
+        dbInfo = await testHelper.getDatabaseInfo();
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
-        const session = driver.session();
-
         try {
-            await session.run(cypher);
+            await testHelper.createDatabase(databaseName);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
+                    await testHelper.close();
                 } else {
                     throw e;
                 }
             }
-        } finally {
-            await session.close();
         }
+    });
 
-        await new Promise((x) => setTimeout(x, 5000));
+    beforeEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            driver = await testHelper.getDriver();
+        }
+    });
+
+    afterEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            await testHelper.close();
+        }
     });
 
     afterAll(async () => {
         if (MULTIDB_SUPPORT) {
-            const cypher = `DROP DATABASE ${databaseName}`;
-
-            const session = await neo4j.getSession();
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.dropDatabase();
+            await testHelper.close();
         }
-        await driver.close();
     });
 
     test("should create a constraint if it doesn't exist and specified in options, and then throw an error in the event of constraint validation", async () => {
@@ -95,8 +87,8 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -106,23 +98,17 @@ describe("assertIndexesAndConstraints/unique", () => {
             })
         ).resolves.not.toThrow();
 
-        const session = driver.session({ database: databaseName });
-
         const cypher = "SHOW UNIQUE CONSTRAINTS";
 
-        try {
-            const result = await session.run(cypher);
+        const result = await testHelper.executeCypher(cypher);
 
-            expect(
-                result.records
-                    .map((record) => {
-                        return record.toObject();
-                    })
-                    .filter((record) => record.labelsOrTypes.includes("Book"))
-            ).toHaveLength(1);
-        } finally {
-            await session.close();
-        }
+        expect(
+            result.records
+                .map((record) => {
+                    return record.toObject();
+                })
+                .filter((record) => record.labelsOrTypes.includes("Book"))
+        ).toHaveLength(1);
 
         const mutation = `
             mutation CreateBooks($isbn: String!, $title: String!) {
@@ -135,13 +121,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
         `;
 
-        const createResult = await graphql({
-            schema,
-            source: mutation,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
+        const createResult = await testHelper.executeGraphQL(mutation, {
             variableValues: {
                 isbn,
                 title,
@@ -154,13 +134,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             createBooks: { books: [{ isbn, title }] },
         });
 
-        const errorResult = await graphql({
-            schema,
-            source: mutation,
-            contextValue: {
-                executionContext: driver,
-                sessionConfig: { database: databaseName },
-            },
+        const errorResult = await testHelper.executeGraphQL(mutation, {
             variableValues: {
                 isbn,
                 title,
@@ -179,7 +153,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("Book");
+            const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -188,7 +162,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -203,7 +177,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("Book");
+            const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -212,7 +186,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -227,7 +201,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("Book");
+            const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -236,20 +210,14 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
-
-            const session = driver.session({ database: databaseName });
 
             const cypher = `CREATE CONSTRAINT ${type.name}_isbn ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
                 dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
             } n.isbn IS UNIQUE`;
 
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(cypher);
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
@@ -263,7 +231,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("Book");
+            const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -272,20 +240,14 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
-
-            const session = driver.session({ database: databaseName });
 
             const cypher = `CREATE CONSTRAINT ${type.name}_isbn ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
                 dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
             } n.internationalStandardBookNumber IS UNIQUE`;
 
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(cypher);
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
@@ -299,7 +261,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("Book");
+            const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -308,7 +270,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -319,23 +281,17 @@ describe("assertIndexesAndConstraints/unique", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
-
             const cypher = "SHOW UNIQUE CONSTRAINTS";
 
-            try {
-                const result = await session.run(cypher);
+            const result = await testHelper.executeCypher(cypher);
 
-                expect(
-                    result.records
-                        .map((record) => {
-                            return record.toObject();
-                        })
-                        .filter((record) => record.labelsOrTypes.includes(type.name))
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                result.records
+                    .map((record) => {
+                        return record.toObject();
+                    })
+                    .filter((record) => record.labelsOrTypes.includes(type.name))
+            ).toHaveLength(1);
         });
 
         test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
@@ -345,7 +301,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("Book");
+            const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -354,7 +310,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -365,27 +321,21 @@ describe("assertIndexesAndConstraints/unique", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
-
             const cypher = "SHOW UNIQUE CONSTRAINTS";
 
-            try {
-                const result = await session.run(cypher);
+            const result = await testHelper.executeCypher(cypher);
 
-                expect(
-                    result.records
-                        .map((record) => {
-                            return record.toObject();
-                        })
-                        .filter(
-                            (record) =>
-                                record.labelsOrTypes.includes(type.name) &&
-                                record.properties.includes("internationalStandardBookNumber")
-                        )
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                result.records
+                    .map((record) => {
+                        return record.toObject();
+                    })
+                    .filter(
+                        (record) =>
+                            record.labelsOrTypes.includes(type.name) &&
+                            record.properties.includes("internationalStandardBookNumber")
+                    )
+            ).toHaveLength(1);
         });
 
         test("should not throw if constraint exists on an additional label", async () => {
@@ -395,8 +345,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
 
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
@@ -412,23 +362,17 @@ describe("assertIndexesAndConstraints/unique", () => {
                 ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.title IS UNIQUE;
             `;
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createConstraintCypher);
 
-            try {
-                await session.run(createConstraintCypher);
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                await neoSchema.getSchema();
-
-                await expect(
-                    neoSchema.assertIndexesAndConstraints({
-                        driver,
-                        sessionConfig: { database: databaseName },
-                    })
-                ).resolves.not.toThrow();
-            } finally {
-                await session.close();
-            }
+            await expect(
+                neoSchema.assertIndexesAndConstraints({
+                    driver,
+                    sessionConfig: { database: databaseName },
+                })
+            ).resolves.not.toThrow();
         });
 
         test("should not create new constraint if constraint exists on an additional label", async () => {
@@ -438,8 +382,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someIntProperty: Int!
@@ -456,41 +400,37 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createConstraintCypher);
 
-            try {
-                await session.run(createConstraintCypher);
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                await neoSchema.getSchema();
+            await expect(
+                neoSchema.assertIndexesAndConstraints({
+                    driver,
+                    sessionConfig: { database: databaseName },
+                    options: { create: true },
+                })
+            ).resolves.not.toThrow();
 
-                await expect(
-                    neoSchema.assertIndexesAndConstraints({
-                        driver,
-                        sessionConfig: { database: databaseName },
-                        options: { create: true },
-                    })
-                ).resolves.not.toThrow();
-
-                const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
+            const dbConstraintsResult = (await testHelper.executeCypher(showConstraintsCypher)).records.map(
+                (record) => {
                     return record.toObject();
-                });
+                }
+            );
 
-                expect(
-                    dbConstraintsResult.filter(
-                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
-                    )
-                ).toHaveLength(0);
+            expect(
+                dbConstraintsResult.filter(
+                    (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
+                )
+            ).toHaveLength(0);
 
-                expect(
-                    dbConstraintsResult.filter(
-                        (record) =>
-                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
-                    )
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                dbConstraintsResult.filter(
+                    (record) =>
+                        record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
+                )
+            ).toHaveLength(1);
         });
 
         test("should not allow creating duplicate @unique properties when constraint is on an additional label", async () => {
@@ -500,8 +440,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someStringProperty: String! @unique @alias(property: "someAlias")
@@ -516,15 +456,11 @@ describe("assertIndexesAndConstraints/unique", () => {
                 ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createConstraintCypher);
 
-            try {
-                await session.run(createConstraintCypher);
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                const generatedSchema = await neoSchema.getSchema();
-
-                const mutation = `
+            const mutation = `
                     mutation {
                         ${baseType.operations.create}(input: [
                             {
@@ -543,7 +479,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     }
                 `;
 
-                const query = `
+            const query = `
                     query {
                         ${baseType.plural} {
                             someStringProperty
@@ -551,31 +487,14 @@ describe("assertIndexesAndConstraints/unique", () => {
                     }
                 `;
 
-                const mutationGqlResult = await graphql({
-                    schema: generatedSchema,
-                    source: mutation,
-                    contextValue: {
-                        executionContext: driver,
-                        sessionConfig: { database: databaseName },
-                    },
-                });
+            const mutationGqlResult = await testHelper.executeGraphQL(mutation);
 
-                const queryGqlResult = await graphql({
-                    schema: generatedSchema,
-                    source: query,
-                    contextValue: {
-                        executionContext: driver,
-                        sessionConfig: { database: databaseName },
-                    },
-                });
+            const queryGqlResult = await testHelper.executeGraphQL(query);
 
-                expect((mutationGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
+            expect((mutationGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
 
-                expect(queryGqlResult.errors).toBeFalsy();
-                expect(queryGqlResult.data?.[baseType.plural]).toBeArrayOfSize(0);
-            } finally {
-                await session.close();
-            }
+            expect(queryGqlResult.errors).toBeFalsy();
+            expect(queryGqlResult.data?.[baseType.plural]).toBeArrayOfSize(0);
         });
 
         test("should not allow updating to duplicate @unique properties when constraint is on an additional label", async () => {
@@ -585,8 +504,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someStringProperty: String! @unique @alias(property: "someAlias")
@@ -601,18 +520,14 @@ describe("assertIndexesAndConstraints/unique", () => {
                 ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createConstraintCypher);
 
-            try {
-                await session.run(createConstraintCypher);
+            await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                const generatedSchema = await neoSchema.getSchema();
+            const uniqueVal1 = "someVal1";
+            const uniqueVal2 = "someUniqueVal2";
 
-                const uniqueVal1 = "someVal1";
-                const uniqueVal2 = "someUniqueVal2";
-
-                const createMutation = `
+            const createMutation = `
                     mutation {
                         ${baseType.operations.create}(input: [
                             {
@@ -631,7 +546,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     }
                 `;
 
-                const updateMutation = `
+            const updateMutation = `
                     mutation {
                         ${baseType.operations.update}(update: {
                             someStringProperty: "notUnique"
@@ -643,7 +558,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     }
                 `;
 
-                const query = `
+            const query = `
                     query {
                         ${baseType.plural} {
                             someStringProperty
@@ -651,48 +566,22 @@ describe("assertIndexesAndConstraints/unique", () => {
                     }
                 `;
 
-                const createGqlResult = await graphql({
-                    schema: generatedSchema,
-                    source: createMutation,
-                    contextValue: {
-                        executionContext: driver,
-                        sessionConfig: { database: databaseName },
-                    },
-                });
+            const createGqlResult = await testHelper.executeGraphQL(createMutation);
+            const updateGqlResult = await testHelper.executeGraphQL(updateMutation);
+            const queryGqlResult = await testHelper.executeGraphQL(query);
 
-                const updateGqlResult = await graphql({
-                    schema: generatedSchema,
-                    source: updateMutation,
-                    contextValue: {
-                        executionContext: driver,
-                        sessionConfig: { database: databaseName },
-                    },
-                });
+            expect(createGqlResult?.errors).toBeFalsy();
+            expect((updateGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
 
-                const queryGqlResult = await graphql({
-                    schema: generatedSchema,
-                    source: query,
-                    contextValue: {
-                        executionContext: driver,
-                        sessionConfig: { database: databaseName },
-                    },
-                });
-
-                expect(createGqlResult?.errors).toBeFalsy();
-                expect((updateGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
-
-                expect(queryGqlResult.errors).toBeFalsy();
-                expect(queryGqlResult.data?.[baseType.plural]).toIncludeSameMembers([
-                    {
-                        someStringProperty: uniqueVal1,
-                    },
-                    {
-                        someStringProperty: uniqueVal2,
-                    },
-                ]);
-            } finally {
-                await session.close();
-            }
+            expect(queryGqlResult.errors).toBeFalsy();
+            expect(queryGqlResult.data?.[baseType.plural]).toIncludeSameMembers([
+                {
+                    someStringProperty: uniqueVal1,
+                },
+                {
+                    someStringProperty: uniqueVal2,
+                },
+            ]);
         });
     });
 
@@ -704,7 +593,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -713,7 +602,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -728,7 +617,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -737,7 +626,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -752,7 +641,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -761,20 +650,14 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
-
-            const session = driver.session({ database: databaseName });
 
             const cypher = `CREATE CONSTRAINT ${type.name}_id ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
                 dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
             } n.id IS UNIQUE`;
 
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(cypher);
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
@@ -788,7 +671,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -797,20 +680,14 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
-
-            const session = driver.session({ database: databaseName });
 
             const cypher = `CREATE CONSTRAINT ${type.name}_id ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
                 dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
             } n.identifier IS UNIQUE`;
 
-            try {
-                await session.run(cypher);
-            } finally {
-                await session.close();
-            }
+            await testHelper.executeCypher(cypher);
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
@@ -824,7 +701,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -833,7 +710,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -844,23 +721,17 @@ describe("assertIndexesAndConstraints/unique", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
-
             const cypher = "SHOW UNIQUE CONSTRAINTS";
 
-            try {
-                const result = await session.run(cypher);
+            const result = await testHelper.executeCypher(cypher);
 
-                expect(
-                    result.records
-                        .map((record) => {
-                            return record.toObject();
-                        })
-                        .filter((record) => record.labelsOrTypes.includes(type.name))
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                result.records
+                    .map((record) => {
+                        return record.toObject();
+                    })
+                    .filter((record) => record.labelsOrTypes.includes(type.name))
+            ).toHaveLength(1);
         });
 
         test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
@@ -870,7 +741,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = new UniqueType("User");
+            const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -879,7 +750,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
             await expect(
@@ -890,26 +761,19 @@ describe("assertIndexesAndConstraints/unique", () => {
                 })
             ).resolves.not.toThrow();
 
-            const session = driver.session({ database: databaseName });
-
             const cypher = "SHOW UNIQUE CONSTRAINTS";
 
-            try {
-                const result = await session.run(cypher);
+            const result = await testHelper.executeCypher(cypher);
 
-                expect(
-                    result.records
-                        .map((record) => {
-                            return record.toObject();
-                        })
-                        .filter(
-                            (record) =>
-                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
-                        )
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                result.records
+                    .map((record) => {
+                        return record.toObject();
+                    })
+                    .filter(
+                        (record) => record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
+                    )
+            ).toHaveLength(1);
         });
 
         test("should not throw if constraint exists on an additional label", async () => {
@@ -919,8 +783,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @mutation(operations: []) {
                     someIdProperty: ID! @id @unique @alias(property: "someAlias")
@@ -934,23 +798,18 @@ describe("assertIndexesAndConstraints/unique", () => {
             })
                 ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
-            const session = driver.session({ database: databaseName });
 
-            try {
-                await session.run(createConstraintCypher);
+            await testHelper.executeCypher(createConstraintCypher);
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                await neoSchema.getSchema();
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
-                await expect(
-                    neoSchema.assertIndexesAndConstraints({
-                        driver,
-                        sessionConfig: { database: databaseName },
-                    })
-                ).resolves.not.toThrow();
-            } finally {
-                await session.close();
-            }
+            await expect(
+                neoSchema.assertIndexesAndConstraints({
+                    driver,
+                    sessionConfig: { database: databaseName },
+                })
+            ).resolves.not.toThrow();
         });
 
         test("should not create new constraint if constraint exists on an additional label", async () => {
@@ -960,8 +819,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = new UniqueType("Base");
-            const additionalType = new UniqueType("Additional");
+            const baseType = testHelper.createUniqueType("Base");
+            const additionalType = testHelper.createUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @mutation(operations: []) {
                     someIdProperty: ID! @id @unique @alias(property: "someAlias")
@@ -978,43 +837,37 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
 
-            const session = driver.session({ database: databaseName });
+            await testHelper.executeCypher(createConstraintCypher);
 
-            try {
-                await session.run(createConstraintCypher);
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                await neoSchema.getSchema();
+            await expect(
+                neoSchema.assertIndexesAndConstraints({
+                    driver,
+                    sessionConfig: { database: databaseName },
+                    options: { create: true },
+                })
+            ).resolves.not.toThrow();
 
-                await expect(
-                    neoSchema.assertIndexesAndConstraints({
-                        driver,
-                        sessionConfig: { database: databaseName },
-                        options: { create: true },
-                    })
-                ).resolves.not.toThrow();
-
-                const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
+            const dbConstraintsResult = (await testHelper.executeCypher(showConstraintsCypher)).records.map(
+                (record) => {
                     return record.toObject();
-                });
+                }
+            );
 
-                expect(
-                    dbConstraintsResult.filter(
-                        (record) =>
-                            record.labelsOrTypes.includes(baseType.name) && record.properties.includes("someAlias")
-                    )
-                ).toHaveLength(0);
+            expect(
+                dbConstraintsResult.filter(
+                    (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("someAlias")
+                )
+            ).toHaveLength(0);
 
-                expect(
-                    dbConstraintsResult.filter(
-                        (record) =>
-                            record.labelsOrTypes.includes(additionalType.name) &&
-                            record.properties.includes("someAlias")
-                    )
-                ).toHaveLength(1);
-            } finally {
-                await session.close();
-            }
+            expect(
+                dbConstraintsResult.filter(
+                    (record) =>
+                        record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("someAlias")
+                )
+            ).toHaveLength(1);
         });
     });
 });

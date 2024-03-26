@@ -18,40 +18,27 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4jHelper from "../neo4j";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("[CartesianPoint]", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    const testHelper = new TestHelper();
+    let Part: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        const typeDefs = `
-            type Part {
+    beforeEach(async () => {
+        Part = testHelper.createUniqueType("Part");
+        const typeDefs = /* GraphQL */ `
+            type ${Part} {
                 id: String!
                 locations: [CartesianPoint!]!
             }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs });
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+        await testHelper.close();
     });
 
     test("enables creation of a node with multiple cartesian points", async () => {
@@ -61,10 +48,10 @@ describe("[CartesianPoint]", () => {
             y: faker.number.float(),
         }));
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateParts($id: String!, $locations: [CartesianPointInput!]!) {
-                createParts(input: [{ id: $id, locations: $locations }]) {
-                    parts {
+                ${Part.operations.create}(input: [{ id: $id, locations: $locations }]) {
+                    ${Part.plural} {
                         id
                         locations {
                             y
@@ -77,27 +64,23 @@ describe("[CartesianPoint]", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: create,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { id, locations },
-        });
+        const gqlResult = await testHelper.executeGraphQL(create, { variableValues: { id, locations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect((gqlResult.data as any)[Part.operations.create][Part.plural][0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
 
-        const result = await session.run(`
-                MATCH (r:Part {id: "${id}"})
+        const result = await testHelper.executeCypher(`
+                MATCH (r:${Part} {id: "${id}"})
                 RETURN r { .id, .locations} as r
             `);
 
         expect(
-            (result.records[0]?.toObject() as any).r.locations
-                .map((location) => {
+            result.records[0]
+                ?.toObject()
+                .r.locations.map((location) => {
                     expect(location.srid).toEqual(int(7203));
                     return {
                         x: location.x,
@@ -116,10 +99,10 @@ describe("[CartesianPoint]", () => {
             z: faker.number.float(),
         }));
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateParts($id: String!, $locations: [CartesianPointInput!]!) {
-                createParts(input: [{ id: $id, locations: $locations }]) {
-                    parts {
+                ${Part.operations.create}(input: [{ id: $id, locations: $locations }]) {
+                    ${Part.plural} {
                         id
                         locations {
                             y
@@ -132,27 +115,22 @@ describe("[CartesianPoint]", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: create,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { id, locations },
-        });
-
+        const gqlResult = await testHelper.executeGraphQL(create, { variableValues: { id, locations } });
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect((gqlResult.data as any)[Part.operations.create][Part.plural][0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
 
-        const result = await session.run(`
-                MATCH (r:Part {id: "${id}"})
+        const result = await testHelper.executeCypher(`
+                MATCH (r:${Part} {id: "${id}"})
                 RETURN r { .id, .locations} as r
             `);
 
         expect(
-            (result.records[0]?.toObject() as any).r.locations
-                .map((location) => {
+            result.records[0]
+                ?.toObject()
+                .r.locations.map((location) => {
                     expect(location.srid).toEqual(int(9157));
                     return {
                         x: location.x,
@@ -175,24 +153,24 @@ describe("[CartesianPoint]", () => {
             y: location.y,
         }));
 
-        const beforeResult = await session.run(
+        const beforeResult = await testHelper.executeCypher(
             `
             CALL {
-                CREATE (r:Part)
+                CREATE (r:${Part})
                 SET r.id = $id
                 SET r.locations = [p in $locations | point(p)]
                 RETURN r
             }
 
-            RETURN
-            r { .id, .locations } AS r
+            RETURN r { .id, .locations } AS r
         `,
             { id, locations }
         );
 
         expect(
-            (beforeResult.records[0]?.toObject() as any).r.locations
-                .map((location) => {
+            beforeResult.records[0]
+                ?.toObject()
+                .r.locations.map((location) => {
                     expect(location.srid).toEqual(int(7203));
                     return {
                         x: location.x,
@@ -202,10 +180,10 @@ describe("[CartesianPoint]", () => {
                 .sort()
         ).toEqual(locations.sort());
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
-                updateParts(where: { id: $id }, update: { locations: $locations }) {
-                    parts {
+                ${Part.operations.update}(where: { id: $id }, update: { locations: $locations }) {
+                    ${Part.plural} {
                         id
                         locations {
                             y
@@ -218,27 +196,22 @@ describe("[CartesianPoint]", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { id, locations: newLocations },
-        });
-
+        const gqlResult = await testHelper.executeGraphQL(update, { variableValues: { id, locations: newLocations } });
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect((gqlResult.data as any)[Part.operations.update][Part.plural][0]).toEqual({
             id,
             locations: newLocations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
 
-        const result = await session.run(`
-                MATCH (r:Part {id: "${id}"})
+        const result = await testHelper.executeCypher(`
+                MATCH (r:${Part} {id: "${id}"})
                 RETURN r { .id, .locations } as r
             `);
 
         expect(
-            (result.records[0]?.toObject() as any).r.locations
-                .map((location) => {
+            result.records[0]
+                ?.toObject()
+                .r.locations.map((location) => {
                     expect(location.srid).toEqual(int(7203));
                     return {
                         x: location.x,
@@ -262,24 +235,24 @@ describe("[CartesianPoint]", () => {
             z: location.z,
         }));
 
-        const beforeResult = await session.run(
+        const beforeResult = await testHelper.executeCypher(
             `
             CALL {
-                CREATE (r:Part)
+                CREATE (r:${Part})
                 SET r.id = $id
                 SET r.locations = [p in $locations | point(p)]
                 RETURN r
             }
 
-            RETURN
-            r { .id, .locations } AS r
+            RETURN r { .id, .locations } AS r
         `,
             { id, locations }
         );
 
         expect(
-            (beforeResult.records[0]?.toObject() as any).r.locations
-                .map((location) => {
+            beforeResult.records[0]
+                ?.toObject()
+                .r.locations.map((location) => {
                     expect(location.srid).toEqual(int(9157));
                     return {
                         x: location.x,
@@ -290,10 +263,10 @@ describe("[CartesianPoint]", () => {
                 .sort()
         ).toEqual(locations.sort());
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
-                updateParts(where: { id: $id }, update: { locations: $locations }) {
-                    parts {
+                ${Part.operations.update}(where: { id: $id }, update: { locations: $locations }) {
+                    ${Part.plural} {
                         id
                         locations {
                             y
@@ -306,27 +279,22 @@ describe("[CartesianPoint]", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { id, locations: newLocations },
-        });
-
+        const gqlResult = await testHelper.executeGraphQL(update, { variableValues: { id, locations: newLocations } });
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect((gqlResult.data as any)[Part.operations.update][Part.plural][0]).toEqual({
             id,
             locations: newLocations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
 
-        const result = await session.run(`
-                MATCH (r:Part {id: "${id}"})
+        const result = await testHelper.executeCypher(`
+                MATCH (r:${Part} {id: "${id}"})
                 RETURN r { .id, .locations } as r
             `);
 
         expect(
-            (result.records[0]?.toObject() as any).r.locations
-                .map((location) => {
+            result.records[0]
+                ?.toObject()
+                .r.locations.map((location) => {
                     expect(location.srid).toEqual(int(9157));
                     return {
                         x: location.x,
@@ -345,24 +313,23 @@ describe("[CartesianPoint]", () => {
             y: faker.number.float(),
         }));
 
-        await session.run(
+        await testHelper.executeCypher(
             `
             CALL {
-                CREATE (r:Part)
+                CREATE (r:${Part})
                 SET r.id = $id
                 SET r.locations = [p in $locations | point(p)]
                 RETURN r
             }
 
-            RETURN
-            r { .id, .locations } AS r
+            RETURN r { .id, .locations } AS r
         `,
             { id, locations }
         );
 
-        const partsQuery = `
+        const partsQuery = /* GraphQL */ `
             query Parts($id: String!) {
-                parts(where: { id: $id }) {
+                ${Part.plural}(where: { id: $id }) {
                     id
                     locations {
                         y
@@ -374,15 +341,10 @@ describe("[CartesianPoint]", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: partsQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { id },
-        });
+        const gqlResult = await testHelper.executeGraphQL(partsQuery, { variableValues: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect((gqlResult.data as any)[Part.plural][0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -396,24 +358,23 @@ describe("[CartesianPoint]", () => {
             z: faker.number.float(),
         }));
 
-        await session.run(
+        await testHelper.executeCypher(
             `
             CALL {
-                CREATE (r:Part)
+                CREATE (r:${Part})
                 SET r.id = $id
                 SET r.locations = [p in $locations | point(p)]
                 RETURN r
             }
 
-            RETURN
-            r { .id, .locations } AS r
+            RETURN r { .id, .locations } AS r
         `,
             { id, locations }
         );
 
-        const partsQuery = `
+        const partsQuery = /* GraphQL */ `
             query Parts($id: String!) {
-                parts(where: { id: $id }) {
+                ${Part.plural}(where: { id: $id }) {
                     id
                     locations {
                         y
@@ -425,15 +386,10 @@ describe("[CartesianPoint]", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: partsQuery,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { id },
-        });
+        const gqlResult = await testHelper.executeGraphQL(partsQuery, { variableValues: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect((gqlResult.data as any)[Part.plural][0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });

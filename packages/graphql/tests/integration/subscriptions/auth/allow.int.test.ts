@@ -17,20 +17,14 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4jHelper from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
-import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/allow", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
-    let session: Session;
+    const testHelper = new TestHelper();
     let plugin: TestSubscriptionsEngine;
     const secret = "secret";
 
@@ -38,33 +32,20 @@ describe("auth/allow", () => {
     let postType: UniqueType;
     let commentType: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
+    beforeEach(() => {
+        userType = testHelper.createUniqueType("User");
+        postType = testHelper.createUniqueType("Post");
+        commentType = testHelper.createUniqueType("Comment");
 
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    beforeEach(async () => {
-        userType = new UniqueType("User");
-        postType = new UniqueType("Post");
-        commentType = new UniqueType("Comment");
-
-        session = await neo4j.getSession();
         plugin = new TestSubscriptionsEngine();
     });
 
     afterEach(async () => {
-        await cleanNodesUsingSession(session, [userType, postType]);
-        await session.close();
+        await testHelper.close();
     });
 
     describe("read", () => {
         test("should throw forbidden when reading a node with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${userType.name} {
                     id: ID
@@ -85,7 +66,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -95,28 +76,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw forbidden when reading a property with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${userType.name} {
                     id: ID
@@ -139,7 +110,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -149,28 +120,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw forbidden when reading a nested property with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${postType.name} {
                     id: ID
@@ -204,7 +165,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -214,28 +175,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw forbidden when reading a nested property with invalid allow (using connections)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${postType.name} {
                     id: ID
@@ -273,7 +224,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -283,28 +234,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${postType.name} {
                     content: String
@@ -340,7 +281,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -350,28 +291,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)(using connections)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${postType.name} {
                     content: String
@@ -411,7 +342,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -421,28 +352,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw forbidden when reading a node with invalid allow (across multi relationship)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${commentType.name}  {
                     id: ID
@@ -492,7 +413,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -502,30 +423,20 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("update", () => {
         test("should throw Forbidden when editing a node with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${userType.name}  {
                     id: ID
@@ -549,7 +460,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -559,28 +470,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (: ${userType.name} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw Forbidden when editing a property with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${userType.name} {
                     id: ID
@@ -606,7 +507,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -616,28 +517,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw Forbidden when editing a nested node with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${postType.name} {
                     id: ID
@@ -673,7 +564,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -683,28 +574,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw Forbidden when editing a nested node property with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${postType.name} {
                     id: ID
@@ -742,7 +623,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -752,30 +633,20 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("delete", () => {
         test("should throw Forbidden when deleting a node with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${userType.name} {
                     id: ID
@@ -798,7 +669,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -808,28 +679,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw Forbidden when deleting a nested node with invalid allow", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${userType.name} {
                     id: ID
@@ -872,7 +733,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -882,30 +743,20 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("disconnect", () => {
         test("should throw Forbidden when disconnecting a node with invalid allow", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type ${postType.name} {
                     id: ID
@@ -941,7 +792,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -951,28 +802,18 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw Forbidden when disconnecting a nested node with invalid allow", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type ${commentType.name} {
                     id: ID
@@ -1029,7 +870,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1039,32 +880,22 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->
                                 (:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->
                                     (:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 
     describe("connect", () => {
         test("should throw Forbidden when connecting a node with invalid allow", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type ${postType.name} {
                     id: ID
@@ -1100,7 +931,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1110,29 +941,19 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})
                     CREATE (:${postType.name} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 
         test("should throw Forbidden when connecting a nested node with invalid allow", async () => {
-            const session = await neo4j.getSession();
-
             const typeDefs = `
                 type ${commentType.name} {
                     id: ID
@@ -1189,7 +1010,7 @@ describe("auth/allow", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -1199,24 +1020,16 @@ describe("auth/allow", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${userType.name} {id: "${userId}"})
                     CREATE (:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 });

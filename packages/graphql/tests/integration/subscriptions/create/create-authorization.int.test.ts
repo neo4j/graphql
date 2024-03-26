@@ -17,40 +17,29 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/bind", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
     let Post: UniqueType;
     let User: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        Post = new UniqueType("Post");
-        User = new UniqueType("User");
+    beforeEach(() => {
+        Post = testHelper.createUniqueType("Post");
+        User = testHelper.createUniqueType("User");
     });
 
-    afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [User, Post]);
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("create", () => {
         test("should throw forbidden when creating a nested node with invalid bind", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${Post} {
                     id: ID
@@ -90,7 +79,7 @@ describe("auth/bind", () => {
 
             const plugin = new TestSubscriptionsEngine();
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -100,21 +89,13 @@ describe("auth/bind", () => {
                 },
             });
 
-            try {
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
 
-                expect(plugin.eventList).toEqual([]);
-            } finally {
-                await session.close();
-            }
+            expect(plugin.eventList).toEqual([]);
         });
     });
 });

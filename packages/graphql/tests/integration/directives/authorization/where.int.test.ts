@@ -17,36 +17,28 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../../src/classes";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
-import Neo4jHelper from "../../neo4j";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("auth/where", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     const secret = "secret";
     let User: UniqueType;
     let Post: UniqueType;
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-        User = new UniqueType("User");
-        Post = new UniqueType("Post");
+    beforeEach(() => {
+        User = testHelper.createUniqueType("User");
+        Post = testHelper.createUniqueType("Post");
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("read", () => {
         test("should add $jwt.id to where and return user", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -67,7 +59,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -76,32 +68,22 @@ describe("auth/where", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${User} {id: "anotherUser"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any)[User.plural] as any[];
-                expect(users).toEqual([{ id: userId }]);
-            } finally {
-                await session.close();
-            }
+            const users = (gqlResult.data as any)[User.plural] as any[];
+            expect(users).toEqual([{ id: userId }]);
         });
 
         test("should add $jwt.id to where on a relationship", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -135,7 +117,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -144,8 +126,7 @@ describe("auth/where", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (u:${User} {id: "${userId}"})
                     CREATE (p1:${Post} {id: "${postId1}"})
                     CREATE (p2:${Post} {id: "${postId2}"})
@@ -153,30 +134,21 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.errors).toBeUndefined();
 
-                const posts = (gqlResult.data as any)[Post.plural] as any[];
-                expect(posts).toHaveLength(2);
-                const post1 = posts.find((x) => x.id === postId1);
-                expect(post1).toBeTruthy();
-                const post2 = posts.find((x) => x.id === postId2);
-                expect(post2).toBeTruthy();
-            } finally {
-                await session.close();
-            }
+            const posts = (gqlResult.data as any)[Post.plural] as any[];
+            expect(posts).toHaveLength(2);
+            const post1 = posts.find((x) => x.id === postId1);
+            expect(post1).toBeTruthy();
+            const post2 = posts.find((x) => x.id === postId2);
+            expect(post2).toBeTruthy();
         });
 
         test("should add $jwt.id to where on a relationship(using connection)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -219,7 +191,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -228,8 +200,7 @@ describe("auth/where", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (u:${User} {id: "${userId}"})
                     CREATE (p1:${Post} {id: "${postId1}"})
                     CREATE (p2:${Post} {id: "${postId2}"})
@@ -238,33 +209,24 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.errors).toBeUndefined();
 
-                const posts = (gqlResult.data as any)[User.plural][0].postsConnection as {
-                    edges: { node: { id: string } }[];
-                };
-                expect(posts.edges).toHaveLength(2);
-                const post1 = posts.edges.find((x) => x.node.id === postId1);
-                expect(post1).toBeTruthy();
-                const post2 = posts.edges.find((x) => x.node.id === postId2);
-                expect(post2).toBeTruthy();
-            } finally {
-                await session.close();
-            }
+            const posts = (gqlResult.data as any)[User.plural][0].postsConnection as {
+                edges: { node: { id: string } }[];
+            };
+            expect(posts.edges).toHaveLength(2);
+            const post1 = posts.edges.find((x) => x.node.id === postId1);
+            expect(post1).toBeTruthy();
+            const post2 = posts.edges.find((x) => x.node.id === postId2);
+            expect(post2).toBeTruthy();
         });
 
         describe("union", () => {
             test("should add $jwt.id to where and return users search", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
                 const typeDefs = `
                     union Content = ${Post}
 
@@ -305,7 +267,7 @@ describe("auth/where", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         authorization: {
@@ -314,8 +276,7 @@ describe("auth/where", () => {
                     },
                 });
 
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (u:${User} {id: "${userId}"})
                         CREATE (p1:${Post} {id: "${postId1}"})
                         CREATE (p2:${Post} {id: "${postId2}"})
@@ -323,29 +284,20 @@ describe("auth/where", () => {
                         MERGE (u)-[:HAS_CONTENT]->(p2)
                     `);
 
-                    const token = createBearerToken(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
-                    const gqlResult = await graphql({
-                        schema: await neoSchema.getSchema(),
-                        source: query,
-                        contextValue: neo4j.getContextValues({ token }),
-                    });
-                    expect(gqlResult.errors).toBeUndefined();
-                    const posts = (gqlResult.data as any)[User.plural][0].content as any[];
-                    expect(posts).toHaveLength(2);
-                    const post1 = posts.find((x) => x.id === postId1);
-                    expect(post1).toBeTruthy();
-                    const post2 = posts.find((x) => x.id === postId2);
-                    expect(post2).toBeTruthy();
-                } finally {
-                    await session.close();
-                }
+                const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+                expect(gqlResult.errors).toBeUndefined();
+                const posts = (gqlResult.data as any)[User.plural][0].content as any[];
+                expect(posts).toHaveLength(2);
+                const post1 = posts.find((x) => x.id === postId1);
+                expect(post1).toBeTruthy();
+                const post2 = posts.find((x) => x.id === postId2);
+                expect(post2).toBeTruthy();
             });
         });
 
         test("should add $jwt.id to where and return users search(using connections)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 union Content = ${Post}
 
@@ -390,7 +342,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -399,8 +351,7 @@ describe("auth/where", () => {
                 },
             });
 
-            try {
-                await session.run(`
+            await testHelper.executeCypher(`
                     CREATE (u:${User} {id: "${userId}"})
                     CREATE (p1:${Post} {id: "${postId1}"})
                     CREATE (p2:${Post} {id: "${postId2}"})
@@ -409,32 +360,23 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_CONTENT]->(p2)
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
-                expect(gqlResult.errors).toBeUndefined();
-                const posts = (gqlResult.data as any)[User.plural][0].contentConnection as {
-                    edges: { node: { id: string } }[];
-                };
-                expect(posts.edges).toHaveLength(2);
-                const post1 = posts.edges.find((x) => x.node.id === postId1);
-                expect(post1).toBeTruthy();
-                const post2 = posts.edges.find((x) => x.node.id === postId2);
-                expect(post2).toBeTruthy();
-            } finally {
-                await session.close();
-            }
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+            expect(gqlResult.errors).toBeUndefined();
+            const posts = (gqlResult.data as any)[User.plural][0].contentConnection as {
+                edges: { node: { id: string } }[];
+            };
+            expect(posts.edges).toHaveLength(2);
+            const post1 = posts.edges.find((x) => x.node.id === postId1);
+            expect(post1).toBeTruthy();
+            const post2 = posts.edges.find((x) => x.node.id === postId2);
+            expect(post2).toBeTruthy();
         });
     });
 
     describe("update", () => {
         test("should add $jwt.id to where", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -460,7 +402,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -468,33 +410,24 @@ describe("auth/where", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
-                expect(users).toEqual([{ id: newUserId }]);
-            } finally {
-                await session.close();
-            }
+            const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
+            expect(users).toEqual([{ id: newUserId }]);
         });
     });
 
     describe("delete", () => {
         test("should add $jwt.id to where", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -515,7 +448,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -523,38 +456,29 @@ describe("auth/where", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-                const nodesDeleted = (gqlResult.data as any)[User.operations.delete].nodesDeleted as number;
-                expect(nodesDeleted).toBe(1);
+            expect(gqlResult.errors).toBeUndefined();
+            const nodesDeleted = (gqlResult.data as any)[User.operations.delete].nodesDeleted as number;
+            expect(nodesDeleted).toBe(1);
 
-                const reQuery = await session.run(`
+            const reQuery = await testHelper.executeCypher(`
                     MATCH (u:${User} {id: "${userId}"})
                     RETURN u
                 `);
-                expect(reQuery.records).toHaveLength(0);
-            } finally {
-                await session.close();
-            }
+            expect(reQuery.records).toHaveLength(0);
         });
     });
 
     describe("connect", () => {
         test("should add jwt.id to where - update update", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -589,7 +513,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -597,31 +521,22 @@ describe("auth/where", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
-                expect(users).toEqual([{ id: userId, posts: [{ id: postId }] }]);
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
+            const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
+            expect(users).toEqual([{ id: userId, posts: [{ id: postId }] }]);
         });
 
         test("should add jwt.id to where - update connect", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -656,7 +571,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -664,33 +579,24 @@ describe("auth/where", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
-                expect(users).toEqual([{ id: userId, posts: [{ id: postId }] }]);
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
+            const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
+            expect(users).toEqual([{ id: userId, posts: [{ id: postId }] }]);
         });
     });
 
     describe("disconnect", () => {
         test("should add $jwt.id to where (update update)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -728,7 +634,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -736,32 +642,23 @@ describe("auth/where", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (u:${User} {id: "${userId}"})
                     CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId1}"})
                     CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId2}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
-                expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
+            const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
+            expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
         });
 
         test("should add $jwt.id to where (update disconnect)", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const typeDefs = `
                 type ${User} {
                     id: ID
@@ -799,7 +696,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
                     authorization: {
@@ -807,27 +704,20 @@ describe("auth/where", () => {
                     },
                 },
             });
-            try {
-                await session.run(`
+
+            await testHelper.executeCypher(`
                     CREATE (u:${User} {id: "${userId}"})
                     CREATE(u)-[:HAS_POST]->(:${Post} {id: "${postId1}"})
                     CREATE(u)-[:HAS_POST]->(:${Post} {id: "${postId2}"})
                 `);
 
-                const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValues({ token }),
-                });
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
-                expect(gqlResult.errors).toBeUndefined();
-                const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
-                expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
-            } finally {
-                await session.close();
-            }
+            expect(gqlResult.errors).toBeUndefined();
+            const users = (gqlResult.data as any)[User.operations.update][User.plural] as any[];
+            expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
         });
     });
 });

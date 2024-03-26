@@ -21,9 +21,9 @@ import type { GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
 import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
-import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import Neo4jHelper from "../../integration/neo4j";
+import { TestHelper } from "../../integration/utils/tests-helper";
+import { DriverBuilder } from "../../utils/builders/driver-builder";
 
 export function setTestEnvVars(envVars: string | undefined): void {
     if (envVars) {
@@ -108,10 +108,10 @@ export async function translateQuery(
     const [cypher, params] = driverBuilder.runFunction.calls[0] as [string, Record<string, any>];
 
     if (process.env.VERIFY_TCK) {
-        const neo4j = new Neo4jHelper();
-        const session = await neo4j.getSession();
+        const testHelper = new TestHelper();
+
         try {
-            await session.run(`EXPLAIN ${cypher}`, params);
+            await testHelper.executeCypher(`EXPLAIN ${cypher}`, params);
         } catch (e) {
             if (e instanceof Neo4jError) {
                 throw new Error(`${e.message}\n\n${cypher}\n\n${formatParams(params)}`);
@@ -119,9 +119,7 @@ export async function translateQuery(
 
             throw e;
         } finally {
-            await session.close();
-            const driver = await neo4j.getDriver();
-            await driver.close();
+            await testHelper.close();
         }
     }
 

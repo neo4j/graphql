@@ -17,32 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4831", () => {
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
     let Test: UniqueType;
 
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
-
     beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-
         Test = new UniqueType("Test");
         const typeDefs = /* GraphQL */ `
             type ${Test} {
@@ -51,18 +33,16 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             }
         `;
 
-        const neo4jGraphQL = new Neo4jGraphQL({
+        const neo4jGraphQL = await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {},
         });
-        schema = await neo4jGraphQL.getSchema();
-        await neo4j.run(`CREATE (:${Test.name})`);
+        await neo4jGraphQL.getSchema();
+        await testHelper.executeCypher(`CREATE (:${Test.name})`);
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await cleanNodesUsingSession(session, [Test]);
-        await driver.close();
+        await testHelper.close();
     });
 
     describe("Boolean", () => {
@@ -75,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 }
             `;
 
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testBoolean: false }],
@@ -91,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 }
             `;
 
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testBoolean: true }],
@@ -107,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 }
             `;
 
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testBoolean: null }],
@@ -123,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 }
             `;
 
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testBoolean: null }],
@@ -141,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 }
             `;
 
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testString: "" }],
@@ -156,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                     }
                 }
             `;
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testString: "some-string" }],
@@ -171,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                     }
                 }
             `;
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testString: null }],
@@ -186,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                     }
                 }
             `;
-            const queryResults = await graphqlQuery(query);
+            const queryResults = await testHelper.executeGraphQL(query);
             expect(queryResults.errors).toBeUndefined();
             expect(queryResults.data).toEqual({
                 [Test.plural]: [{ testString: null }],

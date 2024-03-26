@@ -17,31 +17,21 @@
  * limitations under the License.
  */
 
-import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4jHelper from "../neo4j";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("@populatedBy directive", () => {
-    let driver: Driver;
-    let neo4j: Neo4jHelper;
+    const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        neo4j = new Neo4jHelper();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        await testHelper.close();
     });
 
     describe("Node property tests", () => {
         describe("@populatedBy - String", () => {
             test("Should use on CREATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -55,7 +45,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -81,11 +71,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -101,7 +87,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -115,7 +101,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -141,21 +127,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}" })
                     `);
-                } finally {
-                    await session.close();
-                }
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -171,7 +147,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on CREATE and UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -197,7 +173,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -229,11 +205,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -259,7 +231,7 @@ describe("@populatedBy directive", () => {
 
         describe("@populatedBy - Int", () => {
             test("Should use on CREATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const int1 = Number(
                     generate({
                         charset: "numeric",
@@ -276,7 +248,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -302,11 +274,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -322,7 +290,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const int1 = Number(
                     generate({
                         charset: "numeric",
@@ -339,7 +307,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -365,21 +333,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}" })
                     `);
-                } finally {
-                    await session.close();
-                }
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -395,7 +353,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on CREATE and UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const int1 = Number(
                     generate({
                         charset: "numeric",
@@ -427,7 +385,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -459,11 +417,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -489,7 +443,7 @@ describe("@populatedBy directive", () => {
 
         describe("@populatedBy - Misc", () => {
             test("should not change the property when returning 'undefined'", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -503,7 +457,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -529,20 +483,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}", callback: "${string1}" })
                     `);
-                } finally {
-                    await session.close();
-                }
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -558,7 +503,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("should remove property when returning 'null'", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -572,7 +517,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -598,20 +543,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}", callback: "${string1}" })
                     `);
-                } finally {
-                    await session.close();
-                }
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -627,7 +563,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("should have access to parent in callback function for CREATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const callback = (parent) => `${parent.title}-slug`;
 
                 const typeDefs = gql`
@@ -638,7 +574,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -669,11 +605,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -690,7 +622,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("should have access to parent in callback function for UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const callback = (parent) => `${parent.title}-slug`;
 
                 const typeDefs = gql`
@@ -701,7 +633,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -732,21 +664,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}" })
                     `);
-                } finally {
-                    await session.close();
-                }
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -763,7 +685,7 @@ describe("@populatedBy directive", () => {
             });
 
             test("should have access to context as third argument", async () => {
-                const testMovie = new UniqueType("Movie");
+                const testMovie = testHelper.createUniqueType("Movie");
                 const callback = (_parent, _args, context) => context.testValue;
 
                 const typeDefs = gql`
@@ -774,7 +696,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -809,10 +731,8 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues({ testValue }),
+                const result = await testHelper.executeGraphQL(mutation, {
+                    contextValue: { testValue },
                 });
 
                 expect(result.errors).toBeUndefined();
@@ -833,8 +753,8 @@ describe("@populatedBy directive", () => {
     describe("Relationship property tests", () => {
         describe("@populatedBy - String", () => {
             test("Should use on CREATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -861,7 +781,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -917,11 +837,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -946,8 +862,8 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -974,7 +890,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1026,21 +942,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
                     `);
-                } finally {
-                    await session.close();
-                }
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -1065,8 +971,8 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on CREATE and UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const string1 = generate({
                     charset: "alphabetic",
                 });
@@ -1105,7 +1011,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1187,11 +1093,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -1235,8 +1137,8 @@ describe("@populatedBy directive", () => {
 
         describe("@populatedBy - Int", () => {
             test("Should use on CREATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const int1 = Number(
                     generate({
                         charset: "numeric",
@@ -1266,7 +1168,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1322,11 +1224,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -1351,8 +1249,8 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const int1 = Number(
                     generate({
                         charset: "numeric",
@@ -1382,7 +1280,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1434,21 +1332,11 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                         CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
                     `);
-                } finally {
-                    await session.close();
-                }
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -1473,8 +1361,8 @@ describe("@populatedBy directive", () => {
             });
 
             test("Should use on CREATE and UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const int1 = Number(
                     generate({
                         charset: "numeric",
@@ -1519,7 +1407,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1601,11 +1489,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -1649,8 +1533,8 @@ describe("@populatedBy directive", () => {
 
         describe("@populatedBy - Misc", () => {
             test("should have access to parent in callback function for CREATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const callback = (parent) => `${parent.title}-slug`;
 
                 const typeDefs = gql`
@@ -1674,7 +1558,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1736,11 +1620,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({
@@ -1765,8 +1645,8 @@ describe("@populatedBy directive", () => {
             });
 
             test("should have access to parent in callback function for UPDATE", async () => {
-                const testMovie = new UniqueType("Movie");
-                const testGenre = new UniqueType("Genre");
+                const testMovie = testHelper.createUniqueType("Movie");
+                const testGenre = testHelper.createUniqueType("Genre");
                 const callback = (parent) => `${parent.title}-slug`;
 
                 const typeDefs = gql`
@@ -1790,7 +1670,7 @@ describe("@populatedBy directive", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({
+                await testHelper.initNeo4jGraphQL({
                     typeDefs,
                     features: {
                         populatedBy: {
@@ -1847,21 +1727,11 @@ describe("@populatedBy directive", () => {
                 }
             `;
 
-                const session = await neo4j.getSession();
-
-                try {
-                    await session.run(`
+                await testHelper.executeCypher(`
                     CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
                 `);
-                } finally {
-                    await session.close();
-                }
 
-                const result = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: mutation,
-                    contextValue: neo4j.getContextValues(),
-                });
+                const result = await testHelper.executeGraphQL(mutation);
 
                 expect(result.errors).toBeUndefined();
                 expect(result.data as any).toMatchObject({

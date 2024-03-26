@@ -23,7 +23,6 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { int, isInt } from "neo4j-driver";
 import { generate } from "randomstring";
-import { delay } from "../../../src/utils/utils";
 import type { UniqueType } from "../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../utils/tests-helper";
@@ -91,9 +90,8 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
         try {
-            await testHelper.executeCypher(cypher);
+            await testHelper.createDatabase(databaseName);
         } catch (e) {
             if (e instanceof Error) {
                 if (isMultiDbUnsupportedError(e)) {
@@ -104,15 +102,11 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
                 }
             }
         }
-
-        await delay(5000); // TODO: can we remove or at least reduce this?
     });
 
     afterEach(async () => {
         if (MULTIDB_SUPPORT) {
-            const cypher = `DROP DATABASE ${databaseName}`;
-
-            await testHelper.executeCypher(cypher);
+            await testHelper.dropDatabase();
         }
         await testHelper.close();
     });
