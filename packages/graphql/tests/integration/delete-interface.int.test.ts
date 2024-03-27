@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
-import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("delete interface relationships", () => {
@@ -85,46 +83,25 @@ describe("delete interface relationships", () => {
             typeDefs,
         });
 
-        actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        actorName1 = "Keanu";
+        actorName2 = "Arthur";
 
-        movieTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        movieTitle1 = "PotatoFilm";
 
-        movieTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        movieTitle2 = "The attack of the carrtos";
 
-        movieRuntime1 = faker.number.int({ max: 100000 });
-        movieRuntime2 = faker.number.int({ max: 100000 });
-        movieScreenTime1 = faker.number.int({ max: 100000 });
-        movieScreenTime2 = faker.number.int({ max: 100000 });
+        movieRuntime1 = 1230;
+        movieRuntime2 = 405;
+        movieScreenTime1 = 500;
+        movieScreenTime2 = 501;
 
-        seriesTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesScreenTime1 = faker.number.int({ max: 100000 });
-        seriesScreenTime2 = faker.number.int({ max: 100000 });
-        seriesScreenTime3 = faker.number.int({ max: 100000 });
-        nestedMovieActorScreenTime = faker.number.int({ max: 100000 });
+        seriesTitle1 = "Series 1";
+        seriesTitle2 = "Series 2";
+        seriesTitle3 = "Boring series";
+        seriesScreenTime1 = 888;
+        seriesScreenTime2 = 999;
+        seriesScreenTime3 = 665;
+        nestedMovieActorScreenTime = 3232;
 
         await testHelper.executeCypher(
             `
