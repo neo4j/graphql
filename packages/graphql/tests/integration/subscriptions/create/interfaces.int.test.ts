@@ -33,7 +33,7 @@ describe("interface relationships", () => {
     let Series: UniqueType;
     let Actor: UniqueType;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         Episode = testHelper.createUniqueType("Episode");
         Movie = testHelper.createUniqueType("Movie");
         Series = testHelper.createUniqueType("Series");

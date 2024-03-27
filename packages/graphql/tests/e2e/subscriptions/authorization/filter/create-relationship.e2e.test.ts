@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
@@ -30,7 +29,6 @@ import { WebSocketTestClient } from "../../../setup/ws-client";
 
 describe("Subscriptions authorization with relationship creation events", () => {
     const testHelper = new TestHelper();
-    let driver: Driver;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let User: UniqueType;
