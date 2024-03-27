@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import { toGlobalId } from "../../../../src/utils/global-ids";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("RelayId projection with different database name", () => {
     const testHelper = new TestHelper();

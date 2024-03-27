@@ -20,7 +20,7 @@
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Global authentication - Authorization JWT plugin", () => {
     const testHelper = new TestHelper();

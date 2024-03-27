@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("@fulltext directive - indexes constraints", () => {
     let driver: Driver;

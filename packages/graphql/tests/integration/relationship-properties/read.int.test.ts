@@ -22,7 +22,7 @@ import { offsetToCursor } from "graphql-relay";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Relationship properties - read", () => {
     const testHelper = new TestHelper();
@@ -101,7 +101,7 @@ describe("Relationship properties - read", () => {
 
         expect(result.errors).toBeFalsy();
 
-        expect(result?.data?.[typeMovie.plural]).toHaveLength(1);
+        expect((result?.data as any)?.[typeMovie.plural]).toHaveLength(1);
 
         expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.totalCount).toBe(3);
         expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.pageInfo).toEqual({
@@ -343,7 +343,7 @@ describe("Relationship properties - read", () => {
 
         expect(result.errors).toBeFalsy();
 
-        expect(result?.data?.[typeMovie.plural]).toEqual([
+        expect((result?.data as any)?.[typeMovie.plural]).toEqual([
             {
                 actorsConnection: {
                     edges: [

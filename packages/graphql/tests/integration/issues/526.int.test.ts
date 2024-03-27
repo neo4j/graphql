@@ -18,7 +18,7 @@
  */
 
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Query Converted to Float", () => {
     const testHelper = new TestHelper();

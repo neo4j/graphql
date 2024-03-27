@@ -20,7 +20,7 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../utils/graphql-types";
-import { TestHelper } from "./utils/tests-helper";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Mass Delete", () => {
     const testHelper = new TestHelper();

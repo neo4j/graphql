@@ -20,7 +20,7 @@
 import { generate } from "randomstring";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("cypher directive", () => {
     const testHelper = new TestHelper();
@@ -101,9 +101,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any).customMovies).toEqual([
-                    { title: movieTitle, actors: [{ name: actorName }] },
-                ]);
+                expect((gqlResult?.data).customMovies).toEqual([{ title: movieTitle, actors: [{ name: actorName }] }]);
             });
 
             test("should query custom query and return relationship data with custom where on field", async () => {
@@ -164,9 +162,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any).customMovies).toEqual([
-                    { title: movieTitle, actors: [{ name: actorName }] },
-                ]);
+                expect((gqlResult?.data).customMovies).toEqual([{ title: movieTitle, actors: [{ name: actorName }] }]);
             });
 
             test("should query custom query and return relationship data with auth", async () => {
@@ -308,16 +304,16 @@ describe("cypher directive", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any).customMovies).toHaveLength(3);
-                expect((gqlResult?.data as any).customMovies).toContainEqual({
+                expect((gqlResult?.data).customMovies).toHaveLength(3);
+                expect((gqlResult?.data).customMovies).toContainEqual({
                     title: movieTitle1,
                     actors: [{ name: actorName }],
                 });
-                expect((gqlResult?.data as any).customMovies).toContainEqual({
+                expect((gqlResult?.data).customMovies).toContainEqual({
                     title: movieTitle2,
                     actors: [{ name: actorName }],
                 });
-                expect((gqlResult?.data as any).customMovies).toContainEqual({
+                expect((gqlResult?.data).customMovies).toContainEqual({
                     title: movieTitle3,
                     actors: [{ name: actorName }],
                 });
@@ -488,9 +484,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any).customMovies).toEqual([
-                    { title: movieTitle, actors: [{ name: actorName }] },
-                ]);
+                expect((gqlResult?.data).customMovies).toEqual([{ title: movieTitle, actors: [{ name: actorName }] }]);
             });
 
             test("should query custom mutation and return relationship data with custom where on field", async () => {
@@ -550,9 +544,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any).customMovies).toEqual([
-                    { title: movieTitle, actors: [{ name: actorName }] },
-                ]);
+                expect((gqlResult?.data).customMovies).toEqual([{ title: movieTitle, actors: [{ name: actorName }] }]);
             });
 
             test("should query custom mutation and return relationship data with auth", async () => {
@@ -688,9 +680,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
-                expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
-                );
+                expect((gqlResultWithDefaultValue?.data).townDestinationList).toEqual(expectedTownDestinationList);
             });
 
             test("should return test value", async () => {
@@ -712,9 +702,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
-                expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
-                );
+                expect((gqlResultWithDefaultValue?.data).townDestinationList).toEqual(expectedTownDestinationList);
             });
         });
 
@@ -782,9 +770,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
-                expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
-                );
+                expect((gqlResultWithMissingValue?.data).townDestinationList).toEqual(expectedTownDestinationList);
             });
 
             test("should return test value", async () => {
@@ -806,9 +792,7 @@ describe("cypher directive", () => {
 
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
-                expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
-                );
+                expect((gqlResultWithMissingValue?.data).townDestinationList).toEqual(expectedTownDestinationList);
             });
         });
 

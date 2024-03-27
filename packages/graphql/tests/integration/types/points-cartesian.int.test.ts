@@ -20,7 +20,7 @@
 import { faker } from "@faker-js/faker";
 import { int } from "neo4j-driver";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("[CartesianPoint]", () => {
     const testHelper = new TestHelper();

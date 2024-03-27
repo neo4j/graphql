@@ -20,7 +20,7 @@
 import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-where-node-int - connections", () => {
     let testHelper: TestHelper;

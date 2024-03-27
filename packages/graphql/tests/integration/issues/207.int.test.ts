@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/207", () => {
     let Book: UniqueType;

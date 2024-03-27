@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import type { Integer } from "neo4j-driver";
 import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Create -> ConnectOrCreate", () => {
     const testHelper = new TestHelper();

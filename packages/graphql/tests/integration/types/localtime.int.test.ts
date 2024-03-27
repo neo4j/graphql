@@ -22,7 +22,7 @@ import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import { parseLocalTime } from "../../../src/graphql/scalars/LocalTime";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("LocalTime", () => {
     const testHelper = new TestHelper();

@@ -19,7 +19,7 @@
 
 import type { GraphQLError } from "graphql";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Top-level interface query fields with authorization", () => {
     const secret = "the-secret";

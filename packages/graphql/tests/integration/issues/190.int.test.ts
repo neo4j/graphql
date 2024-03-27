@@ -20,7 +20,7 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/190", () => {
     let User: UniqueType;
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
 
         expect(result.errors).toBeFalsy();
 
-        expect(result?.data?.[User.plural]).toHaveLength(2);
+        expect((result?.data as any)?.[User.plural]).toHaveLength(2);
 
         expect((result?.data as any)?.[User.plural].filter((u) => u.uid === "user1")[0].demographics).toHaveLength(3);
         expect((result?.data as any)?.[User.plural].filter((u) => u.uid === "user1")[0].demographics).toContainEqual({

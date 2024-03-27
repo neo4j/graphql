@@ -21,7 +21,7 @@ import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("interface relationships", () => {
     const testHelper = new TestHelper();

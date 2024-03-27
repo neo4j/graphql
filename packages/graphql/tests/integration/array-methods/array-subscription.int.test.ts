@@ -20,7 +20,7 @@
 import { gql } from "graphql-tag";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("array-subscription", () => {
     const testHelper = new TestHelper();

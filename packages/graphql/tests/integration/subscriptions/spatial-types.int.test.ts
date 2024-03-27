@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { int } from "neo4j-driver";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions to spatial types", () => {
     const testHelper = new TestHelper();

@@ -18,7 +18,7 @@
  */
 
 import { GraphQLError } from "graphql";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@default directive", () => {
     const testHelper = new TestHelper();

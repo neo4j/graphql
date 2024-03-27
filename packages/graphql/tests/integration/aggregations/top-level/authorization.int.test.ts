@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("aggregations-top_level authorization", () => {
     const testHelper = new TestHelper();

@@ -26,7 +26,7 @@ import createJWKSMock from "mock-jwks";
 import { generate } from "randomstring";
 import supertest from "supertest";
 import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("auth/jwks-endpoint", () => {
     let jwksMock: JWKSMock;

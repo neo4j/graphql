@@ -20,7 +20,7 @@
 import isUUID from "is-uuid";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@id directive", () => {
     const testHelper = new TestHelper();

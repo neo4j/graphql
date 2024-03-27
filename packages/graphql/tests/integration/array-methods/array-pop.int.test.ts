@@ -20,7 +20,7 @@
 import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("array-pop", () => {
     const testHelper = new TestHelper();
