@@ -20,15 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { Neo4jGraphQLSubscriptionsCDCEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
+import { Neo4jGraphQLSubscriptionsCDCEngine, type Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import Neo4j from "../../setup/neo4j";
 import { WebSocketTestClient } from "../../setup/ws-client";
 
 describe.each([
@@ -48,34 +46,38 @@ describe.each([
             }),
     },
 ])("$name - Subscription authentication roles", ({ engine }) => {
-    const typeMovie = new UniqueType("Movie");
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper({ cdc: true });
+
+    let typeMovie: UniqueType;
+
     let jwtToken: string;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let subscriptionEngine: Neo4jGraphQLSubscriptionsEngine;
 
-    const typeDefs = `
-    type JWTPayload @jwt {
-        roles: [String!]!
-    }
-    
-    type ${typeMovie} {
-        title: String!
-    }
-
-    extend type ${typeMovie} @authentication(operations: [SUBSCRIBE], jwt: { roles_INCLUDES: "admin" })
-    `;
+    let typeDefs: string;
 
     beforeAll(async () => {
+        typeMovie = testHelper.createUniqueType("Movie");
+
+        typeDefs = `
+        type JWTPayload @jwt {
+            roles: [String!]!
+        }
+        
+        type ${typeMovie} {
+            title: String!
+        }
+    
+        extend type ${typeMovie} @authentication(operations: [SUBSCRIBE], jwt: { roles_INCLUDES: "admin" })
+        `;
+
         jwtToken = createBearerToken("secret", { roles: ["admin"] });
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-        subscriptionEngine = engine(driver, neo4j.getIntegrationDatabaseName());
-        const neoSchema = new Neo4jGraphQL({
+
+        const driver = await testHelper.getDriver();
+        subscriptionEngine = engine(driver, testHelper.database);
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: {
                     key: "secret",
@@ -87,7 +89,7 @@ describe.each([
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -101,7 +103,7 @@ describe.each([
     afterAll(async () => {
         await server.close();
         subscriptionEngine.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("auth with roles pass", async () => {

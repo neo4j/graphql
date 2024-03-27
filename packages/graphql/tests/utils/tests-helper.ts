@@ -41,7 +41,12 @@ export class TestHelper {
 
     private customDB: string | undefined;
 
-    private get database(): string {
+    private cdc: boolean;
+    constructor({ cdc = false }: { cdc: boolean } = { cdc: false }) {
+        this.cdc = cdc;
+    }
+
+    public get database(): string {
         return this.customDB ?? this._database;
     }
 
@@ -107,6 +112,7 @@ export class TestHelper {
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
         if (!this.driver) {
+            this.reset();
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
         const driver = await this.getDriver();
@@ -156,6 +162,10 @@ export class TestHelper {
         } catch (error: any) {
             await driver.close();
             throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
+        }
+
+        if (this.cdc) {
+            await driver.executeQuery(`ALTER DATABASE ${this.database} SET OPTION txLogEnrichment "FULL"`);
         }
 
         this.driver = driver;

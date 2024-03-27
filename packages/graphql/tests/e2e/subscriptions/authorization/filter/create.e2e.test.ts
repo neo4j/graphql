@@ -20,17 +20,16 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../../../src/classes";
-import { UniqueType } from "../../../../utils/graphql-types";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { createJwtHeader } from "../../../../utils/create-jwt-request";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 import type { TestGraphQLServer } from "../../../setup/apollo-server";
 import { ApolloTestServer } from "../../../setup/apollo-server";
 import { WebSocketTestClient } from "../../../setup/ws-client";
-import Neo4j from "../../../setup/neo4j";
-import { createJwtHeader } from "../../../../utils/create-jwt-request";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Subscriptions authorization with create events", () => {
-    let neo4j: Neo4j;
+    const testHelper = new TestHelper();
     let driver: Driver;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
@@ -40,7 +39,7 @@ describe("Subscriptions authorization with create events", () => {
     beforeEach(async () => {
         key = "secret";
 
-        User = new UniqueType("User");
+        User = testHelper.createUniqueType("User");
 
         const typeDefs = `#graphql
             type JWTPayload @jwt {
@@ -58,12 +57,8 @@ describe("Subscriptions authorization with create events", () => {
             }
         `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: { key },
                 subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
@@ -73,7 +68,7 @@ describe("Subscriptions authorization with create events", () => {
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -84,7 +79,7 @@ describe("Subscriptions authorization with create events", () => {
         await wsClient.close();
 
         await server.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("authorization filters out user without matching id", async () => {
@@ -191,7 +186,7 @@ describe("Subscriptions authorization with create events", () => {
 });
 
 describe("Subscriptions authentication with create events", () => {
-    let neo4j: Neo4j;
+    const testHelper = new TestHelper();
     let driver: Driver;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
@@ -200,7 +195,7 @@ describe("Subscriptions authentication with create events", () => {
     beforeEach(async () => {
         key = "secret";
 
-        User = new UniqueType("User");
+        User = testHelper.createUniqueType("User");
 
         const typeDefs = `#graphql
             type JWTPayload @jwt {
@@ -213,12 +208,8 @@ describe("Subscriptions authentication with create events", () => {
             }
         `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 authorization: { key },
                 subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
@@ -228,7 +219,7 @@ describe("Subscriptions authentication with create events", () => {
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -239,7 +230,7 @@ describe("Subscriptions authentication with create events", () => {
         await wsClient.close();
 
         await server.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("authorization filters out user without matching id", async () => {
@@ -336,7 +327,6 @@ describe("Subscriptions authentication with create events", () => {
                 `,
             })
             .expect(200);
-        console.log("Result??", result.body);
         return result;
     }
 });
