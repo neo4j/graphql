@@ -19,7 +19,7 @@
 
 import { mergeDeep } from "@graphql-tools/utils";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
-import { Integer } from "neo4j-driver";
+import { isInt, type Integer } from "neo4j-driver";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -332,7 +332,7 @@ export class OperationsFactory {
         const limitDirective = isUnionEntity(entity) ? undefined : entity.annotations.limit;
 
         let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
-        if (limit instanceof Integer) {
+        if (isInt(limit)) {
             limit = limit.toNumber();
         }
         const maxLimit = limitDirective?.max;

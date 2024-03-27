@@ -21,7 +21,7 @@ import { mergeDeep } from "@graphql-tools/utils";
 import { isObject, isString } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
-import { Integer } from "neo4j-driver";
+import { isInt, type Integer } from "neo4j-driver";
 import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import { InterfaceEntity } from "../../../../schema-model/entity/InterfaceEntity";
 import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -271,7 +271,7 @@ export class ConnectionFactory {
         const limitDirective = entity.annotations.limit;
 
         let limit: Integer | number | undefined = options?.first ?? limitDirective?.default ?? limitDirective?.max;
-        if (limit instanceof Integer) {
+        if (isInt(limit)) {
             limit = limit.toNumber();
         }
         const maxLimit = limitDirective?.max;
