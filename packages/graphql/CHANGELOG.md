@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.3.2
+
+### Patch Changes
+
+-   [#4951](https://github.com/neo4j/graphql/pull/4951) [`1efa353`](https://github.com/neo4j/graphql/commit/1efa353c4a687d65ceb06fb10af8c25a72f34876) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Change order of overrides in context to preserve internal values
+
 ## 5.3.1
 
 ### Patch Changes
