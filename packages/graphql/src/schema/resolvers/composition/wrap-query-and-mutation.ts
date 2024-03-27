@@ -123,11 +123,15 @@ export const wrapQueryAndMutation =
             features,
             subscriptionsEnabled,
             executor,
-            neo4jDatabaseInfo,
             authorization: authorizationContext,
-            // Consider anything in here overrides
-            ...context,
         };
 
-        return next(root, args, { ...context, ...internalContext }, info);
+        const finalContext = {
+            // Some TCK tests override this value to generate version-specific Cypher
+            neo4jDatabaseInfo,
+            ...context,
+            ...internalContext,
+        };
+
+        return next(root, args, finalContext, info);
     };
