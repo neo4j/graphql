@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
@@ -100,13 +99,13 @@ describe("interface implementing interface with declared relationships - two lev
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 89247;
+        const movieScreenTime = 54804;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 43471;
+        const seriesScreenTime = 67186;
+        const episodeNr = 82467;
 
         const query = /* GraphQL */ `
             query Things {
@@ -342,13 +341,13 @@ describe("interface implementing interface with declared relationships - two lev
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 67159;
+        const movieScreenTime = 99602;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 28043;
+        const seriesScreenTime = 45240;
+        const episodeNr = 18199;
 
         const query = /* GraphQL */ `
             query Things {
@@ -677,13 +676,13 @@ describe("interface implementing interface with declared relationships - two lev
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 21789;
+        const movieScreenTime = 27695;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 13078;
+        const seriesScreenTime = 80574;
+        const episodeNr = 69185;
 
         const query = /* GraphQL */ `
             query Shows {
@@ -919,13 +918,13 @@ describe("interface implementing interface with declared relationships - two lev
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 98454;
+        const movieScreenTime = 67373;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 28950;
+        const seriesScreenTime = 32643;
+        const episodeNr = 55960;
 
         const query = /* GraphQL */ `
             query Shows {

@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
-import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("fragments", () => {
@@ -58,25 +56,16 @@ describe("fragments", () => {
         }
     `;
 
-    const actorName = generate({
-        readable: true,
-        charset: "alphabetic",
-    });
+    const actorName = "Marvin";
 
-    const movieTitle = generate({
-        readable: true,
-        charset: "alphabetic",
-    });
-    const movieRuntime = faker.number.int({ max: 100000 });
-    const movieScreenTime = faker.number.int({ max: 100000 });
+    const movieTitle = "The Hitchhiker's Guide to the Galaxy";
+    const movieRuntime = 1230;
+    const movieScreenTime = 3210;
 
-    const seriesTitle = generate({
-        readable: true,
-        charset: "alphabetic",
-    });
-    const seriesRuntime = faker.number.int({ max: 100000 });
-    const seriesEpisodes = faker.number.int({ max: 100000 });
-    const seriesScreenTime = faker.number.int({ max: 100000 });
+    const seriesTitle = "So Long, and Thanks for All the Fish";
+    const seriesRuntime = 112;
+    const seriesEpisodes = 113;
+    const seriesScreenTime = 114;
 
     beforeAll(async () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });

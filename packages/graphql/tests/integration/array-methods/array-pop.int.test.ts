@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "../../utils/tests-helper";
@@ -33,10 +32,10 @@ describe("array-pop", () => {
 
     const dateTime = new Date().toISOString();
     const date = dateTime.split("T")[0];
-    const time = faker.date.past().toISOString().split("T")[1] as string;
+    const time = "2023-08-16T22:27:38.587Z".split("T")[1] as string;
     const initialTimeValue = `${time.slice(0, -1)}000000Z`;
-    const initialLocalTimeValue = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}000000`;
-    const initialLocalDateTimeValue = `${faker.date.past().toISOString().split("Z")[0]}000000`;
+    const initialLocalTimeValue = `${"2023-11-08T20:39:21.174Z".split("T")[1]?.split("Z")[0]}000000`;
+    const initialLocalDateTimeValue = `${"2024-02-13T11:48:01.107Z".split("Z")[0]}000000`;
 
     test.each([
         {
@@ -339,9 +338,9 @@ describe("array-pop", () => {
     );
 
     const point = {
-        longitude: parseFloat(faker.location.longitude().toString()),
-        latitude: parseFloat(faker.location.latitude().toString()),
-        height: faker.number.float(),
+        longitude: parseFloat("-141.9601"),
+        latitude: parseFloat("57.4183"),
+        height: 0.50958710629493,
     };
 
     test.each([
@@ -451,8 +450,8 @@ describe("array-pop", () => {
     });
 
     const cartesianPoint = {
-        x: faker.number.float(),
-        y: faker.number.float(),
+        x: 0.8333638033363968,
+        y: 0.19128136802464724,
     };
 
     test.each([

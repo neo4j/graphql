@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import { parseLocalDateTime } from "../../../src/graphql/scalars/LocalDateTime";
@@ -49,7 +48,7 @@ describe("LocalDateTime", () => {
     describe("create", () => {
         test("should create a movie (with a LocalDateTime)", async () => {
             const id = generate({ readable: false });
-            const localDT = faker.date.past().toISOString().split("Z")[0];
+            const localDT = "2023-04-04T09:19:20.620Z".split("Z")[0];
             const parsedLocalDateTime = parseLocalDateTime(localDT);
 
             const mutation = /* GraphQL */ `
@@ -93,9 +92,7 @@ describe("LocalDateTime", () => {
 
         test("should create a movie (with many Times)", async () => {
             const id = generate({ readable: false });
-            const localDTs = [...new Array(faker.number.int({ min: 2, max: 4 }))].map(
-                () => faker.date.past().toISOString().split("Z")[0]
-            );
+            const localDTs = [...new Array(3)].map(() => "2023-07-14T01:17:41.537Z".split("Z")[0]);
             const parsedLocalDateTimes = localDTs.map((localDT) => parseLocalDateTime(localDT));
 
             const mutation = /* GraphQL */ `
@@ -158,7 +155,7 @@ describe("LocalDateTime", () => {
     describe("update", () => {
         test("should update a movie (with a LocalDateTime)", async () => {
             const id = generate({ readable: false });
-            const localDT = faker.date.past().toISOString().split("Z")[0];
+            const localDT = "2023-12-28T09:03:31.293Z".split("Z")[0];
             const parsedLocalDateTime = parseLocalDateTime(localDT);
 
             await testHelper.executeCypher(
@@ -212,7 +209,7 @@ describe("LocalDateTime", () => {
     describe("filter", () => {
         test("should filter based on localDT equality", async () => {
             const id = generate({ readable: false });
-            const date = faker.date.future();
+            const date = new Date("2024-09-17T11:49:48.322Z");
             const localDT = date.toISOString().split("Z")[0];
             const neo4jLocalDateTime = neo4jDriver.types.LocalDateTime.fromStandardDate(date);
             const parsedLocalDateTime = parseLocalDateTime(localDT);
@@ -249,7 +246,7 @@ describe("LocalDateTime", () => {
             "should filter based on localDT comparison, for filter %s",
             async (filter) => {
                 const futureId = generate({ readable: false });
-                const future = faker.date.future({ years: 2 }).toISOString().split("Z")[0];
+                const future = "2025-02-18T18:10:55.462Z".split("Z")[0];
                 const parsedFuture = parseLocalDateTime(future);
                 const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                     parsedFuture.year,
@@ -275,7 +272,7 @@ describe("LocalDateTime", () => {
                 );
 
                 const pastId = generate({ readable: false });
-                const past = faker.date.past({ years: 2 }).toISOString().split("Z")[0];
+                const past = "2022-08-29T10:21:43.108Z".split("Z")[0];
                 const parsedPast = parseLocalDateTime(past);
                 const neo4jPast = new neo4jDriver.types.LocalDateTime(
                     parsedPast.year,
@@ -361,7 +358,7 @@ describe("LocalDateTime", () => {
     describe("sorting", () => {
         test.each(["ASC", "DESC"])("should sort based on localDT, sorting by %s", async (sort) => {
             const futureId = generate({ readable: false });
-            const future = faker.date.future({ years: 2 }).toISOString().split("Z")[0];
+            const future = "2025-08-10T05:25:26.654Z".split("Z")[0];
             const parsedFuture = parseLocalDateTime(future);
             const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                 parsedFuture.year,
@@ -387,7 +384,7 @@ describe("LocalDateTime", () => {
             );
 
             const pastId = generate({ readable: false });
-            const past = faker.date.past({ years: 2 }).toISOString().split("Z")[0];
+            const past = "2023-10-05T14:58:45.170Z".split("Z")[0];
             const parsedPast = parseLocalDateTime(past);
             const neo4jPast = new neo4jDriver.types.LocalDateTime(
                 parsedPast.year,

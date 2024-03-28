@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
-import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
 
 describe("delete union relationships", () => {
@@ -81,46 +79,24 @@ describe("delete union relationships", () => {
         await testHelper.initNeo4jGraphQL({
             typeDefs,
         });
-        actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        actorName1 = "Arthur Dent";
+        actorName2 = "Ford Prefect";
+        movieTitle1 = "The Hitchhiker's Guide to the Galaxy";
+        movieTitle2 = "The Restaurant at the End of the Universe";
 
-        movieTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        movieRuntime1 = 1234;
+        movieRuntime2 = 3333;
+        movieScreenTime1 = 4444;
+        movieScreenTime2 = 8080;
 
-        movieTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        seriesTitle1 = "So Long, and Thanks for All the Fish";
+        seriesTitle2 = "Mostly Harmless";
+        seriesTitle3 = "And another thing";
 
-        movieRuntime1 = faker.number.int({ max: 100000 });
-        movieRuntime2 = faker.number.int({ max: 100000 });
-        movieScreenTime1 = faker.number.int({ max: 100000 });
-        movieScreenTime2 = faker.number.int({ max: 100000 });
-
-        seriesTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesScreenTime1 = faker.number.int({ max: 100000 });
-        seriesScreenTime2 = faker.number.int({ max: 100000 });
-        seriesScreenTime3 = faker.number.int({ max: 100000 });
-        nestedMovieActorScreenTime = faker.number.int({ max: 100000 });
+        seriesScreenTime1 = 9;
+        seriesScreenTime2 = 121;
+        seriesScreenTime3 = 111;
+        nestedMovieActorScreenTime = 32;
 
         await testHelper.executeCypher(
             `

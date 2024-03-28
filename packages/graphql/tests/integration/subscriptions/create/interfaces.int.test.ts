@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import type { UniqueType } from "../../../utils/graphql-types";
@@ -101,15 +100,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const screenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 44706;
+        const screenTime = 70531;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const episodeRuntime = faker.number.int({ max: 100000 });
+        const episodeRuntime = 27151;
 
         const query = `
             mutation CreateActorConnectMovie(

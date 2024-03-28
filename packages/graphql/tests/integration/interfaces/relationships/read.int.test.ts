@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -79,15 +78,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 88052;
+        const movieScreenTime = 47337;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 45953;
+        const seriesScreenTime = 99847;
 
         const query = `
             query Actors($name: String) {
@@ -150,26 +149,26 @@ describe("interface relationships", () => {
 
         const movie1 = {
             title: "A",
-            runtime: faker.number.int({ max: 100000 }),
-            screenTime: faker.number.int({ max: 100000 }),
+            runtime: 23408,
+            screenTime: 40446,
         };
 
         const movie2 = {
             title: "B",
-            runtime: faker.number.int({ max: 100000 }),
-            screenTime: faker.number.int({ max: 100000 }),
+            runtime: 76130,
+            screenTime: 89440,
         };
 
         const series1 = {
             title: "C",
-            episodes: faker.number.int({ max: 100000 }),
-            screenTime: faker.number.int({ max: 100000 }),
+            episodes: 64675,
+            screenTime: 83928,
         };
 
         const series2 = {
             title: "D",
-            episodes: faker.number.int({ max: 100000 }),
-            screenTime: faker.number.int({ max: 100000 }),
+            episodes: 8135,
+            screenTime: 83728,
         };
 
         const query = /* GraphQL */ `
@@ -224,21 +223,21 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 85953;
+        const movieScreenTime = 50667;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 85490;
+        const seriesScreenTime = 1726;
 
         const newMovieTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const newMovieRuntime = faker.number.int({ max: 100000 });
+        const newMovieRuntime = 6106;
 
         const query = `
             query Actors($name: String) {
@@ -306,11 +305,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 76300;
+        const movieScreenTime = 28270;
 
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 52388;
+        const seriesScreenTime = 70458;
 
         const query = `
             query Actors($name: String, $title: String) {

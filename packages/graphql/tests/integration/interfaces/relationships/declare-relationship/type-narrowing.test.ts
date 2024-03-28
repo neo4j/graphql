@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
@@ -95,13 +94,13 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 63563;
+        const movieScreenTime = 42699;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 88310;
+        const seriesScreenTime = 40968;
+        const sceneNr = 92937;
 
         const query = /* GraphQL */ `
             query Productions {
@@ -219,13 +218,13 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 41886;
+        const movieScreenTime = 72079;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 34992;
+        const seriesScreenTime = 43724;
+        const sceneNr = 96768;
 
         const query = /* GraphQL */ `
             query Productions {
@@ -402,13 +401,13 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 12527;
+        const movieScreenTime = 41858;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 65818;
+        const seriesScreenTime = 67600;
+        const sceneNr = 88992;
 
         const query = /* GraphQL */ `
             query Productions {
@@ -560,13 +559,13 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 17297;
+        const movieScreenTime = 33241;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 1345;
+        const seriesScreenTime = 17269;
+        const sceneNr = 9176;
 
         const query = /* GraphQL */ `
             query People {
@@ -679,13 +678,13 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 69186;
+        const movieScreenTime = 33869;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 88178;
+        const seriesScreenTime = 41685;
+        const sceneNr = 20583;
 
         const query = /* GraphQL */ `
             query People {
@@ -795,14 +794,14 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
+        const movieRuntime = 80494;
+        const movieScreenTime = 34409;
+        const movieScreenTime2 = 12485;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 79217;
+        const seriesScreenTime = 60447;
+        const sceneNr = 85423;
 
         const query = /* GraphQL */ `
             query People {
@@ -955,14 +954,14 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
+        const movieRuntime = 49337;
+        const movieScreenTime = 80113;
+        const movieScreenTime2 = 5407;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 189;
+        const seriesScreenTime = 22550;
+        const sceneNr = 40154;
 
         const query = /* GraphQL */ `
             query People {
@@ -1115,14 +1114,14 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
+        const movieRuntime = 12169;
+        const movieScreenTime = 33584;
+        const movieScreenTime2 = 98332;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 80053;
+        const seriesScreenTime = 98561;
+        const sceneNr = 21219;
 
         const query = /* GraphQL */ `
             query People {
@@ -1265,14 +1264,14 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
+        const movieRuntime = 39883;
+        const movieScreenTime = 64889;
+        const movieScreenTime2 = 82496;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 42968;
+        const seriesScreenTime = 64469;
+        const sceneNr = 2621;
 
         const query = /* GraphQL */ `
             query Actors {
@@ -1359,14 +1358,14 @@ describe("type narrowing - simple case", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
+        const movieRuntime = 67705;
+        const movieScreenTime = 88223;
+        const movieScreenTime2 = 91931;
 
         const amatureProductionTitle = "amature";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 16632;
+        const seriesScreenTime = 39594;
+        const sceneNr = 76405;
 
         const query = /* GraphQL */ `
         query Actors {

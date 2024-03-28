@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { int } from "neo4j-driver";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
@@ -42,10 +41,10 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables creation of a node with multiple cartesian points", async () => {
-        const id = faker.string.uuid();
-        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            x: faker.number.float(),
-            y: faker.number.float(),
+        const id = "9447ac23-6f8b-4ee3-88f1-0428c9e5a4af";
+        const locations = [...new Array(2)].map(() => ({
+            x: 0.08219389710575342,
+            y: 0.09543730691075325,
         }));
 
         const create = /* GraphQL */ `
@@ -92,11 +91,11 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables creation of a node with multiple cartesian-3d points", async () => {
-        const id = faker.string.uuid();
-        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            x: faker.number.float(),
-            y: faker.number.float(),
-            z: faker.number.float(),
+        const id = "fceabcc2-3086-48a5-9297-ea17e2dd9d4b";
+        const locations = [...new Array(8)].map(() => ({
+            x: 0.0814846286084503,
+            y: 0.9454853804782033,
+            z: 0.051746641751378775,
         }));
 
         const create = /* GraphQL */ `
@@ -143,13 +142,13 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables update of a node with multiple cartesian points", async () => {
-        const id = faker.string.uuid();
-        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            x: faker.number.float(),
-            y: faker.number.float(),
+        const id = "675a957f-a4ca-42fa-b33c-84bd9e9e66de";
+        const locations = [...new Array(8)].map(() => ({
+            x: 0.9849797878414392,
+            y: 0.7501204372383654,
         }));
         const newLocations = locations.map((location) => ({
-            x: faker.number.float(),
+            x: 0.9360741777345538,
             y: location.y,
         }));
 
@@ -223,14 +222,14 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables update of a node with multiple cartesian-3d points", async () => {
-        const id = faker.string.uuid();
-        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            x: faker.number.float(),
-            y: faker.number.float(),
-            z: faker.number.float(),
+        const id = "b6c4a0ac-16ae-463b-9bd1-3ecae2307484";
+        const locations = [...new Array(4)].map(() => ({
+            x: 0.8189982105977833,
+            y: 0.3447179892100394,
+            z: 0.8076386945322156,
         }));
         const newLocations = locations.map((location) => ({
-            x: faker.number.float(),
+            x: 0.6024873733986169,
             y: location.y,
             z: location.z,
         }));
@@ -307,10 +306,10 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables query of a node with multiple cartesian points", async () => {
-        const id = faker.string.uuid();
-        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            x: faker.number.float(),
-            y: faker.number.float(),
+        const id = "5ba92bc4-95e7-4361-857c-60edcd771391";
+        const locations = [...new Array(8)].map(() => ({
+            x: 0.02772025833837688,
+            y: 0.07264417805708945,
         }));
 
         await testHelper.executeCypher(
@@ -351,11 +350,11 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables query of a node with multiple cartesian-3d points", async () => {
-        const id = faker.string.uuid();
-        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            x: faker.number.float(),
-            y: faker.number.float(),
-            z: faker.number.float(),
+        const id = "052322ec-95e5-4b88-8a90-9f0c1df17ee3";
+        const locations = [...new Array(8)].map(() => ({
+            x: 0.8367510938551277,
+            y: 0.7110547178890556,
+            z: 0.9648887133225799,
         }));
 
         await testHelper.executeCypher(

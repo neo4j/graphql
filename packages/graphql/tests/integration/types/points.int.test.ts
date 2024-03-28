@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { int } from "neo4j-driver";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
@@ -42,10 +41,10 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84 points", async () => {
-        const id = faker.string.uuid();
-        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
-            latitude: parseFloat(faker.location.latitude().toString()),
+        const id = "68b83f50-bf58-4858-b559-ac9f0480b84d";
+        const waypoints = [...new Array(3)].map(() => ({
+            longitude: parseFloat("-109.3787"),
+            latitude: parseFloat("-86.9408"),
         }));
 
         const create = `
@@ -92,11 +91,11 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.string.uuid();
-        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
-            latitude: parseFloat(faker.location.latitude().toString()),
-            height: faker.number.float(),
+        const id = "dc253044-0795-4899-8419-8eedce25e2c3";
+        const waypoints = [...new Array(4)].map(() => ({
+            longitude: parseFloat("147.2789"),
+            latitude: parseFloat("-32.9044"),
+            height: 0.33790676412172616,
         }));
 
         const create = `
@@ -144,13 +143,13 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84 points", async () => {
-        const id = faker.string.uuid();
-        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
-            latitude: parseFloat(faker.location.latitude().toString()),
+        const id = "583824bf-87c3-48c7-a482-feb308e39553";
+        const waypoints = [...new Array(3)].map(() => ({
+            longitude: parseFloat("177.9109"),
+            latitude: parseFloat("58.4798"),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
+            longitude: parseFloat("128.9727"),
             latitude: waypoint.latitude,
         }));
 
@@ -225,14 +224,14 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.string.uuid();
-        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
-            latitude: parseFloat(faker.location.latitude().toString()),
-            height: faker.number.float(),
+        const id = "2f2a284c-17c4-4d40-8a87-63516338d505";
+        const waypoints = [...new Array(4)].map(() => ({
+            longitude: parseFloat("25.2545"),
+            latitude: parseFloat("-73.11"),
+            height: 0.14806141727603972,
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
+            longitude: parseFloat("-81.0101"),
             latitude: waypoint.latitude,
             height: waypoint.height,
         }));
@@ -312,10 +311,10 @@ describe("[Point]", () => {
 
     test("enables query of a node with multiple wgs-84 points", async () => {
         // Create test data and prepare for testing
-        const id = faker.string.uuid();
-        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
-            latitude: parseFloat(faker.location.latitude().toString()),
+        const id = "25c4676e-1e38-4b1b-b156-6a7e28c8013e";
+        const waypoints = [...new Array(9)].map(() => ({
+            longitude: parseFloat("34.1879"),
+            latitude: parseFloat("30.5402"),
         }));
 
         await testHelper.executeCypher(
@@ -398,8 +397,8 @@ describe("[Point]", () => {
         const routesNotIncludesResult = await testHelper.executeGraphQL(routesNotIncludesQuery, {
             variableValues: {
                 waypoint: {
-                    longitude: parseFloat(faker.location.longitude().toString()),
-                    latitude: parseFloat(faker.location.latitude().toString()),
+                    longitude: parseFloat("124.5589"),
+                    latitude: parseFloat("89.7757"),
                 },
             },
         });
@@ -412,11 +411,11 @@ describe("[Point]", () => {
     });
 
     test("enables query of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.string.uuid();
-        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.location.longitude().toString()),
-            latitude: parseFloat(faker.location.latitude().toString()),
-            height: faker.number.float(),
+        const id = "dd320626-cc23-4938-9f33-ba624a3a3e8d";
+        const waypoints = [...new Array(7)].map(() => ({
+            longitude: parseFloat("146.1568"),
+            latitude: parseFloat("-54.6132"),
+            height: 0.03157347836531699,
         }));
 
         await testHelper.executeCypher(
