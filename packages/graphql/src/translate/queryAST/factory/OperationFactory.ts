@@ -96,12 +96,14 @@ export class OperationsFactory {
         context,
         varName,
         reference,
+        resolveAsUnwind = false,
     }: {
         entity?: EntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
         reference?: any;
+        resolveAsUnwind?: boolean;
     }): Operation {
         // Handles deprecated top level fulltext
         if (
@@ -156,6 +158,9 @@ export class OperationsFactory {
             }
             case "CREATE": {
                 assertIsConcreteEntity(entity);
+                if (resolveAsUnwind) {
+                    return this.createFactory.createUnwindCreateOperation(entity, resolveTree, context);
+                }
                 return this.createFactory.createCreateOperation(entity, resolveTree, context);
             }
             case "UPDATE": {

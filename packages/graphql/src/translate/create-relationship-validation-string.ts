@@ -19,9 +19,13 @@
 
 import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { mapLabelsWithContext } from "../schema-model/utils/map-labels-with-context";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { isInterfaceEntity } from "./queryAST/utils/is-interface-entity";
+import { isUnionEntity } from "./queryAST/utils/is-union-entity";
 
-function createRelationshipValidationString({
+export function createRelationshipValidationString({
     node,
     context,
     varName,
@@ -92,4 +96,71 @@ function createRelationshipValidationString({
     return strs.join("\n");
 }
 
-export default createRelationshipValidationString;
+export function createRelationshipValidationStringUsingSchemaModel({
+    entity,
+    context,
+    varName,
+    relationshipFieldNotOverwritable,
+}: {
+    entity: ConcreteEntityAdapter;
+    context: Neo4jGraphQLTranslationContext;
+    varName: string;
+    relationshipFieldNotOverwritable?: string;
+}): string {
+    const strs: string[] = [];
+
+    entity.relationships.forEach((relationship) => {
+        const target = relationship.target;
+        if (isInterfaceEntity(target) || isUnionEntity(target)) {
+            return;
+        }
+        const relVarname = `${varName}_${relationship.name}_${target.name}_unique`;
+
+        let predicate: string;
+        let errorMsg: string;
+        let subQuery: string | undefined;
+        const nodeLabels = target.getLabels();
+        const labels = mapLabelsWithContext(nodeLabels, context);
+        const direction = relationship.direction;
+        const inStr = direction === "IN" ? "<-" : "-";
+        const outStr = direction === "OUT" ? "->" : "-";
+        if (relationship.isList) {
+            if (relationshipFieldNotOverwritable === relationship.name) {
+                predicate = `c = 1`;
+                errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${entity.name}.${relationship.name} required exactly once for a specific ${target.name}`;
+                subQuery = [
+                    `CALL {`,
+                    `\tWITH ${varName}`,
+                    `\tMATCH (${varName})${inStr}[${relVarname}:${relationship.type}]${outStr}(other:${labels})`,
+                    `\tWITH count(${relVarname}) as c, other`,
+                    `\tWHERE apoc.util.validatePredicate(NOT (${predicate}), '${errorMsg}', [0])`,
+                    `\tRETURN collect(c) AS ${relVarname}_ignored`,
+                    `}`,
+                ].join("\n");
+            }
+        } else {
+            predicate = `c = 1`;
+            errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${entity.name}.${relationship.name} required exactly once`;
+            if (relationship.isNullable) {
+                predicate = `c <= 1`;
+                errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${entity.name}.${relationship.name} must be less than or equal to one`;
+            }
+
+            subQuery = [
+                `CALL {`,
+                `\tWITH ${varName}`,
+                `\tMATCH (${varName})${inStr}[${relVarname}:${relationship.type}]${outStr}(:${labels})`,
+                `\tWITH count(${relVarname}) as c`,
+                `\tWHERE apoc.util.validatePredicate(NOT (${predicate}), '${errorMsg}', [0])`,
+                `\tRETURN c AS ${relVarname}_ignored`,
+                `}`,
+            ].join("\n");
+        }
+
+        if (subQuery) {
+            strs.push(subQuery);
+        }
+    });
+
+    return strs.join("\n");
+}

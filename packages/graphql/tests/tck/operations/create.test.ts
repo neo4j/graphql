@@ -73,8 +73,7 @@ describe("Cypher Create", () => {
                     {
                         \\"id\\": \\"1\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -113,8 +112,7 @@ describe("Cypher Create", () => {
                     {
                         \\"id\\": \\"2\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -148,12 +146,11 @@ describe("Cypher Create", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Actor)
+                    CREATE (create_this3:Actor)
                     SET
-                        create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
-                    RETURN collect(NULL) AS create_var7
+                        create_this3.name = create_var2.node.name
+                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                    RETURN collect(NULL) AS create_var5
                 }
                 RETURN create_this1
             }
@@ -187,8 +184,7 @@ describe("Cypher Create", () => {
                             ]
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -232,23 +228,21 @@ describe("Cypher Create", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Actor)
+                    CREATE (create_this3:Actor)
                     SET
-                        create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
-                    WITH create_this5, create_var3
+                        create_this3.name = create_var2.node.name
+                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                    WITH create_this3, create_var2
                     CALL {
-                        WITH create_this5, create_var3
-                        UNWIND create_var3.movies.create AS create_var7
-                        WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
-                        CREATE (create_this10:Movie)
+                        WITH create_this3, create_var2
+                        UNWIND create_var2.node.movies.create AS create_var5
+                        CREATE (create_this6:Movie)
                         SET
-                            create_this10.id = create_var8.id
-                        MERGE (create_this5)-[create_this11:ACTED_IN]->(create_this10)
-                        RETURN collect(NULL) AS create_var12
+                            create_this6.id = create_var5.node.id
+                        MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
+                        RETURN collect(NULL) AS create_var8
                     }
-                    RETURN collect(NULL) AS create_var13
+                    RETURN collect(NULL) AS create_var9
                 }
                 RETURN create_this1
             }
@@ -300,8 +294,7 @@ describe("Cypher Create", () => {
                             ]
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

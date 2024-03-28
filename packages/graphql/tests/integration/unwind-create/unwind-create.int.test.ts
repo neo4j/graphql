@@ -274,7 +274,7 @@ describe("unwind-create", () => {
 
         const records = reFind.records.map((record) => record.toObject());
         expect(records).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     m: expect.objectContaining({ properties: { id } }),
                     a: expect.objectContaining({ properties: { name: actor1Name } }),

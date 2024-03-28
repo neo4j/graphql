@@ -178,39 +178,38 @@ describe("Cypher alias directive", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actedIn.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Movie)
+                    CREATE (create_this3:Movie)
                     SET
-                        create_this5.title = create_var3.title,
-                        create_this5.ratingPropInDb = create_var3.rating
-                    MERGE (create_this1)-[create_this6:ACTED_IN]->(create_this5)
+                        create_this3.title = create_var2.node.title,
+                        create_this3.ratingPropInDb = create_var2.node.rating
+                    MERGE (create_this1)-[create_this4:ACTED_IN]->(create_this3)
                     SET
-                        create_this6.characterPropInDb = create_var4.character,
-                        create_this6.screenTime = create_var4.screenTime
-                    RETURN collect(NULL) AS create_var7
+                        create_this4.characterPropInDb = create_var2.edge.character,
+                        create_this4.screenTime = create_var2.edge.screenTime
+                    RETURN collect(NULL) AS create_var5
                 }
                 RETURN create_this1
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)-[create_this8:ACTED_IN]->(create_this9:Movie)
-                WITH create_this9 { .title, rating: create_this9.ratingPropInDb } AS create_this9
-                RETURN collect(create_this9) AS create_var10
+                MATCH (create_this1)-[create_this6:ACTED_IN]->(create_this7:Movie)
+                WITH create_this7 { .title, rating: create_this7.ratingPropInDb } AS create_this7
+                RETURN collect(create_this7) AS create_var8
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)-[create_this11:ACTED_IN]->(create_this12:Movie)
-                WITH collect({ node: create_this12, relationship: create_this11 }) AS edges
+                MATCH (create_this1)-[create_this9:ACTED_IN]->(create_this10:Movie)
+                WITH collect({ node: create_this10, relationship: create_this9 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
                     WITH edges
                     UNWIND edges AS edge
-                    WITH edge.node AS create_this12, edge.relationship AS create_this11
-                    RETURN collect({ properties: { character: create_this11.characterPropInDb, screenTime: create_this11.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: create_this12.title, rating: create_this12.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS create_var13
+                    WITH edge.node AS create_this10, edge.relationship AS create_this9
+                    RETURN collect({ properties: { character: create_this9.characterPropInDb, screenTime: create_this9.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: create_this10.title, rating: create_this10.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS create_var11
                 }
-                RETURN { edges: create_var13, totalCount: totalCount } AS create_var14
+                RETURN { edges: create_var11, totalCount: totalCount } AS create_var12
             }
-            RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_var10, actedInConnection: create_var14 }) AS data"
+            RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_var8, actedInConnection: create_var12 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -237,8 +236,7 @@ describe("Cypher alias directive", () => {
                             ]
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

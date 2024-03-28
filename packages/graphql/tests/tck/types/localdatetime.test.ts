@@ -140,8 +140,7 @@ describe("Cypher LocalDateTime", () => {
                             \\"nanosecond\\": 555000000
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

@@ -219,8 +219,7 @@ describe("Cypher Points", () => {
                             }
                         ]
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

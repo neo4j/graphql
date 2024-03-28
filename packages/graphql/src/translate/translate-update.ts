@@ -32,7 +32,7 @@ import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-p
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
@@ -462,7 +462,7 @@ export default async function translateUpdate({
         ? Cypher.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
-    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
+    const relationshipValidationStr = createRelationshipValidationString({ node, context, varName });
 
     const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
         const cypher = [
