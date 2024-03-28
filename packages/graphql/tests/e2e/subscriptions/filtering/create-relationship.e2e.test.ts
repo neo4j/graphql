@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import { type Driver } from "neo4j-driver";
 import supertest from "supertest";
 import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
-import { Neo4jGraphQL } from "../../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { delay } from "../../../../src/utils/utils";
-import { cleanNodesUsingSession } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import Neo4j from "../../setup/neo4j";
 import { WebSocketTestClient } from "../../setup/ws-client";
 
 describe.each([
@@ -48,8 +46,7 @@ describe.each([
     //         }),
     // },
 ])("$name - Connect Subscription with optional filters valid for all types", ({ engine }) => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let wsClient2: WebSocketTestClient;
@@ -115,12 +112,10 @@ describe.each([
             }
         `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-        subscriptionEngine = engine(driver, neo4j.getIntegrationDatabaseName());
-        const neoSchema = new Neo4jGraphQL({
+        const driver = await testHelper.getDriver();
+        subscriptionEngine = engine(driver, testHelper.database);
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: subscriptionEngine,
             },
@@ -128,7 +123,7 @@ describe.each([
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -142,11 +137,9 @@ describe.each([
         await wsClient.close();
         await wsClient2.close();
         subscriptionEngine.close();
-        const session = driver.session();
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer, where }) => `

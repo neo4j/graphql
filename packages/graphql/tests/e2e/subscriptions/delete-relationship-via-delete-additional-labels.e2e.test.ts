@@ -17,20 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
-import Neo4j from "../setup/neo4j";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Delete Subscriptions when only nodes are targeted - when nodes employ @node directive to configure db label and additionalLabels", () => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let wsClient2: WebSocketTestClient;
@@ -44,13 +40,13 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = new UniqueType("Actor");
-        typePerson = new UniqueType("Person");
-        typeDinosaur = new UniqueType("Dinosaur");
-        typeMovie = new UniqueType("Movie");
-        typeFilm = new UniqueType("Film");
-        typeSeries = new UniqueType("Series");
-        typeProduction = new UniqueType("Production");
+        typeActor = testHelper.createUniqueType("Actor");
+        typePerson = testHelper.createUniqueType("Person");
+        typeDinosaur = testHelper.createUniqueType("Dinosaur");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeFilm = testHelper.createUniqueType("Film");
+        typeSeries = testHelper.createUniqueType("Series");
+        typeProduction = testHelper.createUniqueType("Production");
 
         typeDefs = `
              type ${typeActor} @node(labels: ["${typeActor}", "${typePerson}"]) {
@@ -88,12 +84,8 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
              }
         `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
             },
@@ -101,7 +93,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -115,11 +107,8 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
         await wsClient.close();
         await wsClient2.close();
 
-        const session = driver.session();
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeFilm, typeSeries, typeProduction]);
-
         await server.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     const actorSubscriptionQuery = (typeActor) => `
