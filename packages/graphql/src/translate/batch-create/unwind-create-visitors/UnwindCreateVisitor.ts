@@ -31,7 +31,7 @@ import {
     createAuthorizationAfterPredicate,
     createAuthorizationAfterPredicateField,
 } from "../../authorization/create-authorization-after-predicate";
-import createRelationshipValidationString from "../../create-relationship-validation-string";
+import { createRelationshipValidationString } from "../../create-relationship-validation-string";
 import type { CreateAST, NestedCreateAST, UnwindASTNode, Visitor } from "../GraphQLInputAST/GraphQLInputAST";
 
 type UnwindCreateScopeDefinition = {

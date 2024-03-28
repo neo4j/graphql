@@ -107,8 +107,7 @@ describe("Batch Create, Interface", () => {
                     {
                         \\"id\\": \\"2\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

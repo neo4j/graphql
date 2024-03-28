@@ -54,12 +54,17 @@ export class QueryASTFactory {
         context,
         reference,
         varName,
+        resolveAsUnwind = false,
     }: {
         resolveTree: ResolveTree;
         entityAdapter?: EntityAdapter;
         context: Neo4jGraphQLTranslationContext;
         reference?: any;
         varName?: string;
+        // TODO: remove this flag, the only reason exist in the first place is because the check for unwind create is done in the create resolver
+        // the method isUnwindCreateSupported should be moved to the QueryASTFactory,
+        // but as the normal create is still not migrated that is not possible and as this checks are expensive we need to keep this flag
+        resolveAsUnwind?: boolean;
     }): QueryAST {
         const operation = this.operationsFactory.createTopLevelOperation({
             entity: entityAdapter,
@@ -67,6 +72,7 @@ export class QueryASTFactory {
             context,
             varName,
             reference,
+            resolveAsUnwind,
         });
         return new QueryAST(operation);
     }

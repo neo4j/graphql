@@ -18,15 +18,17 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
 import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
-import { ReadOperation } from "./operations/ReadOperation";
-import type { Operation, OperationTranspileResult } from "./operations/operations";
 import { DeleteOperation } from "./operations/DeleteOperation";
+import { ReadOperation } from "./operations/ReadOperation";
+import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
+import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
     private operation: Operation;
@@ -90,7 +92,11 @@ export class QueryAST {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, varName);
         }
         if (this.operation instanceof AggregationOperation) {
-            return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, varName);
+            return createNodeFromEntity(this.operation.entity as ConcreteEntityAdapter, neo4jGraphQLContext, varName);
+        }
+
+        if (this.operation instanceof UnwindCreateOperation) {
+            return createNodeFromEntity(this.operation.target as ConcreteEntityAdapter, neo4jGraphQLContext);
         }
     }
 

@@ -77,8 +77,7 @@ describe("tck/rfs/003", () => {
                             {
                                 \\"id\\": \\"movieId-1\\"
                             }
-                        ],
-                        \\"resolvedCallbacks\\": {}
+                        ]
                     }"
                 `);
             });
@@ -137,8 +136,7 @@ describe("tck/rfs/003", () => {
                             {
                                 \\"id\\": \\"movieId-1\\"
                             }
-                        ],
-                        \\"resolvedCallbacks\\": {}
+                        ]
                     }"
                 `);
             });
@@ -189,20 +187,19 @@ describe("tck/rfs/003", () => {
                             CALL {
                                 WITH create_this1, create_var0
                                 UNWIND create_var0.director.create AS create_var2
-                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                                CREATE (create_this5:Director)
+                                CREATE (create_this3:Director)
                                 SET
-                                    create_this5.id = create_var3.id
-                                MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
-                                WITH create_this5
+                                    create_this3.id = create_var2.node.id
+                                MERGE (create_this1)<-[create_this4:DIRECTED]-(create_this3)
+                                WITH create_this3
                                 CALL {
-                                	WITH create_this5
-                                	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
-                                	WITH count(create_this5_address_Address_unique) as c
+                                	WITH create_this3
+                                	MATCH (create_this3)-[create_this3_address_Address_unique:HAS_ADDRESS]->(:Address)
+                                	WITH count(create_this3_address_Address_unique) as c
                                 	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
-                                	RETURN c AS create_this5_address_Address_unique_ignored
+                                	RETURN c AS create_this3_address_Address_unique_ignored
                                 }
-                                RETURN collect(NULL) AS create_var7
+                                RETURN collect(NULL) AS create_var5
                             }
                             WITH create_this1
                             CALL {
@@ -230,8 +227,7 @@ describe("tck/rfs/003", () => {
                                         }
                                     }
                                 }
-                            ],
-                            \\"resolvedCallbacks\\": {}
+                            ]
                         }"
                     `);
                 });
@@ -281,20 +277,19 @@ describe("tck/rfs/003", () => {
                             CALL {
                                 WITH create_this1, create_var0
                                 UNWIND create_var0.director.create AS create_var2
-                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                                CREATE (create_this5:Director)
+                                CREATE (create_this3:Director)
                                 SET
-                                    create_this5.id = create_var3.id
-                                MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
-                                WITH create_this5
+                                    create_this3.id = create_var2.node.id
+                                MERGE (create_this1)<-[create_this4:DIRECTED]-(create_this3)
+                                WITH create_this3
                                 CALL {
-                                	WITH create_this5
-                                	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
-                                	WITH count(create_this5_address_Address_unique) as c
+                                	WITH create_this3
+                                	MATCH (create_this3)-[create_this3_address_Address_unique:HAS_ADDRESS]->(:Address)
+                                	WITH count(create_this3_address_Address_unique) as c
                                 	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
-                                	RETURN c AS create_this5_address_Address_unique_ignored
+                                	RETURN c AS create_this3_address_Address_unique_ignored
                                 }
-                                RETURN collect(NULL) AS create_var7
+                                RETURN collect(NULL) AS create_var5
                             }
                             WITH create_this1
                             CALL {
@@ -322,8 +317,7 @@ describe("tck/rfs/003", () => {
                                         }
                                     }
                                 }
-                            ],
-                            \\"resolvedCallbacks\\": {}
+                            ]
                         }"
                     `);
                 });

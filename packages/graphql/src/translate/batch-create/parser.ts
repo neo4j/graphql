@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { RelationField } from "../../types";
-import type { GraphQLCreateInput, TreeDescriptor } from "./types";
-import { UnsupportedUnwindOptimization } from "./types";
+import Cypher from "@neo4j/cypher-builder";
 import type { GraphElement, Node, Relationship } from "../../classes";
 import { Neo4jGraphQLError } from "../../classes";
-import Cypher from "@neo4j/cypher-builder";
+import type { RelationField } from "../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import mapToDbProperty from "../../utils/map-to-db-property";
 import type { UnwindASTNode } from "./GraphQLInputAST/GraphQLInputAST";
 import { CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
-import mapToDbProperty from "../../utils/map-to-db-property";
-import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import type { GraphQLCreateInput, TreeDescriptor } from "./types";
+import { UnsupportedUnwindOptimization } from "./types";
 
 function getRelationshipFields(
     node: Node,
@@ -219,19 +219,7 @@ function parser(
                             )
                         );
                         break;
-                    /*
-                    case "connect":
-                         parentASTNode.addChildren(
-                            parseConnect(description, relatedNodes[0], context, node, key, [
-                                relationField,
-                                relatedNodes,
-                            ])
-                        ); 
-                        break;
-                    case "connectOrCreate":
-                         parentASTNode.addChildren(parseConnectOrCreate(description, relatedNodes[0], context, node)); 
-                        break;
-                    */
+
                     default:
                         throw new UnsupportedUnwindOptimization(`Not supported operation: ${operation}`);
                 }

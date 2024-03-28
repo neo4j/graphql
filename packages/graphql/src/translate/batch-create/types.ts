@@ -22,7 +22,6 @@ export type GraphQLCreateInput = Record<string, any>;
 export interface TreeDescriptor {
     properties: Set<string>;
     children: Record<string, TreeDescriptor>;
-    path?: string;
 }
 
 export class UnsupportedUnwindOptimization extends Error {

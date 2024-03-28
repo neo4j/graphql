@@ -70,8 +70,7 @@ describe("Cypher autogenerate directive", () => {
                     {
                         \\"name\\": \\"dan\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
