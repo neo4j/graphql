@@ -22,6 +22,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 import { PropertyFilter } from "./PropertyFilter";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { FilterOperator } from "../Filter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 type CypherVariable = Cypher.Variable | Cypher.Property | Cypher.Param;
 
@@ -35,6 +36,7 @@ export class ParamPropertyFilter extends PropertyFilter {
         operator: FilterOperator;
         isNot: boolean;
         attachedTo?: "node" | "relationship";
+        relationship?: RelationshipAdapter;
     }) {
         super(options);
         this.comparisonValue = options.comparisonValue;
