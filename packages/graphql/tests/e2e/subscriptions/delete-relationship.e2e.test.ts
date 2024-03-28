@@ -17,22 +17,17 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { delay } from "../../../src/utils/utils";
-import { cleanNodesUsingSession } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import Neo4j from "../setup/neo4j";
 import { WebSocketTestClient } from "../setup/ws-client";
 
 describe("Delete Relationship Subscription", () => {
-    let neo4j: Neo4j;
-    let session: Session;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let wsClient2: WebSocketTestClient;
@@ -43,10 +38,10 @@ describe("Delete Relationship Subscription", () => {
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = new UniqueType("Actor");
-        typeMovie = new UniqueType("Movie");
-        typePerson = new UniqueType("Person");
-        typeInfluencer = new UniqueType("Influencer");
+        typeActor = testHelper.createUniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typePerson = testHelper.createUniqueType("Person");
+        typeInfluencer = testHelper.createUniqueType("Influencer");
 
         typeDefs = `
             type ${typeMovie} {
@@ -98,13 +93,8 @@ describe("Delete Relationship Subscription", () => {
             }
         `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-        session = driver.session();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
             },
@@ -112,7 +102,7 @@ describe("Delete Relationship Subscription", () => {
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -126,11 +116,8 @@ describe("Delete Relationship Subscription", () => {
         await wsClient.close();
         await wsClient2.close();
 
-        await cleanNodesUsingSession(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
-
         await server.close();
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     const actorSubscriptionQuery = (typeActor) => `

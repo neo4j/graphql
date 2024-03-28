@@ -17,21 +17,17 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/";
 import { Neo4jDatabaseInfo } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import Neo4j from "../setup/neo4j";
 
 describe("Create with specific neo4jDatabaseInfo set correctly", () => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper();
 
-    const typeMovie = new UniqueType("Movie");
+    const typeMovie = testHelper.createUniqueType("Movie");
 
     let server: TestGraphQLServer;
 
@@ -42,12 +38,8 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
          }
          `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -58,8 +50,8 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
     });
 
     afterAll(async () => {
+        await testHelper.close();
         await server.close();
-        await driver.close();
     });
 
     test("simple mutation", async () => {
@@ -90,10 +82,9 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
 });
 
 describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper();
 
-    const typeMovie = new UniqueType("Movie");
+    const typeMovie = testHelper.createUniqueType("Movie");
 
     let server: TestGraphQLServer;
 
@@ -104,12 +95,8 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
          }
          `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
         });
 
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -120,8 +107,8 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
     });
 
     afterAll(async () => {
+        await testHelper.close();
         await server.close();
-        await driver.close();
     });
 
     test("simple mutation", async () => {

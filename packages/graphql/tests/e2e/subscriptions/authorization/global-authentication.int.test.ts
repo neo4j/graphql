@@ -17,25 +17,21 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../../src/classes";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import { TestHelper } from "../../../utils/tests-helper";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { WebSocketTestClient } from "../../setup/ws-client";
-import Neo4j from "../../setup/neo4j";
-import { createBearerToken } from "../../../utils/create-bearer-token";
-import { UniqueType } from "../../../utils/graphql-types";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Subscription global authentication", () => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper();
     let jwtToken: string;
 
     const secret = "secret";
-    const typeMovie = new UniqueType("Movie");
+    const typeMovie = testHelper.createUniqueType("Movie");
     const typeDefs = `
         type ${typeMovie} {
             title: String!
@@ -44,13 +40,8 @@ describe("Subscription global authentication", () => {
         extend schema @authentication
     `;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         jwtToken = createBearerToken(secret, { roles: ["admin"] });
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-    });
-    afterAll(async () => {
-        await driver.close();
     });
 
     describe("should fail with no JWT token present and global authentication is enabled", () => {
@@ -58,9 +49,8 @@ describe("Subscription global authentication", () => {
         let wsClient: WebSocketTestClient;
 
         beforeAll(async () => {
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
@@ -72,7 +62,7 @@ describe("Subscription global authentication", () => {
             // eslint-disable-next-line @typescript-eslint/require-await
             server = new ApolloTestServer(neoSchema, async ({ req }) => ({
                 sessionConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
+                    database: testHelper.database,
                 },
                 token: req.headers.authorization,
             }));
@@ -84,6 +74,7 @@ describe("Subscription global authentication", () => {
         });
 
         afterAll(async () => {
+            await testHelper.close();
             await server.close();
         });
 
@@ -133,9 +124,8 @@ describe("Subscription global authentication", () => {
         let wsClient: WebSocketTestClient;
 
         beforeAll(async () => {
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
@@ -147,7 +137,7 @@ describe("Subscription global authentication", () => {
             // eslint-disable-next-line @typescript-eslint/require-await
             server = new ApolloTestServer(neoSchema, async ({ req }) => ({
                 sessionConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
+                    database: testHelper.database,
                 },
                 token: req.headers.authorization,
             }));
@@ -159,6 +149,7 @@ describe("Subscription global authentication", () => {
         });
 
         afterAll(async () => {
+            await testHelper.close();
             await server.close();
         });
 
@@ -208,9 +199,8 @@ describe("Subscription global authentication", () => {
         let wsClient: WebSocketTestClient;
 
         beforeAll(async () => {
-            const neoSchema = new Neo4jGraphQL({
+            const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                driver,
                 features: {
                     authorization: {
                         key: secret,
@@ -222,7 +212,7 @@ describe("Subscription global authentication", () => {
             // eslint-disable-next-line @typescript-eslint/require-await
             server = new ApolloTestServer(neoSchema, async ({ req }) => ({
                 sessionConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
+                    database: testHelper.database,
                 },
                 token: req.headers.authorization,
             }));
@@ -234,6 +224,7 @@ describe("Subscription global authentication", () => {
         });
 
         afterAll(async () => {
+            await testHelper.close();
             await server.close();
         });
 

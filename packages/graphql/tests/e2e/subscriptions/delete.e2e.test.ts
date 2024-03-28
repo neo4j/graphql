@@ -20,14 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { Neo4jGraphQLSubscriptionsCDCEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import type { Neo4jGraphQLSubscriptionsEngine } from "../../../src/types";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import Neo4j from "../setup/neo4j";
 import { WebSocketTestClient } from "../setup/ws-client";
 
 describe.each([
@@ -47,8 +46,7 @@ describe.each([
             }),
     },
 ])("$name Delete Subscription", ({ engine }) => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper({ cdc: true });
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let typeMovie: UniqueType;
@@ -56,8 +54,8 @@ describe.each([
     let subscriptionEngine: Neo4jGraphQLSubscriptionsEngine;
 
     beforeEach(async () => {
-        typeMovie = new UniqueType("Movie");
-        typeActor = new UniqueType("Actor");
+        typeMovie = testHelper.createUniqueType("Movie");
+        typeActor = testHelper.createUniqueType("Actor");
         const typeDefs = `
         type ${typeMovie} {
             title: String
@@ -67,14 +65,11 @@ describe.each([
            name: String
         }`;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
+        const driver = await testHelper.getDriver();
+        subscriptionEngine = engine(driver, testHelper.database);
 
-        subscriptionEngine = engine(driver, neo4j.getIntegrationDatabaseName());
-
-        const neoSchema = new Neo4jGraphQL({
+        const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
-            driver,
             features: {
                 subscriptions: subscriptionEngine,
             },
@@ -83,7 +78,7 @@ describe.each([
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -96,7 +91,7 @@ describe.each([
         await wsClient.close();
         subscriptionEngine.close();
         await server.close();
-        await driver.close();
+        await testHelper.close();
     });
 
     test("delete subscription", async () => {
