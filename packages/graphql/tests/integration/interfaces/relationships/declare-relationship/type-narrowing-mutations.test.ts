@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 // TODO: maybe use type-narrowing-connections
 describe("type narrowing - mutations setup", () => {

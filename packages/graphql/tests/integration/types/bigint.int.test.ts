@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("BigInt", () => {
     const testHelper = new TestHelper();
@@ -112,7 +112,7 @@ describe("BigInt", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data as any).toEqual({
+            expect(gqlResult?.data).toEqual({
                 [File.plural]: [
                     {
                         name,
@@ -155,7 +155,7 @@ describe("BigInt", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data as any).toEqual({
+            expect(gqlResult?.data).toEqual({
                 [File.plural]: [
                     {
                         name,
@@ -201,7 +201,7 @@ describe("BigInt", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data as any).toEqual({
+            expect(gqlResult?.data).toEqual({
                 [File.plural]: [
                     {
                         name,

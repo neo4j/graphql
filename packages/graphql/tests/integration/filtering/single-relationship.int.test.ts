@@ -18,7 +18,7 @@
  */
 
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Single relationship (1-*) filtering", () => {
     let Person: UniqueType;

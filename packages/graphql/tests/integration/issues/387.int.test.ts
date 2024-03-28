@@ -21,7 +21,7 @@ import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
     const testHelper = new TestHelper();

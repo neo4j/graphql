@@ -18,7 +18,7 @@
  */
 
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("integration/rfcs/query-limits", () => {
     const testHelper = new TestHelper();

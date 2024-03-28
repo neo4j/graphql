@@ -18,7 +18,7 @@
  */
 
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("connect-or-create with @id", () => {
     const testHelper = new TestHelper();

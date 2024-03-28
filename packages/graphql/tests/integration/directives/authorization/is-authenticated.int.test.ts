@@ -23,7 +23,7 @@ import { generate } from "randomstring";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("auth/is-authenticated", () => {
     const testHelper = new TestHelper();

@@ -20,7 +20,7 @@
 import { generate } from "randomstring";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Subscriptions delete", () => {
     const testHelper = new TestHelper();

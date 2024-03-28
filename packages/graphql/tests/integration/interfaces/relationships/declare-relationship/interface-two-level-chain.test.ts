@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("interface implementing interface with declared relationships - two level interface chain", () => {
     const testHelper = new TestHelper();

@@ -20,7 +20,7 @@
 import { generate } from "randomstring";
 import type { Neo4jGraphQL } from "../../../src";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("query options", () => {
     let neoSchema: Neo4jGraphQL;

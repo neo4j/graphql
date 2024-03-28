@@ -23,7 +23,7 @@ import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import type { Neo4jGraphQL } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/464", () => {
     let typeAuthor: UniqueType;

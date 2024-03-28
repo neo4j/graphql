@@ -21,12 +21,12 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ExecutionResult, GraphQLArgs } from "graphql";
 import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
-import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../../src";
-import { Neo4jGraphQL } from "../../../src";
-import { Neo4jDatabaseInfo } from "../../../src/classes";
-import type { Neo4jEdition } from "../../../src/classes/Neo4jDatabaseInfo";
-import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
+import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
+import { Neo4jGraphQL } from "../../src";
+import { Neo4jDatabaseInfo } from "../../src/classes";
+import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
+import { createBearerToken } from "./create-bearer-token";
+import { UniqueType } from "./graphql-types";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";

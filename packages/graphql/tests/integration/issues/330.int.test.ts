@@ -19,7 +19,7 @@
 
 import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932

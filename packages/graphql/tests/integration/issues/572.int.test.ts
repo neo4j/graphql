@@ -18,7 +18,7 @@
  */
 
 import { gql } from "graphql-tag";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
     const testHelper = new TestHelper();

@@ -20,7 +20,7 @@
 import * as neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@alias directive", () => {
     const testHelper = new TestHelper();

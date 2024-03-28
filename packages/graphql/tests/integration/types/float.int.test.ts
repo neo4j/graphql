@@ -20,7 +20,7 @@
 import { int } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Float", () => {
     const imdbRatingFloat = 4.0;

@@ -18,7 +18,7 @@
  */
 
 import { gql } from "graphql-tag";
-import { TestHelper } from "./utils/tests-helper";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("delete union relationships", () => {
     const testHelper = new TestHelper();

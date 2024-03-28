@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 /*
  * Auth rules are already tested in the auth tests,

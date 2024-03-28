@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 const testLabel = generate({ charset: "alphabetic" });
 

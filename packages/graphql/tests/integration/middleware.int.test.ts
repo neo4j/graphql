@@ -20,7 +20,7 @@
 import { applyMiddleware } from "graphql-middleware";
 import { generate } from "randomstring";
 import type { UniqueType } from "../utils/graphql-types";
-import { TestHelper } from "./utils/tests-helper";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("Middleware Resolvers", () => {
     const testHelper = new TestHelper();

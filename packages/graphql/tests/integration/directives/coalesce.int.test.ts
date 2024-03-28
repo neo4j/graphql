@@ -19,7 +19,7 @@
 
 import { GraphQLError } from "graphql";
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("@coalesce directive", () => {
     const testHelper = new TestHelper();

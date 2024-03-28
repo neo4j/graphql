@@ -22,8 +22,8 @@ import { graphql } from "graphql";
 import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
 import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import { TestHelper } from "../../integration/utils/tests-helper";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
+import { TestHelper } from "../../utils/tests-helper";
 
 export function setTestEnvVars(envVars: string | undefined): void {
     if (envVars) {

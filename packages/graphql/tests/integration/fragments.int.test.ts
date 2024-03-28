@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "./utils/tests-helper";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("fragments", () => {
     const testHelper = new TestHelper();
