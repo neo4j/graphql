@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import gql from "graphql-tag";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
@@ -97,13 +96,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         movieTitle = "movie1";
         movieTitle2 = "movie2";
-        movieRuntime = faker.number.int({ max: 100000 });
-        movieScreenTime = faker.number.int({ max: 100000 });
+        movieRuntime = 992;
+        movieScreenTime = 45827;
 
         seriesTitle = "series1";
-        seriesEpisodes = faker.number.int({ max: 100000 });
-        seriesScreenTime = faker.number.int({ max: 100000 });
-        episodeNr = faker.number.int({ max: 100000 });
+        seriesEpisodes = 10440;
+        seriesScreenTime = 61849;
+        episodeNr = 16099;
         sameTitle = "sameTitle";
 
         await testHelper.executeCypher(

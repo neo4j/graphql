@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -100,13 +99,13 @@ describe("type narrowing - mutations setup", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 69423;
+        const movieScreenTime = 1227;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const sceneNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 65752;
+        const seriesScreenTime = 64112;
+        const sceneNr = 2291;
 
         const query = /* GraphQL */ `
         mutation {

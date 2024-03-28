@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -67,7 +66,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(67883);
 
         await testHelper.executeCypher(
             `
@@ -106,7 +105,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(38531);
         const someIntGt = someInt - 1;
 
         await testHelper.executeCypher(
@@ -146,7 +145,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(33494);
 
         await testHelper.executeCypher(
             `
@@ -185,7 +184,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(64621);
         const someIntLT = someInt + 1;
 
         await testHelper.executeCypher(
@@ -225,7 +224,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(84082);
 
         await testHelper.executeCypher(
             `
@@ -549,7 +548,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(10628);
 
         await testHelper.executeCypher(
             `
@@ -588,7 +587,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(28724);
         const someIntGt = someInt - 1;
 
         await testHelper.executeCypher(
@@ -628,7 +627,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(86262);
 
         await testHelper.executeCypher(
             `
@@ -667,7 +666,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(89902);
         const someIntLT = someInt + 1;
 
         await testHelper.executeCypher(
@@ -707,7 +706,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(78777);
 
         await testHelper.executeCypher(
             `

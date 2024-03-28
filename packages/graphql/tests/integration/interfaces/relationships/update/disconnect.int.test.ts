@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -87,14 +86,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 59348;
+        const movieScreenTime = 7079;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesScreenTime = 5423;
 
         const query = `
             mutation DisconnectMovie($name: String, $title: String) {
@@ -164,14 +163,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 77473;
+        const movieScreenTime = 72796;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesScreenTime = 61111;
 
         const query = `
             mutation DisconnectMovie($name1: String, $name2: String, $title: String) {

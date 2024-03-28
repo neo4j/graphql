@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -96,13 +95,13 @@ describe("interface filters of declared relationships", () => {
 
         movieTitle = "movie1";
         movieTitle2 = "movie2";
-        movieRuntime = faker.number.int({ max: 100000 });
-        movieScreenTime = faker.number.int({ max: 100000 });
+        movieRuntime = 74223;
+        movieScreenTime = 19124;
 
         seriesTitle = "series1";
-        seriesEpisodes = faker.number.int({ max: 100000 });
-        seriesScreenTime = faker.number.int({ max: 100000 });
-        episodeNr = faker.number.int({ max: 100000 });
+        seriesEpisodes = 32695;
+        seriesScreenTime = 70317;
+        episodeNr = 89129;
 
         await testHelper.executeCypher(
             `
@@ -404,13 +403,13 @@ describe("interface filters of declared interface relationships", () => {
 
         movieTitle = "movie1";
         movieTitle2 = "movie2";
-        movieRuntime = faker.number.int({ max: 100000 });
-        movieScreenTime = faker.number.int({ max: 100000 });
+        movieRuntime = 38566;
+        movieScreenTime = 35472;
 
         seriesTitle = "series1";
-        seriesEpisodes = faker.number.int({ max: 100000 });
-        seriesScreenTime = faker.number.int({ max: 100000 });
-        episodeNr = faker.number.int({ max: 100000 });
+        seriesEpisodes = 89908;
+        seriesScreenTime = 56668;
+        episodeNr = 33194;
 
         await testHelper.executeCypher(
             `

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import { int } from "neo4j-driver";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
@@ -55,12 +54,12 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with Point field", async () => {
-        const longitude1 = parseFloat(faker.location.longitude().toString());
-        const longitude2 = parseFloat(faker.location.longitude().toString());
-        const latitude1 = parseFloat(faker.location.latitude().toString());
-        const latitude2 = parseFloat(faker.location.latitude().toString());
-        const height1 = faker.number.float();
-        const height2 = faker.number.float();
+        const longitude1 = parseFloat("-71.0007");
+        const longitude2 = parseFloat("139.1539");
+        const latitude1 = parseFloat("48.1706");
+        const latitude2 = parseFloat("-50.9324");
+        const height1 = 0.34409760613925755;
+        const height2 = 0.19406892964616418;
 
         const query = `
         mutation CreateMovie($longitude1: Float!, $latitude1: Float!, $height1: Float!, $longitude2: Float!, $latitude2: Float!, $height2: Float!)  {
@@ -180,10 +179,10 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("update type with Point field", async () => {
-        const longitude1 = parseFloat(faker.location.longitude().toString());
-        const latitude1 = parseFloat(faker.location.latitude().toString());
-        const height1 = faker.number.float();
-        const newLatitude = parseFloat(faker.location.latitude().toString());
+        const longitude1 = parseFloat("-38.9491");
+        const latitude1 = parseFloat("-75.8207");
+        const height1 = 0.8940616026520729;
+        const newLatitude = parseFloat("-42.7308");
 
         await testHelper.executeCypher(`
             CALL {
@@ -272,8 +271,8 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("query type with Point field and filters", async () => {
-        const longitude = parseFloat(faker.location.longitude().toString());
-        const latitude = parseFloat(faker.location.latitude().toString());
+        const longitude = parseFloat("154.8561");
+        const latitude = parseFloat("73.8678");
 
         await testHelper.executeCypher(`
             CALL {
@@ -336,8 +335,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { longitude, latitude },
                     {
-                        longitude: parseFloat(faker.location.longitude().toString()),
-                        latitude: parseFloat(faker.location.latitude().toString()),
+                        longitude: parseFloat("51.8962"),
+                        latitude: parseFloat("-9.6844"),
                     },
                 ],
             },
@@ -373,12 +372,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        longitude: parseFloat(faker.location.longitude().toString()),
-                        latitude: parseFloat(faker.location.latitude().toString()),
+                        longitude: parseFloat("12.4692"),
+                        latitude: parseFloat("55.2318"),
                     },
                     {
-                        longitude: parseFloat(faker.location.longitude().toString()),
-                        latitude: parseFloat(faker.location.latitude().toString()),
+                        longitude: parseFloat("162.6476"),
+                        latitude: parseFloat("-10.2548"),
                     },
                 ],
             },
@@ -397,10 +396,10 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with CartesianPoint field", async () => {
-        const x1 = faker.number.float();
-        const y1 = faker.number.float();
-        const x2 = faker.number.float();
-        const y2 = faker.number.float();
+        const x1 = 0.8607480155769736;
+        const y1 = 0.6322691068053246;
+        const x2 = 0.21531713823787868;
+        const y2 = 0.8199794858228415;
 
         const query = `
         mutation CreateMovie($x1: Float!, $x2: Float!, $y1: Float!, $y2: Float!)  {
@@ -518,9 +517,9 @@ describe("Subscriptions to spatial types", () => {
         ]);
     });
     test("update type with CartesianPoint field", async () => {
-        const x = faker.number.float();
-        const y = faker.number.float();
-        const newY = faker.number.float();
+        const x = 0.8504534482490271;
+        const y = 0.8674011980183423;
+        const newY = 0.142022400861606;
 
         await testHelper.executeCypher(`
             CALL {
@@ -610,8 +609,8 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("query type with CartesianPoint field and filters", async () => {
-        const x = faker.number.float();
-        const y = faker.number.float();
+        const x = 0.8776046128477901;
+        const y = 0.01593078044243157;
 
         await testHelper.executeCypher(`
             CALL {
@@ -674,8 +673,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { x, y },
                     {
-                        x: faker.number.float(),
-                        y: faker.number.float(),
+                        x: 0.425140418112278,
+                        y: 0.5120728241745383,
                     },
                 ],
             },
@@ -711,12 +710,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        x: faker.number.float(),
-                        y: faker.number.float(),
+                        x: 0.13677962007932365,
+                        y: 0.05952018848620355,
                     },
                     {
-                        x: faker.number.float(),
-                        y: faker.number.float(),
+                        x: 0.993210831657052,
+                        y: 0.3956587021239102,
                     },
                 ],
             },
