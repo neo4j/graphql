@@ -20,10 +20,11 @@
 "use strict";
 
 import neo4j from "neo4j-driver";
+// eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { createYoga } from "graphql-yoga";
-import { getLargeSchema } from "../typedefs.js";
 import { createServer } from "http";
+import { getLargeSchema } from "../typedefs.js";
 
 async function main() {
     const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;

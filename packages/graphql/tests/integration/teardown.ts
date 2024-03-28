@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import { TestHelper } from "../utils/tests-helper";
+
 /*
  * File not imported in project, and to be used in test pipelines to teardown target database.
  *
  *   `ts-node tests/integration/teardown.ts`
  */
-
-import { TestHelper } from "./utils/tests-helper";
 
 const teardown = async () => {
     const testHelper = new TestHelper();
