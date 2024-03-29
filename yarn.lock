@@ -2798,9 +2798,9 @@ __metadata:
   linkType: hard
 
 "@neo4j/cypher-builder@npm:^1.13.0":
-  version: 1.14.0
-  resolution: "@neo4j/cypher-builder@npm:1.14.0"
-  checksum: 10c0/ea8582f1a20906b7c3de06dce99988fcfbeee96cbc9f6b144307e3aafc1a13964348e7258c7b02966600e1fea6a35440914dae55971ce2628a0a2c5251ea48c5
+  version: 1.15.0
+  resolution: "@neo4j/cypher-builder@npm:1.15.0"
+  checksum: 10c0/fc68bc283d5bc077360d507b8db1803e3b5c057071a918f160ab2c3025f43759b1450f63981323a7cb7c9796d49098f4eb2df4c9e223bc0a8625cc7111db4512
   languageName: node
   linkType: hard
 
