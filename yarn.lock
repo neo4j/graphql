@@ -43,15 +43,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@0no-co/graphql.web@npm:^1.0.1":
-  version: 1.0.4
-  resolution: "@0no-co/graphql.web@npm:1.0.4"
+"@0no-co/graphql.web@npm:^1.0.5":
+  version: 1.0.6
+  resolution: "@0no-co/graphql.web@npm:1.0.6"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   peerDependenciesMeta:
     graphql:
       optional: true
-  checksum: 10c0/bf63cb5b017063363c9a9e06dc17532abc1c2da402c7ebcbc7b5ab2a0601ec93b02de93af9e50d9daffb3b747eddcf0b1e5418a46d1182c5b8087b7d7a1768ad
+  checksum: 10c0/10103e9b30df14d351d098871a4a35d38c9a478763faa667eb1409bfb27bf06c8f8d2bb3c33dd6a4250a5d866d7d301afe0090dacc409a38831674b087cc78cd
   languageName: node
   linkType: hard
 
@@ -5072,13 +5072,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@urql/core@npm:^4.2.0":
-  version: 4.3.0
-  resolution: "@urql/core@npm:4.3.0"
+"@urql/core@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@urql/core@npm:5.0.0"
   dependencies:
-    "@0no-co/graphql.web": "npm:^1.0.1"
+    "@0no-co/graphql.web": "npm:^1.0.5"
     wonka: "npm:^6.3.2"
-  checksum: 10c0/25a50cd11f27abca36ba07a93a393a3b0343d8d0957bf7fef4ddcc49d7582c751bb0c86f26c4f5e9342409237b92da569cfc90745a34539dfe8b5ebc426e112a
+  checksum: 10c0/626b43d3a9fca239a1d120afdc2fb791c1270ac3795dc9392df52e034176796f117eb9722d134374147d9a519da12f146c0ec2c773ef945a705c08d26f1d920a
   languageName: node
   linkType: hard
 
@@ -20653,14 +20653,14 @@ __metadata:
   linkType: hard
 
 "urql@npm:^4.0.0":
-  version: 4.0.6
-  resolution: "urql@npm:4.0.6"
+  version: 4.0.7
+  resolution: "urql@npm:4.0.7"
   dependencies:
-    "@urql/core": "npm:^4.2.0"
+    "@urql/core": "npm:^5.0.0"
     wonka: "npm:^6.3.2"
   peerDependencies:
     react: ">= 16.8.0"
-  checksum: 10c0/d3d952c5a1f288e6c9c24a0ffb694893133d3c8b0d1237109ce96b460697a6f4536a494b5ec70e690660cacbd9c149461d1811d33482f4ca2126ea96560c4332
+  checksum: 10c0/d939c5eb8721f24ddf45618976437c2db8984f9c2dea3c37a3a4e21a0f6df53f162488be6fd58c38bcbfad2e123a945a0a2157a9e8ab35589cdcb57d77803ef1
   languageName: node
   linkType: hard
 
