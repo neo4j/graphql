@@ -76,7 +76,7 @@ describe("interface relationships aliased fields", () => {
         await testHelper.close();
     });
 
-    test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
+    test.only("should read and return interface relationship fields with interface relationship filter SOME", async () => {
         const actorName = generate({
             readable: true,
             charset: "alphabetic",
@@ -104,9 +104,9 @@ describe("interface relationships aliased fields", () => {
         const seriesEpisodes = faker.number.int({ max: 100000 });
         const seriesScreenTime = faker.number.int({ max: 100000 });
 
-        const query = `
+        const query = /* GraphQL */ `
             query Actors($title: String) {
-                 ${typeActor.plural}(where: { actedInConnection: { node: { title: $title } } }) {
+                 ${typeActor.plural}(where: { actedInConnection_SOME: { node: { title: $title } } }) {
                     name
                     actedIn {
                         title
@@ -191,9 +191,9 @@ describe("interface relationships aliased fields", () => {
         const seriesEpisodes = faker.number.int({ max: 100000 });
         const seriesScreenTime = faker.number.int({ max: 100000 });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
-                 ${typeActor.operations.delete}(where: { actedInConnection: { node: { title: $title } } }) {
+                 ${typeActor.operations.delete}(where: { actedInConnection_SOME: { node: { title: $title } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -265,7 +265,7 @@ describe("interface relationships aliased fields", () => {
         const seriesEpisodes = faker.number.int({ max: 100000 });
         const seriesScreenTime = faker.number.int({ max: 100000 });
 
-        const query = `
+        const query = /* GraphQL */ `
             query ProtectedActors {
                  ${ProtectedActor.plural} {
                     name

@@ -67,7 +67,7 @@ describe("interface relationships with aliased fields", () => {
     test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
         const query = /* GraphQL */ `
             query Actors($title: String) {
-                actors(where: { actedInConnection: { node: { title: $title } } }) {
+                actors(where: { actedInConnection_SOME: { node: { title: $title } } }) {
                     name
                     actedIn {
                         title
@@ -82,13 +82,19 @@ describe("interface relationships with aliased fields", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const result = await translateQuery(neoSchema, query, {
+            variableValues: { title: "movieTitle2" },
+        });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             WHERE EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1)
-                WHERE (this1:Movie OR this1:Series)
+                WHERE (CASE
+                    WHEN this1:Movie THEN this1.movieTitle
+                    WHEN this1:Series THEN this1.seriesTitle
+                    ELSE this1.title
+                END = $param0 AND (this1:Movie OR this1:Series))
             }
             CALL {
                 WITH this
@@ -109,31 +115,45 @@ describe("interface relationships with aliased fields", () => {
             RETURN this { .name, actedIn: var4 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"movieTitle2\\"
+            }"
+        `);
     });
 
     test("delete", async () => {
         const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
-                deleteActors(where: { actedInConnection: { node: { title: $title } } }) {
+                deleteActors(where: { actedInConnection_SOME: { node: { title: $title } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const result = await translateQuery(neoSchema, query, {
+            variableValues: { title: "movieTitle2" },
+        });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             WHERE EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1)
-                WHERE (this1:Movie OR this1:Series)
+                WHERE (CASE
+                    WHEN this1:Movie THEN this1.movieTitle
+                    WHEN this1:Series THEN this1.seriesTitle
+                    ELSE this1.title
+                END = $param0 AND (this1:Movie OR this1:Series))
             }
             DETACH DELETE this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"movieTitle2\\"
+            }"
+        `);
     });
 
     test("auth", async () => {
