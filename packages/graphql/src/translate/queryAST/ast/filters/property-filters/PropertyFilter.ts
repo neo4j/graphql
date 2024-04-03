@@ -25,9 +25,12 @@ import type { QueryASTNode } from "../../QueryASTNode";
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import { hasTarget } from "../../../utils/context-has-target";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
+    protected relationship: RelationshipAdapter | undefined;
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
     protected isNot: boolean; // _NOT is deprecated
@@ -35,12 +38,14 @@ export class PropertyFilter extends Filter {
 
     constructor({
         attribute,
+        relationship,
         comparisonValue,
         operator,
         isNot,
         attachedTo,
     }: {
         attribute: AttributeAdapter;
+        relationship?: RelationshipAdapter;
         comparisonValue: unknown;
         operator: FilterOperator;
         isNot: boolean;
@@ -48,6 +53,7 @@ export class PropertyFilter extends Filter {
     }) {
         super();
         this.attribute = attribute;
+        this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.operator = operator;
         this.isNot = isNot;
@@ -63,7 +69,7 @@ export class PropertyFilter extends Filter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
-        const prop = this.getPropertyRef(queryASTContext);
+        const prop = this.getPropertyRefOrAliasesCase(queryASTContext);
 
         if (this.comparisonValue === null) {
             return this.getNullPredicate(prop);
@@ -72,6 +78,42 @@ export class PropertyFilter extends Filter {
         const baseOperation = this.getOperation(prop);
 
         return this.wrapInNotIfNeeded(baseOperation);
+    }
+
+    private getPropertyRefOrAliasesCase(queryASTContext: QueryASTContext): Cypher.Property | Cypher.Case {
+        const implementationsWithAlias = this.getAliasesToResolve();
+        if (implementationsWithAlias) {
+            return this.generateCaseForAliasedFields(queryASTContext, implementationsWithAlias);
+        }
+        return this.getPropertyRef(queryASTContext);
+    }
+
+    private getAliasesToResolve(): [string[], string][] | undefined {
+        if (!this.relationship || !(this.relationship.target instanceof InterfaceEntityAdapter)) {
+            return;
+        }
+        const aliasedImplementationsMap = this.relationship.target.getImplementationToAliasMapWhereAliased(
+            this.attribute
+        );
+        if (!aliasedImplementationsMap.length) {
+            return;
+        }
+        return aliasedImplementationsMap;
+    }
+
+    private generateCaseForAliasedFields(
+        queryASTContext: QueryASTContext,
+        concreteLabelsToAttributeAlias: [string[], string][]
+    ): Cypher.Case {
+        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        const aliasesCase = new Cypher.Case();
+        for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
+            aliasesCase
+                .when(queryASTContext.target.hasLabels(...labels))
+                .then(queryASTContext.target.property(databaseName));
+        }
+        aliasesCase.else(queryASTContext.target.property(this.attribute.databaseName));
+        return aliasesCase;
     }
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
@@ -88,7 +130,7 @@ export class PropertyFilter extends Filter {
     /** Returns the operation for a given filter.
      * To be overridden by subclasses
      */
-    protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {
+    protected getOperation(prop: Cypher.Property | Cypher.Case): Cypher.ComparisonOp {
         return this.createBaseOperation({
             operator: this.operator,
             property: prop,
@@ -120,7 +162,7 @@ export class PropertyFilter extends Filter {
         return expr;
     }
 
-    private getNullPredicate(propertyRef: Cypher.Property): Cypher.Predicate {
+    private getNullPredicate(propertyRef: Cypher.Property | Cypher.Case): Cypher.Predicate {
         if (this.isNot) {
             return Cypher.isNotNull(propertyRef);
         } else {

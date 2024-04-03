@@ -153,6 +153,7 @@ export class FilterFactory {
                         return this.createInterfaceNodeFilters({
                             entity,
                             whereFields: value,
+                            relationship: rel,
                         });
                     }
                     return this.createNodeFilters(entity, value);
@@ -164,12 +165,14 @@ export class FilterFactory {
 
     protected createPropertyFilter({
         attribute,
+        relationship,
         comparisonValue,
         operator,
         isNot,
         attachedTo,
     }: {
         attribute: AttributeAdapter;
+        relationship?: RelationshipAdapter;
         comparisonValue: unknown;
         operator: WhereOperator | undefined;
         isNot: boolean;
@@ -197,6 +200,7 @@ export class FilterFactory {
 
         return new PropertyFilter({
             attribute,
+            relationship,
             comparisonValue,
             isNot,
             operator: filterOperator,
@@ -267,10 +271,12 @@ export class FilterFactory {
         entity,
         targetEntity,
         whereFields,
+        relationship,
     }: {
         entity: InterfaceEntityAdapter;
         targetEntity?: ConcreteEntityAdapter;
         whereFields: Record<string, any>;
+        relationship?: RelationshipAdapter;
     }): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
@@ -317,6 +323,7 @@ export class FilterFactory {
                 }
                 return this.createPropertyFilter({
                     attribute: attr,
+                    relationship,
                     comparisonValue: value,
                     isNot,
                     operator,
