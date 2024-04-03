@@ -20,7 +20,7 @@
 import { GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import { generate } from "randomstring";
-import { TestHelper } from "./utils/tests-helper";
+import { TestHelper } from "../utils/tests-helper";
 
 const GraphQLUpperCaseString = new GraphQLScalarType({
     name: "UpperCaseString",

@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("array-pop-errors", () => {
     const testHelper = new TestHelper();

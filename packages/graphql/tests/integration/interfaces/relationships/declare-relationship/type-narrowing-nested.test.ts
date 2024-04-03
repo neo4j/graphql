@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("type narrowing nested connections", () => {
     const testHelper = new TestHelper();
@@ -47,12 +46,12 @@ describe("type narrowing nested connections", () => {
         untrainedPersonName = "anyone";
         movieTitle = "movie1";
         movieTitle2 = "movie2";
-        movieRuntime = faker.number.int({ max: 100000 });
-        movieScreenTime = faker.number.int({ max: 100000 });
+        movieRuntime = 99105;
+        movieScreenTime = 87653;
         amatureProductionTitle = "amature";
-        seriesEpisodes = faker.number.int({ max: 100000 });
-        seriesScreenTime = faker.number.int({ max: 100000 });
-        sceneNr = faker.number.int({ max: 100000 });
+        seriesEpisodes = 607;
+        seriesScreenTime = 73385;
+        sceneNr = 16220;
 
         Movie = testHelper.createUniqueType("Movie");
         AmatureProduction = testHelper.createUniqueType("AmatureProduction");

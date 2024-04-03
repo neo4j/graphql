@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-where-edge-int", () => {
     const testHelper = new TestHelper();
@@ -58,7 +57,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(234);
 
         await testHelper.executeCypher(
             `
@@ -96,7 +95,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(5454);
         const someIntGt = someInt - 1;
 
         await testHelper.executeCypher(
@@ -135,7 +134,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(100000);
 
         await testHelper.executeCypher(
             `
@@ -173,7 +172,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(2);
         const someIntLT = someInt + 1;
 
         await testHelper.executeCypher(
@@ -212,7 +211,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int({ max: 100000 }));
+        const someInt = Number(572);
 
         await testHelper.executeCypher(
             `

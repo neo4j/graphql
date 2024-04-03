@@ -21,12 +21,12 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ExecutionResult, GraphQLArgs } from "graphql";
 import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
-import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../../src";
-import { Neo4jGraphQL } from "../../../src";
-import { Neo4jDatabaseInfo } from "../../../src/classes";
-import type { Neo4jEdition } from "../../../src/classes/Neo4jDatabaseInfo";
-import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
+import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
+import { Neo4jGraphQL } from "../../src";
+import { Neo4jDatabaseInfo } from "../../src/classes";
+import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
+import { createBearerToken } from "./create-bearer-token";
+import { UniqueType } from "./graphql-types";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
@@ -41,7 +41,12 @@ export class TestHelper {
 
     private customDB: string | undefined;
 
-    private get database(): string {
+    private cdc: boolean;
+    constructor({ cdc = false }: { cdc: boolean } = { cdc: false }) {
+        this.cdc = cdc;
+    }
+
+    public get database(): string {
         return this.customDB ?? this._database;
     }
 
@@ -107,6 +112,7 @@ export class TestHelper {
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
         if (!this.driver) {
+            this.reset();
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
         const driver = await this.getDriver();
@@ -156,6 +162,10 @@ export class TestHelper {
         } catch (error: any) {
             await driver.close();
             throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
+        }
+
+        if (this.cdc) {
+            await driver.executeQuery(`ALTER DATABASE ${this.database} SET OPTION txLogEnrichment "FULL"`);
         }
 
         this.driver = driver;

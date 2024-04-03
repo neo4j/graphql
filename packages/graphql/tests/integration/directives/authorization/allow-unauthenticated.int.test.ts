@@ -21,7 +21,7 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345

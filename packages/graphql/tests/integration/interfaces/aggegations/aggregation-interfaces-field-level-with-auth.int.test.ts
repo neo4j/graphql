@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLError } from "graphql";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Interface Field Level Aggregations with authorization", () => {
     const secret = "the-secret";

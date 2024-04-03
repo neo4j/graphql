@@ -22,7 +22,7 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("assertIndexesAndConstraints/unique", () => {
     const testHelper = new TestHelper();

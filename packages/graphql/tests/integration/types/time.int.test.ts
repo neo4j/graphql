@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { Time, isTime } from "neo4j-driver";
 import { generate } from "randomstring";
 import { parseTime } from "../../../src/graphql/scalars/Time";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Time", () => {
     const testHelper = new TestHelper();
@@ -49,7 +48,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const time = faker.date.past().toISOString().split("T")[1];
+            const time = "2024-01-29T03:57:32.358Z".split("T")[1];
             const parsedTime = parseTime(time);
 
             const mutation = `
@@ -100,9 +99,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const times = [...new Array(faker.number.int({ min: 2, max: 4 }))].map(
-                () => faker.date.past().toISOString().split("T")[1]
-            );
+            const times = [...new Array(4)].map(() => "2023-06-09T11:17:47.789Z".split("T")[1]);
             const parsedTimes = times.map((time) => parseTime(time));
 
             const mutation = `
@@ -169,7 +166,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const time = faker.date.past().toISOString().split("T")[1];
+            const time = "2023-07-12T05:44:06.918Z".split("T")[1];
             const parsedTime = parseTime(time);
 
             await testHelper.executeCypher(
@@ -230,7 +227,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const date = faker.date.future();
+            const date = new Date("2024-02-17T11:49:48.322Z");
             const time = date.toISOString().split("T")[1];
             const neo4jTime = Time.fromStandardDate(date);
             const parsedTime = parseTime(time);

@@ -21,7 +21,7 @@ import type { JWKSMock } from "mock-jwks";
 import createJWKSMock from "mock-jwks";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Global authentication - Authorization JWKS plugin", () => {
     let jwksMock: JWKSMock;

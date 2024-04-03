@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import { toGlobalId } from "../../../../src/utils/global-ids";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 // used to confirm the issue: https://github.com/neo4j/graphql/issues/4158
 describe("RelayId projection with GraphQL field alias", () => {

@@ -19,7 +19,7 @@
 
 import { type Integer } from "neo4j-driver";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("connectOrCreate", () => {
     describe("Update -> ConnectOrCreate", () => {

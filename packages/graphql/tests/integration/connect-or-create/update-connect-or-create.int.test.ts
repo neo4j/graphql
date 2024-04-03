@@ -18,7 +18,7 @@
  */
 
 import type { Integer } from "neo4j-driver";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Update -> ConnectOrCreate", () => {
     const testHelper = new TestHelper();

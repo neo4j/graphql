@@ -20,7 +20,7 @@
 import { gql } from "graphql-tag";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import type { EventMeta } from "../../../src/types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Subscriptions Single Instance Plugin", () => {
     const testHelper = new TestHelper();

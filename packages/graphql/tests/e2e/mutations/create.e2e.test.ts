@@ -17,20 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import Neo4j from "../setup/neo4j";
 
 describe("Create", () => {
-    let neo4j: Neo4j;
-    let driver: Driver;
+    const testHelper = new TestHelper();
 
-    const typeMovie = new UniqueType("Movie");
+    const typeMovie = testHelper.createUniqueType("Movie");
 
     let server: TestGraphQLServer;
 
@@ -41,18 +37,12 @@ describe("Create", () => {
          }
          `;
 
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
+        const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
         // eslint-disable-next-line @typescript-eslint/require-await
         server = new ApolloTestServer(neoSchema, async ({ req }) => ({
             sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
+                database: testHelper.database,
             },
             token: req.headers.authorization,
         }));
@@ -60,8 +50,8 @@ describe("Create", () => {
     });
 
     afterAll(async () => {
+        await testHelper.close();
         await server.close();
-        await driver.close();
     });
 
     test("simple mutation", async () => {

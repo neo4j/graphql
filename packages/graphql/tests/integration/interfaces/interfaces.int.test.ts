@@ -18,7 +18,7 @@
  */
 
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Interfaces tests", () => {
     const secret = "the-secret";

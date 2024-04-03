@@ -19,7 +19,7 @@
 
 import type { Neo4jGraphQL } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Connections -> Unions", () => {
     const testHelper = new TestHelper();

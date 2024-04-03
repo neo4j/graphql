@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import { parseLocalTime } from "../../../src/graphql/scalars/LocalTime";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("LocalTime", () => {
     const testHelper = new TestHelper();
@@ -49,7 +48,7 @@ describe("LocalTime", () => {
     describe("create", () => {
         test("should create a movie (with a LocalTime)", async () => {
             const id = generate({ readable: false });
-            const time = faker.date.past().toISOString().split("T")[1]?.split("Z")[0];
+            const time = "2023-10-16T16:33:05.024Z".split("T")[1]?.split("Z")[0];
             const parsedTime = parseLocalTime(time);
 
             const mutation = /* GraphQL */ `
@@ -93,9 +92,7 @@ describe("LocalTime", () => {
 
         test("should create a movie (with many Times)", async () => {
             const id = generate({ readable: false });
-            const times = [...new Array(faker.number.int({ min: 2, max: 4 }))].map(
-                () => faker.date.past().toISOString().split("T")[1]?.split("Z")[0]
-            );
+            const times = [...new Array(3)].map(() => "2023-11-03T00:02:28.229Z".split("T")[1]?.split("Z")[0]);
             const parsedTimes = times.map((time) => parseLocalTime(time));
 
             const mutation = /* GraphQL */ `
@@ -156,7 +153,7 @@ describe("LocalTime", () => {
     describe("update", () => {
         test("should update a movie (with a LocalTime)", async () => {
             const id = generate({ readable: false });
-            const time = faker.date.past().toISOString().split("T")[1]?.split("Z")[0];
+            const time = "2024-01-18T11:15:48.144Z".split("T")[1]?.split("Z")[0];
             const parsedTime = parseLocalTime(time);
 
             await testHelper.executeCypher(
@@ -210,7 +207,7 @@ describe("LocalTime", () => {
     describe("filter", () => {
         test("should filter based on time equality", async () => {
             const id = generate({ readable: false });
-            const date = faker.date.future();
+            const date = new Date("2024-09-17T11:49:48.322Z");
             const time = date.toISOString().split("T")[1]?.split("Z")[0];
             const neo4jTime = neo4jDriver.types.LocalTime.fromStandardDate(date);
             const parsedTime = parseLocalTime(time);

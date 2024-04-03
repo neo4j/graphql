@@ -18,7 +18,7 @@
  */
 
 import type { Integer, QueryResult } from "neo4j-driver";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 async function runAndParseRecords<T extends Record<string, unknown>>(
     testHelper: TestHelper,

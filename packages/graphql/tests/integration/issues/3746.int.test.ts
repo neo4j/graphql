@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3746", () => {
     const testHelper = new TestHelper();

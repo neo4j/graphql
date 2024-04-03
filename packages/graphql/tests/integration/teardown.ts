@@ -17,25 +17,22 @@
  * limitations under the License.
  */
 
+import { TestHelper } from "../utils/tests-helper";
+
 /*
  * File not imported in project, and to be used in test pipelines to teardown target database.
  *
  *   `ts-node tests/integration/teardown.ts`
  */
 
-import Neo4jHelper from "./neo4j";
-
 const teardown = async () => {
-    const neo4j = new Neo4jHelper();
-    const driver = await neo4j.getDriver();
-    const session = await neo4j.getSession();
+    const testHelper = new TestHelper();
 
     try {
         console.log("Clearing down database...");
-        await session.run("MATCH (n) DETACH DELETE n");
+        await testHelper.executeCypher("MATCH (n) DETACH DELETE n");
     } finally {
-        await session.close();
-        await driver.close();
+        await testHelper.close();
     }
 };
 

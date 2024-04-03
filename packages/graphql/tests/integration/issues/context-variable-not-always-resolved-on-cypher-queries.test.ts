@@ -18,7 +18,7 @@
  */
 
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     const testHelper = new TestHelper();

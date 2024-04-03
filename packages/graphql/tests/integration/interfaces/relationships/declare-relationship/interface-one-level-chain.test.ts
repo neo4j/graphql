@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("interface implementing interface with declared relationships", () => {
     const testHelper = new TestHelper();
@@ -95,12 +94,12 @@ describe("interface implementing interface with declared relationships", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 90446;
+        const movieScreenTime = 94090;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 59857;
+        const seriesScreenTime = 16711;
 
         const query = `
             query Productions {
@@ -280,13 +279,13 @@ describe("interface implementing interface with declared relationships", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 33068;
+        const movieScreenTime = 5810;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 49193;
+        const seriesScreenTime = 86451;
+        const episodeNr = 96228;
 
         const query = /* GraphQL */ `
             query Shows {
@@ -522,13 +521,13 @@ describe("interface implementing interface with declared relationships", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 39467;
+        const movieScreenTime = 81390;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 3154;
+        const seriesScreenTime = 44814;
+        const episodeNr = 60460;
 
         const query = /* GraphQL */ `
             query Shows {
@@ -857,13 +856,13 @@ describe("interface implementing interface with declared relationships", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 19548;
+        const movieScreenTime = 77112;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const episodeNr = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 92772;
+        const seriesScreenTime = 97200;
+        const episodeNr = 24425;
 
         const query = /* GraphQL */ `
             query Shows {
@@ -948,12 +947,12 @@ describe("interface implementing interface with declared relationships", () => {
 
         const movieTitle = "movie1";
         const movieTitle2 = "movie2";
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 83562;
+        const movieScreenTime = 62906;
 
         const seriesTitle = "series1";
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 90176;
+        const seriesScreenTime = 44779;
 
         // const query = `
         //     query Actors {

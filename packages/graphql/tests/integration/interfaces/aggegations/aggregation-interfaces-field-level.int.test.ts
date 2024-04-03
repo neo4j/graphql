@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Interface Field Level Aggregations", () => {
     const testHelper = new TestHelper();

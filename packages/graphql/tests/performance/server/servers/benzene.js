@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-"use strict"
+"use strict";
 
 import neo4j from "neo4j-driver";
+
+import { Benzene, makeHandler, parseGraphQLBody } from "@benzene/http";
+// eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { createServer } from "http";
-import { Benzene, makeHandler, parseGraphQLBody } from "@benzene/http";
 import { getLargeSchema } from "../typedefs.js";
 
 async function main() {
@@ -43,7 +45,8 @@ async function main() {
     await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
 
     const benzene = new Benzene({
-        schema, contextFn: () => ({}),
+        schema,
+        contextFn: () => ({}),
     });
 
     const graphqlHTTP = makeHandler(benzene);

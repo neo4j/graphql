@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("587: Dates in edges can cause wrongly generated cypher", () => {
     const testHelper = new TestHelper();

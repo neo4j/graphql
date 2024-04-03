@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4908", () => {
     const testHelper = new TestHelper();

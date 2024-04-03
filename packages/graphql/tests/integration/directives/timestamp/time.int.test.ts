@@ -21,7 +21,7 @@ import type { Integer } from "neo4j-driver";
 import { isTime } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("timestamp/time", () => {
     const testHelper = new TestHelper();

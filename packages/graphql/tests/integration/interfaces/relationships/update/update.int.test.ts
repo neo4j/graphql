@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("interface relationships", () => {
     const testHelper = new TestHelper();
@@ -87,8 +86,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 76907;
+        const movieScreenTime = 82739;
 
         const movieNewTitle = generate({
             readable: true,
@@ -99,7 +98,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesScreenTime = 53301;
 
         const query = `
             mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
@@ -182,8 +181,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 44372;
+        const movieScreenTime = 92046;
 
         const movieNewTitle = generate({
             readable: true,
@@ -194,7 +193,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesScreenTime = 38286;
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {

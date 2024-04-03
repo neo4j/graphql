@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
-import { generate } from "randomstring";
-import { TestHelper } from "./utils/tests-helper";
+import { TestHelper } from "../utils/tests-helper";
 
 describe("delete interface relationships", () => {
     const testHelper = new TestHelper();
@@ -85,46 +83,25 @@ describe("delete interface relationships", () => {
             typeDefs,
         });
 
-        actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        actorName1 = "Arthur Dent";
+        actorName2 = "Ford Prefect";
 
-        movieTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        movieTitle1 = "The Hitchhiker's Guide to the Galaxy";
 
-        movieTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        movieTitle2 = "The Restaurant at the End of the Universe";
 
-        movieRuntime1 = faker.number.int({ max: 100000 });
-        movieRuntime2 = faker.number.int({ max: 100000 });
-        movieScreenTime1 = faker.number.int({ max: 100000 });
-        movieScreenTime2 = faker.number.int({ max: 100000 });
+        movieRuntime1 = 121;
+        movieRuntime2 = 321;
+        movieScreenTime1 = 455;
+        movieScreenTime2 = 4325;
 
-        seriesTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        seriesScreenTime1 = faker.number.int({ max: 100000 });
-        seriesScreenTime2 = faker.number.int({ max: 100000 });
-        seriesScreenTime3 = faker.number.int({ max: 100000 });
-        nestedMovieActorScreenTime = faker.number.int({ max: 100000 });
+        seriesTitle1 = "Life, the Universe and Everything";
+        seriesTitle2 = "So Long, and Thanks for All the Fish";
+        seriesTitle3 = "Mostly Harmless";
+        seriesScreenTime1 = 111;
+        seriesScreenTime2 = 3232;
+        seriesScreenTime3 = 5556;
+        nestedMovieActorScreenTime = 2496;
 
         await testHelper.executeCypher(
             `

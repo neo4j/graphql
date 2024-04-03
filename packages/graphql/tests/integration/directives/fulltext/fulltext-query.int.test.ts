@@ -26,7 +26,7 @@ import { upperFirst } from "../../../../src/utils/upper-first";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
