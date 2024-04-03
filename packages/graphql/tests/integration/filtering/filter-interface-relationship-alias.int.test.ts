@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-import { faker } from "@faker-js/faker";
 import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("interface relationships aliased fields", () => {
     const testHelper = new TestHelper();
@@ -76,7 +75,7 @@ describe("interface relationships aliased fields", () => {
         await testHelper.close();
     });
 
-    test.only("should read and return interface relationship fields with interface relationship filter SOME", async () => {
+    test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
         const actorName = generate({
             readable: true,
             charset: "alphabetic",
@@ -94,15 +93,15 @@ describe("interface relationships aliased fields", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 123;
+        const movieScreenTime = 23;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 234;
+        const seriesScreenTime = 45;
 
         const query = /* GraphQL */ `
             query Actors($title: String) {
@@ -181,15 +180,15 @@ describe("interface relationships aliased fields", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 123;
+        const movieScreenTime = 23;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
+        const seriesEpisodes = 234;
+        const seriesScreenTime = 45;
 
         const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
@@ -255,16 +254,15 @@ describe("interface relationships aliased fields", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
+        const movieRuntime = 123;
+        const movieScreenTime = 23;
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int({ max: 100000 });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-
+        const seriesEpisodes = 234;
+        const seriesScreenTime = 45;
         const query = /* GraphQL */ `
             query ProtectedActors {
                  ${ProtectedActor.plural} {
