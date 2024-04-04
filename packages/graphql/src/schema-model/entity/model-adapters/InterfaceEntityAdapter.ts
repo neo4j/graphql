@@ -137,7 +137,15 @@ export class InterfaceEntityAdapter {
     }
 
     public get subscriptionEventPayloadFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
+        return Array.from(this.attributes.values()).filter((attribute) => {
+            if (!attribute.isEventPayloadField()) {
+                return false;
+            }
+            const attributeIsCustomResolvedInAnyImplementations = !!this.concreteEntities
+                .map((e) => e.findAttribute(attribute.name))
+                .find((attribute) => attribute?.isCustomResolvable());
+            return !attributeIsCustomResolvedInAnyImplementations;
+        });
     }
 
     public findAttribute(name: string): AttributeAdapter | undefined {
