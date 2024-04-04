@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
         const resolvers = {
             [typeMovie.name]: {
-                info: ({ id, title }, args, context, info) => {
+                info: ({ id, title }) => {
                     return `${id}, ${title}`;
                 },
             },

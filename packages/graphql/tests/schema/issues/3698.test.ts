@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
         const subscriptionsEngine = new TestSubscriptionsEngine();
         const resolvers = {
             Movie: {
-                info: ({ id, name }, args, context, info) => {
+                info: ({ id, name }) => {
                     return `${id}, ${name}`;
                 },
             },
@@ -1098,7 +1098,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
         const subscriptionsEngine = new TestSubscriptionsEngine();
         const resolvers = {
             Movie: {
-                info: ({ id, name }, args, context, info) => {
+                info: ({ id, name }) => {
                     return `${id}, ${name}`;
                 },
             },
@@ -2263,7 +2263,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
         const subscriptionsEngine = new TestSubscriptionsEngine();
         const resolvers = {
             Movie: {
-                info: ({ id, name }, args, context, info) => {
+                info: ({ id, name }) => {
                     return `${id}, ${name}`;
                 },
             },
