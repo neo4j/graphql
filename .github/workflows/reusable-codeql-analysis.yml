@@ -14,9 +14,9 @@ jobs:
         with:
           node-version: lts/*
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@1b1aada464948af03b950897e5eb522f92603cc2 # v3
+        uses: github/codeql-action/init@4355270be187e1b672a7a1c7c7bae5afdc1ab94a # v3
         with:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@1b1aada464948af03b950897e5eb522f92603cc2 # v3
+        uses: github/codeql-action/analyze@4355270be187e1b672a7a1c7c7bae5afdc1ab94a # v3
