@@ -88,10 +88,10 @@ function parseEvents(schemaModel: Neo4jGraphQLSchemaModel) {
 }
 
 type EventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
-type MapIdToListOfTypenamesType = Map<number, { fromTypename: string; toTypename: string }[]>;
+type MapIdToListOfTypenamesType = Map<string, { fromTypename: string; toTypename: string }[]>;
 function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: EventType[]): SubscriptionsEvent[] {
     const resultIdsByEventType = eventTypes.reduce((acc, eventType) => {
-        acc.set(eventType, new Map<number, { fromTypename: string; toTypename: string }[]>());
+        acc.set(eventType, new Map<string, { fromTypename: string; toTypename: string }[]>());
         return acc;
     }, new Map<EventType, MapIdToListOfTypenamesType>());
 
@@ -157,7 +157,7 @@ function isRelationshipWithLabelsSubscriptionMeta(
 }
 function serializeNodeSubscriptionEvent(event: NodeSubscriptionMeta): SubscriptionsEvent {
     return {
-        id: serializeNeo4jValue(event.id),
+        id: event.id.toString(),
         typename: event.typename,
         timestamp: serializeNeo4jValue(event.timestamp),
         event: event.event,
@@ -171,9 +171,9 @@ function serializeRelationshipSubscriptionEvent(
     event: RelationshipSubscriptionMetaTypenameParameters
 ): SubscriptionsEvent {
     return {
-        id: serializeNeo4jValue(event.id),
-        id_from: serializeNeo4jValue(event.id_from),
-        id_to: serializeNeo4jValue(event.id_to),
+        id: event.id.toString(),
+        id_from: event.id_from.toString(),
+        id_to: event.id_to.toString(),
         relationshipName: event.relationshipName,
         fromTypename: serializeNeo4jValue(event.fromTypename),
         toTypename: serializeNeo4jValue(event.toTypename),

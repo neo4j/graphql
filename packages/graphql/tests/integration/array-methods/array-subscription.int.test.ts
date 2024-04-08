@@ -85,7 +85,7 @@ describe("array-subscription", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {
@@ -119,7 +119,7 @@ describe("array-subscription", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {
@@ -153,7 +153,7 @@ describe("array-subscription", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {

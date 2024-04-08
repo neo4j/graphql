@@ -79,14 +79,14 @@ describe("Subscriptions delete", () => {
 
         expect(plugin.eventList).toIncludeAllMembers([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "delete",
                 properties: { old: { id: "1" }, new: undefined },
                 typename: typeMovie.name,
             },
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "delete",
                 properties: { old: { id: "2" }, new: undefined },
@@ -118,35 +118,35 @@ describe("Subscriptions delete", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "1" }, new: undefined },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "3" }, new: undefined },
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "2" }, new: undefined },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "5" }, new: undefined },
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "4" }, new: undefined },
@@ -192,28 +192,28 @@ describe("Subscriptions delete", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "1" }, new: undefined },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "3" }, new: undefined },
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "2" }, new: undefined },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "4" }, new: undefined },

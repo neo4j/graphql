@@ -217,7 +217,7 @@ describe("interface relationships", () => {
             expect.arrayContaining([
                 {
                     event: "create",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: {
                             name: name2,
@@ -229,7 +229,7 @@ describe("interface relationships", () => {
                 },
                 {
                     event: "create",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: {
                             runtime: movieRuntime,
@@ -242,7 +242,7 @@ describe("interface relationships", () => {
                 },
                 {
                     event: "create",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: {
                             runtime: episodeRuntime,
@@ -254,7 +254,7 @@ describe("interface relationships", () => {
                 },
                 {
                     event: "create",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: {
                             title: seriesTitle,
@@ -266,7 +266,7 @@ describe("interface relationships", () => {
                 },
                 {
                     event: "create",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: {
                             name: name1,
