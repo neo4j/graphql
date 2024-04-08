@@ -36,7 +36,7 @@ describe("subscriptionWhere", () => {
                     title: "movie1",
                 },
             },
-            id: 1,
+            id: "1",
             timestamp: 1,
             typename: "Movie",
         };
@@ -68,7 +68,7 @@ describe("subscriptionWhere", () => {
                     title: "movie1",
                 },
             },
-            id: 1,
+            id: "1",
             timestamp: 1,
             typename: "Movie",
         };
