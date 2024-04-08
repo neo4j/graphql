@@ -78,7 +78,7 @@ describe("Subscriptions Single Instance Plugin", () => {
         const eventMeta = await onEventPromise;
 
         expect(eventMeta).toEqual({
-            id: expect.any(Number),
+            id: expect.any(String),
             timestamp: expect.any(Number),
             event: "create",
             properties: { old: undefined, new: { id: "1" } },
