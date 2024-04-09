@@ -142,6 +142,10 @@ describe("3817", () => {
               id: SortDirection
             }
 
+            input FriendOfUpdateInput {
+              id: String
+            }
+
             input FriendOfWhere {
               AND: [FriendOfWhere!]
               NOT: FriendOfWhere
@@ -314,6 +318,7 @@ describe("3817", () => {
             }
 
             input PersonFriendsUpdateConnectionInput {
+              edge: FriendOfUpdateInput
               node: PersonUpdateInput
             }
 

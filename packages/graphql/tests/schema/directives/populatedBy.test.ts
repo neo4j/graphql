@@ -206,6 +206,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieCreateInput {
+                  callback2: String!
                   id: ID
                 }
 
@@ -234,6 +235,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieUpdateInput {
+                  callback1: String
                   id: ID
                 }
 
@@ -426,6 +428,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieCreateInput {
+                  callback2: Int!
                   id: ID
                 }
 
@@ -454,6 +457,9 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieUpdateInput {
+                  callback1: Int
+                  callback1_DECREMENT: Int
+                  callback1_INCREMENT: Int
                   id: ID
                 }
 
@@ -1190,6 +1196,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesCreateInput {
+                  callback2: String!
                   id: ID!
                 }
 
@@ -1201,6 +1208,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesUpdateInput {
+                  callback1: String
                   id: ID
                 }
 
@@ -1769,6 +1777,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesCreateInput {
+                  callback2: Int!
                   id: ID!
                 }
 
@@ -1780,6 +1789,9 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesUpdateInput {
+                  callback1: Int
+                  callback1_DECREMENT: Int
+                  callback1_INCREMENT: Int
                   id: ID
                 }
 
