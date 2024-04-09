@@ -174,9 +174,9 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -197,9 +197,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -220,9 +220,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -243,9 +243,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -331,9 +331,9 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -354,9 +354,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -435,9 +435,9 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -459,9 +459,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -615,9 +615,9 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -639,9 +639,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -662,9 +662,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -685,9 +685,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -708,9 +708,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -732,9 +732,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -756,9 +756,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {
@@ -780,9 +780,9 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.anything(), // NOTE: This should be expect.any(Number) or expect.any(String) (Issue #4890)
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id: expect.any(String),
+                    id_from: expect.any(String),
+                    id_to: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create_relationship",
                     properties: {

@@ -45,7 +45,7 @@ describe("Subscriptions RabbitMQ Integration", () => {
                     },
                     old: undefined,
                 },
-                id: 2,
+                id: "2",
                 timestamp: 2,
                 typename: "test",
             };

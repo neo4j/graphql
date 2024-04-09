@@ -314,7 +314,7 @@ export type NodeSubscriptionsEvent =
               old: undefined;
               new: Record<string, any>;
           };
-          id: number;
+          id: string;
           timestamp: number;
       }
     | {
@@ -324,7 +324,7 @@ export type NodeSubscriptionsEvent =
               old: Record<string, any>;
               new: Record<string, any>;
           };
-          id: number;
+          id: string;
           timestamp: number;
       }
     | {
@@ -334,7 +334,7 @@ export type NodeSubscriptionsEvent =
               old: Record<string, any>;
               new: undefined;
           };
-          id: number;
+          id: string;
           timestamp: number;
       };
 export type RelationshipSubscriptionsEvent =
@@ -346,11 +346,11 @@ export type RelationshipSubscriptionsEvent =
               to: Record<string, any>;
               relationship: Record<string, any>;
           };
-          id_from: number;
-          id_to: number;
+          id_from: string;
+          id_to: string;
           fromTypename: string;
           toTypename: string;
-          id: number;
+          id: string;
           timestamp: number;
       }
     | {
@@ -361,11 +361,11 @@ export type RelationshipSubscriptionsEvent =
               to: Record<string, any>;
               relationship: Record<string, any>;
           };
-          id_from: number;
-          id_to: number;
+          id_from: string;
+          id_to: string;
           fromTypename: string;
           toTypename: string;
-          id: number;
+          id: string;
           timestamp: number;
       };
 /** Serialized subscription event */

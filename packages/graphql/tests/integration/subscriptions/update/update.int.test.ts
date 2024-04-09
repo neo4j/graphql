@@ -151,7 +151,7 @@ describe("Subscriptions update", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
@@ -183,14 +183,14 @@ describe("Subscriptions update", () => {
         expect(plugin.eventList).toEqual(
             expect.toIncludeSameMembers([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: {
@@ -253,14 +253,14 @@ describe("Subscriptions update", () => {
         expect(plugin.eventList).toEqual(
             expect.toIncludeSameMembers([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: {
@@ -270,7 +270,7 @@ describe("Subscriptions update", () => {
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: {
@@ -338,28 +338,28 @@ describe("Subscriptions update", () => {
             expect.toIncludeSameMembers([
                 {
                     event: "update",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: { new: { id: "1", name: "The Matrix" }, old: { id: "1", name: "Terminator" } },
                     timestamp: expect.any(Number),
                     typename: typeMovie.name,
                 },
                 {
                     event: "update",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: { new: { name: "ford" }, old: { name: "arthur" } },
                     timestamp: expect.any(Number),
                     typename: typeActor.name,
                 },
                 {
                     event: "update",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: { new: { id: "3", name: "new movie title" }, old: { id: "3", name: "Terminator 2" } },
                     timestamp: expect.any(Number),
                     typename: typeMovie.name,
                 },
                 {
                     event: "update",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: { id: "4", name: "new movie title" },
                         old: { id: "4", name: "The Many Adventures of Winnie the Pooh 2" },
@@ -369,7 +369,7 @@ describe("Subscriptions update", () => {
                 },
                 {
                     event: "update",
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     properties: {
                         new: { id: "2", name: "The Matrix" },
                         old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
@@ -422,14 +422,14 @@ describe("Subscriptions update", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: {
@@ -486,14 +486,14 @@ describe("Subscriptions update", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: {
@@ -555,14 +555,14 @@ describe("Subscriptions update", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: {
@@ -572,7 +572,7 @@ describe("Subscriptions update", () => {
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: {
@@ -652,14 +652,14 @@ describe("Subscriptions update", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: {
@@ -669,7 +669,7 @@ describe("Subscriptions update", () => {
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: {
@@ -679,7 +679,7 @@ describe("Subscriptions update", () => {
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: {
@@ -689,7 +689,7 @@ describe("Subscriptions update", () => {
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: {
@@ -723,7 +723,7 @@ describe("Subscriptions update", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {
@@ -761,7 +761,7 @@ describe("Subscriptions update", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {
@@ -800,7 +800,7 @@ describe("Subscriptions update", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {
@@ -859,7 +859,7 @@ describe("Subscriptions update", () => {
 
         expect(plugin.eventList).toEqual([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {
@@ -869,7 +869,7 @@ describe("Subscriptions update", () => {
                 typename: typeActor.name,
             },
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: {

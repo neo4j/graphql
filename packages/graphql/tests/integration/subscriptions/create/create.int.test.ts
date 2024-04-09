@@ -91,42 +91,42 @@ describe("Subscriptions create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: { old: undefined, new: { id: "2" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: { old: undefined, new: { name: "Andrés" } },
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: { old: undefined, new: { id: "1" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: { old: undefined, new: { id: "4" } },
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: { old: undefined, new: { name: "Darrell" } },
                     typename: typeActor.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: { old: undefined, new: { id: "3" } },

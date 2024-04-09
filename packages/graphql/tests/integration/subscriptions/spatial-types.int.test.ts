@@ -150,7 +150,7 @@ describe("Subscriptions to spatial types", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: {
@@ -163,7 +163,7 @@ describe("Subscriptions to spatial types", () => {
                     typename: typeMovie.name,
                 },
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "create",
                     properties: {
@@ -252,7 +252,7 @@ describe("Subscriptions to spatial types", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: {
@@ -489,7 +489,7 @@ describe("Subscriptions to spatial types", () => {
 
         expect(plugin.eventList).toIncludeSameMembers([
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: {
@@ -502,7 +502,7 @@ describe("Subscriptions to spatial types", () => {
                 typename: typeMovie.name,
             },
             {
-                id: expect.any(Number),
+                id: expect.any(String),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: {
@@ -589,7 +589,7 @@ describe("Subscriptions to spatial types", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(Number),
+                    id: expect.any(String),
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: {
