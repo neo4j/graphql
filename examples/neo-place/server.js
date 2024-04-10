@@ -17,75 +17,79 @@ const { createEngine } = require("./create-engine");
 const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-8");
 
 async function main() {
-    const driver = await getDriver();
+    try {
+        const driver = await getDriver();
 
-    const engine = await createEngine();
+        const engine = await createEngine();
 
-    const neoSchema = new Neo4jGraphQL({
-        typeDefs: typeDefs,
-        driver: driver,
-        features: {
-            authorization: { key: "super-secret42" },
-            subscriptions: engine || true
-        },
-    });
-
-    await setupMap(30);
-    // Apollo server setup
-    const app = express();
-
-    app.use(express.static("dist"));
-
-    const httpServer = createServer(app);
-
-    // Setup websocket server on top of express http server
-    const wsServer = new WebSocketServer({
-        server: httpServer,
-        path: "/graphql",
-    });
-
-    // Build Neo4j/graphql schema
-    const schema = await neoSchema.getSchema();
-
-    await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
-
-    const serverCleanup = useServer(
-        {
-            schema,
-            context: (ctx) => {
-                return ctx;
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: typeDefs,
+            driver: driver,
+            features: {
+                authorization: { key: "super-secret42" },
+                subscriptions: engine || true,
             },
-        },
-        wsServer
-    );
+        });
 
-    const server = new ApolloServer({
-        schema,
-        context: ({ req }) => ({ token: req.headers.authorization }),
-        plugins: [
-            ApolloServerPluginDrainHttpServer({
-                httpServer,
-            }),
+        await setupMap(30);
+        // Apollo server setup
+        const app = express();
+
+        app.use(express.static("dist"));
+
+        const httpServer = createServer(app);
+
+        // Setup websocket server on top of express http server
+        const wsServer = new WebSocketServer({
+            server: httpServer,
+            path: "/graphql",
+        });
+
+        // Build Neo4j/graphql schema
+        const schema = await neoSchema.getSchema();
+
+        await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
+
+        const serverCleanup = useServer(
             {
-                async serverWillStart() {
-                    return {
-                        async drainServer() {
-                            await serverCleanup.dispose();
-                        },
-                    };
+                schema,
+                context: (ctx) => {
+                    return ctx;
                 },
             },
-        ],
-    });
-    await server.start();
-    server.applyMiddleware({
-        app,
-    });
+            wsServer
+        );
 
-    const PORT = process.env.PORT || 4000;
-    httpServer.listen(PORT, () => {
-        console.log(`Server is now running on http://localhost:${PORT}/graphql`);
-    });
+        const server = new ApolloServer({
+            schema,
+            context: ({ req }) => ({ token: req.headers.authorization }),
+            plugins: [
+                ApolloServerPluginDrainHttpServer({
+                    httpServer,
+                }),
+                {
+                    async serverWillStart() {
+                        return {
+                            async drainServer() {
+                                await serverCleanup.dispose();
+                            },
+                        };
+                    },
+                },
+            ],
+        });
+        await server.start();
+        server.applyMiddleware({
+            app,
+        });
+
+        const PORT = process.env.PORT || 4000;
+        httpServer.listen(PORT, () => {
+            console.log(`Server is now running on http://localhost:${PORT}/graphql`);
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 main();
