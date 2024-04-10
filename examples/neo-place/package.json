@@ -38,18 +38,21 @@
         "@apollo/server": "^4.7.0",
         "@neo4j/graphql": "^5.0.0",
         "@neo4j/graphql-amqp-subscriptions-engine": "^2.0.0",
+        "apollo-server-express": "^3.13.0",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
         "graphql": "^16.6.0",
         "graphql-ws": "^5.11.2",
         "neo4j-driver": "^5.8.0",
         "parcel": "^2.8.0",
+        "react": "17",
         "rimraf": "^5.0.0",
         "urql": "^4.0.0",
         "wonka": "^6.1.1",
         "ws": "^8.11.0"
     },
     "devDependencies": {
+        "@types/react": "^17",
         "concurrently": "8.2.2",
         "parcel": "2.12.0"
     }
