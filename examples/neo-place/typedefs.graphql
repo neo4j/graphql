@@ -14,4 +14,7 @@ type Query {
             """
             columnName: "canvas"
         )
+        @authentication
 }
+
+extend type Pixel @authentication
