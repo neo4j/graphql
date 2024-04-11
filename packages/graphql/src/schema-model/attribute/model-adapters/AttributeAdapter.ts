@@ -161,7 +161,7 @@ export class AttributeAdapter {
             return false;
         }
 
-        if (this.timestampCreateIsGenerated()) {
+        if (this.timestampCreateIsGenerated() || this.populatedByCreateIsGenerated()) {
             return false;
         }
 
@@ -203,7 +203,8 @@ export class AttributeAdapter {
         return (
             this.isNonGeneratedField() &&
             this.annotations.settable?.onCreate !== false &&
-            !this.timestampCreateIsGenerated()
+            !this.timestampCreateIsGenerated() &&
+            !this.populatedByCreateIsGenerated()
         );
     }
 
@@ -211,7 +212,8 @@ export class AttributeAdapter {
         return (
             this.isNonGeneratedField() &&
             this.annotations.settable?.onUpdate !== false &&
-            !this.timestampUpdateIsGenerated()
+            !this.timestampUpdateIsGenerated() &&
+            !this.populatedByUpdateIsGenerated()
         );
     }
 
@@ -230,12 +232,27 @@ export class AttributeAdapter {
         return false;
     }
 
+    populatedByCreateIsGenerated(): boolean {
+        if (!this.annotations.populatedBy) {
+            // The populatedBy directive is not set on the field
+            return false;
+        }
+
+        if (this.annotations.populatedBy.operations.includes("CREATE")) {
+            // The populatedBy directive is set to generate on create
+            return true;
+        }
+
+        // The populatedBy directive is not set to generate on create
+        return false;
+    }
+
     isNonGeneratedField(): boolean {
         if (this.isCypher() || this.isCustomResolvable()) {
             return false;
         }
 
-        if (this.annotations.id || this.annotations.populatedBy) {
+        if (this.annotations.id) {
             return false;
         }
 
@@ -258,6 +275,21 @@ export class AttributeAdapter {
         }
 
         // The timestamp directive is not set to generate on update
+        return false;
+    }
+
+    populatedByUpdateIsGenerated(): boolean {
+        if (!this.annotations.populatedBy) {
+            // The populatedBy directive is not set on the field
+            return false;
+        }
+
+        if (this.annotations.populatedBy.operations.includes("UPDATE")) {
+            // The populatedBy directive is set to generate on update
+            return true;
+        }
+
+        // The populatedBy directive is not set to generate on update
         return false;
     }
 
