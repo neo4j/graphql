@@ -140,7 +140,10 @@ export class AttributeAdapter {
     }
 
     isEventPayloadField(): boolean {
-        return this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar();
+        return (
+            (this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar()) &&
+            !this.isCustomResolvable()
+        );
     }
 
     isSubscriptionConnectedRelationshipField(): boolean {
