@@ -127,7 +127,7 @@ export class CreateFactory {
         return unwindCreate;
     }
 
-    public hydrateTopLevelCreateUnwindOperation({
+    private hydrateTopLevelCreateUnwindOperation({
         entity,
         input,
         unwindCreate,
