@@ -101,7 +101,7 @@ export class CreateFactory {
     }): UnwindCreateOperation {
         const rawInputParam = new Cypher.Param(input);
         const unwindCreate = new UnwindCreateOperation({ target: entity, argumentToUnwind: rawInputParam });
-        this.hydrateTopLevelCreateUnwindOperation({ entity, input, unwindCreate, context });
+        this.hydrateUnwindCreateOperation({ entityOrRel: entity, input, unwindCreate, context });
 
         return unwindCreate;
     }
@@ -122,181 +122,165 @@ export class CreateFactory {
             target: relationship,
             argumentToUnwind: unwindVariable,
         });
-        this.hydrateNestedLevelCreateUnwindOperation({ relationship, input, unwindCreate, context });
+        this.hydrateUnwindCreateOperation({ entityOrRel: relationship, input, unwindCreate, context });
 
         return unwindCreate;
     }
 
-    private hydrateTopLevelCreateUnwindOperation({
-        entity,
+    private hydrateUnwindCreateOperation({
+        entityOrRel,
         input,
         unwindCreate,
         context,
     }: {
-        entity: ConcreteEntityAdapter;
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter;
         input: Record<string, any>[];
         unwindCreate: UnwindCreateOperation;
         context: Neo4jGraphQLTranslationContext;
     }) {
-        this.addEntityAuthorization({ entity, context, unwindCreate });
+        const isNested = !isConcreteEntity(entityOrRel);
+        const nestedTarget = isNested ? entityOrRel.target : entityOrRel;
+        assertIsConcreteEntity(nestedTarget);
+        this.addEntityAuthorization({ entity: nestedTarget, context, unwindCreate });
+        const unwindVariable = unwindCreate.getUnwindVariable();
         asArray(input).forEach((inputItem) => {
-            this.raiseAttributeAmbiguity(Object.keys(inputItem ?? {}), entity);
-            for (const key of Object.keys(inputItem)) {
-                const relationship = entity.relationships.get(key);
-                const attribute = entity.attributes.get(key);
+            if (isNested) {
+                this.raiseAttributeAmbiguity(Object.keys(inputItem.node ?? {}), nestedTarget);
+                this.raiseAttributeAmbiguity(Object.keys(inputItem.edge ?? {}), entityOrRel);
+            } else {
+                this.raiseAttributeAmbiguity(Object.keys(inputItem ?? {}), nestedTarget);
+            }
+            const targetInput = isNested ? inputItem["node"] ?? {} : inputItem ?? {};
+            for (const key of Object.keys(targetInput)) {
+                const relationship = nestedTarget.relationships.get(key);
+                const attribute = nestedTarget.attributes.get(key);
                 if (attribute) {
-                    if (!unwindCreate.getField(key)) {
-                        this.addAttributeAuthorization({
-                            attribute,
-                            entity,
-                            context,
-                            unwindCreate,
-                            conditionForEvaluation: Cypher.isNotNull(unwindCreate.getUnwindVariable().property(key)),
-                        });
-                        const literalInputField = new ReferenceInputField({
-                            attribute,
-                            reference: unwindCreate.getUnwindVariable().property(key),
-                        });
-                        unwindCreate.addField(literalInputField);
-                    }
+                    const path = isNested
+                        ? unwindVariable.property("node").property(key)
+                        : unwindVariable.property(key);
+                    this.addAttributeInputFieldToUnwindOperation({
+                        entity: nestedTarget,
+                        attribute,
+                        unwindCreate,
+                        context,
+                        path,
+                        attachedTo: "node",
+                    });
                 } else if (relationship) {
                     const nestedEntity = relationship.target;
-                    assertIsConcreteEntity(nestedEntity); // unwind is not available for abstract types and this should be have been checked by isUnwindCreateSupported
+                    assertIsConcreteEntity(nestedEntity);
                     const relField = unwindCreate.getField(key);
+                    const nestedCreateInput = isNested ? inputItem?.node[key]?.create : inputItem[key].create;
                     if (!relField) {
-                        const nestedCreate = inputItem[key].create;
-                        if (nestedCreate) {
-                            const nestedUnwind = this.parseNestedLevelUnwindCreate({
-                                relationship: relationship,
-                                input: nestedCreate,
-                                unwindVariable: unwindCreate
-                                    .getUnwindVariable()
-                                    .property(relationship.name)
-                                    .property("create"),
-                                context,
-                            });
-                            const mutationOperationField = new MutationOperationField(key, nestedUnwind);
-                            unwindCreate.addField(mutationOperationField);
-                        } else {
-                            throw new Error(`Expected create operation, but found: ${key}`);
-                        }
+                        const partialPath = isNested ? unwindVariable.property("node") : unwindVariable;
+                        this.addRelationshipInputFieldToUnwindOperation({
+                            relationship,
+                            unwindCreate,
+                            context,
+                            path: partialPath.property(relationship.name).property("create"),
+                            nestedCreateInput,
+                        });
                     } else {
                         if (
-                            relField instanceof MutationOperationField &&
-                            relField.mutationOperation instanceof UnwindCreateOperation
+                            !(
+                                relField instanceof MutationOperationField &&
+                                relField.mutationOperation instanceof UnwindCreateOperation
+                            )
                         ) {
-                            this.hydrateNestedLevelCreateUnwindOperation({
-                                relationship,
-                                input: inputItem[key].create,
-                                unwindCreate: relField.mutationOperation,
-                                context,
-                            });
-                        } else {
                             throw new Error(
                                 `Transpile Error: Unwind create optimization failed when trying to hydrate nested level create operation for ${key}`
                             );
                         }
+                        this.hydrateUnwindCreateOperation({
+                            entityOrRel: relationship,
+                            input: nestedCreateInput,
+                            unwindCreate: relField.mutationOperation,
+                            context,
+                        });
                     }
                 } else {
-                    throw new Error(`Transpile Error: Input field ${key} not found in entity ${entity.name}`);
+                    throw new Error(`Transpile Error: Input field ${key} not found in entity ${nestedTarget.name}`);
+                }
+            }
+            if (isNested) {
+                // do it for edge properties
+                for (const key of Object.keys(inputItem.edge ?? {})) {
+                    const attribute = entityOrRel.attributes.get(key);
+                    if (attribute) {
+                        this.addAttributeInputFieldToUnwindOperation({
+                            entity: nestedTarget,
+                            attribute,
+                            unwindCreate,
+                            context,
+                            path: unwindCreate.getUnwindVariable().property("edge").property(key),
+                            attachedTo: "relationship",
+                        });
+                    }
                 }
             }
         });
     }
 
-    private hydrateNestedLevelCreateUnwindOperation({
-        relationship,
-        input,
+    private addAttributeInputFieldToUnwindOperation({
+        entity,
+        attribute,
         unwindCreate,
         context,
+        path,
+        attachedTo,
     }: {
-        relationship: RelationshipAdapter;
-        input: Record<string, any>[];
+        entity: ConcreteEntityAdapter;
+        attribute: AttributeAdapter;
         unwindCreate: UnwindCreateOperation;
         context: Neo4jGraphQLTranslationContext;
-    }) {
-        const entity = relationship.target;
-        assertIsConcreteEntity(entity);
-        this.addEntityAuthorization({ entity, context, unwindCreate });
-        asArray(input).forEach((inputItem) => {
-            this.raiseAttributeAmbiguity(Object.keys(inputItem.node ?? {}), entity);
-            this.raiseAttributeAmbiguity(Object.keys(inputItem.edge ?? {}), relationship);
-            // do for node properties
-            for (const key of Object.keys(inputItem.node ?? {})) {
-                const relationship = entity.relationships.get(key);
-                const attribute = entity.attributes.get(key);
-                if (attribute) {
-                    if (!unwindCreate.getField(key)) {
-                        this.addAttributeAuthorization({
-                            attribute,
-                            entity,
-                            context,
-                            unwindCreate,
-                            conditionForEvaluation: Cypher.isNotNull(unwindCreate.getUnwindVariable().property("node").property(key)),
-                        });
-                        const literalInputField = new ReferenceInputField({
-                            attribute,
-                            reference: unwindCreate.getUnwindVariable().property("node").property(key),
-                        });
-                        unwindCreate.addField(literalInputField);
-                    }
-                } else if (relationship) {
-                    const nestedEntity = relationship.target;
-                    assertIsConcreteEntity(nestedEntity); // unwind is not available for abstract types and this should be have been checked by isUnwindCreateSupported
-                    const relField = unwindCreate.getField(key);
-                    if (!relField) {
-                        const nestedCreate = inputItem?.node[key]?.create;
-                        if (nestedCreate) {
-                            const nestedUnwind = this.parseNestedLevelUnwindCreate({
-                                relationship: relationship,
-                                input: nestedCreate,
-                                unwindVariable: unwindCreate
-                                    .getUnwindVariable()
-                                    .property("node")
-                                    .property(relationship.name)
-                                    .property("create"),
-                                context,
-                            });
-                            const mutationOperationField = new MutationOperationField(key, nestedUnwind);
-                            unwindCreate.addField(mutationOperationField);
-                        } else {
-                            throw new Error(`Expected create operation, but found: ${key}`);
-                        }
-                    } else {
-                        if (
-                            relField instanceof MutationOperationField &&
-                            relField.mutationOperation instanceof UnwindCreateOperation
-                        ) {
-                            const nestedCreate = inputItem?.node[key]?.create;
-                            this.hydrateNestedLevelCreateUnwindOperation({
-                                relationship,
-                                input: nestedCreate,
-                                unwindCreate: relField.mutationOperation,
-                                context,
-                            });
-                        } else {
-                            throw new Error(
-                                `Transpile Error: Unwind create optimization failed when trying to hydrate nested level create operation for ${key}`
-                            );
-                        }
-                    }
-                } else {
-                    throw new Error(`Transpile Error: Input field ${key} not found in entity ${entity.name}`);
-                }
+        path: Cypher.Property;
+        attachedTo: "relationship" | "node";
+    }): void {
+        if (!unwindCreate.getField(attribute.name)) {
+            this.addAttributeAuthorization({
+                attribute,
+                entity,
+                context,
+                unwindCreate,
+                conditionForEvaluation: Cypher.isNotNull(path),
+            });
+            const referenceInputField = new ReferenceInputField({
+                attribute,
+                reference: path,
+                attachedTo,
+            });
+            unwindCreate.addField(referenceInputField);
+        }
+    }
+
+    private addRelationshipInputFieldToUnwindOperation({
+        relationship,
+        unwindCreate,
+        context,
+        path,
+        nestedCreateInput,
+    }: {
+        relationship: RelationshipAdapter;
+        unwindCreate: UnwindCreateOperation;
+        context: Neo4jGraphQLTranslationContext;
+        path: Cypher.Property;
+        nestedCreateInput: Record<string, any>[];
+    }): void {
+        const relField = unwindCreate.getField(relationship.name);
+        if (!relField) {
+            if (nestedCreateInput) {
+                const nestedUnwind = this.parseNestedLevelUnwindCreate({
+                    relationship: relationship,
+                    input: nestedCreateInput,
+                    unwindVariable: path,
+                    context,
+                });
+                const mutationOperationField = new MutationOperationField(relationship.name, nestedUnwind);
+                unwindCreate.addField(mutationOperationField);
+            } else {
+                throw new Error(`Expected create operation, but found: ${relationship.name}`);
             }
-            // do it for edge properties
-            for (const key of Object.keys(inputItem.edge ?? {})) {
-                const attribute = relationship.attributes.get(key);
-                if (attribute) {
-                    const literalInputField = new ReferenceInputField({
-                        attribute,
-                        reference: unwindCreate.getUnwindVariable().property("edge").property(key),
-                        attachedTo: "relationship",
-                    });
-                    unwindCreate.addField(literalInputField);
-                }
-            }
-        });
+        }
     }
 
     private raiseAttributeAmbiguity(
