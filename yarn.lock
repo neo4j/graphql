@@ -2823,7 +2823,7 @@ __metadata:
     "@types/debug": "npm:4.1.12"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.7"
-    amqplib: "npm:0.10.3"
+    amqplib: "npm:0.10.4"
     body-parser: "npm:^1.20.2"
     camelcase: "npm:6.3.0"
     cors: "npm:^2.8.5"
@@ -5571,19 +5571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:0.10.3":
-  version: 0.10.3
-  resolution: "amqplib@npm:0.10.3"
-  dependencies:
-    "@acuminous/bitsyntax": "npm:^0.1.2"
-    buffer-more-ints: "npm:~1.0.0"
-    readable-stream: "npm:1.x >=1.1.9"
-    url-parse: "npm:~1.5.10"
-  checksum: 10c0/873d557795edd3a0bdbec146dfa57fdb0d7791951fc44f34fac8af6d58d5b5113ed896a39636e34a967ac4b6fb9f415cbb279c3e6e9af028dcd3d53120c56588
-  languageName: node
-  linkType: hard
-
-"amqplib@npm:^0.10.3":
+"amqplib@npm:0.10.4, amqplib@npm:^0.10.3":
   version: 0.10.4
   resolution: "amqplib@npm:0.10.4"
   dependencies:
