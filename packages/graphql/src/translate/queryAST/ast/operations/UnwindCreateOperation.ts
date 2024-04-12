@@ -36,15 +36,14 @@ import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 export class UnwindCreateOperation extends MutationOperation {
-    public inputFields: Map<string, InputField>;
-    private argumentToUnwind: Cypher.Param | Cypher.Property;
-    private unwindVariable: Cypher.Variable;
-
+    public readonly inputFields: Map<string, InputField>;
     public readonly target: ConcreteEntityAdapter | RelationshipAdapter;
-    // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    public projectionOperations: ReadOperation[] = [];
+    public readonly projectionOperations: ReadOperation[] = [];
+    
+    protected readonly authFilters: AuthorizationFilters[] = [];
 
-    protected authFilters: AuthorizationFilters[] = [];
+    private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
+    private readonly unwindVariable: Cypher.Variable;
 
     constructor({
         target,
@@ -58,6 +57,9 @@ export class UnwindCreateOperation extends MutationOperation {
         this.inputFields = new Map();
         this.argumentToUnwind = argumentToUnwind;
         this.unwindVariable = new Cypher.Variable();
+    }
+    public getChildren(): QueryASTNode[] {
+        return filterTruthy(this.projectionOperations);
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
@@ -80,10 +82,6 @@ export class UnwindCreateOperation extends MutationOperation {
 
     public getUnwindVariable(): Cypher.Variable {
         return this.unwindVariable;
-    }
-
-    public getChildren(): QueryASTNode[] {
-        return filterTruthy(this.projectionOperations);
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {

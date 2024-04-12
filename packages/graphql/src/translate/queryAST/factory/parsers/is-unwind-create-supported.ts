@@ -61,7 +61,7 @@ export function isUnwindCreateSupported(
 
     for (let createArg of createArgs) {
         if (createArg["node"]) {
-            // differently from top-level input nested create input are wrapped in a node object
+            // top level path does not contains node, apart from that the parsing will be the same.
             createArg = createArg["node"];
         }
         const entries = Object.entries(createArg);
@@ -76,10 +76,7 @@ export function isUnwindCreateSupported(
                 if (!unsupportedAnnotation.isSupported) {
                     return unsupportedAnnotation;
                 }
-                const target = relationship?.target;
-                if (!target) {
-                    throw new Error("Transpile error: Relationship target is missing");
-                }
+                const target = relationship.target;
                 const isNestedSupported = isUnwindCreateSupported(target, asArray(value.create), context);
                 if (!isNestedSupported.isSupported) {
                     return isNestedSupported;

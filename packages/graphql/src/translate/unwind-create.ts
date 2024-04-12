@@ -18,7 +18,6 @@
  */
 
 import Debug from "debug";
-import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -29,28 +28,12 @@ const debug = Debug(DEBUG_TRANSLATE);
 export default function unwindCreate({
     context,
     entityAdapter,
-    node,
 }: {
     context: Neo4jGraphQLTranslationContext;
     entityAdapter: EntityAdapter;
-    node: Node;
 }): { cypher: string; params: Record<string, any> } {
     const { resolveTree } = context;
-    // const input = resolveTree.args.input as GraphQLCreateInput | GraphQLCreateInput[];
 
-    /*   const treeDescriptor = mergeTreeDescriptors(
-        asArray(input).map((el: GraphQLCreateInput) => getTreeDescriptor(el, node, context))
-    );
-
-    const createNodeAST = parseCreate(treeDescriptor, node, context);
-    const callbackBucket = new CallbackBucket(context);
-    const unwindVar = new Cypher.Variable();
-    const unwind = new Cypher.Param(input);
-    const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
-    const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
-    createNodeAST.accept(unwindCreateVisitor);
-    const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
- */
     const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
         resolveTree,
         entityAdapter,
@@ -58,24 +41,8 @@ export default function unwindCreate({
         resolveAsUnwind: true,
     });
     debug(queryAST.print());
-    /*    const queryASTEnv = new QueryASTEnv(); */
-    /*     const queryASTContext = new QueryASTContext({
-        target: rootNodeVariable,
-        env: queryASTEnv,
-        neo4jGraphQLContext: context,
-        returnVariable: new Cypher.NamedVariable("data"),
-        shouldCollect: true,
-    }); */
-    const clauses = queryAST.build(context);
-    /*     const projectionCypher = clauses.length
-        ? Cypher.concat(...clauses)
-        : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
- */
-    /*     const unwindCreate = Cypher.concat(unwindQuery, createCypher, projectionCypher);
 
-    const createQueryCypher = unwindCreate.build("create_");
-    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-        cypher: createQueryCypher.cypher,
-    }); */
+    const clauses = queryAST.build(context);
+
     return clauses.build("create_");
 }

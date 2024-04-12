@@ -49,7 +49,7 @@ export default async function translateCreate({
     }
     const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
     if (isSupported) {
-        return unwindCreate({ context, entityAdapter, node });
+        return unwindCreate({ context, entityAdapter });
     }
     debug(`Unwind create optimization not supported: ${reason}`);
 
