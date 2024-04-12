@@ -5571,7 +5571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:0.10.3, amqplib@npm:^0.10.3":
+"amqplib@npm:0.10.3":
   version: 0.10.3
   resolution: "amqplib@npm:0.10.3"
   dependencies:
@@ -5580,6 +5580,18 @@ __metadata:
     readable-stream: "npm:1.x >=1.1.9"
     url-parse: "npm:~1.5.10"
   checksum: 10c0/873d557795edd3a0bdbec146dfa57fdb0d7791951fc44f34fac8af6d58d5b5113ed896a39636e34a967ac4b6fb9f415cbb279c3e6e9af028dcd3d53120c56588
+  languageName: node
+  linkType: hard
+
+"amqplib@npm:^0.10.3":
+  version: 0.10.4
+  resolution: "amqplib@npm:0.10.4"
+  dependencies:
+    "@acuminous/bitsyntax": "npm:^0.1.2"
+    buffer-more-ints: "npm:~1.0.0"
+    readable-stream: "npm:1.x >=1.1.9"
+    url-parse: "npm:~1.5.10"
+  checksum: 10c0/808d39feadfde44a61bf194f7948e91f90fb2d7e9b70ad0d479f10a5e57ba20d2a4b178768d31a9035e455d1706a93a343aa0f011b0842a788f10ebb51dd4658
   languageName: node
   linkType: hard
 
