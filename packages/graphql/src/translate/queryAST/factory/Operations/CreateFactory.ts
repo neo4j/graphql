@@ -74,7 +74,7 @@ export class CreateFactory {
         );
         const rawInput = resolveTree.args.input as Record<string, any>[];
 
-        const unwindCreate = this.parseTopLevelUnwindCreate({ entity, input: rawInput ?? [], context });
+        const unwindCreate = this.parseUnwindCreate({ entityOrRel: entity, input: rawInput ?? [], context });
 
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
@@ -90,39 +90,20 @@ export class CreateFactory {
         return unwindCreate;
     }
 
-    private parseTopLevelUnwindCreate({
-        entity,
+    private parseUnwindCreate({
+        entityOrRel,
         input,
         context,
+        unwindVariable = new Cypher.Param(input),
     }: {
-        entity: ConcreteEntityAdapter;
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter;
         input: Record<string, any>[];
         context: Neo4jGraphQLTranslationContext;
+
+        unwindVariable?: Cypher.Property | Cypher.Param;
     }): UnwindCreateOperation {
-        const rawInputParam = new Cypher.Param(input);
-        const unwindCreate = new UnwindCreateOperation({ target: entity, argumentToUnwind: rawInputParam });
-        this.hydrateUnwindCreateOperation({ entityOrRel: entity, input, unwindCreate, context });
-
-        return unwindCreate;
-    }
-
-    private parseNestedLevelUnwindCreate({
-        input,
-        relationship,
-        context,
-        unwindVariable,
-    }: {
-        relationship: RelationshipAdapter;
-        input: Record<string, any>[];
-        unwindVariable: Cypher.Property;
-
-        context: Neo4jGraphQLTranslationContext;
-    }): UnwindCreateOperation {
-        const unwindCreate = new UnwindCreateOperation({
-            target: relationship,
-            argumentToUnwind: unwindVariable,
-        });
-        this.hydrateUnwindCreateOperation({ entityOrRel: relationship, input, unwindCreate, context });
+        const unwindCreate = new UnwindCreateOperation({ target: entityOrRel, argumentToUnwind: unwindVariable });
+        this.hydrateUnwindCreateOperation({ entityOrRel: entityOrRel, input, unwindCreate, context });
 
         return unwindCreate;
     }
@@ -269,8 +250,8 @@ export class CreateFactory {
         const relField = unwindCreate.getField(relationship.name);
         if (!relField) {
             if (nestedCreateInput) {
-                const nestedUnwind = this.parseNestedLevelUnwindCreate({
-                    relationship: relationship,
+                const nestedUnwind = this.parseUnwindCreate({
+                    entityOrRel: relationship,
                     input: nestedCreateInput,
                     unwindVariable: path,
                     context,
