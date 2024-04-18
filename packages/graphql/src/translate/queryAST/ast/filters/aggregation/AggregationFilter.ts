@@ -18,16 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { Filter } from "../Filter";
-import type { CountFilter } from "./CountFilter";
-import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
-import type { LogicalFilter } from "../LogicalFilter";
-import type { QueryASTContext } from "../../QueryASTContext";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { QueryASTNode } from "../../QueryASTNode";
 import { hasTarget } from "../../../utils/context-has-target";
 import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
-import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTNode } from "../../QueryASTNode";
+import { Filter } from "../Filter";
+import type { LogicalFilter } from "../LogicalFilter";
+import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
+import type { CountFilter } from "./CountFilter";
 
 export class AggregationFilter extends Filter {
     private relationship: RelationshipAdapter;
@@ -60,7 +60,7 @@ export class AggregationFilter extends Filter {
         if (relatedEntity instanceof InterfaceEntityAdapter) {
             relatedNode = new Cypher.Node();
             const labelsForImplementations = relatedEntity.concreteEntities.map((e) =>
-                relatedNode.hasLabel(e.getLabels().join(":"))
+                relatedNode.hasLabels(...e.getLabels())
             );
             labelsFilter = Cypher.or(...labelsForImplementations);
         } else {
