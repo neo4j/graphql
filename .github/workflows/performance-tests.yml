@@ -119,7 +119,7 @@ jobs:
         working-directory: packages/graphql
 
       - name: Archive performance test results
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
+        uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4
         with:
           name: performance
           path: packages/graphql/performance/
