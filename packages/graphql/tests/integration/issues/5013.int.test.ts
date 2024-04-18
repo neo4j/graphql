@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/5013", () => {
         const response = await testHelper.executeGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
-            [Post.plural]: [{ content: "My post 3" }, { content: "My post 4" }],
+            [Post.plural]: expect.toIncludeSameMembers([{ content: "My post 3" }, { content: "My post 4" }]),
         });
     });
 });
