@@ -763,7 +763,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN any(var2 IN collect(this1.name) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -794,7 +794,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN any(var2 IN collect(CASE
                     WHEN this1:User:Employee THEN this1._someStringAlias
                     ELSE this1.someStringAlias
@@ -828,7 +828,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 > $param0) AS var3
             }
             WITH *
@@ -862,7 +862,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 >= $param0) AS var3
             }
             WITH *
@@ -896,7 +896,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 < $param0) AS var3
             }
             WITH *
@@ -930,7 +930,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 <= $param0) AS var3
             }
             WITH *
@@ -964,7 +964,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN min(size(this1.name)) = $param0 AS var2
             }
             WITH *
@@ -998,7 +998,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN min(size(this1.name)) > $param0 AS var2
             }
             WITH *
@@ -1032,7 +1032,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN min(size(this1.name)) >= $param0 AS var2
             }
             WITH *
@@ -1066,7 +1066,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN min(size(this1.name)) < $param0 AS var2
             }
             WITH *
@@ -1100,7 +1100,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN min(size(this1.name)) <= $param0 AS var2
             }
             WITH *
@@ -1134,7 +1134,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN max(size(this1.name)) = $param0 AS var2
             }
             WITH *
@@ -1168,7 +1168,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN max(size(this1.name)) > $param0 AS var2
             }
             WITH *
@@ -1202,7 +1202,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN max(size(this1.name)) >= $param0 AS var2
             }
             WITH *
@@ -1236,7 +1236,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN max(size(this1.name)) < $param0 AS var2
             }
             WITH *
@@ -1270,7 +1270,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN max(size(this1.name)) <= $param0 AS var2
             }
             WITH *
@@ -1304,7 +1304,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN avg(size(this1.name)) = $param0 AS var2
             }
             WITH *
@@ -1335,7 +1335,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN avg(size(this1.name)) > $param0 AS var2
             }
             WITH *
@@ -1366,7 +1366,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN avg(size(this1.name)) >= $param0 AS var2
             }
             WITH *
@@ -1397,7 +1397,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN avg(size(this1.name)) < $param0 AS var2
             }
             WITH *
@@ -1428,7 +1428,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:\`User:Employee\` OR this1:Person)
+                WHERE (this1:User:Employee OR this1:Person)
                 RETURN avg(size(this1.name)) <= $param0 AS var2
             }
             WITH *
