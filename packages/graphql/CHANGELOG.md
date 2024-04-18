@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 5.3.3
+
+### Patch Changes
+
+-   [#4992](https://github.com/neo4j/graphql/pull/4992) [`5dcd0a7`](https://github.com/neo4j/graphql/commit/5dcd0a702bdb52e02d774af91bafb17dfc43ce4e) Thanks [@a-alle](https://github.com/a-alle)! - PopulatedBy fields part of inputs for operations not defined in directive argument
+
+-   [#4979](https://github.com/neo4j/graphql/pull/4979) [`b730146`](https://github.com/neo4j/graphql/commit/b730146dba595ea5c3674ab51ec911d42b01ca88) Thanks [@a-alle](https://github.com/a-alle)! - EventPayload type for interface excludes fields that any of its implementations define as custom resolved
+
+-   [#5022](https://github.com/neo4j/graphql/pull/5022) [`6b6f636`](https://github.com/neo4j/graphql/commit/6b6f63607345efe0a926d675432a6a6bd7b08d32) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix aggregation filtering with multiple labels #5013
+
+-   [#4916](https://github.com/neo4j/graphql/pull/4916) [`cb83cf5`](https://github.com/neo4j/graphql/commit/cb83cf5242b93992a307de9608eab663b7c18b2e) Thanks [@a-alle](https://github.com/a-alle)! - Fix aliased fields case on interface relationship connection filters
+
 ## 5.3.2
 
 ### Patch Changes
