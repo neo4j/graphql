@@ -44,6 +44,36 @@ export class ReadFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
+    public createReadOperationWithSelection({
+        entity,
+        relationship,
+        resolveTree,
+        context,
+        selection,
+    }: {
+        entity: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        selection: EntitySelection;
+    }): ReadOperation {
+        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+
+        const operation = new ReadOperation({
+            target: entity,
+            relationship,
+            selection,
+        });
+
+        return this.hydrateReadOperation({
+            operation,
+            entity,
+            resolveTree,
+            context,
+            whereArgs: resolveTreeWhere,
+        });
+    }
+
     public createReadOperation({
         entityOrRel,
         resolveTree,

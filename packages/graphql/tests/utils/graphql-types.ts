@@ -27,6 +27,7 @@ type UniqueTypeOperations = {
     create: string;
     update: string;
     delete: string;
+    upsert: string;
     aggregate: string;
     connection: string;
     subscribe: {
@@ -75,6 +76,7 @@ export class UniqueType {
             create: `create${pascalCasePlural}`,
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
+            upsert: `upsert${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
             connection: `${this.plural}Connection`,
             subscribe: {

@@ -32,7 +32,8 @@ export type TopLevelOperationFieldMatch =
     | "CREATE"
     | "UPDATE"
     | "DELETE"
-    | "CUSTOM_CYPHER";
+    | "CUSTOM_CYPHER"
+    | "UPSERT";
 
 export function parseTopLevelOperationField(
     field: string,
@@ -75,6 +76,8 @@ function parseOperationField(
             return "UPDATE";
         case rootTypeFieldNames.delete:
             return "DELETE";
+        case rootTypeFieldNames.upsert:
+            return "UPSERT";
         default:
             throw new Error(`Interface does not support this operation: ${field}`);
     }

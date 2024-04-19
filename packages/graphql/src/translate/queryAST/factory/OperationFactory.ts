@@ -40,6 +40,7 @@ import type { CompositeConnectionReadOperation } from "../ast/operations/composi
 import type { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import type { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import type { Operation } from "../ast/operations/operations";
+import type { EntitySelection } from "../ast/selection/EntitySelection";
 import type { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { assertIsConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
@@ -55,6 +56,7 @@ import { DeleteFactory } from "./Operations/DeleteFactory";
 import { FulltextFactory } from "./Operations/FulltextFactory";
 import { ReadFactory } from "./Operations/ReadFactory";
 import { UpdateFactory } from "./Operations/UpdateFactory";
+import { UpsertFactory } from "./Operations/UpsertFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
@@ -74,6 +76,7 @@ export class OperationsFactory {
     private customCypherFactory: CustomCypherFactory;
     private connectionFactory: ConnectionFactory;
     private readFactory: ReadFactory;
+    private upsertFactory: UpsertFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.filterFactory = queryASTFactory.filterFactory;
@@ -88,6 +91,7 @@ export class OperationsFactory {
         this.customCypherFactory = new CustomCypherFactory(queryASTFactory);
         this.connectionFactory = new ConnectionFactory(queryASTFactory);
         this.readFactory = new ReadFactory(queryASTFactory);
+        this.upsertFactory = new UpsertFactory(queryASTFactory);
     }
 
     public createTopLevelOperation({
@@ -159,6 +163,10 @@ export class OperationsFactory {
                 assertIsConcreteEntity(entity);
                 return this.updateFactory.createUpdateOperation(entity, resolveTree, context);
             }
+            case "UPSERT": {
+                assertIsConcreteEntity(entity);
+                return this.upsertFactory.createUpsertOperation(entity, resolveTree, context);
+            }
             case "DELETE": {
                 assertIsConcreteEntity(entity);
                 return this.deleteFactory.createTopLevelDeleteOperation({
@@ -186,6 +194,17 @@ export class OperationsFactory {
     }): ReadOperation | CompositeReadOperation {
         return this.readFactory.createReadOperation(arg);
     }
+
+    public createReadOperationWithSelection(args: {
+        entity: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        selection: EntitySelection;
+    }): ReadOperation {
+        return this.readFactory.createReadOperationWithSelection(args);
+    }
+
     public getFulltextSelection(
         entity: ConcreteEntityAdapter,
         context: Neo4jGraphQLTranslationContext

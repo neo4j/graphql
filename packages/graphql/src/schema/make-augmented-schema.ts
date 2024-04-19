@@ -84,11 +84,13 @@ import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
+import { withUpsertInputType } from "./generation/upsert-input";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
+import { upsertResolver } from "./resolvers/mutation/upsert";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
@@ -532,6 +534,7 @@ function generateObjectType({
     withUniqueWhereInputType({ concreteEntityAdapter, composer });
     withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
     withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+    withUpsertInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
     withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
     const composeNode = withObjectType({
         entityAdapter: concreteEntityAdapter,
@@ -553,6 +556,7 @@ function generateObjectType({
 
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
+    ensureNonEmptyInput(composer, concreteEntityAdapter.operations.upsertInputTypeName);
 
     if (concreteEntityAdapter.isReadable) {
         composer.Query.addFields({
@@ -633,6 +637,21 @@ function generateObjectType({
         });
         composer.Mutation.setFieldDirectives(
             concreteEntityAdapter.operations.rootTypeFieldNames.update,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
+
+    const canUpsertEntity = concreteEntityAdapter.isCreatable && concreteEntityAdapter.isUpdatable;
+    if (canUpsertEntity) {
+        composer.Mutation.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.upsert]: upsertResolver({
+                node,
+                // composer,
+                concreteEntityAdapter,
+            }),
+        });
+        composer.Mutation.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.upsert,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }

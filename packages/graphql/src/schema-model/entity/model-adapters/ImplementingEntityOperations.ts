@@ -26,6 +26,7 @@ export type RootTypeFieldNames = {
     connection: string;
     read: string;
     update: string;
+    upsert: string;
     delete: string;
     aggregate: string;
 };
@@ -38,6 +39,7 @@ type AggregateTypeNames = {
 type MutationResponseTypeNames = {
     create: string;
     update: string;
+    upsert: string;
 };
 
 type SubscriptionEvents = {
@@ -59,6 +61,10 @@ export type UpdateMutationArgumentNames = {
 };
 
 export type CreateMutationArgumentNames = {
+    input: string;
+};
+
+export type UpsertMutationArgumentNames = {
     input: string;
 };
 
@@ -98,6 +104,10 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return `${this.entityAdapter.name}UpdateInput`;
     }
 
+    public get upsertInputTypeName(): string {
+        return `${this.entityAdapter.name}UpsertInput`;
+    }
+
     public get deleteInputTypeName(): string {
         return `${this.entityAdapter.name}DeleteInput`;
     }
@@ -130,6 +140,10 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return `${this.entityAdapter.name}OnCreateInput`;
     }
 
+    public get onUpdateInputTypeName(): string {
+        return `${this.entityAdapter.name}OnUpdateInput`;
+    }
+
     public get subscriptionWhereInputTypeName(): string {
         return `${this.entityAdapter.name}SubscriptionWhere`;
     }
@@ -154,6 +168,7 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
             update: `update${this.pascalCasePlural}`,
             delete: `delete${this.pascalCasePlural}`,
             aggregate: `${this.entityAdapter.plural}Aggregate`,
+            upsert: `upsert${this.pascalCasePlural}`,
         };
     }
 
@@ -168,6 +183,7 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return {
             create: `Create${this.pascalCasePlural}MutationResponse`,
             update: `Update${this.pascalCasePlural}MutationResponse`,
+            upsert: `Upsert${this.pascalCasePlural}MutationResponse`,
         };
     }
 
@@ -206,6 +222,12 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
     public get createMutationArgumentNames(): CreateMutationArgumentNames {
         return {
             input: `[${this.createInputTypeName}!]!`,
+        };
+    }
+
+    public get upsertMutationArgumentNames(): UpsertMutationArgumentNames {
+        return {
+            input: `[${this.upsertInputTypeName}!]!`,
         };
     }
 

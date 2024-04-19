@@ -21,6 +21,7 @@ import { GraphQLNonNull } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import { CreateInfo } from "../../graphql/objects/CreateInfo";
 import { UpdateInfo } from "../../graphql/objects/UpdateInfo";
+import { UpsertInfo } from "../../graphql/objects/UpsertInfo";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
@@ -46,6 +47,15 @@ export function withMutationResponseTypes({
         name: concreteEntityAdapter.operations.mutationResponseTypeNames.update,
         fields: {
             info: new GraphQLNonNull(UpdateInfo),
+            [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
+        },
+        directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+
+    composer.createObjectTC({
+        name: concreteEntityAdapter.operations.mutationResponseTypeNames.upsert,
+        fields: {
+            info: new GraphQLNonNull(UpsertInfo),
             [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),

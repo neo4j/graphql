@@ -24,7 +24,7 @@ type Scope = Map<string, Cypher.Variable>;
 
 export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
-    public topLevelOperationName: "READ" | "CREATE" | "UPDATE" | "DELETE" = "READ";
+    public topLevelOperationName: "READ" | "CREATE" | "UPDATE" | "DELETE" | "UPSERT" = "READ";
 
     public getScope(element: Cypher.Node | Cypher.Relationship): Scope {
         const scope = this.scopes.get(element);
@@ -48,7 +48,6 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
     public readonly returnVariable: Cypher.Variable;
     public readonly shouldCollect: boolean; // temporary hack to describe if we should collect the return variable (used for mutation response)
     public readonly shouldDistinct: boolean; // temporary hack to describe if we should distinct the return variable (used for mutation response)
-
 
     public env: QueryASTEnv;
     public neo4jGraphQLContext: Neo4jGraphQLTranslationContext;

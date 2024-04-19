@@ -24,9 +24,10 @@ import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
 import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
-import { ReadOperation } from "./operations/ReadOperation";
-import type { Operation, OperationTranspileResult } from "./operations/operations";
 import { DeleteOperation } from "./operations/DeleteOperation";
+import { ReadOperation } from "./operations/ReadOperation";
+import { UpsertOperation } from "./operations/UpsertOperation";
+import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
     private operation: Operation;
@@ -85,7 +86,8 @@ export class QueryAST {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
-            this.operation instanceof DeleteOperation
+            this.operation instanceof DeleteOperation ||
+            this.operation instanceof UpsertOperation
         ) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, varName);
         }

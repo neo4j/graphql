@@ -103,7 +103,7 @@ export function attributeAdapterToComposeFields(
 export function concreteEntityToCreateInputFields(
     objectFields: AttributeAdapter[],
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>
-) {
+): Record<string, InputField> {
     const createInputFields: Record<string, InputField> = {};
     for (const field of objectFields) {
         const newInputField: InputField = {
