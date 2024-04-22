@@ -18,10 +18,10 @@
  */
 
 import type { Integer } from "neo4j-driver";
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Upsert Batch Authentication", () => {
+describe("Upsert Authentication", () => {
     const testHelper = new TestHelper();
 
     let Movie: UniqueType;

@@ -18,10 +18,10 @@
  */
 
 import type { Integer } from "neo4j-driver";
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Upsert", () => {
+describe("Upsert with @alias", () => {
     const testHelper = new TestHelper();
 
     let Movie: UniqueType;
@@ -37,7 +37,7 @@ describe("Upsert", () => {
             }
 
             type ${Movie} {
-                title: String!
+                title: String! @alias(property: "dbTitle")
                 released: Int
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -63,7 +63,7 @@ describe("Upsert", () => {
 
         const gqlResult = await testHelper.executeGraphQL(query);
         const movieCountResult = await testHelper.executeCypher(
-            `MATCH(m:${Movie} {title: "The Matrix"}) RETURN COUNT(m) AS count`
+            `MATCH(m:${Movie} {dbTitle: "The Matrix"}) RETURN COUNT(m) AS count`
         );
         const movieCount = movieCountResult.records[0]?.toObject().count as Integer;
 
@@ -95,7 +95,7 @@ describe("Upsert", () => {
 
         const gqlResult = await testHelper.executeGraphQL(query);
         const movieCountResult = await testHelper.executeCypher(
-            `MATCH(m:${Movie} {title: "The Matrix"}) RETURN COUNT(m) AS count`
+            `MATCH(m:${Movie} {dbTitle: "The Matrix"}) RETURN COUNT(m) AS count`
         );
         const movieCount = movieCountResult.records[0]?.toObject().count as Integer;
 
@@ -105,89 +105,6 @@ describe("Upsert", () => {
                 [Movie.plural]: [
                     {
                         title: "The Matrix",
-                    },
-                ],
-            },
-        });
-        expect(movieCount.equals(1)).toBeTrue();
-    });
-
-    test("should return multiple nodes if exist", async () => {
-        await testHelper.executeCypher(`
-        CREATE(:${Movie} {title: "The Matrix", released: 1999})
-        CREATE(:${Movie} {title: "The Matrix", released: 2000})
-        `);
-
-        const query = /* GraphQL */ `
-            mutation {
-                ${Movie.operations.upsert}(input: [{ node: { title: "The Matrix" } }]) {
-                    ${Movie.plural} {
-                        title
-                        released
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        const movieCountResult = await testHelper.executeCypher(
-            `MATCH(m:${Movie} {title: "The Matrix"}) RETURN COUNT(m) AS count`
-        );
-        const movieCount = movieCountResult.records[0]?.toObject().count as Integer;
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.upsert]: {
-                [Movie.plural]: expect.toIncludeSameMembers([
-                    {
-                        title: "The Matrix",
-                        released: 1999,
-                    },
-                    {
-                        title: "The Matrix",
-                        released: 2000,
-                    },
-                ]),
-            },
-        });
-        expect(movieCount.equals(2)).toBeTrue();
-    });
-
-    test("should return related actors", async () => {
-        await testHelper.executeCypher(
-            `CREATE(m:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(a:${Actor} {name: "Keanu"})`
-        );
-
-        const query = /* GraphQL */ `
-            mutation {
-                ${Movie.operations.upsert}(input: [{ node: { title: "The Matrix" } }]) {
-                    ${Movie.plural} {
-                        title
-                        actors {
-                            name
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        const movieCountResult = await testHelper.executeCypher(
-            `MATCH(m:${Movie} {title: "The Matrix"}) RETURN COUNT(m) AS count`
-        );
-        const movieCount = movieCountResult.records[0]?.toObject().count as Integer;
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.upsert]: {
-                [Movie.plural]: [
-                    {
-                        title: "The Matrix",
-                        actors: [
-                            {
-                                name: "Keanu",
-                            },
-                        ],
                     },
                 ],
             },
