@@ -73,4 +73,36 @@ describe("filterDocument", () => {
             extend schema @query(read: true, aggregate: true) @mutation(operations: [CREATE, UPDATE, DELETE]) @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])"
         `);
     });
+
+    test("should remove all directives 4995", () => {
+        const initial = `
+        type A {
+            a: String
+          }
+          
+          type B {
+            b: String
+          }
+          
+          union AorB = A | B
+          extend union AorB
+            @query(read: false, aggregate: false)
+        `;
+
+        const filtered = filterDocument(initial);
+
+        expect(print(filtered)).toMatchInlineSnapshot(`
+            "type A {
+              a: String
+            }
+
+            type B {
+              b: String
+            }
+
+            union AorB @query(read: false, aggregate: false) = A | B
+
+            extend schema @query(read: true, aggregate: true) @mutation(operations: [CREATE, UPDATE, DELETE]) @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])"
+        `);
+    });
 });
