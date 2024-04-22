@@ -20,6 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { UpsertSetField } from "../../ast/input-fields/UpsertSetField";
 import type { UpsertOperationFields } from "../../ast/operations/UpsertOperation";
 import { UpsertOperation } from "../../ast/operations/UpsertOperation";
@@ -44,6 +45,11 @@ export class UpsertFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): UpsertOperation {
+        checkEntityAuthentication({
+            entity: entity.entity,
+            targetOperations: ["UPDATE", "CREATE"],
+            context,
+        });
         const responseFields = Object.values(
             resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.upsert] ?? {}
         );

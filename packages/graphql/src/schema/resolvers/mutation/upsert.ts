@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { FieldNode, Kind, type GraphQLResolveInfo } from "graphql";
+import type { FieldNode, GraphQLResolveInfo } from "graphql";
+import { Kind } from "graphql";
 import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { translateUpsert } from "../../../translate/translate-upsert";
