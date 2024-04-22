@@ -184,11 +184,11 @@ describe("Cypher Auth Allow", () => {
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND create_this9.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)<-[create_this3_creator_User_unique:HAS_POST]-(:User)
-                    	WITH count(create_this3_creator_User_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-                    	RETURN c AS create_this3_creator_User_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)<-[create_this3_creator_User_unique:HAS_POST]-(:User)
+                        WITH count(create_this3_creator_User_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c = 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once\\", [0])
+                        RETURN c AS create_this3_creator_User_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var10
                 }

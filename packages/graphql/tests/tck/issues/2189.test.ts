@@ -96,21 +96,21 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this3_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this3_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this3_item_Test_Item_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_this3_item_Test_Item_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var5
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this1_feedback_Test_Feedback_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
                 }
                 RETURN create_this1
             }
@@ -186,21 +186,21 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this3_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this3_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this3_item_Test_Item_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_this3_item_Test_Item_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var5
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this1_feedback_Test_Feedback_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
                 }
                 RETURN create_this1
             }
@@ -294,21 +294,21 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this3_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this3_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this3_item_Test_Item_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_this3_item_Test_Item_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var5
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this1_feedback_Test_Feedback_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
                 }
                 RETURN create_this1
             }
@@ -415,21 +415,21 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this3_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this3_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this3_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this3_item_Test_Item_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_this3_item_Test_Item_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var5
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this1_feedback_Test_Feedback_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
                 }
                 RETURN create_this1
             }
