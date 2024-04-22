@@ -88,11 +88,11 @@ describe("Batch Create, Scalar types", () => {
                     create_this1.createdAt = datetime()
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                	WITH count(create_this1_website_Website_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-                	RETURN c AS create_this1_website_Website_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this1_website_Website_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_website_Website_unique_ignored
                 }
                 RETURN create_this1
             }
@@ -192,11 +192,11 @@ describe("Batch Create, Scalar types", () => {
                     }
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)-[create_this3_website_Website_unique:HAS_WEBSITE]->(:Website)
-                    	WITH count(create_this3_website_Website_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
-                    	RETURN c AS create_this3_website_Website_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this3_website_Website_unique:HAS_WEBSITE]->(:Website)
+                        WITH count(create_this3_website_Website_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one\\", [0])
+                        RETURN c AS create_this3_website_Website_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var9
                 }
@@ -212,11 +212,11 @@ describe("Batch Create, Scalar types", () => {
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                	WITH count(create_this1_website_Website_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-                	RETURN c AS create_this1_website_Website_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this1_website_Website_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_website_Website_unique_ignored
                 }
                 RETURN create_this1
             }
@@ -309,21 +309,21 @@ describe("Batch Create, Scalar types", () => {
                         create_this4.year = create_var2.edge.year
                     WITH create_this3
                     CALL {
-                    	WITH create_this3
-                    	MATCH (create_this3)-[create_this3_website_Website_unique:HAS_WEBSITE]->(:Website)
-                    	WITH count(create_this3_website_Website_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
-                    	RETURN c AS create_this3_website_Website_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this3_website_Website_unique:HAS_WEBSITE]->(:Website)
+                        WITH count(create_this3_website_Website_unique) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one\\", [0])
+                        RETURN c AS create_this3_website_Website_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var5
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                	WITH count(create_this1_website_Website_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-                	RETURN c AS create_this1_website_Website_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this1_website_Website_unique) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
+                    RETURN c AS create_this1_website_Website_unique_ignored
                 }
                 RETURN create_this1
             }
