@@ -88,10 +88,10 @@ describe("Batch Create, Interface", () => {
                 WITH create_this1
                 CALL {
                     WITH create_this1
-                    MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                    WITH count(create_this1_website_Website_unique) AS c
+                    MATCH (create_this1)-[create_this2:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this2) AS c
                     WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
-                    RETURN c AS create_this1_website_Website_unique_ignored
+                    RETURN c AS create_var3
                 }
                 RETURN create_this1
             }

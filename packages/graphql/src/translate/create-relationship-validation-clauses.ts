@@ -38,7 +38,7 @@ export function createRelationshipValidationClauses({
 }: {
     entity: ConcreteEntityAdapter;
     context: Neo4jGraphQLTranslationContext;
-    varName: string;
+    varName: Cypher.Node;
     relationshipFieldNotOverwritable?: string;
 }): Cypher.Clause[] {
     return filterTruthy(
@@ -47,11 +47,11 @@ export function createRelationshipValidationClauses({
             if (isInterfaceEntity(target) || isUnionEntity(target)) {
                 return;
             }
-            const relVarname = `${varName}_${relationship.name}_${target.name}_unique`;
-            const relVarnameCypher = new Cypher.NamedRelationship(relVarname, {
+            //const relVarname = `${varName}_${relationship.name}_${target.name}_unique`;
+            const relVarnameCypher = new Cypher.Relationship( {
                 type: relationship.type,
             });
-            const varNameNode = new Cypher.NamedNode(varName);
+           // const varNameNode = new Cypher.NamedNode(varName);
             const direction = relationship.getCypherDirection();
             const predicateAndMessage = getCardinalityPredicateAndMessage(
                 relationship,
@@ -64,12 +64,12 @@ export function createRelationshipValidationClauses({
             const [predicate, errorMsg] = predicateAndMessage;
             const cVariable = new NamedVariable("c");
             const predicateCypher = Cypher.not(predicate);
-            const relVarNameIgnored = new Cypher.NamedVariable(`${relVarname}_ignored`);
-            const source = createNodeFromEntity(entity, context, varName);
+          //  const relVarNameIgnored = new Cypher.NamedVariable(`${relVarname}_ignored`);
+        //    const source = createNodeFromEntity(entity, context, varName);
             const cypherNodeTarget = createNodeFromEntity(target, context);
             const returnVar = relationship.isList ? Cypher.collect(cVariable) : cVariable;
             const match = new Cypher.Match(
-                new Cypher.Pattern(source)
+                new Cypher.Pattern(varName)
                     .withoutLabels()
                     .related(relVarnameCypher)
                     .withDirection(direction)
@@ -78,8 +78,8 @@ export function createRelationshipValidationClauses({
             )
                 .with([Cypher.count(relVarnameCypher), cVariable])
                 .where(Cypher.apoc.util.validatePredicate(predicateCypher, errorMsg))
-                .return([returnVar, relVarNameIgnored]);
-            return new Cypher.Call(match).importWith(varNameNode);
+                .return([returnVar, new Cypher.Variable()]);
+            return new Cypher.Call(match).importWith(varName);
         })
     );
 }

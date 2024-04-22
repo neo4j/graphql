@@ -61,10 +61,10 @@ describe("tck/rfs/003", () => {
                         WITH create_this1
                         CALL {
                             WITH create_this1
-                            MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
-                            WITH count(create_this1_director_Director_unique) AS c
+                            MATCH (create_this1)<-[create_this2:DIRECTED]-(:Director)
+                            WITH count(create_this2) AS c
                             WHERE apoc.util.validatePredicate(NOT (c = 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once\\", [0])
-                            RETURN c AS create_this1_director_Director_unique_ignored
+                            RETURN c AS create_var3
                         }
                         RETURN create_this1
                     }
@@ -120,10 +120,10 @@ describe("tck/rfs/003", () => {
                         WITH create_this1
                         CALL {
                             WITH create_this1
-                            MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
-                            WITH count(create_this1_director_Director_unique) AS c
+                            MATCH (create_this1)<-[create_this2:DIRECTED]-(:Director)
+                            WITH count(create_this2) AS c
                             WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one\\", [0])
-                            RETURN c AS create_this1_director_Director_unique_ignored
+                            RETURN c AS create_var3
                         }
                         RETURN create_this1
                     }
@@ -194,20 +194,20 @@ describe("tck/rfs/003", () => {
                                 WITH create_this3
                                 CALL {
                                     WITH create_this3
-                                    MATCH (create_this3)-[create_this3_address_Address_unique:HAS_ADDRESS]->(:Address)
-                                    WITH count(create_this3_address_Address_unique) AS c
+                                    MATCH (create_this3)-[create_this5:HAS_ADDRESS]->(:Address)
+                                    WITH count(create_this5) AS c
                                     WHERE apoc.util.validatePredicate(NOT (c = 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once\\", [0])
-                                    RETURN c AS create_this3_address_Address_unique_ignored
+                                    RETURN c AS create_var6
                                 }
-                                RETURN collect(NULL) AS create_var5
+                                RETURN collect(NULL) AS create_var7
                             }
                             WITH create_this1
                             CALL {
                                 WITH create_this1
-                                MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
-                                WITH count(create_this1_director_Director_unique) AS c
+                                MATCH (create_this1)<-[create_this8:DIRECTED]-(:Director)
+                                WITH count(create_this8) AS c
                                 WHERE apoc.util.validatePredicate(NOT (c = 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once\\", [0])
-                                RETURN c AS create_this1_director_Director_unique_ignored
+                                RETURN c AS create_var9
                             }
                             RETURN create_this1
                         }
@@ -284,20 +284,20 @@ describe("tck/rfs/003", () => {
                                 WITH create_this3
                                 CALL {
                                     WITH create_this3
-                                    MATCH (create_this3)-[create_this3_address_Address_unique:HAS_ADDRESS]->(:Address)
-                                    WITH count(create_this3_address_Address_unique) AS c
+                                    MATCH (create_this3)-[create_this5:HAS_ADDRESS]->(:Address)
+                                    WITH count(create_this5) AS c
                                     WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one\\", [0])
-                                    RETURN c AS create_this3_address_Address_unique_ignored
+                                    RETURN c AS create_var6
                                 }
-                                RETURN collect(NULL) AS create_var5
+                                RETURN collect(NULL) AS create_var7
                             }
                             WITH create_this1
                             CALL {
                                 WITH create_this1
-                                MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
-                                WITH count(create_this1_director_Director_unique) AS c
+                                MATCH (create_this1)<-[create_this8:DIRECTED]-(:Director)
+                                WITH count(create_this8) AS c
                                 WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one\\", [0])
-                                RETURN c AS create_this1_director_Director_unique_ignored
+                                RETURN c AS create_var9
                             }
                             RETURN create_this1
                         }
