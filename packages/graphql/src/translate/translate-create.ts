@@ -57,7 +57,7 @@ export default async function translateCreate({
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     const metaNames: string[] = [];
-
+    
     // TODO: after the createCreateAndParams refactor, remove varNameStrs and only use Cypher Variables
     const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
     const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
