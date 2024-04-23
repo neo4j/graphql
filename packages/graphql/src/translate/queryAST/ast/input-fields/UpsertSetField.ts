@@ -50,4 +50,8 @@ export class UpsertSetField extends InputField {
     public getChildren(): QueryASTNode[] {
         return [];
     }
+
+    public print(): string {
+        return `${super.print()} <${this.attribute.name}>`;
+    }
 }

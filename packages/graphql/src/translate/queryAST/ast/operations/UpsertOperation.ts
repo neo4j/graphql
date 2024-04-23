@@ -46,7 +46,10 @@ export class UpsertOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy(this.projectionOperations);
+        const upsertOperations = this.operationFields.flatMap((op) => {
+            return [...op.setFields, ...op.onCreateFields, ...op.onUpdateFields];
+        });
+        return filterTruthy([...this.projectionOperations, ...upsertOperations]);
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {

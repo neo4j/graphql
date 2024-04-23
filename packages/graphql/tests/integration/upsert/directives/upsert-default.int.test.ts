@@ -21,7 +21,7 @@ import type { Integer } from "neo4j-driver";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Upsert with @alias", () => {
+describe("Upsert with @default", () => {
     const testHelper = new TestHelper();
 
     let Movie: UniqueType;
@@ -31,7 +31,7 @@ describe("Upsert with @alias", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} {
-                title: String! @alias(property: "dbTitle")
+                title: String! @default(value: "The Matrix")
                 released: Int
             }
         `;
@@ -43,10 +43,10 @@ describe("Upsert with @alias", () => {
         await testHelper.close();
     });
 
-    test("should create new node", async () => {
+    test("should create new node with default value", async () => {
         const query = /* GraphQL */ `
             mutation {
-                ${Movie.operations.upsert}(input: [{ node: { title: "The Matrix" } }]) {
+                ${Movie.operations.upsert}(input: [{ node: { released: 1999 } }]) {
                     ${Movie.plural} {
                         title
                     }
@@ -56,7 +56,7 @@ describe("Upsert with @alias", () => {
 
         const gqlResult = await testHelper.executeGraphQL(query);
         const movieCountResult = await testHelper.executeCypher(
-            `MATCH(m:${Movie} {dbTitle: "The Matrix"}) RETURN COUNT(m) AS count`
+            `MATCH(m:${Movie} {title: "The Matrix"}) RETURN COUNT(m) AS count`
         );
         const movieCount = movieCountResult.records[0]?.toObject().count as Integer;
 
@@ -73,12 +73,12 @@ describe("Upsert with @alias", () => {
         expect(movieCount.equals(1)).toBeTrue();
     });
 
-    test("should not create new node if exists", async () => {
+    test("should create new node if node with default value exists", async () => {
         await testHelper.executeCypher(`CREATE(m:${Movie} {title: "The Matrix"})`);
 
         const query = /* GraphQL */ `
             mutation {
-                ${Movie.operations.upsert}(input: [{ node: { title: "The Matrix" } }]) {
+                ${Movie.operations.upsert}(input: [{ node: { released: 1999 } }]) {
                     ${Movie.plural} {
                         title
                     }
@@ -88,7 +88,7 @@ describe("Upsert with @alias", () => {
 
         const gqlResult = await testHelper.executeGraphQL(query);
         const movieCountResult = await testHelper.executeCypher(
-            `MATCH(m:${Movie} {dbTitle: "The Matrix"}) RETURN COUNT(m) AS count`
+            `MATCH(m:${Movie} {title: "The Matrix"}) RETURN COUNT(m) AS count`
         );
         const movieCount = movieCountResult.records[0]?.toObject().count as Integer;
 
@@ -99,9 +99,12 @@ describe("Upsert with @alias", () => {
                     {
                         title: "The Matrix",
                     },
+                    {
+                        title: "The Matrix",
+                    },
                 ],
             },
         });
-        expect(movieCount.equals(1)).toBeTrue();
+        expect(movieCount.equals(2)).toBeTrue();
     });
 });

@@ -60,6 +60,7 @@ export class UpsertFactory {
             onUpdate?: Record<string, any>;
         }> = (resolveTree.args.input as any) ?? [];
 
+        console.log(inputArg);
         // const input = inputArg[0]!;
 
         // const setFields = this.createInputFields(entity, input.node);
