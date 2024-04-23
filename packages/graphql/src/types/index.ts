@@ -49,6 +49,14 @@ export type FulltextContext = {
     scoreVariable: Cypher.Variable;
 };
 
+export type GenAIContext = {
+    name: string;
+    fields: string[];
+    queryType: string;
+    queryName: string | undefined;
+    scoreVariable: Cypher.Variable;
+};
+
 export type FullText = {
     indexes: FulltextContext[];
 };

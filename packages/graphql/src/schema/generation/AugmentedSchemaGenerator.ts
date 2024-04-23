@@ -81,7 +81,7 @@ export class AugmentedSchemaGenerator {
                         cartesianPointInTypeDefs = true;
                     }
                 }
-                if (model.annotations.fulltext) {
+                if (model.annotations.fulltext || model.annotations.genAI) {
                     floatWhereInTypeDefs = true;
                 }
                 if (model instanceof ConcreteEntityAdapter) {
