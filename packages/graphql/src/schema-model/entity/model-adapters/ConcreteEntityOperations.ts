@@ -39,6 +39,12 @@ type FulltextTypeNames = {
     sort: string;
 };
 
+type GenAITypeNames = {
+    result: string;
+    where: string;
+    sort: string;
+};
+
 export class ConcreteEntityOperations extends ImplementingEntityOperations<ConcreteEntityAdapter> {
     constructor(concreteEntityAdapter: ConcreteEntityAdapter) {
         super(concreteEntityAdapter);
@@ -54,6 +60,18 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
 
     public getFullTextIndexQueryFieldName(indexName: string): string {
         return `${this.entityAdapter.plural}Fulltext${upperFirst(indexName)}`;
+    }
+
+    public get genAIInputTypeName(): string {
+        return `${this.entityAdapter.name}GenAIInput`;
+    }
+
+    public getGenAIIndexInputTypeName(indexName: string): string {
+        return `${this.entityAdapter.name}${upperFirst(indexName)}GenAI`;
+    }
+
+    public getGenAIIndexQueryFieldName(indexName: string): string {
+        return `${this.entityAdapter.plural}GenAI${upperFirst(indexName)}`;
     }
 
     public get relationshipsSubscriptionWhereInputTypeName(): string {
@@ -94,6 +112,14 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
             result: `${this.pascalCaseSingular}FulltextResult`,
             where: `${this.pascalCaseSingular}FulltextWhere`,
             sort: `${this.pascalCaseSingular}FulltextSort`,
+        };
+    }
+
+    public get genAITypeNames(): GenAITypeNames {
+        return {
+            result: `${this.pascalCaseSingular}GenAIResult`,
+            where: `${this.pascalCaseSingular}GenAIWhere`,
+            sort: `${this.pascalCaseSingular}GenAISort`,
         };
     }
 }
