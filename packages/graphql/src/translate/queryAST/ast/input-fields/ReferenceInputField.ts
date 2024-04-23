@@ -74,6 +74,14 @@ export class ReferenceInputField extends InputField {
         return this.propertyReference;
     }
 
+    private getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
+        const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
+        if (!target) {
+            throw new Error("No target found");
+        }
+        return target;
+    }
+
     public getSetClause(): Cypher.Clause[] {
         return [];
     }
