@@ -127,6 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             	    WHERE (tenantCount <> 0 AND size([(authorization__before_this2)<-[:ADMIN_IN]-(authorization__before_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization__before_this3.userId = $jwt.id) | 1]) > 0)
             	    RETURN count(authorization__before_this1) = 1 AS authorization__before_var0
             	}
+            	WITH *
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization__before_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	WITH this_settings0_extendedOpeningHours0_delete0_relationship, collect(DISTINCT this_settings0_extendedOpeningHours0_delete0) AS this_settings0_extendedOpeningHours0_delete0_to_delete
             	CALL {
