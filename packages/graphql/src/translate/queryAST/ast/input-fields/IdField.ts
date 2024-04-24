@@ -18,13 +18,11 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { CypherFunction } from "@neo4j/cypher-builder/dist/expressions/functions/CypherFunctions";
-import { Neo4jGraphQLTemporalType } from "../../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../QueryASTContext";
 import { InputField } from "./InputField";
 
-export class TimestampField extends InputField {
+export class IdField extends InputField {
     private attribute: AttributeAdapter;
 
     constructor(name: string, attribute: AttributeAdapter, attachedTo: "node" | "relationship" = "node") {
@@ -41,42 +39,11 @@ export class TimestampField extends InputField {
 
     public getSetFields(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
-        // DateTime -> datetime(); Time -> time()
-        const relatedCypherExpression = this.getCypherTemporalFunction(
-            this.attribute.type.name as Neo4jGraphQLTemporalType
-        );
-        const setParam: Cypher.SetParam = [target.property(this.attribute.databaseName), relatedCypherExpression];
+        const setParam: Cypher.SetParam = [target.property(this.attribute.databaseName), Cypher.randomUUID()];
         return [setParam];
     }
 
     public getSetClause(): Cypher.Clause[] {
         return [];
-    }
-
-    private getCypherTemporalFunction(type: Neo4jGraphQLTemporalType): CypherFunction {
-        switch (type) {
-            case Neo4jGraphQLTemporalType.DateTime:
-                return Cypher.datetime();
-
-            case Neo4jGraphQLTemporalType.LocalDateTime:
-                return Cypher.localdatetime();
-
-            case Neo4jGraphQLTemporalType.Time:
-                return Cypher.time();
-
-            case Neo4jGraphQLTemporalType.LocalTime:
-                return Cypher.localtime();
-
-            default: {
-                throw new Error(`Transpile error: Expected type to one of:
-                [ 
-                    ${Neo4jGraphQLTemporalType.DateTime},
-                    ${Neo4jGraphQLTemporalType.LocalDateTime}, 
-                    ${Neo4jGraphQLTemporalType.Time},
-                    ${Neo4jGraphQLTemporalType.LocalTime}
-                ]
-                but found ${type} instead`);
-            }
-        }
     }
 }
