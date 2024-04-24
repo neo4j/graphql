@@ -41,7 +41,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieConnection {
-              edges: MovieEdge
+              edges: [MovieEdge]
               pageInfo: PageInfo
             }
 
@@ -50,13 +50,17 @@ describe("Simple Aura-API", () => {
               node: Movie
             }
 
+            type MovieOperation {
+              connection: MovieConnection
+            }
+
             type PageInfo {
               hasNextPage: Boolean
               hasPreviousPage: Boolean
             }
 
             type Query {
-              Movie: MovieConnection
+              movies: MovieOperation
             }"
         `);
     });
@@ -83,7 +87,7 @@ describe("Simple Aura-API", () => {
             }
 
             type ActorConnection {
-              edges: ActorEdge
+              edges: [ActorEdge]
               pageInfo: PageInfo
             }
 
@@ -92,12 +96,16 @@ describe("Simple Aura-API", () => {
               node: Actor
             }
 
+            type ActorOperation {
+              connection: ActorConnection
+            }
+
             type Movie {
               title: String
             }
 
             type MovieConnection {
-              edges: MovieEdge
+              edges: [MovieEdge]
               pageInfo: PageInfo
             }
 
@@ -106,14 +114,18 @@ describe("Simple Aura-API", () => {
               node: Movie
             }
 
+            type MovieOperation {
+              connection: MovieConnection
+            }
+
             type PageInfo {
               hasNextPage: Boolean
               hasPreviousPage: Boolean
             }
 
             type Query {
-              Actor: ActorConnection
-              Movie: MovieConnection
+              actors: ActorOperation
+              movies: MovieOperation
             }"
         `);
     });

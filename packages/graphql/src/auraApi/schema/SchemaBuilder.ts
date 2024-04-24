@@ -9,15 +9,15 @@ export class SchemaBuilder {
         this.composer = new SchemaComposer();
     }
 
-    public createObjectType(name: string, fields: Record<string, any>, description?: string) {
-        this.composer.createObjectTC({
+    public createObjectType(name: string, fields: Record<string, any>, description?: string): ObjectTypeComposer {
+        return this.composer.createObjectTC({
             name,
             description,
             fields,
         });
     }
 
-    public addQueryField(name: string, type: ObjectTypeComposer | string) {
+    public addQueryField(name: string, type: ObjectTypeComposer | string): void {
         this.composer.Query.addFields({
             [name]: {
                 type: type,
@@ -26,12 +26,8 @@ export class SchemaBuilder {
         });
     }
 
-    public getObjectType(typeName: string) {
+    public getObjectType(typeName: string): ObjectTypeComposer {
         return this.composer.getOTC(typeName);
-    }
-
-    public addFieldToObjectType(typeName: string) {
-        this.composer.getOTC(typeName);
     }
 
     public build(): GraphQLSchema {

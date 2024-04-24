@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
+import { plural } from "pluralize";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import { lowerFirst } from "../utils/lower-first";
 
 export class AuraEntityOperations {
     private readonly concreteEntity: ConcreteEntity;
@@ -26,11 +28,31 @@ export class AuraEntityOperations {
         this.concreteEntity = concreteEntity;
     }
 
-    public get edgeType(): string {
-        return `${this.concreteEntity.name}Edge`;
+    public get connectionOperation(): string {
+        return `${this.concreteEntity.name}Operation`;
     }
 
     public get connectionType(): string {
         return `${this.concreteEntity.name}Connection`;
+    }
+
+    public get edgeType(): string {
+        return `${this.concreteEntity.name}Edge`;
+    }
+
+    public get nodeType(): string {
+        return `${this.concreteEntity.name}`;
+    }
+
+    public get plural(): string {
+        return plural(lowerFirst(this.concreteEntity.name));
+        // if (!this._plural) {
+        //     if (this.annotations.plural) {
+        //         this._plural = plural(this.annotations.plural.value);
+        //     } else {
+        //         this._plural = plural(this.name);
+        //     }
+        // }
+        // return this._plural;
     }
 }
