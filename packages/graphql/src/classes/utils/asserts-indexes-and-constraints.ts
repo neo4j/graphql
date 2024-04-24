@@ -56,14 +56,23 @@ export async function assertIndexesAndConstraints({
     }
 }
 
-async function getExistingIndexes({
-    session,
-}: {
-    session: Session;
-}): Promise<Record<string, { labelsOrTypes: string; properties: string[] }>> {
-    const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
+type ExistingIndexes = Record<
+    string,
+    { labelsOrTypes: string; properties: string[]; options: Record<string, unknown> }
+>;
 
-    const indexesCypher = "SHOW INDEXES";
+async function getExistingIndexes({ session }: { session: Session }): Promise<ExistingIndexes> {
+    const existingIndexes: ExistingIndexes = {};
+
+    const indexesCypher = `
+        SHOW INDEXES YIELD
+        name AS name,
+        type AS type,
+        entityType AS entityType,
+        labelsOrTypes AS labelsOrTypes,
+        properties AS properties,
+        options AS options
+    `;
 
     debug(`About to execute Cypher: ${indexesCypher}`);
     const indexesResult = await session.run(indexesCypher);
@@ -71,7 +80,7 @@ async function getExistingIndexes({
     indexesResult.records.forEach((record) => {
         const index = record.toObject();
 
-        if (index.type !== "FULLTEXT" || index.entityType !== "NODE") {
+        if ((index.type !== "FULLTEXT" && index.type !== "VECTOR") || index.entityType !== "NODE") {
             return;
         }
 
@@ -82,6 +91,7 @@ async function getExistingIndexes({
         existingIndexes[index.name] = {
             labelsOrTypes: index.labelsOrTypes,
             properties: index.properties,
+            options: index.options,
         };
     });
 
@@ -242,6 +252,40 @@ async function checkIndexesAndConstraints({
                         );
                     }
                 });
+            });
+        }
+
+        if (entity.annotations["genAI"]) {
+            entity.annotations["genAI"].indexes.forEach((index) => {
+                const existingIndex = existingIndexes[index.indexName];
+
+                if (!existingIndex) {
+                    indexErrors.push(`Missing @genAI index '${index.indexName}' on Node '${entity.name}'`);
+
+                    return;
+                }
+
+                const propertyIsInIndex = existingIndex.properties.some((p) => p === index.propertyName);
+                if (!propertyIsInIndex) {
+                    indexErrors.push(
+                        `@genAI index '${index.indexName}' on Node '${entity.name}' is missing field '${index.propertyName}'`
+                    );
+                }
+
+                if (!existingIndex.options) {
+                    indexErrors.push(`@genAI index '${index.indexName}' on Node '${entity.name}' is missing options`);
+
+                    return;
+                }
+
+                const indexConfig = existingIndex.options["indexConfig"];
+                if (!indexConfig) {
+                    indexErrors.push(
+                        `@genAI index '${index.indexName}' on Node '${entity.name}' is missing indexConfig`
+                    );
+
+                    return;
+                }
             });
         }
     }
