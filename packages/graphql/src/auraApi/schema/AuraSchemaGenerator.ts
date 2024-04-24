@@ -4,6 +4,7 @@ import { Memoize } from "typescript-memoize";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { AuraEntityOperations } from "../AuraEntityOperations";
+import { generateReadResolver } from "../resolvers/readResolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 
 export class AuraSchemaGenerator {
@@ -40,7 +41,10 @@ export class AuraSchemaGenerator {
 
         const entityOperationType = this.createEntityOperationType(entityOperations, concreteEntity);
 
-        this.schemaBuilder.addQueryField(entityOperations.plural, entityOperationType);
+        const resolver = generateReadResolver({
+            entity: concreteEntity,
+        });
+        this.schemaBuilder.addQueryField(entityOperations.plural, entityOperationType, resolver);
     }
 
     private createEntityOperationType(

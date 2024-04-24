@@ -17,11 +17,11 @@ export class SchemaBuilder {
         });
     }
 
-    public addQueryField(name: string, type: ObjectTypeComposer | string): void {
+    public addQueryField(name: string, type: ObjectTypeComposer | string, resolver: (...args: any[]) => any): void {
         this.composer.Query.addFields({
             [name]: {
                 type: type,
-                resolve: () => null,
+                resolve: resolver,
             },
         });
     }
