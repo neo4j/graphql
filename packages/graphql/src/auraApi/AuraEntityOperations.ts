@@ -19,7 +19,7 @@
 
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
-export class ConcreteEntityOperations {
+export class AuraEntityOperations {
     private readonly concreteEntity: ConcreteEntity;
 
     constructor(concreteEntity: ConcreteEntity) {
@@ -30,11 +30,7 @@ export class ConcreteEntityOperations {
         return `${this.concreteEntity.name}Edge`;
     }
 
-    public get edgeFields(): Record<string, any> {
-        return {
-            node: this.concreteEntity.name,
-            cursor: "String",
-            // TODO: FullText
-        };
+    public get connectionType(): string {
+        return `${this.concreteEntity.name}Connection`;
     }
 }
