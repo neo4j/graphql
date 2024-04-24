@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/4995", () => {
         await driver.close();
     });
 
-    test("should re-create issue and return types without throwing", async () => {
+    test("should not raise an error when schema configuration is used on union types", async () => {
         const typeDefs = /* GraphQL */ `
             type ${A} {
                 a: String
