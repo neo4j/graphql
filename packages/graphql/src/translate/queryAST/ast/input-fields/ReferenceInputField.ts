@@ -25,21 +25,19 @@ import { InputField } from "./InputField";
 export class ReferenceInputField extends InputField {
     private attribute: AttributeAdapter;
     private propertyReference: Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection>;
-    public attachedTo: "node" | "relationship";
 
     constructor({
         attribute,
         reference,
-        attachedTo = "node",
+        attachedTo,
     }: {
         attribute: AttributeAdapter;
         reference: Cypher.Property;
-        attachedTo?: "node" | "relationship";
+        attachedTo: "node" | "relationship";
     }) {
         super(attribute.name, attachedTo);
         this.attribute = attribute;
         this.propertyReference = reference;
-        this.attachedTo = attachedTo;
     }
 
     public getChildren() {
@@ -51,10 +49,7 @@ export class ReferenceInputField extends InputField {
     }
 
     public getSetFields(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
-        const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
-        if (!target) {
-            throw new Error("No target found");
-        }
+        const target = this.getTarget(queryASTContext);
         const leftExpr = target.property(this.attribute.databaseName);
         const rightExpr = this.coerceReference();
 
@@ -74,13 +69,7 @@ export class ReferenceInputField extends InputField {
         return this.propertyReference;
     }
 
-    private getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
-        const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
-        if (!target) {
-            throw new Error("No target found");
-        }
-        return target;
-    }
+
 
     public getSetClause(): Cypher.Clause[] {
         return [];
