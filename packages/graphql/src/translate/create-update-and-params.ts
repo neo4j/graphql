@@ -26,7 +26,7 @@ import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constan
 import type { BaseField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
-import { findConflictingProperties } from "../utils/is-property-clash";
+import { findConflictingProperties } from "../utils/find-conflicting-properties";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { checkAuthentication } from "./authorization/check-authentication";

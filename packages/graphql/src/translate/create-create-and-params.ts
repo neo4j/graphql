@@ -21,7 +21,7 @@ import type { Node, Relationship } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jGraphQLError } from "../classes/Error";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { findConflictingProperties } from "../utils/is-property-clash";
+import { findConflictingProperties } from "../utils/find-conflicting-properties";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { checkAuthentication } from "./authorization/check-authentication";
 import {
