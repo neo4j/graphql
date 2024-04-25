@@ -9,12 +9,16 @@ export class SchemaBuilder {
         this.composer = new SchemaComposer();
     }
 
-    public createObjectType(name: string, fields: Record<string, any>, description?: string): ObjectTypeComposer {
+    public createObjectType(name: string, fields?: Record<string, any>, description?: string): ObjectTypeComposer {
         return this.composer.createObjectTC({
             name,
             description,
             fields,
         });
+    }
+
+    public addFieldToType(type: ObjectTypeComposer, fields: Record<string, any>): void {
+        type.addFields(fields);
     }
 
     public addQueryField(name: string, type: ObjectTypeComposer | string, resolver: (...args: any[]) => any): void {

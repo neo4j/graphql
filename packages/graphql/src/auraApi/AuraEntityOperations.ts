@@ -47,6 +47,10 @@ export class AuraEntityOperations {
         return `${this.concreteEntity.name}Where`;
     }
 
+    public get queryField(): string {
+        return this.plural;
+    }
+
     public get plural(): string {
         return plural(this.concreteEntity.name);
 

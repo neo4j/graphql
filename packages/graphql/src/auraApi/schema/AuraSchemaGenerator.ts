@@ -3,82 +3,66 @@ import { type ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import { AuraEntityOperations } from "../AuraEntityOperations";
 import { generateReadResolver } from "../resolvers/readResolver";
+import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import { SchemaBuilder } from "./SchemaBuilder";
+
+export type StaticTypes = Record<"pageInfo", ObjectTypeComposer>;
 
 export class AuraSchemaGenerator {
     private schemaBuilder: SchemaBuilder;
 
-    constructor() {
+    private entityTypes: Map<ConcreteEntity, EntitySchemaTypes>;
+
+    constructor(schemaModel: Neo4jGraphQLSchemaModel) {
         this.schemaBuilder = new SchemaBuilder();
+        this.entityTypes = this.generateEntityTypes(schemaModel);
     }
 
-    public generate({ schemaModel }: { schemaModel: Neo4jGraphQLSchemaModel }): GraphQLSchema {
-        for (const entity of schemaModel.entities.values()) {
-            if (entity.isConcreteEntity()) {
-                this.generateTypesForConcreteEntity(entity);
-            }
-        }
+    public generate(): GraphQLSchema {
+        this.createQueryFields();
 
-        const schema = this.schemaBuilder.build();
+        return this.schemaBuilder.build();
+    }
 
-        return schema;
+    private createQueryFields(): void {
+        this.entityTypes.forEach((entitySchemaTypes, entity) => {
+            const resolver = generateReadResolver({
+                entity,
+            });
+            this.schemaBuilder.addQueryField(
+                entitySchemaTypes.queryFieldName,
+                entitySchemaTypes.connectionOperation,
+                resolver
+            );
+        });
     }
 
     @Memoize()
-    private get staticTypes() {
+    private get staticTypes(): StaticTypes {
         return {
             pageInfo: this.createPageInfoType(),
         } as const;
     }
 
+    private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel): Map<ConcreteEntity, EntitySchemaTypes> {
+        const resultMap = new Map<ConcreteEntity, EntitySchemaTypes>();
+        for (const entity of schemaModel.entities.values()) {
+            if (entity.isConcreteEntity()) {
+                const entitySchemaTypes = new EntitySchemaTypes({
+                    entity,
+                    schemaBuilder: this.schemaBuilder,
+                    staticTypes: this.staticTypes,
+                });
+
+                resultMap.set(entity, entitySchemaTypes);
+            }
+        }
+
+        return resultMap;
+    }
+
     private createPageInfoType(): ObjectTypeComposer {
         return this.schemaBuilder.createObjectType("PageInfo", { hasNextPage: "Boolean", hasPreviousPage: "Boolean" });
-    }
-
-    private generateTypesForConcreteEntity(concreteEntity: ConcreteEntity) {
-        const entityOperations = new AuraEntityOperations(concreteEntity);
-
-        const entityOperationType = this.createEntityOperationType(entityOperations, concreteEntity);
-
-        const resolver = generateReadResolver({
-            entity: concreteEntity,
-        });
-        this.schemaBuilder.addQueryField(entityOperations.plural, entityOperationType, resolver);
-    }
-
-    private createEntityOperationType(
-        entityOperations: AuraEntityOperations,
-        concreteEntity: ConcreteEntity
-    ): ObjectTypeComposer {
-        const nodeType = this.createEntityType(entityOperations.nodeType, concreteEntity);
-
-        const edgeType = this.schemaBuilder.createObjectType(entityOperations.edgeType, {
-            node: nodeType,
-            cursor: "String",
-        });
-
-        const connectionType = this.schemaBuilder.createObjectType(entityOperations.connectionType, {
-            pageInfo: this.staticTypes.pageInfo,
-            edges: [edgeType],
-        });
-
-        const connectionOperation = this.schemaBuilder.createObjectType(entityOperations.connectionOperation, {
-            connection: connectionType,
-        });
-
-        return connectionOperation;
-    }
-
-    private createEntityType(nodeType: string, concreteEntity: ConcreteEntity): ObjectTypeComposer {
-        const fields = this.getObjectFields(concreteEntity);
-        return this.schemaBuilder.createObjectType(nodeType, fields);
-    }
-
-    private getObjectFields(concreteEntity: ConcreteEntity): Record<string, string> {
-        return Object.fromEntries(
-            [...concreteEntity.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
-        );
     }
 }
