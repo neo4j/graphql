@@ -1,4 +1,4 @@
-FROM node:20.12.2-buster-slim@sha256:1eebe9c64660703835c797f7b62c80f4f0a54bd89d649dd0e2fb2a7d114411bd
+FROM node:20.12.2-buster-slim@sha256:956a0eeb32c33a50df612e31b74f7465fdf3b9903df8325cc6ea8173ec79460e
 
 WORKDIR /app
 

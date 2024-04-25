@@ -170,6 +170,7 @@ function createDeleteAndParams({
 
                         if (subqueries) {
                             innerStrs.push(subqueries);
+                            innerStrs.push("WITH *");
                         }
                     }
 
