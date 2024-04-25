@@ -40,7 +40,6 @@ export class ReadOperationFactory {
         entity: ConcreteEntity;
         context;
     }): Operation {
-        //console.log(`ResolveTree: ${JSON.stringify(resolveTree, null, 2)}`);
         const entityOperations = new AuraEntityOperations(entity);
         const operationEntry = resolveTree.fieldsByTypeName[entityOperations.connectionOperation];
         if (!operationEntry) {
@@ -152,58 +151,4 @@ export class ReadOperationFactory {
             fields,
         };
     }
-
-    // private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
-    //     relationship,
-    //     target,
-    //     resolveTree,
-    //     context,
-    //     operation,
-    //     whereArgs,
-    //     entityOperations,
-    // }: {
-    //     relationship?: Relationship;
-    //     target: ConcreteEntity;
-    //     resolveTree: ResolveTree;
-    //     context: Neo4jGraphQLTranslationContext;
-    //     operation: T;
-    //     whereArgs: Record<string, any>;
-    //     entityOperations: AuraEntityOperations;
-    // }): T {
-
-    //     const resolveTreeEdgeFields = this.parseConnectionFields({
-    //         resolveTree,
-    //         entityOperations,
-    //     });
-
-    //     const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
-    //     const resolveTreeNodeFields = nodeFieldsRaw[target.name];
-    //     const nodeFields = this.queryASTFactory.fieldFactory.createFields(target, resolveTreeNodeFields, context);
-    // }
-
-    // private parseConnectionFields({
-    //     resolveTree,
-    //     entityOperations,
-    // }: {
-    //     resolveTree: ResolveTree;
-    //     entityOperations: AuraEntityOperations;
-    // }): Record<string, ResolveTree> {
-    //     const concreteProjectionFields = {
-    //         ...resolveTree.fieldsByTypeName[entityOperations.connectionType],
-    //     };
-
-    //     const resolveTreeConnectionFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
-    //         concreteProjectionFields,
-    //     ]);
-
-    //     const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
-
-    //     const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOperations.edgeType);
-
-    //     return concreteEdgeFields;
-    // }
-
-    // private createConnectionFields() {
-
-    // }
 }
