@@ -1,4 +1,4 @@
-import { type GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
 import { type ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
@@ -22,6 +22,7 @@ export class AuraSchemaGenerator {
         }
 
         const schema = this.schemaBuilder.build();
+
         return schema;
     }
 

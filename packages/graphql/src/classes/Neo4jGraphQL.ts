@@ -120,11 +120,15 @@ class Neo4jGraphQL {
         const auraSchemaGenerator = new AuraSchemaGenerator();
         const document = this.normalizeTypeDefinitions(this.typeDefs);
         this.schemaModel = this.generateSchemaModel(document);
+        this._nodes = [];
+        this._relationships = [];
 
         return Promise.resolve(
-            auraSchemaGenerator.generate({
-                schemaModel: this.schemaModel,
-            })
+            this.composeSchema(
+                auraSchemaGenerator.generate({
+                    schemaModel: this.schemaModel,
+                })
+            )
         );
     }
 

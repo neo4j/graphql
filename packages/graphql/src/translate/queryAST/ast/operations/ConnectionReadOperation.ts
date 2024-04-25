@@ -53,15 +53,22 @@ export class ConnectionReadOperation extends Operation {
         relationship,
         target,
         selection,
+        fields,
     }: {
-        relationship: RelationshipAdapter | undefined;
+        relationship?: RelationshipAdapter;
         target: ConcreteEntityAdapter;
         selection: EntitySelection;
+        fields?: {
+            node: Field[];
+            edge: Field[];
+        };
     }) {
         super();
         this.relationship = relationship;
         this.target = target;
         this.selection = selection;
+        this.nodeFields = fields?.node ?? [];
+        this.edgeFields = fields?.edge ?? [];
     }
 
     public setNodeFields(fields: Field[]) {
