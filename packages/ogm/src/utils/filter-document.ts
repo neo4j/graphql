@@ -17,9 +17,16 @@
  * limitations under the License.
  */
 
-import { Kind, type DefinitionNode, type DocumentNode, type FieldDefinitionNode } from "graphql";
-import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
+import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
+import type {
+    DefinitionNode,
+    DocumentNode,
+    FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
+import { Kind } from "graphql";
 
 const excludedDirectives = [
     "authentication",
@@ -47,7 +54,11 @@ export function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): D
     return {
         ...merged,
         definitions: merged.definitions.reduce((res: DefinitionNode[], def) => {
-            if (def.kind !== Kind.OBJECT_TYPE_DEFINITION && def.kind !== Kind.INTERFACE_TYPE_DEFINITION) {
+            if (
+                def.kind !== Kind.OBJECT_TYPE_DEFINITION &&
+                def.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
+                def.kind !== Kind.UNION_TYPE_DEFINITION
+            ) {
                 return [...res, def];
             }
 
@@ -66,38 +77,39 @@ export function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): D
                     value: true,
                 },
             };
-
+            const getFields = (def: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode) =>
+                def.fields?.reduce(
+                    (r: FieldDefinitionNode[], f) => [
+                        ...r,
+                        {
+                            ...f,
+                            directives: f.directives
+                                ?.filter((x) => !excludedDirectives.includes(x.name.value))
+                                .map((x) => {
+                                    if (x.name.value === "relationship") {
+                                        const args = (
+                                            x.arguments
+                                                ? x.arguments?.filter((arg) => arg.name.value !== "aggregate")
+                                                : []
+                                        ) as any[]; // cast to any as this type is changing between GraphQL versions
+                                        args?.push(relationshipAggregateArgument);
+                                        return {
+                                            ...x,
+                                            arguments: args,
+                                        };
+                                    }
+                                    return x;
+                                }),
+                        },
+                    ],
+                    []
+                );
             return [
                 ...res,
                 {
                     ...def,
                     directives: def.directives?.filter((x) => !excludedDirectives.includes(x.name.value)),
-                    fields: def.fields?.reduce(
-                        (r: FieldDefinitionNode[], f) => [
-                            ...r,
-                            {
-                                ...f,
-                                directives: f.directives
-                                    ?.filter((x) => !excludedDirectives.includes(x.name.value))
-                                    .map((x) => {
-                                        if (x.name.value === "relationship") {
-                                            const args = (
-                                                x.arguments
-                                                    ? x.arguments?.filter((arg) => arg.name.value !== "aggregate")
-                                                    : []
-                                            ) as any[]; // cast to any as this type is changing between GraphQL versions
-                                            args?.push(relationshipAggregateArgument);
-                                            return {
-                                                ...x,
-                                                arguments: args,
-                                            };
-                                        }
-                                        return x;
-                                    }),
-                            },
-                        ],
-                        []
-                    ),
+                    fields: def.kind === Kind.UNION_TYPE_DEFINITION ? [] : getFields(def),
                 },
             ];
         }, []),

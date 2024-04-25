@@ -22,7 +22,7 @@ import { filterDocument } from "./filter-document";
 
 describe("filterDocument", () => {
     test("should remove all directives", () => {
-        const initial = `
+        const initial = /* GraphQL */ `
             type User @authentication @authorization {
                 id: ID @id @private @unique
                 name: String @authentication @authorization @private
@@ -32,17 +32,41 @@ describe("filterDocument", () => {
                 bikes: [Car!]! @relationship(type: "HAS_CAR", direction: OUT)
             }
 
-            type Car @query(read: false, aggregate: false) @mutation(operations: []), @subscription(events: []) {
+            type Car {
                 name: String @filterable(byValue: false, byAggregate: false)
                 engine: String @selectable(onRead: false, onAggregate: false)
             }
 
-            type Bike {
+            union CarOrBike = Car | Bike
+
+            interface Vehicle @query(read: false) {
+                name: String @settable(onCreate: false, onUpdate: false)
+                engine: String
+            }
+
+            type Motorbike implements Vehicle @query(read: false) {
+                name: String @settable(onCreate: false, onUpdate: false)
+                kw: Int
+                engine: String @filterable
+            }
+
+            type Bike @query(read: false) {
                 name: String @settable(onCreate: false, onUpdate: false)
                 engine: String @filterable
                 model: String @selectable
                 type: String @settable
             }
+
+            extend type Car @query(read: false, aggregate: false)
+
+            extend type Bike {
+                stuff: String @settable(onCreate: false)
+            }
+
+            extend interface Vehicle @query(read: false) {
+                kw: Int @settable(onCreate: false, onUpdate: false)
+            }
+            extend union CarOrBike @query(read: false)
             extend schema @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: [])
         `;
 
@@ -63,11 +87,26 @@ describe("filterDocument", () => {
               engine: String
             }
 
+            union CarOrBike = Car | Bike
+
+            interface Vehicle {
+              name: String
+              engine: String
+              kw: Int
+            }
+
+            type Motorbike implements Vehicle {
+              name: String
+              kw: Int
+              engine: String
+            }
+
             type Bike {
               name: String
               engine: String
               model: String
               type: String
+              stuff: String
             }
 
             extend schema @query(read: true, aggregate: true) @mutation(operations: [CREATE, UPDATE, DELETE]) @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])"
