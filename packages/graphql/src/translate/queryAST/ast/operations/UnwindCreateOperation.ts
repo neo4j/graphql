@@ -47,7 +47,7 @@ export class UnwindCreateOperation extends MutationOperation {
 
     constructor({
         target,
-        argumentToUnwind: argumentToUnwind,
+        argumentToUnwind,
     }: {
         target: ConcreteEntityAdapter | RelationshipAdapter;
         argumentToUnwind: Cypher.Param | Cypher.Property;
