@@ -160,32 +160,27 @@ export class CreateFactory {
                     assertIsConcreteEntity(nestedEntity);
                     const relField = unwindCreate.getField(key, "node");
                     const nestedCreateInput = targetInput[key]?.create;
-                    if (!relField) {
-                        const partialPath = isNested ? unwindVariable.property("node") : unwindVariable;
-                        this.addRelationshipInputFieldToUnwindOperation({
-                            relationship: nestedRelationship,
-                            unwindCreate,
-                            context,
-                            path: partialPath.property(nestedRelationship.name).property("create"),
-                            nestedCreateInput,
-                        });
-                    } else {
-                        if (
-                            !(
-                                relField instanceof MutationOperationField &&
-                                relField.mutationOperation instanceof UnwindCreateOperation
-                            )
-                        ) {
-                            throw new Error(
-                                `Transpile Error: Unwind create optimization failed when trying to hydrate nested level create operation for ${key}`
-                            );
-                        }
+                    if (
+                        relField &&
+                        relField instanceof MutationOperationField &&
+                        relField.mutationOperation instanceof UnwindCreateOperation
+                    ) {
+                        // in case relationship field is already present in the unwind operation we want still to hydrate the unwind-create operation as it might have different fields.
                         this.hydrateUnwindCreateOperation({
                             target: nestedEntity,
                             relationship: nestedRelationship,
                             input: nestedCreateInput,
                             unwindCreate: relField.mutationOperation,
                             context,
+                        });
+                    } else {
+                        const partialPath = this.getEdgeOrNodePath({ unwindVariable, isNested, isRelField: false });
+                        this.addRelationshipInputFieldToUnwindOperation({
+                            relationship: nestedRelationship,
+                            unwindCreate,
+                            context,
+                            path: partialPath.property(nestedRelationship.name).property("create"),
+                            nestedCreateInput,
                         });
                     }
                 }
@@ -254,12 +249,12 @@ export class CreateFactory {
     }) {
         const unwindVariable = unwindCreate.getUnwindVariable();
         const isConcreteEntityTarget = isConcreteEntity(target);
-        const path = this.getAttributePath({
+        const edgeOrNodePath = this.getEdgeOrNodePath({
             unwindVariable,
-            attribute,
-            isNested,
             isRelField: !isConcreteEntityTarget,
+            isNested,
         });
+        const path = edgeOrNodePath.property(attribute.name);
         const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
         if (isConcreteEntityTarget) {
             this.addAttributeAuthorization({
@@ -279,26 +274,24 @@ export class CreateFactory {
         });
     }
 
-    private getAttributePath({
+    private getEdgeOrNodePath({
         unwindVariable,
-        attribute,
         isNested,
         isRelField,
     }: {
         unwindVariable: Cypher.Variable;
-        attribute: AttributeAdapter;
         isNested: boolean;
         isRelField: boolean;
-    }) {
+    }): Cypher.Property | Cypher.Variable {
         if (!isNested && isRelField) {
-            throw new Error("Transpile error: invalid invoke of getAttributeUnwindPath for relationship field.");
+            throw new Error("Transpile error: invalid invoke of getEdgeOrNodePath for relationship field.");
         }
 
         if (isNested) {
             const path = isRelField ? "edge" : "node";
-            return unwindVariable.property(path).property(attribute.name);
+            return unwindVariable.property(path);
         }
-        return unwindVariable.property(attribute.name);
+        return unwindVariable;
     }
 
     private addAttributeInputFieldToUnwindOperation({
