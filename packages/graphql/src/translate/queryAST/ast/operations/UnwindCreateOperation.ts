@@ -66,14 +66,13 @@ export class UnwindCreateOperation extends MutationOperation {
     public addAuthFilters(...filter: AuthorizationFilters[]) {
         this.authFilters.push(...filter);
     }
-
-    public getField(key: string): any {
-        return this.inputFields.get(key);
+    public getField(key: string, attachedTo: "node" | "relationship") {
+        return this.inputFields.get(`${attachedTo}_${key}`);
     }
 
-    public addField(field: InputField) {
+    public addField(field: InputField, attachedTo: "node" | "relationship") {
         if (!this.inputFields.has(field.name)) {
-            this.inputFields.set(field.name, field);
+            this.inputFields.set(`${attachedTo}_${field.name}`, field);
         }
     }
 
@@ -89,30 +88,6 @@ export class UnwindCreateOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
-    public getTarget(): ConcreteEntityAdapter {
-        if (this.target instanceof RelationshipAdapter) {
-            const targetAdapter = this.target.target;
-            assertIsConcreteEntity(targetAdapter);
-            return targetAdapter;
-        }
-        return this.target;
-    }
-
-    public getNestedContext(context: QueryASTContext): QueryASTContext {
-        if (this.target instanceof RelationshipAdapter) {
-            const nestedTarget = this.target.target;
-            assertIsConcreteEntity(nestedTarget);
-            const nestedTargetNode = createNodeFromEntity(nestedTarget, context.neo4jGraphQLContext);
-            const relationship = createRelationshipFromEntity(this.target);
-
-            return context.push({
-                target: nestedTargetNode,
-                relationship,
-            });
-        }
-        return context;
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         const nestedContext = this.getNestedContext(context);
         nestedContext.env.topLevelOperationName = "CREATE";
@@ -120,7 +95,6 @@ export class UnwindCreateOperation extends MutationOperation {
         if (!nestedContext.hasTarget()) {
             throw new Error("No parent node found!");
         }
-
         const target = this.getTarget();
         checkEntityAuthentication({
             context: nestedContext.neo4jGraphQLContext,
@@ -140,25 +114,7 @@ export class UnwindCreateOperation extends MutationOperation {
 
         const createClause = new Cypher.Create(nestedContext.target);
         const setSubqueries: Cypher.Clause[] = [];
-        let mergeClause: Cypher.Merge | undefined;
-        if (this.isNested) {
-            if (!nestedContext.source || !nestedContext.relationship) {
-                throw new Error("Transpile error: No source or relationship found!");
-            }
-            if (!(this.target instanceof RelationshipAdapter)) {
-                throw new Error("Transpile error: Invalid target");
-            }
-
-            mergeClause = new Cypher.Merge(
-                new Cypher.Pattern(nestedContext.source)
-                    .withoutLabels()
-                    .related(nestedContext.relationship)
-                    .withDirection(this.target.cypherDirectionFromRelDirection())
-                    .to(nestedContext.target)
-                    .withoutLabels()
-            );
-        }
-
+        const mergeClause: Cypher.Merge | undefined = this.getMergeClause(nestedContext);
         for (const field of this.inputFields.values()) {
             if (field.attachedTo === "relationship" && mergeClause) {
                 mergeClause.set(...field.getSetFields(nestedContext));
@@ -206,6 +162,49 @@ export class UnwindCreateOperation extends MutationOperation {
         });
         const clauses = Cypher.concat(unwindClause, subQueryClause, ...this.getProjectionClause(projectionContext));
         return { projectionExpr: nestedContext.returnVariable, clauses: [clauses] };
+    }
+
+    private getMergeClause(context: QueryASTContext): Cypher.Merge | undefined {
+        if (this.isNested) {
+            if (!context.source || !context.relationship) {
+                throw new Error("Transpile error: No source or relationship found!");
+            }
+            if (!(this.target instanceof RelationshipAdapter)) {
+                throw new Error("Transpile error: Invalid target");
+            }
+
+            return new Cypher.Merge(
+                new Cypher.Pattern(context.source)
+                    .withoutLabels()
+                    .related(context.relationship)
+                    .withDirection(this.target.cypherDirectionFromRelDirection())
+                    .to(context.target)
+                    .withoutLabels()
+            );
+        }
+    }
+    private getTarget(): ConcreteEntityAdapter {
+        if (this.target instanceof RelationshipAdapter) {
+            const targetAdapter = this.target.target;
+            assertIsConcreteEntity(targetAdapter);
+            return targetAdapter;
+        }
+        return this.target;
+    }
+
+    private getNestedContext(context: QueryASTContext): QueryASTContext {
+        if (this.target instanceof RelationshipAdapter) {
+            const nestedTarget = this.target.target;
+            assertIsConcreteEntity(nestedTarget);
+            const nestedTargetNode = createNodeFromEntity(nestedTarget, context.neo4jGraphQLContext);
+            const relationship = createRelationshipFromEntity(this.target);
+
+            return context.push({
+                target: nestedTargetNode,
+                relationship,
+            });
+        }
+        return context;
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
