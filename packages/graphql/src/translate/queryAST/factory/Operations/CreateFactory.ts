@@ -144,17 +144,16 @@ export class CreateFactory {
             for (const key of Object.keys(targetInput)) {
                 const nestedRelationship = target.relationships.get(key);
                 const attribute = target.attributes.get(key);
+                if (!attribute && !nestedRelationship) {
+                    throw new Error(`Transpile Error: Input field ${key} not found in entity ${target.name}`);
+                }
                 if (attribute) {
-                    const path = isNested
-                        ? unwindVariable.property("node").property(key)
-                        : unwindVariable.property(key);
-                    this.addAttributeInputFieldToUnwindOperation({
-                        entity: target,
+                    this.parseAttributeInputField({
+                        target,
                         attribute,
                         unwindCreate,
+                        isNested,
                         context,
-                        path,
-                        attachedTo: "node",
                     });
                 } else if (nestedRelationship) {
                     const nestedEntity = nestedRelationship.target;
@@ -189,28 +188,25 @@ export class CreateFactory {
                             context,
                         });
                     }
-                } else {
-                    throw new Error(`Transpile Error: Input field ${key} not found in entity ${target.name}`);
                 }
             }
             if (relationship) {
-                // do it for edge properties
                 for (const key of Object.keys(this.getInputEdge(inputItem))) {
                     const attribute = relationship.attributes.get(key);
                     if (attribute) {
-                        this.addAttributeInputFieldToUnwindOperation({
-                            entity: target,
+                        this.parseAttributeInputField({
+                            target: relationship,
                             attribute,
                             unwindCreate,
+                            isNested,
                             context,
-                            path: unwindCreate.getUnwindVariable().property("edge").property(key),
-                            attachedTo: "relationship",
                         });
                     }
                 }
             }
         });
     }
+
     private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {
         if (isNested) {
             return inputItem.node ?? {};
@@ -243,31 +239,83 @@ export class CreateFactory {
         });
     }
 
-    private addAttributeInputFieldToUnwindOperation({
-        entity,
+    private parseAttributeInputField({
+        target,
         attribute,
         unwindCreate,
+        isNested,
         context,
+    }: {
+        target: ConcreteEntityAdapter | RelationshipAdapter;
+        attribute: AttributeAdapter;
+        unwindCreate: UnwindCreateOperation;
+        isNested: boolean;
+        context: Neo4jGraphQLTranslationContext;
+    }) {
+        const unwindVariable = unwindCreate.getUnwindVariable();
+        const isConcreteEntityTarget = isConcreteEntity(target);
+        const path = this.getAttributePath({
+            unwindVariable,
+            attribute,
+            isNested,
+            isRelField: !isConcreteEntityTarget,
+        });
+        const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
+        if (isConcreteEntityTarget) {
+            this.addAttributeAuthorization({
+                attribute,
+                entity: target,
+                context,
+                unwindCreate,
+                conditionForEvaluation: Cypher.isNotNull(path),
+            });
+        }
+
+        this.addAttributeInputFieldToUnwindOperation({
+            attribute,
+            unwindCreate,
+            path,
+            attachedTo,
+        });
+    }
+
+    private getAttributePath({
+        unwindVariable,
+        attribute,
+        isNested,
+        isRelField,
+    }: {
+        unwindVariable: Cypher.Variable;
+        attribute: AttributeAdapter;
+        isNested: boolean;
+        isRelField: boolean;
+    }) {
+        if (!isNested && isRelField) {
+            throw new Error("Transpile error: invalid invoke of getAttributeUnwindPath for relationship field.");
+        }
+
+        if (isNested) {
+            const path = isRelField ? "edge" : "node";
+            return unwindVariable.property(path).property(attribute.name);
+        }
+        return unwindVariable.property(attribute.name);
+    }
+
+    private addAttributeInputFieldToUnwindOperation({
+        attribute,
+        unwindCreate,
         path,
         attachedTo,
     }: {
-        entity: ConcreteEntityAdapter;
         attribute: AttributeAdapter;
         unwindCreate: UnwindCreateOperation;
-        context: Neo4jGraphQLTranslationContext;
         path: Cypher.Property;
         attachedTo: "relationship" | "node";
     }): void {
         if (unwindCreate.getField(attribute.name, attachedTo)) {
             return;
         }
-        this.addAttributeAuthorization({
-            attribute,
-            entity,
-            context,
-            unwindCreate,
-            conditionForEvaluation: Cypher.isNotNull(path),
-        });
+
         const inputField = new ReferenceInputField({
             attribute,
             reference: path,

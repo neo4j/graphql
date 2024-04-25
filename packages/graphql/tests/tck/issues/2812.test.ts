@@ -208,11 +208,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         create_this3.fieldB = create_var2.node.fieldB
                     MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
                     WITH *
-                    WHERE (apoc.util.validatePredicate((create_var2.node.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var2.node.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE (apoc.util.validatePredicate((create_var2.node.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var2.node.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var2.node.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var2.node.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     RETURN collect(NULL) AS create_var5
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             CALL {
@@ -269,7 +269,9 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 },
                 \\"create_param3\\": \\"role-A\\",
                 \\"create_param4\\": \\"role-B\\",
-                \\"create_param5\\": \\"admin\\"
+                \\"create_param5\\": \\"role-A\\",
+                \\"create_param6\\": \\"role-B\\",
+                \\"create_param7\\": \\"admin\\"
             }"
         `);
     });
