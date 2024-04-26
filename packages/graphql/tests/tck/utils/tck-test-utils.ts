@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLArgs } from "graphql";
+import type { GraphQLArgs, GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
@@ -54,31 +54,32 @@ export function formatParams(params: Record<string, any>): string {
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
     query: string,
-    options?: {
+    options: {
         token?: string;
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
         subgraph?: boolean;
-    }
+        auraApi?: boolean;
+    } = {}
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
-    const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.4");
+    const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options.neo4jVersion ?? "4.4");
     let contextValue: Record<string, any> = {
         executionContext: driverBuilder.instance(),
         neo4jDatabaseInfo,
     };
 
-    if (options?.token) {
+    if (options.token) {
         contextValue.token = options.token;
     }
 
-    if (options?.contextValues) {
+    if (options.contextValues) {
         contextValue = { ...contextValue, ...options.contextValues };
     }
 
     const graphqlArgs: GraphQLArgs = {
-        schema: await (options?.subgraph ? neoSchema.getSubgraphSchema() : neoSchema.getSchema()),
+        schema: await getSchema(neoSchema, options),
         source: query,
         contextValue,
     };
@@ -127,4 +128,20 @@ export async function translateQuery(
         cypher,
         params,
     };
+}
+
+function getSchema(
+    neoSchema: Neo4jGraphQL,
+    options: {
+        subgraph?: boolean;
+        auraApi?: boolean;
+    }
+): Promise<GraphQLSchema> {
+    if (options.subgraph) {
+        return neoSchema.getSubgraphSchema();
+    }
+    if (options.auraApi) {
+        return neoSchema.getAuraSchema();
+    }
+    return neoSchema.getSchema();
 }

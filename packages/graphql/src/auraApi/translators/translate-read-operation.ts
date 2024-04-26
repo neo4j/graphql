@@ -38,16 +38,4 @@ export function translateReadOperation({
     debug(readOperation.print());
     const results = readOperation.build(context);
     return results.build();
-
-    // const { resolveTree } = context;
-    // const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
-    // const operationsTree = operationsTreeFactory.createQueryAST({
-    //     resolveTree,
-    //     entityAdapter,
-    //     context,
-    //     varName,
-    // });
-    // debug(operationsTree.print());
-    // const clause = operationsTree.build(context);
-    // return clause.build();
 }

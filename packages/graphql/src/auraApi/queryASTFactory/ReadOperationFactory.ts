@@ -27,6 +27,7 @@ export class ReadOperationFactory {
         entity: ConcreteEntity;
         context;
     }): QueryAST {
+        // console.log(JSON.stringify(resolveTree, null, 2));
         const operation = this.parseResolveTree({ resolveTree, entity, context });
         return new QueryAST(operation);
     }
