@@ -118,7 +118,7 @@ export class UnwindCreateOperation extends MutationOperation {
                 mergeClause.set(...field.getSetFields(nestedContext, this.unwindVariable));
             } else if (field.attachedTo === "node") {
                 createClause.set(...field.getSetFields(nestedContext, this.unwindVariable));
-                setSubqueries.push(...field.getSetClause(nestedContext));
+                setSubqueries.push(...field.getSubqueries(nestedContext));
             }
         }
 

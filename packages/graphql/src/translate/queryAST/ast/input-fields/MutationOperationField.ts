@@ -42,7 +42,7 @@ export class MutationOperationField extends InputField {
         return [];
     }
 
-    public getSetClause(queryASTContext: QueryASTContext): Cypher.Clause[] {
+    public getSubqueries(queryASTContext: QueryASTContext): Cypher.Clause[] {
         const { clauses } = this.mutationOperation.transpile(queryASTContext);
         return clauses;
     }

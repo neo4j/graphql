@@ -49,10 +49,6 @@ export class TimestampField extends InputField {
         return [setParam];
     }
 
-    public getSetClause(): Cypher.Clause[] {
-        return [];
-    }
-
     private getCypherTemporalFunction(type: Neo4jGraphQLTemporalType): CypherFunction {
         switch (type) {
             case Neo4jGraphQLTemporalType.DateTime:
