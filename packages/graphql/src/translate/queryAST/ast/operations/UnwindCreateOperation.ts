@@ -66,6 +66,10 @@ export class UnwindCreateOperation extends MutationOperation {
     public addAuthFilters(...filter: AuthorizationFilters[]) {
         this.authFilters.push(...filter);
     }
+    /**
+     * Get and set field methods are utilities to remove duplicate fields between separate inputs
+     * TODO: This logic should be handled in the factory.
+     */
     public getField(key: string, attachedTo: "node" | "relationship") {
         return this.inputFields.get(`${attachedTo}_${key}`);
     }
@@ -75,7 +79,6 @@ export class UnwindCreateOperation extends MutationOperation {
             this.inputFields.set(`${attachedTo}_${field.name}`, field);
         }
     }
-
     public getUnwindArgument(): Cypher.Param | Cypher.Property {
         return this.argumentToUnwind;
     }
@@ -117,9 +120,9 @@ export class UnwindCreateOperation extends MutationOperation {
         const mergeClause: Cypher.Merge | undefined = this.getMergeClause(nestedContext);
         for (const field of this.inputFields.values()) {
             if (field.attachedTo === "relationship" && mergeClause) {
-                mergeClause.set(...field.getSetFields(nestedContext));
+                mergeClause.set(...field.getSetFields(nestedContext, this.unwindVariable));
             } else if (field.attachedTo === "node") {
-                createClause.set(...field.getSetFields(nestedContext));
+                createClause.set(...field.getSetFields(nestedContext, this.unwindVariable));
                 setSubqueries.push(...field.getSetClause(nestedContext));
             }
         }
