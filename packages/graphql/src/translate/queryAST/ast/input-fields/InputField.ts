@@ -37,7 +37,6 @@ export abstract class InputField extends QueryASTNode {
 
     protected getTarget(
         queryASTContext: QueryASTContext<Cypher.Node>,
-        inputVariable?: Cypher.Variable
     ): Cypher.Node | Cypher.Relationship {
         const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
         if (!target) {
@@ -47,6 +46,4 @@ export abstract class InputField extends QueryASTNode {
     }
 
     abstract getSetFields(_queryASTContext: QueryASTContext, inputVariable?: Cypher.Variable): Cypher.SetParam[];
-
-    abstract getSetClause(_queryASTContext: QueryASTContext): Cypher.Clause[];
 }
