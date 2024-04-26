@@ -8,106 +8,11 @@ import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fi
 import { ConnectionReadOperation } from "../../translate/queryAST/ast/operations/ConnectionReadOperation";
 import type { Operation } from "../../translate/queryAST/ast/operations/operations";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
-import { AuraEntityOperations } from "../AuraEntityOperations";
+import type { AuraAPIResolveTree, ResolveTreeEntityField } from "./ResolveTreeParser";
+import { ResolveTreeParser } from "./ResolveTreeParser";
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 // export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
-
-type ResolveTreeElement<T extends Record<string, ResolveTreeEntityField | ResolveTreeElement<any>>> = {
-    alias: string;
-    args: Record<string, any>;
-    fields: T;
-};
-
-type ResolveTreeEntityField = {
-    alias: string;
-    args: Record<string, any>;
-};
-type ResolveTreeNode = ResolveTreeElement<Record<string, ResolveTreeEntityField>>;
-type ResolveTreeEdge = ResolveTreeElement<{ node?: ResolveTreeNode }>;
-type ResolveTreeConnection = ResolveTreeElement<{ edges?: ResolveTreeEdge }>;
-
-type AuraAPIResolveTree = ResolveTreeElement<{ connection?: ResolveTreeConnection }>;
-
-class ResolveTreeParser {
-    public parse(concreteEntity: ConcreteEntity, resolveTree: ResolveTree): AuraAPIResolveTree {
-        const auraOps = new AuraEntityOperations(concreteEntity);
-        const fieldsByTypeName = resolveTree.fieldsByTypeName[auraOps.connectionOperation] ?? {};
-
-        const connectionResolveTree = fieldsByTypeName["connection"];
-        const connection = connectionResolveTree
-            ? this.parseConnection(concreteEntity, auraOps, connectionResolveTree)
-            : undefined;
-
-        return {
-            alias: resolveTree.alias,
-            args: resolveTree.args,
-            fields: {
-                connection,
-            },
-        };
-    }
-
-    private parseConnection(
-        concreteEntity: ConcreteEntity,
-        auraOps: AuraEntityOperations,
-        connectionResolveTree: ResolveTree
-    ): ResolveTreeConnection {
-        const edgesResolveTree = connectionResolveTree.fieldsByTypeName[auraOps.connectionType]?.["edges"];
-        const edgeResolveTree = edgesResolveTree
-            ? this.parseEdges(concreteEntity, auraOps, edgesResolveTree)
-            : undefined;
-        return {
-            alias: connectionResolveTree.alias,
-            args: connectionResolveTree.args,
-            fields: {
-                edges: edgeResolveTree,
-            },
-        };
-    }
-
-    private parseEdges(
-        concreteEntity: ConcreteEntity,
-        auraOps: AuraEntityOperations,
-        connectionResolveTree: ResolveTree
-    ): ResolveTreeEdge {
-        const nodeResolveTree = connectionResolveTree.fieldsByTypeName[auraOps.edgeType]?.["node"];
-
-        const node = nodeResolveTree ? this.parseEntity(concreteEntity, auraOps, nodeResolveTree) : undefined;
-
-        return {
-            alias: connectionResolveTree.alias,
-            args: connectionResolveTree.args,
-            fields: {
-                node: node,
-            },
-        };
-    }
-
-    private parseEntity(
-        concreteEntity: ConcreteEntity,
-        auraOps: AuraEntityOperations,
-        nodeResolveTree: ResolveTree
-    ): ResolveTreeEdge {
-        const fieldsResolveTree = nodeResolveTree.fieldsByTypeName[auraOps.nodeType] ?? {};
-        const fields = Object.entries(fieldsResolveTree).reduce(
-            (acc, [key, f]): Record<string, ResolveTreeEntityField> => {
-                acc[key] = {
-                    alias: f.alias,
-                    args: f.args,
-                };
-                return acc;
-            },
-            {}
-        );
-
-        return {
-            alias: nodeResolveTree.alias,
-            args: nodeResolveTree.args,
-            fields: fields,
-        };
-    }
-}
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -116,22 +21,13 @@ export class ReadOperationFactory {
         this.schemaModel = schemaModel;
     }
 
-    public createAST({
-        resolveTree,
-        entity,
-        context,
-    }: {
-        resolveTree: ResolveTree;
-        entity: ConcreteEntity;
-        context;
-    }): QueryAST {
-        const resolveTreeParser = new ResolveTreeParser();
+    public createAST({ resolveTree, entity }: { resolveTree: ResolveTree; entity: ConcreteEntity }): QueryAST {
+        const resolveTreeParser = new ResolveTreeParser(entity);
 
-        const parsedTree = resolveTreeParser.parse(entity, resolveTree);
+        const parsedTree = resolveTreeParser.parse(resolveTree);
         const operation = this.generateOperation({
             parsedTree: parsedTree,
             entity,
-            context,
         });
         return new QueryAST(operation);
     }
@@ -139,11 +35,9 @@ export class ReadOperationFactory {
     private generateOperation({
         parsedTree,
         entity,
-        context,
     }: {
         parsedTree: AuraAPIResolveTree;
         entity: ConcreteEntity;
-        context;
     }): Operation {
         const connectionTree = parsedTree.fields.connection;
         if (!connectionTree) {
@@ -155,8 +49,19 @@ export class ReadOperationFactory {
         });
 
         const nodeFieldsTree = connectionTree.fields.edges?.fields.node?.fields ?? {};
+        const nodeFields = this.getNodeFields(entity, nodeFieldsTree);
+        return new ConnectionReadOperation({
+            target,
+            selection,
+            fields: {
+                edge: [],
+                node: nodeFields,
+            },
+        });
+    }
 
-        const nodeFields = Object.entries(nodeFieldsTree).map(([name, rawField]) => {
+    private getNodeFields(entity: ConcreteEntity, nodeFieldsTree: Record<string, ResolveTreeEntityField>) {
+        return Object.entries(nodeFieldsTree).map(([name, rawField]) => {
             const attribute = entity.attributes.get(name);
             if (!attribute) {
                 throw new Error(`Attribute ${name} not found in ${entity.name}`);
@@ -166,15 +71,6 @@ export class ReadOperationFactory {
                 alias: rawField.alias,
                 attribute: new AttributeAdapter(attribute),
             });
-        });
-
-        return new ConnectionReadOperation({
-            target,
-            selection,
-            fields: {
-                edge: [],
-                node: nodeFields,
-            },
         });
     }
 }

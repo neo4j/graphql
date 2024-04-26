@@ -34,7 +34,7 @@ export function translateReadOperation({
     entity: ConcreteEntity;
 }): Cypher.CypherResult {
     const readFactory = new ReadOperationFactory(context.schemaModel);
-    const readOperation = readFactory.createAST({ resolveTree: context.resolveTree, entity, context });
+    const readOperation = readFactory.createAST({ resolveTree: context.resolveTree, entity });
     debug(readOperation.print());
     const results = readOperation.build(context);
     return results.build();
