@@ -100,7 +100,7 @@ export class UnwindCreateOperation extends MutationOperation {
             targetOperations: ["CREATE"],
         });
         this.inputFields.forEach((field) => {
-            if (field instanceof ReferenceInputField)
+            if (field.attachedTo === "node" && field instanceof ReferenceInputField)
                 checkEntityAuthentication({
                     context: nestedContext.neo4jGraphQLContext,
                     entity: target.entity,
