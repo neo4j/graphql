@@ -47,11 +47,10 @@ export function createRelationshipValidationClauses({
             if (isInterfaceEntity(target) || isUnionEntity(target)) {
                 return;
             }
-            //const relVarname = `${varName}_${relationship.name}_${target.name}_unique`;
             const relVarnameCypher = new Cypher.Relationship( {
                 type: relationship.type,
             });
-           // const varNameNode = new Cypher.NamedNode(varName);
+            
             const direction = relationship.getCypherDirection();
             const predicateAndMessage = getCardinalityPredicateAndMessage(
                 relationship,
@@ -64,8 +63,6 @@ export function createRelationshipValidationClauses({
             const [predicate, errorMsg] = predicateAndMessage;
             const cVariable = new NamedVariable("c");
             const predicateCypher = Cypher.not(predicate);
-          //  const relVarNameIgnored = new Cypher.NamedVariable(`${relVarname}_ignored`);
-        //    const source = createNodeFromEntity(entity, context, varName);
             const cypherNodeTarget = createNodeFromEntity(target, context);
             const returnVar = relationship.isList ? Cypher.collect(cVariable) : cVariable;
             const match = new Cypher.Match(
