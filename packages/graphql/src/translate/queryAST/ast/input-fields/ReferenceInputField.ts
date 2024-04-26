@@ -24,20 +24,19 @@ import { InputField } from "./InputField";
 
 export class ReferenceInputField extends InputField {
     private attribute: AttributeAdapter;
-    private propertyReference: Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection>;
-
+    private refPath: string[];
     constructor({
         attribute,
-        reference,
         attachedTo,
+        refPath,
     }: {
         attribute: AttributeAdapter;
-        reference: Cypher.Property;
         attachedTo: "node" | "relationship";
+        refPath: string[];
     }) {
         super(attribute.name, attachedTo);
         this.attribute = attribute;
-        this.propertyReference = reference;
+        this.refPath = refPath;
     }
 
     public getChildren() {
@@ -48,28 +47,48 @@ export class ReferenceInputField extends InputField {
         return `${super.print()} <${this.name}>`;
     }
 
-    public getSetFields(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
+    public getSetFields(
+        queryASTContext: QueryASTContext<Cypher.Node>,
+        inputVariable?: Cypher.Variable
+    ): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
+
+        if (!inputVariable) {
+            throw new Error("Transpile Error: No input variable found");
+        }
+        const rightVariable = this.getVariablePath(inputVariable, this.refPath);
+
         const leftExpr = target.property(this.attribute.databaseName);
-        const rightExpr = this.coerceReference();
+        const rightExpr = this.coerceReference(rightVariable);
 
         const setField: Cypher.SetParam = [leftExpr, rightExpr];
         return [setField];
     }
 
-    private coerceReference(): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
+    private getVariablePath(
+        variable: Cypher.Property | Cypher.Variable,
+        path: string[]
+    ): Cypher.Property | Cypher.Variable {
+        const next = path.shift();
+        if (next === undefined) {
+            return variable;
+        }
+        return this.getVariablePath(variable.property(next), path);
+    }
+
+    private coerceReference(
+        variable: Cypher.Variable | Cypher.Property
+    ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
         if (this.attribute.typeHelper.isSpatial()) {
             if (!this.attribute.typeHelper.isList()) {
-                return Cypher.point(this.propertyReference);
+                return Cypher.point(variable);
             }
             const comprehensionVar = new Cypher.Variable();
             const mapPoint = Cypher.point(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, this.propertyReference).map(mapPoint);
+            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapPoint);
         }
-        return this.propertyReference;
+        return variable;
     }
-
-
 
     public getSetClause(): Cypher.Clause[] {
         return [];

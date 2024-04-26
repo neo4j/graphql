@@ -102,7 +102,6 @@ export class CreateFactory {
         relationship?: RelationshipAdapter;
         input: Record<string, any>[];
         context: Neo4jGraphQLTranslationContext;
-
         unwindVariable?: Cypher.Property | Cypher.Param;
     }): UnwindCreateOperation {
         const unwindCreate = new UnwindCreateOperation({
@@ -269,8 +268,9 @@ export class CreateFactory {
         this.addAttributeInputFieldToUnwindOperation({
             attribute,
             unwindCreate,
-            path,
+            pathStr: isConcreteEntityTarget ? "edge" : "node",
             attachedTo,
+            isNested,
         });
     }
 
@@ -297,21 +297,23 @@ export class CreateFactory {
     private addAttributeInputFieldToUnwindOperation({
         attribute,
         unwindCreate,
-        path,
         attachedTo,
+        isNested,
     }: {
         attribute: AttributeAdapter;
         unwindCreate: UnwindCreateOperation;
-        path: Cypher.Property;
+        pathStr: string;
         attachedTo: "relationship" | "node";
+        isNested: boolean;
     }): void {
         if (unwindCreate.getField(attribute.name, attachedTo)) {
             return;
         }
+        const pathVariable = attachedTo === "node" ? "node" : "edge";
 
         const inputField = new ReferenceInputField({
             attribute,
-            reference: path,
+            refPath: isNested ? [pathVariable, attribute.name] : [attribute.name],
             attachedTo,
         });
 
