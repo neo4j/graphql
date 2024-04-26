@@ -190,11 +190,12 @@ describe("GraphQL - Infer Schema on graphs", () => {
             pay: 200.5,
             str: "String",
             int: neo4j.int(1),
+            screenTime: new neo4j.Duration(0, 0, 3600, 0),
         };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
-                `CREATE (m:Movie {title: $props.title})
+                `CREATE (m:Movie {title: $props.title, screenTime: $props.screenTime})
                 CREATE (a:Actor {name: $props.name})
                 CREATE (a2:Actor {name: $props.name2})
                 MERGE (a)-[:ACTED_IN {roles: $props.roles, pay: $props.pay, amb: $props.str}]->(m)
@@ -229,6 +230,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             type Movie {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	actorsDirected: [Actor!]! @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
+            	screenTime: Duration!
             	title: String!
             	wonPrizeForActors: [Actor!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
             }"
