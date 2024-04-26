@@ -35,9 +35,7 @@ export abstract class InputField extends QueryASTNode {
         return `${super.print()} <${this.name}>`;
     }
 
-    protected getTarget(
-        queryASTContext: QueryASTContext<Cypher.Node>,
-    ): Cypher.Node | Cypher.Relationship {
+    protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
         const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
         if (!target) {
             throw new Error("No target found");
