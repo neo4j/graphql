@@ -41,7 +41,7 @@ import type { CompositeCypherOperation } from "../ast/operations/composite/Compo
 import type { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import type { Operation } from "../ast/operations/operations";
 import type { FulltextSelection } from "../ast/selection/FulltextSelection";
-import { assertIsConcreteEntity } from "../utils/is-concrete-entity";
+import { assertIsConcreteEntity, isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { AuthorizationFactory } from "./AuthorizationFactory";
@@ -104,10 +104,13 @@ export class OperationsFactory {
         reference?: any;
     }): Operation {
         // Handles deprecated top level fulltext
-        if (context.resolveTree.args.phrase) {
-            if (!context.fulltext) {
-                throw new Error("Failed to get context fulltext");
-            }
+        if (
+            entity &&
+            isConcreteEntity(entity) &&
+            Boolean(entity.annotations.fulltext) &&
+            context.fulltext &&
+            context.resolveTree.args.phrase
+        ) {
             const indexName = context.fulltext.indexName ?? context.fulltext.name;
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
