@@ -29,6 +29,7 @@ const map = {
     DateTime: "DateTime",
     LocalTime: "LocalTime",
     LocalDateTime: "LocalDateTime",
+    Duration: "Duration",
     Time: "Time",
     Point: "Point",
 
@@ -44,6 +45,7 @@ const map = {
     TimeArray: "[Time]",
     LocalTimeArray: "[LocalTime]",
     LocalDateTimeArray: "[LocalDateTime]",
+    DurationArray: "[Duration]",
     PointArray: "[Point]",
 };
 
