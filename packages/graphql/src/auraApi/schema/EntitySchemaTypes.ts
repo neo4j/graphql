@@ -139,8 +139,5 @@ class RelationshipSchemaTypes {
         }
         const targetOperations = new AuraEntityOperations(target);
         return targetOperations.nodeType;
-        // const fields = this.getObjectFields(this.entity);
-        // const relationships = this.getRelationshipFields(this.entity);
-        // return this.schemaBuilder.createObjectType(this.entityOperations.nodeType, { ...fields, ...relationships });
     }
 }

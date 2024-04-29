@@ -107,4 +107,12 @@ export class ConcreteEntity implements Entity {
     public findRelationship(name: string): Relationship | undefined {
         return this.relationships.get(name);
     }
+
+    public hasAttribute(name: string): boolean {
+        return this.attributes.has(name);
+    }
+
+    public hasRelationship(name: string): boolean {
+        return this.relationships.has(name);
+    }
 }
