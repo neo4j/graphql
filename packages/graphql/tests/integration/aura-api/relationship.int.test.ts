@@ -24,18 +24,26 @@ describe("Aura-api simple", () => {
     const testHelper = new TestHelper({ cdc: false, auraApi: true });
 
     let Movie: UniqueType;
+    let Actor: UniqueType;
+
     beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actors");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} {
-                title: String!
+                title: String
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+            type ${Actor} {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {title: "The Matrix"})
+            CREATE (movie:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(a:${Actor} {name: "Keanu"})
         `);
     });
 
@@ -43,7 +51,7 @@ describe("Aura-api simple", () => {
         await testHelper.close();
     });
 
-    test("should be able to get a Movie", async () => {
+    test("should be able to get a Movie with related actors", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -51,9 +59,17 @@ describe("Aura-api simple", () => {
                         edges {
                             node {
                                 title
+                                actors {
+                                    connection {
+                                        edges {
+                                            node {
+                                                name
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -69,6 +85,15 @@ describe("Aura-api simple", () => {
                         {
                             node: {
                                 title: "The Matrix",
+                                actors: {
+                                    connection: {
+                                        edges: [
+                                            {
+                                                node: { name: "Keanu" },
+                                            },
+                                        ],
+                                    },
+                                },
                             },
                         },
                     ],
