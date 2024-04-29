@@ -8,11 +8,8 @@ import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fi
 import { ConnectionReadOperation } from "../../translate/queryAST/ast/operations/ConnectionReadOperation";
 import type { Operation } from "../../translate/queryAST/ast/operations/operations";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
-import type { AuraAPIResolveTree, ResolveTreeEntityField } from "./ResolveTreeParser";
+import type { ResolveTreeReadOperation } from "./ResolveTreeParser";
 import { ResolveTreeParser } from "./ResolveTreeParser";
-
-/** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
-// export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -36,7 +33,7 @@ export class ReadOperationFactory {
         parsedTree,
         entity,
     }: {
-        parsedTree: AuraAPIResolveTree;
+        parsedTree: ResolveTreeReadOperation;
         entity: ConcreteEntity;
     }): Operation {
         const connectionTree = parsedTree.fields.connection;
@@ -60,7 +57,7 @@ export class ReadOperationFactory {
         });
     }
 
-    private getNodeFields(entity: ConcreteEntity, nodeFieldsTree: Record<string, ResolveTreeEntityField>) {
+    private getNodeFields(entity: ConcreteEntity, nodeFieldsTree: Record<string, any>) {
         return Object.entries(nodeFieldsTree).map(([name, rawField]) => {
             const attribute = entity.attributes.get(name);
             if (!attribute) {

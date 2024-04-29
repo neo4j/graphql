@@ -2,21 +2,32 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { AuraEntityOperations } from "../AuraEntityOperations";
 
-type ResolveTreeElement<T extends Record<string, ResolveTreeEntityField | ResolveTreeElement<any>>> = {
-    alias: string;
-    args: Record<string, any>;
-    fields: T;
-};
+type ResolveTreeArgs = Record<string, any>;
 
-export type ResolveTreeEntityField = {
+interface ResolveTreeElement {
     alias: string;
-    args: Record<string, any>;
-};
-type ResolveTreeNode = ResolveTreeElement<Record<string, ResolveTreeEntityField>>;
-type ResolveTreeEdge = ResolveTreeElement<{ node?: ResolveTreeNode }>;
-type ResolveTreeConnection = ResolveTreeElement<{ edges?: ResolveTreeEdge }>;
+    args: ResolveTreeArgs;
+}
 
-export type AuraAPIResolveTree = ResolveTreeElement<{ connection?: ResolveTreeConnection }>;
+export interface ResolveTreeReadOperation extends ResolveTreeElement {
+    fields: {
+        connection?: ResolveTreeConnection;
+    };
+}
+
+export interface ResolveTreeConnection extends ResolveTreeElement {
+    fields: {
+        edges?: ResolveTreeEdge;
+    };
+}
+export interface ResolveTreeEdge extends ResolveTreeElement {
+    fields: {
+        node?: ResolveTreeNode;
+    };
+}
+export interface ResolveTreeNode extends ResolveTreeElement {
+    fields: Record<string, ResolveTreeElement>;
+}
 
 export class ResolveTreeParser {
     private operations: AuraEntityOperations;
@@ -25,7 +36,7 @@ export class ResolveTreeParser {
         this.operations = new AuraEntityOperations(entity);
     }
 
-    public parse(resolveTree: ResolveTree): AuraAPIResolveTree {
+    public parse(resolveTree: ResolveTree): ResolveTreeReadOperation {
         const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.connectionOperation] ?? {};
 
         const connectionResolveTree = fieldsByTypeName["connection"];
@@ -68,16 +79,13 @@ export class ResolveTreeParser {
 
     private parseEntity(nodeResolveTree: ResolveTree): ResolveTreeEdge {
         const fieldsResolveTree = nodeResolveTree.fieldsByTypeName[this.operations.nodeType] ?? {};
-        const fields = Object.entries(fieldsResolveTree).reduce(
-            (acc, [key, f]): Record<string, ResolveTreeEntityField> => {
-                acc[key] = {
-                    alias: f.alias,
-                    args: f.args,
-                };
-                return acc;
-            },
-            {}
-        );
+        const fields = Object.entries(fieldsResolveTree).reduce((acc, [key, f]): Record<string, any> => {
+            acc[key] = {
+                alias: f.alias,
+                args: f.args,
+            };
+            return acc;
+        }, {});
 
         return {
             alias: nodeResolveTree.alias,
