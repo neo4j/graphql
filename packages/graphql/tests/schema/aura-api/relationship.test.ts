@@ -118,4 +118,111 @@ describe("Relationships", () => {
             }"
         `);
     });
+
+    test("Simple relationship with properties", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie {
+                title: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+            type Actor {
+                name: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                year: Int
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+            }
+
+            type ActedIn {
+              year: Int
+            }
+
+            type Actor {
+              movies: ActorMoviesOperation
+              name: String
+            }
+
+            type ActorConnection {
+              edges: [ActorEdge]
+              pageInfo: PageInfo
+            }
+
+            type ActorEdge {
+              cursor: String
+              node: Actor
+            }
+
+            type ActorMoviesConnection {
+              edges: [ActorMoviesEdge]
+              pageInfo: PageInfo
+            }
+
+            type ActorMoviesEdge {
+              cursor: String
+              node: Movie
+              properties: ActedIn
+            }
+
+            type ActorMoviesOperation {
+              connection: ActorMoviesConnection
+            }
+
+            type ActorOperation {
+              connection: ActorConnection
+            }
+
+            type Movie {
+              actors: MovieActorsOperation
+              title: String
+            }
+
+            type MovieActorsConnection {
+              edges: [MovieActorsEdge]
+              pageInfo: PageInfo
+            }
+
+            type MovieActorsEdge {
+              cursor: String
+              node: Actor
+              properties: ActedIn
+            }
+
+            type MovieActorsOperation {
+              connection: MovieActorsConnection
+            }
+
+            type MovieConnection {
+              edges: [MovieEdge]
+              pageInfo: PageInfo
+            }
+
+            type MovieEdge {
+              cursor: String
+              node: Movie
+            }
+
+            type MovieOperation {
+              connection: MovieConnection
+            }
+
+            type PageInfo {
+              hasNextPage: Boolean
+              hasPreviousPage: Boolean
+            }
+
+            type Query {
+              actors: ActorOperation
+              movies: MovieOperation
+            }"
+        `);
+    });
 });

@@ -92,6 +92,10 @@ export class AuraRelationshipOperations {
         return `${this.relationshipTypePrefix}Edge`;
     }
 
+    public get propertiesType(): string | undefined {
+        return this.relationship.propertiesTypeName;
+    }
+
     public get nodeType(): string {
         return `${this.relationshipTypePrefix}`;
     }

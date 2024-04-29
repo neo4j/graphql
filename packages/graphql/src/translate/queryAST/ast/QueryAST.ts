@@ -22,11 +22,12 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
+import { AuraReadOperation } from "./aura-api/ConnectionReadOperation";
 import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
+import { DeleteOperation } from "./operations/DeleteOperation";
 import { ReadOperation } from "./operations/ReadOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
-import { DeleteOperation } from "./operations/DeleteOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -85,6 +86,7 @@ export class QueryAST {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
+            this.operation instanceof AuraReadOperation ||
             this.operation instanceof DeleteOperation
         ) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, varName);

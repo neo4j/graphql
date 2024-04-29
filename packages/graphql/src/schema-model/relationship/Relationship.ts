@@ -150,6 +150,10 @@ export class Relationship {
         return this.attributes.get(name);
     }
 
+    public hasAttribute(name: string): boolean {
+        return this.attributes.has(name);
+    }
+
     public setSiblings(siblingPropertiesTypeNames: string[]) {
         this.siblings = siblingPropertiesTypeNames;
     }

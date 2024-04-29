@@ -125,10 +125,25 @@ class RelationshipSchemaTypes {
 
     @Memoize()
     public get edge(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.relationshipOperations.edgeType, {
+        const fields = {
             node: this.nodeType,
             cursor: "String",
-        });
+        };
+
+        const properties = this.relationshipProperties;
+        if (properties) {
+            fields["properties"] = properties;
+        }
+
+        return this.schemaBuilder.createObjectType(this.relationshipOperations.edgeType, fields);
+    }
+
+    // TODO: fix it using memoize
+    public get relationshipProperties(): ObjectTypeComposer | undefined {
+        if (this.relationshipOperations.propertiesType) {
+            const fields = this.getRelationshipFields(this.relationship);
+            return this.schemaBuilder.getOrCreateObjectType(this.relationshipOperations.propertiesType, fields);
+        }
     }
 
     @Memoize()
@@ -139,5 +154,11 @@ class RelationshipSchemaTypes {
         }
         const targetOperations = new AuraEntityOperations(target);
         return targetOperations.nodeType;
+    }
+
+    private getRelationshipFields(relationship: Relationship): Record<string, string> {
+        return Object.fromEntries(
+            [...relationship.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
+        );
     }
 }

@@ -24,12 +24,19 @@ export interface ResolveTreeConnection extends ResolveTreeElement {
         edges?: ResolveTreeEdge;
     };
 }
+
 export interface ResolveTreeEdge extends ResolveTreeElement {
     fields: {
         node?: ResolveTreeNode;
+        properties?: ResolveTreeProperties;
     };
 }
+
 export interface ResolveTreeNode extends ResolveTreeElement {
+    fields: Record<string, ResolveTreeField | ResolveTreeReadOperation>;
+}
+
+export interface ResolveTreeProperties extends ResolveTreeElement {
     fields: Record<string, ResolveTreeField | ResolveTreeReadOperation>;
 }
 
@@ -162,14 +169,17 @@ class RelationshipResolveTreeParser {
 
     private parseEdges(connectionResolveTree: ResolveTree): ResolveTreeEdge {
         const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
+        const propertiesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["properties"];
 
         const node = nodeResolveTree ? this.parseEntity(nodeResolveTree) : undefined;
+        const properties = propertiesResolveTree ? this.parseRelationshipProperties(propertiesResolveTree) : undefined;
 
         return {
             alias: connectionResolveTree.alias,
             args: connectionResolveTree.args,
             fields: {
                 node: node,
+                properties: properties,
             },
         };
     }
@@ -184,6 +194,32 @@ class RelationshipResolveTreeParser {
         const result = resolveTreeParser.parseEntity(resolveTree);
 
         return result;
+    }
+
+    private parseRelationshipProperties(resolveTree: ResolveTree): ResolveTreeProperties | undefined {
+        if (!this.operations.propertiesType) return undefined;
+        const fieldsResolveTree = resolveTree.fieldsByTypeName[this.operations.propertiesType] ?? {};
+        const fields = Object.fromEntries(
+            Object.entries(fieldsResolveTree).map(([key, f]): [string, ResolveTreeField] => {
+                const fieldName = f.name;
+                if (this.relationship.hasAttribute(fieldName)) {
+                    return [
+                        key,
+                        {
+                            alias: f.alias,
+                            args: f.args,
+                        },
+                    ];
+                }
+                throw new ResolveTreeParserError(`${fieldName} is not an attribute of the relationship`);
+            })
+        );
+
+        return {
+            alias: resolveTree.alias,
+            args: resolveTree.args,
+            fields: fields,
+        };
     }
 }
 

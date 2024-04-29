@@ -1,4 +1,4 @@
-import type { GraphQLSchema } from "graphql";
+import { type GraphQLSchema } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 
@@ -14,6 +14,17 @@ export class SchemaBuilder {
             name,
             description,
             fields,
+        });
+    }
+
+    public getOrCreateObjectType(name: string, fields?: Record<string, any>, description?: string): ObjectTypeComposer {
+        return this.composer.getOrCreateOTC(name, (tc) => {
+            if (fields) {
+                tc.addFields(fields);
+            }
+            if (description) {
+                tc.setDescription(description);
+            }
         });
     }
 

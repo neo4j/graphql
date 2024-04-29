@@ -33,18 +33,27 @@ describe("Aura-api simple", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} {
                 title: String
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             type ${Actor} {
                 name: String
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                year: Int
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(a:${Actor} {name: "Keanu"})
-        `);
+        await testHelper.executeCypher(
+            `
+            CREATE (movie:${Movie} {title: "The Matrix"})<-[:ACTED_IN {year: $year}]-(a:${Actor} {name: "Keanu"})
+        `,
+            {
+                year: 1999,
+            }
+        );
     });
 
     afterAll(async () => {
@@ -64,6 +73,60 @@ describe("Aura-api simple", () => {
                                         edges {
                                             node {
                                                 name
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                title: "The Matrix",
+                                actors: {
+                                    connection: {
+                                        edges: [
+                                            {
+                                                node: { name: "Keanu" },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test("should be able to get a Movie with related actors and relationship properties", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural} {
+                    connection {
+                        edges {
+                            node {
+                                title
+                                actors {
+                                    connection {
+                                        edges {
+                                            node {
+                                                name
+                                            },
+                                            properties {
+                                                year
                                             }
                                         }
                                     }
@@ -90,6 +153,7 @@ describe("Aura-api simple", () => {
                                         edges: [
                                             {
                                                 node: { name: "Keanu" },
+                                                properties: { year: 1999 },
                                             },
                                         ],
                                     },

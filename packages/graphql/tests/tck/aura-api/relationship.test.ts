@@ -78,20 +78,20 @@ describe("Relationship", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this1:Actor)
-                    WITH collect({ node: this1 }) AS edges
+                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
+                    WITH collect({ node: actors, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS this1
-                        RETURN collect({ node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
+                        WITH edge.node AS actors, edge.relationship AS this1
+                        RETURN collect({ node: { name: actors.name, __resolveType: \\"Actor\\" } }) AS var2
                     }
-                    RETURN { edges: var2, totalCount: totalCount } AS var3
+                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
                 }
                 RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

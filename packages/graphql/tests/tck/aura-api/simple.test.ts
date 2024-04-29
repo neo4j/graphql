@@ -64,7 +64,7 @@ describe("Simple Aura API", () => {
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
-            RETURN { edges: var1, totalCount: totalCount } AS this"
+            RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

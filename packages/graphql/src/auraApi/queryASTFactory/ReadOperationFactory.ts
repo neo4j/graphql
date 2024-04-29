@@ -1,16 +1,18 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { Relationship } from "../../schema-model/relationship/Relationship";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { QueryAST } from "../../translate/queryAST/ast/QueryAST";
+import { AuraReadOperation } from "../../translate/queryAST/ast/aura-api/ConnectionReadOperation";
 import type { Field } from "../../translate/queryAST/ast/fields/Field";
 import { OperationField } from "../../translate/queryAST/ast/fields/OperationField";
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
-import { ConnectionReadOperation } from "../../translate/queryAST/ast/operations/ConnectionReadOperation";
-import type { Operation } from "../../translate/queryAST/ast/operations/operations";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
-import type { ResolveTreeNode, ResolveTreeReadOperation } from "./ResolveTreeParser";
+import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
+import type { ResolveTreeNode, ResolveTreeProperties, ResolveTreeReadOperation } from "./ResolveTreeParser";
 import { ResolveTreeParser } from "./ResolveTreeParser";
 
 export class ReadOperationFactory {
@@ -37,7 +39,7 @@ export class ReadOperationFactory {
     }: {
         parsedTree: ResolveTreeReadOperation;
         entity: ConcreteEntity;
-    }): Operation {
+    }): AuraReadOperation {
         const connectionTree = parsedTree.fields.connection;
         if (!connectionTree) {
             throw new Error("No Connection");
@@ -51,11 +53,50 @@ export class ReadOperationFactory {
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
-        return new ConnectionReadOperation({
+        return new AuraReadOperation({
             target,
             selection,
             fields: {
                 edge: [],
+                node: nodeFields,
+            },
+        });
+    }
+
+    private generateRelationshipOperation({
+        parsedTree,
+        relationship,
+    }: {
+        parsedTree: ResolveTreeReadOperation;
+        relationship: Relationship;
+    }): AuraReadOperation {
+        const connectionTree = parsedTree.fields.connection;
+        if (!connectionTree) {
+            throw new Error("No Connection");
+        }
+
+        const relationshipAdapter = new RelationshipAdapter(relationship);
+        if (!(relationshipAdapter.target instanceof ConcreteEntityAdapter)) {
+            throw new QueryParseError("Interfaces not supported");
+        }
+
+        const selection = new RelationshipSelection({
+            relationship: relationshipAdapter,
+            alias: parsedTree.alias,
+        });
+
+        // const nodeFieldsTree = connectionTree.fields.edges?.fields.node?.fields ?? {};
+
+        const nodeResolveTree = connectionTree.fields.edges?.fields.node;
+        const propertiesResolveTree = connectionTree.fields.edges?.fields.properties;
+        const nodeFields = this.getNodeFields(relationshipAdapter.target.entity, nodeResolveTree);
+        const edgeFields = this.getEdgeFields(relationship, propertiesResolveTree);
+
+        return new AuraReadOperation({
+            target: relationshipAdapter.target,
+            selection,
+            fields: {
+                edge: edgeFields,
                 node: nodeFields,
             },
         });
@@ -77,21 +118,71 @@ export class ReadOperationFactory {
 
             const relationship = entity.findRelationship(name);
             if (relationship) {
-                if (!(relationship.target instanceof ConcreteEntity)) {
-                    throw new QueryParseError("Interfaces not supported");
-                }
-                const relationshipOperation = this.generateOperation({
-                    entity: relationship.target,
-                    parsedTree: rawField as ResolveTreeReadOperation, // Fix this!
-                });
-
-                return new OperationField({
-                    alias: rawField.alias,
-                    operation: relationshipOperation,
-                });
+                // FIX casting here
+                return this.generateRelationshipField(rawField as ResolveTreeReadOperation, relationship);
             }
 
             throw new QueryParseError(`field ${name} not found in ${entity.name}`);
+        });
+    }
+    private getEdgeFields(
+        relationship: Relationship,
+        propertiesResolveTree: ResolveTreeProperties | undefined
+    ): Field[] {
+        if (!propertiesResolveTree) {
+            return [];
+        }
+
+        return Object.entries(propertiesResolveTree.fields).map(([name, rawField]) => {
+            const attribute = relationship.findAttribute(name);
+            if (attribute) {
+                return new AttributeField({
+                    alias: rawField.alias,
+                    attribute: new AttributeAdapter(attribute),
+                });
+            }
+
+            throw new QueryParseError(`field ${name} not found in ${relationship.name}`);
+        });
+    }
+
+    private generateRelationshipField(
+        resolveTree: ResolveTreeReadOperation,
+        relationship: Relationship
+    ): OperationField {
+        const relationshipOperation = this.generateRelationshipOperation({
+            relationship: relationship,
+            parsedTree: resolveTree,
+        });
+        const edgeProperties = resolveTree.fields.connection?.fields.edges?.fields.properties;
+        const relationshipPropertiesFields = this.generateRelationshipPropertiesFields(relationship, edgeProperties);
+
+        relationshipOperation.setEdgeFields(relationshipPropertiesFields);
+
+        return new OperationField({
+            alias: resolveTree.alias,
+            operation: relationshipOperation,
+        });
+    }
+
+    private generateRelationshipPropertiesFields(
+        relationship: Relationship,
+        resolveTree: ResolveTreeProperties | undefined
+    ): Field[] {
+        if (!resolveTree) {
+            return [];
+        }
+
+        return Object.entries(resolveTree.fields).map(([name, rawField]) => {
+            const attribute = relationship.findAttribute(name);
+            if (attribute) {
+                return new AttributeField({
+                    alias: rawField.alias,
+                    attribute: new AttributeAdapter(attribute),
+                });
+            }
+
+            throw new QueryParseError(`field ${name} not found in ${relationship.name}`);
         });
     }
 }

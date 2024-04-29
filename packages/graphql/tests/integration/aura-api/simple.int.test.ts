@@ -60,7 +60,6 @@ describe("Aura-api simple", () => {
         `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
