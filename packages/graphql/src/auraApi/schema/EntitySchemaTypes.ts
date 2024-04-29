@@ -1,6 +1,8 @@
 import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
-import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import type { Relationship } from "../../schema-model/relationship/Relationship";
+import type { AuraRelationshipOperations } from "../AuraEntityOperations";
 import { AuraEntityOperations } from "../AuraEntityOperations";
 import type { StaticTypes } from "./AuraSchemaGenerator";
 import type { SchemaBuilder } from "./SchemaBuilder";
@@ -26,17 +28,14 @@ export class EntitySchemaTypes {
         this.staticTypes = staticTypes;
     }
 
-    @Memoize()
-    public get nodeType(): ObjectTypeComposer {
-        const fields = this.getObjectFields(this.entity);
-        return this.schemaBuilder.createObjectType(this.entityOperations.nodeType, fields);
+    public get queryFieldName(): string {
+        return this.entityOperations.queryField;
     }
 
     @Memoize()
-    public get edge(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityOperations.edgeType, {
-            node: this.nodeType,
-            cursor: "String",
+    public get connectionOperation(): ObjectTypeComposer {
+        return this.schemaBuilder.createObjectType(this.entityOperations.connectionOperation, {
+            connection: this.connection,
         });
     }
 
@@ -49,19 +48,99 @@ export class EntitySchemaTypes {
     }
 
     @Memoize()
-    public get connectionOperation(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityOperations.connectionOperation, {
-            connection: this.connection,
+    public get edge(): ObjectTypeComposer {
+        return this.schemaBuilder.createObjectType(this.entityOperations.edgeType, {
+            node: this.nodeType,
+            cursor: "String",
         });
     }
 
-    public get queryFieldName(): string {
-        return this.entityOperations.queryField;
+    @Memoize()
+    public get nodeType(): ObjectTypeComposer {
+        const fields = this.getObjectFields(this.entity);
+        const relationships = this.getRelationshipFields(this.entity);
+        return this.schemaBuilder.createObjectType(this.entityOperations.nodeType, { ...fields, ...relationships });
     }
 
     private getObjectFields(concreteEntity: ConcreteEntity): Record<string, string> {
         return Object.fromEntries(
             [...concreteEntity.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
         );
+    }
+
+    private getRelationshipFields(concreteEntity: ConcreteEntity): Record<string, ObjectTypeComposer> {
+        return Object.fromEntries(
+            [...concreteEntity.relationships.values()].map((relationship) => {
+                const relationshipTypes = new RelationshipSchemaTypes({
+                    schemaBuilder: this.schemaBuilder,
+                    relationship,
+                    entityOperations: this.entityOperations,
+                    staticTypes: this.staticTypes,
+                });
+                const relationshipType = relationshipTypes.readOperation;
+
+                return [relationship.name, relationshipType];
+            })
+        );
+    }
+}
+
+class RelationshipSchemaTypes {
+    private schemaBuilder: SchemaBuilder;
+    private relationshipOperations: AuraRelationshipOperations;
+    private relationship: Relationship;
+    private staticTypes: StaticTypes;
+
+    constructor({
+        schemaBuilder,
+        relationship,
+        entityOperations,
+        staticTypes,
+    }: {
+        schemaBuilder: SchemaBuilder;
+        relationship: Relationship;
+        entityOperations: AuraEntityOperations;
+        staticTypes: StaticTypes;
+    }) {
+        this.schemaBuilder = schemaBuilder;
+        this.relationshipOperations = entityOperations.relationship(relationship);
+        this.relationship = relationship;
+        this.staticTypes = staticTypes;
+    }
+
+    @Memoize()
+    public get readOperation() {
+        return this.schemaBuilder.createObjectType(this.relationshipOperations.readOperation, {
+            connection: this.connection,
+        });
+    }
+
+    @Memoize()
+    public get connection(): ObjectTypeComposer {
+        return this.schemaBuilder.createObjectType(this.relationshipOperations.connectionType, {
+            pageInfo: this.staticTypes.pageInfo,
+            edges: [this.edge],
+        });
+    }
+
+    @Memoize()
+    public get edge(): ObjectTypeComposer {
+        return this.schemaBuilder.createObjectType(this.relationshipOperations.edgeType, {
+            node: this.nodeType,
+            cursor: "String",
+        });
+    }
+
+    @Memoize()
+    public get nodeType(): string {
+        const target = this.relationship.target;
+        if (!(target instanceof ConcreteEntity)) {
+            throw new Error("Interfaces not supported yet");
+        }
+        const targetOperations = new AuraEntityOperations(target);
+        return targetOperations.nodeType;
+        // const fields = this.getObjectFields(this.entity);
+        // const relationships = this.getRelationshipFields(this.entity);
+        // return this.schemaBuilder.createObjectType(this.entityOperations.nodeType, { ...fields, ...relationships });
     }
 }

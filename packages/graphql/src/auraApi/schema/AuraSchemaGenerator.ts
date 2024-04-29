@@ -25,6 +25,13 @@ export class AuraSchemaGenerator {
         return this.schemaBuilder.build();
     }
 
+    @Memoize()
+    private get staticTypes(): StaticTypes {
+        return {
+            pageInfo: this.createPageInfoType(),
+        } as const;
+    }
+
     private createQueryFields(): void {
         this.entityTypes.forEach((entitySchemaTypes, entity) => {
             const resolver = generateReadResolver({
@@ -36,13 +43,6 @@ export class AuraSchemaGenerator {
                 resolver
             );
         });
-    }
-
-    @Memoize()
-    private get staticTypes(): StaticTypes {
-        return {
-            pageInfo: this.createPageInfoType(),
-        } as const;
     }
 
     private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel): Map<ConcreteEntity, EntitySchemaTypes> {

@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
+import { upperFirst } from "graphql-compose";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import type { Relationship } from "../schema-model/relationship/Relationship";
 import { plural } from "../schema-model/utils/string-manipulation";
 
 export class AuraEntityOperations {
@@ -25,6 +27,10 @@ export class AuraEntityOperations {
 
     constructor(concreteEntity: ConcreteEntity) {
         this.concreteEntity = concreteEntity;
+    }
+
+    public relationship(relationship: Relationship): AuraRelationshipOperations {
+        return new AuraRelationshipOperations(this.concreteEntity, relationship);
     }
 
     public get connectionOperation(): string {
@@ -62,5 +68,35 @@ export class AuraEntityOperations {
         //     }
         // }
         // return this._plural;
+    }
+}
+
+export class AuraRelationshipOperations {
+    private parent: ConcreteEntity;
+    private relationship: Relationship;
+
+    constructor(parent: ConcreteEntity, relationship: Relationship) {
+        this.parent = parent;
+        this.relationship = relationship;
+    }
+
+    public get readOperation(): string {
+        return `${this.relationshipTypePrefix}Operation`;
+    }
+
+    public get connectionType(): string {
+        return `${this.relationshipTypePrefix}Connection`;
+    }
+
+    public get edgeType(): string {
+        return `${this.relationshipTypePrefix}Edge`;
+    }
+
+    public get nodeType(): string {
+        return `${this.relationshipTypePrefix}`;
+    }
+
+    private get relationshipTypePrefix(): string {
+        return `${this.parent.name}${upperFirst(this.relationship.name)}`;
     }
 }
