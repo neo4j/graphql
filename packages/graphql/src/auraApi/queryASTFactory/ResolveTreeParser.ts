@@ -153,10 +153,7 @@ class RelationshipResolveTreeParser {
     }
 
     public parse(resolveTree: ResolveTree): ResolveTreeReadOperation {
-        // const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.readOperation] ?? {};
-        // const connectionResolveTree = fieldsByTypeName["connection"];
-
-        const connectionResolveTree = findFieldByName(resolveTree, this.operations.readOperation, "connection");
+        const connectionResolveTree = findFieldByName(resolveTree, this.operations.connectionOperation, "connection");
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
 
         return {

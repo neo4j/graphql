@@ -19,10 +19,19 @@
 
 import { upperFirst } from "graphql-compose";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import type { Entity } from "../schema-model/entity/Entity";
 import type { Relationship } from "../schema-model/relationship/Relationship";
 import { plural } from "../schema-model/utils/string-manipulation";
 
-export class AuraEntityOperations {
+interface GraphQLTypeNames {
+    connectionOperation: string;
+    connectionType: string;
+    edgeType: string;
+    nodeType: string;
+    whereInputTypeName: string;
+}
+
+export class AuraEntityOperations implements GraphQLTypeNames {
     private readonly concreteEntity: ConcreteEntity;
 
     constructor(concreteEntity: ConcreteEntity) {
@@ -30,7 +39,7 @@ export class AuraEntityOperations {
     }
 
     public relationship(relationship: Relationship): AuraRelationshipOperations {
-        return new AuraRelationshipOperations(this.concreteEntity, relationship);
+        return new AuraRelationshipOperations(relationship);
     }
 
     public get connectionOperation(): string {
@@ -59,28 +68,19 @@ export class AuraEntityOperations {
 
     public get plural(): string {
         return plural(this.concreteEntity.name);
-
-        // if (!this._plural) {
-        //     if (this.annotations.plural) {
-        //         this._plural = plural(this.annotations.plural.value);
-        //     } else {
-        //         this._plural = plural(this.name);
-        //     }
-        // }
-        // return this._plural;
     }
 }
 
-export class AuraRelationshipOperations {
-    private parent: ConcreteEntity;
+export class AuraRelationshipOperations implements GraphQLTypeNames {
+    private parent: Entity;
     private relationship: Relationship;
 
-    constructor(parent: ConcreteEntity, relationship: Relationship) {
-        this.parent = parent;
+    constructor(relationship: Relationship) {
+        this.parent = relationship.source;
         this.relationship = relationship;
     }
 
-    public get readOperation(): string {
+    public get connectionOperation(): string {
         return `${this.relationshipTypePrefix}Operation`;
     }
 
@@ -98,6 +98,10 @@ export class AuraRelationshipOperations {
 
     public get nodeType(): string {
         return `${this.relationshipTypePrefix}`;
+    }
+
+    public get whereInputTypeName(): string {
+        return `${this.relationshipTypePrefix}Where`;
     }
 
     private get relationshipTypePrefix(): string {

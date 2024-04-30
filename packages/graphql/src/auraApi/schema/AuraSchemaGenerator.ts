@@ -11,7 +11,6 @@ export type StaticTypes = Record<"pageInfo", ObjectTypeComposer>;
 
 export class AuraSchemaGenerator {
     private schemaBuilder: SchemaBuilder;
-
     private entityTypes: Map<ConcreteEntity, EntitySchemaTypes>;
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel) {
@@ -32,19 +31,6 @@ export class AuraSchemaGenerator {
         } as const;
     }
 
-    private createQueryFields(): void {
-        this.entityTypes.forEach((entitySchemaTypes, entity) => {
-            const resolver = generateReadResolver({
-                entity,
-            });
-            this.schemaBuilder.addQueryField(
-                entitySchemaTypes.queryFieldName,
-                entitySchemaTypes.connectionOperation,
-                resolver
-            );
-        });
-    }
-
     private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel): Map<ConcreteEntity, EntitySchemaTypes> {
         const resultMap = new Map<ConcreteEntity, EntitySchemaTypes>();
         for (const entity of schemaModel.entities.values()) {
@@ -60,6 +46,19 @@ export class AuraSchemaGenerator {
         }
 
         return resultMap;
+    }
+
+    private createQueryFields(): void {
+        this.entityTypes.forEach((entitySchemaTypes, entity) => {
+            const resolver = generateReadResolver({
+                entity,
+            });
+            this.schemaBuilder.addQueryField(
+                entitySchemaTypes.queryFieldName,
+                entitySchemaTypes.connectionOperation,
+                resolver
+            );
+        });
     }
 
     private createPageInfoType(): ObjectTypeComposer {

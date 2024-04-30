@@ -19,6 +19,7 @@ export class SchemaBuilder {
 
     public getOrCreateObjectType(name: string, fields?: Record<string, any>, description?: string): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
+            console.log("ON CREATE", name);
             if (fields) {
                 tc.addFields(fields);
             }

@@ -110,7 +110,7 @@ class RelationshipSchemaTypes {
 
     @Memoize()
     public get readOperation() {
-        return this.schemaBuilder.createObjectType(this.relationshipOperations.readOperation, {
+        return this.schemaBuilder.createObjectType(this.relationshipOperations.connectionOperation, {
             connection: this.connection,
         });
     }
