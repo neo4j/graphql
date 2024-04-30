@@ -23,7 +23,7 @@ import type { Entity } from "../schema-model/entity/Entity";
 import type { Relationship } from "../schema-model/relationship/Relationship";
 import { plural } from "../schema-model/utils/string-manipulation";
 
-interface GraphQLTypeNames {
+export interface GraphQLTypeNames {
     connectionOperation: string;
     connectionType: string;
     edgeType: string;

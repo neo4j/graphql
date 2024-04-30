@@ -119,12 +119,12 @@ class Neo4jGraphQL {
     public getAuraSchema(): Promise<GraphQLSchema> {
         const document = this.normalizeTypeDefinitions(this.typeDefs);
         this.schemaModel = this.generateSchemaModel(document);
-        const auraSchemaGenerator = new AuraSchemaGenerator(this.schemaModel);
+        const auraSchemaGenerator = new AuraSchemaGenerator();
 
         this._nodes = [];
         this._relationships = [];
 
-        return Promise.resolve(this.composeSchema(auraSchemaGenerator.generate()));
+        return Promise.resolve(this.composeSchema(auraSchemaGenerator.generate(this.schemaModel)));
     }
 
     public async getExecutableSchema(): Promise<GraphQLSchema> {
