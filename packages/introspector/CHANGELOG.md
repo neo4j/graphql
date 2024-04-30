@@ -1,5 +1,11 @@
 # @neo4j/introspector
 
+## 3.0.1
+
+### Patch Changes
+
+-   [#5053](https://github.com/neo4j/graphql/pull/5053) [`dc45cc4`](https://github.com/neo4j/graphql/commit/dc45cc45b1fe6fbb44756e12519c1447673ebfdb) Thanks [@a-alle](https://github.com/a-alle)! - Add Duration type to introspector
+
 ## 3.0.0
 
 ### Major Changes

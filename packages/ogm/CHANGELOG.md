@@ -1,5 +1,14 @@
 # @neo4j/graphql-ogm
 
+## 5.3.4
+
+### Patch Changes
+
+-   [#5041](https://github.com/neo4j/graphql/pull/5041) [`d6aaf98`](https://github.com/neo4j/graphql/commit/d6aaf98ece95a39469ae2c88cf5df3d264b21f93) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix a bug that caused OGM to fail when a Schema Configuration directive was applied to a Union type.
+
+-   Updated dependencies [[`2cff42d`](https://github.com/neo4j/graphql/commit/2cff42d9fbd2b34a6fc0c268944eaaf959afa54e), [`19d12a3`](https://github.com/neo4j/graphql/commit/19d12a30668b2690fd877590e0f0be4fd070ecec)]:
+    -   @neo4j/graphql@5.3.4
+
 ## 5.3.3
 
 ### Patch Changes
