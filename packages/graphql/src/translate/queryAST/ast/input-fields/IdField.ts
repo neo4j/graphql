@@ -37,7 +37,7 @@ export class IdField extends InputField {
         return `${super.print()} <${this.name}>`;
     }
 
-    public getSetFields(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
+    public getSetParams(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
         const setParam: Cypher.SetParam = [target.property(this.attribute.databaseName), Cypher.randomUUID()];
         return [setParam];

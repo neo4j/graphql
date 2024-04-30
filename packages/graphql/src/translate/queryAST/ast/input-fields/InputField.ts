@@ -43,5 +43,5 @@ export abstract class InputField extends QueryASTNode {
         return target;
     }
 
-    abstract getSetFields(_queryASTContext: QueryASTContext, inputVariable?: Cypher.Variable): Cypher.SetParam[];
+    abstract getSetParams(_queryASTContext: QueryASTContext, inputVariable?: Cypher.Variable): Cypher.SetParam[];
 }

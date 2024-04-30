@@ -115,9 +115,9 @@ export class UnwindCreateOperation extends MutationOperation {
         const mergeClause: Cypher.Merge | undefined = this.getMergeClause(nestedContext);
         for (const field of this.inputFields.values()) {
             if (field.attachedTo === "relationship" && mergeClause) {
-                mergeClause.set(...field.getSetFields(nestedContext, this.unwindVariable));
+                mergeClause.set(...field.getSetParams(nestedContext, this.unwindVariable));
             } else if (field.attachedTo === "node") {
-                createClause.set(...field.getSetFields(nestedContext, this.unwindVariable));
+                createClause.set(...field.getSetParams(nestedContext, this.unwindVariable));
                 setSubqueries.push(...field.getSubqueries(nestedContext));
             }
         }

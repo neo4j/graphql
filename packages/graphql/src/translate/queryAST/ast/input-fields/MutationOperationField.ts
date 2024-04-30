@@ -38,7 +38,7 @@ export class MutationOperationField extends InputField {
         return `${super.print()} <${this.name}>`;
     }
 
-    public getSetFields(): Cypher.SetParam[] {
+    public getSetParams(): Cypher.SetParam[] {
         return [];
     }
 

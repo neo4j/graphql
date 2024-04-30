@@ -47,7 +47,7 @@ export class ReferenceInputField extends InputField {
         return `${super.print()} <${this.name}>`;
     }
 
-    public getSetFields(
+    public getSetParams(
         queryASTContext: QueryASTContext<Cypher.Node>,
         inputVariable?: Cypher.Variable
     ): Cypher.SetParam[] {

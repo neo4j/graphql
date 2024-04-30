@@ -39,17 +39,20 @@ export class TimestampField extends InputField {
         return `${super.print()} <${this.name}>`;
     }
 
-    public getSetFields(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
+    public getSetParams(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
-        // DateTime -> datetime(); Time -> time()
-        const relatedCypherExpression = this.getCypherTemporalFunction(
+        const relatedCypherExpression = this.GetFunctionForTemporalType(
             this.attribute.type.name as Neo4jGraphQLTemporalType
         );
         const setParam: Cypher.SetParam = [target.property(this.attribute.databaseName), relatedCypherExpression];
         return [setParam];
     }
 
-    private getCypherTemporalFunction(type: Neo4jGraphQLTemporalType): CypherFunction {
+    public getSetClause(): Cypher.Clause[] {
+        return [];
+    }
+
+    private GetFunctionForTemporalType(type: Neo4jGraphQLTemporalType): CypherFunction {
         switch (type) {
             case Neo4jGraphQLTemporalType.DateTime:
                 return Cypher.datetime();
