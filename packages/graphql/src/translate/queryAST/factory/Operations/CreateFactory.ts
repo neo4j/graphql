@@ -25,7 +25,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { asArray } from "../../../../utils/utils";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
-import { ReferenceInputField } from "../../ast/input-fields/ReferenceInputField";
+import { PropertyInputField } from "../../ast/input-fields/PropertyInputField";
 import { CreateOperation } from "../../ast/operations/CreateOperation";
 import type { ReadOperation } from "../../ast/operations/ReadOperation";
 import { UnwindCreateOperation } from "../../ast/operations/UnwindCreateOperation";
@@ -170,7 +170,6 @@ export class CreateFactory {
                         target,
                         attribute,
                         unwindCreate,
-                        isNested,
                     });
                 } else if (nestedRelationship) {
                     const nestedEntity = nestedRelationship.target;
@@ -211,7 +210,6 @@ export class CreateFactory {
                             target: relationship,
                             attribute,
                             unwindCreate,
-                            isNested,
                         });
                     }
                 }
@@ -255,12 +253,10 @@ export class CreateFactory {
         target,
         attribute,
         unwindCreate,
-        isNested,
     }: {
         target: ConcreteEntityAdapter | RelationshipAdapter;
         attribute: AttributeAdapter;
         unwindCreate: UnwindCreateOperation;
-        isNested: boolean;
     }) {
         const isConcreteEntityTarget = isConcreteEntity(target);
         const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
@@ -270,7 +266,6 @@ export class CreateFactory {
             unwindCreate,
             pathStr: isConcreteEntityTarget ? "edge" : "node",
             attachedTo,
-            isNested,
         });
     }
 
@@ -298,22 +293,18 @@ export class CreateFactory {
         attribute,
         unwindCreate,
         attachedTo,
-        isNested,
     }: {
         attribute: AttributeAdapter;
         unwindCreate: UnwindCreateOperation;
         pathStr: string;
         attachedTo: "relationship" | "node";
-        isNested: boolean;
     }): void {
         if (unwindCreate.getField(attribute.name, attachedTo)) {
             return;
         }
-        const pathVariable = attachedTo === "node" ? "node" : "edge";
 
-        const inputField = new ReferenceInputField({
+        const inputField = new PropertyInputField({
             attribute,
-            refPath: isNested ? [pathVariable, attribute.name] : [attribute.name],
             attachedTo,
         });
 

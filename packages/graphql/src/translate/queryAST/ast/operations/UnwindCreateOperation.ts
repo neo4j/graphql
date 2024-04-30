@@ -29,7 +29,7 @@ import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
-import { ReferenceInputField } from "../input-fields/ReferenceInputField";
+import { PropertyInputField } from "../input-fields/PropertyInputField";
 import type { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 import { MutationOperation } from "./operations";
@@ -100,7 +100,7 @@ export class UnwindCreateOperation extends MutationOperation {
             targetOperations: ["CREATE"],
         });
         this.inputFields.forEach((field) => {
-            if (field.attachedTo === "node" && field instanceof ReferenceInputField)
+            if (field.attachedTo === "node" && field instanceof PropertyInputField)
                 checkEntityAuthentication({
                     context: nestedContext.neo4jGraphQLContext,
                     entity: target.entity,
@@ -181,6 +181,7 @@ export class UnwindCreateOperation extends MutationOperation {
             );
         }
     }
+
     private getTarget(): ConcreteEntityAdapter {
         if (this.target instanceof RelationshipAdapter) {
             const targetAdapter = this.target.target;

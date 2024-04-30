@@ -22,21 +22,12 @@ import type { AttributeAdapter } from "../../../../schema-model/attribute/model-
 import type { QueryASTContext } from "../QueryASTContext";
 import { InputField } from "./InputField";
 
-export class ReferenceInputField extends InputField {
+export class PropertyInputField extends InputField {
     private attribute: AttributeAdapter;
-    private refPath: string[];
-    constructor({
-        attribute,
-        attachedTo,
-        refPath,
-    }: {
-        attribute: AttributeAdapter;
-        attachedTo: "node" | "relationship";
-        refPath: string[];
-    }) {
+
+    constructor({ attribute, attachedTo }: { attribute: AttributeAdapter; attachedTo: "node" | "relationship" }) {
         super(attribute.name, attachedTo);
         this.attribute = attribute;
-        this.refPath = refPath;
     }
 
     public getChildren() {
@@ -56,7 +47,7 @@ export class ReferenceInputField extends InputField {
         if (!inputVariable) {
             throw new Error("Transpile Error: No input variable found");
         }
-        const rightVariable = this.getVariablePath(inputVariable, this.refPath);
+        const rightVariable = this.getVariablePath(queryASTContext, inputVariable);
 
         const leftExpr = target.property(this.attribute.databaseName);
         const rightExpr = this.coerceReference(rightVariable);
@@ -66,6 +57,17 @@ export class ReferenceInputField extends InputField {
     }
 
     private getVariablePath(
+        queryASTContext: QueryASTContext<Cypher.Node>,
+        variable: Cypher.Property | Cypher.Variable
+    ): Cypher.Property | Cypher.Variable {
+        const path = this.attachedTo === "node" ? "node" : "edge";
+        if (queryASTContext.relationship) {
+            return variable.property(path).property(this.attribute.name);
+        }
+        return variable.property(this.attribute.name);
+    }
+
+    /*  private getVariablePath(
         variable: Cypher.Property | Cypher.Variable,
         path: string[]
     ): Cypher.Property | Cypher.Variable {
@@ -74,7 +76,7 @@ export class ReferenceInputField extends InputField {
             return variable;
         }
         return this.getVariablePath(variable.property(next), path);
-    }
+    } */
 
     private coerceReference(
         variable: Cypher.Variable | Cypher.Property
