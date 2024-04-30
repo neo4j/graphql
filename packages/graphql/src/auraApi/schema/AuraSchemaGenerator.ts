@@ -1,7 +1,6 @@
 import type { GraphQLSchema } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import { AuraEntityOperations } from "../AuraEntityOperations";
 import { generateReadResolver } from "../resolvers/readResolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { StaticTypes } from "./schema-types/StaticTypes";
@@ -46,7 +45,6 @@ export class AuraSchemaGenerator {
                     entity,
                     schemaBuilder: this.schemaBuilder,
                     staticTypes,
-                    entityOperations: new AuraEntityOperations(entity),
                 });
 
                 resultMap.set(entity, entitySchemaTypes);

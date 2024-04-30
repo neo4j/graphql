@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { TopLevelEntityTypeNames } from "../../auraApi/graphQLTypeNames/TopLevelEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotations } from "../annotation/Annotation";
@@ -66,6 +67,11 @@ export class ConcreteEntity implements Entity {
         for (const entity of compositeEntities) {
             this.addCompositeEntities(entity);
         }
+    }
+
+    /** Note: Types of the new API */
+    public get types(): TopLevelEntityTypeNames {
+        return new TopLevelEntityTypeNames(this);
     }
 
     public isConcreteEntity(): this is ConcreteEntity {

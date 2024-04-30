@@ -1,44 +1,42 @@
 import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { AuraEntityOperations } from "../../AuraEntityOperations";
+import type { EntityTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import { NestedEntitySchemaTypes } from "./NestedEntityTypes";
 import type { StaticTypes } from "./StaticTypes";
 
-export class TopLevelEntityTypes extends EntityTypes<AuraEntityOperations> {
+export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
     private entity: ConcreteEntity;
 
     constructor({
         entity,
         schemaBuilder,
-        entityOperations,
         staticTypes,
     }: {
         schemaBuilder: SchemaBuilder;
         entity: ConcreteEntity;
         staticTypes: StaticTypes;
-        entityOperations: AuraEntityOperations;
     }) {
         super({
             schemaBuilder,
-            entityOperations,
+            entityTypes: entity.types,
             staticTypes,
         });
         this.entity = entity;
     }
 
     public get queryFieldName(): string {
-        return this.entityOperations.queryField;
+        return this.entity.types.queryField;
     }
 
     @Memoize()
     public get nodeType(): string {
         const fields = this.getNodeFields(this.entity);
         const relationships = this.getRelationshipFields(this.entity);
-        this.schemaBuilder.createObjectType(this.entityOperations.nodeType, { ...fields, ...relationships });
-        return this.entityOperations.nodeType;
+        this.schemaBuilder.createObjectType(this.entity.types.nodeType, { ...fields, ...relationships });
+        return this.entity.types.nodeType;
     }
 
     protected getEdgeProperties(): ObjectTypeComposer<any, any> | undefined {
@@ -57,7 +55,7 @@ export class TopLevelEntityTypes extends EntityTypes<AuraEntityOperations> {
                 const relationshipTypes = new NestedEntitySchemaTypes({
                     schemaBuilder: this.schemaBuilder,
                     relationship,
-                    entityOperations: this.entityOperations.relationship(relationship),
+                    entityTypes: this.entity.types.relationship(relationship),
                     staticTypes: this.staticTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;

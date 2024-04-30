@@ -2,38 +2,37 @@ import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
-import type { AuraRelationshipOperations } from "../../AuraEntityOperations";
-import { AuraEntityOperations } from "../../AuraEntityOperations";
+import type { RelationshipTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import type { StaticTypes } from "./StaticTypes";
 
-export class NestedEntitySchemaTypes extends EntityTypes<AuraRelationshipOperations> {
+export class NestedEntitySchemaTypes extends EntityTypes<RelationshipTypeNames> {
     private relationship: Relationship;
 
     constructor({
         relationship,
         schemaBuilder,
-        entityOperations,
+        entityTypes,
         staticTypes,
     }: {
         schemaBuilder: SchemaBuilder;
         relationship: Relationship;
         staticTypes: StaticTypes;
-        entityOperations: AuraRelationshipOperations;
+        entityTypes: RelationshipTypeNames;
     }) {
         super({
             schemaBuilder,
-            entityOperations,
+            entityTypes,
             staticTypes,
         });
         this.relationship = relationship;
     }
 
     protected getEdgeProperties(): ObjectTypeComposer | undefined {
-        if (this.entityOperations.propertiesType) {
+        if (this.entityTypes.propertiesType) {
             const fields = this.getRelationshipFields(this.relationship);
-            return this.schemaBuilder.getOrCreateObjectType(this.entityOperations.propertiesType, fields);
+            return this.schemaBuilder.getOrCreateObjectType(this.entityTypes.propertiesType, fields);
         }
     }
 
@@ -43,8 +42,7 @@ export class NestedEntitySchemaTypes extends EntityTypes<AuraRelationshipOperati
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        const targetOperations = new AuraEntityOperations(target);
-        return targetOperations.nodeType;
+        return target.types.nodeType;
     }
 
     private getRelationshipFields(relationship: Relationship): Record<string, string> {

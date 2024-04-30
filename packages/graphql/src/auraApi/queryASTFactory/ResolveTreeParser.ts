@@ -1,7 +1,8 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../schema-model/relationship/Relationship";
-import { AuraEntityOperations, type AuraRelationshipOperations } from "../AuraEntityOperations";
+import type { RelationshipTypeNames } from "../graphQLTypeNames/NestedEntityTypeNames";
+import type { TopLevelEntityTypeNames } from "../graphQLTypeNames/TopLevelEntityTypeNames";
 
 type ResolveTreeArgs = Record<string, any>;
 
@@ -48,12 +49,12 @@ function findFieldByName(resolveTree: ResolveTree, typeName: string, name: strin
 }
 
 export class ResolveTreeParser {
-    private operations: AuraEntityOperations;
+    private operations: TopLevelEntityTypeNames;
     private entity: ConcreteEntity;
 
     constructor(entity: ConcreteEntity) {
         this.entity = entity;
-        this.operations = new AuraEntityOperations(entity);
+        this.operations = entity.types;
     }
 
     public parse(resolveTree: ResolveTree): ResolveTreeReadOperation {
@@ -144,10 +145,10 @@ export class ResolveTreeParser {
 }
 
 class RelationshipResolveTreeParser {
-    private operations: AuraRelationshipOperations;
+    private operations: RelationshipTypeNames;
     private relationship: Relationship;
 
-    constructor(relationship: Relationship, operations: AuraRelationshipOperations) {
+    constructor(relationship: Relationship, operations: RelationshipTypeNames) {
         this.operations = operations;
         this.relationship = relationship;
     }
