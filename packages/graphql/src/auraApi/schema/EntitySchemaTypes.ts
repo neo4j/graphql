@@ -7,7 +7,14 @@ import { AuraEntityOperations } from "../AuraEntityOperations";
 import type { StaticTypes } from "./AuraSchemaGenerator";
 import type { SchemaBuilder } from "./SchemaBuilder";
 
-export class EntitySchemaTypes {
+interface SchemaType {
+    connectionOperation: ObjectTypeComposer;
+    connection: ObjectTypeComposer;
+    edge: ObjectTypeComposer;
+    nodeType: string;
+}
+
+export class EntitySchemaTypes implements SchemaType {
     private schemaBuilder: SchemaBuilder;
     private entityOperations: AuraEntityOperations;
     private entity: ConcreteEntity;
@@ -56,10 +63,11 @@ export class EntitySchemaTypes {
     }
 
     @Memoize()
-    public get nodeType(): ObjectTypeComposer {
+    public get nodeType(): string {
         const fields = this.getObjectFields(this.entity);
         const relationships = this.getRelationshipFields(this.entity);
-        return this.schemaBuilder.createObjectType(this.entityOperations.nodeType, { ...fields, ...relationships });
+        this.schemaBuilder.createObjectType(this.entityOperations.nodeType, { ...fields, ...relationships });
+        return this.entityOperations.nodeType;
     }
 
     private getObjectFields(concreteEntity: ConcreteEntity): Record<string, string> {
@@ -77,7 +85,7 @@ export class EntitySchemaTypes {
                     entityOperations: this.entityOperations,
                     staticTypes: this.staticTypes,
                 });
-                const relationshipType = relationshipTypes.readOperation;
+                const relationshipType = relationshipTypes.connectionOperation;
 
                 return [relationship.name, relationshipType];
             })
@@ -85,7 +93,7 @@ export class EntitySchemaTypes {
     }
 }
 
-class RelationshipSchemaTypes {
+class RelationshipSchemaTypes implements SchemaType {
     private schemaBuilder: SchemaBuilder;
     private relationshipOperations: AuraRelationshipOperations;
     private relationship: Relationship;
@@ -109,7 +117,7 @@ class RelationshipSchemaTypes {
     }
 
     @Memoize()
-    public get readOperation() {
+    public get connectionOperation() {
         return this.schemaBuilder.createObjectType(this.relationshipOperations.connectionOperation, {
             connection: this.connection,
         });
