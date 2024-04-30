@@ -1,8 +1,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../schema-model/relationship/Relationship";
-import type { AuraRelationshipOperations } from "../AuraEntityOperations";
-import { AuraEntityOperations } from "../AuraEntityOperations";
+import { AuraEntityOperations, type AuraRelationshipOperations } from "../AuraEntityOperations";
 
 type ResolveTreeArgs = Record<string, any>;
 
@@ -40,6 +39,14 @@ export interface ResolveTreeProperties extends ResolveTreeElement {
     fields: Record<string, ResolveTreeField | ResolveTreeReadOperation>;
 }
 
+/** Returns the field of the resolve tree by passing the typename and name */
+function findFieldByName(resolveTree: ResolveTree, typeName: string, name: string): ResolveTree | undefined {
+    const fieldsByTypeName = resolveTree.fieldsByTypeName[typeName] ?? {};
+    return Object.values(fieldsByTypeName).find((field) => {
+        return field.name === name;
+    });
+}
+
 export class ResolveTreeParser {
     private operations: AuraEntityOperations;
     private entity: ConcreteEntity;
@@ -50,22 +57,26 @@ export class ResolveTreeParser {
     }
 
     public parse(resolveTree: ResolveTree): ResolveTreeReadOperation {
-        const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.connectionOperation] ?? {};
+        // const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.connectionOperation] ?? {};
+        // const connectionResolveTree = fieldsByTypeName["connection"];
 
-        const connectionResolveTree = fieldsByTypeName["connection"];
+        const connectionResolveTree = findFieldByName(resolveTree, this.operations.connectionOperation, "connection");
+
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
 
-        return {
+        const result = {
             alias: resolveTree.alias,
             args: resolveTree.args,
             fields: {
                 connection,
             },
         };
+        return result;
     }
 
     private parseConnection(connectionResolveTree: ResolveTree): ResolveTreeConnection {
-        const edgesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.connectionType]?.["edges"];
+        // const edgesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.connectionType]?.["edges"];
+        const edgesResolveTree = findFieldByName(connectionResolveTree, this.operations.connectionType, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
         return {
             alias: connectionResolveTree.alias,
@@ -77,7 +88,8 @@ export class ResolveTreeParser {
     }
 
     private parseEdges(connectionResolveTree: ResolveTree): ResolveTreeEdge {
-        const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
+        // const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
+        const nodeResolveTree = findFieldByName(connectionResolveTree, this.operations.edgeType, "node");
 
         const node = nodeResolveTree ? this.parseEntity(nodeResolveTree) : undefined;
 
@@ -93,15 +105,15 @@ export class ResolveTreeParser {
     public parseEntity(nodeResolveTree: ResolveTree): ResolveTreeNode {
         const fieldsResolveTree = nodeResolveTree.fieldsByTypeName[this.operations.nodeType] ?? {};
         const fields = Object.fromEntries(
-            Object.entries(fieldsResolveTree).map(([key, f]): [string, ResolveTreeField | ResolveTreeReadOperation] => {
+            Object.values(fieldsResolveTree).map((f): [string, ResolveTreeField | ResolveTreeReadOperation] => {
                 const fieldName = f.name;
                 if (this.entity.hasRelationship(fieldName)) {
                     const result = this.parseRelationship(f);
-                    return [key, result];
+                    return [fieldName, result];
                 }
                 if (this.entity.hasAttribute(fieldName)) {
                     return [
-                        key,
+                        fieldName,
                         {
                             alias: f.alias,
                             args: f.args,
@@ -141,9 +153,10 @@ class RelationshipResolveTreeParser {
     }
 
     public parse(resolveTree: ResolveTree): ResolveTreeReadOperation {
-        const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.readOperation] ?? {};
+        // const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.readOperation] ?? {};
+        // const connectionResolveTree = fieldsByTypeName["connection"];
 
-        const connectionResolveTree = fieldsByTypeName["connection"];
+        const connectionResolveTree = findFieldByName(resolveTree, this.operations.readOperation, "connection");
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
 
         return {
@@ -156,7 +169,8 @@ class RelationshipResolveTreeParser {
     }
 
     private parseConnection(connectionResolveTree: ResolveTree): ResolveTreeConnection {
-        const edgesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.connectionType]?.["edges"];
+        // const edgesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.connectionType]?.["edges"];
+        const edgesResolveTree = findFieldByName(connectionResolveTree, this.operations.connectionType, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
         return {
             alias: connectionResolveTree.alias,
@@ -168,8 +182,10 @@ class RelationshipResolveTreeParser {
     }
 
     private parseEdges(connectionResolveTree: ResolveTree): ResolveTreeEdge {
-        const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
-        const propertiesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["properties"];
+        // const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
+        // const propertiesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["properties"];
+        const nodeResolveTree = findFieldByName(connectionResolveTree, this.operations.edgeType, "node");
+        const propertiesResolveTree = findFieldByName(connectionResolveTree, this.operations.edgeType, "properties");
 
         const node = nodeResolveTree ? this.parseEntity(nodeResolveTree) : undefined;
         const properties = propertiesResolveTree ? this.parseRelationshipProperties(propertiesResolveTree) : undefined;
@@ -200,11 +216,11 @@ class RelationshipResolveTreeParser {
         if (!this.operations.propertiesType) return undefined;
         const fieldsResolveTree = resolveTree.fieldsByTypeName[this.operations.propertiesType] ?? {};
         const fields = Object.fromEntries(
-            Object.entries(fieldsResolveTree).map(([key, f]): [string, ResolveTreeField] => {
+            Object.values(fieldsResolveTree).map((f): [string, ResolveTreeField] => {
                 const fieldName = f.name;
                 if (this.relationship.hasAttribute(fieldName)) {
                     return [
-                        key,
+                        fieldName,
                         {
                             alias: f.alias,
                             args: f.args,

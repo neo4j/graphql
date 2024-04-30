@@ -165,4 +165,59 @@ describe("Aura-api simple", () => {
             },
         });
     });
+
+    test("should be able to get a Movie with related actors and relationship properties with aliased fields", async () => {
+        const query = /* GraphQL */ `
+            query {
+                myMovies: ${Movie.plural} {
+                    c: connection {
+                        e: edges {
+                            n: node {
+                               name: title
+                                a: actors {
+                                    nc: connection {
+                                        ne: edges {
+                                            nn: node {
+                                                nodeName: name
+                                            },
+                                            np: properties {
+                                                y:year
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            myMovies: {
+                c: {
+                    e: [
+                        {
+                            n: {
+                                name: "The Matrix",
+                                a: {
+                                    nc: {
+                                        ne: [
+                                            {
+                                                nn: { nodeName: "Keanu" },
+                                                np: { y: 1999 },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
 });
