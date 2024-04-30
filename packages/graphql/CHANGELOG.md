@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 5.3.4
+
+### Patch Changes
+
+-   [#5039](https://github.com/neo4j/graphql/pull/5039) [`2cff42d`](https://github.com/neo4j/graphql/commit/2cff42d9fbd2b34a6fc0c268944eaaf959afa54e) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix cypher generation on delete operations #5023
+
+-   [#5057](https://github.com/neo4j/graphql/pull/5057) [`19d12a3`](https://github.com/neo4j/graphql/commit/19d12a30668b2690fd877590e0f0be4fd070ecec) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixws a bug where a custom Cypher query with an argument named phrase was interpreted as FullText query.
+
 ## 5.3.3
 
 ### Patch Changes
