@@ -37,6 +37,7 @@
         "test:e2e:watch": "jest e2e --watch",
         "test:schema": "jest tests/schema -c jest.minimal.config.js",
         "test:schema:watch": "jest tests/schema --watch -c jest.minimal.config.js",
+        "test:aura": "jest --filter='<rootDir>/packages/graphql/aura-test-filter.js'",
         "setup:package-tests": "yarn pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && cd package && cd ../ && yarn install && yarn run setup",
         "posttest:package-tests": "yarn run cleanup:package-tests",
         "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
