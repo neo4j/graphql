@@ -12,6 +12,7 @@ import { OperationField } from "../../translate/queryAST/ast/fields/OperationFie
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
+import { filterTruthy } from "../../utils/utils";
 import { ResolveTreeParser } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
     GraphQLTree,
@@ -49,12 +50,11 @@ export class ReadOperationFactory {
         if (!connectionTree) {
             throw new Error("No Connection");
         }
+
         const target = new ConcreteEntityAdapter(entity);
         const selection = new NodeSelection({
             target,
         });
-
-        // const nodeFieldsTree = connectionTree.fields.edges?.fields.node?.fields ?? {};
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
@@ -85,17 +85,17 @@ export class ReadOperationFactory {
             throw new QueryParseError("Interfaces not supported");
         }
 
+        // Selection
         const selection = new RelationshipSelection({
             relationship: relationshipAdapter,
             alias: parsedTree.alias,
         });
 
-        // const nodeFieldsTree = connectionTree.fields.edges?.fields.node?.fields ?? {};
-
+        // Fields
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const propertiesResolveTree = connectionTree.fields.edges?.fields.properties;
         const nodeFields = this.getNodeFields(relationshipAdapter.target.entity, nodeResolveTree);
-        const edgeFields = this.getEdgeFields(relationship, propertiesResolveTree);
+        const edgeFields = this.getAttributeFields(relationship, propertiesResolveTree);
 
         return new AuraReadOperation({
             target: relationshipAdapter.target,
@@ -107,48 +107,50 @@ export class ReadOperationFactory {
         });
     }
 
-    private getNodeFields(entity: ConcreteEntity, nodeResolveTree: GraphQLTreeNode | undefined): Field[] {
+    private getAttributeFields(target: ConcreteEntity, propertiesTree: GraphQLTreeNode | undefined): Field[];
+    private getAttributeFields(target: Relationship, propertiesTree: GraphQLTreeProperties | undefined): Field[];
+    private getAttributeFields(
+        target: Relationship | ConcreteEntity,
+        propertiesTree: GraphQLTreeProperties | GraphQLTreeNode | undefined
+    ): Field[] {
+        if (!propertiesTree) {
+            return [];
+        }
+
+        return filterTruthy(
+            Object.entries(propertiesTree.fields).map(([name, rawField]) => {
+                const attribute = target.findAttribute(name);
+                if (attribute) {
+                    return new AttributeField({
+                        alias: rawField.alias,
+                        attribute: new AttributeAdapter(attribute),
+                    });
+                }
+                return undefined;
+            })
+        );
+    }
+
+    private getRelationshipFields(entity: ConcreteEntity, nodeResolveTree: GraphQLTreeNode | undefined): Field[] {
         if (!nodeResolveTree) {
             return [];
         }
 
-        return Object.entries(nodeResolveTree.fields).map(([name, rawField]) => {
-            const attribute = entity.findAttribute(name);
-            if (attribute) {
-                return new AttributeField({
-                    alias: rawField.alias,
-                    attribute: new AttributeAdapter(attribute),
-                });
-            }
-
-            const relationship = entity.findRelationship(name);
-            if (relationship) {
-                // FIX casting here
-                return this.generateRelationshipField(rawField as GraphQLTreeReadOperation, relationship);
-            }
-
-            throw new QueryParseError(`field ${name} not found in ${entity.name}`);
-        });
+        return filterTruthy(
+            Object.entries(nodeResolveTree.fields).map(([name, rawField]) => {
+                const relationship = entity.findRelationship(name);
+                if (relationship) {
+                    // FIX casting here
+                    return this.generateRelationshipField(rawField as GraphQLTreeReadOperation, relationship);
+                }
+            })
+        );
     }
-    private getEdgeFields(
-        relationship: Relationship,
-        propertiesResolveTree: GraphQLTreeProperties | undefined
-    ): Field[] {
-        if (!propertiesResolveTree) {
-            return [];
-        }
 
-        return Object.entries(propertiesResolveTree.fields).map(([name, rawField]) => {
-            const attribute = relationship.findAttribute(name);
-            if (attribute) {
-                return new AttributeField({
-                    alias: rawField.alias,
-                    attribute: new AttributeAdapter(attribute),
-                });
-            }
-
-            throw new QueryParseError(`field ${name} not found in ${relationship.name}`);
-        });
+    private getNodeFields(entity: ConcreteEntity, nodeResolveTree: GraphQLTreeNode | undefined): Field[] {
+        const attributeFields = this.getAttributeFields(entity, nodeResolveTree);
+        const relationshipFields = this.getRelationshipFields(entity, nodeResolveTree);
+        return [...attributeFields, ...relationshipFields];
     }
 
     private generateRelationshipField(
@@ -159,35 +161,10 @@ export class ReadOperationFactory {
             relationship: relationship,
             parsedTree: resolveTree,
         });
-        const edgeProperties = resolveTree.fields.connection?.fields.edges?.fields.properties;
-        const relationshipPropertiesFields = this.generateRelationshipPropertiesFields(relationship, edgeProperties);
-
-        relationshipOperation.setEdgeFields(relationshipPropertiesFields);
 
         return new OperationField({
             alias: resolveTree.alias,
             operation: relationshipOperation,
-        });
-    }
-
-    private generateRelationshipPropertiesFields(
-        relationship: Relationship,
-        resolveTree: GraphQLTreeProperties | undefined
-    ): Field[] {
-        if (!resolveTree) {
-            return [];
-        }
-
-        return Object.entries(resolveTree.fields).map(([name, rawField]) => {
-            const attribute = relationship.findAttribute(name);
-            if (attribute) {
-                return new AttributeField({
-                    alias: rawField.alias,
-                    attribute: new AttributeAdapter(attribute),
-                });
-            }
-
-            throw new QueryParseError(`field ${name} not found in ${relationship.name}`);
         });
     }
 }
