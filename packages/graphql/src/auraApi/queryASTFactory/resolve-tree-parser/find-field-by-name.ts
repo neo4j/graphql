@@ -17,19 +17,12 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeComposer } from "graphql-compose";
-import { Memoize } from "typescript-memoize";
-import type { SchemaBuilder } from "../SchemaBuilder";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 
-export class StaticTypes {
-    private schemaBuilder: SchemaBuilder;
-
-    constructor({ schemaBuilder }: { schemaBuilder: SchemaBuilder }) {
-        this.schemaBuilder = schemaBuilder;
-    }
-
-    @Memoize()
-    public get pageInfo(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType("PageInfo", { hasNextPage: "Boolean", hasPreviousPage: "Boolean" });
-    }
+/** Returns the field of the resolve tree by passing the typename and name */
+export function findFieldByName(resolveTree: ResolveTree, typeName: string, name: string): ResolveTree | undefined {
+    const fieldsByTypeName = resolveTree.fieldsByTypeName[typeName] ?? {};
+    return Object.values(fieldsByTypeName).find((field) => {
+        return field.name === name;
+    });
 }

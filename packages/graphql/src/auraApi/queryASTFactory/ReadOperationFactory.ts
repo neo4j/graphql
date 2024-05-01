@@ -12,8 +12,13 @@ import { OperationField } from "../../translate/queryAST/ast/fields/OperationFie
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
-import type { ResolveTreeNode, ResolveTreeProperties, ResolveTreeReadOperation } from "./ResolveTreeParser";
-import { ResolveTreeParser } from "./ResolveTreeParser";
+import { ResolveTreeParser } from "./resolve-tree-parser/ResolveTreeParser";
+import type {
+    GraphQLTree,
+    GraphQLTreeNode,
+    GraphQLTreeProperties,
+    GraphQLTreeReadOperation,
+} from "./resolve-tree-parser/graphql-tree";
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -37,7 +42,7 @@ export class ReadOperationFactory {
         parsedTree,
         entity,
     }: {
-        parsedTree: ResolveTreeReadOperation;
+        parsedTree: GraphQLTree;
         entity: ConcreteEntity;
     }): AuraReadOperation {
         const connectionTree = parsedTree.fields.connection;
@@ -67,7 +72,7 @@ export class ReadOperationFactory {
         parsedTree,
         relationship,
     }: {
-        parsedTree: ResolveTreeReadOperation;
+        parsedTree: GraphQLTreeReadOperation;
         relationship: Relationship;
     }): AuraReadOperation {
         const connectionTree = parsedTree.fields.connection;
@@ -102,7 +107,7 @@ export class ReadOperationFactory {
         });
     }
 
-    private getNodeFields(entity: ConcreteEntity, nodeResolveTree: ResolveTreeNode | undefined): Field[] {
+    private getNodeFields(entity: ConcreteEntity, nodeResolveTree: GraphQLTreeNode | undefined): Field[] {
         if (!nodeResolveTree) {
             return [];
         }
@@ -119,7 +124,7 @@ export class ReadOperationFactory {
             const relationship = entity.findRelationship(name);
             if (relationship) {
                 // FIX casting here
-                return this.generateRelationshipField(rawField as ResolveTreeReadOperation, relationship);
+                return this.generateRelationshipField(rawField as GraphQLTreeReadOperation, relationship);
             }
 
             throw new QueryParseError(`field ${name} not found in ${entity.name}`);
@@ -127,7 +132,7 @@ export class ReadOperationFactory {
     }
     private getEdgeFields(
         relationship: Relationship,
-        propertiesResolveTree: ResolveTreeProperties | undefined
+        propertiesResolveTree: GraphQLTreeProperties | undefined
     ): Field[] {
         if (!propertiesResolveTree) {
             return [];
@@ -147,7 +152,7 @@ export class ReadOperationFactory {
     }
 
     private generateRelationshipField(
-        resolveTree: ResolveTreeReadOperation,
+        resolveTree: GraphQLTreeReadOperation,
         relationship: Relationship
     ): OperationField {
         const relationshipOperation = this.generateRelationshipOperation({
@@ -167,7 +172,7 @@ export class ReadOperationFactory {
 
     private generateRelationshipPropertiesFields(
         relationship: Relationship,
-        resolveTree: ResolveTreeProperties | undefined
+        resolveTree: GraphQLTreeProperties | undefined
     ): Field[] {
         if (!resolveTree) {
             return [];
