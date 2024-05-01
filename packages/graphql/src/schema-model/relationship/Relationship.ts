@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
+import type { NestedEntityTypeNames } from "../../auraApi/graphQLTypeNames/NestedEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
 import type { Annotations } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { Attribute } from "../attribute/Attribute";
+import { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
@@ -137,6 +139,14 @@ export class Relationship {
             originalTarget: this.originalTarget,
             siblings: this.siblings,
         });
+    }
+
+    /** Note: Types of the new API */
+    public get types(): NestedEntityTypeNames {
+        if (!(this.source instanceof ConcreteEntity)) {
+            throw new Error("Interfaces not supported");
+        }
+        return this.source.types.relationship(this);
     }
 
     private addAttribute(attribute: Attribute): void {

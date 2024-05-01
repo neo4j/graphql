@@ -20,14 +20,18 @@
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../schema-model/relationship/Relationship";
 import { EntityTypeNames } from "./EntityTypeNames";
-import { RelationshipTypeNames } from "./NestedEntityTypeNames";
+import { NestedEntityTypeNames } from "./NestedEntityTypeNames";
 
 export class TopLevelEntityTypeNames extends EntityTypeNames {
     constructor(concreteEntity: ConcreteEntity) {
         super(concreteEntity.name);
     }
 
-    public relationship(relationship: Relationship): RelationshipTypeNames {
-        return new RelationshipTypeNames(relationship);
+    public relationship(relationship: Relationship): NestedEntityTypeNames {
+        return new NestedEntityTypeNames(relationship);
+    }
+
+    public get propertiesType(): undefined {
+        return undefined;
     }
 }

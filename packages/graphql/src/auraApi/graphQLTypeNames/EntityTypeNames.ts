@@ -19,15 +19,7 @@
 
 import { plural } from "../../schema-model/utils/string-manipulation";
 
-export interface GraphQLTypeNames {
-    connectionOperation: string;
-    connectionType: string;
-    edgeType: string;
-    nodeType: string;
-    whereInputTypeName: string;
-}
-
-export abstract class EntityTypeNames implements GraphQLTypeNames {
+export abstract class EntityTypeNames {
     private readonly prefix: string;
 
     constructor(prefix: string) {
@@ -61,4 +53,6 @@ export abstract class EntityTypeNames implements GraphQLTypeNames {
     public get plural(): string {
         return plural(this.prefix);
     }
+
+    public abstract get propertiesType(): string | undefined;
 }

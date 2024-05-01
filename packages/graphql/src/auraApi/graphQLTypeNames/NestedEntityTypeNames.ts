@@ -21,7 +21,7 @@ import type { Relationship } from "../../schema-model/relationship/Relationship"
 import { upperFirst } from "../../utils/upper-first";
 import { EntityTypeNames } from "./EntityTypeNames";
 
-export class RelationshipTypeNames extends EntityTypeNames {
+export class NestedEntityTypeNames extends EntityTypeNames {
     private relationship: Relationship;
 
     constructor(relationship: Relationship) {

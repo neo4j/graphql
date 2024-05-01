@@ -21,12 +21,12 @@ import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
-import type { RelationshipTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
+import type { NestedEntityTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import type { StaticTypes } from "./StaticTypes";
 
-export class NestedEntitySchemaTypes extends EntityTypes<RelationshipTypeNames> {
+export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> {
     private relationship: Relationship;
 
     constructor({
@@ -38,7 +38,7 @@ export class NestedEntitySchemaTypes extends EntityTypes<RelationshipTypeNames> 
         schemaBuilder: SchemaBuilder;
         relationship: Relationship;
         staticTypes: StaticTypes;
-        entityTypes: RelationshipTypeNames;
+        entityTypes: NestedEntityTypeNames;
     }) {
         super({
             schemaBuilder,

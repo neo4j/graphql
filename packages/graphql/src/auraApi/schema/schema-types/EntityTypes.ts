@@ -19,12 +19,12 @@
 
 import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
-import type { GraphQLTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
+import type { EntityTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import type { StaticTypes } from "./StaticTypes";
 
 /** This class defines the GraphQL types for an entity */
-export abstract class EntityTypes<T extends GraphQLTypeNames> {
+export abstract class EntityTypes<T extends EntityTypeNames> {
     protected schemaBuilder: SchemaBuilder;
     protected entityTypes: T;
     protected staticTypes: StaticTypes;
