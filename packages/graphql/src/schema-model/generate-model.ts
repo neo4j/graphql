@@ -25,7 +25,6 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
-import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "./library-directives";
 import {
     declareRelationshipDirective,
     nodeDirective,
@@ -33,6 +32,8 @@ import {
     relationshipDirective,
 } from "../graphql/directives";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
+import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
+import { isInArray } from "../utils/is-in-array";
 import { filterTruthy } from "../utils/utils";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
@@ -40,8 +41,10 @@ import { Operation } from "./Operation";
 import type { Attribute } from "./attribute/Attribute";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
+import type { Entity } from "./entity/Entity";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
+import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "./library-directives";
 import type { DefinitionCollection } from "./parser/definition-collection";
 import { getDefinitionCollection } from "./parser/definition-collection";
 import { parseAnnotations } from "./parser/parse-annotation";
@@ -50,12 +53,9 @@ import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribut
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
-import { isInArray } from "../utils/is-in-array";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
-import type { Entity } from "./entity/Entity";
-import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
 
-export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
+export function generateModel(document: DocumentNode, isAura = false): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
     const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
@@ -65,11 +65,35 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
 
     // hydrate interface to typeNames map
     hydrateInterfacesToTypeNamesMap(definitionCollection);
+    const definitionNodesAsArray = Array.from(definitionCollection.nodes.values());
+    const definitionNodes = isAura ? getAuraNodeDefinitions(definitionNodesAsArray) : definitionNodesAsArray;
 
-    const concreteEntities = Array.from(definitionCollection.nodes.values()).map((node) =>
-        generateConcreteEntity(node, definitionCollection)
+    const concreteEntities = definitionNodes.map((node) => generateConcreteEntity(node, definitionCollection));
+    const compositeEntities = isAura ? [] : getCompositeEntities(concreteEntities, definitionCollection);
+    const annotations = parseAnnotations(definitionCollection.schemaDirectives);
+
+    const schema = new Neo4jGraphQLSchemaModel({
+        compositeEntities,
+        concreteEntities,
+        operations,
+        annotations,
+    });
+    definitionNodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+    definitionCollection.interfaceTypes.forEach((def) =>
+        hydrateRelationshipDeclarations(def, schema, definitionCollection)
     );
+    addCompositeEntitiesToConcreteEntity(compositeEntities);
+    return schema;
+}
 
+function getAuraNodeDefinitions(definitionNodes: ObjectTypeDefinitionNode[]): ObjectTypeDefinitionNode[] {
+    return definitionNodes.filter((nodeDef) => findDirective(nodeDef.directives, nodeDirective.name));
+}
+
+function getCompositeEntities(
+    concreteEntities: ConcreteEntity[],
+    definitionCollection: DefinitionCollection
+): (InterfaceEntity | UnionEntity)[] {
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
         if (acc.has(entity.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
@@ -77,7 +101,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         acc.set(entity.name, entity);
         return acc;
     }, new Map<string, ConcreteEntity>());
-
     const interfaceEntities = Array.from(definitionCollection.interfaceToImplementingTypeNamesMap.entries()).map(
         ([name, concreteEntities]) => {
             const interfaceNode = definitionCollection.interfaceTypes.get(name);
@@ -102,21 +125,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         );
     });
 
-    const annotations = parseAnnotations(definitionCollection.schemaDirectives);
-
-    const schema = new Neo4jGraphQLSchemaModel({
-        compositeEntities: [...unionEntities, ...interfaceEntities],
-        concreteEntities,
-        operations,
-        annotations,
-    });
-    definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-    definitionCollection.interfaceTypes.forEach((def) =>
-        hydrateRelationshipDeclarations(def, schema, definitionCollection)
-    );
-    addCompositeEntitiesToConcreteEntity(interfaceEntities);
-    addCompositeEntitiesToConcreteEntity(unionEntities);
-    return schema;
+    return [...interfaceEntities, ...unionEntities];
 }
 
 function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity[]): void {
@@ -498,6 +507,13 @@ function generateConcreteEntity(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
+    // schema configuration directives are propagated onto concrete entities
+    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
+        isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
+    );
+    const directives = [...(definition.directives ?? []), ...(schemaDirectives ?? [])];
+    const annotations = parseAnnotations(directives);
+
     const fields = (definition.fields || []).map((fieldDefinition) => {
         // If the attribute is the private directive then
         const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
@@ -512,12 +528,6 @@ function generateConcreteEntity(
         }
         return parseAttribute(fieldDefinition, definitionCollection, definition.fields);
     });
-
-    // schema configuration directives are propagated onto concrete entities
-    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
-        isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
-    );
-    const annotations = parseAnnotations((definition.directives || []).concat(schemaDirectives || []));
 
     return new ConcreteEntity({
         name: definition.name.value,

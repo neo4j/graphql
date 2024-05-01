@@ -118,7 +118,7 @@ class Neo4jGraphQL {
 
     public getAuraSchema(): Promise<GraphQLSchema> {
         const document = this.normalizeTypeDefinitions(this.typeDefs);
-        this.schemaModel = this.generateSchemaModel(document);
+        this.schemaModel = this.generateSchemaModel(document, true);
         const auraSchemaGenerator = new AuraSchemaGenerator();
 
         this._nodes = [];
@@ -358,9 +358,9 @@ class Neo4jGraphQL {
         };
     }
 
-    private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
+    private generateSchemaModel(document: DocumentNode, isAura = false): Neo4jGraphQLSchemaModel {
         if (!this.schemaModel) {
-            return generateModel(document);
+            return generateModel(document, isAura);
         }
         return this.schemaModel;
     }

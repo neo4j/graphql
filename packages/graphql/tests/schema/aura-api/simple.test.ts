@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Simple Aura-API", () => {
     test("single type", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String
             }
         `;
@@ -67,10 +67,10 @@ describe("Simple Aura-API", () => {
 
     test("multiple types", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String
             }
-            type Actor {
+            type Actor @node {
                 name: String
             }
         `;
@@ -128,5 +128,51 @@ describe("Simple Aura-API", () => {
               movies: MovieOperation
             }"
         `);
+    });
+
+    test("should ignore types without the @node directive", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
+                title: String
+            }
+            type AnotherNode {
+                name: String
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+          "schema {
+            query: Query
+          }
+
+          type Movie {
+            title: String
+          }
+
+          type MovieConnection {
+            edges: [MovieEdge]
+            pageInfo: PageInfo
+          }
+
+          type MovieEdge {
+            cursor: String
+            node: Movie
+          }
+
+          type MovieOperation {
+            connection: MovieConnection
+          }
+
+          type PageInfo {
+            hasNextPage: Boolean
+            hasPreviousPage: Boolean
+          }
+
+          type Query {
+            movies: MovieOperation
+          }"
+      `);
     });
 });

@@ -28,7 +28,7 @@ describe("Aura-api simple", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
             }
         `;

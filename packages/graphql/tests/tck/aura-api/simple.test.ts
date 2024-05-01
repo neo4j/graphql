@@ -26,7 +26,7 @@ describe("Simple Aura API", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
             }
         `;
