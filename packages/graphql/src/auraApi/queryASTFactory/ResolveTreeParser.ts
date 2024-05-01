@@ -58,9 +58,6 @@ export class ResolveTreeParser {
     }
 
     public parse(resolveTree: ResolveTree): ResolveTreeReadOperation {
-        // const fieldsByTypeName = resolveTree.fieldsByTypeName[this.operations.connectionOperation] ?? {};
-        // const connectionResolveTree = fieldsByTypeName["connection"];
-
         const connectionResolveTree = findFieldByName(resolveTree, this.operations.connectionOperation, "connection");
 
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
@@ -76,7 +73,6 @@ export class ResolveTreeParser {
     }
 
     private parseConnection(connectionResolveTree: ResolveTree): ResolveTreeConnection {
-        // const edgesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.connectionType]?.["edges"];
         const edgesResolveTree = findFieldByName(connectionResolveTree, this.operations.connectionType, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
         return {
@@ -89,7 +85,6 @@ export class ResolveTreeParser {
     }
 
     private parseEdges(connectionResolveTree: ResolveTree): ResolveTreeEdge {
-        // const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
         const nodeResolveTree = findFieldByName(connectionResolveTree, this.operations.edgeType, "node");
 
         const node = nodeResolveTree ? this.parseEntity(nodeResolveTree) : undefined;
@@ -167,7 +162,6 @@ class RelationshipResolveTreeParser {
     }
 
     private parseConnection(connectionResolveTree: ResolveTree): ResolveTreeConnection {
-        // const edgesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.connectionType]?.["edges"];
         const edgesResolveTree = findFieldByName(connectionResolveTree, this.operations.connectionType, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
         return {
@@ -180,8 +174,6 @@ class RelationshipResolveTreeParser {
     }
 
     private parseEdges(connectionResolveTree: ResolveTree): ResolveTreeEdge {
-        // const nodeResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["node"];
-        // const propertiesResolveTree = connectionResolveTree.fieldsByTypeName[this.operations.edgeType]?.["properties"];
         const nodeResolveTree = findFieldByName(connectionResolveTree, this.operations.edgeType, "node");
         const propertiesResolveTree = findFieldByName(connectionResolveTree, this.operations.edgeType, "properties");
 
