@@ -20,7 +20,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { createRelationshipValidationClauses } from "../../../create-relationship-validation-clauses";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
@@ -62,7 +61,7 @@ export class UnwindCreateOperation extends MutationOperation {
         this.isNested = target instanceof RelationshipAdapter;
     }
     public getChildren(): QueryASTNode[] {
-        return filterTruthy(this.projectionOperations);
+        return [...this.inputFields.values(), ...this.authFilters, ...this.projectionOperations];
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {

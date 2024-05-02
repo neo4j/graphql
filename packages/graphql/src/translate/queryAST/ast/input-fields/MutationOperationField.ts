@@ -31,7 +31,7 @@ export class MutationOperationField extends InputField {
     }
 
     public getChildren() {
-        return [];
+        return [this.mutationOperation];
     }
 
     public print(): string {
