@@ -29,11 +29,8 @@ export class ReadOperationFactory {
     }
 
     public createAST({ resolveTree, entity }: { resolveTree: ResolveTree; entity: ConcreteEntity }): QueryAST {
-        //const resolveTreeParser = new ResolveTreeParser(entity);
-
         const parsedTree = parseResolveInfoTree({ resolveTree, entity });
 
-        // console.log(JSON.stringify(parsedTree, null, 2));
         const operation = this.generateOperation({
             parsedTree: parsedTree,
             entity,
