@@ -39,21 +39,30 @@ export function parseResolveInfoTree({
     resolveTree: ResolveTree;
     entity: ConcreteEntity | Relationship;
 }): GraphQLTree {
-    const entityTypes = entity.types;
-    const connectionResolveTree = findFieldByName(resolveTree, entityTypes.connectionOperation, "connection");
+    return parseOperation({ resolveTree, entity });
+}
+
+/** Parse a resolveTree into a Neo4j GraphQLTree */
+export function parseOperation({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity | Relationship;
+}): GraphQLTreeReadOperation {
+    const connectionResolveTree = findFieldByName(resolveTree, entity.types.connectionOperation, "connection");
 
     const connection = connectionResolveTree
         ? parseConnection({ resolveTree: connectionResolveTree, entity })
         : undefined;
 
-    const result = {
+    return {
         alias: resolveTree.alias,
         args: resolveTree.args,
         fields: {
             connection,
         },
     };
-    return result;
 }
 
 function parseConnection({
@@ -82,18 +91,22 @@ function parseEdges({
     resolveTree: ResolveTree;
     entity: ConcreteEntity | Relationship;
 }): GraphQLTreeEdge {
-    const entityTypes = entity.types;
-    const edgeType = entityTypes.edgeType;
-    let target = entity;
-    if (entity instanceof Relationship) {
-        target = entity.target as ConcreteEntity;
-    }
+    const edgeType = entity.types.edgeType;
+
+    const target = (entity instanceof Relationship ? entity.target : entity) as ConcreteEntity;
+
     const nodeResolveTree = findFieldByName(resolveTree, edgeType, "node");
-    const propertiesResolveTree = findFieldByName(resolveTree, entityTypes.edgeType, "properties");
+
     const node = nodeResolveTree ? parseNode({ resolveTree: nodeResolveTree, entity: target }) : undefined;
-    const properties = propertiesResolveTree
-        ? parseRelationshipProperties({ resolveTree: propertiesResolveTree, entity })
-        : undefined;
+
+    let properties: GraphQLTreeProperties | undefined;
+
+    if (entity instanceof Relationship) {
+        const propertiesResolveTree = findFieldByName(resolveTree, edgeType, "properties");
+        properties = propertiesResolveTree
+            ? parseRelationshipProperties({ resolveTree: propertiesResolveTree, entity })
+            : undefined;
+    }
 
     return {
         alias: resolveTree.alias,
@@ -105,13 +118,7 @@ function parseEdges({
     };
 }
 
-function parseNode({
-    resolveTree,
-    entity,
-}: {
-    resolveTree: ResolveTree;
-    entity: ConcreteEntity | Relationship;
-}): GraphQLTreeNode {
+function parseNode({ resolveTree, entity }: { resolveTree: ResolveTree; entity: ConcreteEntity }): GraphQLTreeNode {
     const entityTypes = entity.types;
     const fieldsResolveTree = resolveTree.fieldsByTypeName[entityTypes.nodeType] ?? {};
     const fields = parseEntityFields({ resolveTrees: Object.values(fieldsResolveTree), entity });
@@ -128,14 +135,14 @@ function parseRelationshipProperties({
     entity,
 }: {
     resolveTree: ResolveTree;
-    entity: ConcreteEntity | Relationship;
+    entity: Relationship;
 }): GraphQLTreeProperties | undefined {
     if (!entity.types.propertiesType) {
         return;
     }
     const fieldsResolveTree = resolveTree.fieldsByTypeName[entity.types.propertiesType] ?? {};
 
-    const fields = parseEntityFields({ resolveTrees: Object.values(fieldsResolveTree), entity });
+    const fields = parseRelationshipFields({ resolveTrees: Object.values(fieldsResolveTree), entity });
 
     return {
         alias: resolveTree.alias,
@@ -144,15 +151,35 @@ function parseRelationshipProperties({
     };
 }
 
+function parseRelationshipFields({
+    resolveTrees,
+    entity,
+}: {
+    resolveTrees: ResolveTree[];
+    entity: Relationship;
+}): Record<string, GraphQLTreeLeafField> {
+    return Object.fromEntries(
+        resolveTrees.map((resolveTree) => {
+            const fieldName = resolveTree.name;
+            const field = parseAttributeField({ resolveTree, entity });
+            if (!field) {
+                throw new ResolveTreeParserError(`${fieldName} attribute not found in ${entity.name}`);
+            }
+
+            return field;
+        })
+    );
+}
+
 function parseEntityFields({
     resolveTrees,
     entity,
 }: {
     resolveTrees: ResolveTree[];
     entity: ConcreteEntity | Relationship;
-}): Record<string, GraphQLTreeLeafField> {
+}): Record<string, GraphQLTreeReadOperation | GraphQLTreeLeafField> {
     return Object.fromEntries(
-        resolveTrees.map((resolveTree): [string, GraphQLTreeLeafField] => {
+        resolveTrees.map((resolveTree) => {
             const fieldName = resolveTree.name;
             const field = parseRelationship({ resolveTree, entity }) ?? parseAttributeField({ resolveTree, entity });
             if (!field) {
@@ -177,6 +204,7 @@ function parseAttributeField({
             {
                 alias: resolveTree.alias,
                 args: resolveTree.args,
+                fields: undefined,
             },
         ];
     }

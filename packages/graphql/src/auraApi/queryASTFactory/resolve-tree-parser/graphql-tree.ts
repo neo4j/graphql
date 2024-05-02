@@ -32,4 +32,6 @@ interface GraphQLTreeElement {
     args: Record<string, any>;
 }
 
-export interface GraphQLTreeLeafField extends GraphQLTreeElement {}
+export interface GraphQLTreeLeafField extends GraphQLTreeElement {
+    fields: undefined;
+}
