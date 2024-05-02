@@ -67,17 +67,6 @@ export class PropertyInputField extends InputField {
         return variable.property(this.attribute.name);
     }
 
-    /*  private getVariablePath(
-        variable: Cypher.Property | Cypher.Variable,
-        path: string[]
-    ): Cypher.Property | Cypher.Variable {
-        const next = path.shift();
-        if (next === undefined) {
-            return variable;
-        }
-        return this.getVariablePath(variable.property(next), path);
-    } */
-
     private coerceReference(
         variable: Cypher.Variable | Cypher.Property
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
