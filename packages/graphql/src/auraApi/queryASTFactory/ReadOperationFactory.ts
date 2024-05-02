@@ -16,8 +16,8 @@ import { filterTruthy } from "../../utils/utils";
 import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
     GraphQLTree,
+    GraphQLTreeEdgeProperties,
     GraphQLTreeNode,
-    GraphQLTreeProperties,
     GraphQLTreeReadOperation,
 } from "./resolve-tree-parser/graphql-tree";
 
@@ -33,7 +33,7 @@ export class ReadOperationFactory {
 
         const parsedTree = parseResolveInfoTree({ resolveTree, entity });
 
-       // console.log(JSON.stringify(parsedTree, null, 2));
+        // console.log(JSON.stringify(parsedTree, null, 2));
         const operation = this.generateOperation({
             parsedTree: parsedTree,
             entity,
@@ -110,10 +110,10 @@ export class ReadOperationFactory {
     }
 
     private getAttributeFields(target: ConcreteEntity, propertiesTree: GraphQLTreeNode | undefined): Field[];
-    private getAttributeFields(target: Relationship, propertiesTree: GraphQLTreeProperties | undefined): Field[];
+    private getAttributeFields(target: Relationship, propertiesTree: GraphQLTreeEdgeProperties | undefined): Field[];
     private getAttributeFields(
         target: Relationship | ConcreteEntity,
-        propertiesTree: GraphQLTreeProperties | GraphQLTreeNode | undefined
+        propertiesTree: GraphQLTreeEdgeProperties | GraphQLTreeNode | undefined
     ): Field[] {
         if (!propertiesTree) {
             return [];
