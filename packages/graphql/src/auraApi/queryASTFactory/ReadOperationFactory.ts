@@ -13,7 +13,7 @@ import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fi
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
 import { filterTruthy } from "../../utils/utils";
-import { ResolveTreeParser } from "./resolve-tree-parser/ResolveTreeParser";
+import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
     GraphQLTree,
     GraphQLTreeNode,
@@ -29,9 +29,11 @@ export class ReadOperationFactory {
     }
 
     public createAST({ resolveTree, entity }: { resolveTree: ResolveTree; entity: ConcreteEntity }): QueryAST {
-        const resolveTreeParser = new ResolveTreeParser(entity);
+        //const resolveTreeParser = new ResolveTreeParser(entity);
 
-        const parsedTree = resolveTreeParser.parse(resolveTree);
+        const parsedTree = parseResolveInfoTree({ resolveTree, entity });
+
+       // console.log(JSON.stringify(parsedTree, null, 2));
         const operation = this.generateOperation({
             parsedTree: parsedTree,
             entity,

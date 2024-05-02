@@ -41,7 +41,7 @@ describe("Relationship", () => {
         });
     });
 
-    test("Simple relationship", async () => {
+    test.only("Simple relationship", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {

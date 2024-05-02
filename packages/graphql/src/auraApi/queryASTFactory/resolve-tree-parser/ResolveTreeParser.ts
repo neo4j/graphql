@@ -18,9 +18,8 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
-import type { EntityTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLTree,
@@ -33,21 +32,20 @@ import type {
 } from "./graphql-tree";
 
 /** Parse a resolveTree into a Neo4j GraphQLTree */
-export function parse(resolveTree: ResolveTree): GraphQLTree {}
-
-type ResolveTreeEntity = Relationship | ConcreteEntity;
-
-function parseConnectionOperation({
-    entityTypes,
+export function parseResolveInfoTree({
     resolveTree,
     entity,
 }: {
-    entityTypes: EntityTypeNames;
     resolveTree: ResolveTree;
-    entity: ResolveTreeEntity;
-}): GraphQLTreeReadOperation {
+    entity: ConcreteEntity | Relationship;
+}): GraphQLTree {
+    const entityTypes = entity.types;
     const connectionResolveTree = findFieldByName(resolveTree, entityTypes.connectionOperation, "connection");
-    const connection = connectionResolveTree ? parseConnection(connectionResolveTree) : undefined;
+
+    const connection = connectionResolveTree
+        ? parseConnection({ resolveTree: connectionResolveTree, entity })
+        : undefined;
+
     const result = {
         alias: resolveTree.alias,
         args: resolveTree.args,
@@ -60,13 +58,14 @@ function parseConnectionOperation({
 
 function parseConnection({
     resolveTree,
-    entityTypes,
+    entity,
 }: {
     resolveTree: ResolveTree;
-    entityTypes: EntityTypeNames;
+    entity: ConcreteEntity | Relationship;
 }): GraphQLTreeConnection {
+    const entityTypes = entity.types;
     const edgesResolveTree = findFieldByName(resolveTree, entityTypes.connectionType, "edges");
-    const edgeResolveTree = edgesResolveTree ? parseEdges({ resolveTree: edgesResolveTree, entityTypes }) : undefined;
+    const edgeResolveTree = edgesResolveTree ? parseEdges({ resolveTree: edgesResolveTree, entity }) : undefined;
     return {
         alias: resolveTree.alias,
         args: resolveTree.args,
@@ -78,16 +77,23 @@ function parseConnection({
 
 function parseEdges({
     resolveTree,
-    entityTypes,
+    entity,
 }: {
     resolveTree: ResolveTree;
-    entityTypes: EntityTypeNames;
+    entity: ConcreteEntity | Relationship;
 }): GraphQLTreeEdge {
-    const nodeResolveTree = findFieldByName(resolveTree, entityTypes.edgeType, "node");
+    const entityTypes = entity.types;
+    const edgeType = entityTypes.edgeType;
+    let target = entity;
+    if (entity instanceof Relationship) {
+        target = entity.target as ConcreteEntity;
+    }
+    const nodeResolveTree = findFieldByName(resolveTree, edgeType, "node");
     const propertiesResolveTree = findFieldByName(resolveTree, entityTypes.edgeType, "properties");
-
-    const node = nodeResolveTree ? parseNode(nodeResolveTree) : undefined;
-    const properties = propertiesResolveTree ? parseRelationshipProperties(propertiesResolveTree) : undefined;
+    const node = nodeResolveTree ? parseNode({ resolveTree: nodeResolveTree, entity: target }) : undefined;
+    const properties = propertiesResolveTree
+        ? parseRelationshipProperties({ resolveTree: propertiesResolveTree, entity })
+        : undefined;
 
     return {
         alias: resolveTree.alias,
@@ -99,18 +105,16 @@ function parseEdges({
     };
 }
 
-function parseRelationshipProperties({
+function parseNode({
     resolveTree,
-    entityTypes,
+    entity,
 }: {
     resolveTree: ResolveTree;
-    entityTypes: EntityTypeNames;
-}): GraphQLTreeProperties | undefined {
-    if (!entityTypes.propertiesType) {
-        return;
-    }
-    const fieldsResolveTree = resolveTree.fieldsByTypeName[entityTypes.propertiesType] ?? {};
-    const fields = parseEntityFields(Object.values(fieldsResolveTree));
+    entity: ConcreteEntity | Relationship;
+}): GraphQLTreeNode {
+    const entityTypes = entity.types;
+    const fieldsResolveTree = resolveTree.fieldsByTypeName[entityTypes.nodeType] ?? {};
+    const fields = parseEntityFields({ resolveTrees: Object.values(fieldsResolveTree), entity });
 
     return {
         alias: resolveTree.alias,
@@ -119,141 +123,82 @@ function parseRelationshipProperties({
     };
 }
 
-export abstract class ResolveTreeOperationParser<T extends ConcreteEntity | Relationship> {
-    protected entity: T;
-    protected entityTypes: EntityTypeNames;
-
-    constructor(entity: T) {
-        this.entity = entity;
-        this.entityTypes = entity.types;
+function parseRelationshipProperties({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity | Relationship;
+}): GraphQLTreeProperties | undefined {
+    if (!entity.types.propertiesType) {
+        return;
     }
+    const fieldsResolveTree = resolveTree.fieldsByTypeName[entity.types.propertiesType] ?? {};
 
-    public parse(resolveTree: ResolveTree): GraphQLTree {
-        const connectionResolveTree = findFieldByName(resolveTree, this.entityTypes.connectionOperation, "connection");
+    const fields = parseEntityFields({ resolveTrees: Object.values(fieldsResolveTree), entity });
 
-        const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
-
-        const result = {
-            alias: resolveTree.alias,
-            args: resolveTree.args,
-            fields: {
-                connection,
-            },
-        };
-        return result;
-    }
-
-    protected parseConnection(connectionResolveTree: ResolveTree): GraphQLTreeConnection {
-        const edgesResolveTree = findFieldByName(connectionResolveTree, this.entityTypes.connectionType, "edges");
-        const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
-        return {
-            alias: connectionResolveTree.alias,
-            args: connectionResolveTree.args,
-            fields: {
-                edges: edgeResolveTree,
-            },
-        };
-    }
-
-    protected parseEdges(connectionResolveTree: ResolveTree): GraphQLTreeEdge {
-        const nodeResolveTree = findFieldByName(connectionResolveTree, this.entityTypes.edgeType, "node");
-        const propertiesResolveTree = findFieldByName(connectionResolveTree, this.entityTypes.edgeType, "properties");
-
-        const node = nodeResolveTree ? this.parseNode(nodeResolveTree) : undefined;
-        const properties = propertiesResolveTree ? this.parseRelationshipProperties(propertiesResolveTree) : undefined;
-
-        return {
-            alias: connectionResolveTree.alias,
-            args: connectionResolveTree.args,
-            fields: {
-                node: node,
-                properties: properties,
-            },
-        };
-    }
-    private parseRelationshipProperties(resolveTree: ResolveTree): GraphQLTreeProperties | undefined {
-        if (!this.entityTypes.propertiesType) {
-            return;
-        }
-        const fieldsResolveTree = resolveTree.fieldsByTypeName[this.entityTypes.propertiesType] ?? {};
-        const fields = this.parseFields(Object.values(fieldsResolveTree));
-
-        return {
-            alias: resolveTree.alias,
-            args: resolveTree.args,
-            fields: fields,
-        };
-    }
-
-    protected parseFields(resolveTrees: ResolveTree[]): Record<string, GraphQLTreeLeafField> {
-        return Object.fromEntries(
-            resolveTrees.map((f): [string, GraphQLTreeLeafField] => {
-                const fieldName = f.name;
-                const field = this.parseRelationship(f) ?? this.parseAttributeField(f);
-                if (!field) {
-                    throw new ResolveTreeParserError(`${fieldName} is not an attribute nor relationship`);
-                }
-
-                return field;
-            })
-        );
-    }
-    protected parseAttributeField(resolveTree: ResolveTree): [string, GraphQLTreeLeafField] | undefined {
-        if (this.entity.hasAttribute(resolveTree.name)) {
-            return [
-                resolveTree.name,
-                {
-                    alias: resolveTree.alias,
-                    args: resolveTree.args,
-                },
-            ];
-        }
-    }
-
-    protected abstract parseNode(connectionResolveTree: ResolveTree): GraphQLTreeNode;
-    protected abstract parseRelationship(resolveTree: ResolveTree): [string, GraphQLTreeReadOperation] | undefined;
+    return {
+        alias: resolveTree.alias,
+        args: resolveTree.args,
+        fields: fields,
+    };
 }
 
-export class ResolveTreeParser extends ResolveTreeOperationParser<ConcreteEntity> {
-    public parseNode(nodeResolveTree: ResolveTree): GraphQLTreeNode {
-        const fieldsResolveTree = nodeResolveTree.fieldsByTypeName[this.entityTypes.nodeType] ?? {};
-        const fields = this.parseFields(Object.values(fieldsResolveTree));
-
-        return {
-            alias: nodeResolveTree.alias,
-            args: nodeResolveTree.args,
-            fields: fields,
-        };
-    }
-
-    protected parseRelationship(resolveTree: ResolveTree): [string, GraphQLTreeReadOperation] | undefined {
-        if (this.entity.hasRelationship(resolveTree.name)) {
-            const relationship = this.entity.findRelationship(resolveTree.name);
-            if (!relationship) {
-                throw new ResolveTreeParserError("Relationship not found");
+function parseEntityFields({
+    resolveTrees,
+    entity,
+}: {
+    resolveTrees: ResolveTree[];
+    entity: ConcreteEntity | Relationship;
+}): Record<string, GraphQLTreeLeafField> {
+    return Object.fromEntries(
+        resolveTrees.map((resolveTree): [string, GraphQLTreeLeafField] => {
+            const fieldName = resolveTree.name;
+            const field = parseRelationship({ resolveTree, entity }) ?? parseAttributeField({ resolveTree, entity });
+            if (!field) {
+                throw new ResolveTreeParserError(`${fieldName} is not an attribute nor relationship`);
             }
 
-            const relationshipParser = new RelationshipResolveTreeParser(relationship);
-            return [resolveTree.name, relationshipParser.parse(resolveTree)];
-        }
+            return field;
+        })
+    );
+}
+
+function parseAttributeField({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity | Relationship;
+}): [string, GraphQLTreeLeafField] | undefined {
+    if (entity.hasAttribute(resolveTree.name)) {
+        return [
+            resolveTree.name,
+            {
+                alias: resolveTree.alias,
+                args: resolveTree.args,
+            },
+        ];
     }
 }
 
-class RelationshipResolveTreeParser extends ResolveTreeOperationParser<Relationship> {
-    protected parseNode(resolveTree: ResolveTree): GraphQLTreeNode {
-        const target = this.entity.target;
-        if (!(target instanceof ConcreteEntity)) {
-            throw new Error("Interface not supported");
-        }
-
-        const resolveTreeParser = new ResolveTreeParser(target);
-        const result = resolveTreeParser.parseNode(resolveTree);
-
-        return result;
-    }
-
-    protected parseRelationship(): [string, GraphQLTreeReadOperation] | undefined {
+function parseRelationship({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity | Relationship;
+}): [string, GraphQLTreeReadOperation] | undefined {
+    if (entity instanceof Relationship) {
         return;
+    }
+    if (entity.hasRelationship(resolveTree.name)) {
+        const relationship = entity.findRelationship(resolveTree.name);
+        if (!relationship) {
+            throw new ResolveTreeParserError("Relationship not found");
+        }
+        const nestedConnection = parseResolveInfoTree({ resolveTree, entity: relationship });
+        return [resolveTree.name, nestedConnection];
     }
 }
 
