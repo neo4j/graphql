@@ -26,11 +26,11 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
     let AdminGroup: UniqueType;
     let UserBlockedUser: UniqueType;
     let Party: UniqueType;
-    const secret = "secret";
 
+    const secret = "secret";
     const testHelper = new TestHelper();
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         User = testHelper.createUniqueType("User");
         AdminGroup = testHelper.createUniqueType("AdminGroup");
         UserBlockedUser = testHelper.createUniqueType("UserBlockedUser");
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
         });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
@@ -115,11 +115,9 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
           }
         `;
 
-        const cypher = `
-            MERGE (p:${Party} { id: "1" })<-[:CREATED_PARTY]-(u:${User} { id: "1", username: "arthur" });
-        `;
-
-        await testHelper.executeCypher(cypher);
+        await testHelper.executeCypher(`
+        CREATE (p:${Party} { id: "1" })<-[:CREATED_PARTY]-(u:${User} { id: "1", username: "arthur" });
+        `);
 
         const token = createBearerToken(secret, { sub: "1" });
         const result = await testHelper.executeGraphQLWithToken(query, token);
