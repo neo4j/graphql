@@ -20,31 +20,24 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { mapLabelsWithContext } from "../../../schema-model/utils/map-labels-with-context";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
-export function createNodeFromEntity(
-    entity: EntityAdapter,
-    neo4jGraphQLContext?: Neo4jGraphQLContext,
-    name?: string
-): Cypher.Node {
-    const nodeLabels = entity instanceof ConcreteEntityAdapter ? entity.getLabels() : [entity.name];
-    const labels = neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
-
+export function createNode(name?: string): Cypher.Node {
     if (name) {
-        return new Cypher.NamedNode(name, { labels });
+        return new Cypher.NamedNode(name);
     }
-    return new Cypher.Node({
-        labels,
-    });
+    return new Cypher.Node();
 }
 
-export function createRelationshipFromEntity(rel: RelationshipAdapter, name?: string): Cypher.Relationship {
+export function getEntityLabels(entity: EntityAdapter, neo4jGraphQLContext?: Neo4jGraphQLContext): string[] {
+    const nodeLabels = entity instanceof ConcreteEntityAdapter ? entity.getLabels() : [entity.name];
+    return neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
+}
+
+export function createRelationship(name?: string): Cypher.Relationship {
     if (name) {
-        return new Cypher.NamedRelationship(name, { type: rel.type });
+        return new Cypher.NamedRelationship(name);
     }
-    return new Cypher.Relationship({
-        type: rel.type,
-    });
+    return new Cypher.Relationship();
 }
