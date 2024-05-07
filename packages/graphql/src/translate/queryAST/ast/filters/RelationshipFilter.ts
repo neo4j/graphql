@@ -24,7 +24,7 @@ import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/mod
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import type { RelationshipWhereOperator } from "../../../where/types";
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -77,12 +77,9 @@ export class RelationshipFilter extends Filter {
     }
 
     @Memoize()
-    protected getNestedContext(context: QueryASTContext): QueryASTContext {
-        const relatedEntity = this.target;
-        const target = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
-        const relationship = new Cypher.Relationship({
-            type: this.relationship.type,
-        });
+    protected getNestedContext(context: QueryASTContext): QueryASTContext<Cypher.Node> {
+        const target = new Cypher.Node();
+        const relationship = new Cypher.Relationship();
         const nestedContext = context.push({
             target,
             relationship,
@@ -91,7 +88,6 @@ export class RelationshipFilter extends Filter {
         return nestedContext;
     }
 
-    @Memoize()
     protected getNestedSelectionSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const returnVars: Cypher.Variable[] = [];
 
@@ -103,12 +99,14 @@ export class RelationshipFilter extends Filter {
                 const selection = f.getSelection(context);
                 if (selection.length === 0) return undefined;
 
-                const pattern = new Cypher.Pattern(context.source!)
-                    .withoutLabels()
-                    .related(context.relationship)
-                    .withoutVariable()
-                    .withDirection(this.relationship.getCypherDirection())
-                    .to(context.target);
+                const pattern = new Cypher.Pattern(context.source)
+                    .related({
+                        type: this.relationship.type,
+                        direction: this.relationship.getCypherDirection(),
+                    })
+                    .to(context.target, {
+                        labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+                    });
 
                 const relationshipMatch = new Cypher.Match(pattern);
 
@@ -141,11 +139,8 @@ export class RelationshipFilter extends Filter {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         // NOTE: not using getNestedContext because this should not be memoized in ALL operations
-        const relatedEntity = this.target;
-        const target = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
-        const relationship = new Cypher.Relationship({
-            type: this.relationship.type,
-        });
+        const target = new Cypher.Node();
+        const relationship = new Cypher.Relationship();
         const nestedContext = context.push({
             target,
             relationship,
@@ -166,13 +161,15 @@ export class RelationshipFilter extends Filter {
         return subqueries;
     }
 
-    protected getNestedSubqueries(context: QueryASTContext): Cypher.Clause[] {
+    protected getNestedSubqueries(context: QueryASTContext<Cypher.Node>): Cypher.Clause[] {
         const pattern = new Cypher.Pattern(context.source!)
-            .withoutLabels()
-            .related(context.relationship)
-            .withoutVariable()
-            .withDirection(this.relationship.getCypherDirection())
-            .to(context.target);
+            .related({
+                direction: this.relationship.getCypherDirection(),
+                type: this.relationship.type,
+            })
+            .to(context.target, {
+                labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+            });
 
         switch (this.operator) {
             case "NONE":
@@ -293,11 +290,13 @@ export class RelationshipFilter extends Filter {
             }
 
             const pattern = new Cypher.Pattern(nestedContext.source!)
-                .withoutLabels()
-                .related(nestedContext.relationship)
-                .withDirection(this.relationship.getCypherDirection())
-                .withoutVariable()
-                .to(nestedContext.target);
+                .related({
+                    type: this.relationship.type,
+                    direction: this.relationship.getCypherDirection(),
+                })
+                .to(nestedContext.target, {
+                    labels: getEntityLabels(this.target, nestedContext.neo4jGraphQLContext),
+                });
             return [
                 new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVariable]),
             ];
@@ -318,11 +317,13 @@ export class RelationshipFilter extends Filter {
         }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
-            .withoutLabels()
-            .related(nestedContext.relationship)
-            .withDirection(this.relationship.getCypherDirection())
-            .withoutVariable()
-            .to(nestedContext.target);
+            .related({
+                type: this.relationship.type,
+                direction: this.relationship.getCypherDirection(),
+            })
+            .to(nestedContext.target, {
+                labels: getEntityLabels(this.target, nestedContext.neo4jGraphQLContext),
+            });
 
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
         if (predicate) {

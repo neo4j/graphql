@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { hasTarget } from "../../utils/context-has-target";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { createNode, getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
 
@@ -59,17 +59,16 @@ export class RelationshipSelection extends EntitySelection {
         selection: SelectionClause;
     } {
         if (!hasTarget(context)) throw new Error("No parent node over a nested relationship match!");
-        const relVar = createRelationshipFromEntity(this.relationship);
+        const relVar = new Cypher.Relationship();
 
         const relationshipTarget = this.targetOverride ?? this.relationship.target;
-        const targetNode = createNodeFromEntity(relationshipTarget, context.neo4jGraphQLContext, this.alias);
+        const targetNode = createNode(this.alias);
+        const labels = getEntityLabels(relationshipTarget, context.neo4jGraphQLContext);
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)
-            .withoutLabels()
-            .related(relVar)
-            .withDirection(relDirection)
-            .to(targetNode);
+            .related(relVar, { direction: relDirection, type: this.relationship.type })
+            .to(targetNode, { labels });
 
         // NOTE: Direction not passed (can we remove it from context?)
         const nestedContext = context.push({ target: targetNode, relationship: relVar });

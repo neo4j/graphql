@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { getEntityLabels } from "../../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { RelationshipFilter } from "../RelationshipFilter";
 
@@ -33,11 +34,13 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
-            .withoutLabels()
-            .related(nestedContext.relationship)
-            .withDirection(this.relationship.getCypherDirection())
-            .withoutVariable()
-            .to(nestedContext.target);
+            .related({
+                type: this.relationship.type,
+                direction: this.relationship.getCypherDirection(),
+            })
+            .to(nestedContext.target, {
+                labels: getEntityLabels(this.target, queryASTContext.neo4jGraphQLContext),
+            });
 
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
 
