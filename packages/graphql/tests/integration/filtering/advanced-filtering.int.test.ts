@@ -503,26 +503,21 @@ describe("Advanced Filtering", () => {
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
             expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(notValue);
         });
-    });
 
-    describe("String Filtering", () => {
         test("should find Movies GT string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
                         type ${movieType.name} {
-                            title: String
+                            title: ${type}
                         }
                     `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
                     filters: {
-                        String: {
-                            LT: true,
+                        [type]: {
                             GT: true,
-                            LTE: true,
-                            GTE: true,
                         },
                     },
                 },
@@ -571,18 +566,15 @@ describe("Advanced Filtering", () => {
 
             const typeDefs = `
                         type ${movieType.name} {
-                            title: String
+                            title: ${type}
                         }
                     `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
                     filters: {
-                        String: {
+                        [type]: {
                             LT: true,
-                            GT: true,
-                            LTE: true,
-                            GTE: true,
                         },
                     },
                 },
@@ -631,18 +623,15 @@ describe("Advanced Filtering", () => {
 
             const typeDefs = `
                         type ${movieType.name} {
-                            title: String
+                            title: ${type}
                         }
                     `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
                     filters: {
-                        String: {
-                            LT: true,
+                        [type]: {
                             GT: true,
-                            LTE: true,
-                            GTE: true,
                         },
                     },
                 },
@@ -691,18 +680,15 @@ describe("Advanced Filtering", () => {
 
             const typeDefs = `
                         type ${movieType.name} {
-                            title: String
+                            title: ${type}
                         }
                     `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
                     filters: {
-                        String: {
-                            LT: true,
+                        [type]: {
                             GT: true,
-                            LTE: true,
-                            GTE: true,
                         },
                     },
                 },
