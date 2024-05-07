@@ -407,6 +407,10 @@ export interface Neo4jStringFiltersSettings {
 }
 
 export interface Neo4jIDFiltersSettings {
+    GT?: boolean;
+    GTE?: boolean;
+    LT?: boolean;
+    LTE?: boolean;
     MATCHES?: boolean;
 }
 
