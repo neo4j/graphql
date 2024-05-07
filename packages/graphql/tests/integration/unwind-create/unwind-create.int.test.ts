@@ -738,4 +738,337 @@ describe("unwind-create", () => {
             ]),
         });
     });
+
+    test("should create a triple nested batch", async () => {
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
+
+        const typeDefs = /* GraphQL */ `
+            type ${Actor} {
+                name: String!
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+            type ${Movie} {
+                id: ID!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+
+        const id3 = generate({
+            charset: "alphabetic",
+        });
+        const id4 = generate({
+            charset: "alphabetic",
+        });
+
+        const actor1Name = generate({
+            charset: "alphabetic",
+        });
+
+        const actor2Name = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            mutation($id: ID!, $id2: ID!, $id3: ID!, $id4: ID!, $actor1Name: String!, $actor2Name: String! ) {
+                ${Movie.operations.create}(input: [
+                    { id: $id, actors: { create: [{ node: { name: $actor1Name, movies: { create: { node: { id: $id2 }}} }}] } },
+                    { id: $id3, actors: { create: [{ node: { name: $actor2Name, movies: { create: { node: { id: $id4 }}} }}] } },
+                ]) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Movie.plural} {
+                        id
+                        actors {
+                            name
+                            movies {
+                                id
+                            }
+                        }
+                    }
+                }
+              }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id, id2, id3, id4, actor1Name, actor2Name },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual(
+            expect.objectContaining({
+                [Movie.operations.create]: {
+                    info: {
+                        nodesCreated: 6,
+                        relationshipsCreated: 4,
+                    },
+                    [Movie.plural]: [
+                        {
+                            id,
+                            actors: [{ name: actor1Name, movies: expect.toIncludeSameMembers([{ id: id2 }, { id }]) }],
+                        },
+                        {
+                            id: id3,
+                            actors: [
+                                { name: actor2Name, movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]) },
+                            ],
+                        },
+                    ],
+                },
+            })
+        );
+
+        const reFind = await testHelper.executeCypher(
+            `
+                MATCH (m:${Movie})
+                CALL {
+                    WITH m
+                    MATCH (m)<-[:ACTED_IN]-(a:${Actor})
+                    CALL {
+                        WITH a
+                        MATCH (a)-[:ACTED_IN]->(m2:${Movie})
+                        RETURN collect(m2 { .id }) as m2
+                    }
+                    RETURN collect(a { .name, movies: m2 }) as a
+                }
+                RETURN m { .id, actors: a } as movie
+            `,
+            {}
+        );
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    movie: expect.objectContaining({
+                        id,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor1Name,
+                                movies: expect.toIncludeSameMembers([{ id: id2 }, { id }]),
+                            },
+                        ]),
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id2,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor1Name,
+                                movies: expect.toIncludeSameMembers([{ id: id2 }, { id }]),
+                            },
+                        ]),
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id3,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor2Name,
+                                movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]),
+                            },
+                        ]),
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id4,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor2Name,
+                                movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]),
+                            },
+                        ]),
+                    }),
+                },
+            ])
+        );
+    });
+
+    test("should create nested nodes from a sparse input", async () => {
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
+
+        const typeDefs = /* GraphQL */ `
+            type ${Actor} {
+                name: String!
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+            type ${Movie} {
+                id: ID!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+        const id3 = generate({
+            charset: "alphabetic",
+        });
+        const id4 = generate({
+            charset: "alphabetic",
+        });
+
+        const actor1Name = generate({
+            charset: "alphabetic",
+        });
+
+        const actor2Name = generate({
+            charset: "alphabetic",
+        });
+
+        const actor3Name = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            mutation($id: ID!, $id2: ID!, $id3: ID!, $id4: ID! $actor1Name: String!,  $actor2Name: String!, $actor3Name: String!) {
+                ${Movie.operations.create}(input: [
+                    { id: $id, actors: { create: [{ node: { name: $actor1Name }}, { node: { name: $actor2Name }}] } },
+                    { id: $id2 },
+                    { id: $id3, actors: { create: [{ node: { name: $actor3Name, movies: { create: {node: { id: $id4 }}} }}] } },
+                ]) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Movie.plural} {
+                        id
+                        actors {
+                            name
+                            movies {
+                                id
+                            }
+                        }
+                    }
+                }
+              }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id, id2, id3, id4, actor1Name, actor2Name, actor3Name },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual(
+            expect.objectContaining({
+                [Movie.operations.create]: {
+                    info: {
+                        nodesCreated: 7,
+                        relationshipsCreated: 4,
+                    },
+                    [Movie.plural]: expect.toIncludeSameMembers([
+                        {
+                            id,
+                            actors: expect.toIncludeSameMembers([
+                                {
+                                    name: actor1Name,
+                                    movies: expect.toIncludeSameMembers([{ id: id }]),
+                                },
+                                {
+                                    name: actor2Name,
+                                    movies: expect.toIncludeSameMembers([{ id: id }]),
+                                },
+                            ]),
+                        },
+                        { id: id2, actors: [] },
+                        {
+                            id: id3,
+                            actors: expect.toIncludeSameMembers([
+                                { name: actor3Name, movies: expect.toIncludeSameMembers([{ id: id3 }, { id: id4 }]) },
+                            ]),
+                        },
+                    ]),
+                },
+            })
+        );
+
+        const reFind = await testHelper.executeCypher(
+            `
+                MATCH (m:${Movie})
+                CALL {
+                    WITH m
+                    MATCH (m)<-[:ACTED_IN]-(a:${Actor})
+                    CALL {
+                        WITH a
+                        MATCH (a)-[:ACTED_IN]->(m2:${Movie})
+                        RETURN collect(m2 { .id }) as m2
+                    }
+                    RETURN collect(a { .name, movies: m2 }) as a
+                }
+                RETURN m { .id, actors: a } as movie
+            `,
+            {}
+        );
+        const records = reFind.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    movie: expect.objectContaining({
+                        id,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor1Name,
+                                movies: expect.toIncludeSameMembers([{ id: id}]),
+                            },
+                            {
+                                name: actor2Name,
+                                movies: expect.toIncludeSameMembers([{ id: id}]),
+                            },
+                        ]),
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id2,
+                        actors: [],
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id3,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor3Name,
+                                movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]),
+                            },
+                        ]),
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id4,
+                        actors: expect.toIncludeSameMembers([
+                            {
+                                name: actor3Name,
+                                movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]),
+                            },
+                        ]),
+                    }),
+                },
+            ])
+        );
+    });
 });

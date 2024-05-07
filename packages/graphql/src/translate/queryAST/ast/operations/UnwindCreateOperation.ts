@@ -37,9 +37,7 @@ export class UnwindCreateOperation extends MutationOperation {
     public readonly inputFields: Map<string, InputField>;
     public readonly target: ConcreteEntityAdapter | RelationshipAdapter;
     public readonly projectionOperations: ReadOperation[] = [];
-
     protected readonly authFilters: AuthorizationFilters[] = [];
-
     private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
     private readonly unwindVariable: Cypher.Variable;
     private isNested: boolean;
@@ -47,17 +45,15 @@ export class UnwindCreateOperation extends MutationOperation {
     constructor({
         target,
         argumentToUnwind,
-        unwindVariable,
     }: {
         target: ConcreteEntityAdapter | RelationshipAdapter;
         argumentToUnwind: Cypher.Param | Cypher.Property;
-        unwindVariable: Cypher.Variable;
     }) {
         super();
         this.target = target;
         this.inputFields = new Map();
         this.argumentToUnwind = argumentToUnwind;
-        this.unwindVariable = unwindVariable;
+        this.unwindVariable = new Cypher.Variable();
         this.isNested = target instanceof RelationshipAdapter;
     }
     public getChildren(): QueryASTNode[] {
@@ -79,6 +75,10 @@ export class UnwindCreateOperation extends MutationOperation {
         if (!this.inputFields.has(field.name)) {
             this.inputFields.set(`${attachedTo}_${field.name}`, field);
         }
+    }
+
+    public getUnwindVariable(): Cypher.Variable {
+        return this.unwindVariable;
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {
