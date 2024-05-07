@@ -631,7 +631,7 @@ describe("Advanced Filtering", () => {
                 features: {
                     filters: {
                         [type]: {
-                            GT: true,
+                            GTE: true,
                         },
                     },
                 },
@@ -688,7 +688,7 @@ describe("Advanced Filtering", () => {
                 features: {
                     filters: {
                         [type]: {
-                            GT: true,
+                            LTE: true,
                         },
                     },
                 },
