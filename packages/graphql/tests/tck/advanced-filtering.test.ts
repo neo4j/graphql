@@ -53,6 +53,10 @@ describe("Cypher Advanced Filtering", () => {
                         MATCHES: true,
                     },
                     ID: {
+                        LT: true,
+                        GT: true,
+                        LTE: true,
+                        GTE: true,
                         MATCHES: true,
                     },
                 },
@@ -386,6 +390,29 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
+    test("LT ID", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies(where: { id_LT: "0000" }) {
+                    id
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.id < $param0
+            RETURN this { .id } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"0000\\"
+            }"
+        `);
+    });
+
     test("LTE", async () => {
         const query = /* GraphQL */ `
             {
@@ -459,6 +486,29 @@ describe("Cypher Advanced Filtering", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix Revolutions\\"
+            }"
+        `);
+    });
+
+    test("LTE ID", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies(where: { id_LTE: "0000" }) {
+                    id
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.id <= $param0
+            RETURN this { .id } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"0000\\"
             }"
         `);
     });
@@ -540,6 +590,29 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
+    test("GT ID", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies(where: { id_GT: "0000" }) {
+                    id
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.id > $param0
+            RETURN this { .id } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"0000\\"
+            }"
+        `);
+    });
+
     test("GTE", async () => {
         const query = /* GraphQL */ `
             {
@@ -613,6 +686,29 @@ describe("Cypher Advanced Filtering", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix Revolutions\\"
+            }"
+        `);
+    });
+
+    test("GTE ID", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies(where: { id_GTE: "0000" }) {
+                    id
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.id >= $param0
+            RETURN this { .id } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"0000\\"
             }"
         `);
     });
