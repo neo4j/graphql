@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TopLevelEntityTypeNames } from "../../auraApi/graphQLTypeNames/TopLevelEntityTypeNames";
+import { TopLevelEntityTypeNames } from "../../api-v6/graphQLTypeNames/TopLevelEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotations } from "../annotation/Annotation";

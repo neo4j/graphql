@@ -60,7 +60,7 @@ export async function translateQuery(
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
         subgraph?: boolean;
-        auraApi?: boolean;
+        v6Api?: boolean;
     } = {}
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
@@ -134,13 +134,13 @@ function getSchema(
     neoSchema: Neo4jGraphQL,
     options: {
         subgraph?: boolean;
-        auraApi?: boolean;
+        v6Api?: boolean;
     }
 ): Promise<GraphQLSchema> {
     if (options.subgraph) {
         return neoSchema.getSubgraphSchema();
     }
-    if (options.auraApi) {
+    if (options.v6Api) {
         return neoSchema.getAuraSchema();
     }
     return neoSchema.getSchema();

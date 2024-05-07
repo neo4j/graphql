@@ -43,9 +43,9 @@ export class TestHelper {
     private customDB: string | undefined;
 
     private cdc: boolean;
-    constructor({ cdc = false, auraApi = false }: { cdc: boolean; auraApi: boolean } = { cdc: false, auraApi: false }) {
+    constructor({ cdc = false, v6Api = false }: { cdc: boolean; v6Api: boolean } = { cdc: false, v6Api: false }) {
         this.cdc = cdc;
-        this.isAuraApi = auraApi;
+        this.isAuraApi = v6Api;
     }
 
     public get database(): string {

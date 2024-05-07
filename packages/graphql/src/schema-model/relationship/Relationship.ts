@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { NestedEntityTypeNames } from "../../auraApi/graphQLTypeNames/NestedEntityTypeNames";
+import type { NestedEntityTypeNames } from "../../api-v6/graphQLTypeNames/NestedEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";

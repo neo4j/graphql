@@ -18,11 +18,11 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { V6ReadOperation } from "../../../api-v6/QueryIR/ConnectionReadOperation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
-import { AuraReadOperation } from "./aura-api/ConnectionReadOperation";
 import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import { DeleteOperation } from "./operations/DeleteOperation";
@@ -86,7 +86,7 @@ export class QueryAST {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
-            this.operation instanceof AuraReadOperation ||
+            this.operation instanceof V6ReadOperation ||
             this.operation instanceof DeleteOperation
         ) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, varName);

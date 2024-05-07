@@ -25,7 +25,7 @@ import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
-import { AuraSchemaGenerator } from "../auraApi/schema/AuraSchemaGenerator";
+import { AuraSchemaGenerator } from "../api-v6/schema/AuraSchemaGenerator";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";

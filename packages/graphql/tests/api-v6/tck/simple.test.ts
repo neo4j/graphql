@@ -18,21 +18,16 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../tck/utils/tck-test-utils";
 
-describe("Relationship", () => {
+describe("Simple Aura API", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-            type Actor @node {
-                name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                title: String!
             }
         `;
 
@@ -41,7 +36,7 @@ describe("Relationship", () => {
         });
     });
 
-    test.only("Simple relationship", async () => {
+    test("Simple", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
@@ -49,15 +44,6 @@ describe("Relationship", () => {
                         edges {
                             node {
                                 title
-                                actors {
-                                    connection {
-                                        edges {
-                                            node {
-                                                name
-                                            }
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
@@ -65,7 +51,7 @@ describe("Relationship", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, { auraApi: true });
+        const result = await translateQuery(neoSchema, query, { v6Api: true });
 
         // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -76,22 +62,9 @@ describe("Relationship", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
-                    WITH collect({ node: actors, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS actors, edge.relationship AS this1
-                        RETURN collect({ node: { name: actors.name, __resolveType: \\"Actor\\" } }) AS var2
-                    }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
-                }
-                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

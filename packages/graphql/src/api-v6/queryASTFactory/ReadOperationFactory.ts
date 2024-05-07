@@ -6,13 +6,13 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import type { Relationship } from "../../schema-model/relationship/Relationship";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { QueryAST } from "../../translate/queryAST/ast/QueryAST";
-import { AuraReadOperation } from "../../translate/queryAST/ast/aura-api/ConnectionReadOperation";
 import type { Field } from "../../translate/queryAST/ast/fields/Field";
 import { OperationField } from "../../translate/queryAST/ast/fields/OperationField";
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
 import { filterTruthy } from "../../utils/utils";
+import { V6ReadOperation } from "../QueryIR/ConnectionReadOperation";
 import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
     GraphQLTree,
@@ -44,7 +44,7 @@ export class ReadOperationFactory {
     }: {
         parsedTree: GraphQLTree;
         entity: ConcreteEntity;
-    }): AuraReadOperation {
+    }): V6ReadOperation {
         const connectionTree = parsedTree.fields.connection;
         if (!connectionTree) {
             throw new Error("No Connection");
@@ -57,7 +57,7 @@ export class ReadOperationFactory {
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
-        return new AuraReadOperation({
+        return new V6ReadOperation({
             target,
             selection,
             fields: {
@@ -73,7 +73,7 @@ export class ReadOperationFactory {
     }: {
         parsedTree: GraphQLTreeReadOperation;
         relationship: Relationship;
-    }): AuraReadOperation {
+    }): V6ReadOperation {
         const connectionTree = parsedTree.fields.connection;
         if (!connectionTree) {
             throw new Error("No Connection");
@@ -96,7 +96,7 @@ export class ReadOperationFactory {
         const nodeFields = this.getNodeFields(relationshipAdapter.target.entity, nodeResolveTree);
         const edgeFields = this.getAttributeFields(relationship, propertiesResolveTree);
 
-        return new AuraReadOperation({
+        return new V6ReadOperation({
             target: relationshipAdapter.target,
             selection,
             fields: {
