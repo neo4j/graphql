@@ -28,9 +28,7 @@
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
         "test:unit": "jest src",
-        "test:unit:watch": "jest src --watch",
         "test:int": "jest tests/integration",
-        "test:int:watch": "jest tests/integration --watch",
         "build": "tsc --build tsconfig.production.json",
         "build:clean": "yarn clean && yarn build"
     },

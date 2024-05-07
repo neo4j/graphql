@@ -28,9 +28,7 @@
         "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
-        "test:unit:watch": "jest src --watch",
-        "test:int": "jest tests/integration",
-        "test:int:watch": "test:int -- --watch"
+        "test:int": "jest tests/integration"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
