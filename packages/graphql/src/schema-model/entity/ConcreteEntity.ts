@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { TopLevelEntityTypeNames } from "../../api-v6/graphQLTypeNames/TopLevelEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotations } from "../annotation/Annotation";
@@ -68,6 +69,11 @@ export class ConcreteEntity implements Entity {
         }
     }
 
+    /** Note: Types of the new API */
+    public get types(): TopLevelEntityTypeNames {
+        return new TopLevelEntityTypeNames(this);
+    }
+
     public isConcreteEntity(): this is ConcreteEntity {
         return true;
     }
@@ -106,5 +112,13 @@ export class ConcreteEntity implements Entity {
 
     public findRelationship(name: string): Relationship | undefined {
         return this.relationships.get(name);
+    }
+
+    public hasAttribute(name: string): boolean {
+        return this.attributes.has(name);
+    }
+
+    public hasRelationship(name: string): boolean {
+        return this.relationships.has(name);
     }
 }

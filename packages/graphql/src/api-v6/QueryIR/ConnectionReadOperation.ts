@@ -18,25 +18,24 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { filterTruthy } from "../../../../utils/utils";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { Field } from "../fields/Field";
-import { OperationField } from "../fields/OperationField";
-import type { Filter } from "../filters/Filter";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
-import type { Pagination } from "../pagination/Pagination";
-import type { EntitySelection } from "../selection/EntitySelection";
-import { CypherPropertySort } from "../sort/CypherPropertySort";
-import type { Sort, SortField } from "../sort/Sort";
-import { CypherScalarOperation } from "./CypherScalarOperation";
-import type { OperationTranspileResult } from "./operations";
-import { Operation } from "./operations";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTContext } from "../../translate/queryAST/ast/QueryASTContext";
+import type { QueryASTNode } from "../../translate/queryAST/ast/QueryASTNode";
+import type { Field } from "../../translate/queryAST/ast/fields/Field";
+import { OperationField } from "../../translate/queryAST/ast/fields/OperationField";
+import type { Filter } from "../../translate/queryAST/ast/filters/Filter";
+import type { AuthorizationFilters } from "../../translate/queryAST/ast/filters/authorization-filters/AuthorizationFilters";
+import { CypherScalarOperation } from "../../translate/queryAST/ast/operations/CypherScalarOperation";
+import { Operation, type OperationTranspileResult } from "../../translate/queryAST/ast/operations/operations";
+import type { Pagination } from "../../translate/queryAST/ast/pagination/Pagination";
+import type { EntitySelection } from "../../translate/queryAST/ast/selection/EntitySelection";
+import { CypherPropertySort } from "../../translate/queryAST/ast/sort/CypherPropertySort";
+import type { Sort, SortField } from "../../translate/queryAST/ast/sort/Sort";
+import { wrapSubqueriesInCypherCalls } from "../../translate/queryAST/utils/wrap-subquery-in-calls";
+import { filterTruthy } from "../../utils/utils";
 
-export class ConnectionReadOperation extends Operation {
+export class V6ReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
     public readonly target: ConcreteEntityAdapter;
 
@@ -170,8 +169,10 @@ export class ConnectionReadOperation extends Operation {
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
-                edges: edgesProjectionVar,
-                totalCount: totalCount,
+                connection: new Cypher.Map({
+                    edges: edgesProjectionVar,
+                    totalCount: totalCount,
+                }),
             }),
             context.returnVariable,
         ]);

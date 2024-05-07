@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
+import type { NestedEntityTypeNames } from "../../api-v6/graphQLTypeNames/NestedEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
 import type { Annotations } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { Attribute } from "../attribute/Attribute";
+import { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
@@ -139,6 +141,14 @@ export class Relationship {
         });
     }
 
+    /** Note: Types of the new API */
+    public get types(): NestedEntityTypeNames {
+        if (!(this.source instanceof ConcreteEntity)) {
+            throw new Error("Interfaces not supported");
+        }
+        return this.source.types.relationship(this);
+    }
+
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}.`);
@@ -148,6 +158,10 @@ export class Relationship {
 
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
+    }
+
+    public hasAttribute(name: string): boolean {
+        return this.attributes.has(name);
     }
 
     public setSiblings(siblingPropertiesTypeNames: string[]) {

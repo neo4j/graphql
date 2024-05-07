@@ -36,14 +36,16 @@ export class TestHelper {
     private neo4jGraphQL: Neo4jGraphQL | undefined;
     private uniqueTypes: UniqueType[] = [];
     private driver: neo4j.Driver | undefined;
+    private isAuraApi: boolean;
 
     private lock: boolean = false; // Lock to avoid race condition between initNeo4jGraphQL
 
     private customDB: string | undefined;
 
     private cdc: boolean;
-    constructor({ cdc = false }: { cdc: boolean } = { cdc: false }) {
+    constructor({ cdc = false, v6Api = false }: { cdc: boolean; v6Api: boolean } = { cdc: false, v6Api: false }) {
         this.cdc = cdc;
+        this.isAuraApi = v6Api;
     }
 
     public get database(): string {
@@ -89,7 +91,7 @@ export class TestHelper {
         if (args.contextValue instanceof Promise) {
             throw new Error("contextValue is a promise. Did you forget to use await with 'getContextValue'?");
         }
-        const schema = await this.neo4jGraphQL.getSchema();
+        const schema = this.isAuraApi ? await this.neo4jGraphQL.getAuraSchema() : await this.neo4jGraphQL.getSchema();
 
         return graphqlRuntime({
             schema,
