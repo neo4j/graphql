@@ -37,7 +37,6 @@
         "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
         "cleanup:package-tests": "cd ../package-tests/ && yarn run cleanup && rimraf ./package/ && rimraf *.tgz",
         "build": "tsc --build src/tsconfig.production.json",
-        "watch": "tsc -w",
         "performance": "ts-node tests/performance/performance.ts"
     },
     "author": "Neo4j Inc.",
