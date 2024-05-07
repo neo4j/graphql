@@ -25,7 +25,6 @@ import type {
 } from "graphql";
 import { gql } from "graphql-tag";
 import validateDocument from "../../validate-document";
-import { VALIDATE_OBJECT_FIELD_WARN_MSG } from "./object-fields-without-resolver";
 
 const additionalDefinitions = {
     enums: [] as EnumTypeDefinitionNode[],
@@ -44,48 +43,45 @@ describe("WarnObjectFieldsWithoutResolver", () => {
     afterEach(() => {
         warn.mockReset();
     });
-
-    test("Error on object field array  without resolver", () => {
-        const doc = gql`
-            type Movie {
-                actors: [Actor!]!
-            }
-
-            type Actor {
-                name: String
-            }
-        `;
-
-        validateDocument({
-            document: doc,
-            additionalDefinitions,
-            features: {},
-        });
-        expect(warn).toHaveBeenCalledWith(`${VALIDATE_OBJECT_FIELD_WARN_MSG} actors`);
-        expect(warn).toHaveBeenCalledOnce();
-    });
-
-    test("Error on object field without resolver", () => {
-        const doc = gql`
-            type Movie {
-                actors: Actor
-            }
-
-            type Actor {
-                name: String
-            }
-        `;
-
-        validateDocument({
-            document: doc,
-            additionalDefinitions,
-            features: {},
-        });
-        expect(warn).toHaveBeenCalledWith(`${VALIDATE_OBJECT_FIELD_WARN_MSG} actors`);
-        expect(warn).toHaveBeenCalledOnce();
-    });
-
     describe("Does not show warning", () => {
+        test("Error on object field array  without resolver throw warning in debug", () => {
+            const doc = gql`
+                type Movie {
+                    actors: [Actor!]!
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+            expect(warn).not.toHaveBeenCalled();
+        });
+
+        test("Error on object field without resolver throw warning in debug", () => {
+            const doc = gql`
+                type Movie {
+                    actors: Actor
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+            expect(warn).not.toHaveBeenCalled();
+        });
+
         test("Relationship", () => {
             const doc = gql`
                 type Movie {
