@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { V6ReadOperation } from "../../../api-v6/QueryIR/ConnectionReadOperation";
+import { V6ReadOperation } from "../../../api-v6/queryIR/ConnectionReadOperation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNode } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";

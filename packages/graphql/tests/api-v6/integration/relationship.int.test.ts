@@ -20,8 +20,8 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("Relationships simple", () => {
-    const testHelper = new TestHelper({ cdc: false, v6Api: true });
+describe("Relationship simple query", () => {
+    const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
     let Actor: UniqueType;
