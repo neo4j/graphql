@@ -24,7 +24,7 @@ import type { UniqueType } from "./utils";
 
 /** Removes all nodes with the given labels from the database */
 export async function cleanNodes(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
-    const nodeRef = new Cypher.Node({});
+    const nodeRef = new Cypher.Node();
 
     const nodeHasLabelPredicates = labels.map((l) => {
         return nodeRef.hasLabel(`${l}`);

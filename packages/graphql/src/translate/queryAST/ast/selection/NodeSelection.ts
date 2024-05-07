@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { createNode, getEntityLabels } from "../../utils/create-node-from-entity";
 import { QueryASTContext } from "../QueryASTContext";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
 
@@ -61,9 +61,13 @@ export class NodeSelection extends EntitySelection {
                 throw new Error("No target found in the context");
             }
             node = context.target;
-            matchPattern = new Cypher.Pattern(node).withoutLabels();
+            matchPattern = new Cypher.Pattern(node);
         } else {
-            node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias);
+            node = createNode(this.alias);
+
+            matchPattern = new Cypher.Pattern(node, {
+                labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+            });
         }
         const match = new Cypher.Match(matchPattern ?? node);
 

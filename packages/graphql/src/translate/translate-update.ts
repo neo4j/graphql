@@ -71,9 +71,17 @@ export default async function translateUpdate({
     const createStrs: string[] = [];
     let deleteStr = "";
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
-    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const matchNode = new Cypher.NamedNode(varName);
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "UPDATE", where });
+    const matchPattern = new Cypher.Pattern(matchNode, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({
+        matchNode,
+        matchPattern,
+        node,
+        context,
+        operation: "UPDATE",
+        where,
+    });
     matchAndWhereStr = topLevelMatch.cypher;
     let cypherParams = topLevelMatch.params;
 

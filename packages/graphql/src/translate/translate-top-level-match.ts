@@ -17,24 +17,26 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg } from "../types";
-import type { Node } from "../classes";
 import Cypher from "@neo4j/cypher-builder";
-import { createWhereNodePredicate } from "./where/create-where-predicate";
+import type { Node } from "../classes";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../schema-model/annotation/AuthorizationAnnotation";
+import type { GraphQLWhereArg } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { createWhereNodePredicate } from "./where/create-where-predicate";
 
 export function translateTopLevelMatch({
     matchNode,
+    matchPattern,
     node,
     context,
     operation,
     where,
 }: {
     matchNode: Cypher.Node;
+    matchPattern: Cypher.Pattern;
     context: Neo4jGraphQLTranslationContext;
     node: Node;
     operation: AuthorizationOperation;
@@ -42,6 +44,7 @@ export function translateTopLevelMatch({
 }): Cypher.CypherResult {
     const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
         matchNode,
+        matchPattern,
         node,
         context,
         operation,
@@ -59,12 +62,14 @@ type CreateMatchClauseReturn = {
 
 function createMatchClause({
     matchNode,
+    matchPattern,
     node,
     context,
     operation,
     where,
 }: {
     matchNode: Cypher.Node;
+    matchPattern: Cypher.Pattern;
     context: Neo4jGraphQLTranslationContext;
     node: Node;
     operation: AuthorizationOperation;
@@ -72,7 +77,7 @@ function createMatchClause({
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    let matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchNode);
+    let matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchPattern);
     let whereOperators: Cypher.Predicate[] = [];
 
     // TODO: removed deprecated fulltext translation

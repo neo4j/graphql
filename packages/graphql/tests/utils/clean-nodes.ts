@@ -23,7 +23,7 @@ import type { UniqueType } from "./graphql-types";
 import { runCypher } from "./run-cypher";
 
 export async function cleanNodes(driver: Driver, labels: Array<string | UniqueType>): Promise<Result> {
-    const nodeRef = new Cypher.Node({});
+    const nodeRef = new Cypher.Node();
 
     const nodeHasLabelPredicates = labels.map((l) => {
         return nodeRef.hasLabel(`${l}`);
@@ -37,7 +37,7 @@ export async function cleanNodes(driver: Driver, labels: Array<string | UniqueTy
 }
 
 export async function cleanNodesUsingSession(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
-    const nodeRef = new Cypher.Node({});
+    const nodeRef = new Cypher.Node();
 
     const nodeHasLabelPredicates = labels.map((l) => {
         return nodeRef.hasLabel(`${l}`);

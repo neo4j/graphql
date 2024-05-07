@@ -90,8 +90,16 @@ export function translateDelete({
 
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
 
-    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE", where });
+    const matchNode = new Cypher.NamedNode(varName);
+    const matchPattern = new Cypher.Pattern(matchNode, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({
+        matchNode,
+        matchPattern,
+        node,
+        context,
+        operation: "DELETE",
+        where,
+    });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
