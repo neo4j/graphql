@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.3.5
+
+### Patch Changes
+
+-   [#5072](https://github.com/neo4j/graphql/pull/5072) [`aec402e`](https://github.com/neo4j/graphql/commit/aec402ecd552b3e68b8f73f4d1689dd91f013470) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix authorization with unions
+
 ## 5.3.4
 
 ### Patch Changes
