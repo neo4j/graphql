@@ -19,9 +19,11 @@
 
 import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { EntityTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
-import type { SchemaBuilder } from "../SchemaBuilder";
+import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import { NestedEntitySchemaTypes } from "./NestedEntityTypes";
 import type { StaticTypes } from "./StaticTypes";
@@ -62,10 +64,12 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
         return undefined;
     }
 
-    private getNodeFields(concreteEntity: ConcreteEntity): Record<string, string> {
-        return Object.fromEntries(
-            [...concreteEntity.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
+    private getNodeFields(concreteEntity: ConcreteEntity): Record<string, FieldDefinition> {
+        const entityAttributes = [...concreteEntity.attributes.values()].map(
+            (attribute) => new AttributeAdapter(attribute)
         );
+
+        return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 
     private getRelationshipFields(concreteEntity: ConcreteEntity): Record<string, ObjectTypeComposer> {

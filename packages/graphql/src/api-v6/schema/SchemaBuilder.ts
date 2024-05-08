@@ -17,9 +17,21 @@
  * limitations under the License.
  */
 
-import { type GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
+
+export type TypeDefinition = string | ObjectTypeComposer[] | ObjectTypeComposer;
+
+export type GraphQLResolver = () => any;
+
+export type FieldDefinition = {
+    resolver?: GraphQLResolver;
+    type: TypeDefinition;
+    args?: Record<string, any>;
+    deprecationReason?: string | null;
+    description?: string | null;
+};
 
 export class SchemaBuilder {
     private composer: SchemaComposer;
@@ -28,7 +40,11 @@ export class SchemaBuilder {
         this.composer = new SchemaComposer();
     }
 
-    public createObjectType(name: string, fields?: Record<string, any>, description?: string): ObjectTypeComposer {
+    public createObjectType(
+        name: string,
+        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer[] | ObjectTypeComposer>,
+        description?: string
+    ): ObjectTypeComposer {
         return this.composer.createObjectTC({
             name,
             description,
@@ -36,7 +52,11 @@ export class SchemaBuilder {
         });
     }
 
-    public getOrCreateObjectType(name: string, fields?: Record<string, any>, description?: string): ObjectTypeComposer {
+    public getOrCreateObjectType(
+        name: string,
+        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer[] | ObjectTypeComposer>,
+        description?: string
+    ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
             if (fields) {
                 tc.addFields(fields);
