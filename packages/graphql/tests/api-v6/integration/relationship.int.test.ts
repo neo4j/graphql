@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("Aura-api simple", () => {
+describe("Relationships simple", () => {
     const testHelper = new TestHelper({ cdc: false, v6Api: true });
 
     let Movie: UniqueType;
