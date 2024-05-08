@@ -31,7 +31,7 @@ import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fi
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
 import { filterTruthy } from "../../utils/utils";
-import { V6ReadOperation } from "../QueryIR/ConnectionReadOperation";
+import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
     GraphQLTree,
