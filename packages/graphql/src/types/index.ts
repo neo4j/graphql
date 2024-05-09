@@ -439,7 +439,7 @@ export type Neo4jFeaturesSettings = {
      *
      * NOTE: this will not remove user defined deprecated fields
      **/
-    removeDeprecatedFields?: boolean;
+    excludeDeprecatedFields?: boolean;
 };
 
 /** Parsed features used in context */

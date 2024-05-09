@@ -367,6 +367,7 @@ function makeAugmentedSchema({
     }
 
     const generatedTypeDefs = composer.toSDL();
+    console.log(generatedTypeDefs);
     let parsedDoc = parse(generatedTypeDefs);
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));

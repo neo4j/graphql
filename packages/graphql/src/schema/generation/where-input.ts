@@ -165,10 +165,14 @@ export function withSourceWhereInputType({
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
-    const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
+    const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives, features);
     whereInput.addFields(fields);
 
-    const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+    const connectionFields = augmentWhereInputTypeWithConnectionFields(
+        relationshipAdapter,
+        deprecatedDirectives,
+        features
+    );
     whereInput.addFields(connectionFields);
 
     // TODO: Current unions are not supported as relationship targets beyond the above fields

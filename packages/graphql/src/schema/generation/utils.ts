@@ -38,7 +38,7 @@ export function relationshipTargetHasRelationshipWithNestedOperation(
     );
 }
 
-/** Returns true if the "removeDeprecatedFields" flag is not set in the features option of Neo4jGraphQL */
+/** Returns true if the "excludeDeprecatedFields" flag is not set in the features option of Neo4jGraphQL */
 export function shouldAddDeprecatedFields(features: Neo4jFeaturesSettings | undefined): boolean {
-    return !features?.removeDeprecatedFields;
+    return !features?.excludeDeprecatedFields;
 }
