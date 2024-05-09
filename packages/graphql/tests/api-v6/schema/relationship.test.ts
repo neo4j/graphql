@@ -51,9 +51,17 @@ describe("Relationships", () => {
               pageInfo: PageInfo
             }
 
+            input ActorConnectionSort {
+              edges: ActorEdgeSort
+            }
+
             type ActorEdge {
               cursor: String
               node: Actor
+            }
+
+            input ActorEdgeSort {
+              node: ActorSort
             }
 
             type ActorMoviesConnection {
@@ -71,7 +79,11 @@ describe("Relationships", () => {
             }
 
             type ActorOperation {
-              connection: ActorConnection
+              connection(sort: [ActorConnectionSort!]): ActorConnection
+            }
+
+            input ActorSort {
+              name: SortDirection
             }
 
             type Movie {
@@ -98,13 +110,25 @@ describe("Relationships", () => {
               pageInfo: PageInfo
             }
 
+            input MovieConnectionSort {
+              edges: MovieEdgeSort
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
             }
 
+            input MovieEdgeSort {
+              node: MovieSort
+            }
+
             type MovieOperation {
-              connection: MovieConnection
+              connection(sort: [MovieConnectionSort!]): MovieConnection
+            }
+
+            input MovieSort {
+              title: SortDirection
             }
 
             type PageInfo {
@@ -115,6 +139,11 @@ describe("Relationships", () => {
             type Query {
               actors: ActorOperation
               movies: MovieOperation
+            }
+
+            enum SortDirection {
+              ASC
+              DESC
             }"
         `);
     });
@@ -156,9 +185,17 @@ describe("Relationships", () => {
               pageInfo: PageInfo
             }
 
+            input ActorConnectionSort {
+              edges: ActorEdgeSort
+            }
+
             type ActorEdge {
               cursor: String
               node: Actor
+            }
+
+            input ActorEdgeSort {
+              node: ActorSort
             }
 
             type ActorMoviesConnection {
@@ -177,7 +214,11 @@ describe("Relationships", () => {
             }
 
             type ActorOperation {
-              connection: ActorConnection
+              connection(sort: [ActorConnectionSort!]): ActorConnection
+            }
+
+            input ActorSort {
+              name: SortDirection
             }
 
             type Movie {
@@ -205,13 +246,25 @@ describe("Relationships", () => {
               pageInfo: PageInfo
             }
 
+            input MovieConnectionSort {
+              edges: MovieEdgeSort
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
             }
 
+            input MovieEdgeSort {
+              node: MovieSort
+            }
+
             type MovieOperation {
-              connection: MovieConnection
+              connection(sort: [MovieConnectionSort!]): MovieConnection
+            }
+
+            input MovieSort {
+              title: SortDirection
             }
 
             type PageInfo {
@@ -222,6 +275,11 @@ describe("Relationships", () => {
             type Query {
               actors: ActorOperation
               movies: MovieOperation
+            }
+
+            enum SortDirection {
+              ASC
+              DESC
             }"
         `);
     });

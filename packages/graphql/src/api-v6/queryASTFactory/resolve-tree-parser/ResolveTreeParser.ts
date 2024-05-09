@@ -22,6 +22,8 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { findFieldByName } from "./find-field-by-name";
 import type {
+    GraphQLConnectionArgs,
+    GraphQLSortArgument,
     GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeEdge,
@@ -70,9 +72,10 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
         const entityTypes = this.entity.types;
         const edgesResolveTree = findFieldByName(resolveTree, entityTypes.connectionType, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
+        const connectionArgs = this.parseConnectionArgs(resolveTree.args);
         return {
             alias: resolveTree.alias,
-            args: resolveTree.args,
+            args: connectionArgs,
             fields: {
                 edges: edgeResolveTree,
             },
@@ -179,6 +182,46 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
         }
         const relationshipTreeParser = new RelationshipResolveTreeParser({ entity: relationship });
         return relationshipTreeParser.parseOperation(resolveTree);
+    }
+
+    private parseConnectionArgs(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgs {
+        if (!resolveTreeArgs.sort) {
+            return {};
+        }
+
+        return {
+            sort: this.parseSort(resolveTreeArgs.sort),
+        };
+    }
+
+    private parseSort(sortArguments: { edges: { node: Record<string, any> } }[]): GraphQLSortArgument[] {
+        return sortArguments.map((sortArgument) => {
+            const edges = sortArgument.edges;
+            const node = edges.node;
+
+            const fields = Object.fromEntries(
+                Object.entries(node).map(([fieldName, resolveTreeDirection]) => {
+                    if (this.entity.hasAttribute(fieldName)) {
+                        const direction = this.parseDirection(resolveTreeDirection);
+                        return [fieldName, direction];
+                    }
+                    throw new ResolveTreeParserError(`Invalid sort field: ${fieldName}`);
+                })
+            );
+
+            return {
+                edges: {
+                    node: fields,
+                },
+            };
+        });
+    }
+
+    private parseDirection(direction: string): "ASC" | "DESC" {
+        if (direction === "ASC" || direction === "DESC") {
+            return direction;
+        }
+        throw new ResolveTreeParserError(`Invalid sort direction: ${direction}`);
     }
 }
 

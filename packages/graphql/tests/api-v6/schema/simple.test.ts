@@ -45,13 +45,25 @@ describe("Simple Aura-API", () => {
               pageInfo: PageInfo
             }
 
+            input MovieConnectionSort {
+              edges: MovieEdgeSort
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
             }
 
+            input MovieEdgeSort {
+              node: MovieSort
+            }
+
             type MovieOperation {
-              connection: MovieConnection
+              connection(sort: [MovieConnectionSort!]): MovieConnection
+            }
+
+            input MovieSort {
+              title: SortDirection
             }
 
             type PageInfo {
@@ -61,6 +73,11 @@ describe("Simple Aura-API", () => {
 
             type Query {
               movies: MovieOperation
+            }
+
+            enum SortDirection {
+              ASC
+              DESC
             }"
         `);
     });
@@ -91,13 +108,25 @@ describe("Simple Aura-API", () => {
               pageInfo: PageInfo
             }
 
+            input ActorConnectionSort {
+              edges: ActorEdgeSort
+            }
+
             type ActorEdge {
               cursor: String
               node: Actor
             }
 
+            input ActorEdgeSort {
+              node: ActorSort
+            }
+
             type ActorOperation {
-              connection: ActorConnection
+              connection(sort: [ActorConnectionSort!]): ActorConnection
+            }
+
+            input ActorSort {
+              name: SortDirection
             }
 
             type Movie {
@@ -109,13 +138,25 @@ describe("Simple Aura-API", () => {
               pageInfo: PageInfo
             }
 
+            input MovieConnectionSort {
+              edges: MovieEdgeSort
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
             }
 
+            input MovieEdgeSort {
+              node: MovieSort
+            }
+
             type MovieOperation {
-              connection: MovieConnection
+              connection(sort: [MovieConnectionSort!]): MovieConnection
+            }
+
+            input MovieSort {
+              title: SortDirection
             }
 
             type PageInfo {
@@ -126,6 +167,11 @@ describe("Simple Aura-API", () => {
             type Query {
               actors: ActorOperation
               movies: MovieOperation
+            }
+
+            enum SortDirection {
+              ASC
+              DESC
             }"
         `);
     });
@@ -143,36 +189,53 @@ describe("Simple Aura-API", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-          "schema {
-            query: Query
-          }
+            "schema {
+              query: Query
+            }
 
-          type Movie {
-            title: String
-          }
+            type Movie {
+              title: String
+            }
 
-          type MovieConnection {
-            edges: [MovieEdge]
-            pageInfo: PageInfo
-          }
+            type MovieConnection {
+              edges: [MovieEdge]
+              pageInfo: PageInfo
+            }
 
-          type MovieEdge {
-            cursor: String
-            node: Movie
-          }
+            input MovieConnectionSort {
+              edges: MovieEdgeSort
+            }
 
-          type MovieOperation {
-            connection: MovieConnection
-          }
+            type MovieEdge {
+              cursor: String
+              node: Movie
+            }
 
-          type PageInfo {
-            hasNextPage: Boolean
-            hasPreviousPage: Boolean
-          }
+            input MovieEdgeSort {
+              node: MovieSort
+            }
 
-          type Query {
-            movies: MovieOperation
-          }"
-      `);
+            type MovieOperation {
+              connection(sort: [MovieConnectionSort!]): MovieConnection
+            }
+
+            input MovieSort {
+              title: SortDirection
+            }
+
+            type PageInfo {
+              hasNextPage: Boolean
+              hasPreviousPage: Boolean
+            }
+
+            type Query {
+              movies: MovieOperation
+            }
+
+            enum SortDirection {
+              ASC
+              DESC
+            }"
+        `);
     });
 });

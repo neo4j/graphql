@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { EnumTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { SchemaBuilder } from "../SchemaBuilder";
 
@@ -31,5 +31,10 @@ export class StaticTypes {
     @Memoize()
     public get pageInfo(): ObjectTypeComposer {
         return this.schemaBuilder.createObjectType("PageInfo", { hasNextPage: "Boolean", hasPreviousPage: "Boolean" });
+    }
+
+    @Memoize()
+    public get sortDirection(): EnumTypeComposer {
+        return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);
     }
 }

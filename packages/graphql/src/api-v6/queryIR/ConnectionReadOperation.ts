@@ -53,6 +53,7 @@ export class V6ReadOperation extends Operation {
         target,
         selection,
         fields,
+        sortFields,
     }: {
         relationship?: RelationshipAdapter;
         target: ConcreteEntityAdapter;
@@ -61,6 +62,7 @@ export class V6ReadOperation extends Operation {
             node: Field[];
             edge: Field[];
         };
+        sortFields?: Array<{ node: Sort[]; edge: Sort[] }>;
     }) {
         super();
         this.relationship = relationship;
@@ -68,6 +70,7 @@ export class V6ReadOperation extends Operation {
         this.selection = selection;
         this.nodeFields = fields?.node ?? [];
         this.edgeFields = fields?.edge ?? [];
+        this.sortFields = sortFields ?? [];
     }
 
     public setNodeFields(fields: Field[]) {

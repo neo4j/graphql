@@ -18,10 +18,10 @@
  */
 
 import type { GraphQLSchema } from "graphql";
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 
-export type TypeDefinition = string | ObjectTypeComposer[] | ObjectTypeComposer;
+export type TypeDefinition = string | ListComposer<ObjectTypeComposer> | ObjectTypeComposer[] | ObjectTypeComposer;
 
 export type GraphQLResolver = () => any;
 
@@ -42,7 +42,7 @@ export class SchemaBuilder {
 
     public createObjectType(
         name: string,
-        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer[] | ObjectTypeComposer>,
+        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer | ListComposer<ObjectTypeComposer>>,
         description?: string
     ): ObjectTypeComposer {
         return this.composer.createObjectTC({
@@ -54,7 +54,7 @@ export class SchemaBuilder {
 
     public getOrCreateObjectType(
         name: string,
-        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer[] | ObjectTypeComposer>,
+        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer | ListComposer<ObjectTypeComposer>>,
         description?: string
     ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
@@ -64,6 +64,30 @@ export class SchemaBuilder {
             if (description) {
                 tc.setDescription(description);
             }
+        });
+    }
+
+    public createInputObjectType(
+        name: string,
+        fields: Record<string, InputTypeComposer | EnumTypeComposer | ListComposer<InputTypeComposer>>,
+        description?: string
+    ): InputTypeComposer {
+        return this.composer.createInputTC({
+            name,
+            description,
+            fields,
+        });
+    }
+
+    public createEnumType(name: string, values: string[], description?: string): EnumTypeComposer {
+        const enumValuesFormatted: Record<string, any> = values.reduce((acc, value) => {
+            acc[value] = { value };
+            return acc;
+        }, {});
+        return this.composer.createEnumTC({
+            name,
+            description,
+            values: enumValuesFormatted,
         });
     }
 
