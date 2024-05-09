@@ -899,55 +899,78 @@ describe("unwind-create", () => {
         );
     });
 
-    test("should create nested nodes from a sparse input", async () => {
+    test("batch create with a diverse input", async () => {
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
+        const TheatricalWork = new UniqueType("TheatricalWork");
+        const Producer = new UniqueType("Producer");
 
         const typeDefs = /* GraphQL */ `
             type ${Actor} {
                 name: String!
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                theatricalWorks: [${TheatricalWork}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
+        
             type ${Movie} {
                 id: ID!
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                producers: [${Producer}!]! @relationship(type: "PRODUCED", direction: IN)
             }
+
+            type ${TheatricalWork} {
+                id: ID! @id
+                title: String
+            }
+
+            type ${Producer} {
+                id: ID! @id
+                name: String!
+            }
+   
+            type ActedIn @relationshipProperties {
+                year: Int
+            }
+
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const id = generate({
-            charset: "alphabetic",
-        });
+        const id = "id1";
+        const id2 = "id2";
+        const id3 = "id3";
+        const id4 = "id4";
+        const id5 = "id5";
 
-        const id2 = generate({
-            charset: "alphabetic",
-        });
-        const id3 = generate({
-            charset: "alphabetic",
-        });
-        const id4 = generate({
-            charset: "alphabetic",
-        });
+        const actor1Name = "actor1Name";
+        const actor2Name = "actor2Name";
+        const actor3Name = "actor3Name";
 
-        const actor1Name = generate({
-            charset: "alphabetic",
-        });
+        const producerName = "producerName";
 
-        const actor2Name = generate({
-            charset: "alphabetic",
-        });
+        const theatricalWorkTitle = "theatricalWorkTitle";
+        const theatricalWorkDate = int(1999);
 
-        const actor3Name = generate({
-            charset: "alphabetic",
-        });
-
-        const query = /* GraphQL */ `
-            mutation($id: ID!, $id2: ID!, $id3: ID!, $id4: ID! $actor1Name: String!,  $actor2Name: String!, $actor3Name: String!) {
+        const mutation = /* GraphQL */ `
+            mutation {
                 ${Movie.operations.create}(input: [
-                    { id: $id, actors: { create: [{ node: { name: $actor1Name }}, { node: { name: $actor2Name }}] } },
-                    { id: $id2 },
-                    { id: $id3, actors: { create: [{ node: { name: $actor3Name, movies: { create: {node: { id: $id4 }}} }}] } },
+                    { id: "${id}", actors: {
+                         create: [
+                            { node: { name: "${actor1Name}", theatricalWorks: { create: { edge: { year: ${theatricalWorkDate} },  node: { title: "${theatricalWorkTitle}" }}} }},
+                            { node: { name: "${actor2Name}" }}
+                        ] 
+                    } },
+                    { id: "${id2}" },
+                    { id: "${id3}", actors: {
+                         create: [
+                            { node: { 
+                                name: "${actor3Name}",
+                                movies: { 
+                                    create: { node: { id: "${id4}" }}}
+                            }}
+                        ] 
+                    }},
+                    { id: "${id5}", producers: { create: { node: { name: "${producerName}" }} }},
                 ]) {
                     info {
                         nodesCreated
@@ -955,10 +978,18 @@ describe("unwind-create", () => {
                     }
                     ${Movie.plural} {
                         id
+                        producers {
+                            id
+                            name
+                        }
                         actors {
                             name
                             movies {
                                 id
+                            }
+                            theatricalWorks {
+                                id
+                                title
                             }
                         }
                     }
@@ -966,9 +997,7 @@ describe("unwind-create", () => {
               }
         `;
 
-        const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: { id, id2, id3, id4, actor1Name, actor2Name, actor3Name },
-        });
+        const gqlResult = await testHelper.executeGraphQL(mutation, {});
 
         expect(gqlResult.errors).toBeFalsy();
 
@@ -976,34 +1005,60 @@ describe("unwind-create", () => {
             expect.objectContaining({
                 [Movie.operations.create]: {
                     info: {
-                        nodesCreated: 7,
-                        relationshipsCreated: 4,
+                        nodesCreated: 10,
+                        relationshipsCreated: 6,
                     },
                     [Movie.plural]: expect.toIncludeSameMembers([
                         {
                             id,
+                            producers: [],
                             actors: expect.toIncludeSameMembers([
                                 {
                                     name: actor1Name,
+                                    theatricalWorks: expect.toIncludeSameMembers([
+                                        { title: theatricalWorkTitle, id: expect.any(String) },
+                                    ]),
                                     movies: expect.toIncludeSameMembers([{ id: id }]),
                                 },
                                 {
                                     name: actor2Name,
+                                    theatricalWorks: [],
                                     movies: expect.toIncludeSameMembers([{ id: id }]),
                                 },
                             ]),
                         },
-                        { id: id2, actors: [] },
+                        { id: id2, actors: [], producers: [] },
                         {
                             id: id3,
+                            producers: [],
                             actors: expect.toIncludeSameMembers([
-                                { name: actor3Name, movies: expect.toIncludeSameMembers([{ id: id3 }, { id: id4 }]) },
+                                {
+                                    name: actor3Name,
+                                    theatricalWorks: [],
+                                    movies: expect.toIncludeSameMembers([{ id: id3 }, { id: id4 }]),
+                                },
                             ]),
+                        },
+                        {
+                            id: id5,
+                            actors: [],
+                            producers: expect.toIncludeSameMembers([{ id: expect.any(String), name: producerName }]),
                         },
                     ]),
                 },
             })
         );
+
+        const countNodesQuery = await testHelper.executeCypher(
+            `
+                MATCH (m:${Movie} | ${Actor} | ${TheatricalWork} | ${Producer})
+                RETURN count(m) as count
+            `,
+            {}
+        );
+        const countNodesRes = countNodesQuery.records.map((record) => record.toObject());
+
+        expect(countNodesRes).toEqual([{ count: int(10) }]);
 
         const reFind = await testHelper.executeCypher(
             `
@@ -1016,9 +1071,19 @@ describe("unwind-create", () => {
                         MATCH (a)-[:ACTED_IN]->(m2:${Movie})
                         RETURN collect(m2 { .id }) as m2
                     }
-                    RETURN collect(a { .name, movies: m2 }) as a
+                    CALL {
+                        WITH a
+                        MATCH (a)-[ai:ACTED_IN]->(tw:${TheatricalWork})
+                        RETURN collect({edge: {year: ai.year}, node: { title: tw.title, id: tw.id } }) as tw
+                    }
+                    RETURN collect(a { .name, movies: m2, theatricalWorks: tw }) as a
                 }
-                RETURN m { .id, actors: a } as movie
+                CALL {
+                    WITH m
+                    MATCH (m)<-[:PRODUCED]-(p:${Producer})
+                    RETURN collect(p { .id, .name }) as p
+                }
+                RETURN m { .id, actors: a, producers: p } as movie
             `,
             {}
         );
@@ -1028,14 +1093,22 @@ describe("unwind-create", () => {
                 {
                     movie: expect.objectContaining({
                         id,
+                        producers: [],
                         actors: expect.toIncludeSameMembers([
                             {
                                 name: actor1Name,
-                                movies: expect.toIncludeSameMembers([{ id: id}]),
+                                theatricalWorks: [
+                                    {
+                                        edge: { year: theatricalWorkDate },
+                                        node: { title: theatricalWorkTitle, id: expect.any(String) },
+                                    },
+                                ],
+                                movies: expect.toIncludeSameMembers([{ id: id }]),
                             },
                             {
                                 name: actor2Name,
-                                movies: expect.toIncludeSameMembers([{ id: id}]),
+                                theatricalWorks: [],
+                                movies: expect.toIncludeSameMembers([{ id: id }]),
                             },
                         ]),
                     }),
@@ -1043,15 +1116,18 @@ describe("unwind-create", () => {
                 {
                     movie: expect.objectContaining({
                         id: id2,
+                        producers: [],
                         actors: [],
                     }),
                 },
                 {
                     movie: expect.objectContaining({
                         id: id3,
+                        producers: [],
                         actors: expect.toIncludeSameMembers([
                             {
                                 name: actor3Name,
+                                theatricalWorks: [],
                                 movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]),
                             },
                         ]),
@@ -1060,12 +1136,21 @@ describe("unwind-create", () => {
                 {
                     movie: expect.objectContaining({
                         id: id4,
+                        producers: [],
                         actors: expect.toIncludeSameMembers([
                             {
                                 name: actor3Name,
+                                theatricalWorks: [],
                                 movies: expect.toIncludeSameMembers([{ id: id4 }, { id: id3 }]),
                             },
                         ]),
+                    }),
+                },
+                {
+                    movie: expect.objectContaining({
+                        id: id5,
+                        producers: [{ id: expect.any(String), name: producerName }],
+                        actors: [],
                     }),
                 },
             ])
