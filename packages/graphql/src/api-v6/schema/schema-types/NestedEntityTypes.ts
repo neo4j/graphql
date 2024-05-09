@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, ListComposer, NonNullComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import type { NestedEntityTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
@@ -48,13 +49,6 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         this.relationship = relationship;
     }
 
-    protected getEdgeProperties(): ObjectTypeComposer | undefined {
-        if (this.entityTypes.propertiesType) {
-            const fields = this.getRelationshipFields(this.relationship);
-            return this.schemaBuilder.getOrCreateObjectType(this.entityTypes.propertiesType, fields);
-        }
-    }
-
     @Memoize()
     public get nodeType(): string {
         const target = this.relationship.target;
@@ -64,9 +58,22 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         return target.types.nodeType;
     }
 
-    private getRelationshipFields(relationship: Relationship): Record<string, string> {
+    protected getEdgeProperties(): ObjectTypeComposer | undefined {
+        if (this.entityTypes.propertiesType) {
+            const fields = this.getRelationshipFields();
+            return this.schemaBuilder.getOrCreateObjectType(this.entityTypes.propertiesType, fields);
+        }
+    }
+
+    protected getFields(): Attribute[] {
+        return [...this.relationship.attributes.values()];
+    }
+    protected getConnectionArgs(): { sort?: ListComposer<NonNullComposer<InputTypeComposer>> | undefined } {
+        return {};
+    }
+    private getRelationshipFields(): Record<string, string> {
         return Object.fromEntries(
-            [...relationship.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
+            [...this.relationship.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
         );
     }
 }

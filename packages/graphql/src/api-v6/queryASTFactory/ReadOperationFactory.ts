@@ -30,6 +30,7 @@ import { OperationField } from "../../translate/queryAST/ast/fields/OperationFie
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
+import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
 import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../QueryIR/ConnectionReadOperation";
 import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
@@ -49,9 +50,8 @@ export class ReadOperationFactory {
 
     public createAST({ resolveTree, entity }: { resolveTree: ResolveTree; entity: ConcreteEntity }): QueryAST {
         const parsedTree = parseResolveInfoTree({ resolveTree, entity });
-
         const operation = this.generateOperation({
-            parsedTree: parsedTree,
+            parsedTree,
             entity,
         });
         return new QueryAST(operation);
@@ -75,7 +75,9 @@ export class ReadOperationFactory {
         });
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
+        const nodeSortArgs = connectionTree.args.sort;
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
+        const sortFields = this.getSortFields(entity, nodeSortArgs);
         return new V6ReadOperation({
             target,
             selection,
@@ -83,6 +85,7 @@ export class ReadOperationFactory {
                 edge: [],
                 node: nodeFields,
             },
+            sortFields,
         });
     }
 
@@ -169,6 +172,30 @@ export class ReadOperationFactory {
         const attributeFields = this.getAttributeFields(entity, nodeResolveTree);
         const relationshipFields = this.getRelationshipFields(entity, nodeResolveTree);
         return [...attributeFields, ...relationshipFields];
+    }
+
+    private getSortFields(
+        entity: ConcreteEntity,
+        sortArguments: { edges: { node: Record<string, "ASC" | "DESC"> } }[] | undefined
+    ): { edge: PropertySort[]; node: PropertySort[] }[] {
+        if (!sortArguments) {
+            return [];
+        }
+        return sortArguments.map((sortArgument) => {
+            return {
+                edge: [],
+                node: Object.entries(sortArgument.edges.node).map(([fieldName, direction]) => {
+                    const attribute = entity.findAttribute(fieldName);
+                    if (!attribute) {
+                        throw new Error(`no filter attribute ${fieldName}`);
+                    }
+                    return new PropertySort({
+                        direction,
+                        attribute: new AttributeAdapter(attribute),
+                    });
+                }),
+            };
+        });
     }
 
     private generateRelationshipField(

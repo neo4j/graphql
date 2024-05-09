@@ -34,6 +34,18 @@ export abstract class EntityTypeNames {
         return `${this.prefix}Connection`;
     }
 
+    public get connectionSortType(): string {
+        return `${this.prefix}ConnectionSort`;
+    }
+
+    public get edgeSortType(): string {
+        return `${this.prefix}EdgeSort`;
+    }
+
+    public get nodeSortType(): string {
+        return `${this.prefix}Sort`;
+    }
+
     public get edgeType(): string {
         return `${this.prefix}Edge`;
     }
