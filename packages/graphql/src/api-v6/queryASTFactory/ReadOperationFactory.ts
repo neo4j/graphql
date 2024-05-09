@@ -77,7 +77,7 @@ export class ReadOperationFactory {
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const nodeSortArgs = connectionTree.args.sort;
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
-        const sortFields = this.getSortFields(entity, nodeSortArgs);
+        const sortInputFields = this.getSortInputFields(entity, nodeSortArgs);
         return new V6ReadOperation({
             target,
             selection,
@@ -85,7 +85,7 @@ export class ReadOperationFactory {
                 edge: [],
                 node: nodeFields,
             },
-            sortFields,
+            sortFields: sortInputFields,
         });
     }
 
@@ -174,10 +174,10 @@ export class ReadOperationFactory {
         return [...attributeFields, ...relationshipFields];
     }
 
-    private getSortFields(
+    private getSortInputFields(
         entity: ConcreteEntity,
         sortArguments: { edges: { node: Record<string, "ASC" | "DESC"> } }[] | undefined
-    ): { edge: PropertySort[]; node: PropertySort[] }[] {
+    ): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
         if (!sortArguments) {
             return [];
         }
