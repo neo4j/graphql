@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { createNodeFromEntity } from "../utils/create-node-from-entity";
+import { createNode } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
 import { AggregationOperation } from "./operations/AggregationOperation";
@@ -65,13 +65,13 @@ export class QueryAST {
         return this.operation.transpile(context);
     }
 
-    public buildQueryASTContext(
+    private buildQueryASTContext(
         neo4jGraphQLContext: Neo4jGraphQLTranslationContext,
         varName = "this"
     ): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
         const returnVariable = new Cypher.NamedVariable(varName);
-        const node = this.getTargetFromOperation(neo4jGraphQLContext, varName);
+        const node = this.getTargetFromOperation(varName);
         return new QueryASTContext({
             target: node,
             env: queryASTEnv,
@@ -80,23 +80,14 @@ export class QueryAST {
         });
     }
 
-    public getTargetFromOperation(
-        neo4jGraphQLContext: Neo4jGraphQLTranslationContext,
-        varName: string
-    ): Cypher.Node | undefined {
+    private getTargetFromOperation(varName: string): Cypher.Node | undefined {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
-            this.operation instanceof DeleteOperation
+            this.operation instanceof DeleteOperation ||
+            this.operation instanceof AggregationOperation
         ) {
-            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, varName);
-        }
-        if (this.operation instanceof AggregationOperation) {
-            return createNodeFromEntity(this.operation.entity as ConcreteEntityAdapter, neo4jGraphQLContext, varName);
-        }
-
-        if (this.operation instanceof UnwindCreateOperation) {
-            return createNodeFromEntity(this.operation.target as ConcreteEntityAdapter, neo4jGraphQLContext);
+            return createNode(varName);
         }
     }
 

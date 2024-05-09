@@ -21,7 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -173,9 +172,7 @@ export class AggregationOperation extends Operation {
                 throw new Error("No valid relationship");
             }
             return new Cypher.Pattern(context.source)
-                .withoutLabels()
-                .related(context.relationship)
-                .withDirection(context.direction)
+                .related(context.relationship, { direction: context.direction })
                 .to(context.target);
         } else {
             return new Cypher.Pattern(context.target);
@@ -184,12 +181,12 @@ export class AggregationOperation extends Operation {
 
     private createContext(parentContext: QueryASTContext) {
         if (this.entity instanceof RelationshipAdapter) {
-            const relVar = createRelationshipFromEntity(this.entity);
-            const targetNode = createNodeFromEntity(this.entity.target, parentContext.neo4jGraphQLContext);
+            const relVar = new Cypher.Relationship();
+            const targetNode = new Cypher.Node();
             const relDirection = this.entity.getCypherDirection(this.directed);
             return parentContext.push({ relationship: relVar, target: targetNode, direction: relDirection });
         } else {
-            const targetNode = createNodeFromEntity(this.entity, parentContext.neo4jGraphQLContext);
+            const targetNode = new Cypher.Node();
             return new QueryASTContext({
                 target: targetNode,
                 neo4jGraphQLContext: parentContext.neo4jGraphQLContext,

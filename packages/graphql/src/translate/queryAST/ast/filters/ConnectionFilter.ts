@@ -23,7 +23,7 @@ import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/mod
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipWhereOperator } from "../../../where/types";
 import { hasTarget } from "../../utils/context-has-target";
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import type { QueryASTContext } from "../QueryASTContext";
@@ -71,26 +71,18 @@ export class ConnectionFilter extends Filter {
         return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
-    private getTargetNode(context: QueryASTContext): Cypher.Node {
-        // if the target is an interface entity, we need to use the label predicate optimization
-        if (isInterfaceEntity(this.target)) {
-            return new Cypher.Node();
-        }
-        return createNodeFromEntity(this.target, context.neo4jGraphQLContext);
-    }
-
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        const targetNode = this.getTargetNode(context);
-        const relationship = new Cypher.Relationship({
-            type: this.relationship.type,
-        });
+        const targetNode = new Cypher.Node();
+        const targetLabels = getEntityLabels(this.target, context.neo4jGraphQLContext);
+        const relationship = new Cypher.Relationship();
 
         const pattern = new Cypher.Pattern(context.target)
-            .withoutLabels()
-            .related(relationship)
-            .withDirection(this.relationship.getCypherDirection())
-            .to(targetNode);
+            .related(relationship, {
+                type: this.relationship.type,
+                direction: this.relationship.getCypherDirection(),
+            })
+            .to(targetNode, { labels: targetLabels });
 
         const nestedContext = context.push({
             relationship,
@@ -111,16 +103,20 @@ export class ConnectionFilter extends Filter {
             return this.subqueryPredicate;
         }
 
-        const target = this.getTargetNode(queryASTContext);
-        const relationship = new Cypher.Relationship({
-            type: this.relationship.type,
-        });
+        const target = new Cypher.Node();
+        let targetLabels: string[] = [];
+        if (!isInterfaceEntity(this.target)) {
+            targetLabels = getEntityLabels(this.target, queryASTContext.neo4jGraphQLContext);
+        }
+        const relationship = new Cypher.Relationship();
 
         const pattern = new Cypher.Pattern(queryASTContext.target)
-            .withoutLabels()
-            .related(relationship)
-            .withDirection(this.relationship.getCypherDirection())
-            .to(target);
+            .related(relationship, {
+                type: this.relationship.type,
+                direction: this.relationship.getCypherDirection(),
+            })
+
+            .to(target, { labels: targetLabels });
 
         const nestedContext = queryASTContext.push({ target, relationship });
 
