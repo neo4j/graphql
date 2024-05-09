@@ -170,7 +170,9 @@ function withAggregationWhereInputType({
         OR: aggregationInput.NonNull.List,
         NOT: aggregationInput,
     });
-    aggregationInput.addFields(makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields));
+
+    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields);
+    aggregationInput.addFields(aggrFields);
     return aggregationInput;
 }
 
@@ -178,20 +180,19 @@ function makeAggregationFields(
     attributes: AttributeAdapter[],
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined
 ): InputTypeComposerFieldConfigMapDefinition {
-    const aggregationFields = attributes
-        .map((attribute) =>
-            getAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name))
-        )
-        .reduce((acc, el) => ({ ...acc, ...el }), {});
-    return aggregationFields;
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const attribute of attributes) {
+        addAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name), fields);
+    }
+    return fields;
 }
 
 // TODO: refactor this by introducing specialized Adapters
-function getAggregationFieldsByType(
+function addAggregationFieldsByType(
     attribute: AttributeAdapter,
-    directivesOnField: DirectiveNode[] | undefined
+    directivesOnField: DirectiveNode[] | undefined,
+    fields: InputTypeComposerFieldConfigMapDefinition
 ): InputTypeComposerFieldConfigMapDefinition {
-    const fields: InputTypeComposerFieldConfigMapDefinition = {};
     const deprecatedDirectives = graphqlDirectivesToCompose(
         (directivesOnField || []).filter((d) => d.name.value === DEPRECATED)
     );
