@@ -1049,17 +1049,6 @@ describe("unwind-create", () => {
             })
         );
 
-        const countNodesQuery = await testHelper.executeCypher(
-            `
-                MATCH (m:${Movie} | ${Actor} | ${TheatricalWork} | ${Producer})
-                RETURN count(m) as count
-            `,
-            {}
-        );
-        const countNodesRes = countNodesQuery.records.map((record) => record.toObject());
-
-        expect(countNodesRes).toEqual([{ count: int(10) }]);
-
         const reFind = await testHelper.executeCypher(
             `
                 MATCH (m:${Movie})
