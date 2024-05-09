@@ -108,8 +108,7 @@ describe("Plural directive", () => {
                     {
                         \\"name\\": \\"Highlander\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

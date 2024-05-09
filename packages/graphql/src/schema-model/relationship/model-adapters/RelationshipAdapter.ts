@@ -179,7 +179,7 @@ export class RelationshipAdapter {
         }
     }
 
-    private cypherDirectionFromRelDirection(): "left" | "right" {
+    public cypherDirectionFromRelDirection(): "left" | "right" {
         return this.direction === "IN" ? "left" : "right";
     }
 
@@ -300,6 +300,10 @@ export class RelationshipAdapter {
 
     public get whereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
+    public get temporalFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.typeHelper.isTemporal());
     }
 
     public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {

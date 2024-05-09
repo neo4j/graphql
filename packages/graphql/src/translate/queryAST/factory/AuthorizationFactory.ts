@@ -51,7 +51,7 @@ type AuthValidateParams = AuthParams & {
 
 export class AuthorizationFactory {
     constructor(private filterFactory: AuthFilterFactory) {}
-
+    // TODO: rename this to getProjectionAuthFilters
     public getAuthFilters({
         attributes,
         ...params

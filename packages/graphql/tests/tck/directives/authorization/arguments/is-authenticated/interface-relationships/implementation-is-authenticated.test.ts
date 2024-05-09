@@ -97,8 +97,7 @@ describe("Cypher Auth isAuthenticated", () => {
                         \\"id\\": \\"1\\",
                         \\"content\\": \\"content\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -139,8 +138,7 @@ describe("Cypher Auth isAuthenticated", () => {
                         \\"id\\": \\"1\\",
                         \\"content\\": \\"content\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

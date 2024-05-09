@@ -24,11 +24,11 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypherIfExists } from "../utils/compile-cypher";
-import { filterTruthy } from "../utils/utils";
-import { UnsupportedUnwindOptimization } from "./batch-create/types";
+import { asArray, filterTruthy } from "../utils/utils";
 import createCreateAndParams from "./create-create-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { isUnwindCreateSupported } from "./queryAST/factory/parsers/is-unwind-create-supported";
 import unwindCreate from "./unwind-create";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
@@ -43,20 +43,21 @@ export default async function translateCreate({
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
-
-    try {
-        return await unwindCreate({ context, node });
-    } catch (error) {
-        if (!(error instanceof UnsupportedUnwindOptimization)) {
-            throw error;
-        }
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!entityAdapter) {
+        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
+    const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
+    if (isSupported) {
+        return unwindCreate({ context, entityAdapter });
+    }
+    debug(`Unwind create optimization not supported: ${reason}`);
 
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     const metaNames: string[] = [];
-
+    
     // TODO: after the createCreateAndParams refactor, remove varNameStrs and only use Cypher Variables
     const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
     const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
@@ -113,10 +114,6 @@ export default async function translateCreate({
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
-    }
-    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!entityAdapter) {
-        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
     const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({

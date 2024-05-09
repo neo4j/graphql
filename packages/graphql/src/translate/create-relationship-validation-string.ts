@@ -21,7 +21,7 @@ import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
-function createRelationshipValidationString({
+export function createRelationshipValidationString({
     node,
     context,
     varName,
@@ -91,5 +91,3 @@ function createRelationshipValidationString({
 
     return strs.join("\n");
 }
-
-export default createRelationshipValidationString;
