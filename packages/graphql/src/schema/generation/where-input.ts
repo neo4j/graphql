@@ -154,11 +154,13 @@ export function withSourceWhereInputType({
     composer,
     deprecatedDirectives,
     userDefinedDirectivesOnTargetFields,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
@@ -179,6 +181,7 @@ export function withSourceWhereInputType({
         entityAdapter: relationshipTarget,
         composer: composer,
         userDefinedDirectivesOnTargetFields,
+        features,
     });
 
     if (relationshipAdapter.isFilterableByAggregate()) {
