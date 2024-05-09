@@ -18,7 +18,6 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNode } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
@@ -67,11 +66,11 @@ export class QueryAST {
 
     private buildQueryASTContext(
         neo4jGraphQLContext: Neo4jGraphQLTranslationContext,
-        varName = "this"
+        varName?: string
     ): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
-        const returnVariable = new Cypher.NamedVariable(varName);
         const node = this.getTargetFromOperation(varName);
+        const returnVariable = new Cypher.NamedVariable(varName ?? "this");
         return new QueryASTContext({
             target: node,
             env: queryASTEnv,
@@ -80,12 +79,13 @@ export class QueryAST {
         });
     }
 
-    private getTargetFromOperation(varName: string): Cypher.Node | undefined {
+    private getTargetFromOperation(varName?: string): Cypher.Node | undefined {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
             this.operation instanceof DeleteOperation ||
-            this.operation instanceof AggregationOperation
+            this.operation instanceof AggregationOperation ||
+            this.operation instanceof UnwindCreateOperation
         ) {
             return createNode(varName);
         }

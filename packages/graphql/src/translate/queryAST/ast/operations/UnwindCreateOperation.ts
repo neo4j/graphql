@@ -22,7 +22,7 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { createRelationshipValidationClauses } from "../../../create-relationship-validation-clauses";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { assertIsConcreteEntity } from "../../utils/is-concrete-entity";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -109,7 +109,9 @@ export class UnwindCreateOperation extends MutationOperation {
         });
         const unwindClause = new Cypher.Unwind([this.argumentToUnwind, this.unwindVariable]);
 
-        const createClause = new Cypher.Create(nestedContext.target);
+        const createClause = new Cypher.Create(
+            new Cypher.Pattern(nestedContext.target, { labels: getEntityLabels(target, context.neo4jGraphQLContext) })
+        );
         const setSubqueries: Cypher.Clause[] = [];
         const mergeClause: Cypher.Merge | undefined = this.getMergeClause(nestedContext);
         for (const field of this.inputFields.values()) {
@@ -172,11 +174,11 @@ export class UnwindCreateOperation extends MutationOperation {
 
             return new Cypher.Merge(
                 new Cypher.Pattern(context.source)
-                    .withoutLabels()
-                    .related(context.relationship)
-                    .withDirection(this.target.cypherDirectionFromRelDirection())
+                    .related(context.relationship, {
+                        type: this.target.type,
+                        direction: this.target.cypherDirectionFromRelDirection(),
+                    })
                     .to(context.target)
-                    .withoutLabels()
             );
         }
     }
@@ -190,18 +192,18 @@ export class UnwindCreateOperation extends MutationOperation {
         return this.target;
     }
 
-    private getNestedContext(context: QueryASTContext): QueryASTContext {
+    protected getNestedContext(context: QueryASTContext): QueryASTContext {
         if (this.target instanceof RelationshipAdapter) {
-            const nestedTarget = this.target.target;
-            assertIsConcreteEntity(nestedTarget);
-            const nestedTargetNode = createNodeFromEntity(nestedTarget, context.neo4jGraphQLContext);
-            const relationship = createRelationshipFromEntity(this.target);
-
-            return context.push({
-                target: nestedTargetNode,
+            const target = new Cypher.Node();
+            const relationship = new Cypher.Relationship();
+            const nestedContext = context.push({
+                target,
                 relationship,
             });
+
+            return nestedContext;
         }
+
         return context;
     }
 

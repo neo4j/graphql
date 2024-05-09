@@ -23,7 +23,7 @@ import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapter
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../utils/utils";
-import { createNodeFromEntity } from "./queryAST/utils/create-node-from-entity";
+import { getEntityLabels } from "./queryAST/utils/create-node-from-entity";
 import { isInterfaceEntity } from "./queryAST/utils/is-interface-entity";
 import { isUnionEntity } from "./queryAST/utils/is-union-entity";
 
@@ -47,11 +47,8 @@ export function createRelationshipValidationClauses({
             if (isInterfaceEntity(target) || isUnionEntity(target)) {
                 return;
             }
-            const relVarnameCypher = new Cypher.Relationship( {
-                type: relationship.type,
-            });
-            
-            const direction = relationship.getCypherDirection();
+            const relVarnameCypher = new Cypher.Relationship();
+
             const predicateAndMessage = getCardinalityPredicateAndMessage(
                 relationship,
                 entity,
@@ -63,15 +60,14 @@ export function createRelationshipValidationClauses({
             const [predicate, errorMsg] = predicateAndMessage;
             const cVariable = new NamedVariable("c");
             const predicateCypher = Cypher.not(predicate);
-            const cypherNodeTarget = createNodeFromEntity(target, context);
             const returnVar = relationship.isList ? Cypher.collect(cVariable) : cVariable;
             const match = new Cypher.Match(
                 new Cypher.Pattern(varName)
-                    .withoutLabels()
-                    .related(relVarnameCypher)
-                    .withDirection(direction)
-                    .to(cypherNodeTarget)
-                    .withoutVariable()
+                    .related(relVarnameCypher, {
+                        type: relationship.type,
+                        direction: relationship.getCypherDirection(),
+                    })
+                    .to({ labels: getEntityLabels(target, context) })
             )
                 .with([Cypher.count(relVarnameCypher), cVariable])
                 .where(Cypher.apoc.util.validatePredicate(predicateCypher, errorMsg))
