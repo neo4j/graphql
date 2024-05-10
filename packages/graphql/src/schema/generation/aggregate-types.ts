@@ -213,7 +213,7 @@ function addAggregationFieldsByType(
     );
     // IF deprecated flag
     if (attribute.typeHelper.isID()) {
-        if (shouldAddDeprecatedFields(features)) {
+        if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
             fields[`${attribute.name}_EQUAL`] = {
                 type: GraphQLID,
                 directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
@@ -223,7 +223,7 @@ function addAggregationFieldsByType(
     }
     if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
                 fields[`${attribute.name}_${operator}`] = {
                     type: `${operator === "EQUAL" ? GraphQLString : GraphQLInt}`,
                     directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
@@ -262,7 +262,7 @@ function addAggregationFieldsByType(
         // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
         // String uses avg(size())
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
                 fields[`${attribute.name}_${operator}`] = {
                     type: attribute.getTypeName(),
                     directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
@@ -292,7 +292,7 @@ function addAggregationFieldsByType(
         return fields;
     }
     for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
-        if (shouldAddDeprecatedFields(features)) {
+        if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
             fields[`${attribute.name}_${operator}`] = {
                 type: attribute.getTypeName(),
                 directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],

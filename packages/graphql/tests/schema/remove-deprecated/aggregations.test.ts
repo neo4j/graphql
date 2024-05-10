@@ -42,7 +42,13 @@ describe("Remove deprecated fields for aggregations", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                excludeDeprecatedFields: true,
+                excludeDeprecatedFields: {
+                    bookmark: true,
+                    negationFilters: true,
+                    arrayFilters: true,
+                    stringAggregation: true,
+                    aggregationFilters: true,
+                },
             },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -401,7 +407,18 @@ describe("Remove deprecated fields for aggregations", () => {
                 someDuration: Duration
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { excludeDeprecatedFields: true } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                excludeDeprecatedFields: {
+                    bookmark: true,
+                    negationFilters: true,
+                    arrayFilters: true,
+                    stringAggregation: true,
+                    aggregationFilters: true,
+                },
+            },
+        });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

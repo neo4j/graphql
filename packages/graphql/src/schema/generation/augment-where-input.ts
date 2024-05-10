@@ -49,7 +49,7 @@ function augmentWhereInputType({
         return fields;
     }
 
-    if (shouldAddDeprecatedFields(features)) {
+    if (shouldAddDeprecatedFields(features, "arrayFilters")) {
         fields[fieldName] = {
             type: whereType,
         };
@@ -67,7 +67,7 @@ function augmentWhereInputType({
                 description: filterField.description,
             };
 
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "arrayFilters")) {
                 // TODO: are these deprecations still relevant?
                 // only adding these for the deprecation message. If no deprecation anymore, delete them.
                 fields[fieldName] = {

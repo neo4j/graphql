@@ -38,7 +38,12 @@ export function relationshipTargetHasRelationshipWithNestedOperation(
     );
 }
 
-/** Returns true if the "excludeDeprecatedFields" flag is not set in the features option of Neo4jGraphQL */
-export function shouldAddDeprecatedFields(features: Neo4jFeaturesSettings | undefined): boolean {
-    return !features?.excludeDeprecatedFields;
+type DeprecationOptions = Exclude<Neo4jFeaturesSettings["excludeDeprecatedFields"], undefined>;
+
+/** Returns true if the "excludeDeprecatedFields" flag is not set in the features option of Neo4jGraphQL for the chosen deprecation type */
+export function shouldAddDeprecatedFields(
+    features: Neo4jFeaturesSettings | undefined,
+    deprecation: keyof DeprecationOptions
+): boolean {
+    return !features?.excludeDeprecatedFields?.[deprecation];
 }

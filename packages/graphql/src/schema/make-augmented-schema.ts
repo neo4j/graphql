@@ -75,7 +75,7 @@ import { filterTruthy } from "../utils/utils";
 import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
-import { deprecationMap } from "./deprecation-map";
+import { bookmarkDeprecationMap } from "./deprecation-map";
 import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
@@ -152,10 +152,10 @@ function makeAugmentedSchema({
     }
 
     // Loop over all entries in the deprecation map and add field deprecations to all types in the map.
-    for (const [typeName, deprecatedFields] of deprecationMap) {
+    for (const [typeName, deprecatedFields] of bookmarkDeprecationMap) {
         const typeComposer = composer.getOTC(typeName);
 
-        if (shouldAddDeprecatedFields(features)) {
+        if (shouldAddDeprecatedFields(features, "bookmark")) {
             typeComposer.deprecateFields(
                 deprecatedFields.reduce((acc, { field, reason }) => ({ ...acc, [field]: reason }), {})
             );

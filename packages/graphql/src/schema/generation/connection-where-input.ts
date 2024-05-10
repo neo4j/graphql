@@ -99,7 +99,7 @@ export function withConnectionWhereInputType({
         node: targetEntity.operations.whereInputTypeName,
     });
 
-    if (shouldAddDeprecatedFields(features)) {
+    if (shouldAddDeprecatedFields(features, "negationFilters")) {
         connectionWhereInputType.addFields({
             node_NOT: {
                 type: targetEntity.operations.whereInputTypeName,
@@ -112,7 +112,7 @@ export function withConnectionWhereInputType({
             edge: relationshipAdapter.operations.whereInputTypeName,
         });
 
-        if (shouldAddDeprecatedFields(features)) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             connectionWhereInputType.addFields({
                 edge_NOT: {
                     type: relationshipAdapter.operations.whereInputTypeName,

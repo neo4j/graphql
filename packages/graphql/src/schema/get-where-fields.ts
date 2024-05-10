@@ -74,7 +74,7 @@ function getWhereFields({
                 directives: deprecatedDirectives,
             };
 
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
                 res[`${f.fieldName}_NOT`] = {
                     type: f.typeMeta.input.where.pretty,
                     directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -90,7 +90,7 @@ function getWhereFields({
                     type: f.typeMeta.input.where.type,
                     directives: deprecatedDirectives,
                 };
-                if (shouldAddDeprecatedFields(features)) {
+                if (shouldAddDeprecatedFields(features, "negationFilters")) {
                     res[`${f.fieldName}_NOT_INCLUDES`] = {
                         type: f.typeMeta.input.where.type,
                         directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -103,7 +103,7 @@ function getWhereFields({
                 type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
                 directives: deprecatedDirectives,
             };
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
                 res[`${f.fieldName}_NOT_IN`] = {
                     type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
                     directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -160,7 +160,7 @@ function getWhereFields({
                     res[`${f.fieldName}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
                 });
 
-                if (shouldAddDeprecatedFields(features)) {
+                if (shouldAddDeprecatedFields(features, "negationFilters")) {
                     stringWhereOperatorsNegate.forEach((comparator) => {
                         res[`${f.fieldName}${comparator}`] = {
                             type: f.typeMeta.name,
@@ -215,7 +215,7 @@ export function getWhereFieldsForAttributes({
             directives: deprecatedDirectives,
         };
 
-        if (shouldAddDeprecatedFields(features)) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             result[`${field.name}_NOT`] = {
                 type: field.getInputTypeNames().where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -234,7 +234,7 @@ export function getWhereFieldsForAttributes({
                 type: field.getInputTypeNames().where.type,
                 directives: deprecatedDirectives,
             };
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
                 result[`${field.name}_NOT_INCLUDES`] = {
                     type: field.getInputTypeNames().where.type,
                     directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -248,7 +248,7 @@ export function getWhereFieldsForAttributes({
             type: field.getFilterableInputTypeName(),
             directives: deprecatedDirectives,
         };
-        if (shouldAddDeprecatedFields(features)) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             result[`${field.name}_NOT_IN`] = {
                 type: field.getFilterableInputTypeName(),
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -302,7 +302,7 @@ export function getWhereFieldsForAttributes({
                 result[`${field.name}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
             });
 
-            if (shouldAddDeprecatedFields(features)) {
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
                 ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"].forEach((comparator) => {
                     result[`${field.name}${comparator}`] = {
                         type: field.getInputTypeNames().where.type,
