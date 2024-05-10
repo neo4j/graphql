@@ -84,6 +84,7 @@ import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
@@ -153,9 +154,14 @@ function makeAugmentedSchema({
     // Loop over all entries in the deprecation map and add field deprecations to all types in the map.
     for (const [typeName, deprecatedFields] of deprecationMap) {
         const typeComposer = composer.getOTC(typeName);
-        typeComposer.deprecateFields(
-            deprecatedFields.reduce((acc, { field, reason }) => ({ ...acc, [field]: reason }), {})
-        );
+
+        if (shouldAddDeprecatedFields(features)) {
+            typeComposer.deprecateFields(
+                deprecatedFields.reduce((acc, { field, reason }) => ({ ...acc, [field]: reason }), {})
+            );
+        } else {
+            typeComposer.removeField(deprecatedFields.map((field) => field.field));
+        }
     }
 
     // TODO: ideally move these in getSubgraphSchema()
@@ -367,7 +373,6 @@ function makeAugmentedSchema({
     }
 
     const generatedTypeDefs = composer.toSDL();
-    console.log(generatedTypeDefs);
     let parsedDoc = parse(generatedTypeDefs);
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));

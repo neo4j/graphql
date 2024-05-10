@@ -329,7 +329,12 @@ function createRelationshipFieldsForTarget({
     );
 
     composeNode.addFields(
-        augmentObjectOrInterfaceTypeWithConnectionField(relationshipAdapter, userDefinedFieldDirectives, composer)
+        augmentObjectOrInterfaceTypeWithConnectionField(
+            relationshipAdapter,
+            userDefinedFieldDirectives,
+            composer,
+            features
+        )
     );
 
     withRelationInputType({
@@ -356,12 +361,14 @@ function createRelationshipFieldsForTarget({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
+        features,
     });
 
     augmentDisconnectInputTypeWithDisconnectFieldInput({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
+        features,
     });
 
     augmentUpdateInputTypeWithUpdateFieldInput({
@@ -369,5 +376,6 @@ function createRelationshipFieldsForTarget({
         composer,
         deprecatedDirectives,
         userDefinedFieldDirectives,
+        features,
     });
 }

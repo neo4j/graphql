@@ -69,7 +69,6 @@ describe("Comments", () => {
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
             type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -86,7 +85,6 @@ describe("Comments", () => {
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
             type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -257,7 +255,6 @@ describe("Comments", () => {
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
             type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -361,7 +358,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -375,7 +371,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -437,7 +432,6 @@ describe("Comments", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: ActorWhere
-                  node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -638,7 +632,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -789,9 +782,7 @@ describe("Comments", () => {
                   NOT: ActorActedInConnectionWhere
                   OR: [ActorActedInConnectionWhere!]
                   edge: ActedInWhere
-                  edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   node: ProductionWhere
-                  node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input ActorActedInCreateFieldInput {
@@ -970,7 +961,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -989,7 +979,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -1265,7 +1254,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -1316,7 +1304,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -1330,7 +1317,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -1495,7 +1481,6 @@ describe("Comments", () => {
                   NOT: MovieSearchGenreConnectionWhere
                   OR: [MovieSearchGenreConnectionWhere!]
                   node: GenreWhere
-                  node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieSearchGenreCreateFieldInput {
@@ -1538,7 +1523,6 @@ describe("Comments", () => {
                   NOT: MovieSearchMovieConnectionWhere
                   OR: [MovieSearchMovieConnectionWhere!]
                   node: MovieWhere
-                  node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieSearchMovieCreateFieldInput {
@@ -1693,7 +1677,6 @@ describe("Comments", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
