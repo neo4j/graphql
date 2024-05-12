@@ -10975,11 +10975,11 @@ __metadata:
   linkType: hard
 
 "graphql-compose@npm:^9.0.8":
-  version: 9.0.10
-  resolution: "graphql-compose@npm:9.0.10"
+  version: 9.0.11
+  resolution: "graphql-compose@npm:9.0.11"
   dependencies:
     graphql-type-json: "npm:0.3.2"
-  checksum: 10c0/83724bf8ee9e7da8d040f1b4d580a5f75041529f7c4aabdaad9fcc8a2eba0854c1612aed7a04665e5620a37b8baacc75808f1b6e34aa55785884aa2091bd0489
+  checksum: 10c0/318ec98a8b149f4e27feca1b805069a2c241393e6c1dd95957222c6cdff5d804ccdc6dd450ec040f35c8992a87e282cfb6780259e070c1cb8a8bef54de50c220
   languageName: node
   linkType: hard
 
