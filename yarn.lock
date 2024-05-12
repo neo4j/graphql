@@ -17716,7 +17716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:5.0.7":
+"rimraf@npm:5.0.7, rimraf@npm:^5.0.0":
   version: 5.0.7
   resolution: "rimraf@npm:5.0.7"
   dependencies:
@@ -17735,17 +17735,6 @@ __metadata:
   bin:
     rimraf: bin.js
   checksum: 10c0/9cb7757acb489bd83757ba1a274ab545eafd75598a9d817e0c3f8b164238dd90eba50d6b848bd4dcc5f3040912e882dc7ba71653e35af660d77b25c381d402e8
-  languageName: node
-  linkType: hard
-
-"rimraf@npm:^5.0.0":
-  version: 5.0.6
-  resolution: "rimraf@npm:5.0.6"
-  dependencies:
-    glob: "npm:^10.3.7"
-  bin:
-    rimraf: dist/esm/bin.mjs
-  checksum: 10c0/7e750e2d9073c058895c23622fdde6419acbdfdbba2f1baf4c14ce44c3424d1a83a513955ed32161fc13df54ab4182ceda1ca448720ceb6d834020b5ca0a7717
   languageName: node
   linkType: hard
 
