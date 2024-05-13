@@ -98,8 +98,8 @@ describe("@alias directive", () => {
             },
         });
     });
-    // this test fail, I believe is because the numeric resolver was not added on the relationship properties
-    test.skip("Query node and relationship with alias", async () => {
+
+    test("Query node and relationship with alias", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {

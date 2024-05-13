@@ -20,10 +20,12 @@
 import type { InputTypeComposer, ListComposer, NonNullComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { NestedEntityTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
-import type { SchemaBuilder } from "../SchemaBuilder";
+import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import type { StaticTypes } from "./StaticTypes";
 
@@ -71,9 +73,11 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
     protected getConnectionArgs(): { sort?: ListComposer<NonNullComposer<InputTypeComposer>> | undefined } {
         return {};
     }
-    private getRelationshipFields(): Record<string, string> {
-        return Object.fromEntries(
-            [...this.relationship.attributes.values()].map((attribute) => [attribute.name, attribute.type.name])
+    private getRelationshipFields(): Record<string, FieldDefinition> {
+        const entityAttributes = [...this.relationship.attributes.values()].map(
+            (attribute) => new AttributeAdapter(attribute)
         );
+
+        return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 }
