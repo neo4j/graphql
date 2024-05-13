@@ -30,15 +30,19 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { DEPRECATE_NOT } from "../constants";
+import { shouldAddDeprecatedFields } from "./utils";
 
 // tODO: refactor into smaller fns for unions, like disconnect-input
 export function makeConnectionWhereInputType({
     relationshipAdapter,
     composer,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer {
     const typeName = relationshipAdapter.operations.getConnectionWhereTypename();
     if (composer.has(typeName)) {
@@ -52,6 +56,7 @@ export function makeConnectionWhereInputType({
                 relationshipAdapter,
                 memberEntity: concreteEntity,
                 composer,
+                features,
             });
 
             connectionWhereITC.addFields({
@@ -63,6 +68,7 @@ export function makeConnectionWhereInputType({
     return withConnectionWhereInputType({
         relationshipAdapter,
         composer,
+        features,
     });
 }
 
@@ -70,10 +76,12 @@ export function withConnectionWhereInputType({
     relationshipAdapter,
     memberEntity,
     composer,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     memberEntity?: ConcreteEntityAdapter;
     composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer {
     const typeName = relationshipAdapter.operations.getConnectionWhereTypename(memberEntity);
     if (composer.has(typeName)) {
@@ -89,20 +97,31 @@ export function withConnectionWhereInputType({
         OR: connectionWhereInputType.NonNull.List,
         NOT: connectionWhereInputType,
         node: targetEntity.operations.whereInputTypeName,
-        node_NOT: {
-            type: targetEntity.operations.whereInputTypeName,
-            directives: [DEPRECATE_NOT],
-        },
     });
-    if (relationshipAdapter.hasAnyProperties) {
+
+    if (shouldAddDeprecatedFields(features, "negationFilters")) {
         connectionWhereInputType.addFields({
-            edge: relationshipAdapter.operations.whereInputTypeName,
-            edge_NOT: {
-                type: relationshipAdapter.operations.whereInputTypeName,
+            node_NOT: {
+                type: targetEntity.operations.whereInputTypeName,
                 directives: [DEPRECATE_NOT],
             },
         });
     }
+    if (relationshipAdapter.hasAnyProperties) {
+        connectionWhereInputType.addFields({
+            edge: relationshipAdapter.operations.whereInputTypeName,
+        });
+
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
+            connectionWhereInputType.addFields({
+                edge_NOT: {
+                    type: relationshipAdapter.operations.whereInputTypeName,
+                    directives: [DEPRECATE_NOT],
+                },
+            });
+        }
+    }
+
     return connectionWhereInputType;
 }
 

@@ -435,6 +435,17 @@ export type Neo4jFeaturesSettings = {
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
     subscriptions?: Neo4jGraphQLSubscriptionsEngine | boolean;
+    /** If set to `true`, removes `@neo4j/graphql` fields that are marked as deprecated to reduce schema size.
+     *
+     * NOTE: this will not remove user defined deprecated fields
+     **/
+    excludeDeprecatedFields?: {
+        bookmark?: boolean;
+        negationFilters?: boolean;
+        arrayFilters?: boolean;
+        stringAggregation?: boolean;
+        aggregationFilters?: boolean;
+    };
 };
 
 /** Parsed features used in context */

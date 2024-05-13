@@ -21,7 +21,7 @@ import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { UpdateInfo } from "../graphql/objects/UpdateInfo";
 
-export const deprecationMap = new Map<
+export const bookmarkDeprecationMap = new Map<
     string,
     {
         field: string;
