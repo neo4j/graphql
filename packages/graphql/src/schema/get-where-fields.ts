@@ -187,7 +187,7 @@ export function getWhereFieldsForAttributes({
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
-    features?: Neo4jFeaturesSettings;
+    features: Neo4jFeaturesSettings | undefined;
 }): Record<
     string,
     {
@@ -202,7 +202,6 @@ export function getWhereFieldsForAttributes({
             directives: Directive[];
         }
     > = {};
-
     // Add the where fields for each attribute
     for (const field of attributes) {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives?.get(field.name);

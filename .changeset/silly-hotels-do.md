@@ -11,7 +11,13 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     features: {
-        excludeDeprecatedFields: true,
+        excludeDeprecatedFields: {
+            bookmark: true,
+            negationFilters: true,
+            arrayFilters: true,
+            stringAggregation: true,
+            aggregationFilters: true,
+        },
     },
 });
 ```

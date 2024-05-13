@@ -254,6 +254,7 @@ function makeAugmentedSchema({
                 propagatedDirectivesForNode,
                 aggregationTypesMapper,
                 seenRelationshipPropertiesTypes,
+                features,
             });
             const connectionFields = createConnectionFields({
                 entityAdapter: interfaceEntityAdapter,
@@ -657,7 +658,7 @@ function generateInterfaceObjectType({
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
-    features?: Neo4jFeaturesSettings;
+    features: Neo4jFeaturesSettings | undefined;
     subgraph?: Subgraph;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     userDefinedInterfaceDirectives: DirectiveNode[];
