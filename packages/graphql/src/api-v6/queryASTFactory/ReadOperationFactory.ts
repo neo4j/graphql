@@ -35,10 +35,12 @@ import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
+    GraphQLSortArgument,
     GraphQLTree,
     GraphQLTreeEdgeProperties,
     GraphQLTreeNode,
     GraphQLTreeReadOperation,
+    GraphQLTreeSortElement,
 } from "./resolve-tree-parser/graphql-tree";
 
 export class ReadOperationFactory {
@@ -75,9 +77,12 @@ export class ReadOperationFactory {
         });
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
-        const nodeSortArgs = connectionTree.args.sort;
+        const sortArgument = connectionTree.args.sort;
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
-        const sortInputFields = this.getSortInputFields(entity, nodeSortArgs);
+        const sortInputFields = this.getSortInputFields({
+            entity,
+            sortArgument,
+        });
         return new V6ReadOperation({
             target,
             selection,
@@ -115,8 +120,12 @@ export class ReadOperationFactory {
         // Fields
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const propertiesResolveTree = connectionTree.fields.edges?.fields.properties;
-        const nodeFields = this.getNodeFields(relationshipAdapter.target.entity, nodeResolveTree);
+        const relTarget = relationshipAdapter.target.entity;
+        const nodeFields = this.getNodeFields(relTarget, nodeResolveTree);
         const edgeFields = this.getAttributeFields(relationship, propertiesResolveTree);
+
+        const sortArgument = connectionTree.args.sort;
+        const sortInputFields = this.getSortInputFields({ entity: relTarget, relationship, sortArgument });
 
         return new V6ReadOperation({
             target: relationshipAdapter.target,
@@ -125,6 +134,7 @@ export class ReadOperationFactory {
                 edge: edgeFields,
                 node: nodeFields,
             },
+            sortFields: sortInputFields,
         });
     }
 
@@ -147,7 +157,7 @@ export class ReadOperationFactory {
                         attribute: new AttributeAdapter(attribute),
                     });
                 }
-                return undefined;
+                return;
             })
         );
     }
@@ -174,29 +184,50 @@ export class ReadOperationFactory {
         return [...attributeFields, ...relationshipFields];
     }
 
-    private getSortInputFields(
-        entity: ConcreteEntity,
-        sortArguments: { edges: { node: Record<string, "ASC" | "DESC"> } }[] | undefined
-    ): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
-        if (!sortArguments) {
+    private getSortInputFields({
+        entity,
+        relationship,
+        sortArgument,
+    }: {
+        entity: ConcreteEntity;
+        relationship?: Relationship;
+        sortArgument: GraphQLSortArgument | undefined;
+    }): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
+        if (!sortArgument) {
             return [];
         }
-        return sortArguments.map((sortArgument) => {
+        return sortArgument.edges.map((edge): { edge: PropertySort[]; node: PropertySort[] } => {
+            const nodeSortFields = edge.node ? this.getPropertiesSort({ target: entity, sortArgument: edge.node }) : [];
+            const edgeSortFields =
+                edge.properties && relationship
+                    ? this.getPropertiesSort({ target: relationship, sortArgument: edge.properties })
+                    : [];
             return {
-                edge: [],
-                node: Object.entries(sortArgument.edges.node).map(([fieldName, direction]) => {
-                    const attribute = entity.findAttribute(fieldName);
-                    if (!attribute) {
-                        throw new Error(`no filter attribute ${fieldName}`);
-                    }
-                    return new PropertySort({
-                        direction,
-                        attribute: new AttributeAdapter(attribute),
-                    });
-                }),
+                edge: edgeSortFields,
+                node: nodeSortFields,
             };
         });
     }
+
+    private getPropertiesSort({
+        target,
+        sortArgument,
+    }: {
+        target: ConcreteEntity | Relationship;
+        sortArgument: GraphQLTreeSortElement;
+    }): PropertySort[] {
+        return Object.entries(sortArgument).map(([fieldName, direction]) => {
+            const attribute = target.findAttribute(fieldName);
+            if (!attribute) {
+                throw new Error(`Attribute not found: ${fieldName}`);
+            }
+            return new PropertySort({
+                direction,
+                attribute: new AttributeAdapter(attribute),
+            });
+        });
+    }
+
 
     private generateRelationshipField(
         resolveTree: GraphQLTreeReadOperation,

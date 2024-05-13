@@ -18,10 +18,26 @@
  */
 
 import type { GraphQLSchema } from "graphql";
-import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
+import type {
+    EnumTypeComposer,
+    InputTypeComposer,
+    ListComposer,
+    NonNullComposer,
+    ObjectTypeComposer,
+} from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 
-export type TypeDefinition = string | ListComposer<ObjectTypeComposer> | ObjectTypeComposer[] | ObjectTypeComposer;
+export type TypeDefinition = string | ListComposer<ObjectTypeComposer> | ObjectTypeComposer;
+
+type ObjectOrInputTypeComposer = ObjectTypeComposer | InputTypeComposer;
+
+type ListOrNullComposer<T extends ObjectOrInputTypeComposer> =
+    | ListComposer<T>
+    | ListComposer<NonNullComposer<T>>
+    | NonNullComposer<T>
+    | NonNullComposer<ListComposer<T>>;
+
+type WrappedComposer<T extends ObjectOrInputTypeComposer> = T | ListOrNullComposer<T>;
 
 export type GraphQLResolver = () => any;
 
@@ -42,7 +58,7 @@ export class SchemaBuilder {
 
     public createObjectType(
         name: string,
-        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer | ListComposer<ObjectTypeComposer>>,
+        fields?: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
         description?: string
     ): ObjectTypeComposer {
         return this.composer.createObjectTC({
@@ -54,7 +70,7 @@ export class SchemaBuilder {
 
     public getOrCreateObjectType(
         name: string,
-        fields?: Record<string, FieldDefinition | string | ObjectTypeComposer | ListComposer<ObjectTypeComposer>>,
+        fields?: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
         description?: string
     ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
@@ -69,13 +85,28 @@ export class SchemaBuilder {
 
     public createInputObjectType(
         name: string,
-        fields: Record<string, InputTypeComposer | EnumTypeComposer | ListComposer<InputTypeComposer>>,
+        fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>,
         description?: string
     ): InputTypeComposer {
         return this.composer.createInputTC({
             name,
             description,
             fields,
+        });
+    }
+
+    public getOrCreateInputObjectType(
+        name: string,
+        fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>,
+        description?: string
+    ): InputTypeComposer {
+        return this.composer.getOrCreateITC(name, (itc) => {
+            if (fields) {
+                itc.addFields(fields);
+            }
+            if (description) {
+                itc.setDescription(description);
+            }
         });
     }
 

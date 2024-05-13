@@ -27,7 +27,7 @@ describe("Sort", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
-                title: String!
+                title: String
                 ratings: Int!
             }
         `;
@@ -76,7 +76,7 @@ describe("Sort", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    connection(sort: [{ edges: { node: { title: DESC } } }, { edges: { node: { ratings: DESC } } }]) {
+                    connection(sort: { edges: [{ node: { title: DESC } }, { node: { ratings: DESC } }] }) {
                         edges {
                             node {
                                 title

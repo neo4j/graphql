@@ -290,7 +290,7 @@ export class V6ReadOperation extends Operation {
     private generateSortAndPaginationClause(context: QueryASTContext<Cypher.Node>): Cypher.With | undefined {
         const shouldGenerateSortWith = this.pagination || this.sortFields.length > 0;
         if (!shouldGenerateSortWith) {
-            return undefined;
+            return;
         }
         const paginationWith = new Cypher.With("*");
         this.addPaginationSubclauses(paginationWith);

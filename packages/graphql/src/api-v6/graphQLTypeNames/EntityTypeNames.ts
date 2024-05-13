@@ -42,10 +42,6 @@ export abstract class EntityTypeNames {
         return `${this.prefix}EdgeSort`;
     }
 
-    public get nodeSortType(): string {
-        return `${this.prefix}Sort`;
-    }
-
     public get edgeType(): string {
         return `${this.prefix}Edge`;
     }
@@ -67,4 +63,6 @@ export abstract class EntityTypeNames {
     }
 
     public abstract get propertiesType(): string | undefined;
+    public abstract get propertiesSortType(): string | undefined;
+    public abstract get nodeSortType(): string;
 }

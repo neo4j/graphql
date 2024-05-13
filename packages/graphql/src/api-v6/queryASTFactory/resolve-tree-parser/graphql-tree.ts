@@ -38,7 +38,7 @@ export interface GraphQLTreeConnection extends GraphQLTreeElement {
 }
 
 export interface GraphQLConnectionArgs {
-    sort?: GraphQLSortArgument[];
+    sort?: GraphQLSortArgument;
 }
 
 export interface GraphQLTreeEdge extends GraphQLTreeElement {
@@ -61,7 +61,14 @@ export interface GraphQLTreeLeafField extends GraphQLTreeElement {
 }
 
 export interface GraphQLSortArgument {
-    edges: {
-        node: Record<string, "ASC" | "DESC">;
-    };
+    edges: GraphQLSortEdgeArgument[];
+}
+
+export interface GraphQLSortEdgeArgument {
+    node?: GraphQLTreeSortElement;
+    properties?: GraphQLTreeSortElement;
+}
+
+export interface GraphQLTreeSortElement {
+    [key: string]: "ASC" | "DESC";
 }

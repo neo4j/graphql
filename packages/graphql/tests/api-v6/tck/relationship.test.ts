@@ -28,11 +28,14 @@ describe("Relationship", () => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             type Actor @node {
                 name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+            type ActedIn @relationshipProperties {
+                year: Int
             }
         `;
 
@@ -41,7 +44,7 @@ describe("Relationship", () => {
         });
     });
 
-    test("Simple relationship", async () => {
+    test("should query a relationship", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
@@ -86,6 +89,62 @@ describe("Relationship", () => {
                         UNWIND edges AS edge
                         WITH edge.node AS actors, edge.relationship AS this1
                         RETURN collect({ node: { name: actors.name, __resolveType: \\"Actor\\" } }) AS var2
+                    }
+                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                }
+                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+            }
+            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("should query relationship properties", async () => {
+        const query = /* GraphQL */ `
+            query {
+                movies {
+                    connection {
+                        edges {
+                            node {
+                                title
+                                actors {
+                                    connection {
+                                        edges {
+                                            properties {
+                                                year
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, { v6Api: true });
+
+        // NOTE: Order of these subqueries have been reversed after refactor
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:Movie)
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
+                    WITH collect({ node: actors, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS actors, edge.relationship AS this1
+                        RETURN collect({ properties: { year: this1.year }, node: { __id: id(actors), __resolveType: \\"Actor\\" } }) AS var2
                     }
                     RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
                 }

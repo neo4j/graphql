@@ -23,8 +23,11 @@ import { EntityTypeNames } from "./EntityTypeNames";
 import { NestedEntityTypeNames } from "./NestedEntityTypeNames";
 
 export class TopLevelEntityTypeNames extends EntityTypeNames {
+    private concreteEntity: ConcreteEntity;
+
     constructor(concreteEntity: ConcreteEntity) {
         super(concreteEntity.name);
+        this.concreteEntity = concreteEntity;
     }
 
     public relationship(relationship: Relationship): NestedEntityTypeNames {
@@ -32,6 +35,14 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     }
 
     public get propertiesType(): undefined {
-        return undefined;
+        return;
+    }
+
+    public get propertiesSortType(): undefined {
+        return;
+    }
+
+    public get nodeSortType(): string {
+        return `${this.concreteEntity.name}Sort`;
     }
 }

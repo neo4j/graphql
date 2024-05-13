@@ -32,4 +32,15 @@ export class NestedEntityTypeNames extends EntityTypeNames {
     public get propertiesType(): string | undefined {
         return this.relationship.propertiesTypeName;
     }
+
+    public get propertiesSortType(): string | undefined {
+        if (!this.relationship.propertiesTypeName) {
+            return;
+        }
+        return `${this.relationship.propertiesTypeName}Sort`;
+    }
+
+    public get nodeSortType(): string {
+        return `${this.relationship.target.name}Sort`;
+    }
 }
