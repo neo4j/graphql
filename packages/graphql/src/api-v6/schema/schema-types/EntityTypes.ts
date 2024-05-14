@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, ListComposer, NonNullComposer, ObjectTypeComposer } from "graphql-compose";
+import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { EntityTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
@@ -49,7 +49,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
         return this.schemaBuilder.createObjectType(this.entityTypes.connectionOperation, {
             connection: {
                 type: this.connection,
-                args: this.getConnectionArgs(),
+                args: this.connectionArgs,
             },
         });
     }
@@ -63,31 +63,35 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
     }
 
     @Memoize()
-    public get connectionArgs(): InputTypeComposer {
-        return this.schemaBuilder.createInputObjectType(this.entityTypes.connectionSortType, {
-            edges: this.edgeSort,
-        });
+    protected get connectionArgs(): { sort: InputTypeComposer } {
+        return {
+            sort: this.connectionSort,
+        };
     }
 
     @Memoize()
     public get connectionSort(): InputTypeComposer {
         return this.schemaBuilder.createInputObjectType(this.entityTypes.connectionSortType, {
-            edges: this.edgeSort,
+            edges: this.edgeSort.NonNull.List,
         });
     }
 
     @Memoize()
     public get edgeSort(): InputTypeComposer {
-        return this.schemaBuilder.createInputObjectType(this.entityTypes.edgeSortType, {
-            node: this.nodeSort,
-        });
+        const edgeSortFields = {
+            node: this.nodeSortType,
+        };
+        const properties = this.getEdgeSortProperties();
+        if (properties) {
+            edgeSortFields["properties"] = properties;
+        }
+
+        return this.schemaBuilder.createInputObjectType(this.entityTypes.edgeSortType, edgeSortFields);
     }
 
     @Memoize()
-    public get nodeSort(): InputTypeComposer {
-        const fields = this.getFields();
-        const sortFields = Object.fromEntries(fields.map((field) => [field.name, this.staticTypes.sortDirection]));
-        return this.schemaBuilder.createInputObjectType(this.entityTypes.nodeSortType, sortFields);
+    public get sortFields(): Record<string, EnumTypeComposer> {
+        return Object.fromEntries(this.getFields().map((field) => [field.name, this.staticTypes.sortDirection]));
     }
 
     @Memoize()
@@ -105,9 +109,9 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
         return this.schemaBuilder.createObjectType(this.entityTypes.edgeType, fields);
     }
 
-    // sort is optional because relationship sort is not yet implemented
-    protected abstract getConnectionArgs(): { sort?: ListComposer<NonNullComposer<InputTypeComposer>> };
     protected abstract getEdgeProperties(): ObjectTypeComposer | undefined;
+    protected abstract getEdgeSortProperties(): InputTypeComposer | undefined;
     protected abstract getFields(): Attribute[];
     public abstract get nodeType(): string;
+    public abstract get nodeSortType(): string;
 }

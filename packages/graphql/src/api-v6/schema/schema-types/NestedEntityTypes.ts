@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, ListComposer, NonNullComposer, ObjectTypeComposer } from "graphql-compose";
+import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -25,7 +25,7 @@ import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { NestedEntityTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
-import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
+import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import type { StaticTypes } from "./StaticTypes";
 
@@ -59,7 +59,16 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         }
         return target.types.nodeType;
     }
+    @Memoize()
+    public get nodeSortType(): string {
+        const target = this.relationship.target;
+        if (!(target instanceof ConcreteEntity)) {
+            throw new Error("Interfaces not supported yet");
+        }
+        return target.types.nodeSortType;
+    }
 
+    @Memoize()
     protected getEdgeProperties(): ObjectTypeComposer | undefined {
         if (this.entityTypes.propertiesType) {
             const fields = this.getRelationshipFields();
@@ -67,17 +76,29 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         }
     }
 
+    @Memoize()
+    protected getEdgeSortProperties(): InputTypeComposer | undefined {
+        if (this.entityTypes.propertiesSortType) {
+            const fields = this.getRelationshipSortFields();
+            return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypes.propertiesSortType, fields);
+        }
+    }
+
+    @Memoize()
     protected getFields(): Attribute[] {
         return [...this.relationship.attributes.values()];
     }
-    protected getConnectionArgs(): { sort?: ListComposer<NonNullComposer<InputTypeComposer>> | undefined } {
-        return {};
-    }
-    private getRelationshipFields(): Record<string, FieldDefinition> {
-        const entityAttributes = [...this.relationship.attributes.values()].map(
-            (attribute) => new AttributeAdapter(attribute)
-        );
 
+    @Memoize()
+    private getRelationshipFields(): Record<string, string> {
+        const entityAttributes = this.getFields().map((attribute) => new AttributeAdapter(attribute));
         return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
+    }
+
+    @Memoize()
+    private getRelationshipSortFields(): Record<string, EnumTypeComposer> {
+        return Object.fromEntries(
+            this.getFields().map((attribute) => [attribute.name, this.staticTypes.sortDirection])
+        );
     }
 }

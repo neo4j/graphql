@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, ListComposer, NonNullComposer, ObjectTypeComposer } from "graphql-compose";
+import type { ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -61,28 +61,32 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
         return this.entity.types.nodeType;
     }
 
-    protected getConnectionArgs(): { sort?: ListComposer<NonNullComposer<InputTypeComposer>> | undefined } {
-        return {
-            sort: this.connectionSort.NonNull.List,
-        };
+    protected getEdgeProperties(): undefined {
+        return;
     }
 
-    protected getEdgeProperties(): ObjectTypeComposer<any, any> | undefined {
-        return undefined;
+    protected getEdgeSortProperties(): undefined {
+        return;
     }
 
+    @Memoize()
     protected getFields(): Attribute[] {
         return [...this.entity.attributes.values()];
     }
 
+    @Memoize()
     private getNodeFieldsDefinitions(): Record<string, FieldDefinition> {
-        const entityAttributes = [...this.entity.attributes.values()].map(
-            (attribute) => new AttributeAdapter(attribute)
-        );
-
+        const entityAttributes = this.getFields().map((attribute) => new AttributeAdapter(attribute));
         return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 
+    @Memoize()
+    public get nodeSortType(): string {
+        this.schemaBuilder.createInputObjectType(this.entity.types.nodeSortType, this.sortFields);
+        return this.entity.types.nodeSortType;
+    }
+
+    @Memoize()
     private getRelationshipFields(): Record<string, ObjectTypeComposer> {
         return Object.fromEntries(
             [...this.entity.relationships.values()].map((relationship) => {

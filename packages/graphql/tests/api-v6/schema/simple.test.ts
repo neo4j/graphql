@@ -46,7 +46,7 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieConnectionSort {
-              edges: MovieEdgeSort
+              edges: [MovieEdgeSort!]
             }
 
             type MovieEdge {
@@ -59,7 +59,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieOperation {
-              connection(sort: [MovieConnectionSort!]): MovieConnection
+              connection(sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieSort {
@@ -109,7 +109,7 @@ describe("Simple Aura-API", () => {
             }
 
             input ActorConnectionSort {
-              edges: ActorEdgeSort
+              edges: [ActorEdgeSort!]
             }
 
             type ActorEdge {
@@ -122,7 +122,7 @@ describe("Simple Aura-API", () => {
             }
 
             type ActorOperation {
-              connection(sort: [ActorConnectionSort!]): ActorConnection
+              connection(sort: ActorConnectionSort): ActorConnection
             }
 
             input ActorSort {
@@ -139,7 +139,7 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieConnectionSort {
-              edges: MovieEdgeSort
+              edges: [MovieEdgeSort!]
             }
 
             type MovieEdge {
@@ -152,7 +152,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieOperation {
-              connection(sort: [MovieConnectionSort!]): MovieConnection
+              connection(sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieSort {
@@ -203,7 +203,7 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieConnectionSort {
-              edges: MovieEdgeSort
+              edges: [MovieEdgeSort!]
             }
 
             type MovieEdge {
@@ -216,7 +216,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieOperation {
-              connection(sort: [MovieConnectionSort!]): MovieConnection
+              connection(sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieSort {

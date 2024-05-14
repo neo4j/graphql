@@ -159,7 +159,7 @@ describe("Sort", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(sort: [{ edges: { node: { title: ASC } } }, { edges: { node: { ratings: DESC } } }]) {
+                    connection(sort: { edges: [{ node: { title: ASC } }, { node: { ratings: DESC } }]  }) {
                         edges {
                             node {
                                 title
