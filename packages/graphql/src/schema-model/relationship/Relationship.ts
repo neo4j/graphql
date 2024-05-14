@@ -18,7 +18,7 @@
  */
 
 import { Memoize } from "typescript-memoize";
-import { NestedEntityTypeNames } from "../../api-v6/graphQLTypeNames/NestedEntityTypeNames";
+import { NestedEntityTypeNames } from "../../api-v6/graphql-type-names/NestedEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";

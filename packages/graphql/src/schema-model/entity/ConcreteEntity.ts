@@ -18,7 +18,7 @@
  */
 
 import { Memoize } from "typescript-memoize";
-import { TopLevelEntityTypeNames } from "../../api-v6/graphQLTypeNames/TopLevelEntityTypeNames";
+import { TopLevelEntityTypeNames } from "../../api-v6/graphql-type-names/TopLevelEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotations } from "../annotation/Annotation";

@@ -24,7 +24,7 @@ import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
-import type { NestedEntityTypeNames } from "../../graphQLTypeNames/NestedEntityTypeNames";
+import type { NestedEntityTypeNames } from "../../graphql-type-names/NestedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import type { StaticTypes } from "./StaticTypes";

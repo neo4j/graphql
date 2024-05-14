@@ -23,7 +23,7 @@ import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
-import type { EntityTypeNames } from "../../graphQLTypeNames/EntityTypeNames";
+import type { EntityTypeNames } from "../../graphql-type-names/EntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import { NestedEntitySchemaTypes } from "./NestedEntityTypes";
