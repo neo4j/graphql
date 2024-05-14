@@ -21,12 +21,40 @@ import type { Relationship } from "../../schema-model/relationship/Relationship"
 import { upperFirst } from "../../utils/upper-first";
 import { EntityTypeNames } from "./EntityTypeNames";
 
-export class NestedEntityTypeNames extends EntityTypeNames {
+/** Typenames for a related entity, including edge properties */
+export class RelatedEntityTypeNames extends EntityTypeNames {
     private relationship: Relationship;
+    private relatedEntityTypeName: string;
 
     constructor(relationship: Relationship) {
-        super(`${relationship.source.name}${upperFirst(relationship.name)}`);
+        super(relationship.target);
+
+        this.relatedEntityTypeName = `${relationship.source.name}${upperFirst(relationship.name)}`;
         this.relationship = relationship;
+    }
+
+    public get connectionOperation(): string {
+        return `${this.relatedEntityTypeName}Operation`;
+    }
+
+    public get connection(): string {
+        return `${this.relatedEntityTypeName}Connection`;
+    }
+
+    public get connectionSort(): string {
+        return `${this.relatedEntityTypeName}ConnectionSort`;
+    }
+
+    public get edge(): string {
+        return `${this.relatedEntityTypeName}Edge`;
+    }
+
+    public get edgeSort(): string {
+        return `${this.relatedEntityTypeName}EdgeSort`;
+    }
+
+    public get whereInput(): string {
+        return `${this.relatedEntityTypeName}Where`;
     }
 
     public get properties(): string | undefined {
@@ -38,9 +66,5 @@ export class NestedEntityTypeNames extends EntityTypeNames {
             return;
         }
         return `${this.relationship.propertiesTypeName}Sort`;
-    }
-
-    public get nodeSort(): string {
-        return `${this.relationship.target.name}Sort`;
     }
 }

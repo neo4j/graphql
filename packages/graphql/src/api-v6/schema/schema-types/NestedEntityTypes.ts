@@ -24,12 +24,12 @@ import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
-import type { NestedEntityTypeNames } from "../../graphql-type-names/NestedEntityTypeNames";
+import type { RelatedEntityTypeNames } from "../../graphql-type-names/RelatedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntityTypes } from "./EntityTypes";
 import type { StaticTypes } from "./StaticTypes";
 
-export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> {
+export class NestedEntitySchemaTypes extends EntityTypes<RelatedEntityTypeNames> {
     private relationship: Relationship;
 
     constructor({
@@ -41,7 +41,7 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         schemaBuilder: SchemaBuilder;
         relationship: Relationship;
         staticTypes: StaticTypes;
-        entityTypeNames: NestedEntityTypeNames;
+        entityTypeNames: RelatedEntityTypeNames;
     }) {
         super({
             schemaBuilder,

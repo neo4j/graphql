@@ -17,50 +17,28 @@
  * limitations under the License.
  */
 
-import { plural } from "../../schema-model/utils/string-manipulation";
+import type { Entity } from "../../schema-model/entity/Entity";
 
+/** Abstract class to hold the typenames of a given entity */
 export abstract class EntityTypeNames {
-    private readonly prefix: string;
+    protected readonly entityName: string;
 
-    constructor(prefix: string) {
-        this.prefix = prefix;
-    }
-
-    public get connectionOperation(): string {
-        return `${this.prefix}Operation`;
-    }
-
-    public get connection(): string {
-        return `${this.prefix}Connection`;
-    }
-
-    public get connectionSort(): string {
-        return `${this.prefix}ConnectionSort`;
-    }
-
-    public get edgeSort(): string {
-        return `${this.prefix}EdgeSort`;
-    }
-
-    public get edge(): string {
-        return `${this.prefix}Edge`;
+    constructor(entity: Entity) {
+        this.entityName = entity.name;
     }
 
     public get node(): string {
-        return `${this.prefix}`;
+        return `${this.entityName}`;
     }
 
-    public get whereInput(): string {
-        return `${this.prefix}Where`;
+    public get nodeSort(): string {
+        return `${this.entityName}Sort`;
     }
 
-    public get queryField(): string {
-        return this.plural;
-    }
-
-    public get plural(): string {
-        return plural(this.prefix);
-    }
-
-    public abstract get nodeSort(): string;
+    public abstract get connectionOperation(): string;
+    public abstract get connection(): string;
+    public abstract get connectionSort(): string;
+    public abstract get edge(): string;
+    public abstract get edgeSort(): string;
+    public abstract get whereInput(): string;
 }

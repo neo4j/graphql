@@ -17,18 +17,37 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import { plural } from "../../schema-model/utils/string-manipulation";
 import { EntityTypeNames } from "./EntityTypeNames";
 
+/** Top level node typenames */
 export class TopLevelEntityTypeNames extends EntityTypeNames {
-    private concreteEntity: ConcreteEntity;
-
-    constructor(concreteEntity: ConcreteEntity) {
-        super(concreteEntity.name);
-        this.concreteEntity = concreteEntity;
+    /** Top Level Query field */
+    public get queryField(): string {
+        return plural(this.entityName);
     }
 
-    public get nodeSort(): string {
-        return `${this.concreteEntity.name}Sort`;
+    public get connectionOperation(): string {
+        return `${this.entityName}Operation`;
+    }
+
+    public get connection(): string {
+        return `${this.entityName}Connection`;
+    }
+
+    public get connectionSort(): string {
+        return `${this.entityName}ConnectionSort`;
+    }
+
+    public get edge(): string {
+        return `${this.entityName}Edge`;
+    }
+
+    public get edgeSort(): string {
+        return `${this.entityName}EdgeSort`;
+    }
+
+    public get whereInput(): string {
+        return `${this.entityName}Where`;
     }
 }
