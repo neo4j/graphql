@@ -70,7 +70,7 @@ export class ConcreteEntity implements Entity {
     }
 
     /** Note: Types of the new API */
-    public get types(): TopLevelEntityTypeNames {
+    public get typeNames(): TopLevelEntityTypeNames {
         return new TopLevelEntityTypeNames(this);
     }
 

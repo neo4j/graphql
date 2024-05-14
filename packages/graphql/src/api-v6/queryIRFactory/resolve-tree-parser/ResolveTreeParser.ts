@@ -54,7 +54,11 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
 
     /** Parse a resolveTree into a Neo4j GraphQLTree */
     public parseOperation(resolveTree: ResolveTree): GraphQLTreeReadOperation {
-        const connectionResolveTree = findFieldByName(resolveTree, this.entity.types.connectionOperation, "connection");
+        const connectionResolveTree = findFieldByName(
+            resolveTree,
+            this.entity.typeNames.connectionOperation,
+            "connection"
+        );
 
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
 
@@ -70,7 +74,7 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     protected abstract get targetNode(): ConcreteEntity;
 
     private parseConnection(resolveTree: ResolveTree): GraphQLTreeConnection {
-        const entityTypes = this.entity.types;
+        const entityTypes = this.entity.typeNames;
         const edgesResolveTree = findFieldByName(resolveTree, entityTypes.connectionType, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
         const connectionArgs = this.parseConnectionArgs(resolveTree.args);
@@ -84,7 +88,7 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 
     private parseEdges(resolveTree: ResolveTree): GraphQLTreeEdge {
-        const edgeType = this.entity.types.edgeType;
+        const edgeType = this.entity.typeNames.edgeType;
 
         const nodeResolveTree = findFieldByName(resolveTree, edgeType, "node");
         const resolveTreeProperties = findFieldByName(resolveTree, edgeType, "properties");
@@ -103,7 +107,7 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 
     private parseNode(resolveTree: ResolveTree): GraphQLTreeNode {
-        const entityTypes = this.targetNode.types;
+        const entityTypes = this.targetNode.typeNames;
         const fieldsResolveTree = resolveTree.fieldsByTypeName[entityTypes.nodeType] ?? {};
 
         const fields = this.getNodeFields(fieldsResolveTree);
@@ -133,10 +137,10 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 
     private parseEdgeProperties(resolveTree: ResolveTree): GraphQLTreeEdgeProperties | undefined {
-        if (!this.entity.types.propertiesType) {
+        if (!this.entity.typeNames.propertiesType) {
             return;
         }
-        const fieldsResolveTree = resolveTree.fieldsByTypeName[this.entity.types.propertiesType] ?? {};
+        const fieldsResolveTree = resolveTree.fieldsByTypeName[this.entity.typeNames.propertiesType] ?? {};
 
         const fields = this.getEdgePropertyFields(fieldsResolveTree);
 

@@ -25,7 +25,7 @@ import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
-import { AuraSchemaGenerator } from "../api-v6/schema/AuraSchemaGenerator";
+import { SchemaGenerator } from "../api-v6/schema/SchemaGenerator";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
@@ -119,12 +119,12 @@ class Neo4jGraphQL {
     public getAuraSchema(): Promise<GraphQLSchema> {
         const document = this.normalizeTypeDefinitions(this.typeDefs);
         this.schemaModel = this.generateSchemaModel(document, true);
-        const auraSchemaGenerator = new AuraSchemaGenerator();
+        const schemaGenerator = new SchemaGenerator();
 
         this._nodes = [];
         this._relationships = [];
 
-        return Promise.resolve(this.composeSchema(auraSchemaGenerator.generate(this.schemaModel)));
+        return Promise.resolve(this.composeSchema(schemaGenerator.generate(this.schemaModel)));
     }
 
     public async getExecutableSchema(): Promise<GraphQLSchema> {

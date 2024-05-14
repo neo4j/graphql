@@ -25,7 +25,7 @@ import { SchemaBuilder } from "./SchemaBuilder";
 import { StaticTypes } from "./schema-types/StaticTypes";
 import { TopLevelEntityTypes } from "./schema-types/TopLevelEntityTypes";
 
-export class AuraSchemaGenerator {
+export class SchemaGenerator {
     private schemaBuilder: SchemaBuilder;
 
     constructor() {

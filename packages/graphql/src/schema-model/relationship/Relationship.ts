@@ -142,11 +142,11 @@ export class Relationship {
     }
 
     /** Note: Types of the new API */
-    public get types(): NestedEntityTypeNames {
+    public get typeNames(): NestedEntityTypeNames {
         if (!(this.source instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported");
         }
-        return this.source.types.relationship(this);
+        return this.source.typeNames.relationship(this);
     }
 
     private addAttribute(attribute: Attribute): void {

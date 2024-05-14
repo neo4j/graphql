@@ -228,7 +228,6 @@ export class ReadOperationFactory {
         });
     }
 
-
     private generateRelationshipField(
         resolveTree: GraphQLTreeReadOperation,
         relationship: Relationship

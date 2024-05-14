@@ -43,22 +43,22 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
     }) {
         super({
             schemaBuilder,
-            entityTypes: entity.types,
+            entityTypeNames: entity.typeNames,
             staticTypes,
         });
         this.entity = entity;
     }
 
     public get queryFieldName(): string {
-        return this.entity.types.queryField;
+        return this.entity.typeNames.queryField;
     }
 
     @Memoize()
     public get nodeType(): string {
         const fields = this.getNodeFieldsDefinitions();
         const relationships = this.getRelationshipFields();
-        this.schemaBuilder.createObjectType(this.entity.types.nodeType, { ...fields, ...relationships });
-        return this.entity.types.nodeType;
+        this.schemaBuilder.createObjectType(this.entity.typeNames.nodeType, { ...fields, ...relationships });
+        return this.entity.typeNames.nodeType;
     }
 
     protected getEdgeProperties(): undefined {
@@ -82,8 +82,8 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
 
     @Memoize()
     public get nodeSortType(): string {
-        this.schemaBuilder.createInputObjectType(this.entity.types.nodeSortType, this.sortFields);
-        return this.entity.types.nodeSortType;
+        this.schemaBuilder.createInputObjectType(this.entity.typeNames.nodeSortType, this.sortFields);
+        return this.entity.typeNames.nodeSortType;
     }
 
     @Memoize()
@@ -93,7 +93,7 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
                 const relationshipTypes = new NestedEntitySchemaTypes({
                     schemaBuilder: this.schemaBuilder,
                     relationship,
-                    entityTypes: this.entity.types.relationship(relationship),
+                    entityTypeNames: this.entity.typeNames.relationship(relationship),
                     staticTypes: this.staticTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;

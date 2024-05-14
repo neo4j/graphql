@@ -35,17 +35,17 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
     constructor({
         relationship,
         schemaBuilder,
-        entityTypes,
+        entityTypeNames,
         staticTypes,
     }: {
         schemaBuilder: SchemaBuilder;
         relationship: Relationship;
         staticTypes: StaticTypes;
-        entityTypes: NestedEntityTypeNames;
+        entityTypeNames: NestedEntityTypeNames;
     }) {
         super({
             schemaBuilder,
-            entityTypes,
+            entityTypeNames,
             staticTypes,
         });
         this.relationship = relationship;
@@ -57,7 +57,7 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        return target.types.nodeType;
+        return target.typeNames.nodeType;
     }
     @Memoize()
     public get nodeSortType(): string {
@@ -65,22 +65,22 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        return target.types.nodeSortType;
+        return target.typeNames.nodeSortType;
     }
 
     @Memoize()
     protected getEdgeProperties(): ObjectTypeComposer | undefined {
-        if (this.entityTypes.propertiesType) {
+        if (this.entityTypeNames.propertiesType) {
             const fields = this.getRelationshipFields();
-            return this.schemaBuilder.getOrCreateObjectType(this.entityTypes.propertiesType, fields);
+            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.propertiesType, fields);
         }
     }
 
     @Memoize()
     protected getEdgeSortProperties(): InputTypeComposer | undefined {
-        if (this.entityTypes.propertiesSortType) {
+        if (this.entityTypeNames.propertiesSortType) {
             const fields = this.getRelationshipSortFields();
-            return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypes.propertiesSortType, fields);
+            return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypeNames.propertiesSortType, fields);
         }
     }
 

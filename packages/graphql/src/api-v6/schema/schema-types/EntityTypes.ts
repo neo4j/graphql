@@ -27,26 +27,26 @@ import type { StaticTypes } from "./StaticTypes";
 /** This class defines the GraphQL types for an entity */
 export abstract class EntityTypes<T extends EntityTypeNames> {
     protected schemaBuilder: SchemaBuilder;
-    protected entityTypes: T;
+    protected entityTypeNames: T;
     protected staticTypes: StaticTypes;
 
     constructor({
         schemaBuilder,
-        entityTypes,
+        entityTypeNames,
         staticTypes,
     }: {
         schemaBuilder: SchemaBuilder;
         staticTypes: StaticTypes;
-        entityTypes: T;
+        entityTypeNames: T;
     }) {
         this.schemaBuilder = schemaBuilder;
-        this.entityTypes = entityTypes;
+        this.entityTypeNames = entityTypeNames;
         this.staticTypes = staticTypes;
     }
 
     @Memoize()
     public get connectionOperation(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityTypes.connectionOperation, {
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.connectionOperation, {
             connection: {
                 type: this.connection,
                 args: this.connectionArgs,
@@ -56,7 +56,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
 
     @Memoize()
     public get connection(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityTypes.connectionType, {
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.connectionType, {
             pageInfo: this.staticTypes.pageInfo,
             edges: this.edge.List,
         });
@@ -71,7 +71,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
 
     @Memoize()
     public get connectionSort(): InputTypeComposer {
-        return this.schemaBuilder.createInputObjectType(this.entityTypes.connectionSortType, {
+        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.connectionSortType, {
             edges: this.edgeSort.NonNull.List,
         });
     }
@@ -86,7 +86,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
             edgeSortFields["properties"] = properties;
         }
 
-        return this.schemaBuilder.createInputObjectType(this.entityTypes.edgeSortType, edgeSortFields);
+        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSortType, edgeSortFields);
     }
 
     @Memoize()
@@ -106,7 +106,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
             fields["properties"] = properties;
         }
 
-        return this.schemaBuilder.createObjectType(this.entityTypes.edgeType, fields);
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.edgeType, fields);
     }
 
     protected abstract getEdgeProperties(): ObjectTypeComposer | undefined;

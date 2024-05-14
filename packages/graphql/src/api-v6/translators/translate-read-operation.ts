@@ -22,7 +22,7 @@ import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
-import { ReadOperationFactory } from "../queryASTFactory/ReadOperationFactory";
+import { ReadOperationFactory } from "../queryIRFactory/ReadOperationFactory";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
