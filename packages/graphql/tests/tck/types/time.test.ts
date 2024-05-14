@@ -134,8 +134,7 @@ describe("Cypher Time", () => {
                             \\"timeZoneOffsetSeconds\\": -3600
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -211,8 +210,7 @@ describe("Cypher Time", () => {
                             \\"timeZoneOffsetSeconds\\": 0
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

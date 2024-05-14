@@ -100,8 +100,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     {
                         \\"title\\": \\"Forrest Gump\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -163,8 +162,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     {
                         \\"title\\": \\"Toy Story\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -228,8 +226,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                         \\"title\\": \\"Toy Story\\"
                     }
                 ],
-                \\"create_param1\\": \\"Tom Hanks\\",
-                \\"resolvedCallbacks\\": {}
+                \\"create_param1\\": \\"Tom Hanks\\"
             }"
         `);
     });

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { type DirectiveNode, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLNonNull, GraphQLString, type DirectiveNode } from "graphql";
 import type { Directive, InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
 import { ObjectTypeComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
@@ -238,6 +238,7 @@ export function createRelationshipFields({
             deprecatedDirectives: Directive[];
             userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
             subgraph?: Subgraph;
+            features: Neo4jFeaturesSettings | undefined;
         } = {
             relationshipAdapter,
             composer: schemaComposer,
@@ -245,6 +246,7 @@ export function createRelationshipFields({
             userDefinedFieldDirectives,
             deprecatedDirectives,
             userDefinedDirectivesOnTargetFields,
+            features,
         };
 
         if (relationshipTarget instanceof UnionEntityAdapter) {
@@ -292,6 +294,7 @@ function createRelationshipFieldsForTarget({
     deprecatedDirectives,
     userDefinedDirectivesOnTargetFields,
     subgraph, // only for concrete targets
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
@@ -300,12 +303,14 @@ function createRelationshipFieldsForTarget({
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
     deprecatedDirectives: Directive[];
     subgraph?: Subgraph;
+    features: Neo4jFeaturesSettings | undefined;
 }) {
     withSourceWhereInputType({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
         userDefinedDirectivesOnTargetFields,
+        features,
     });
 
     if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
@@ -324,7 +329,12 @@ function createRelationshipFieldsForTarget({
     );
 
     composeNode.addFields(
-        augmentObjectOrInterfaceTypeWithConnectionField(relationshipAdapter, userDefinedFieldDirectives, composer)
+        augmentObjectOrInterfaceTypeWithConnectionField(
+            relationshipAdapter,
+            userDefinedFieldDirectives,
+            composer,
+            features
+        )
     );
 
     withRelationInputType({
@@ -351,12 +361,14 @@ function createRelationshipFieldsForTarget({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
+        features,
     });
 
     augmentDisconnectInputTypeWithDisconnectFieldInput({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
+        features,
     });
 
     augmentUpdateInputTypeWithUpdateFieldInput({
@@ -364,5 +376,6 @@ function createRelationshipFieldsForTarget({
         composer,
         deprecatedDirectives,
         userDefinedFieldDirectives,
+        features,
     });
 }

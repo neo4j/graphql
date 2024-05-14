@@ -78,8 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
             "{
                 \\"create_param0\\": [
                     {}
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -108,30 +107,29 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.tests.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Test)
-                    MERGE (create_this1)-[create_this6:REL]->(create_this5)
-                    RETURN collect(NULL) AS create_var7
+                    CREATE (create_this3:Test)
+                    MERGE (create_this1)-[create_this4:REL]->(create_this3)
+                    RETURN collect(NULL) AS create_var5
                 }
                 RETURN create_this1
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)-[create_this8:REL]->(create_this9:Test)
+                MATCH (create_this1)-[create_this6:REL]->(create_this7:Test)
                 CALL {
-                    WITH create_this9
+                    WITH create_this7
                     CALL {
-                        WITH create_this9
-                        WITH create_this9 AS this
+                        WITH create_this7
+                        WITH create_this7 AS this
                         RETURN true AS value
                     }
-                    WITH value AS create_this10
-                    RETURN create_this10 AS create_var11
+                    WITH value AS create_this8
+                    RETURN create_this8 AS create_var9
                 }
-                WITH create_this9 { test: create_var11 } AS create_this9
-                RETURN collect(create_this9) AS create_var12
+                WITH create_this7 { test: create_var9 } AS create_this7
+                RETURN collect(create_this7) AS create_var10
             }
-            RETURN collect(create_this1 { tests: create_var12 }) AS data"
+            RETURN collect(create_this1 { tests: create_var10 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -146,8 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
                             ]
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

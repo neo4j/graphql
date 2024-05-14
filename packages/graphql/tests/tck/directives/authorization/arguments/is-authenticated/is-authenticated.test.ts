@@ -181,8 +181,7 @@ describe("Cypher Auth isAuthenticated", () => {
                     {
                         \\"id\\": \\"1\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -223,8 +222,7 @@ describe("Cypher Auth isAuthenticated", () => {
                         \\"id\\": \\"1\\",
                         \\"password\\": \\"super-password\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

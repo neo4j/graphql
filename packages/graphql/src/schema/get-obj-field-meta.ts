@@ -391,6 +391,7 @@ function getObjFieldMeta({
                     }
 
                     if (idDirective) {
+                        // TODO: remove the following as the argument "autogenerate" does not exists anymore
                         const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");
                         if (!autogenerate || (autogenerate.value as BooleanValueNode).value) {
                             primitiveField.autogenerate = true;

@@ -20,24 +20,24 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
+import { compileCypherIfExists } from "../utils/compile-cypher";
+import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
+import { asArray } from "../utils/utils";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import createRelationshipValidationString from "./create-relationship-validation-string";
+import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
-import { asArray } from "../utils/utils";
-import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
-import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
-import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
-import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { compileCypherIfExists } from "../utils/compile-cypher";
 import { createWhereNodePredicate } from "./where/create-where-predicate";
-import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 interface Res {
     connects: string[];

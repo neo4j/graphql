@@ -128,8 +128,7 @@ describe("Cypher Date", () => {
                             \\"day\\": 1
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
