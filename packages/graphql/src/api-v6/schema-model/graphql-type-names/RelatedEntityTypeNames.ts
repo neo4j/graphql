@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Relationship } from "../../schema-model/relationship/Relationship";
-import { upperFirst } from "../../utils/upper-first";
+import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { upperFirst } from "../../../utils/upper-first";
 import { EntityTypeNames } from "./EntityTypeNames";
 
 /** Typenames for a related entity, including edge properties */

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { plural } from "../../schema-model/utils/string-manipulation";
+import { plural } from "../../../schema-model/utils/string-manipulation";
 import { EntityTypeNames } from "./EntityTypeNames";
 
 /** Top level node typenames */

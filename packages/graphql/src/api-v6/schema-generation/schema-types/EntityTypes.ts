@@ -20,7 +20,7 @@
 import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import type { EntityTypeNames } from "../../graphql-type-names/EntityTypeNames";
+import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import type { StaticTypes } from "./StaticTypes";
 

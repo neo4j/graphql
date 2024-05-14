@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Entity } from "../../schema-model/entity/Entity";
+import type { Entity } from "../../../schema-model/entity/Entity";
 
 /** Abstract class to hold the typenames of a given entity */
 export abstract class EntityTypeNames {
