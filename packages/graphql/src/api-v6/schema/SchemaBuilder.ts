@@ -58,7 +58,7 @@ export class SchemaBuilder {
 
     public createObjectType(
         name: string,
-        fields?: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
+        fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
         description?: string
     ): ObjectTypeComposer {
         return this.composer.createObjectTC({
@@ -70,7 +70,7 @@ export class SchemaBuilder {
 
     public getOrCreateObjectType(
         name: string,
-        fields?: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
+        fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
         description?: string
     ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
@@ -122,10 +122,6 @@ export class SchemaBuilder {
         });
     }
 
-    public addFieldToType(type: ObjectTypeComposer, fields: Record<string, any>): void {
-        type.addFields(fields);
-    }
-
     public addQueryField(name: string, type: ObjectTypeComposer | string, resolver: (...args: any[]) => any): void {
         this.composer.Query.addFields({
             [name]: {
@@ -133,10 +129,6 @@ export class SchemaBuilder {
                 resolve: resolver,
             },
         });
-    }
-
-    public getObjectType(typeName: string): ObjectTypeComposer {
-        return this.composer.getOTC(typeName);
     }
 
     public build(): GraphQLSchema {

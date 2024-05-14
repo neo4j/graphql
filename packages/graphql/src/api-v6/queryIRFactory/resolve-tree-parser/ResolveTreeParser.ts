@@ -157,10 +157,10 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 
     private parseSortEdges(
-        sortEdges: {
+        sortEdges: Array<{
             node: Record<string, string> | undefined;
             properties: Record<string, string> | undefined;
-        }[]
+        }>
     ): GraphQLSortEdgeArgument[] {
         return sortEdges.map((edge) => {
             const sortFields: GraphQLSortEdgeArgument = {};
