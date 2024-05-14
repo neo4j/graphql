@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
@@ -33,7 +32,6 @@ import { RelationshipSelection } from "../../translate/queryAST/ast/selection/Re
 import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
 import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
-import { parseResolveInfoTree } from "./resolve-tree-parser/ResolveTreeParser";
 import type {
     GraphQLSortArgument,
     GraphQLTree,
@@ -50,23 +48,28 @@ export class ReadOperationFactory {
         this.schemaModel = schemaModel;
     }
 
-    public createAST({ resolveTree, entity }: { resolveTree: ResolveTree; entity: ConcreteEntity }): QueryAST {
-        const parsedTree = parseResolveInfoTree({ resolveTree, entity });
+    public createAST({
+        graphQLTree,
+        entity,
+    }: {
+        graphQLTree: GraphQLTreeReadOperation;
+        entity: ConcreteEntity;
+    }): QueryAST {
         const operation = this.generateOperation({
-            parsedTree,
+            graphQLTree,
             entity,
         });
         return new QueryAST(operation);
     }
 
     private generateOperation({
-        parsedTree,
+        graphQLTree,
         entity,
     }: {
-        parsedTree: GraphQLTree;
+        graphQLTree: GraphQLTree;
         entity: ConcreteEntity;
     }): V6ReadOperation {
-        const connectionTree = parsedTree.fields.connection;
+        const connectionTree = graphQLTree.fields.connection;
         if (!connectionTree) {
             throw new Error("No Connection");
         }

@@ -23,6 +23,7 @@ import { DEBUG_TRANSLATE } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { ReadOperationFactory } from "../queryIRFactory/ReadOperationFactory";
+import { parseResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/ResolveTreeParser";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -34,7 +35,10 @@ export function translateReadOperation({
     entity: ConcreteEntity;
 }): Cypher.CypherResult {
     const readFactory = new ReadOperationFactory(context.schemaModel);
-    const readOperation = readFactory.createAST({ resolveTree: context.resolveTree, entity });
+
+    const parsedTree = parseResolveInfoTree({ resolveTree: context.resolveTree, entity });
+
+    const readOperation = readFactory.createAST({ graphQLTree: parsedTree, entity });
     debug(readOperation.print());
     const results = readOperation.build(context);
     return results.build();
