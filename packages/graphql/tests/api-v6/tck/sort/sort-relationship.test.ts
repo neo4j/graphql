@@ -220,7 +220,7 @@ describe("Sort relationship", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test.skip("Relationship sort on relationship properties and node properties", async () => {
+    test("should respect input order on sorting", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
@@ -230,7 +230,13 @@ describe("Sort relationship", () => {
                                 title
                                 actors {
                                     connection(
-                                        sort: { edges: [{ properties: { year: DESC, age: ASC } }, { node: { name: ASC } }, {properties: { age: ASC }}] }
+                                        sort: {
+                                            edges: [
+                                                { properties: { year: DESC } }
+                                                { node: { name: ASC } }
+                                                { properties: { role: ASC } }
+                                            ]
+                                        }
                                     ) {
                                         edges {
                                             node {
@@ -266,7 +272,7 @@ describe("Sort relationship", () => {
                         UNWIND edges AS edge
                         WITH edge.node AS actors, edge.relationship AS this1
                         WITH *
-                        ORDER BY this1.year DESC, actors.name ASC
+                        ORDER BY this1.year DESC, actors.name ASC, this1.role ASC
                         RETURN collect({ node: { age: actors.age, __resolveType: \\"Actor\\" } }) AS var2
                     }
                     RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3

@@ -56,11 +56,11 @@ describe("Sort relationship", () => {
             CREATE (d:${Movie} {title: "The Matrix 3", ratings: 4})
             CREATE (e:${Movie} {title: "The Matrix 4", ratings: 3})
             CREATE (keanu:${Actor} {name: "Keanu", age: 55})
-            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Keanu"}]->(a)
-            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Keanu"}]->(b)
-            CREATE (keanu)-[:ACTED_IN {year: 2001, role: "Keanu"}]->(c)
-            CREATE (keanu)-[:ACTED_IN {year: 2003, role: "Keanu"}]->(d)
-            CREATE (keanu)-[:ACTED_IN {year: 2021, role: "Keanu"}]->(e)
+            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Neo"}]->(a)
+            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Neo"}]->(b)
+            CREATE (keanu)-[:ACTED_IN {year: 2001, role: "Mr. Anderson"}]->(c)
+            CREATE (keanu)-[:ACTED_IN {year: 2003, role: "Neo"}]->(d)
+            CREATE (keanu)-[:ACTED_IN {year: 2021, role: "Neo"}]->(e)
 
         `);
     });
@@ -310,10 +310,11 @@ describe("Sort relationship", () => {
                             node {
                                 name
                                 movies {
-                                    connection(sort: { edges: { properties: { year: ASC } } }) {
+                                    connection(sort: { edges: [{ properties: { role: DESC } }, { properties: { year: ASC } } ] }) {
                                         edges {
                                             properties {
                                                 year
+                                                role
                                             }
                                             node {
                                                 title
@@ -341,33 +342,127 @@ describe("Sort relationship", () => {
                                     connection: {
                                         edges: [
                                             {
-                                                properties: { year: 1999 },
+                                                properties: { year: 1999, role: "Neo" },
                                                 node: {
                                                     title: "The Matrix",
                                                 },
                                             },
                                             {
-                                                properties: { year: 1999 },
+                                                properties: { year: 1999, role: "Neo" },
                                                 node: {
                                                     title: "The Matrix",
                                                 },
                                             },
                                             {
-                                                properties: { year: 2001 },
-                                                node: {
-                                                    title: "The Matrix 2",
-                                                },
-                                            },
-                                            {
-                                                properties: { year: 2003 },
+                                                properties: { year: 2003, role: "Neo" },
                                                 node: {
                                                     title: "The Matrix 3",
                                                 },
                                             },
                                             {
-                                                properties: { year: 2021 },
+                                                properties: { year: 2021, role: "Neo" },
                                                 node: {
                                                     title: "The Matrix 4",
+                                                },
+                                            },
+                                            {
+                                                properties: { year: 2001, role: "Mr. Anderson" },
+                                                node: {
+                                                    title: "The Matrix 2",
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test("should be able to sort by relationship properties and node properties", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Actor.plural} {
+                    connection {
+                        edges {
+                            node {
+                                name
+                                movies {
+                                    connection(sort: { edges: [
+                                            { properties: { role: DESC } },
+                                            { node: { title: ASC } },                                           
+                                            { properties: { year: DESC } },
+                                            { node: { description: ASC } }
+                                         
+                                        ] }) {
+                                        edges {
+                                            properties {
+                                                year
+                                                role
+                                            }
+                                            node {
+                                                title
+                                                description
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }    
+               }
+            }
+        }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                name: "Keanu",
+                                movies: {
+                                    connection: {
+                                        edges: [
+                                            {
+                                                properties: { year: 1999, role: "Neo" },
+                                                node: {
+                                                    title: "The Matrix",
+                                                    description: "Cinema edition",
+                                                },
+                                            },
+                                            {
+                                                properties: { year: 1999, role: "Neo" },
+                                                node: {
+                                                    title: "The Matrix",
+                                                    description: "DVD edition",
+                                                },
+                                            },
+
+                                            {
+                                                properties: { year: 2003, role: "Neo" },
+                                                node: {
+                                                    title: "The Matrix 3",
+                                                    description: null,
+                                                },
+                                            },
+                                            {
+                                                properties: { year: 2021, role: "Neo" },
+                                                node: {
+                                                    title: "The Matrix 4",
+                                                    description: null,
+                                                },
+                                            },
+                                            {
+                                                properties: { year: 2001, role: "Mr. Anderson" },
+                                                node: {
+                                                    title: "The Matrix 2",
+                                                    description: null,
                                                 },
                                             },
                                         ],
