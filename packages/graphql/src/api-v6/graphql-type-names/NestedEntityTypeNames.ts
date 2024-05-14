@@ -29,18 +29,18 @@ export class NestedEntityTypeNames extends EntityTypeNames {
         this.relationship = relationship;
     }
 
-    public get propertiesType(): string | undefined {
+    public get properties(): string | undefined {
         return this.relationship.propertiesTypeName;
     }
 
-    public get propertiesSortType(): string | undefined {
+    public get propertiesSort(): string | undefined {
         if (!this.relationship.propertiesTypeName) {
             return;
         }
         return `${this.relationship.propertiesTypeName}Sort`;
     }
 
-    public get nodeSortType(): string {
+    public get nodeSort(): string {
         return `${this.relationship.target.name}Sort`;
     }
 }

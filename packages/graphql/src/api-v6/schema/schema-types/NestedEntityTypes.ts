@@ -57,7 +57,7 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        return target.typeNames.nodeType;
+        return target.typeNames.node;
     }
     @Memoize()
     public get nodeSortType(): string {
@@ -65,22 +65,22 @@ export class NestedEntitySchemaTypes extends EntityTypes<NestedEntityTypeNames> 
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        return target.typeNames.nodeSortType;
+        return target.typeNames.nodeSort;
     }
 
     @Memoize()
     protected getEdgeProperties(): ObjectTypeComposer | undefined {
-        if (this.entityTypeNames.propertiesType) {
+        if (this.entityTypeNames.properties) {
             const fields = this.getRelationshipFields();
-            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.propertiesType, fields);
+            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.properties, fields);
         }
     }
 
     @Memoize()
     protected getEdgeSortProperties(): InputTypeComposer | undefined {
-        if (this.entityTypeNames.propertiesSortType) {
+        if (this.entityTypeNames.propertiesSort) {
             const fields = this.getRelationshipSortFields();
-            return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypeNames.propertiesSortType, fields);
+            return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypeNames.propertiesSort, fields);
         }
     }
 

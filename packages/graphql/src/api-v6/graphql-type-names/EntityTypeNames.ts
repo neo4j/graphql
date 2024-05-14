@@ -30,27 +30,27 @@ export abstract class EntityTypeNames {
         return `${this.prefix}Operation`;
     }
 
-    public get connectionType(): string {
+    public get connection(): string {
         return `${this.prefix}Connection`;
     }
 
-    public get connectionSortType(): string {
+    public get connectionSort(): string {
         return `${this.prefix}ConnectionSort`;
     }
 
-    public get edgeSortType(): string {
+    public get edgeSort(): string {
         return `${this.prefix}EdgeSort`;
     }
 
-    public get edgeType(): string {
+    public get edge(): string {
         return `${this.prefix}Edge`;
     }
 
-    public get nodeType(): string {
+    public get node(): string {
         return `${this.prefix}`;
     }
 
-    public get whereInputTypeName(): string {
+    public get whereInput(): string {
         return `${this.prefix}Where`;
     }
 
@@ -62,5 +62,5 @@ export abstract class EntityTypeNames {
         return plural(this.prefix);
     }
 
-    public abstract get nodeSortType(): string;
+    public abstract get nodeSort(): string;
 }

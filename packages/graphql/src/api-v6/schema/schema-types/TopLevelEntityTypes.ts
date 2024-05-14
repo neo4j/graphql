@@ -57,8 +57,8 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
     public get nodeType(): string {
         const fields = this.getNodeFieldsDefinitions();
         const relationships = this.getRelationshipFields();
-        this.schemaBuilder.createObjectType(this.entity.typeNames.nodeType, { ...fields, ...relationships });
-        return this.entity.typeNames.nodeType;
+        this.schemaBuilder.createObjectType(this.entity.typeNames.node, { ...fields, ...relationships });
+        return this.entity.typeNames.node;
     }
 
     protected getEdgeProperties(): undefined {
@@ -82,8 +82,8 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
 
     @Memoize()
     public get nodeSortType(): string {
-        this.schemaBuilder.createInputObjectType(this.entity.typeNames.nodeSortType, this.sortFields);
-        return this.entity.typeNames.nodeSortType;
+        this.schemaBuilder.createInputObjectType(this.entity.typeNames.nodeSort, this.sortFields);
+        return this.entity.typeNames.nodeSort;
     }
 
     @Memoize()

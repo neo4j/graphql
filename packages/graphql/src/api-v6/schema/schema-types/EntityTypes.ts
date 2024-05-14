@@ -56,7 +56,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
 
     @Memoize()
     public get connection(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.connectionType, {
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.connection, {
             pageInfo: this.staticTypes.pageInfo,
             edges: this.edge.List,
         });
@@ -71,7 +71,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
 
     @Memoize()
     public get connectionSort(): InputTypeComposer {
-        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.connectionSortType, {
+        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.connectionSort, {
             edges: this.edgeSort.NonNull.List,
         });
     }
@@ -86,7 +86,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
             edgeSortFields["properties"] = properties;
         }
 
-        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSortType, edgeSortFields);
+        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSort, edgeSortFields);
     }
 
     @Memoize()
@@ -106,7 +106,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
             fields["properties"] = properties;
         }
 
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.edgeType, fields);
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.edge, fields);
     }
 
     protected abstract getEdgeProperties(): ObjectTypeComposer | undefined;
