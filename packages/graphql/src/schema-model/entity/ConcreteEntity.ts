@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Memoize } from "typescript-memoize";
 import { TopLevelEntityTypeNames } from "../../api-v6/graphQLTypeNames/TopLevelEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
@@ -70,6 +71,7 @@ export class ConcreteEntity implements Entity {
     }
 
     /** Note: Types of the new API */
+    @Memoize()
     public get typeNames(): TopLevelEntityTypeNames {
         return new TopLevelEntityTypeNames(this);
     }

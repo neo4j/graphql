@@ -93,7 +93,7 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
                 const relationshipTypes = new NestedEntitySchemaTypes({
                     schemaBuilder: this.schemaBuilder,
                     relationship,
-                    entityTypeNames: this.entity.typeNames.relationship(relationship),
+                    entityTypeNames: relationship.typeNames,
                     staticTypes: this.staticTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;

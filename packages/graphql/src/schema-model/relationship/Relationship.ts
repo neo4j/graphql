@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import type { NestedEntityTypeNames } from "../../api-v6/graphQLTypeNames/NestedEntityTypeNames";
+import { Memoize } from "typescript-memoize";
+import { NestedEntityTypeNames } from "../../api-v6/graphQLTypeNames/NestedEntityTypeNames";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
@@ -142,11 +143,13 @@ export class Relationship {
     }
 
     /** Note: Types of the new API */
+    @Memoize()
     public get typeNames(): NestedEntityTypeNames {
         if (!(this.source instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported");
         }
-        return this.source.typeNames.relationship(this);
+
+        return new NestedEntityTypeNames(this);
     }
 
     private addAttribute(attribute: Attribute): void {
