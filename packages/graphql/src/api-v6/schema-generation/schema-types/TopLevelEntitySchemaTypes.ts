@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -49,11 +49,23 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
         this.entity = entity;
     }
 
-    public get queryFieldName(): string {
-        return this.entity.typeNames.queryField;
+    protected get edge(): ObjectTypeComposer {
+        const fields = {
+            node: this.nodeType,
+            cursor: "String",
+        };
+
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.edge, fields);
     }
 
-    @Memoize()
+    protected get edgeSort(): InputTypeComposer {
+        const edgeSortFields = {
+            node: this.nodeSort,
+        };
+
+        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSort, edgeSortFields);
+    }
+
     public get nodeType(): string {
         const fields = this.getNodeFieldsDefinitions();
         const relationships = this.getRelationshipFields();
@@ -61,32 +73,24 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
         return this.entity.typeNames.node;
     }
 
-    protected getEdgeProperties(): undefined {
-        return;
-    }
-
-    protected getEdgeSortProperties(): undefined {
-        return;
+    public get nodeSort(): string {
+        const sortFields = Object.fromEntries(
+            this.getFields().map((field) => [field.name, this.staticTypes.sortDirection])
+        );
+        this.schemaBuilder.createInputObjectType(this.entity.typeNames.nodeSort, sortFields);
+        return this.entity.typeNames.nodeSort;
     }
 
     @Memoize()
-    protected getFields(): Attribute[] {
+    private getFields(): Attribute[] {
         return [...this.entity.attributes.values()];
     }
 
-    @Memoize()
     private getNodeFieldsDefinitions(): Record<string, FieldDefinition> {
         const entityAttributes = this.getFields().map((attribute) => new AttributeAdapter(attribute));
         return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 
-    @Memoize()
-    public get nodeSortType(): string {
-        this.schemaBuilder.createInputObjectType(this.entity.typeNames.nodeSort, this.sortFields);
-        return this.entity.typeNames.nodeSort;
-    }
-
-    @Memoize()
     private getRelationshipFields(): Record<string, ObjectTypeComposer> {
         return Object.fromEntries(
             [...this.entity.relationships.values()].map((relationship) => {

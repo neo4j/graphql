@@ -46,7 +46,7 @@ export class SchemaGenerator {
                 entity,
             });
             this.schemaBuilder.addQueryField(
-                entitySchemaTypes.queryFieldName,
+                entity.typeNames.queryField,
                 entitySchemaTypes.connectionOperation,
                 resolver
             );

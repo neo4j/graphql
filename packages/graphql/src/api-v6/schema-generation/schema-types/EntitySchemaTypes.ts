@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
-import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import type { StaticSchemaTypes } from "./StaticSchemaTypes";
@@ -56,57 +55,22 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
         });
     }
 
-    @Memoize()
-    public get connection(): ObjectTypeComposer {
+    protected get connection(): ObjectTypeComposer {
         return this.schemaBuilder.createObjectType(this.entityTypeNames.connection, {
             pageInfo: this.staticTypes.pageInfo,
             edges: this.edge.List,
         });
     }
 
-    @Memoize()
-    public get connectionSort(): InputTypeComposer {
+    protected get connectionSort(): InputTypeComposer {
         return this.schemaBuilder.createInputObjectType(this.entityTypeNames.connectionSort, {
             edges: this.edgeSort.NonNull.List,
         });
     }
 
-    @Memoize()
-    public get edgeSort(): InputTypeComposer {
-        const edgeSortFields = {
-            node: this.nodeSortType,
-        };
-        const properties = this.getEdgeSortProperties();
-        if (properties) {
-            edgeSortFields["properties"] = properties;
-        }
+    protected abstract get edgeSort(): InputTypeComposer;
+    protected abstract get edge(): ObjectTypeComposer;
 
-        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSort, edgeSortFields);
-    }
-
-    @Memoize()
-    public get sortFields(): Record<string, EnumTypeComposer> {
-        return Object.fromEntries(this.getFields().map((field) => [field.name, this.staticTypes.sortDirection]));
-    }
-
-    @Memoize()
-    public get edge(): ObjectTypeComposer {
-        const fields = {
-            node: this.nodeType,
-            cursor: "String",
-        };
-
-        const properties = this.getEdgeProperties();
-        if (properties) {
-            fields["properties"] = properties;
-        }
-
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.edge, fields);
-    }
-
-    protected abstract getEdgeProperties(): ObjectTypeComposer | undefined;
-    protected abstract getEdgeSortProperties(): InputTypeComposer | undefined;
-    protected abstract getFields(): Attribute[];
     public abstract get nodeType(): string;
-    public abstract get nodeSortType(): string;
+    public abstract get nodeSort(): string;
 }

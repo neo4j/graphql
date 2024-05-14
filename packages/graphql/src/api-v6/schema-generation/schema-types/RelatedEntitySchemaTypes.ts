@@ -51,7 +51,32 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         this.relationship = relationship;
     }
 
-    @Memoize()
+    protected get edge(): ObjectTypeComposer {
+        const fields = {
+            node: this.nodeType,
+            cursor: "String",
+        };
+
+        const properties = this.getEdgeProperties();
+        if (properties) {
+            fields["properties"] = properties;
+        }
+
+        return this.schemaBuilder.createObjectType(this.entityTypeNames.edge, fields);
+    }
+
+    protected get edgeSort(): InputTypeComposer {
+        const edgeSortFields = {
+            node: this.nodeSort,
+        };
+        const properties = this.getEdgeSortProperties();
+        if (properties) {
+            edgeSortFields["properties"] = properties;
+        }
+
+        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSort, edgeSortFields);
+    }
+
     public get nodeType(): string {
         const target = this.relationship.target;
         if (!(target instanceof ConcreteEntity)) {
@@ -59,8 +84,8 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         }
         return target.typeNames.node;
     }
-    @Memoize()
-    public get nodeSortType(): string {
+
+    public get nodeSort(): string {
         const target = this.relationship.target;
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
@@ -69,36 +94,32 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
     }
 
     @Memoize()
-    protected getEdgeProperties(): ObjectTypeComposer | undefined {
-        if (this.entityTypeNames.properties) {
-            const fields = this.getRelationshipFields();
-            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.properties, fields);
-        }
+    private getRelationshipFields(): Attribute[] {
+        return [...this.relationship.attributes.values()];
     }
 
-    @Memoize()
-    protected getEdgeSortProperties(): InputTypeComposer | undefined {
+    private getEdgeSortProperties(): InputTypeComposer | undefined {
         if (this.entityTypeNames.propertiesSort) {
             const fields = this.getRelationshipSortFields();
             return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypeNames.propertiesSort, fields);
         }
     }
 
-    @Memoize()
-    protected getFields(): Attribute[] {
-        return [...this.relationship.attributes.values()];
-    }
-
-    @Memoize()
-    private getRelationshipFields(): Record<string, string> {
-        const entityAttributes = this.getFields().map((attribute) => new AttributeAdapter(attribute));
+    private getRelationshipFieldsDefinition(): Record<string, string> {
+        const entityAttributes = this.getRelationshipFields().map((attribute) => new AttributeAdapter(attribute));
         return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 
-    @Memoize()
     private getRelationshipSortFields(): Record<string, EnumTypeComposer> {
         return Object.fromEntries(
-            this.getFields().map((attribute) => [attribute.name, this.staticTypes.sortDirection])
+            this.getRelationshipFields().map((attribute) => [attribute.name, this.staticTypes.sortDirection])
         );
+    }
+
+    private getEdgeProperties(): ObjectTypeComposer | undefined {
+        if (this.entityTypeNames.properties) {
+            const fields = this.getRelationshipFieldsDefinition();
+            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.properties, fields);
+        }
     }
 }
