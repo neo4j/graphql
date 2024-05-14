@@ -62,7 +62,5 @@ export abstract class EntityTypeNames {
         return plural(this.prefix);
     }
 
-    public abstract get propertiesType(): string | undefined;
-    public abstract get propertiesSortType(): string | undefined;
     public abstract get nodeSortType(): string;
 }

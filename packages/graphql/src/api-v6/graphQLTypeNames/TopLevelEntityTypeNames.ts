@@ -28,14 +28,6 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
         this.concreteEntity = concreteEntity;
     }
 
-    public get propertiesType(): undefined {
-        return;
-    }
-
-    public get propertiesSortType(): undefined {
-        return;
-    }
-
     public get nodeSortType(): string {
         return `${this.concreteEntity.name}Sort`;
     }
