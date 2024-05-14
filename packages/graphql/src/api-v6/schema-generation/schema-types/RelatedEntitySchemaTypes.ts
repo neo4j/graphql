@@ -26,10 +26,10 @@ import type { Relationship } from "../../../schema-model/relationship/Relationsh
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { RelatedEntityTypeNames } from "../../schema-model/graphql-type-names/RelatedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
-import { EntityTypes } from "./EntityTypes";
-import type { StaticTypes } from "./StaticTypes";
+import { EntitySchemaTypes } from "./EntitySchemaTypes";
+import type { StaticSchemaTypes } from "./StaticSchemaTypes";
 
-export class NestedEntitySchemaTypes extends EntityTypes<RelatedEntityTypeNames> {
+export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTypeNames> {
     private relationship: Relationship;
 
     constructor({
@@ -40,7 +40,7 @@ export class NestedEntitySchemaTypes extends EntityTypes<RelatedEntityTypeNames>
     }: {
         schemaBuilder: SchemaBuilder;
         relationship: Relationship;
-        staticTypes: StaticTypes;
+        staticTypes: StaticSchemaTypes;
         entityTypeNames: RelatedEntityTypeNames;
     }) {
         super({

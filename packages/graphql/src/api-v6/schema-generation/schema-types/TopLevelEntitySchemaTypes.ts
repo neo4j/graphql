@@ -25,11 +25,11 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
-import { EntityTypes } from "./EntityTypes";
-import { NestedEntitySchemaTypes } from "./NestedEntityTypes";
-import type { StaticTypes } from "./StaticTypes";
+import { EntitySchemaTypes } from "./EntitySchemaTypes";
+import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
+import type { StaticSchemaTypes } from "./StaticSchemaTypes";
 
-export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
+export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames> {
     private entity: ConcreteEntity;
 
     constructor({
@@ -39,7 +39,7 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
     }: {
         schemaBuilder: SchemaBuilder;
         entity: ConcreteEntity;
-        staticTypes: StaticTypes;
+        staticTypes: StaticSchemaTypes;
     }) {
         super({
             schemaBuilder,
@@ -90,7 +90,7 @@ export class TopLevelEntityTypes extends EntityTypes<EntityTypeNames> {
     private getRelationshipFields(): Record<string, ObjectTypeComposer> {
         return Object.fromEntries(
             [...this.entity.relationships.values()].map((relationship) => {
-                const relationshipTypes = new NestedEntitySchemaTypes({
+                const relationshipTypes = new RelatedEntitySchemaTypes({
                     schemaBuilder: this.schemaBuilder,
                     relationship,
                     entityTypeNames: relationship.typeNames,

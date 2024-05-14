@@ -21,7 +21,7 @@ import type { EnumTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { SchemaBuilder } from "../SchemaBuilder";
 
-export class StaticTypes {
+export class StaticSchemaTypes {
     private schemaBuilder: SchemaBuilder;
 
     constructor({ schemaBuilder }: { schemaBuilder: SchemaBuilder }) {

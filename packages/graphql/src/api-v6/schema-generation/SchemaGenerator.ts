@@ -22,8 +22,8 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { generateReadResolver } from "../resolvers/readResolver";
 import { SchemaBuilder } from "./SchemaBuilder";
-import { StaticTypes } from "./schema-types/StaticTypes";
-import { TopLevelEntityTypes } from "./schema-types/TopLevelEntityTypes";
+import { StaticSchemaTypes } from "./schema-types/StaticSchemaTypes";
+import { TopLevelEntitySchemaTypes } from "./schema-types/TopLevelEntitySchemaTypes";
 
 export class SchemaGenerator {
     private schemaBuilder: SchemaBuilder;
@@ -33,14 +33,14 @@ export class SchemaGenerator {
     }
 
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
-        const staticTypes = new StaticTypes({ schemaBuilder: this.schemaBuilder });
+        const staticTypes = new StaticSchemaTypes({ schemaBuilder: this.schemaBuilder });
         const entityTypes = this.generateEntityTypes(schemaModel, staticTypes);
         this.createQueryFields(entityTypes);
 
         return this.schemaBuilder.build();
     }
 
-    private createQueryFields(entityTypes: Map<ConcreteEntity, TopLevelEntityTypes>): void {
+    private createQueryFields(entityTypes: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
         entityTypes.forEach((entitySchemaTypes, entity) => {
             const resolver = generateReadResolver({
                 entity,
@@ -55,12 +55,12 @@ export class SchemaGenerator {
 
     private generateEntityTypes(
         schemaModel: Neo4jGraphQLSchemaModel,
-        staticTypes: StaticTypes
-    ): Map<ConcreteEntity, TopLevelEntityTypes> {
-        const resultMap = new Map<ConcreteEntity, TopLevelEntityTypes>();
+        staticTypes: StaticSchemaTypes
+    ): Map<ConcreteEntity, TopLevelEntitySchemaTypes> {
+        const resultMap = new Map<ConcreteEntity, TopLevelEntitySchemaTypes>();
         for (const entity of schemaModel.entities.values()) {
             if (entity.isConcreteEntity()) {
-                const entitySchemaTypes = new TopLevelEntityTypes({
+                const entitySchemaTypes = new TopLevelEntitySchemaTypes({
                     entity,
                     schemaBuilder: this.schemaBuilder,
                     staticTypes,

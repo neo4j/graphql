@@ -22,13 +22,13 @@ import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
-import type { StaticTypes } from "./StaticTypes";
+import type { StaticSchemaTypes } from "./StaticSchemaTypes";
 
 /** This class defines the GraphQL types for an entity */
-export abstract class EntityTypes<T extends EntityTypeNames> {
+export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
     protected schemaBuilder: SchemaBuilder;
     protected entityTypeNames: T;
-    protected staticTypes: StaticTypes;
+    protected staticTypes: StaticSchemaTypes;
 
     constructor({
         schemaBuilder,
@@ -36,7 +36,7 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
         staticTypes,
     }: {
         schemaBuilder: SchemaBuilder;
-        staticTypes: StaticTypes;
+        staticTypes: StaticSchemaTypes;
         entityTypeNames: T;
     }) {
         this.schemaBuilder = schemaBuilder;
@@ -49,7 +49,9 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
         return this.schemaBuilder.createObjectType(this.entityTypeNames.connectionOperation, {
             connection: {
                 type: this.connection,
-                args: this.connectionArgs,
+                args: {
+                    sort: this.connectionSort,
+                },
             },
         });
     }
@@ -60,13 +62,6 @@ export abstract class EntityTypes<T extends EntityTypeNames> {
             pageInfo: this.staticTypes.pageInfo,
             edges: this.edge.List,
         });
-    }
-
-    @Memoize()
-    protected get connectionArgs(): { sort: InputTypeComposer } {
-        return {
-            sort: this.connectionSort,
-        };
     }
 
     @Memoize()
