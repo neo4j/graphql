@@ -28,9 +28,10 @@ export class StaticSchemaTypes {
         this.schemaBuilder = schemaBuilder;
     }
 
-    @Memoize()
     public get pageInfo(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType("PageInfo", { hasNextPage: "Boolean", hasPreviousPage: "Boolean" });
+        return this.schemaBuilder.getOrCreateObjectType("PageInfo", () => {
+            return { fields: { hasNextPage: "Boolean", hasPreviousPage: "Boolean" } };
+        });
     }
 
     @Memoize()

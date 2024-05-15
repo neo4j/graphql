@@ -18,59 +18,69 @@
  */
 
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
-import { Memoize } from "typescript-memoize";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
-import type { StaticSchemaTypes } from "./StaticSchemaTypes";
+import type { SchemaTypes } from "./SchemaTypes";
 
 /** This class defines the GraphQL types for an entity */
 export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
     protected schemaBuilder: SchemaBuilder;
     protected entityTypeNames: T;
-    protected staticTypes: StaticSchemaTypes;
+    protected schemaTypes: SchemaTypes;
 
     constructor({
         schemaBuilder,
         entityTypeNames,
-        staticTypes,
+        schemaTypes,
     }: {
         schemaBuilder: SchemaBuilder;
-        staticTypes: StaticSchemaTypes;
+        schemaTypes: SchemaTypes;
         entityTypeNames: T;
     }) {
         this.schemaBuilder = schemaBuilder;
         this.entityTypeNames = entityTypeNames;
-        this.staticTypes = staticTypes;
+        this.schemaTypes = schemaTypes;
     }
 
-    @Memoize()
     public get connectionOperation(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.connectionOperation, {
-            connection: {
-                type: this.connection,
-                args: {
-                    sort: this.connectionSort,
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connectionOperation, () => {
+            return {
+                fields: {
+                    connection: {
+                        type: this.connection,
+                        args: {
+                            sort: this.connectionSort,
+                        },
+                    },
                 },
-            },
+            };
         });
     }
 
     protected get connection(): ObjectTypeComposer {
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.connection, {
-            pageInfo: this.staticTypes.pageInfo,
-            edges: this.edge.List,
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connection, () => {
+            return {
+                fields: {
+                    pageInfo: this.schemaTypes.staticTypes.pageInfo,
+                    edges: this.edge.List,
+                },
+            };
         });
     }
 
     protected get connectionSort(): InputTypeComposer {
-        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.connectionSort, {
-            edges: this.edgeSort.NonNull.List,
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
+            return {
+                fields: {
+                    edges: this.edgeSort.NonNull.List,
+                },
+            };
         });
     }
 
     protected abstract get edgeSort(): InputTypeComposer;
     protected abstract get edge(): ObjectTypeComposer;
 
-    public abstract get nodeType(): string;
-    public abstract get nodeSort(): string;
+    public abstract get nodeType(): ObjectTypeComposer;
+    public abstract get nodeSort(): InputTypeComposer;
 }

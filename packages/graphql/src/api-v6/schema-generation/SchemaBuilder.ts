@@ -56,29 +56,38 @@ export class SchemaBuilder {
         this.composer = new SchemaComposer();
     }
 
-    public createObjectType(
-        name: string,
-        fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
-        description?: string
-    ): ObjectTypeComposer {
-        return this.composer.createObjectTC({
-            name,
-            description,
-            fields,
-        });
-    }
-
     public getOrCreateObjectType(
         name: string,
-        fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>,
-        description?: string
+        onCreate: () => {
+            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>;
+            description?: string;
+        }
     ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
+            const { fields, description } = onCreate();
             if (fields) {
                 tc.addFields(fields);
             }
             if (description) {
                 tc.setDescription(description);
+            }
+        });
+    }
+
+    public getOrCreateInputType(
+        name: string,
+        onCreate: () => {
+            fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>;
+            description?: string;
+        }
+    ): InputTypeComposer {
+        return this.composer.getOrCreateITC(name, (itc) => {
+            const { fields, description } = onCreate();
+            if (fields) {
+                itc.addFields(fields);
+            }
+            if (description) {
+                itc.setDescription(description);
             }
         });
     }
@@ -92,21 +101,6 @@ export class SchemaBuilder {
             name,
             description,
             fields,
-        });
-    }
-
-    public getOrCreateInputObjectType(
-        name: string,
-        fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>,
-        description?: string
-    ): InputTypeComposer {
-        return this.composer.getOrCreateITC(name, (itc) => {
-            if (fields) {
-                itc.addFields(fields);
-            }
-            if (description) {
-                itc.setDescription(description);
-            }
         });
     }
 

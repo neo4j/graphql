@@ -27,7 +27,7 @@ import type { EntityTypeNames } from "../../schema-model/graphql-type-names/Enti
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
-import type { StaticSchemaTypes } from "./StaticSchemaTypes";
+import type { SchemaTypes } from "./SchemaTypes";
 
 export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames> {
     private entity: ConcreteEntity;
@@ -35,50 +35,62 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
     constructor({
         entity,
         schemaBuilder,
-        staticTypes,
+        schemaTypes,
     }: {
         schemaBuilder: SchemaBuilder;
         entity: ConcreteEntity;
-        staticTypes: StaticSchemaTypes;
+        schemaTypes: SchemaTypes;
     }) {
         super({
             schemaBuilder,
             entityTypeNames: entity.typeNames,
-            staticTypes,
+            schemaTypes,
         });
         this.entity = entity;
     }
 
     protected get edge(): ObjectTypeComposer {
-        const fields = {
-            node: this.nodeType,
-            cursor: "String",
-        };
-
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.edge, fields);
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.edge, () => {
+            return {
+                fields: {
+                    node: this.nodeType,
+                    cursor: "String",
+                },
+            };
+        });
     }
 
     protected get edgeSort(): InputTypeComposer {
-        const edgeSortFields = {
-            node: this.nodeSort,
-        };
-
-        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSort, edgeSortFields);
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeSort, () => {
+            return {
+                fields: {
+                    node: this.nodeSort,
+                },
+            };
+        });
     }
 
-    public get nodeType(): string {
-        const fields = this.getNodeFieldsDefinitions();
-        const relationships = this.getRelationshipFields();
-        this.schemaBuilder.createObjectType(this.entity.typeNames.node, { ...fields, ...relationships });
-        return this.entity.typeNames.node;
+    public get nodeType(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.node, () => {
+            const fields = this.getNodeFieldsDefinitions();
+            const relationships = this.getRelationshipFields();
+
+            return {
+                fields: { ...fields, ...relationships },
+            };
+        });
     }
 
-    public get nodeSort(): string {
-        const sortFields = Object.fromEntries(
-            this.getFields().map((field) => [field.name, this.staticTypes.sortDirection])
-        );
-        this.schemaBuilder.createInputObjectType(this.entity.typeNames.nodeSort, sortFields);
-        return this.entity.typeNames.nodeSort;
+    public get nodeSort(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.nodeSort, () => {
+            const sortFields = Object.fromEntries(
+                this.getFields().map((field) => [field.name, this.schemaTypes.staticTypes.sortDirection])
+            );
+
+            return {
+                fields: sortFields,
+            };
+        });
     }
 
     @Memoize()
@@ -98,7 +110,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
                     schemaBuilder: this.schemaBuilder,
                     relationship,
                     entityTypeNames: relationship.typeNames,
-                    staticTypes: this.staticTypes,
+                    schemaTypes: this.schemaTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;
 
