@@ -19,19 +19,19 @@
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
-import { genAIDirective } from "../../../graphql/directives";
-import { parseGenAIAnnotation } from "./genai-annotation";
+import { vectorDirective } from "../../../graphql/directives";
+import { parseVectorAnnotation } from "./vector-annotation";
 
-describe("parseGenAIAnnotation", () => {
+describe("parseVectorAnnotation", () => {
     it("should parse correctly", () => {
         const directive: DirectiveNode = makeDirectiveNode(
-            "genAI",
+            "vector",
             { indexes: [{ indexName: "ProductName", propertyName: "name", provider: "OpenAI" }] },
-            genAIDirective
+            vectorDirective
         );
-        const genAIAnnotation = parseGenAIAnnotation(directive);
-        expect(genAIAnnotation).toEqual({
-            name: "genAI",
+        const vectorAnnotation = parseVectorAnnotation(directive);
+        expect(vectorAnnotation).toEqual({
+            name: "vector",
             indexes: [
                 {
                     indexName: "ProductName",

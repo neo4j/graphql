@@ -39,7 +39,7 @@ type FulltextTypeNames = {
     sort: string;
 };
 
-type GenAITypeNames = {
+type VectorTypeNames = {
     result: string;
     where: string;
     sort: string;
@@ -62,16 +62,16 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
         return `${this.entityAdapter.plural}Fulltext${upperFirst(indexName)}`;
     }
 
-    public get genAIInputTypeName(): string {
-        return `${this.entityAdapter.name}GenAIInput`;
+    public get vectorInputTypeName(): string {
+        return `${this.entityAdapter.name}VectorInput`;
     }
 
-    public getGenAIIndexInputTypeName(indexName: string): string {
-        return `${this.entityAdapter.name}${upperFirst(indexName)}GenAI`;
+    public getVectorIndexInputTypeName(indexName: string): string {
+        return `${this.entityAdapter.name}${upperFirst(indexName)}Vector`;
     }
 
-    public getGenAIIndexQueryFieldName(indexName: string): string {
-        return `${this.entityAdapter.plural}GenAI${upperFirst(indexName)}`;
+    public getVectorIndexQueryFieldName(indexName: string): string {
+        return `${this.entityAdapter.plural}Vector${upperFirst(indexName)}`;
     }
 
     public get relationshipsSubscriptionWhereInputTypeName(): string {
@@ -115,11 +115,11 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
         };
     }
 
-    public get genAITypeNames(): GenAITypeNames {
+    public get vectorTypeNames(): VectorTypeNames {
         return {
-            result: `${this.pascalCaseSingular}GenAIResult`,
-            where: `${this.pascalCaseSingular}GenAIWhere`,
-            sort: `${this.pascalCaseSingular}GenAISort`,
+            result: `${this.pascalCaseSingular}VectorResult`,
+            where: `${this.pascalCaseSingular}VectorWhere`,
+            sort: `${this.pascalCaseSingular}VectorSort`,
         };
     }
 }

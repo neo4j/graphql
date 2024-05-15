@@ -26,8 +26,8 @@ import {
     GraphQLString,
 } from "graphql";
 
-export const genAIDirective = new GraphQLDirective({
-    name: "genAI",
+export const vectorDirective = new GraphQLDirective({
+    name: "vector",
     description:
         "Informs @neo4j/graphql that there should be a vector index in the database, allows users to search by phrase in the generated schema.",
     args: {
@@ -35,7 +35,7 @@ export const genAIDirective = new GraphQLDirective({
             type: new GraphQLNonNull(
                 new GraphQLList(
                     new GraphQLInputObjectType({
-                        name: "GenAIInput",
+                        name: "VectorInput",
                         fields: {
                             indexName: {
                                 type: new GraphQLNonNull(GraphQLString),
@@ -43,8 +43,16 @@ export const genAIDirective = new GraphQLDirective({
                             propertyName: {
                                 type: new GraphQLNonNull(GraphQLString),
                             },
+                            queryName: {
+                                type: GraphQLString,
+                            },
                             provider: {
-                                type: new GraphQLNonNull(GraphQLString),
+                                type: GraphQLString,
+                            },
+                            callback: {
+                                description:
+                                    "The name of the callback function that will be used to populate the fields values.",
+                                type: GraphQLString,
                             },
                         },
                     })

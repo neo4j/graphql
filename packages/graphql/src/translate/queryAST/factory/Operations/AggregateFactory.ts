@@ -136,7 +136,10 @@ export class AggregateFactory {
             if (isConcreteEntity(entity)) {
                 let selection: EntitySelection;
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    // QUESTION: Why can't we just check for context.resolveTree.args.fulltext?
                     selection = this.queryASTFactory.operationsFactory.getFulltextSelection(entity, context);
+                } else if (context.resolveTree.args.vector) {
+                    selection = this.queryASTFactory.operationsFactory.getVectorSelection(entity, context);
                 } else {
                     selection = new NodeSelection({
                         target: entity,
@@ -181,7 +184,11 @@ export class AggregateFactory {
                     (resolveTree.args.options ?? {}) as any
                 );
                 if (options) {
-                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
+                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
+                        options,
+                        entity,
+                        context
+                    );
                     operation.addSort(...sort);
 
                     const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);

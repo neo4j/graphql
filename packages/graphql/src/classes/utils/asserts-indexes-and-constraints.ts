@@ -255,12 +255,12 @@ async function checkIndexesAndConstraints({
             });
         }
 
-        if (entity.annotations["genAI"]) {
-            entity.annotations["genAI"].indexes.forEach((index) => {
+        if (entity.annotations["vector"]) {
+            entity.annotations["vector"].indexes.forEach((index) => {
                 const existingIndex = existingIndexes[index.indexName];
 
                 if (!existingIndex) {
-                    indexErrors.push(`Missing @genAI index '${index.indexName}' on Node '${entity.name}'`);
+                    indexErrors.push(`Missing @vector index '${index.indexName}' on Node '${entity.name}'`);
 
                     return;
                 }
@@ -268,12 +268,12 @@ async function checkIndexesAndConstraints({
                 const propertyIsInIndex = existingIndex.properties.some((p) => p === index.propertyName);
                 if (!propertyIsInIndex) {
                     indexErrors.push(
-                        `@genAI index '${index.indexName}' on Node '${entity.name}' is missing field '${index.propertyName}'`
+                        `@vector index '${index.indexName}' on Node '${entity.name}' is missing field '${index.propertyName}'`
                     );
                 }
 
                 if (!existingIndex.options) {
-                    indexErrors.push(`@genAI index '${index.indexName}' on Node '${entity.name}' is missing options`);
+                    indexErrors.push(`@vector index '${index.indexName}' on Node '${entity.name}' is missing options`);
 
                     return;
                 }
@@ -281,7 +281,7 @@ async function checkIndexesAndConstraints({
                 const indexConfig = existingIndex.options["indexConfig"];
                 if (!indexConfig) {
                     indexErrors.push(
-                        `@genAI index '${index.indexName}' on Node '${entity.name}' is missing indexConfig`
+                        `@vector index '${index.indexName}' on Node '${entity.name}' is missing indexConfig`
                     );
 
                     return;

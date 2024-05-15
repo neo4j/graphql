@@ -34,15 +34,15 @@ import type {
     TemporalField,
     UnionField,
 } from "../types";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
+import { leadingUnderscores } from "../utils/leading-underscore";
 import { upperFirst } from "../utils/upper-first";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
-import type { NodeDirective } from "./NodeDirective";
 import type { LimitDirective } from "./LimitDirective";
-import { leadingUnderscores } from "../utils/leading-underscore";
-import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
+import type { NodeDirective } from "./NodeDirective";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -89,12 +89,6 @@ export type RootTypeFieldNames = {
         relationship_created: string;
         relationship_deleted: string;
     };
-};
-
-export type FulltextTypeNames = {
-    result: string;
-    where: string;
-    sort: string;
 };
 
 export type AggregateTypeNames = {
@@ -224,14 +218,6 @@ class Node extends GraphElement {
                 relationship_created: `${this.singular}RelationshipCreated`,
                 relationship_deleted: `${this.singular}RelationshipDeleted`,
             },
-        };
-    }
-
-    public get fulltextTypeNames(): FulltextTypeNames {
-        return {
-            result: `${this.pascalCaseSingular}FulltextResult`,
-            where: `${this.pascalCaseSingular}FulltextWhere`,
-            sort: `${this.pascalCaseSingular}FulltextSort`,
         };
     }
 

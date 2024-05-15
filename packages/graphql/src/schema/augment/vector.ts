@@ -1,0 +1,86 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import type { SchemaComposer } from "graphql-compose";
+
+import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { VectorContext } from "../../types";
+import {
+    withVectorInputType,
+    withVectorResultType,
+    withVectorSortInputType,
+    withVectorWhereInputType,
+} from "../generation/vector-input";
+import { vectorResolver } from "../resolvers/query/vector";
+
+export function augmentVectorSchema({
+    composer,
+    concreteEntityAdapter,
+}: {
+    composer: SchemaComposer;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}) {
+    if (!concreteEntityAdapter.annotations.vector) {
+        return;
+    }
+
+    withVectorInputType({ concreteEntityAdapter, composer });
+    withVectorWhereInputType({ composer, concreteEntityAdapter });
+
+    concreteEntityAdapter.annotations.vector.indexes.forEach((index) => {
+        let queryName = concreteEntityAdapter.operations.getVectorIndexQueryFieldName(index.indexName);
+        if (index.queryName) {
+            queryName = index.queryName;
+        }
+
+        const vectorContext: VectorContext = {
+            index,
+            queryType: "query",
+            queryName,
+            scoreVariable: new Cypher.Variable(),
+        };
+
+        // If there is a provider, we will ask for the phrase
+        // If there is a callback, we will ask for the phrase
+        const vectorArgs = {
+            where: concreteEntityAdapter.operations.vectorTypeNames.where,
+            sort: withVectorSortInputType({ concreteEntityAdapter, composer }).NonNull.List,
+            limit: GraphQLInt,
+            offset: GraphQLInt,
+        };
+
+        if (index.provider !== undefined || index.callback !== undefined) {
+            vectorArgs["phrase"] = new GraphQLNonNull(GraphQLString);
+        } else {
+            vectorArgs["vector"] = new GraphQLList(new GraphQLNonNull(GraphQLFloat));
+        }
+
+        composer.Query.addFields({
+            [queryName]: {
+                type: withVectorResultType({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
+                description:
+                    "Query a vector index using Vector. This query returns the query score, but does not allow for aggregations.",
+                resolve: vectorResolver({ vectorContext, entityAdapter: concreteEntityAdapter }),
+                args: vectorArgs,
+            },
+        });
+    });
+}

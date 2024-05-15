@@ -21,17 +21,17 @@ import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
-import type { GenAIContext } from "../../../types";
+import type { VectorContext } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function genAIResolver({
-    genAIContext,
+export function vectorResolver({
+    vectorContext,
     entityAdapter,
 }: {
-    genAIContext: GenAIContext;
+    vectorContext: VectorContext;
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }): GraphQLFieldResolver<any, any, any> {
     return async function resolve(
@@ -40,7 +40,7 @@ export function genAIResolver({
         context: Neo4jGraphQLComposedContext,
         info: GraphQLResolveInfo
     ) {
-        context.genAI = genAIContext;
+        context.vector = vectorContext;
 
         const resolveTree = getNeo4jResolveTree(info, { args });
         resolveTree.args.options = {

@@ -76,7 +76,7 @@ function parseOperationField(
         case rootTypeFieldNames.delete:
             return "DELETE";
         default:
-            throw new Error(`Interface does not support this operation: ${field}`);
+            throw new Error(`Type does not support this operation: ${field}`);
     }
 }
 

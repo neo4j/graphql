@@ -41,6 +41,7 @@ import type { CompositeCypherOperation } from "../ast/operations/composite/Compo
 import type { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import type { Operation } from "../ast/operations/operations";
 import type { FulltextSelection } from "../ast/selection/FulltextSelection";
+import type { VectorSelection } from "../ast/selection/VectorSelection";
 import { assertIsConcreteEntity, isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
@@ -55,6 +56,7 @@ import { DeleteFactory } from "./Operations/DeleteFactory";
 import { FulltextFactory } from "./Operations/FulltextFactory";
 import { ReadFactory } from "./Operations/ReadFactory";
 import { UpdateFactory } from "./Operations/UpdateFactory";
+import { VectorFactory } from "./Operations/VectorFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
@@ -70,6 +72,7 @@ export class OperationsFactory {
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;
     private fulltextFactory: FulltextFactory;
+    private vectorFactory: VectorFactory;
     private aggregateFactory: AggregateFactory;
     private customCypherFactory: CustomCypherFactory;
     private connectionFactory: ConnectionFactory;
@@ -84,6 +87,7 @@ export class OperationsFactory {
         this.updateFactory = new UpdateFactory(queryASTFactory);
         this.deleteFactory = new DeleteFactory(queryASTFactory);
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
+        this.vectorFactory = new VectorFactory(queryASTFactory);
         this.aggregateFactory = new AggregateFactory(queryASTFactory);
         this.customCypherFactory = new CustomCypherFactory(queryASTFactory);
         this.connectionFactory = new ConnectionFactory(queryASTFactory);
@@ -120,12 +124,23 @@ export class OperationsFactory {
             assertIsConcreteEntity(entity);
             return this.fulltextFactory.createFulltextOperation(entity, resolveTree, context);
         }
+
+        // TODO: move this kind of thing into parseTopLevelOperationField?
+        if (entity && isConcreteEntity(entity) && Boolean(entity.annotations.vector) && context.vector) {
+            assertIsConcreteEntity(entity);
+            return this.vectorFactory.createVectorOperation(entity, resolveTree, context);
+        }
+
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
         switch (operationMatch) {
             case "READ": {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     assertIsConcreteEntity(entity);
                     return this.fulltextFactory.createFulltextOperation(entity, resolveTree, context);
+                }
+                if (context.resolveTree.args.vector) {
+                    assertIsConcreteEntity(entity);
+                    return this.vectorFactory.createVectorOperation(entity, resolveTree, context);
                 }
                 if (!entity) {
                     throw new Error("Entity is required for top level read operations");
@@ -194,11 +209,16 @@ export class OperationsFactory {
     }): ReadOperation | CompositeReadOperation {
         return this.readFactory.createReadOperation(arg);
     }
+
     public getFulltextSelection(
         entity: ConcreteEntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): FulltextSelection {
         return this.fulltextFactory.getFulltextSelection(entity, context);
+    }
+
+    public getVectorSelection(entity: ConcreteEntityAdapter, context: Neo4jGraphQLTranslationContext): VectorSelection {
+        return this.vectorFactory.getVectorSelection(entity, context);
     }
 
     public createAggregationOperation(

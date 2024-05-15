@@ -16,16 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { genAIDirective } from "../../../graphql/directives";
-import type { GenAIField } from "../../annotation/GenAIAnnotation";
-import { GenAIAnnotation } from "../../annotation/GenAIAnnotation";
-import { parseArguments } from "../parse-arguments";
 
-export function parseGenAIAnnotation(directive: DirectiveNode): GenAIAnnotation {
-    const { indexes } = parseArguments<{ indexes: GenAIField[] }>(genAIDirective, directive);
+import type { Annotation } from "./Annotation";
 
-    return new GenAIAnnotation({
-        indexes,
-    });
+export type VectorField = {
+    indexName: string;
+    propertyName: string;
+    queryName?: string;
+    provider?: string;
+    callback?: string;
+};
+
+export class VectorAnnotation implements Annotation {
+    readonly name = "vector";
+    public readonly indexes: VectorField[];
+
+    constructor({ indexes }: { indexes: VectorField[] }) {
+        this.indexes = indexes;
+    }
 }

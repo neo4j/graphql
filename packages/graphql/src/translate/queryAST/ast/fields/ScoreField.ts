@@ -22,7 +22,7 @@ import type { Variable } from "@neo4j/cypher-builder";
 import type { QueryASTNode } from "../QueryASTNode";
 import { Field } from "./Field";
 
-export class FulltextScoreField extends Field {
+export class ScoreField extends Field {
     private score: Cypher.Variable;
 
     constructor({ alias, score }: { alias: string; score: Cypher.Variable }) {

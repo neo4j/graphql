@@ -26,7 +26,6 @@ import { parseCypherAnnotation } from "../parser/annotations-parser/cypher-annot
 import { parseDefaultAnnotation } from "../parser/annotations-parser/default-annotation";
 import { parseFilterableAnnotation } from "../parser/annotations-parser/filterable-annotation";
 import { parseFullTextAnnotation } from "../parser/annotations-parser/full-text-annotation";
-import { parseGenAIAnnotation } from "../parser/annotations-parser/genai-annotation";
 import { parseJWTClaimAnnotation } from "../parser/annotations-parser/jwt-claim-annotation";
 import { parseKeyAnnotation } from "../parser/annotations-parser/key-annotation";
 import { parseLimitAnnotation } from "../parser/annotations-parser/limit-annotation";
@@ -40,6 +39,7 @@ import { parseSubscriptionAnnotation } from "../parser/annotations-parser/subscr
 import { parseSubscriptionsAuthorizationAnnotation } from "../parser/annotations-parser/subscriptions-authorization-annotation";
 import { parseTimestampAnnotation } from "../parser/annotations-parser/timestamp-annotation";
 import { parseUniqueAnnotation } from "../parser/annotations-parser/unique-annotation";
+import { parseVectorAnnotation } from "../parser/annotations-parser/vector-annotation";
 import type { AuthenticationAnnotation } from "./AuthenticationAnnotation";
 import type { AuthorizationAnnotation } from "./AuthorizationAnnotation";
 import type { CoalesceAnnotation } from "./CoalesceAnnotation";
@@ -48,7 +48,6 @@ import type { CypherAnnotation } from "./CypherAnnotation";
 import type { DefaultAnnotation } from "./DefaultAnnotation";
 import type { FilterableAnnotation } from "./FilterableAnnotation";
 import type { FullTextAnnotation } from "./FullTextAnnotation";
-import type { GenAIAnnotation } from "./GenAIAnnotation";
 import { IDAnnotation } from "./IDAnnotation";
 import type { JWTClaimAnnotation } from "./JWTClaimAnnotation";
 import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
@@ -66,6 +65,7 @@ import type { SubscriptionAnnotation } from "./SubscriptionAnnotation";
 import type { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
 import type { TimestampAnnotation } from "./TimestampAnnotation";
 import type { UniqueAnnotation } from "./UniqueAnnotation";
+import type { VectorAnnotation } from "./VectorAnnotation";
 
 export interface Annotation {
     readonly name: string;
@@ -85,7 +85,7 @@ export type Annotations = CheckAnnotationName<{
     default: DefaultAnnotation;
     filterable: FilterableAnnotation;
     fulltext: FullTextAnnotation;
-    genAI: GenAIAnnotation;
+    vector: VectorAnnotation;
     id: IDAnnotation;
     jwt: JWTPayloadAnnotation;
     jwtClaim: JWTClaimAnnotation;
@@ -136,5 +136,5 @@ export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<
     timestamp: parseTimestampAnnotation,
     unique: parseUniqueAnnotation,
     relayId: () => new RelayIDAnnotation(),
-    genAI: parseGenAIAnnotation,
+    vector: parseVectorAnnotation,
 };

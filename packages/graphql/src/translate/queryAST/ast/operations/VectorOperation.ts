@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { VectorField } from "../../../../schema-model/annotation/VectorAnnotation";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
@@ -28,13 +29,14 @@ import type { EntitySelection } from "../selection/EntitySelection";
 import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
-export type FulltextOptions = {
-    index: string;
-    phrase: string;
+export type VectorOptions = {
+    index: VectorField;
+    vector?: number[];
+    phrase?: string;
     score: Cypher.Variable;
 };
 
-export class FulltextOperation extends ReadOperation {
+export class VectorOperation extends ReadOperation {
     private scoreField: ScoreField | undefined;
 
     constructor({

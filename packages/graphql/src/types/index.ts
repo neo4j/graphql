@@ -27,6 +27,7 @@ import type { Integer } from "neo4j-driver";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
+import type { VectorField } from "../schema-model/annotation/VectorAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
@@ -49,11 +50,10 @@ export type FulltextContext = {
     scoreVariable: Cypher.Variable;
 };
 
-export type GenAIContext = {
-    name: string;
-    fields: string[];
+export type VectorContext = {
+    index: VectorField;
+    queryName: string;
     queryType: string;
-    queryName: string | undefined;
     scoreVariable: Cypher.Variable;
 };
 
@@ -435,7 +435,7 @@ export interface Neo4jAuthorizationSettings {
     verifyOptions?: JWTVerifyOptions;
 }
 
-export interface Neo4jGenAISettings {
+export interface Neo4jVectorSettings {
     ["VertexAI"]: {
         token: string; // API access token.
         projectId: string; // GCP project ID.
@@ -483,7 +483,7 @@ export type Neo4jFeaturesSettings = {
         stringAggregation?: boolean;
         aggregationFilters?: boolean;
     };
-    genAI?: Neo4jGenAISettings;
+    vector?: Neo4jVectorSettings;
 };
 
 /** Parsed features used in context */
