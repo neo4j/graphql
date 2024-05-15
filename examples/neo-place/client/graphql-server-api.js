@@ -1,17 +1,6 @@
-import {
-    createClient,
-    cacheExchange,
-    fetchExchange,
-    subscriptionExchange,
-    gql
-} from "urql";
-import {
-    pipe,
-    subscribe
-} from "wonka";
-import {
-    createClient as createWSClient
-} from "graphql-ws";
+import { cacheExchange, createClient, fetchExchange, gql, subscriptionExchange } from "@urql/core";
+import { createClient as createWSClient } from "graphql-ws";
+import { pipe, subscribe } from "wonka";
 
 // Low security auth
 const JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.vVUnlsit1z9nnQJXIEwyFAj9NNflBUoeOpHP9MyzlCg";
