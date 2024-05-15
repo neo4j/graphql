@@ -22,6 +22,7 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { generateReadResolver } from "../resolvers/readResolver";
 import { SchemaBuilder } from "./SchemaBuilder";
+import { SchemaTypes } from "./schema-types/SchemaTypes";
 import { StaticSchemaTypes } from "./schema-types/StaticSchemaTypes";
 import { TopLevelEntitySchemaTypes } from "./schema-types/TopLevelEntitySchemaTypes";
 
@@ -58,12 +59,16 @@ export class SchemaGenerator {
         staticTypes: StaticSchemaTypes
     ): Map<ConcreteEntity, TopLevelEntitySchemaTypes> {
         const resultMap = new Map<ConcreteEntity, TopLevelEntitySchemaTypes>();
+        const schemaTypes = new SchemaTypes({
+            staticTypes,
+            entitySchemas: resultMap,
+        });
         for (const entity of schemaModel.entities.values()) {
             if (entity.isConcreteEntity()) {
                 const entitySchemaTypes = new TopLevelEntitySchemaTypes({
                     entity,
                     schemaBuilder: this.schemaBuilder,
-                    staticTypes,
+                    schemaTypes,
                 });
 
                 resultMap.set(entity, entitySchemaTypes);

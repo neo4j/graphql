@@ -27,7 +27,7 @@ import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { RelatedEntityTypeNames } from "../../schema-model/graphql-type-names/RelatedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
-import type { StaticSchemaTypes } from "./StaticSchemaTypes";
+import type { SchemaTypes } from "./SchemaTypes";
 
 export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTypeNames> {
     private relationship: Relationship;
@@ -36,61 +36,70 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         relationship,
         schemaBuilder,
         entityTypeNames,
-        staticTypes,
+        schemaTypes,
     }: {
         schemaBuilder: SchemaBuilder;
         relationship: Relationship;
-        staticTypes: StaticSchemaTypes;
+        schemaTypes: SchemaTypes;
         entityTypeNames: RelatedEntityTypeNames;
     }) {
         super({
             schemaBuilder,
             entityTypeNames,
-            staticTypes,
+            schemaTypes,
         });
         this.relationship = relationship;
     }
 
     protected get edge(): ObjectTypeComposer {
-        const fields = {
-            node: this.nodeType,
-            cursor: "String",
-        };
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.edge, () => {
+            const properties = this.getEdgeProperties();
+            const fields = {
+                node: this.nodeType,
+                cursor: "String",
+            };
 
-        const properties = this.getEdgeProperties();
-        if (properties) {
-            fields["properties"] = properties;
-        }
-
-        return this.schemaBuilder.createObjectType(this.entityTypeNames.edge, fields);
+            if (properties) {
+                fields["properties"] = properties;
+            }
+            return {
+                fields,
+            };
+        });
     }
 
     protected get edgeSort(): InputTypeComposer {
-        const edgeSortFields = {
-            node: this.nodeSort,
-        };
-        const properties = this.getEdgeSortProperties();
-        if (properties) {
-            edgeSortFields["properties"] = properties;
-        }
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeSort, () => {
+            const edgeSortFields = {
+                node: this.nodeSort,
+            };
+            const properties = this.getEdgeSortProperties();
+            if (properties) {
+                edgeSortFields["properties"] = properties;
+            }
 
-        return this.schemaBuilder.createInputObjectType(this.entityTypeNames.edgeSort, edgeSortFields);
+            return { fields: edgeSortFields };
+        });
     }
 
-    public get nodeType(): string {
+    public get nodeType(): ObjectTypeComposer {
         const target = this.relationship.target;
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        return target.typeNames.node;
+        const targetSchemaTypes = this.schemaTypes.getEntitySchemaTypes(target);
+
+        return targetSchemaTypes.nodeType;
     }
 
-    public get nodeSort(): string {
+    public get nodeSort(): InputTypeComposer {
         const target = this.relationship.target;
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        return target.typeNames.nodeSort;
+        const targetSchemaTypes = this.schemaTypes.getEntitySchemaTypes(target);
+
+        return targetSchemaTypes.nodeSort;
     }
 
     @Memoize()
@@ -100,8 +109,12 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
 
     private getEdgeSortProperties(): InputTypeComposer | undefined {
         if (this.entityTypeNames.propertiesSort) {
-            const fields = this.getRelationshipSortFields();
-            return this.schemaBuilder.getOrCreateInputObjectType(this.entityTypeNames.propertiesSort, fields);
+            return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.propertiesSort, () => {
+                const fields = this.getRelationshipSortFields();
+                return {
+                    fields,
+                };
+            });
         }
     }
 
@@ -112,14 +125,21 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
 
     private getRelationshipSortFields(): Record<string, EnumTypeComposer> {
         return Object.fromEntries(
-            this.getRelationshipFields().map((attribute) => [attribute.name, this.staticTypes.sortDirection])
+            this.getRelationshipFields().map((attribute) => [
+                attribute.name,
+                this.schemaTypes.staticTypes.sortDirection,
+            ])
         );
     }
 
     private getEdgeProperties(): ObjectTypeComposer | undefined {
         if (this.entityTypeNames.properties) {
-            const fields = this.getRelationshipFieldsDefinition();
-            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.properties, fields);
+            return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.properties, () => {
+                const fields = this.getRelationshipFieldsDefinition();
+                return {
+                    fields,
+                };
+            });
         }
     }
 }
