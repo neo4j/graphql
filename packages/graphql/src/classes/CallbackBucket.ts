@@ -98,6 +98,8 @@ export class CallbackBucket {
                 return GraphQLID.parseValue(result);
             case "BigInt":
                 return GraphQLBigInt.parseValue(result);
+            default:
+                throw new GraphQLError("Callback result received for field of unsupported type.");
         }
     }
 }
