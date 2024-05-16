@@ -4,11 +4,10 @@ module.exports = class CanvasApi {
         this.ctx = this.canvas.getContext("2d");
         this.ctx.imageSmoothingEnabled = false;
         this.pixelScale = pixelScale;
-        this.onPixelClickedCallback=()=>{};
-
+        this.onPixelClickedCallback = () => {};
     }
 
-    onPixelClicked(cb){
+    onPixelClicked(cb) {
         this.onPixelClickedCallback = cb;
 
         this.canvas.addEventListener("click", (ev) => this.onClick(ev), false);
@@ -36,7 +35,7 @@ module.exports = class CanvasApi {
     }
 
     grayscale() {
-        this.ctx.filter = 'grayscale(1)';
+        this.ctx.filter = "grayscale(1)";
         this.ctx.drawImage(this.canvas, 0, 0);
     }
 };

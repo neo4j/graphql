@@ -1,47 +1,30 @@
-import {
-    createClient,
-    cacheExchange,
-    fetchExchange,
-    subscriptionExchange,
-    gql
-} from "urql";
-import {
-    pipe,
-    subscribe
-} from "wonka";
-import {
-    createClient as createWSClient
-} from "graphql-ws";
+import { cacheExchange, createClient, fetchExchange, subscriptionExchange } from "@urql/core";
+import { createClient as createWSClient } from "graphql-ws";
+import { pipe, subscribe } from "wonka";
 
 // Low security auth
 const JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.vVUnlsit1z9nnQJXIEwyFAj9NNflBUoeOpHP9MyzlCg";
 
 module.exports = class GraphQLServerApi {
-
-    constructor({
-        wsUrl,
-        url,
-    }) {
+    constructor({ wsUrl, url }) {
         this.wsUrl = wsUrl;
         this.url = url;
         this._createClients();
     }
 
     async getCanvas() {
-        const canvasQuery = gql`
+        const canvasQuery = /* GraphQL */ `
             query Canvas {
                 canvas
             }
         `;
-        const result = await this.client
-            .query(canvasQuery)
-            .toPromise()
-        if (result.error) throw new Error(result.error.message)
-        return result.data.canvas
+        const result = await this.client.query(canvasQuery).toPromise();
+        if (result.error) throw new Error(result.error.message);
+        return result.data.canvas;
     }
 
     updatePixel(position, color) {
-        const updatePixelQuery = gql`
+        const updatePixelQuery = /* GraphQL */ `
             mutation UpdatePixels($update: PixelUpdateInput, $where: PixelWhere) {
                 updatePixels(update: $update, where: $where) {
                     pixels {
@@ -53,10 +36,10 @@ module.exports = class GraphQLServerApi {
         `;
         const params = {
             update: {
-                color
+                color,
             },
             where: {
-                position
+                position,
             },
         };
 
@@ -64,22 +47,25 @@ module.exports = class GraphQLServerApi {
     }
 
     onConnected(cb) {
-        this.wsClient.on("connected", () => {
+        this.wsClient.on("connected", (e) => {
+            console.log("Connected", e);
             cb();
-        })
+        });
     }
 
     onClosed(cb) {
-        this.wsClient.on("error", () => {
+        this.wsClient.on("error", (e) => {
+            console.log("Error", e);
             cb();
         });
-        this.wsClient.on("closed", () => {
+        this.wsClient.on("closed", (e) => {
+            console.log("Closed", e);
             cb();
-        })
+        });
     }
 
     onPixelUpdate(cb) {
-        const pixelsSubscription = gql`
+        const pixelsSubscription = /* GraphQL */ `
             subscription Subscription {
                 pixelUpdated {
                     updatedPixel {
@@ -94,7 +80,7 @@ module.exports = class GraphQLServerApi {
             this.client.subscription(pixelsSubscription),
             subscribe((result) => {
                 if (!result.error) {
-                    cb(result.data.pixelUpdated)
+                    cb(result.data.pixelUpdated);
                 }
             })
         );
@@ -108,8 +94,6 @@ module.exports = class GraphQLServerApi {
             },
         });
 
-
-
         this.client = createClient({
             url: this.url,
             exchanges: [
@@ -117,20 +101,20 @@ module.exports = class GraphQLServerApi {
                 fetchExchange,
                 subscriptionExchange({
                     forwardSubscription: (request) => {
-                        const input = { ...request, query: request.query || '' };
+                        const input = { ...request, query: request.query || "" };
                         return {
                             subscribe: (sink) => ({
                                 unsubscribe: this.wsClient.subscribe(input, sink),
                             }),
-                        }
+                        };
                     },
                 }),
             ],
             fetchOptions: {
                 headers: {
-                    Authorization: `Bearer ${JWT}`
-                }
-            }
+                    Authorization: `Bearer ${JWT}`,
+                },
+            },
         });
     }
-}
+};

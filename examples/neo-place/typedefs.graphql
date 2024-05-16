@@ -1,5 +1,5 @@
-type Pixel @exclude(operations: [CREATE, DELETE]) {
-    position: [Int!]! @readonly @unique
+type Pixel @mutation(operations: [UPDATE]) @authentication {
+    position: [Int!]! @settable(onCreate: false, onUpdate: false) @unique
     color: String
 }
 
@@ -16,5 +16,3 @@ type Query {
         )
         @authentication
 }
-
-extend type Pixel @authentication
