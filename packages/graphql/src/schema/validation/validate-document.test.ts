@@ -3626,7 +3626,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID or BigInt."
+                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
             expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
