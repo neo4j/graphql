@@ -388,7 +388,7 @@ export interface Neo4jGraphQLSubscriptionsEngine {
     close(): void;
 }
 
-export type CallbackReturnValue = string | number | boolean | undefined | null;
+export type CallbackReturnValue = string | number | boolean | undefined | null | Array<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallback = (
     parent: Record<string, unknown>,

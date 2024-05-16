@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLCallbacks } from "../types";
+import { GraphQLBoolean, GraphQLError, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import type { Integer } from "neo4j-driver";
+import { GraphQLBigInt } from "../graphql/scalars";
+import type { Neo4jGraphQLCallbacks, TypeMeta } from "../types";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
@@ -25,7 +28,10 @@ interface Callback {
     functionName: string;
     paramName: string;
     parent?: Record<string, unknown>;
+    type: TypeMeta;
 }
+
+type CallbackResult = number | string | boolean | Integer | Array<CallbackResult>;
 
 export class CallbackBucket {
     public callbacks: Callback[];
@@ -62,12 +68,41 @@ export class CallbackBucket {
                         .split("\n")
                         .filter((line) => !line.includes(`$resolvedCallbacks.${cb.paramName}`))
                         .join("\n");
+                } else if (param === null) {
+                    params[cb.paramName] = null;
+                } else {
+                    params[cb.paramName] = this.parseCallbackResult(param, cb.type);
                 }
-
-                params[cb.paramName] = param;
             })
         );
 
         return { cypher, params };
+    }
+
+    private parseCallbackResult(result: unknown, type: TypeMeta): CallbackResult {
+        if (type.array) {
+            if (!Array.isArray(result)) {
+                throw new GraphQLError("Expected list as callback result but did not.");
+            }
+
+            return result.map((r) => this.parseCallbackResult(r, { ...type, array: false }));
+        }
+
+        switch (type.name) {
+            case "Int":
+                return GraphQLInt.parseValue(result);
+            case "Float":
+                return GraphQLFloat.parseValue(result);
+            case "String":
+                return GraphQLString.parseValue(result);
+            case "Boolean":
+                return GraphQLBoolean.parseValue(result);
+            case "ID":
+                return GraphQLID.parseValue(result);
+            case "BigInt":
+                return GraphQLBigInt.parseValue(result);
+            default:
+                throw new GraphQLError("Callback result received for field of unsupported type.");
+        }
     }
 }
