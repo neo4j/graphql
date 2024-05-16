@@ -6,9 +6,10 @@ const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
-const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
-
+const cors = require("cors");
+const { ApolloServer } = require("@apollo/server");
+const { ApolloServerPluginDrainHttpServer } = require("@apollo/server/plugin/drainHttpServer");
+const { expressMiddleware } = require("@apollo/server/express4");
 const setupMap = require("./map-setup");
 const { getDriver } = require("./get-driver");
 const { createEngine } = require("./create-engine");
@@ -26,7 +27,7 @@ async function main() {
         driver: driver,
         features: {
             authorization: { key: "super-secret42" },
-            subscriptions: engine || true
+            subscriptions: engine || true,
         },
     });
 
@@ -53,6 +54,7 @@ async function main() {
         {
             schema,
             context: (ctx) => {
+                ctx.connectionParams.token = ctx.connectionParams.authorization;
                 return ctx;
             },
         },
@@ -61,11 +63,8 @@ async function main() {
 
     const server = new ApolloServer({
         schema,
-        context: ({ req }) => ({ token: req.headers.authorization }),
         plugins: [
-            ApolloServerPluginDrainHttpServer({
-                httpServer,
-            }),
+            ApolloServerPluginDrainHttpServer({ httpServer }),
             {
                 async serverWillStart() {
                     return {
@@ -78,9 +77,15 @@ async function main() {
         ],
     });
     await server.start();
-    server.applyMiddleware({
-        app,
-    });
+
+    app.use(
+        "/graphql",
+        cors(),
+        express.json(),
+        expressMiddleware(server, {
+            context: async ({ req }) => ({ token: req.headers.authorization }),
+        })
+    );
 
     const PORT = process.env.PORT || 4000;
     httpServer.listen(PORT, () => {
