@@ -18,6 +18,7 @@
  */
 
 import { GraphQLBoolean, GraphQLError, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import type { Integer } from "neo4j-driver";
 import { GraphQLBigInt } from "../graphql/scalars";
 import type { Neo4jGraphQLCallbacks, TypeMeta } from "../types";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
@@ -29,6 +30,8 @@ interface Callback {
     parent?: Record<string, unknown>;
     type: TypeMeta;
 }
+
+type CallbackResult = number | string | boolean | Integer | Array<CallbackResult>;
 
 export class CallbackBucket {
     public callbacks: Callback[];
@@ -76,7 +79,7 @@ export class CallbackBucket {
         return { cypher, params };
     }
 
-    private parseCallbackResult(result: any, type: TypeMeta): any {
+    private parseCallbackResult(result: unknown, type: TypeMeta): CallbackResult {
         if (type.array) {
             if (!Array.isArray(result)) {
                 throw new GraphQLError("Expected list as callback result but did not.");

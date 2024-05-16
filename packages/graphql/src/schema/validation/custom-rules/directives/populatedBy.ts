@@ -37,7 +37,7 @@ export function verifyPopulatedBy(callbacks?: Neo4jGraphQLCallbacks) {
             return;
         }
         if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-            // delegate
+            // delegate to KnownDirectivesRule
             return;
         }
         const callbackName = parseValueNode(callbackArg.value);
