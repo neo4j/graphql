@@ -32,6 +32,7 @@ import { RelationshipSelection } from "../../translate/queryAST/ast/selection/Re
 import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
 import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
+import { FilterFactory } from "./FilterFactory";
 import type {
     GraphQLSortArgument,
     GraphQLTree,
@@ -43,9 +44,11 @@ import type {
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
+    private filterFactory: FilterFactory;
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel) {
         this.schemaModel = schemaModel;
+        this.filterFactory = new FilterFactory(schemaModel);
     }
 
     public createAST({
@@ -70,6 +73,7 @@ export class ReadOperationFactory {
         entity: ConcreteEntity;
     }): V6ReadOperation {
         const connectionTree = graphQLTree.fields.connection;
+
         if (!connectionTree) {
             throw new Error("No Connection");
         }
@@ -94,6 +98,7 @@ export class ReadOperationFactory {
                 node: nodeFields,
             },
             sortFields: sortInputFields,
+            filters: this.filterFactory.createFilters({ entity, where: graphQLTree.args.where }),
         });
     }
 
@@ -138,6 +143,7 @@ export class ReadOperationFactory {
                 node: nodeFields,
             },
             sortFields: sortInputFields,
+            filters: [],
         });
     }
 

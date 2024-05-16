@@ -23,6 +23,7 @@ import type { Relationship } from "../../../schema-model/relationship/Relationsh
 import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLConnectionArgs,
+    GraphQLReadOperationArgs,
     GraphQLSortEdgeArgument,
     GraphQLTree,
     GraphQLTreeConnection,
@@ -61,13 +62,20 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
         );
 
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
-
+        const connectionOperationArgs = this.parseOperationArgs(resolveTree.args);
         return {
             alias: resolveTree.alias,
-            args: resolveTree.args,
+            args: connectionOperationArgs,
             fields: {
                 connection,
             },
+        };
+    }
+
+    private parseOperationArgs(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgs {
+        // Not properly parsed, assuming the type is the same
+        return {
+            where: resolveTreeArgs.where,
         };
     }
 

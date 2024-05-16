@@ -19,8 +19,8 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { LOGICAL_OPERATORS } from "../../constants";
-import type { ValueOf } from "../../utils/value-of";
 import { isInArray } from "../../utils/is-in-array";
+import type { ValueOf } from "../../utils/value-of";
 
 type LogicalOperator = ValueOf<typeof LOGICAL_OPERATORS>;
 
