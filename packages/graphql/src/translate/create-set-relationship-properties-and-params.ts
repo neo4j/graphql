@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { Relationship } from "../classes";
+import type { CallbackBucket } from "../classes/CallbackBucket";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 
@@ -68,7 +68,7 @@ function createSetRelationshipPropertiesAndParams({
         }
     });
 
-    relationship.primitiveFields.forEach((field) =>
+    [...relationship.primitiveFields, ...relationship.temporalFields].forEach((field) =>
         addCallbackAndSetParam(field, varName, propertiesObj, callbackBucket, strs, operation)
     );
 

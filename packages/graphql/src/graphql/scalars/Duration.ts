@@ -125,7 +125,7 @@ const parse = (value: unknown) => {
         return new neo4j.types.Duration(months, days, seconds, nanoseconds);
     }
 
-    if (isDuration(value as object)) {
+    if (isDuration(value)) {
         return value;
     }
 

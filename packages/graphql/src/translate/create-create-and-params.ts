@@ -334,7 +334,7 @@ function createCreateAndParams({
         initial.push(`SET ${varName}.${field.dbPropertyName} = ${field.typeMeta.name.toLowerCase()}()`);
     });
 
-    node.primitiveFields.forEach((field) =>
+    [...node.primitiveFields, ...node.temporalFields].forEach((field) =>
         addCallbackAndSetParam(field, varName, input, callbackBucket, initial, "CREATE")
     );
 

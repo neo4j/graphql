@@ -1465,6 +1465,972 @@ describe("@populatedBy directive", () => {
             });
         });
 
+        describe("@populatedBy - DateTime", () => {
+            test("Should use on CREATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString());
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: DateTime! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.create]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: date.toISOString(),
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("Should use on UPDATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString());
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: DateTime! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })
+                    `);
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.update]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: date.toISOString(),
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("should throw an error if string is not a DateTime", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const callback = () => Promise.resolve("banana");
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: DateTime! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toHaveLength(1);
+                expect(result.errors?.[0]?.message).toBe("DateTime cannot represent non temporal value: banana");
+                expect(result.data).toBeNull();
+            });
+        });
+
+        describe("@populatedBy - Date", () => {
+            test("Should use on CREATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString());
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Date! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.create]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: date.toISOString().split("T")[0],
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("Should use on UPDATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString());
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Date! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })
+                    `);
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.update]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: date.toISOString().split("T")[0],
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("should throw an error if string is not a Date", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const callback = () => Promise.resolve("banana");
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Date! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toHaveLength(1);
+                expect(result.errors?.[0]?.message).toBe("DateTime cannot represent non temporal value: banana");
+                expect(result.data).toBeNull();
+            });
+        });
+
+        describe("@populatedBy - Time", () => {
+            test("Should use on CREATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString().split("T")[1]);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Time! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.create]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("Should use on UPDATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString().split("T")[1]);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Time! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })
+                    `);
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.update]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("should throw an error if string is not a Time", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const callback = () => Promise.resolve("banana");
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Time! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toHaveLength(1);
+                expect(result.errors?.[0]?.message).toBe("Value must be formatted as Time: banana");
+                expect(result.data).toBeNull();
+            });
+        });
+
+        describe("@populatedBy - LocalDateTime", () => {
+            test("Should use on CREATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString().split("Z")[0]);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: LocalDateTime! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.create]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: `${date.toISOString().split("Z")[0]}000000`,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("Should use on UPDATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString().split("Z")[0]);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: LocalDateTime! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })
+                    `);
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.update]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: `${date.toISOString().split("Z")[0]}000000`,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("should throw an error if string is not a LocalDateTime", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const callback = () => Promise.resolve("banana");
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: LocalDateTime! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toHaveLength(1);
+                expect(result.errors?.[0]?.message).toBe("Value must be formatted as LocalDateTime: banana");
+                expect(result.data).toBeNull();
+            });
+        });
+
+        describe("@populatedBy - LocalTime", () => {
+            test("Should use on CREATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString().split("Z")[0]?.split("T")[1]);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: LocalTime! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.create]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: `${date.toISOString().split("Z")[0]?.split("T")[1]}000000`,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("Should use on UPDATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const date = new Date();
+
+                const callback = () => Promise.resolve(date.toISOString().split("Z")[0]?.split("T")[1]);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: LocalTime! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })
+                    `);
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.update]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: `${date.toISOString().split("Z")[0]?.split("T")[1]}000000`,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("should throw an error if string is not a LocalTime", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const callback = () => Promise.resolve("banana");
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: LocalTime! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toHaveLength(1);
+                expect(result.errors?.[0]?.message).toBe("Value must be formatted as LocalTime: banana");
+                expect(result.data).toBeNull();
+            });
+        });
+
+        describe("@populatedBy - Duration", () => {
+            test("Should use on CREATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const duration = `P14M3DT14700S`;
+
+                const callback = () => Promise.resolve(duration);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Duration! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.create]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: duration,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("Should use on UPDATE", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const duration = `P14M3DT14700S`;
+
+                const callback = () => Promise.resolve(duration);
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Duration! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })
+                    `);
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toBeUndefined();
+                expect(result.data as any).toMatchObject({
+                    [testMovie.operations.update]: {
+                        [testMovie.plural]: [
+                            {
+                                id: movieId,
+                                callback: duration,
+                            },
+                        ],
+                    },
+                });
+            });
+
+            test("should throw an error if string is not a Duration", async () => {
+                const testMovie = testHelper.createUniqueType("Movie");
+
+                const callback = () => Promise.resolve("banana");
+
+                const typeDefs = gql`
+                    type ${testMovie.name} {
+                        id: ID
+                        callback: Duration! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+                `;
+
+                await testHelper.initNeo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
+                        },
+                    },
+                });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [{ id: "${movieId}" }]) {
+                            ${testMovie.plural} {
+                                id
+                                callback
+                            }
+                        }
+                    }
+                `;
+
+                const result = await testHelper.executeGraphQL(mutation);
+
+                expect(result.errors).toHaveLength(1);
+                expect(result.errors?.[0]?.message).toBe("Value must be formatted as Duration: banana");
+                expect(result.data).toBeNull();
+            });
+        });
+
         describe("@populatedBy - Misc", () => {
             test("should not change the property when returning 'undefined'", async () => {
                 const testMovie = testHelper.createUniqueType("Movie");

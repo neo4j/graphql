@@ -51,9 +51,24 @@ export function verifyPopulatedBy(callbacks?: Neo4jGraphQLCallbacks) {
                 "callback",
             ]);
         }
-        if (!["Int", "Float", "String", "Boolean", "ID", "BigInt"].includes(getInnerTypeName(traversedDef.type))) {
+        if (
+            ![
+                "Int",
+                "Float",
+                "String",
+                "Boolean",
+                "ID",
+                "BigInt",
+                "DateTime",
+                "Date",
+                "Time",
+                "LocalDateTime",
+                "LocalTime",
+                "Duration",
+            ].includes(getInnerTypeName(traversedDef.type))
+        ) {
             throw new DocumentValidationError(
-                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID or BigInt.",
+                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration.",
                 []
             );
         }
