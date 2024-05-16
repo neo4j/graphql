@@ -103,7 +103,7 @@ export class CallbackBucket {
         return { cypher, params };
     }
 
-    private parseCallbackResult(result: any, type: TypeMeta): CallbackResult {
+    private parseCallbackResult(result: unknown, type: TypeMeta): CallbackResult {
         if (type.array) {
             if (!Array.isArray(result)) {
                 throw new GraphQLError("Expected list as callback result but did not.");

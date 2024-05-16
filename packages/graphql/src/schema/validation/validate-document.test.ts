@@ -567,6 +567,33 @@ describe("validation 2.0", () => {
                 ).not.toThrow();
             });
 
+            test.each([
+                "DateTime",
+                "Date",
+                "Time",
+                "LocalDateTime",
+                "LocalTime",
+                "Duration",
+                "Point",
+                "CartesianPoint",
+            ])("@populatedBy throws when used on invalid type %s", (type: string) => {
+                const doc = /* GraphQL */ `
+                    type User {
+                        name: ${type} @populatedBy(callback: "myCallback")
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: parse(doc),
+                        features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
+                        additionalDefinitions,
+                    });
+                expect(executeValidate).toThrow(
+                    "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID or BigInt."
+                );
+            });
+
             test.each(["Point", "CartesianPoint"])(
                 "@populatedBy throws when used on invalid type %s",
                 (type: string) => {
