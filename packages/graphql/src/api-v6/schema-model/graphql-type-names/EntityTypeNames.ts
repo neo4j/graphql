@@ -28,7 +28,7 @@ export abstract class EntityTypeNames {
     }
 
     public get node(): string {
-        return `${this.entityName}`;
+        return this.entityName;
     }
 
     public get nodeSort(): string {
@@ -40,5 +40,4 @@ export abstract class EntityTypeNames {
     public abstract get connectionSort(): string;
     public abstract get edge(): string;
     public abstract get edgeSort(): string;
-    public abstract get whereInput(): string;
 }

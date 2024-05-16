@@ -17,20 +17,24 @@
  * limitations under the License.
  */
 
+import type { GraphQLResolveInfo } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
+import { FilterSchemaTypes } from "./FilterSchemaTypes";
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
 
 export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames> {
     private entity: ConcreteEntity;
+    private filterSchemaTypes: FilterSchemaTypes;
 
     constructor({
         entity,
@@ -47,6 +51,25 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
             schemaTypes,
         });
         this.entity = entity;
+        this.filterSchemaTypes = new FilterSchemaTypes({ schemaBuilder, entity, schemaTypes });
+    }
+
+    public addTopLevelQueryField(
+        resolver: (
+            _root: any,
+            args: any,
+            context: Neo4jGraphQLTranslationContext,
+            info: GraphQLResolveInfo
+        ) => Promise<any>
+    ): void {
+        this.schemaBuilder.addQueryField({
+            name: this.entity.typeNames.queryField,
+            type: this.connectionOperation,
+            args: {
+                where: this.filterSchemaTypes.operationWhere,
+            },
+            resolver,
+        });
     }
 
     protected get edge(): ObjectTypeComposer {

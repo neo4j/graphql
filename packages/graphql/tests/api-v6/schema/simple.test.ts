@@ -58,12 +58,33 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              title: StringWhere
             }
 
             type PageInfo {
@@ -72,12 +93,24 @@ describe("Simple Aura-API", () => {
             }
 
             type Query {
-              movies: MovieOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });
@@ -121,12 +154,33 @@ describe("Simple Aura-API", () => {
               node: ActorSort
             }
 
+            input ActorEdgeWhere {
+              AND: [ActorEdgeWhere!]
+              NOT: ActorEdgeWhere
+              OR: [ActorEdgeWhere!]
+              node: ActorWhere
+            }
+
             type ActorOperation {
               connection(sort: ActorConnectionSort): ActorConnection
             }
 
+            input ActorOperationWhere {
+              AND: [ActorOperationWhere!]
+              NOT: ActorOperationWhere
+              OR: [ActorOperationWhere!]
+              edges: ActorEdgeWhere
+            }
+
             input ActorSort {
               name: SortDirection
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              name: StringWhere
             }
 
             type Movie {
@@ -151,12 +205,33 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              title: StringWhere
             }
 
             type PageInfo {
@@ -165,13 +240,25 @@ describe("Simple Aura-API", () => {
             }
 
             type Query {
-              actors: ActorOperation
-              movies: MovieOperation
+              actors(where: ActorOperationWhere): ActorOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });
@@ -215,12 +302,33 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              title: StringWhere
             }
 
             type PageInfo {
@@ -229,12 +337,24 @@ describe("Simple Aura-API", () => {
             }
 
             type Query {
-              movies: MovieOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });

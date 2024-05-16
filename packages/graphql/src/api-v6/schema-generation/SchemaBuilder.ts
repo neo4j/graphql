@@ -116,10 +116,21 @@ export class SchemaBuilder {
         });
     }
 
-    public addQueryField(name: string, type: ObjectTypeComposer | string, resolver: (...args: any[]) => any): void {
+    public addQueryField({
+        name,
+        type,
+        args,
+        resolver,
+    }: {
+        name: string;
+        type: ObjectTypeComposer;
+        args: Record<string, InputTypeComposer>;
+        resolver: (...args: any[]) => any;
+    }): void {
         this.composer.Query.addFields({
             [name]: {
                 type: type,
+                args,
                 resolve: resolver,
             },
         });

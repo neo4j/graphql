@@ -64,6 +64,13 @@ describe("Relationships", () => {
               node: ActorSort
             }
 
+            input ActorEdgeWhere {
+              AND: [ActorEdgeWhere!]
+              NOT: ActorEdgeWhere
+              OR: [ActorEdgeWhere!]
+              node: ActorWhere
+            }
+
             type ActorMoviesConnection {
               edges: [ActorMoviesEdge]
               pageInfo: PageInfo
@@ -90,8 +97,22 @@ describe("Relationships", () => {
               connection(sort: ActorConnectionSort): ActorConnection
             }
 
+            input ActorOperationWhere {
+              AND: [ActorOperationWhere!]
+              NOT: ActorOperationWhere
+              OR: [ActorOperationWhere!]
+              edges: ActorEdgeWhere
+            }
+
             input ActorSort {
               name: SortDirection
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              name: StringWhere
             }
 
             type Movie {
@@ -139,12 +160,33 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              title: StringWhere
             }
 
             type PageInfo {
@@ -153,13 +195,25 @@ describe("Relationships", () => {
             }
 
             type Query {
-              actors: ActorOperation
-              movies: MovieOperation
+              actors(where: ActorOperationWhere): ActorOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });
@@ -218,6 +272,13 @@ describe("Relationships", () => {
               node: ActorSort
             }
 
+            input ActorEdgeWhere {
+              AND: [ActorEdgeWhere!]
+              NOT: ActorEdgeWhere
+              OR: [ActorEdgeWhere!]
+              node: ActorWhere
+            }
+
             type ActorMoviesConnection {
               edges: [ActorMoviesEdge]
               pageInfo: PageInfo
@@ -246,8 +307,22 @@ describe("Relationships", () => {
               connection(sort: ActorConnectionSort): ActorConnection
             }
 
+            input ActorOperationWhere {
+              AND: [ActorOperationWhere!]
+              NOT: ActorOperationWhere
+              OR: [ActorOperationWhere!]
+              edges: ActorEdgeWhere
+            }
+
             input ActorSort {
               name: SortDirection
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              name: StringWhere
             }
 
             type Movie {
@@ -297,12 +372,33 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              title: StringWhere
             }
 
             type PageInfo {
@@ -311,13 +407,25 @@ describe("Relationships", () => {
             }
 
             type Query {
-              actors: ActorOperation
-              movies: MovieOperation
+              actors(where: ActorOperationWhere): ActorOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });

@@ -35,29 +35,11 @@ export class SchemaGenerator {
 
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
         const staticTypes = new StaticSchemaTypes({ schemaBuilder: this.schemaBuilder });
-        const entityTypes = this.generateEntityTypes(schemaModel, staticTypes);
-        this.createQueryFields(entityTypes);
-
+        this.generateEntityTypes(schemaModel, staticTypes);
         return this.schemaBuilder.build();
     }
 
-    private createQueryFields(entityTypes: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
-        entityTypes.forEach((entitySchemaTypes, entity) => {
-            const resolver = generateReadResolver({
-                entity,
-            });
-            this.schemaBuilder.addQueryField(
-                entity.typeNames.queryField,
-                entitySchemaTypes.connectionOperation,
-                resolver
-            );
-        });
-    }
-
-    private generateEntityTypes(
-        schemaModel: Neo4jGraphQLSchemaModel,
-        staticTypes: StaticSchemaTypes
-    ): Map<ConcreteEntity, TopLevelEntitySchemaTypes> {
+    private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
         const resultMap = new Map<ConcreteEntity, TopLevelEntitySchemaTypes>();
         const schemaTypes = new SchemaTypes({
             staticTypes,
@@ -70,11 +52,14 @@ export class SchemaGenerator {
                     schemaBuilder: this.schemaBuilder,
                     schemaTypes,
                 });
-
                 resultMap.set(entity, entitySchemaTypes);
             }
         }
-
-        return resultMap;
+        for (const [entity, entitySchemaTypes] of resultMap.entries()) {
+            const resolver = generateReadResolver({
+                entity,
+            });
+            entitySchemaTypes.addTopLevelQueryField(resolver);
+        }
     }
 }
