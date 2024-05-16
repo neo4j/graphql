@@ -54,6 +54,7 @@ async function main() {
         {
             schema,
             context: (ctx) => {
+                ctx.connectionParams.token = ctx.connectionParams.authorization;
                 return ctx;
             },
         },
