@@ -20,14 +20,14 @@
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import type { Filter, FilterOperator, LogicalOperators } from "../../translate/queryAST/ast/filters/Filter";
+import type { Filter, LogicalOperators } from "../../translate/queryAST/ast/filters/Filter";
 import { LogicalFilter } from "../../translate/queryAST/ast/filters/LogicalFilter";
 import { PropertyFilter } from "../../translate/queryAST/ast/filters/property-filters/PropertyFilter";
+import { getFilterOperator } from "./FilterOperators";
 import type {
     GraphQLEdgeWhereArgs,
     GraphQLFilters,
     GraphQLWhereArgs,
-    NumberFilters,
     StringFilters,
 } from "./resolve-tree-parser/graphql-tree";
 
@@ -86,19 +86,13 @@ export class FilterFactory {
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) return [];
             const attributeAdapter = new AttributeAdapter(attribute);
-            if (attributeAdapter.typeHelper.isString()) {
-                return this.createStringPropertyFilters(attributeAdapter, filters);
-            }
-            if (attributeAdapter.typeHelper.isNumeric()) {
-                return this.createNumberPropertyFilters(attributeAdapter, filters);
-            }
-            return [];
+            return this.createPropertyFilters(attributeAdapter, filters);
         });
     }
 
-    private createStringPropertyFilters(attribute: AttributeAdapter, filters: StringFilters): PropertyFilter[] {
+    private createPropertyFilters(attribute: AttributeAdapter, filters: StringFilters): PropertyFilter[] {
         return Object.entries(filters).map(([key, value]) => {
-            const operator = this.getStringOperator(key);
+            const operator = getFilterOperator(attribute, key);
             if (!operator) throw new Error("Invalid operator");
 
             return new PropertyFilter({
@@ -110,49 +104,5 @@ export class FilterFactory {
                 attachedTo: "node",
             });
         });
-    }
-
-    private createNumberPropertyFilters(attribute: AttributeAdapter, filters: NumberFilters): PropertyFilter[] {
-        return Object.entries(filters).map(([key, value]) => {
-            const operator = this.getNumberOperator(key);
-            if (!operator) throw new Error("Invalid operator");
-
-            return new PropertyFilter({
-                attribute,
-                relationship: undefined,
-                comparisonValue: value,
-                isNot: false, // deprecated
-                operator,
-                attachedTo: "node",
-            });
-        });
-    }
-
-    private getStringOperator(operator: string): FilterOperator | undefined {
-        // TODO: avoid this mapping
-        const stringOperatorMap = {
-            equals: "EQ",
-            in: "IN",
-            matches: "MATCHES",
-            contains: "CONTAINS",
-            startsWith: "STARTS_WITH",
-            endsWith: "ENDS_WITH",
-        } as const;
-
-        return stringOperatorMap[operator];
-    }
-
-    private getNumberOperator(operator: string): FilterOperator | undefined {
-        // TODO: avoid this mapping
-        const numberOperatorMap = {
-            equals: "EQ",
-            in: "IN",
-            lt: "LT",
-            lte: "LTE",
-            gt: "GT",
-            gte: "GTE",
-        } as const;
-
-        return numberOperatorMap[operator];
     }
 }
