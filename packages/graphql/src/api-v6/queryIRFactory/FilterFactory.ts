@@ -26,6 +26,7 @@ import type {
     GraphQLEdgeWhereArgs,
     GraphQLFilters,
     GraphQLWhereArgs,
+    NumberFilters,
     StringFilters,
 } from "./resolve-tree-parser/graphql-tree";
 
@@ -58,6 +59,9 @@ export class FilterFactory {
             if (attributeAdapter.typeHelper.isString()) {
                 return this.createStringPropertyFilters(attributeAdapter, filters);
             }
+            if (attributeAdapter.typeHelper.isNumeric()) {
+                return this.createNumberPropertyFilters(attributeAdapter, filters);
+            }
             return [];
         });
     }
@@ -65,6 +69,22 @@ export class FilterFactory {
     private createStringPropertyFilters(attribute: AttributeAdapter, filters: StringFilters): PropertyFilter[] {
         return Object.entries(filters).map(([key, value]) => {
             const operator = this.getStringOperator(key);
+            if (!operator) throw new Error("Invalid operator");
+
+            return new PropertyFilter({
+                attribute,
+                relationship: undefined,
+                comparisonValue: value,
+                isNot: false, // deprecated
+                operator,
+                attachedTo: "node",
+            });
+        });
+    }
+
+    private createNumberPropertyFilters(attribute: AttributeAdapter, filters: NumberFilters): PropertyFilter[] {
+        return Object.entries(filters).map(([key, value]) => {
+            const operator = this.getNumberOperator(key);
             if (!operator) throw new Error("Invalid operator");
 
             return new PropertyFilter({
@@ -90,5 +110,19 @@ export class FilterFactory {
         } as const;
 
         return stringOperatorMap[operator];
+    }
+
+    private getNumberOperator(operator: string): FilterOperator | undefined {
+        // TODO: avoid this mapping
+        const numberOperatorMap = {
+            equals: "EQ",
+            in: "IN",
+            lt: "LT",
+            lte: "LTE",
+            gt: "GT",
+            gte: "GTE",
+        } as const;
+
+        return numberOperatorMap[operator];
     }
 }

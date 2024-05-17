@@ -28,16 +28,8 @@ describe("Simple Where filters", () => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type Actor @node {
-                name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-
-            type ActedIn @relationshipProperties {
                 year: Int
+                runtime: Float
             }
         `;
 
@@ -46,10 +38,16 @@ describe("Simple Where filters", () => {
         });
     });
 
-    test("should query a relationship", async () => {
+    test("Query scalar types", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { edges: { node: { title: { equals: "The Matrix" } } } }) {
+                movies(
+                    where: {
+                        edges: {
+                            node: { title: { equals: "The Matrix" }, year: { equals: 100 }, runtime: { equals: 90.5 } }
+                        }
+                    }
+                ) {
                     connection {
                         edges {
                             node {
@@ -66,7 +64,7 @@ describe("Simple Where filters", () => {
         // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
-            WHERE this0.title = $param0
+            WHERE (this0.title = $param0 AND this0.year = $param1 AND this0.runtime = $param2)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -80,7 +78,12 @@ describe("Simple Where filters", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\"
+                \\"param0\\": \\"The Matrix\\",
+                \\"param1\\": {
+                    \\"low\\": 100,
+                    \\"high\\": 0
+                },
+                \\"param2\\": 90.5
             }"
         `);
     });

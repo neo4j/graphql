@@ -38,6 +38,14 @@ export type StringFilters = {
     startsWith?: string;
     endsWith?: string;
 };
+export type NumberFilters = {
+    equals?: string;
+    in?: string[];
+    lt?: string;
+    lte?: string;
+    gt?: string;
+    gte?: string;
+};
 
 export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
     fields: {
@@ -59,7 +67,7 @@ export type GraphQLEdgeWhereArgs = LogicalOperation<{
     node?: GraphQLFilters;
 }>;
 
-export type GraphQLFilters = Record<string, StringFilters>;
+export type GraphQLFilters = Record<string, StringFilters | NumberFilters>;
 
 export interface GraphQLTreeConnection extends GraphQLTreeElement {
     fields: {
