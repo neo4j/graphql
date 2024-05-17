@@ -51,15 +51,7 @@ export class StaticSchemaTypes {
     public get stringListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("StringListWhere", (itc) => {
             return {
-                fields: {
-                    OR: itc.NonNull.List,
-                    AND: itc.NonNull.List,
-                    NOT: itc,
-                    all: this.stringWhere,
-                    none: this.stringWhere,
-                    single: this.stringWhere,
-                    some: this.stringWhere,
-                },
+                fields: this.getListWhereFields(itc, this.stringWhere),
             };
         });
     }
@@ -82,6 +74,14 @@ export class StaticSchemaTypes {
         });
     }
 
+    public get idListWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("IDListWhere", (itc) => {
+            return {
+                fields: this.getListWhereFields(itc, this.idWhere),
+            };
+        });
+    }
+
     public get idWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("IDWhere", (itc) => {
             return {
@@ -100,6 +100,13 @@ export class StaticSchemaTypes {
         });
     }
 
+    public get intListWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("IntListWhere", (itc) => {
+            return {
+                fields: this.getListWhereFields(itc, this.intWhere),
+            };
+        });
+    }
 
     public get intWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("IntWhere", (itc) => {
@@ -115,6 +122,14 @@ export class StaticSchemaTypes {
                     gt: GraphQLInt,
                     gte: GraphQLInt,
                 },
+            };
+        });
+    }
+
+    public get floatListWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("FloatListWhere", (itc) => {
+            return {
+                fields: this.getListWhereFields(itc, this.floatWhere),
             };
         });
     }
@@ -135,5 +150,17 @@ export class StaticSchemaTypes {
                 },
             };
         });
+    }
+
+    private getListWhereFields(itc: InputTypeComposer, targetType: InputTypeComposer): Record<string, any> {
+        return {
+            OR: itc.NonNull.List,
+            AND: itc.NonNull.List,
+            NOT: itc,
+            all: targetType,
+            none: targetType,
+            single: targetType,
+            some: targetType,
+        };
     }
 }

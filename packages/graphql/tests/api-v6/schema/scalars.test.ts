@@ -26,28 +26,43 @@ describe("Scalars", () => {
         const typeDefs = /* GraphQL */ `
             type NodeType @node {
                 string: String
+                stringList: [String!]
                 int: Int
+                intList: [Int!]
                 float: Float
+                floatList: [Float!]
                 id: ID
+                idList: [ID!]
                 boolean: Boolean
+                booleanList: [Boolean!]
                 relatedNode: [RelatedNode!]!
                     @relationship(type: "RELATED_TO", direction: OUT, properties: "RelatedNodeProperties")
             }
 
             type RelatedNode @node {
                 string: String
+                stringList: [String!]
                 int: Int
+                intList: [Int!]
                 float: Float
+                floatList: [Float!]
                 id: ID
+                idList: [ID!]
                 boolean: Boolean
+                booleanList: [Boolean!]
             }
 
             type RelatedNodeProperties @relationshipProperties {
                 string: String
+                stringList: [String!]
                 int: Int
+                intList: [Int!]
                 float: Float
+                floatList: [Float!]
                 id: ID
+                idList: [ID!]
                 boolean: Boolean
+                booleanList: [Boolean!]
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -56,6 +71,16 @@ describe("Scalars", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+            }
+
+            input FloatListWhere {
+              AND: [FloatListWhere!]
+              NOT: FloatListWhere
+              OR: [FloatListWhere!]
+              all: FloatWhere
+              none: FloatWhere
+              single: FloatWhere
+              some: FloatWhere
             }
 
             input FloatWhere {
@@ -70,6 +95,16 @@ describe("Scalars", () => {
               lte: Float
             }
 
+            input IDListWhere {
+              AND: [IDListWhere!]
+              NOT: IDListWhere
+              OR: [IDListWhere!]
+              all: IDWhere
+              none: IDWhere
+              single: IDWhere
+              some: IDWhere
+            }
+
             input IDWhere {
               AND: [IDWhere!]
               NOT: IDWhere
@@ -80,6 +115,16 @@ describe("Scalars", () => {
               in: [ID!]
               matches: ID
               startsWith: ID
+            }
+
+            input IntListWhere {
+              AND: [IntListWhere!]
+              NOT: IntListWhere
+              OR: [IntListWhere!]
+              all: IntWhere
+              none: IntWhere
+              single: IntWhere
+              some: IntWhere
             }
 
             input IntWhere {
@@ -96,12 +141,16 @@ describe("Scalars", () => {
 
             type NodeType {
               boolean: Boolean
+              booleanList: [Boolean!]
               float: Float
+              floatList: [Float!]
               id: ID
+              idList: [ID!]
               int: Int
+              intList: [Int!]
               relatedNode(where: NodeTypeRelatedNodeOperationWhere): NodeTypeRelatedNodeOperation
               string: String
-              stringList: [String]
+              stringList: [String!]
             }
 
             type NodeTypeConnection {
@@ -193,9 +242,13 @@ describe("Scalars", () => {
               OR: [NodeTypeWhere!]
               boolean: Boolean
               float: FloatWhere
+              floatList: FloatListWhere
               id: IDWhere
+              idList: IDListWhere
               int: IntWhere
+              intList: IntListWhere
               string: StringWhere
+              stringList: StringListWhere
             }
 
             type PageInfo {
@@ -210,10 +263,15 @@ describe("Scalars", () => {
 
             type RelatedNode {
               boolean: Boolean
+              booleanList: [Boolean!]
               float: Float
+              floatList: [Float!]
               id: ID
+              idList: [ID!]
               int: Int
+              intList: [Int!]
               string: String
+              stringList: [String!]
             }
 
             type RelatedNodeConnection {
@@ -254,18 +312,28 @@ describe("Scalars", () => {
 
             type RelatedNodeProperties {
               boolean: Boolean
+              booleanList: [Boolean!]
               float: Float
+              floatList: [Float!]
               id: ID
+              idList: [ID!]
               int: Int
+              intList: [Int!]
               string: String
+              stringList: [String!]
             }
 
             input RelatedNodePropertiesSort {
               boolean: SortDirection
+              booleanList: SortDirection
               float: SortDirection
+              floatList: SortDirection
               id: SortDirection
+              idList: SortDirection
               int: SortDirection
+              intList: SortDirection
               string: SortDirection
+              stringList: SortDirection
             }
 
             input RelatedNodePropertiesWhere {
@@ -274,9 +342,13 @@ describe("Scalars", () => {
               OR: [RelatedNodePropertiesWhere!]
               boolean: Boolean
               float: FloatWhere
+              floatList: FloatListWhere
               id: IDWhere
+              idList: IDListWhere
               int: IntWhere
+              intList: IntListWhere
               string: StringWhere
+              stringList: StringListWhere
             }
 
             input RelatedNodeSort {
@@ -293,14 +365,28 @@ describe("Scalars", () => {
               OR: [RelatedNodeWhere!]
               boolean: Boolean
               float: FloatWhere
+              floatList: FloatListWhere
               id: IDWhere
+              idList: IDListWhere
               int: IntWhere
+              intList: IntListWhere
               string: StringWhere
+              stringList: StringListWhere
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringListWhere {
+              AND: [StringListWhere!]
+              NOT: StringListWhere
+              OR: [StringListWhere!]
+              all: StringWhere
+              none: StringWhere
+              single: StringWhere
+              some: StringWhere
             }
 
             input StringWhere {

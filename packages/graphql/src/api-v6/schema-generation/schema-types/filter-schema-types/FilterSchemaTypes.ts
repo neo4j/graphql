@@ -21,7 +21,7 @@ import type { GraphQLScalarType } from "graphql";
 import { GraphQLBoolean } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
-import { GraphQLBuiltInScalarType } from "../../../../schema-model/attribute/AttributeType";
+import { GraphQLBuiltInScalarType, ListType } from "../../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { filterTruthy } from "../../../../utils/utils";
@@ -76,24 +76,42 @@ export abstract class FilterSchemaTypes<T extends ConcreteEntity | Relationship>
     }
 
     private attributeToPropertyFilter(attribute: Attribute): GraphQLScalarType | InputTypeComposer | undefined {
-        switch (attribute.type.name as GraphQLBuiltInScalarType) {
+        const isList = attribute.type instanceof ListType;
+        const wrappedType = isList ? attribute.type.ofType : attribute.type;
+
+        switch (wrappedType.name as GraphQLBuiltInScalarType) {
             case GraphQLBuiltInScalarType.Boolean: {
+                if (isList) {
+                    return; // TODO: check what to do with boolean lists in filters
+                }
                 return GraphQLBoolean;
             }
 
             case GraphQLBuiltInScalarType.String: {
+                if (isList) {
+                    return this.schemaTypes.staticTypes.stringListWhere;
+                }
                 return this.schemaTypes.staticTypes.stringWhere;
             }
 
             case GraphQLBuiltInScalarType.ID: {
+                if (isList) {
+                    return this.schemaTypes.staticTypes.idListWhere;
+                }
                 return this.schemaTypes.staticTypes.idWhere;
             }
 
             case GraphQLBuiltInScalarType.Int: {
+                if (isList) {
+                    return this.schemaTypes.staticTypes.intListWhere;
+                }
                 return this.schemaTypes.staticTypes.intWhere;
             }
 
             case GraphQLBuiltInScalarType.Float: {
+                if (isList) {
+                    return this.schemaTypes.staticTypes.floatListWhere;
+                }
                 return this.schemaTypes.staticTypes.floatWhere;
             }
 
