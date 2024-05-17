@@ -20,6 +20,7 @@
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import type { Relationship } from "../../schema-model/relationship/Relationship";
 import type { Filter, LogicalOperators } from "../../translate/queryAST/ast/filters/Filter";
 import { LogicalFilter } from "../../translate/queryAST/ast/filters/LogicalFilter";
 import { PropertyFilter } from "../../translate/queryAST/ast/filters/property-filters/PropertyFilter";
@@ -38,15 +39,25 @@ export class FilterFactory {
         this.schemaModel = schemaModel;
     }
 
-    public createFilters({ where = {}, entity }: { entity: ConcreteEntity; where?: GraphQLWhereArgs }): Filter[] {
-        return this.createEdgeFilters({ entity, edgeWhere: where.edges });
+    public createFilters({
+        where = {},
+        relationship,
+        entity,
+    }: {
+        entity: ConcreteEntity;
+        relationship?: Relationship;
+        where?: GraphQLWhereArgs;
+    }): Filter[] {
+        return this.createEdgeFilters({ entity, relationship, edgeWhere: where.edges });
     }
 
     private createEdgeFilters({
         edgeWhere = {},
+        relationship,
         entity,
     }: {
         entity: ConcreteEntity;
+        relationship?: Relationship;
         edgeWhere?: GraphQLEdgeWhereArgs;
     }): Filter[] {
         const andFilters = this.createLogicalEdgeFilters(entity, "AND", edgeWhere.AND);
@@ -54,7 +65,15 @@ export class FilterFactory {
         const notFilters = this.createLogicalEdgeFilters(entity, "NOT", edgeWhere.NOT ? [edgeWhere.NOT] : undefined);
 
         const nodeFilters = this.createNodeFilter({ where: edgeWhere.node, entity });
-        return [...nodeFilters, ...andFilters, ...orFilters, ...notFilters];
+
+        let edgePropertiesFilters: Filter[] = [];
+        if (relationship) {
+            edgePropertiesFilters = this.createEdgePropertiesFilters({
+                where: edgeWhere.properties,
+                relationship,
+            });
+        }
+        return [...nodeFilters, ...edgePropertiesFilters, ...andFilters, ...orFilters, ...notFilters];
     }
 
     private createLogicalEdgeFilters(
@@ -90,7 +109,29 @@ export class FilterFactory {
         });
     }
 
-    private createPropertyFilters(attribute: AttributeAdapter, filters: StringFilters): PropertyFilter[] {
+    private createEdgePropertiesFilters({
+        where,
+        relationship,
+    }: {
+        where: GraphQLEdgeWhereArgs["properties"];
+        relationship: Relationship;
+    }): Filter[] {
+        if (!where) {
+            return [];
+        }
+        return Object.entries(where).flatMap(([fieldName, filters]) => {
+            const attribute = relationship.findAttribute(fieldName);
+            if (!attribute) return [];
+            const attributeAdapter = new AttributeAdapter(attribute);
+            return this.createPropertyFilters(attributeAdapter, filters, "relationship");
+        });
+    }
+
+    private createPropertyFilters(
+        attribute: AttributeAdapter,
+        filters: StringFilters,
+        attachedTo: "node" | "relationship" = "node"
+    ): PropertyFilter[] {
         return Object.entries(filters).map(([key, value]) => {
             const operator = getFilterOperator(attribute, key);
             if (!operator) throw new Error("Invalid operator");
@@ -101,7 +142,7 @@ export class FilterFactory {
                 comparisonValue: value,
                 isNot: false, // deprecated
                 operator,
-                attachedTo: "node",
+                attachedTo,
             });
         });
     }

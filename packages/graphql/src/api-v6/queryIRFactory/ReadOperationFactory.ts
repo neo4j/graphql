@@ -143,7 +143,11 @@ export class ReadOperationFactory {
                 node: nodeFields,
             },
             sortFields: sortInputFields,
-            filters: [],
+            filters: this.filterFactory.createFilters({
+                entity: relationshipAdapter.target.entity,
+                relationship,
+                where: parsedTree.args.where,
+            }),
         });
     }
 
