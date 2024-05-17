@@ -48,7 +48,48 @@ export class FilterFactory {
         relationship?: Relationship;
         where?: GraphQLWhereArgs;
     }): Filter[] {
-        return this.createEdgeFilters({ entity, relationship, edgeWhere: where.edges });
+        const andFilters = this.createLogicalFilters({ operation: "AND", entity, relationship, where: where.AND });
+        const orFilters = this.createLogicalFilters({ operation: "OR", entity, relationship, where: where.OR });
+        const notFilters = this.createLogicalFilters({
+            operation: "NOT",
+            entity,
+            relationship,
+            where: where.NOT ? [where.NOT] : undefined,
+        });
+
+        const edgeFilters = this.createEdgeFilters({ entity, relationship, edgeWhere: where.edges });
+
+        return [...edgeFilters, ...andFilters, ...orFilters, ...notFilters];
+    }
+
+    private createLogicalFilters({
+        where = [],
+        relationship,
+        operation,
+        entity,
+    }: {
+        entity: ConcreteEntity;
+        relationship?: Relationship;
+        operation: LogicalOperators;
+        where?: GraphQLEdgeWhereArgs[];
+    }): [] | [Filter] {
+        if (where.length === 0) {
+            return [];
+        }
+        const nestedFilters = where.flatMap((orWhere: GraphQLEdgeWhereArgs) => {
+            return this.createFilters({ entity, relationship, where: orWhere });
+        });
+
+        if (nestedFilters.length > 0) {
+            return [
+                new LogicalFilter({
+                    operation,
+                    filters: nestedFilters,
+                }),
+            ];
+        }
+
+        return [];
     }
 
     private createEdgeFilters({
@@ -102,6 +143,7 @@ export class FilterFactory {
 
     private createNodeFilter({ where = {}, entity }: { entity: ConcreteEntity; where?: GraphQLFilters }): Filter[] {
         return Object.entries(where).flatMap(([fieldName, filters]) => {
+            // TODO: Logical filters here
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) return [];
             const attributeAdapter = new AttributeAdapter(attribute);
@@ -120,6 +162,7 @@ export class FilterFactory {
             return [];
         }
         return Object.entries(where).flatMap(([fieldName, filters]) => {
+            // TODO: Logical filters here
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) return [];
             const attributeAdapter = new AttributeAdapter(attribute);

@@ -38,6 +38,45 @@ describe("NOT filters", () => {
         });
     });
 
+    test("NOT logical filter in where", async () => {
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { NOT: { edges: { node: { title: { equals: "The Matrix" } } } } }) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, { v6Api: true });
+
+        // NOTE: Order of these subqueries have been reversed after refactor
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:Movie)
+            WHERE NOT (this0.title = $param0)
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
+            }
+            RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Matrix\\"
+            }"
+        `);
+    });
+
     test("NOT logical filter on edges", async () => {
         const query = /* GraphQL */ `
             query {
