@@ -17,9 +17,18 @@
  * limitations under the License.
  */
 
+import { GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { SchemaBuilder } from "../SchemaBuilder";
+
+function nonNull(type: string): string {
+    return `${type}!`;
+}
+
+function list(type: string): string {
+    return `[${type}]`;
+}
 
 export class StaticSchemaTypes {
     private schemaBuilder: SchemaBuilder;
@@ -39,55 +48,90 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);
     }
 
-    public get stringWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("StringWhere", () => {
+    public get stringListWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("StringListWhere", (itc) => {
             return {
                 fields: {
-                    OR: this.stringWhere.NonNull.List,
-                    AND: this.stringWhere.NonNull.List,
-                    NOT: this.stringWhere,
-                    equals: "String",
-                    in: "[String!]",
-                    matches: "String",
-                    contains: "String",
-                    startsWith: "String",
-                    endsWith: "String",
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    all: this.stringWhere,
+                    none: this.stringWhere,
+                    single: this.stringWhere,
+                    some: this.stringWhere,
                 },
             };
         });
     }
 
-    public get intWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("IntWhere", () => {
+    public get stringWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("StringWhere", (itc) => {
             return {
                 fields: {
-                    OR: this.intWhere.NonNull.List,
-                    AND: this.intWhere.NonNull.List,
-                    NOT: this.intWhere,
-                    equals: "Int",
-                    in: "[Int!]",
-                    lt: "Int",
-                    lte: "Int",
-                    gt: "Int",
-                    gte: "Int",
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    equals: GraphQLString,
+                    in: list(nonNull(GraphQLString.name)),
+                    matches: GraphQLString,
+                    contains: GraphQLString,
+                    startsWith: GraphQLString,
+                    endsWith: GraphQLString,
+                },
+            };
+        });
+    }
+
+    public get idWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("IDWhere", (itc) => {
+            return {
+                fields: {
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    equals: GraphQLID,
+                    in: list(nonNull(GraphQLID.name)),
+                    matches: GraphQLID,
+                    contains: GraphQLID,
+                    startsWith: GraphQLID,
+                    endsWith: GraphQLID,
+                },
+            };
+        });
+    }
+
+
+    public get intWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("IntWhere", (itc) => {
+            return {
+                fields: {
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    equals: GraphQLInt,
+                    in: list(nonNull(GraphQLInt.name)),
+                    lt: GraphQLInt,
+                    lte: GraphQLInt,
+                    gt: GraphQLInt,
+                    gte: GraphQLInt,
                 },
             };
         });
     }
 
     public get floatWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("FloatWhere", () => {
+        return this.schemaBuilder.getOrCreateInputType("FloatWhere", (itc) => {
             return {
                 fields: {
-                    OR: this.floatWhere.NonNull.List,
-                    AND: this.floatWhere.NonNull.List,
-                    NOT: this.floatWhere,
-                    equals: "Float",
-                    in: "[Float!]",
-                    lt: "Float",
-                    lte: "Float",
-                    gt: "Float",
-                    gte: "Float",
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    equals: GraphQLFloat,
+                    in: list(nonNull(GraphQLFloat.name)),
+                    lt: GraphQLFloat,
+                    lte: GraphQLFloat,
+                    gt: GraphQLFloat,
+                    gte: GraphQLFloat,
                 },
             };
         });

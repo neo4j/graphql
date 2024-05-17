@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
+import { type GraphQLNamedInputType, type GraphQLSchema } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -77,7 +77,10 @@ export class SchemaBuilder {
     public getOrCreateInputType(
         name: string,
         onCreate: (itc: InputTypeComposer) => {
-            fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>;
+            fields: Record<
+                string,
+                EnumTypeComposer | string | GraphQLNamedInputType | WrappedComposer<InputTypeComposer>
+            >;
             description?: string;
         }
     ): InputTypeComposer {

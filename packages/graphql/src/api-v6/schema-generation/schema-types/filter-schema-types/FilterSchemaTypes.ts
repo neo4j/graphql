@@ -17,11 +17,14 @@
  * limitations under the License.
  */
 
+import type { GraphQLScalarType } from "graphql";
+import { GraphQLBoolean } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import { GraphQLBuiltInScalarType } from "../../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../../schema-model/relationship/Relationship";
+import { filterTruthy } from "../../../../utils/utils";
 import type { SchemaBuilder } from "../../SchemaBuilder";
 import type { SchemaTypes } from "../SchemaTypes";
 
@@ -61,20 +64,29 @@ export abstract class FilterSchemaTypes<T extends ConcreteEntity | Relationship>
     }
 
     protected convertAttributesToFilters(attributes: Attribute[]): Record<string, InputTypeComposer> {
-        const fields: ([string, InputTypeComposer] | [])[] = attributes.map((attribute) => {
-            const filter = this.attributeToPropertyFilter(attribute);
-            if (filter) {
-                return [attribute.name, filter];
-            }
-            return [];
-        });
+        const fields: ([string, InputTypeComposer | GraphQLScalarType] | [])[] = filterTruthy(
+            attributes.map((attribute) => {
+                const filter = this.attributeToPropertyFilter(attribute);
+                if (filter) {
+                    return [attribute.name, filter];
+                }
+            })
+        );
         return Object.fromEntries(fields);
     }
 
-    private attributeToPropertyFilter(attribute: Attribute): InputTypeComposer | undefined {
+    private attributeToPropertyFilter(attribute: Attribute): GraphQLScalarType | InputTypeComposer | undefined {
         switch (attribute.type.name as GraphQLBuiltInScalarType) {
+            case GraphQLBuiltInScalarType.Boolean: {
+                return GraphQLBoolean;
+            }
+
             case GraphQLBuiltInScalarType.String: {
                 return this.schemaTypes.staticTypes.stringWhere;
+            }
+
+            case GraphQLBuiltInScalarType.ID: {
+                return this.schemaTypes.staticTypes.idWhere;
             }
 
             case GraphQLBuiltInScalarType.Int: {

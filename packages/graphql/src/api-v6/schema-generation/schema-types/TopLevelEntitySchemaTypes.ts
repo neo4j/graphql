@@ -21,10 +21,12 @@ import type { GraphQLResolveInfo } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType } from "../../../schema-model/attribute/AttributeType";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { filterTruthy } from "../../../utils/utils";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
@@ -107,7 +109,17 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
     public get nodeSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.nodeSort, () => {
             const sortFields = Object.fromEntries(
-                this.getFields().map((field) => [field.name, this.schemaTypes.staticTypes.sortDirection])
+                filterTruthy(
+                    this.getFields().map((field) => {
+                        if (
+                            Object.values(GraphQLBuiltInScalarType).includes(
+                                field.type.name as GraphQLBuiltInScalarType
+                            )
+                        ) {
+                            return [field.name, this.schemaTypes.staticTypes.sortDirection];
+                        }
+                    })
+                )
             );
 
             return {
