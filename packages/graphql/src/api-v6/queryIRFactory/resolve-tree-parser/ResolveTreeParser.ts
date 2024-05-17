@@ -25,7 +25,6 @@ import type {
     GraphQLConnectionArgs,
     GraphQLReadOperationArgs,
     GraphQLSortEdgeArgument,
-    GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeEdge,
     GraphQLTreeEdgeProperties,
@@ -35,18 +34,7 @@ import type {
     GraphQLTreeSortElement,
 } from "./graphql-tree";
 
-export function parseResolveInfoTree({
-    resolveTree,
-    entity,
-}: {
-    resolveTree: ResolveTree;
-    entity: ConcreteEntity;
-}): GraphQLTree {
-    const parser = new TopLevelTreeParser({ entity });
-    return parser.parseOperation(resolveTree);
-}
-
-abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
+export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     protected entity: T;
 
     constructor({ entity }: { entity: T }) {
@@ -210,30 +198,9 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 }
 
-class TopLevelTreeParser extends ResolveTreeParser<ConcreteEntity> {
-    protected get targetNode(): ConcreteEntity {
-        return this.entity;
-    }
+export class ResolveTreeParserError extends Error {}
 
-    protected parseEdges(resolveTree: ResolveTree): GraphQLTreeEdge {
-        const edgeType = this.entity.typeNames.edge;
-
-        const nodeResolveTree = findFieldByName(resolveTree, edgeType, "node");
-
-        const node = nodeResolveTree ? this.parseNode(nodeResolveTree) : undefined;
-
-        return {
-            alias: resolveTree.alias,
-            args: resolveTree.args,
-            fields: {
-                node: node,
-                properties: undefined,
-            },
-        };
-    }
-}
-
-class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
+export class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
     protected get targetNode(): ConcreteEntity {
         return this.entity.target as ConcreteEntity;
     }
@@ -285,5 +252,3 @@ class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
         return propertyFields;
     }
 }
-
-class ResolveTreeParserError extends Error {}

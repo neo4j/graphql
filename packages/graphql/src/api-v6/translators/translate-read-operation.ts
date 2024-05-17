@@ -23,7 +23,7 @@ import { DEBUG_TRANSLATE } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { ReadOperationFactory } from "../queryIRFactory/ReadOperationFactory";
-import { parseResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/ResolveTreeParser";
+import { parseResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
