@@ -76,13 +76,13 @@ export class SchemaBuilder {
 
     public getOrCreateInputType(
         name: string,
-        onCreate: () => {
+        onCreate: (itc: InputTypeComposer) => {
             fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>;
             description?: string;
         }
     ): InputTypeComposer {
         return this.composer.getOrCreateITC(name, (itc) => {
-            const { fields, description } = onCreate();
+            const { fields, description } = onCreate(itc);
             if (fields) {
                 itc.addFields(fields);
             }

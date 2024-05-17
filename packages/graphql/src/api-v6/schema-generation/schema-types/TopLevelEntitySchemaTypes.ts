@@ -28,13 +28,13 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
-import { FilterSchemaTypes } from "./FilterSchemaTypes";
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
+import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterSchemaTypes";
 
 export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames> {
     private entity: ConcreteEntity;
-    private filterSchemaTypes: FilterSchemaTypes;
+    private filterSchemaTypes: TopLevelFilterSchemaTypes;
 
     constructor({
         entity,
@@ -51,7 +51,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
             schemaTypes,
         });
         this.entity = entity;
-        this.filterSchemaTypes = new FilterSchemaTypes({ schemaBuilder, entity, schemaTypes });
+        this.filterSchemaTypes = new TopLevelFilterSchemaTypes({ schemaBuilder, entity, schemaTypes });
     }
 
     public addTopLevelQueryField(
@@ -126,7 +126,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
         return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 
-    private getRelationshipFields(): Record<string, ObjectTypeComposer> {
+    private getRelationshipFields(): Record<string, { type: ObjectTypeComposer; args: Record<string, any> }> {
         return Object.fromEntries(
             [...this.entity.relationships.values()].map((relationship) => {
                 const relationshipTypes = new RelatedEntitySchemaTypes({
@@ -136,8 +136,8 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
                     schemaTypes: this.schemaTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;
-
-                return [relationship.name, relationshipType];
+                const operationWhere = relationshipTypes.filterSchemaTypes.operationWhere;
+                return [relationship.name, { type: relationshipType, args: { where: operationWhere } }];
             })
         );
     }

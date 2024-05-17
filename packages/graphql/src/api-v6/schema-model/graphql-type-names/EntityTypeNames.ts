@@ -35,7 +35,12 @@ export abstract class EntityTypeNames {
         return `${this.entityName}Sort`;
     }
 
+    public get nodeWhere(): string {
+        return `${this.entityName}Where`;
+    }
+
     public abstract get connectionOperation(): string;
+    public abstract get operationWhere(): string;
     public abstract get connection(): string;
     public abstract get connectionSort(): string;
     public abstract get edge(): string;

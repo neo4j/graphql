@@ -31,6 +31,10 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
         return `${this.entityName}Operation`;
     }
 
+    public get operationWhere(): string {
+        return `${this.entityName}OperationWhere`;
+    }
+
     public get connection(): string {
         return `${this.entityName}Connection`;
     }
@@ -47,15 +51,7 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
         return `${this.entityName}EdgeSort`;
     }
 
-    public get operationWhere(): string {
-        return `${this.entityName}OperationWhere`;
-    }
-
     public get edgeWhere(): string {
         return `${this.entityName}EdgeWhere`;
-    }
-
-    public get nodeWhere(): string {
-        return `${this.entityName}Where`;
     }
 }
