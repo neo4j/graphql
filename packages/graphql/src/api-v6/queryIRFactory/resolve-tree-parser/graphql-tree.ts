@@ -25,8 +25,8 @@ interface GraphQLTreeElement {
 }
 
 type LogicalOperation<T> = {
-    AND?: LogicalOperation<T>;
-    OR?: LogicalOperation<T>;
+    AND?: Array<LogicalOperation<T>>;
+    OR?: Array<LogicalOperation<T>>;
     NOT?: LogicalOperation<T>;
 } & T;
 

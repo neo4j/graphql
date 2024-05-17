@@ -20,7 +20,8 @@
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import type { Filter, FilterOperator } from "../../translate/queryAST/ast/filters/Filter";
+import type { Filter, FilterOperator, LogicalOperators } from "../../translate/queryAST/ast/filters/Filter";
+import { LogicalFilter } from "../../translate/queryAST/ast/filters/LogicalFilter";
 import { PropertyFilter } from "../../translate/queryAST/ast/filters/property-filters/PropertyFilter";
 import type {
     GraphQLEdgeWhereArgs,
@@ -48,7 +49,36 @@ export class FilterFactory {
         entity: ConcreteEntity;
         edgeWhere?: GraphQLEdgeWhereArgs;
     }): Filter[] {
-        return this.createNodeFilter({ where: edgeWhere.node, entity });
+        const andFilters = this.createLogicalEdgeFilters(entity, "AND", edgeWhere.AND);
+        const orFilters = this.createLogicalEdgeFilters(entity, "OR", edgeWhere.OR);
+        const notFilters = this.createLogicalEdgeFilters(entity, "NOT", edgeWhere.NOT ? [edgeWhere.NOT] : undefined);
+
+        const nodeFilters = this.createNodeFilter({ where: edgeWhere.node, entity });
+        return [...nodeFilters, ...andFilters, ...orFilters, ...notFilters];
+    }
+
+    private createLogicalEdgeFilters(
+        entity: ConcreteEntity,
+        operation: LogicalOperators,
+        where: GraphQLEdgeWhereArgs[] = []
+    ): [] | [Filter] {
+        if (where.length === 0) {
+            return [];
+        }
+        const nestedFilters = where.flatMap((orWhere: GraphQLEdgeWhereArgs) => {
+            return this.createEdgeFilters({ entity, edgeWhere: orWhere });
+        });
+
+        if (nestedFilters.length > 0) {
+            return [
+                new LogicalFilter({
+                    operation,
+                    filters: nestedFilters,
+                }),
+            ];
+        }
+
+        return [];
     }
 
     private createNodeFilter({ where = {}, entity }: { entity: ConcreteEntity; where?: GraphQLFilters }): Filter[] {
