@@ -23,8 +23,8 @@ import type { Relationship } from "../../../schema-model/relationship/Relationsh
 import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLConnectionArgs,
+    GraphQLReadOperationArgs,
     GraphQLSortEdgeArgument,
-    GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeEdge,
     GraphQLTreeEdgeProperties,
@@ -34,18 +34,7 @@ import type {
     GraphQLTreeSortElement,
 } from "./graphql-tree";
 
-export function parseResolveInfoTree({
-    resolveTree,
-    entity,
-}: {
-    resolveTree: ResolveTree;
-    entity: ConcreteEntity;
-}): GraphQLTree {
-    const parser = new TopLevelTreeParser({ entity });
-    return parser.parseOperation(resolveTree);
-}
-
-abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
+export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     protected entity: T;
 
     constructor({ entity }: { entity: T }) {
@@ -61,13 +50,20 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
         );
 
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
-
+        const connectionOperationArgs = this.parseOperationArgs(resolveTree.args);
         return {
             alias: resolveTree.alias,
-            args: resolveTree.args,
+            args: connectionOperationArgs,
             fields: {
                 connection,
             },
+        };
+    }
+
+    private parseOperationArgs(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgs {
+        // Not properly parsed, assuming the type is the same
+        return {
+            where: resolveTreeArgs.where,
         };
     }
 
@@ -202,30 +198,9 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 }
 
-class TopLevelTreeParser extends ResolveTreeParser<ConcreteEntity> {
-    protected get targetNode(): ConcreteEntity {
-        return this.entity;
-    }
+export class ResolveTreeParserError extends Error {}
 
-    protected parseEdges(resolveTree: ResolveTree): GraphQLTreeEdge {
-        const edgeType = this.entity.typeNames.edge;
-
-        const nodeResolveTree = findFieldByName(resolveTree, edgeType, "node");
-
-        const node = nodeResolveTree ? this.parseNode(nodeResolveTree) : undefined;
-
-        return {
-            alias: resolveTree.alias,
-            args: resolveTree.args,
-            fields: {
-                node: node,
-                properties: undefined,
-            },
-        };
-    }
-}
-
-class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
+export class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
     protected get targetNode(): ConcreteEntity {
         return this.entity.target as ConcreteEntity;
     }
@@ -277,5 +252,3 @@ class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
         return propertyFields;
     }
 }
-
-class ResolveTreeParserError extends Error {}

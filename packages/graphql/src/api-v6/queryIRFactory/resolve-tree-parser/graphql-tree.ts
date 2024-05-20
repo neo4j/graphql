@@ -24,11 +24,50 @@ interface GraphQLTreeElement {
     args: Record<string, any>;
 }
 
+type LogicalOperation<T> = {
+    AND?: Array<LogicalOperation<T>>;
+    OR?: Array<LogicalOperation<T>>;
+    NOT?: LogicalOperation<T>;
+} & T;
+
+export type StringFilters = {
+    equals?: string;
+    in?: string[];
+    matches?: string;
+    contains?: string;
+    startsWith?: string;
+    endsWith?: string;
+};
+export type NumberFilters = {
+    equals?: string;
+    in?: string[];
+    lt?: string;
+    lte?: string;
+    gt?: string;
+    gte?: string;
+};
+
 export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
     fields: {
         connection?: GraphQLTreeConnection;
     };
+    args: GraphQLReadOperationArgs;
 }
+
+export interface GraphQLReadOperationArgs {
+    where?: GraphQLWhereArgs;
+}
+
+export type GraphQLWhereArgs = LogicalOperation<{
+    edges?: GraphQLEdgeWhereArgs;
+}>;
+
+export type GraphQLEdgeWhereArgs = LogicalOperation<{
+    properties?: GraphQLFilters;
+    node?: GraphQLFilters;
+}>;
+
+export type GraphQLFilters = Record<string, StringFilters | NumberFilters>;
 
 export interface GraphQLTreeConnection extends GraphQLTreeElement {
     fields: {
