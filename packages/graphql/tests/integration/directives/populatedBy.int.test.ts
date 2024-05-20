@@ -279,8 +279,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe('Int cannot represent non-integer value: "string"');
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: 'Int cannot represent non-integer value: "string"',
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -512,8 +515,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe('Float cannot represent non numeric value: "string"');
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: 'Float cannot represent non numeric value: "string"',
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -757,8 +763,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("String cannot represent a non string value: 1");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "String cannot represent a non string value: 1",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -990,8 +999,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe('Boolean cannot represent a non boolean value: "string"');
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: 'Boolean cannot represent a non boolean value: "string"',
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -1223,8 +1235,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("ID cannot represent value: true");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "ID cannot represent value: true",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -1456,10 +1471,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe(
-                    "Value must be either a BigInt, or a string representing a BigInt value."
-                );
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "Value must be either a BigInt, or a string representing a BigInt value.",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -1619,8 +1635,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("DateTime cannot represent non temporal value: banana");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "DateTime cannot represent non temporal value: banana",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -1780,8 +1799,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("DateTime cannot represent non temporal value: banana");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "DateTime cannot represent non temporal value: banana",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -1941,8 +1963,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("Value must be formatted as Time: banana");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "Value must be formatted as Time: banana",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -2102,8 +2127,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("Value must be formatted as LocalDateTime: banana");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "Value must be formatted as LocalDateTime: banana",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -2263,8 +2291,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("Value must be formatted as LocalTime: banana");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "Value must be formatted as LocalTime: banana",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -2424,8 +2455,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("Value must be formatted as Duration: banana");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "Value must be formatted as Duration: banana",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
@@ -2831,8 +2865,11 @@ describe("@populatedBy directive", () => {
 
                 const result = await testHelper.executeGraphQL(mutation);
 
-                expect(result.errors).toHaveLength(1);
-                expect(result.errors?.[0]?.message).toBe("Expected list as callback result but did not.");
+                expect(result.errors).toEqual([
+                    expect.objectContaining({
+                        message: "Expected list as callback result but did not.",
+                    }),
+                ]);
                 expect(result.data).toBeNull();
             });
         });
