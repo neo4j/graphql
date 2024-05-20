@@ -1781,7 +1781,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             expect(result.errors).toEqual([
                 expect.objectContaining({
-                    message: "DateTime cannot represent non temporal value: banana",
+                    message: "Date cannot represent non temporal value: banana",
                 }),
             ]);
             expect(result.data).toBeNull();

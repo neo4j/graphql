@@ -42,7 +42,7 @@ export const GraphQLDate = new GraphQLScalarType({
             const date = new Date(inputValue);
 
             if (date.toString() === "Invalid Date") {
-                throw new GraphQLError(`DateTime cannot represent non temporal value: ${inputValue}`);
+                throw new GraphQLError(`Date cannot represent non temporal value: ${inputValue}`);
             }
 
             return neo4j.types.Date.fromStandardDate(date);
