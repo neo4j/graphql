@@ -807,6 +807,2456 @@ describe("@populatedBy directive - Relationship properties", () => {
         });
     });
 
+    describe("@populatedBy - Float", () => {
+        test("Should use on CREATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+            const float1 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
+
+            const callback = () => Promise.resolve(float1);
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE",
+                            direction: OUT,
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: Float! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: float1 },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+            const float1 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
+
+            const callback = () => Promise.resolve(float1);
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                      properties { callback
+                                      }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+                    `);
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: float1 },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on CREATE and UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+            const float1 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
+            const float2 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
+
+            let counter = 0;
+            const callback = () => {
+                counter += 1;
+
+                if (counter === 1) {
+                    return Promise.resolve(float1);
+                }
+
+                return Promise.resolve(float2);
+            };
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: float1 },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: float2 },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+    });
+
+    describe("@populatedBy - Boolean", () => {
+        test("Should use on CREATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve(true);
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE",
+                            direction: OUT,
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: Boolean! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: true },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve(true);
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: Boolean! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                      properties { callback
+                                      }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+                    `);
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: true },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on CREATE and UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            let counter = 0;
+            const callback = () => {
+                counter += 1;
+
+                if (counter === 1) {
+                    return Promise.resolve(true);
+                }
+
+                return Promise.resolve(false);
+            };
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: Boolean! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: true },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: false },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+    });
+
+    describe("@populatedBy - ID", () => {
+        test("Should use on CREATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("12345");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE",
+                            direction: OUT,
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ID! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "12345" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("12345");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ID! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                      properties { callback
+                                      }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+                    `);
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "12345" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on CREATE and UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            let counter = 0;
+            const callback = () => {
+                counter += 1;
+
+                if (counter === 1) {
+                    return Promise.resolve(54321);
+                }
+
+                return Promise.resolve("76543");
+            };
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ID! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "54321" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "76543" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("should throw an error if the callback result is not a number or a string", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve(true);
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ID! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toEqual([
+                expect.objectContaining({
+                    message: "ID cannot represent value: true",
+                }),
+            ]);
+        });
+    });
+
+    describe("@populatedBy - BigInt", () => {
+        test("Should use on CREATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("12345");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE",
+                            direction: OUT,
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: BigInt! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "12345" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("12345");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: BigInt! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                      properties { callback
+                                      }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+                    `);
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "12345" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on CREATE and UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            let counter = 0;
+            const callback = () => {
+                counter += 1;
+
+                if (counter === 1) {
+                    return Promise.resolve("54321");
+                }
+
+                return Promise.resolve("76543");
+            };
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: BigInt! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "54321" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: "76543" },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("should throw an error if the callback result is not a number or a string", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("banana");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: BigInt! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toEqual([
+                expect.objectContaining({
+                    message: "Value must be either a BigInt, or a string representing a BigInt value.",
+                }),
+            ]);
+        });
+    });
+
+    const date = new Date();
+
+    describe.each<{
+        description: string;
+        type: string;
+        callback: () => Promise<string>;
+        expectedValue: string;
+    }>([
+        {
+            description: "@populatedBy - Time",
+            type: "Time",
+            callback: () => Promise.resolve(`${date.toISOString().split("T")[1]}`),
+            expectedValue: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+        },
+        {
+            description: "@populatedBy - LocalDateTime",
+            type: "LocalDateTime",
+            callback: () => Promise.resolve(`${date.toISOString().split("Z")[0]}`),
+            expectedValue: `${date.toISOString().split("Z")[0]}000000`,
+        },
+        {
+            description: "@populatedBy - LocalTime",
+            type: "LocalTime",
+            callback: () => Promise.resolve(`${date.toISOString().split("Z")[0]?.split("T")[1]}`),
+            expectedValue: `${date.toISOString().split("Z")[0]?.split("T")[1]}000000`,
+        },
+        {
+            description: "@populatedBy - Duration",
+            type: "Duration",
+            callback: () => Promise.resolve(`P14M3DT14700S`),
+            expectedValue: `P14M3DT14700S`,
+        },
+    ])("$description", ({ type, callback, expectedValue }) => {
+        test("Should use on CREATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE",
+                            direction: OUT,
+                            properties: "RelProperties"
+                        )
+                    }
+    
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ${type}! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+    
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: expectedValue },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+    
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ${type}! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+    
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                      properties { callback
+                                      }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+                    `);
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: expectedValue },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test(`should throw an error if string is not a ${type}`, async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("banana");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+    
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ${type}! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+    
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+    
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toEqual([
+                expect.objectContaining({
+                    message: `Value must be formatted as ${type}: banana`,
+                }),
+            ]);
+        });
+    });
+
+    describe.each<{
+        description: string;
+        type: string;
+        callback: () => Promise<string>;
+        expectedValue: string;
+    }>([
+        {
+            description: "@populatedBy - DateTime",
+            type: "DateTime",
+            callback: () => Promise.resolve(date.toISOString()),
+            expectedValue: date.toISOString(),
+        },
+        {
+            description: "@populatedBy - Date",
+            type: "Date",
+            callback: () => Promise.resolve(date.toISOString()),
+            expectedValue: `${date.toISOString().split("T")[0]}`,
+        },
+    ])("$description", ({ type, callback, expectedValue }) => {
+        test("Should use on CREATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE",
+                            direction: OUT,
+                            properties: "RelProperties"
+                        )
+                    }
+    
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ${type}! @populatedBy(operations: [CREATE], callback: "callback")
+                    }
+    
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: expectedValue },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("Should use on UPDATE", async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+    
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ${type}! @populatedBy(operations: [UPDATE], callback: "callback")
+                    }
+    
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                      properties { callback
+                                      }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            await testHelper.executeCypher(`
+                        CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+                    `);
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        properties: { callback: expectedValue },
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test(`should throw an error if the callback result is not a ${type}`, async () => {
+            const testMovie = testHelper.createUniqueType("Movie");
+            const testGenre = testHelper.createUniqueType("Genre");
+
+            const callback = () => Promise.resolve("banana");
+
+            const typeDefs = /* GraphQL */ `
+                    type ${testMovie.name} {
+                        id: ID
+                        genres: [${testGenre.name}!]! @relationship(
+                            type: "IN_GENRE", 
+                            direction: OUT, 
+                            properties: "RelProperties"
+                        )
+                    }
+    
+                    type RelProperties @relationshipProperties {
+                        id: ID!
+                        callback: ${type}! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
+                    }
+    
+                    type ${testGenre.name} {
+                        id: ID!
+                    }
+                `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback,
+                        },
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                    mutation {
+                        ${testMovie.operations.create}(input: [
+                            {
+                                id: "${movieId}",
+                                genres: {
+                                    create: [
+                                        {
+                                            node: {
+                                                id: "${genreId}",
+                                            },
+                                            edge: {
+                                                id: "${relId}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+    
+                        ${testMovie.operations.update}(
+                            where: { id: "${movieId}" }, 
+                            update: { 
+                                genres: {
+                                    update: {
+                                        edge: {
+                                            id: "${relId}"
+                                        }
+                                    }
+                                }
+                            }
+                        ) {
+                            ${testMovie.plural} {
+                                id
+                                genresConnection {
+                                    edges {
+                                       properties { callback
+                                       }
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const result = await testHelper.executeGraphQL(mutation);
+
+            expect(result.errors).toEqual([
+                expect.objectContaining({
+                    message: `${type} cannot represent non temporal value: banana`,
+                }),
+            ]);
+        });
+    });
+
     describe("@populatedBy - Misc", () => {
         test("should have access to parent in callback function for CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
