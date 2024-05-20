@@ -20,49 +20,49 @@
 import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
+    DirectiveNode,
     EnumTypeDefinitionNode,
+    EnumValueNode,
     InterfaceTypeDefinitionNode,
     ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     StringValueNode,
-    EnumValueNode,
     UnionTypeDefinitionNode,
-    DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
-import getAliasMeta from "./get-alias-meta";
-import { getCypherMeta } from "./get-cypher-meta";
-import getFieldTypeMeta from "./get-field-type-meta";
-import { getCustomResolverMeta } from "./get-custom-resolver-meta";
-import getRelationshipMeta from "./get-relationship-meta";
-import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../constants";
+import { parseArgumentsFromUnknownDirective } from "../schema-model/parser/parse-arguments";
+import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import type {
-    RelationField,
-    CypherField,
-    PrimitiveField,
     BaseField,
-    CustomEnumField,
-    CustomScalarField,
-    UnionField,
-    InterfaceField,
-    ObjectField,
-    TemporalField,
-    PointField,
-    TimeStampOperations,
     ConnectionField,
+    CustomEnumField,
     CustomResolverField,
+    CustomScalarField,
+    CypherField,
+    FilterableOptions,
+    InterfaceField,
     Neo4jGraphQLCallbacks,
+    ObjectField,
+    PointField,
+    PrimitiveField,
+    RelationField,
     SelectableOptions,
     SettableOptions,
-    FilterableOptions,
+    TemporalField,
+    TimeStampOperations,
+    UnionField,
 } from "../types";
-import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import { upperFirst } from "../utils/upper-first";
+import getAliasMeta from "./get-alias-meta";
+import { getCustomResolverMeta } from "./get-custom-resolver-meta";
+import { getCypherMeta } from "./get-cypher-meta";
+import getFieldTypeMeta from "./get-field-type-meta";
 import { getPopulatedByMeta } from "./get-populated-by-meta";
-import { parseArgumentsFromUnknownDirective } from "../schema-model/parser/parse-arguments";
+import getRelationshipMeta from "./get-relationship-meta";
+import getUniqueMeta from "./parse/get-unique-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -357,6 +357,11 @@ function getObjFieldMeta({
                     const temporalField: TemporalField = {
                         ...baseField,
                     };
+
+                    if (populatedByDirective) {
+                        const callback = getPopulatedByMeta(populatedByDirective, callbacks);
+                        temporalField.callback = callback;
+                    }
 
                     if (timestampDirective) {
                         const operations = timestampDirective?.arguments?.find((x) => x.name.value === "operations")
