@@ -89,28 +89,34 @@ export abstract class FilterSchemaTypes<T extends ConcreteEntity | Relationship>
 
             case GraphQLBuiltInScalarType.String: {
                 if (isList) {
-                    return this.schemaTypes.staticTypes.stringListWhere;
+                    const isNullable = !wrappedType.isRequired;
+                    return this.schemaTypes.staticTypes.getStringListWhere(isNullable);
                 }
                 return this.schemaTypes.staticTypes.stringWhere;
             }
 
             case GraphQLBuiltInScalarType.ID: {
                 if (isList) {
-                    return this.schemaTypes.staticTypes.idListWhere;
+                    const isNullable = !wrappedType.isRequired;
+                    return this.schemaTypes.staticTypes.getIdListWhere(isNullable);
                 }
                 return this.schemaTypes.staticTypes.idWhere;
             }
 
             case GraphQLBuiltInScalarType.Int: {
                 if (isList) {
-                    return this.schemaTypes.staticTypes.intListWhere;
+                    const isNullable = !wrappedType.isRequired;
+
+                    return this.schemaTypes.staticTypes.getIntListWhere(isNullable);
                 }
                 return this.schemaTypes.staticTypes.intWhere;
             }
 
             case GraphQLBuiltInScalarType.Float: {
                 if (isList) {
-                    return this.schemaTypes.staticTypes.floatListWhere;
+                    const isNullable = !wrappedType.isRequired;
+
+                    return this.schemaTypes.staticTypes.getFloatListWhere(isNullable);
                 }
                 return this.schemaTypes.staticTypes.floatWhere;
             }
