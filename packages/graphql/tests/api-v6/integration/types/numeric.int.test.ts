@@ -30,12 +30,13 @@ describe("Numeric fields", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 year: Int!
+                rating: Float!
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {year: 1999})
+            CREATE (movie:${Movie} {year: 1999, rating: 4.0})
         `);
     });
 
@@ -43,7 +44,7 @@ describe("Numeric fields", () => {
         await testHelper.close();
     });
 
-    test("should be able to get an integer field", async () => {
+    test("should be able to get int and float fields", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -51,6 +52,7 @@ describe("Numeric fields", () => {
                         edges {
                             node {
                                 year
+                                rating
                             }
                         }
 
@@ -68,6 +70,7 @@ describe("Numeric fields", () => {
                         {
                             node: {
                                 year: 1999,
+                                rating: 4.0,
                             },
                         },
                     ],

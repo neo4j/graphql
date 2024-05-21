@@ -254,7 +254,7 @@ describe("Query aliasing", () => {
         });
     });
 
-    // Check aliasing.int.test.ts
+    // Check Original tests: connection/alias.int.test.ts
     test.todo("should alias pageInfo");
     test.todo("should alias cursor");
 });

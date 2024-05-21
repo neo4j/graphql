@@ -20,7 +20,7 @@
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../tck/utils/tck-test-utils";
 
-describe("Simple Where filters", () => {
+describe("Top level filters", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
