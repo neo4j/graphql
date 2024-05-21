@@ -139,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
-                    \\"sub\\": \\"1\\"
+                    \\"id\\": \\"1\\"
                 }
             }"
         `);
