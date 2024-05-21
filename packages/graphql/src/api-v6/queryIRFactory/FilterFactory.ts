@@ -177,7 +177,7 @@ export class FilterFactory {
     ): PropertyFilter[] {
         return Object.entries(filters).map(([key, value]) => {
             const operator = getFilterOperator(attribute, key);
-            if (!operator) throw new Error("Invalid operator");
+            if (!operator) throw new Error(`Invalid operator: ${key}`);
 
             return new PropertyFilter({
                 attribute,
