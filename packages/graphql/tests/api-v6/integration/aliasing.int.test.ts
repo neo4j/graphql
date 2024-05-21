@@ -136,7 +136,7 @@ describe("Query aliasing", () => {
         });
     });
 
-    test.only("should allow multiple aliases on the same connection", async () => {
+    test("should allow multiple aliases on the same connection", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
@@ -185,6 +185,65 @@ describe("Query aliasing", () => {
                                 second: {
                                     connection: {
                                         edges: [{ node: { titleAlias: "The Matrix Reloaded" } }],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test("should allow multiple aliases on relationship properties", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Actor.plural} {
+                    connection {
+                        edges {
+                            node {
+                                movies {
+                                    connection {
+                                        edges {
+                                            properties {
+                                                year1: year
+                                                year2: year
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                movies: {
+                                    connection: {
+                                        edges: expect.arrayContaining([
+                                            {
+                                                properties: {
+                                                    year1: 2001,
+                                                    year2: 2001,
+                                                },
+                                            },
+                                            {
+                                                properties: {
+                                                    year1: 1999,
+                                                    year2: 1999,
+                                                },
+                                            },
+                                        ]),
                                     },
                                 },
                             },
