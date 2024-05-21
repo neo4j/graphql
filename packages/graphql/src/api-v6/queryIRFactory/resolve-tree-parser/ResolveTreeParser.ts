@@ -54,6 +54,7 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
         return {
             alias: resolveTree.alias,
             args: connectionOperationArgs,
+            name: resolveTree.name,
             fields: {
                 connection,
             },
@@ -78,6 +79,7 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
             return {
                 alias: resolveTree.alias,
                 args: resolveTree.args,
+                name: resolveTree.name,
                 fields: undefined,
             };
         }
@@ -114,7 +116,7 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
         fields: Record<string, ResolveTree>
     ): Record<string, GraphQLTreeLeafField | GraphQLTreeReadOperation> {
         const propertyFields: Record<string, GraphQLTreeLeafField | GraphQLTreeReadOperation> = {};
-        for (const fieldResolveTree of Object.values(fields)) {
+        for (const [key, fieldResolveTree] of Object.entries(fields)) {
             const fieldName = fieldResolveTree.name;
             const field =
                 this.parseRelationshipField(fieldResolveTree, this.targetNode) ??
@@ -122,7 +124,7 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
             if (!field) {
                 throw new ResolveTreeParserError(`${fieldName} is not a field of node`);
             }
-            propertyFields[fieldName] = field;
+            propertyFields[key] = field;
         }
         return propertyFields;
     }
@@ -241,13 +243,13 @@ export class RelationshipResolveTreeParser extends ResolveTreeParser<Relationshi
 
     private getEdgePropertyFields(fields: Record<string, ResolveTree>): Record<string, GraphQLTreeLeafField> {
         const propertyFields: Record<string, GraphQLTreeLeafField> = {};
-        for (const fieldResolveTree of Object.values(fields)) {
+        for (const [key, fieldResolveTree] of Object.entries(fields)) {
             const fieldName = fieldResolveTree.name;
             const field = this.parseAttributeField(fieldResolveTree, this.entity);
             if (!field) {
                 throw new ResolveTreeParserError(`${fieldName} is not an attribute of edge`);
             }
-            propertyFields[fieldName] = field;
+            propertyFields[key] = field;
         }
         return propertyFields;
     }
