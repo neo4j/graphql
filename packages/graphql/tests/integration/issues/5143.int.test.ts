@@ -80,7 +80,6 @@ describe("https://github.com/neo4j/graphql/issues/5143", () => {
 
         await testHelper.executeCypher(`
             CREATE (:${Video} { id: "1" })<-[:PUBLISHER]-(:${User} { id: "1" })
-            CREATE (:${Video} { id: "2" })<-[:PUBLISHER]-(:${User} { id: "2" })
         `);
 
         const token = createBearerToken(secret, { sub: "1" });
