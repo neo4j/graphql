@@ -432,7 +432,10 @@ function createAuthorizationAfterConnectOrCreate({
 }
 
 function getCallbackFields(node: Node | Relationship): PrimitiveField[] {
-    const callbackFields = node.primitiveFields.filter((f) => f.callback);
+    const callbackFields = [
+        ...node.primitiveFields.filter((f) => f.callback),
+        ...node.temporalFields.filter((f) => f.callback),
+    ];
     return callbackFields;
 }
 

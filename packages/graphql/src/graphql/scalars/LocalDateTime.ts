@@ -77,7 +77,7 @@ export const parseLocalDateTime = (
 };
 
 const parse = (value: unknown) => {
-    if (isLocalDateTime(value as object)) {
+    if (isLocalDateTime(value)) {
         return value;
     }
 

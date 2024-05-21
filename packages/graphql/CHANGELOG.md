@@ -1,5 +1,19 @@
 # @neo4j/graphql
 
+## 5.4.0
+
+### Minor Changes
+
+-   [#5132](https://github.com/neo4j/graphql/pull/5132) [`899b1b4`](https://github.com/neo4j/graphql/commit/899b1b408f72171f832d0ba161640af0cb228473) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Allows `@populatedBy` to be used on fields of list type
+
+-   [#5136](https://github.com/neo4j/graphql/pull/5136) [`8e3ffea`](https://github.com/neo4j/graphql/commit/8e3ffeaf9c80d6a9aa7952bdca5eacaba573d341) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Allows `@populatedBy` to be used on temporal fields
+
+### Patch Changes
+
+-   [#5132](https://github.com/neo4j/graphql/pull/5132) [`899b1b4`](https://github.com/neo4j/graphql/commit/899b1b408f72171f832d0ba161640af0cb228473) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Adds schema validation so that `@populatedBy` can only be used on fields of supported types
+
+-   [#5132](https://github.com/neo4j/graphql/pull/5132) [`899b1b4`](https://github.com/neo4j/graphql/commit/899b1b408f72171f832d0ba161640af0cb228473) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fixes bug where non-numeric strings would evaluate to 0 as a `BigInt`
+
 ## 5.3.6
 
 ### Patch Changes

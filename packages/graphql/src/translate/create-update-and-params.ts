@@ -525,7 +525,7 @@ export default function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        node.primitiveFields.forEach((field) =>
+        [...node.primitiveFields, ...node.temporalFields].forEach((field) =>
             addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
