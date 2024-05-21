@@ -21,6 +21,7 @@ import Debug from "debug";
 import type { Driver, Session } from "neo4j-driver";
 import { DEBUG_EXECUTE } from "../../constants";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
@@ -98,6 +99,40 @@ async function getExistingIndexes({ session }: { session: Session }): Promise<Ex
     return existingIndexes;
 }
 
+function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingIndexes, indexErrors: string[]) {
+    if (entity.annotations.vector) {
+        entity.annotations.vector.indexes.forEach((index) => {
+            const existingIndex = existingIndexes[index.indexName];
+
+            if (!existingIndex) {
+                indexErrors.push(`Missing @vector index '${index.indexName}' on Node '${entity.name}'`);
+
+                return;
+            }
+
+            const propertyIsInIndex = existingIndex.properties.some((p) => p === index.propertyName);
+            if (!propertyIsInIndex) {
+                indexErrors.push(
+                    `@vector index '${index.indexName}' on Node '${entity.name}' is missing field '${index.propertyName}'`
+                );
+            }
+
+            if (!existingIndex.options) {
+                indexErrors.push(`@vector index '${index.indexName}' on Node '${entity.name}' is missing options`);
+
+                return;
+            }
+
+            const indexConfig = existingIndex.options["indexConfig"];
+            if (!indexConfig) {
+                indexErrors.push(`@vector index '${index.indexName}' on Node '${entity.name}' is missing indexConfig`);
+
+                return;
+            }
+        });
+    }
+}
+
 async function createIndexesAndConstraints({
     schemaModel,
     session,
@@ -160,6 +195,9 @@ async function createIndexesAndConstraints({
                 }
             });
         }
+
+        // Even though this is the create path, we still check for vector indexes to ensure they are correct
+        checkVectorIndexes(entity, existingIndexes, indexErrors);
     }
 
     if (indexErrors.length) {
@@ -255,39 +293,7 @@ async function checkIndexesAndConstraints({
             });
         }
 
-        if (entity.annotations["vector"]) {
-            entity.annotations["vector"].indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.indexName];
-
-                if (!existingIndex) {
-                    indexErrors.push(`Missing @vector index '${index.indexName}' on Node '${entity.name}'`);
-
-                    return;
-                }
-
-                const propertyIsInIndex = existingIndex.properties.some((p) => p === index.propertyName);
-                if (!propertyIsInIndex) {
-                    indexErrors.push(
-                        `@vector index '${index.indexName}' on Node '${entity.name}' is missing field '${index.propertyName}'`
-                    );
-                }
-
-                if (!existingIndex.options) {
-                    indexErrors.push(`@vector index '${index.indexName}' on Node '${entity.name}' is missing options`);
-
-                    return;
-                }
-
-                const indexConfig = existingIndex.options["indexConfig"];
-                if (!indexConfig) {
-                    indexErrors.push(
-                        `@vector index '${index.indexName}' on Node '${entity.name}' is missing indexConfig`
-                    );
-
-                    return;
-                }
-            });
-        }
+        checkVectorIndexes(entity, existingIndexes, indexErrors);
     }
 
     if (indexErrors.length) {
