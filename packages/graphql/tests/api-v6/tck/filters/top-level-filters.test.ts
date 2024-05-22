@@ -17,17 +17,19 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../../tck/utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, formatParams, translateQuery } from "../../../tck/utils/tck-test-utils";
 
-describe("Simple Aura API", () => {
+describe("Top level filters", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
-                title: String!
+                title: String
+                year: Int
+                runtime: Float
             }
         `;
 
@@ -36,10 +38,16 @@ describe("Simple Aura API", () => {
         });
     });
 
-    test("Simple", async () => {
+    test("Query scalar types", async () => {
         const query = /* GraphQL */ `
             query {
-                movies {
+                movies(
+                    where: {
+                        edges: {
+                            node: { title: { equals: "The Matrix" }, year: { equals: 100 }, runtime: { equals: 90.5 } }
+                        }
+                    }
+                ) {
                     connection {
                         edges {
                             node {
@@ -56,6 +64,7 @@ describe("Simple Aura API", () => {
         // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
+            WHERE (this0.title = $param0 AND this0.year = $param1 AND this0.runtime = $param2)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -67,6 +76,15 @@ describe("Simple Aura API", () => {
             RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Matrix\\",
+                \\"param1\\": {
+                    \\"low\\": 100,
+                    \\"high\\": 0
+                },
+                \\"param2\\": 90.5
+            }"
+        `);
     });
 });
