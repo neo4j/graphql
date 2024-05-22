@@ -50,12 +50,15 @@ export class ConnectionFilter extends Filter {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operator: RelationshipWhereOperator | undefined;
-        isNot: boolean;
+        isNot?: boolean;
     }) {
         super();
         this.relationship = relationship;
-        this.isNot = isNot;
+        this.isNot = Boolean(isNot);
         this.operator = operator || "SOME";
+        if (operator === "NONE") {
+            this.isNot = true;
+        }
         this.target = target;
     }
 

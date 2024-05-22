@@ -1,5 +1,5 @@
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { FilterOperator } from "../../translate/queryAST/ast/filters/Filter";
+import type { FilterOperator, RelationshipWhereOperator } from "../../translate/queryAST/ast/filters/Filter";
 
 export function getFilterOperator(attribute: AttributeAdapter, operator: string): FilterOperator | undefined {
     if (attribute.typeHelper.isString() || attribute.typeHelper.isID()) {
@@ -37,4 +37,15 @@ function getNumberOperator(operator: string): FilterOperator | undefined {
     } as const;
 
     return numberOperatorMap[operator];
+}
+
+export function getRelationshipOperator(operator: string): RelationshipWhereOperator {
+    const relationshipOperatorMap = {
+        all: "ALL",
+        none: "NONE",
+        single: "SINGLE",
+        some: "SOME",
+    } as const;
+
+    return relationshipOperatorMap[operator];
 }
