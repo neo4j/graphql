@@ -86,7 +86,7 @@ describe("Filters AND", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
@@ -97,7 +97,53 @@ describe("Filters AND", () => {
                                 title: "The Matrix Thingy",
                             },
                         },
-                    ],
+                    ]),
+                },
+            },
+        });
+    });
+
+    test("top level AND with nested AND filter by node", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(
+                    where: {
+                        AND: {
+                            AND: [
+                                { edges: { node: { runtime: { equals: 90.5 } } } }
+                                { edges: { node: { year: { equals: 1999 } } } }
+                            ]
+                        }
+                    }
+                ) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                title: "The Matrix",
+                            },
+                        },
+                        {
+                            node: {
+                                title: "The Matrix Thingy",
+                            },
+                        },
+                    ]),
                 },
             },
         });
@@ -129,7 +175,7 @@ describe("Filters AND", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
@@ -137,10 +183,10 @@ describe("Filters AND", () => {
                         },
                         {
                             node: {
-                                title: "The Matrix THingy",
+                                title: "The Matrix Thingy",
                             },
                         },
-                    ],
+                    ]),
                 },
             },
         });

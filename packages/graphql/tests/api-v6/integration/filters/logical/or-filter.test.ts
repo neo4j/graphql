@@ -85,7 +85,7 @@ describe("Filters OR", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
@@ -96,7 +96,53 @@ describe("Filters OR", () => {
                                 title: "The Matrix Reloaded",
                             },
                         },
-                    ],
+                    ]),
+                },
+            },
+        });
+    });
+
+    test("top level OR with nested OR filter by node", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(
+                    where: {
+                        OR: {
+                            OR: [
+                                { edges: { node: { title: { equals: "The Matrix" } } } }
+                                { edges: { node: { year: { equals: 2001 } } } }
+                            ]
+                        }
+                    }
+                ) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                title: "The Matrix",
+                            },
+                        },
+                        {
+                            node: {
+                                title: "The Matrix Reloaded",
+                            },
+                        },
+                    ]),
                 },
             },
         });
@@ -128,7 +174,7 @@ describe("Filters OR", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
@@ -139,7 +185,7 @@ describe("Filters OR", () => {
                                 title: "The Matrix Reloaded",
                             },
                         },
-                    ],
+                    ]),
                 },
             },
         });
