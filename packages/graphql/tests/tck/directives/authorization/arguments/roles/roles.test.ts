@@ -245,7 +245,7 @@ describe("Cypher Auth Roles", () => {
                 SET
                     create_this1.id = create_var0.id
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -266,7 +266,7 @@ describe("Cypher Auth Roles", () => {
                     \\"sub\\": \\"super_admin\\"
                 },
                 \\"create_param3\\": \\"admin\\",
-                \\"resolvedCallbacks\\": {}
+                \\"create_param4\\": \\"super-admin\\"
             }"
         `);
     });
@@ -296,9 +296,7 @@ describe("Cypher Auth Roles", () => {
                     create_this1.id = create_var0.id,
                     create_this1.password = create_var0.password
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH *
-                WHERE apoc.util.validatePredicate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -320,8 +318,7 @@ describe("Cypher Auth Roles", () => {
                     \\"sub\\": \\"super_admin\\"
                 },
                 \\"create_param3\\": \\"admin\\",
-                \\"create_param4\\": \\"super-admin\\",
-                \\"resolvedCallbacks\\": {}
+                \\"create_param4\\": \\"super-admin\\"
             }"
         `);
     });

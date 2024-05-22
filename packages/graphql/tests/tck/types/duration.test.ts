@@ -149,8 +149,7 @@ describe("Cypher Duration", () => {
                             }
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

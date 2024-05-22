@@ -18,23 +18,23 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import { Neo4jGraphQLError } from "../classes/Error";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import createConnectAndParams from "./create-connect-and-params";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
-import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-string";
-import { createEventMeta } from "./subscriptions/create-event-meta";
-import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
-import { addCallbackAndSetParam } from "./utils/callback-utils";
-import { findConflictingProperties } from "../utils/is-property-clash";
-import {
-    createAuthorizationAfterAndParamsField,
-    createAuthorizationAfterAndParams,
-} from "./authorization/compatibility/create-authorization-after-and-params";
-import { checkAuthentication } from "./authorization/check-authentication";
+import { Neo4jGraphQLError } from "../classes/Error";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { findConflictingProperties } from "../utils/find-conflicting-properties";
+import mapToDbProperty from "../utils/map-to-db-property";
+import { checkAuthentication } from "./authorization/check-authentication";
+import {
+    createAuthorizationAfterAndParams,
+    createAuthorizationAfterAndParamsField,
+} from "./authorization/compatibility/create-authorization-after-and-params";
+import createConnectAndParams from "./create-connect-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
+import { createRelationshipValidationString } from "./create-relationship-validation-string";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 interface Res {
     creates: string[];
@@ -213,7 +213,7 @@ function createCreateAndParams({
                             res.creates.push(`WITH *, ${eventWithMetaStr}`);
                         }
 
-                        const relationshipValidationStr = createRelationshipValidationStr({
+                        const relationshipValidationStr = createRelationshipValidationString({
                             node: refNode,
                             context,
                             varName: nodeName,
@@ -334,7 +334,7 @@ function createCreateAndParams({
         initial.push(`SET ${varName}.${field.dbPropertyName} = ${field.typeMeta.name.toLowerCase()}()`);
     });
 
-    node.primitiveFields.forEach((field) =>
+    [...node.primitiveFields, ...node.temporalFields].forEach((field) =>
         addCallbackAndSetParam(field, varName, input, callbackBucket, initial, "CREATE")
     );
 
@@ -382,7 +382,7 @@ function createCreateAndParams({
     }
 
     if (includeRelationshipValidation) {
-        const str = createRelationshipValidationStr({ node, context, varName });
+        const str = createRelationshipValidationString({ node, context, varName });
 
         if (str) {
             creates.push(`WITH *`);

@@ -30,6 +30,7 @@ import type {
     TemporalField,
 } from "../types";
 import { DEPRECATE_NOT } from "./constants";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 interface Fields {
@@ -72,10 +73,13 @@ function getWhereFields({
                 type: f.typeMeta.input.where.pretty,
                 directives: deprecatedDirectives,
             };
-            res[`${f.fieldName}_NOT`] = {
-                type: f.typeMeta.input.where.pretty,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-            };
+
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
+                res[`${f.fieldName}_NOT`] = {
+                    type: f.typeMeta.input.where.pretty,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                };
+            }
 
             if (f.typeMeta.name === "Boolean") {
                 return res;
@@ -86,10 +90,12 @@ function getWhereFields({
                     type: f.typeMeta.input.where.type,
                     directives: deprecatedDirectives,
                 };
-                res[`${f.fieldName}_NOT_INCLUDES`] = {
-                    type: f.typeMeta.input.where.type,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                };
+                if (shouldAddDeprecatedFields(features, "negationFilters")) {
+                    res[`${f.fieldName}_NOT_INCLUDES`] = {
+                        type: f.typeMeta.input.where.type,
+                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                    };
+                }
                 return res;
             }
 
@@ -97,11 +103,12 @@ function getWhereFields({
                 type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
                 directives: deprecatedDirectives,
             };
-            res[`${f.fieldName}_NOT_IN`] = {
-                type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-            };
-
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
+                res[`${f.fieldName}_NOT_IN`] = {
+                    type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                };
+            }
             if (
                 [
                     "Float",
@@ -153,12 +160,14 @@ function getWhereFields({
                     res[`${f.fieldName}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
                 });
 
-                stringWhereOperatorsNegate.forEach((comparator) => {
-                    res[`${f.fieldName}${comparator}`] = {
-                        type: f.typeMeta.name,
-                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                    };
-                });
+                if (shouldAddDeprecatedFields(features, "negationFilters")) {
+                    stringWhereOperatorsNegate.forEach((comparator) => {
+                        res[`${f.fieldName}${comparator}`] = {
+                            type: f.typeMeta.name,
+                            directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                        };
+                    });
+                }
                 return res;
             }
 
@@ -178,7 +187,7 @@ export function getWhereFieldsForAttributes({
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
-    features?: Neo4jFeaturesSettings;
+    features: Neo4jFeaturesSettings | undefined;
 }): Record<
     string,
     {
@@ -193,7 +202,6 @@ export function getWhereFieldsForAttributes({
             directives: Directive[];
         }
     > = {};
-
     // Add the where fields for each attribute
     for (const field of attributes) {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives?.get(field.name);
@@ -206,11 +214,12 @@ export function getWhereFieldsForAttributes({
             directives: deprecatedDirectives,
         };
 
-        result[`${field.name}_NOT`] = {
-            type: field.getInputTypeNames().where.pretty,
-            directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-        };
-
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
+            result[`${field.name}_NOT`] = {
+                type: field.getInputTypeNames().where.pretty,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+            };
+        }
         // If the field is a boolean, skip it
         // This is done here because the previous additions are still added for boolean fields
         if (field.typeHelper.isBoolean()) {
@@ -224,10 +233,12 @@ export function getWhereFieldsForAttributes({
                 type: field.getInputTypeNames().where.type,
                 directives: deprecatedDirectives,
             };
-            result[`${field.name}_NOT_INCLUDES`] = {
-                type: field.getInputTypeNames().where.type,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-            };
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
+                result[`${field.name}_NOT_INCLUDES`] = {
+                    type: field.getInputTypeNames().where.type,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                };
+            }
             continue;
         }
 
@@ -236,12 +247,12 @@ export function getWhereFieldsForAttributes({
             type: field.getFilterableInputTypeName(),
             directives: deprecatedDirectives,
         };
-
-        result[`${field.name}_NOT_IN`] = {
-            type: field.getFilterableInputTypeName(),
-            directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-        };
-
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
+            result[`${field.name}_NOT_IN`] = {
+                type: field.getFilterableInputTypeName(),
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+            };
+        }
         // If the field is a number or temporal, add the comparison operators
         if (field.isNumericalOrTemporal()) {
             ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
@@ -290,12 +301,14 @@ export function getWhereFieldsForAttributes({
                 result[`${field.name}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
             });
 
-            ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"].forEach((comparator) => {
-                result[`${field.name}${comparator}`] = {
-                    type: field.getInputTypeNames().where.type,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                };
-            });
+            if (shouldAddDeprecatedFields(features, "negationFilters")) {
+                ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"].forEach((comparator) => {
+                    result[`${field.name}${comparator}`] = {
+                        type: field.getInputTypeNames().where.type,
+                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                    };
+                });
+            }
         }
     }
 

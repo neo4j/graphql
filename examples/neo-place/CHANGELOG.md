@@ -1,5 +1,14 @@
 # neo-place
 
+## 0.1.5
+
+### Patch Changes
+
+-   [#5134](https://github.com/neo4j/graphql/pull/5134) [`02a87e1`](https://github.com/neo4j/graphql/commit/02a87e15b0ea7729c48e07c36a86bde7414d53af) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fixes neo-place to use Apollo Server 4
+
+-   Updated dependencies [[`899b1b4`](https://github.com/neo4j/graphql/commit/899b1b408f72171f832d0ba161640af0cb228473), [`899b1b4`](https://github.com/neo4j/graphql/commit/899b1b408f72171f832d0ba161640af0cb228473), [`8e3ffea`](https://github.com/neo4j/graphql/commit/8e3ffeaf9c80d6a9aa7952bdca5eacaba573d341), [`899b1b4`](https://github.com/neo4j/graphql/commit/899b1b408f72171f832d0ba161640af0cb228473)]:
+    -   @neo4j/graphql@5.4.0
+
 ## 0.1.4
 
 ### Patch Changes

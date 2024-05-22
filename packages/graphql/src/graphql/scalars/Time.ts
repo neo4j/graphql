@@ -79,7 +79,7 @@ export const parseTime = (value: unknown): ParsedTime => {
 };
 
 const parse = (value: unknown) => {
-    if (isTime(value as object)) {
+    if (isTime(value)) {
         return value;
     }
 

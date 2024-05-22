@@ -134,8 +134,7 @@ describe("Cypher Projection", () => {
                 ],
                 \\"create_param1\\": \\"url.com\\",
                 \\"create_param2\\": \\"123\\",
-                \\"create_param3\\": \\"small\\",
-                \\"resolvedCallbacks\\": {}
+                \\"create_param3\\": \\"small\\"
             }"
         `);
     });

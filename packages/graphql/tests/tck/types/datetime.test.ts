@@ -110,8 +110,7 @@ describe("Cypher DateTime", () => {
                             \\"timeZoneOffsetSeconds\\": 0
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

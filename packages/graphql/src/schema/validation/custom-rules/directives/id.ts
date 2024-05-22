@@ -34,6 +34,7 @@ export function verifyId({
         // delegate
         return;
     }
+    // TODO: remove the following as the argument "autogenerate" does not exists anymore
     const autogenerateArg = directiveNode.arguments?.find((x) => x.name.value === "autogenerate");
     if (autogenerateArg) {
         const autogenerate = parseValueNode(autogenerateArg.value);

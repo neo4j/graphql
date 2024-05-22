@@ -117,8 +117,7 @@ describe("Cypher Auth Allow", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -163,38 +162,35 @@ describe("Cypher Auth Allow", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.posts.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Post)
+                    CREATE (create_this3:Post)
                     SET
-                        create_this5.id = create_var3.id
-                    MERGE (create_this1)-[create_this6:HAS_POST]->(create_this5)
-                    WITH create_this5, create_var3
+                        create_this3.id = create_var2.node.id
+                    MERGE (create_this1)-[create_this4:HAS_POST]->(create_this3)
+                    WITH create_this3, create_var2
                     CALL {
-                        WITH create_this5, create_var3
-                        UNWIND create_var3.creator.create AS create_var7
-                        WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
-                        CREATE (create_this10:User)
+                        WITH create_this3, create_var2
+                        UNWIND create_var2.node.creator.create AS create_var5
+                        CREATE (create_this6:User)
                         SET
-                            create_this10.id = create_var8.id
-                        MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
+                            create_this6.id = create_var5.node.id
+                        MERGE (create_this3)<-[create_this7:HAS_POST]-(create_this6)
                         WITH *
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this10.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        RETURN collect(NULL) AS create_var12
+                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this6.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        RETURN collect(NULL) AS create_var8
                     }
                     WITH *
-                    OPTIONAL MATCH (create_this5)<-[:HAS_POST]-(create_this13:User)
-                    WITH *, count(create_this13) AS creatorCount
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND create_this13.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH create_this5
+                    OPTIONAL MATCH (create_this3)<-[:HAS_POST]-(create_this9:User)
+                    WITH *, count(create_this9) AS creatorCount
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND create_this9.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH create_this3
                     CALL {
-                    	WITH create_this5
-                    	MATCH (create_this5)<-[create_this5_creator_User_unique:HAS_POST]-(:User)
-                    	WITH count(create_this5_creator_User_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-                    	RETURN c AS create_this5_creator_User_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)<-[create_this10:HAS_POST]-(:User)
+                        WITH count(create_this10) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c = 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once\\", [0])
+                        RETURN c AS create_var11
                     }
-                    RETURN collect(NULL) AS create_var14
+                    RETURN collect(NULL) AS create_var12
                 }
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -233,8 +229,7 @@ describe("Cypher Auth Allow", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

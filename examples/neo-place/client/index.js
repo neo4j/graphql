@@ -1,7 +1,7 @@
 import CanvasApi from "./canvas-api";
 import GraphQLServerApi from "./graphql-server-api";
 
-const LOCAL_GRAPHQL_SERVER_URI_BASE = "localhost:4000/graphql"
+const LOCAL_GRAPHQL_SERVER_URI_BASE = "localhost:4000/graphql";
 
 let selectedColor = "#FFFFFF";
 const buttons = ["#000000", "#FFFFFF", "#CC254B", "#018BFF", "#327D60", "#FFDE63"];
@@ -44,7 +44,8 @@ const canvasApi = new CanvasApi("place", 10);
 async function setupCanvas() {
     const canvasState = await serverApi.getCanvas();
 
-    let i = 0, j = 0;
+    let i = 0,
+        j = 0;
     for (const pixelColor of canvasState) {
         canvasApi.drawPixel([i, j], pixelColor);
         j++;
@@ -64,18 +65,16 @@ serverApi.onPixelUpdate((updatedEvent) => {
     if (!canvasLock) drawBackflow(eventsBackflow);
 });
 
-let errored = false
+let errored = false;
 serverApi.onConnected(async () => {
     canvasLock = true;
     await setupCanvas();
     drawBackflow(eventsBackflow);
-    if (!errored)
-        handleConnect();
+    if (!errored) handleConnect();
 });
 
-
 function handleDisconnect() {
-    errored = true
+    errored = true;
     canvasLock = true;
     const buttonWrapper = document.querySelector(".buttons-wrap");
     const disconnectedMessage = document.querySelector(".disconnected-message");
@@ -88,14 +87,14 @@ function handleConnect() {
     const buttonWrapper = document.querySelector(".buttons-wrap");
     const loader = document.querySelector(".loader");
     const canvas = document.querySelector("#place");
-    buttonWrapper.style.display = "flex"
+    buttonWrapper.style.display = "flex";
     loader.hidden = true;
     canvas.hidden = false;
-    canvasLock = false
+    canvasLock = false;
 }
 
 serverApi.onClosed(async () => {
-    handleDisconnect()
+    handleDisconnect();
 });
 
 function drawBackflow(pixels) {
@@ -113,6 +112,6 @@ canvasApi.onPixelClicked((pixelClicked) => {
             if (res.error) {
                 handleDisconnect();
             }
-        })
+        });
     }
 });

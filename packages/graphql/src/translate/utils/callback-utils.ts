@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { CallbackBucket } from "../../classes/CallbackBucket";
 import type { PrimitiveField } from "../../types";
-import Cypher from "@neo4j/cypher-builder";
 import { compileCypher } from "../../utils/compile-cypher";
 
 export const addCallbackAndSetParam = (
@@ -40,6 +40,7 @@ export const addCallbackAndSetParam = (
         functionName: field.callback?.callbackName,
         paramName,
         parent,
+        type: field.typeMeta,
     });
 
     strs.push(`SET ${varName}.${field.dbPropertyName} = $resolvedCallbacks.${paramName}`);
@@ -66,6 +67,7 @@ export const addCallbackAndSetParamCypher = (
             functionName: field.callback?.callbackName as string,
             paramName,
             parent,
+            type: field.typeMeta,
         });
 
         return [`$resolvedCallbacks.${paramName}`, {}];
