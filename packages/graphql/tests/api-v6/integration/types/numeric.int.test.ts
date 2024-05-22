@@ -21,7 +21,7 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Numeric fields", () => {
-    const testHelper = new TestHelper({ cdc: false, v6Api: true });
+    const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
     beforeAll(async () => {

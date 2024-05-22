@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("Simple", () => {
+describe("Simple Query", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
