@@ -27,14 +27,14 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../utils/utils";
-import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
+import type { TopLevelEntityTypeNames } from "../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
 import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterSchemaTypes";
 
-export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames> {
+export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityTypeNames> {
     private entity: ConcreteEntity;
     private filterSchemaTypes: TopLevelFilterSchemaTypes;
 
@@ -126,6 +126,10 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
                 fields: sortFields,
             };
         });
+    }
+
+    public get nodeWhere(): InputTypeComposer {
+        return this.filterSchemaTypes.nodeWhere;
     }
 
     @Memoize()

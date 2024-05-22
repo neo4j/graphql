@@ -27,18 +27,6 @@ export abstract class EntityTypeNames {
         this.entityName = entity.name;
     }
 
-    public get node(): string {
-        return this.entityName;
-    }
-
-    public get nodeSort(): string {
-        return `${this.entityName}Sort`;
-    }
-
-    public get nodeWhere(): string {
-        return `${this.entityName}Where`;
-    }
-
     public abstract get connectionOperation(): string;
     public abstract get operationWhere(): string;
     public abstract get connection(): string;

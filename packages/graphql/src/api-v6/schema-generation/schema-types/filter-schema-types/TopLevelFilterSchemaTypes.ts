@@ -17,13 +17,19 @@
  * limitations under the License.
  */
 
+import type { GraphQLScalarType } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
+import type { Relationship } from "../../../../schema-model/relationship/Relationship";
+import { filterTruthy } from "../../../../utils/utils";
+import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { SchemaBuilder } from "../../SchemaBuilder";
 import type { SchemaTypes } from "../SchemaTypes";
 import { FilterSchemaTypes } from "./FilterSchemaTypes";
+import { RelatedEntityFilterSchemaTypes } from "./RelatedEntityFilterSchemaTypes";
 
-export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<ConcreteEntity> {
+export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<TopLevelEntityTypeNames> {
+    private entity: ConcreteEntity;
     constructor({
         entity,
         schemaBuilder,
@@ -33,11 +39,12 @@ export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<ConcreteEntity>
         entity: ConcreteEntity;
         schemaTypes: SchemaTypes;
     }) {
-        super({ entity, schemaBuilder, schemaTypes });
+        super({ entityTypeNames: entity.typeNames, schemaBuilder, schemaTypes });
+        this.entity = entity;
     }
 
     protected get edgeWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType(this.entity.typeNames.edgeWhere, (itc: InputTypeComposer) => {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeWhere, (itc: InputTypeComposer) => {
             return {
                 fields: {
                     AND: itc.NonNull.List,
@@ -49,16 +56,32 @@ export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<ConcreteEntity>
         });
     }
 
-    protected get nodeWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType(this.entity.typeNames.nodeWhere, (itc: InputTypeComposer) => {
+    public get nodeWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.nodeWhere, (itc: InputTypeComposer) => {
             return {
                 fields: {
                     AND: itc.NonNull.List,
                     OR: itc.NonNull.List,
                     NOT: itc,
                     ...this.convertAttributesToFilters([...this.entity.attributes.values()]),
+                    ...this.convertRelationshipsToFilters([...this.entity.relationships.values()]),
                 },
             };
         });
+    }
+
+    private convertRelationshipsToFilters(relationships: Relationship[]): Record<string, InputTypeComposer> {
+        const fields: ([string, InputTypeComposer | GraphQLScalarType] | [])[] = filterTruthy(
+            relationships.map((relationship) => {
+                const relatedFilterSchemaTypes = new RelatedEntityFilterSchemaTypes({
+                    schemaBuilder: this.schemaBuilder,
+                    relationship,
+                    schemaTypes: this.schemaTypes,
+                });
+
+                return [relationship.name, relatedFilterSchemaTypes.nestedOperationWhere];
+            })
+        );
+        return Object.fromEntries(fields);
     }
 }

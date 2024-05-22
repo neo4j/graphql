@@ -41,6 +41,10 @@ export class RelatedEntityTypeNames extends EntityTypeNames {
         return `${this.relatedEntityTypeName}OperationWhere`;
     }
 
+    public get nestedOperationWhere(): string {
+        return `${this.relatedEntityTypeName}NestedOperationWhere`;
+    }
+
     public get connection(): string {
         return `${this.relatedEntityTypeName}Connection`;
     }
@@ -59,6 +63,10 @@ export class RelatedEntityTypeNames extends EntityTypeNames {
 
     public get edgeWhere(): string {
         return `${this.relatedEntityTypeName}EdgeWhere`;
+    }
+
+    public get edgeListWhere(): string {
+        return `${this.relatedEntityTypeName}EdgeListWhere`;
     }
 
     public get properties(): string | undefined {

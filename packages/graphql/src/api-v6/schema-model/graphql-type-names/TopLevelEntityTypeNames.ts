@@ -54,4 +54,16 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     public get edgeWhere(): string {
         return `${this.entityName}EdgeWhere`;
     }
+
+    public get nodeWhere(): string {
+        return `${this.entityName}Where`;
+    }
+
+    public get nodeSort(): string {
+        return `${this.entityName}Sort`;
+    }
+
+    public get node(): string {
+        return this.entityName;
+    }
 }

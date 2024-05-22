@@ -20,24 +20,27 @@
 import type { InputTypeComposer } from "graphql-compose";
 import { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../../schema-model/relationship/Relationship";
+import type { RelatedEntityTypeNames } from "../../../schema-model/graphql-type-names/RelatedEntityTypeNames";
 import type { SchemaBuilder } from "../../SchemaBuilder";
 import type { SchemaTypes } from "../SchemaTypes";
 import { FilterSchemaTypes } from "./FilterSchemaTypes";
 
-export class RelatedEntityFilterSchemaTypes extends FilterSchemaTypes<Relationship> {
+export class RelatedEntityFilterSchemaTypes extends FilterSchemaTypes<RelatedEntityTypeNames> {
+    private relationship: Relationship;
     constructor({
-        entity,
+        relationship,
         schemaBuilder,
         schemaTypes,
     }: {
         schemaBuilder: SchemaBuilder;
-        entity: Relationship;
+        relationship: Relationship;
         schemaTypes: SchemaTypes;
     }) {
-        super({ entity, schemaBuilder, schemaTypes });
+        super({ entityTypeNames: relationship.typeNames, schemaBuilder, schemaTypes });
+        this.relationship = relationship;
     }
     protected get edgeWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType(this.entity.typeNames.edgeWhere, (itc: InputTypeComposer) => {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeWhere, (itc: InputTypeComposer) => {
             const fields = {
                 AND: itc.NonNull.List,
                 OR: itc.NonNull.List,
@@ -52,33 +55,58 @@ export class RelatedEntityFilterSchemaTypes extends FilterSchemaTypes<Relationsh
         });
     }
 
-    protected get nodeWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType(this.entity.typeNames.nodeWhere, (itc: InputTypeComposer) => {
-            if (!(this.entity.target instanceof ConcreteEntity)) {
-                throw new Error("Interface filters not supported yet.");
+    public get nestedOperationWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(
+            this.relationship.typeNames.nestedOperationWhere,
+            (itc: InputTypeComposer) => {
+                return {
+                    fields: {
+                        AND: itc.NonNull.List,
+                        OR: itc.NonNull.List,
+                        NOT: itc,
+                        edges: this.edgeListWhere,
+                    },
+                };
             }
+        );
+    }
+
+    private get edgeListWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeListWhere, (itc: InputTypeComposer) => {
             return {
                 fields: {
                     AND: itc.NonNull.List,
                     OR: itc.NonNull.List,
                     NOT: itc,
-                    ...this.convertAttributesToFilters([...this.entity.target.attributes.values()]),
+                    all: this.edgeWhere,
+                    none: this.edgeWhere,
+                    single: this.edgeWhere,
+                    some: this.edgeWhere,
                 },
             };
         });
     }
 
+    protected get nodeWhere(): InputTypeComposer {
+        const target = this.relationship.target;
+        if (!(target instanceof ConcreteEntity)) {
+            throw new Error("Interfaces not supported yet");
+        }
+        const targetSchemaTypes = this.schemaTypes.getEntitySchemaTypes(target);
+        return targetSchemaTypes.nodeWhere;
+    }
+
     private get propertiesWhere(): InputTypeComposer | undefined {
-        if (this.entity.typeNames.properties) {
+        if (this.entityTypeNames.properties) {
             return this.schemaBuilder.getOrCreateInputType(
-                this.entity.typeNames.propertiesWhere,
+                this.entityTypeNames.propertiesWhere,
                 (itc: InputTypeComposer) => {
                     return {
                         fields: {
                             AND: itc.NonNull.List,
                             OR: itc.NonNull.List,
                             NOT: itc,
-                            ...this.convertAttributesToFilters([...this.entity.attributes.values()]),
+                            ...this.convertAttributesToFilters([...this.relationship.attributes.values()]),
                         },
                     };
                 }
