@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Filters OR", () => {
+describe("Filters AND", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -34,6 +34,7 @@ describe("Filters OR", () => {
             type ${Movie} @node {
                 title: String
                 year: Int
+                runtime: Float
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             type ${Actor} @node {
@@ -50,7 +51,7 @@ describe("Filters OR", () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999, runtime: 90.5})<-[:ACTED_IN {year: 1999}]-(a:${Actor} {name: "Keanu"})
             CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, runtime: 90.5})<-[:ACTED_IN {year: 2001}]-(a)
-            CREATE (:${Movie} {title: "The Matrix Revelations", year: 2002, runtime: 70})<-[:ACTED_IN {year: 2002}]-(a)
+            CREATE (:${Movie} {title: "The Matrix Thingy", year: 1999, runtime: 90.5})<-[:ACTED_IN {year: 2002}]-(a)
         `);
     });
 
@@ -58,14 +59,14 @@ describe("Filters OR", () => {
         await testHelper.close();
     });
 
-    test("top level OR filter by node", async () => {
+    test("top level AND filter by node", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
                     where: {
-                        OR: [
-                            { edges: { node: { title: { equals: "The Matrix" } } } }
-                            { edges: { node: { year: { equals: 2001 } } } }
+                        AND: [
+                            { edges: { node: { runtime: { equals: 90.5 } } } }
+                            { edges: { node: { year: { equals: 1999 } } } }
                         ]
                     }
                 ) {
@@ -93,7 +94,7 @@ describe("Filters OR", () => {
                         },
                         {
                             node: {
-                                title: "The Matrix Reloaded",
+                                title: "The Matrix Thingy",
                             },
                         },
                     ],
@@ -102,13 +103,13 @@ describe("Filters OR", () => {
         });
     });
 
-    test("OR filter in edges by node", async () => {
+    test("AND filter in edges by node", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
                     where: {
                         edges: {
-                            OR: [{ node: { title: { equals: "The Matrix" } } }, { node: { year: { equals: 2001 } } }]
+                            AND: [{ node: { runtime: { equals: 90.5 } } }, { node: { year: { equals: 1999 } } }]
                         }
                     }
                 ) {
@@ -136,7 +137,7 @@ describe("Filters OR", () => {
                         },
                         {
                             node: {
-                                title: "The Matrix Reloaded",
+                                title: "The Matrix THingy",
                             },
                         },
                     ],
