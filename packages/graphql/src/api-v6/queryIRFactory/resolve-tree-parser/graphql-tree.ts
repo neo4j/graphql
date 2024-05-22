@@ -52,6 +52,7 @@ export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
         connection?: GraphQLTreeConnection;
     };
     args: GraphQLReadOperationArgs;
+    name: string;
 }
 
 export interface GraphQLReadOperationArgs {
@@ -97,6 +98,7 @@ export interface GraphQLTreeEdgeProperties extends GraphQLTreeElement {
 
 export interface GraphQLTreeLeafField extends GraphQLTreeElement {
     fields: undefined;
+    name: string;
 }
 
 export interface GraphQLSortArgument {

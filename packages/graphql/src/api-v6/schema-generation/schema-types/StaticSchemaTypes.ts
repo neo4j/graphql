@@ -48,10 +48,22 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);
     }
 
-    public get stringListWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("StringListWhere", (itc) => {
+    public getStringListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
+                return {
+                    fields: {
+                        equals: "[String]",
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
             return {
-                fields: this.getListWhereFields(itc, this.stringWhere),
+                fields: {
+                    equals: "[String!]",
+                },
             };
         });
     }
@@ -74,10 +86,22 @@ export class StaticSchemaTypes {
         });
     }
 
-    public get idListWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("IDListWhere", (itc) => {
+    public getIdListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", (itc) => {
+                return {
+                    fields: {
+                        equals: "[String]",
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("IDListWhere", () => {
             return {
-                fields: this.getListWhereFields(itc, this.idWhere),
+                fields: {
+                    equals: "[String!]",
+                },
             };
         });
     }
@@ -100,10 +124,22 @@ export class StaticSchemaTypes {
         });
     }
 
-    public get intListWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("IntListWhere", (itc) => {
+    public getIntListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("IntListWhereNullable", (itc) => {
+                return {
+                    fields: {
+                        equals: "[Int]",
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("IntListWhere", () => {
             return {
-                fields: this.getListWhereFields(itc, this.intWhere),
+                fields: {
+                    equals: "[Int!]",
+                },
             };
         });
     }
@@ -126,10 +162,22 @@ export class StaticSchemaTypes {
         });
     }
 
-    public get floatListWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("FloatListWhere", (itc) => {
+    public getFloatListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("FloatListWhereNullable", (itc) => {
+                return {
+                    fields: {
+                        equals: "[Float]",
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("FloatListWhere", () => {
             return {
-                fields: this.getListWhereFields(itc, this.floatWhere),
+                fields: {
+                    equals: "[Float!]",
+                },
             };
         });
     }
@@ -152,15 +200,15 @@ export class StaticSchemaTypes {
         });
     }
 
-    private getListWhereFields(itc: InputTypeComposer, targetType: InputTypeComposer): Record<string, any> {
-        return {
-            OR: itc.NonNull.List,
-            AND: itc.NonNull.List,
-            NOT: itc,
-            all: targetType,
-            none: targetType,
-            single: targetType,
-            some: targetType,
-        };
-    }
+    // private getListWhereFields(itc: InputTypeComposer, targetType: InputTypeComposer): Record<string, any> {
+    //     return {
+    //         OR: itc.NonNull.List,
+    //         AND: itc.NonNull.List,
+    //         NOT: itc,
+    //         all: targetType,
+    //         none: targetType,
+    //         single: targetType,
+    //         some: targetType,
+    //     };
+    // }
 }

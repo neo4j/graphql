@@ -25,29 +25,44 @@ describe("Scalars", () => {
     test("should generate the right types for all the scalars", async () => {
         const typeDefs = /* GraphQL */ `
             type NodeType @node {
-                string: String
-                int: Int
-                float: Float
-                id: ID
-                boolean: Boolean
+                stringList: [String!]
+                stringListNullable: [String]
+                intList: [Int!]
+                intListNullable: [Int]
+                floatList: [Float!]
+                floatListNullable: [Float]
+                idList: [ID!]
+                idListNullable: [ID]
+                booleanList: [Boolean!]
+                booleanListNullable: [Boolean]
                 relatedNode: [RelatedNode!]!
                     @relationship(type: "RELATED_TO", direction: OUT, properties: "RelatedNodeProperties")
             }
 
             type RelatedNode @node {
-                string: String
-                int: Int
-                float: Float
-                id: ID
-                boolean: Boolean
+                stringList: [String!]
+                stringListNullable: [String]
+                intList: [Int!]
+                intListNullable: [Int]
+                floatList: [Float!]
+                floatListNullable: [Float]
+                idList: [ID!]
+                idListNullable: [ID]
+                booleanList: [Boolean!]
+                booleanListNullable: [Boolean]
             }
 
             type RelatedNodeProperties @relationshipProperties {
-                string: String
-                int: Int
-                float: Float
-                id: ID
-                boolean: Boolean
+                stringList: [String!]
+                stringListNullable: [String]
+                intList: [Int!]
+                intListNullable: [Int]
+                floatList: [Float!]
+                floatListNullable: [Float]
+                idList: [ID!]
+                idListNullable: [ID]
+                booleanList: [Boolean!]
+                booleanListNullable: [Boolean]
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -58,49 +73,42 @@ describe("Scalars", () => {
               query: Query
             }
 
-            input FloatWhere {
-              AND: [FloatWhere!]
-              NOT: FloatWhere
-              OR: [FloatWhere!]
-              equals: Float
-              gt: Float
-              gte: Float
-              in: [Float!]
-              lt: Float
-              lte: Float
+            input FloatListWhere {
+              equals: [Float!]
             }
 
-            input IDWhere {
-              AND: [IDWhere!]
-              NOT: IDWhere
-              OR: [IDWhere!]
-              contains: ID
-              endsWith: ID
-              equals: ID
-              in: [ID!]
-              matches: ID
-              startsWith: ID
+            input FloatListWhereNullable {
+              equals: [Float]
             }
 
-            input IntWhere {
-              AND: [IntWhere!]
-              NOT: IntWhere
-              OR: [IntWhere!]
-              equals: Int
-              gt: Int
-              gte: Int
-              in: [Int!]
-              lt: Int
-              lte: Int
+            input IDListWhere {
+              equals: [String!]
+            }
+
+            input IDListWhereNullable {
+              equals: [String]
+            }
+
+            input IntListWhere {
+              equals: [Int!]
+            }
+
+            input IntListWhereNullable {
+              equals: [Int]
             }
 
             type NodeType {
-              boolean: Boolean
-              float: Float
-              id: ID
-              int: Int
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
               relatedNode(where: NodeTypeRelatedNodeOperationWhere): NodeTypeRelatedNodeOperation
-              string: String
+              stringList: [String!]
+              stringListNullable: [String]
             }
 
             type NodeTypeConnection {
@@ -195,24 +203,21 @@ describe("Scalars", () => {
               edges: NodeTypeRelatedNodeEdgeWhere
             }
 
-            input NodeTypeSort {
-              boolean: SortDirection
-              float: SortDirection
-              id: SortDirection
-              int: SortDirection
-              string: SortDirection
-            }
+            input NodeTypeSort
 
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
-              boolean: Boolean
-              float: FloatWhere
-              id: IDWhere
-              int: IntWhere
+              floatList: FloatListWhere
+              floatListNullable: FloatListWhereNullable
+              idList: IDListWhere
+              idListNullable: IDListWhereNullable
+              intList: IntListWhere
+              intListNullable: IntListWhereNullable
               relatedNode: NodeTypeRelatedNodeNestedOperationWhere
-              string: StringWhere
+              stringList: StringListWhere
+              stringListNullable: StringListWhereNullable
             }
 
             type PageInfo {
@@ -226,11 +231,16 @@ describe("Scalars", () => {
             }
 
             type RelatedNode {
-              boolean: Boolean
-              float: Float
-              id: ID
-              int: Int
-              string: String
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
+              stringList: [String!]
+              stringListNullable: [String]
             }
 
             type RelatedNodeConnection {
@@ -270,49 +280,59 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeProperties {
-              boolean: Boolean
-              float: Float
-              id: ID
-              int: Int
-              string: String
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
+              stringList: [String!]
+              stringListNullable: [String]
             }
 
             input RelatedNodePropertiesSort {
-              boolean: SortDirection
-              float: SortDirection
-              id: SortDirection
-              int: SortDirection
-              string: SortDirection
+              booleanList: SortDirection
+              booleanListNullable: SortDirection
+              floatList: SortDirection
+              floatListNullable: SortDirection
+              idList: SortDirection
+              idListNullable: SortDirection
+              intList: SortDirection
+              intListNullable: SortDirection
+              stringList: SortDirection
+              stringListNullable: SortDirection
             }
 
             input RelatedNodePropertiesWhere {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
-              boolean: Boolean
-              float: FloatWhere
-              id: IDWhere
-              int: IntWhere
-              string: StringWhere
+              floatList: FloatListWhere
+              floatListNullable: FloatListWhereNullable
+              idList: IDListWhere
+              idListNullable: IDListWhereNullable
+              intList: IntListWhere
+              intListNullable: IntListWhereNullable
+              stringList: StringListWhere
+              stringListNullable: StringListWhereNullable
             }
 
-            input RelatedNodeSort {
-              boolean: SortDirection
-              float: SortDirection
-              id: SortDirection
-              int: SortDirection
-              string: SortDirection
-            }
+            input RelatedNodeSort
 
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
-              boolean: Boolean
-              float: FloatWhere
-              id: IDWhere
-              int: IntWhere
-              string: StringWhere
+              floatList: FloatListWhere
+              floatListNullable: FloatListWhereNullable
+              idList: IDListWhere
+              idListNullable: IDListWhereNullable
+              intList: IntListWhere
+              intListNullable: IntListWhereNullable
+              stringList: StringListWhere
+              stringListNullable: StringListWhereNullable
             }
 
             enum SortDirection {
@@ -320,16 +340,12 @@ describe("Scalars", () => {
               DESC
             }
 
-            input StringWhere {
-              AND: [StringWhere!]
-              NOT: StringWhere
-              OR: [StringWhere!]
-              contains: String
-              endsWith: String
-              equals: String
-              in: [String!]
-              matches: String
-              startsWith: String
+            input StringListWhere {
+              equals: [String!]
+            }
+
+            input StringListWhereNullable {
+              equals: [String]
             }"
         `);
     });

@@ -2,7 +2,7 @@ import type { AttributeAdapter } from "../../schema-model/attribute/model-adapte
 import type { FilterOperator } from "../../translate/queryAST/ast/filters/Filter";
 
 export function getFilterOperator(attribute: AttributeAdapter, operator: string): FilterOperator | undefined {
-    if (attribute.typeHelper.isString()) {
+    if (attribute.typeHelper.isString() || attribute.typeHelper.isID()) {
         return getStringOperator(operator);
     }
 
