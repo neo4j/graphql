@@ -225,14 +225,29 @@ export class ArgumentAdapter {
      *
      */
 
+    // Duplicate from AttributeAdapter
     getTypePrettyName(): string {
-        if (this.isList()) {
-            return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
+        if (!this.isList()) {
+            return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
         }
-        return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
+        const listType = this.type as ListType;
+        if (listType.ofType instanceof ListType) {
+            // matrix case
+            return `[[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]]${this.isRequired() ? "!" : ""}`;
+        }
+        return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
     }
 
+    // Duplicate from AttributeAdapter
     getTypeName(): string {
-        return this.isList() ? this.type.ofType.name : this.type.name;
+        if (!this.isList()) {
+            return this.type.name;
+        }
+        const listType = this.type as ListType;
+        if (listType.ofType instanceof ListType) {
+            // matrix case
+            return listType.ofType.ofType.name;
+        }
+        return listType.ofType.name;
     }
 }

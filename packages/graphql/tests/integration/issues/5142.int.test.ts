@@ -17,53 +17,38 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/5030", () => {
+describe("https://github.com/neo4j/graphql/issues/5142", () => {
     const testHelper = new TestHelper();
 
-    let Movie: UniqueType;
-
     beforeAll(async () => {
-        Movie = testHelper.createUniqueType("Movie");
-
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
-                title: String
-                released: Int
-            }
             type Query {
-                customCypher(phrase: String!): [${Movie}!]!
-                    @cypher(
-                        statement: """
-                            MATCH (m:${Movie.name}) 
-                            WHERE m.title = $phrase
-                            RETURN m as this
-                        """
-                        columnName: "this"
-                    )
+                test(fields: [[String!]]!): String!
             }
         `;
+
         await testHelper.initNeo4jGraphQL({
             typeDefs,
+            resolvers: {
+                Query: {
+                    test(_parent, args) {
+                        return "Hello World " + args.fields;
+                    },
+                },
+            },
         });
-        await testHelper.executeCypher(`
-            CREATE (:${Movie.name} { title: "The Matrix", released: 2001 })
-        `);
     });
 
     afterAll(async () => {
         await testHelper.close();
     });
 
-    test("custom @cypher should works with an argument name as phrase", async () => {
+    test("should allow for a matrix input", async () => {
         const query = /* GraphQL */ `
             query {
-                customCypher(phrase: "The Matrix") {
-                    title
-                    released
-                }
+                test(fields: [["first"], ["second"]])
             }
         `;
 
@@ -71,12 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/5030", () => {
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
-            customCypher: expect.toIncludeSameMembers([
-                {
-                    title: "The Matrix",
-                    released: 2001,
-                },
-            ]),
+            test: "Hello World first,second",
         });
     });
 });
