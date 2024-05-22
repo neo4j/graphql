@@ -106,7 +106,7 @@ export class RelatedEntityFilterSchemaTypes extends FilterSchemaTypes<RelatedEnt
                             AND: itc.NonNull.List,
                             OR: itc.NonNull.List,
                             NOT: itc,
-                            ...this.convertAttributesToFilters([...this.relationship.attributes.values()]),
+                            ...this.createPropertyFilters([...this.relationship.attributes.values()]),
                         },
                     };
                 }

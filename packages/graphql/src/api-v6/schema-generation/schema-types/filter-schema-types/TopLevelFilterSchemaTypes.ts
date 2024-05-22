@@ -21,7 +21,6 @@ import type { GraphQLScalarType } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../../schema-model/relationship/Relationship";
-import { filterTruthy } from "../../../../utils/utils";
 import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { SchemaBuilder } from "../../SchemaBuilder";
 import type { SchemaTypes } from "../SchemaTypes";
@@ -63,16 +62,16 @@ export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<TopLevelEntityT
                     AND: itc.NonNull.List,
                     OR: itc.NonNull.List,
                     NOT: itc,
-                    ...this.convertAttributesToFilters([...this.entity.attributes.values()]),
-                    ...this.convertRelationshipsToFilters([...this.entity.relationships.values()]),
+                    ...this.createPropertyFilters([...this.entity.attributes.values()]),
+                    ...this.createRelationshipFilters([...this.entity.relationships.values()]),
                 },
             };
         });
     }
 
-    private convertRelationshipsToFilters(relationships: Relationship[]): Record<string, InputTypeComposer> {
-        const fields: ([string, InputTypeComposer | GraphQLScalarType] | [])[] = filterTruthy(
-            relationships.map((relationship) => {
+    private createRelationshipFilters(relationships: Relationship[]): Record<string, InputTypeComposer> {
+        const fields: Array<[string, InputTypeComposer | GraphQLScalarType] | []> = relationships.map(
+            (relationship) => {
                 const relatedFilterSchemaTypes = new RelatedEntityFilterSchemaTypes({
                     schemaBuilder: this.schemaBuilder,
                     relationship,
@@ -80,7 +79,7 @@ export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<TopLevelEntityT
                 });
 
                 return [relationship.name, relatedFilterSchemaTypes.nestedOperationWhere];
-            })
+            }
         );
         return Object.fromEntries(fields);
     }

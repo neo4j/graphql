@@ -63,7 +63,7 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         );
     }
 
-    protected convertAttributesToFilters(attributes: Attribute[]): Record<string, InputTypeComposer> {
+    protected createPropertyFilters(attributes: Attribute[]): Record<string, InputTypeComposer> {
         const fields: ([string, InputTypeComposer | GraphQLScalarType] | [])[] = filterTruthy(
             attributes.map((attribute) => {
                 const propertyFilter = this.attributeToPropertyFilter(attribute);
