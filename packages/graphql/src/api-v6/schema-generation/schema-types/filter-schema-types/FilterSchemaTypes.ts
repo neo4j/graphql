@@ -22,34 +22,34 @@ import { GraphQLBoolean } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import { GraphQLBuiltInScalarType, ListType } from "../../../../schema-model/attribute/AttributeType";
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { filterTruthy } from "../../../../utils/utils";
+import type { RelatedEntityTypeNames } from "../../../schema-model/graphql-type-names/RelatedEntityTypeNames";
+import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { SchemaBuilder } from "../../SchemaBuilder";
 import type { SchemaTypes } from "../SchemaTypes";
 
-export abstract class FilterSchemaTypes<T extends ConcreteEntity | Relationship> {
-    protected entity: T;
+export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | RelatedEntityTypeNames> {
+    protected entityTypeNames: T;
     protected schemaTypes: SchemaTypes;
     protected schemaBuilder: SchemaBuilder;
 
     constructor({
-        entity,
+        entityTypeNames,
         schemaBuilder,
         schemaTypes,
     }: {
+        entityTypeNames: T;
         schemaBuilder: SchemaBuilder;
-        entity: T;
         schemaTypes: SchemaTypes;
     }) {
+        this.entityTypeNames = entityTypeNames;
         this.schemaBuilder = schemaBuilder;
         this.schemaTypes = schemaTypes;
-        this.entity = entity;
     }
 
     public get operationWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(
-            this.entity.typeNames.operationWhere,
+            this.entityTypeNames.operationWhere,
             (itc: InputTypeComposer) => {
                 return {
                     fields: {
@@ -63,12 +63,12 @@ export abstract class FilterSchemaTypes<T extends ConcreteEntity | Relationship>
         );
     }
 
-    protected convertAttributesToFilters(attributes: Attribute[]): Record<string, InputTypeComposer> {
+    protected createPropertyFilters(attributes: Attribute[]): Record<string, InputTypeComposer> {
         const fields: ([string, InputTypeComposer | GraphQLScalarType] | [])[] = filterTruthy(
             attributes.map((attribute) => {
-                const filter = this.attributeToPropertyFilter(attribute);
-                if (filter) {
-                    return [attribute.name, filter];
+                const propertyFilter = this.attributeToPropertyFilter(attribute);
+                if (propertyFilter) {
+                    return [attribute.name, propertyFilter];
                 }
             })
         );
@@ -82,7 +82,7 @@ export abstract class FilterSchemaTypes<T extends ConcreteEntity | Relationship>
         switch (wrappedType.name as GraphQLBuiltInScalarType) {
             case GraphQLBuiltInScalarType.Boolean: {
                 if (isList) {
-                    return; // TODO: check what to do with boolean lists in filters
+                    return;
                 }
                 return GraphQLBoolean;
             }

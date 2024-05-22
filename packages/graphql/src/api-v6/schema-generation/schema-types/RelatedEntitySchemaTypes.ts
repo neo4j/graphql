@@ -52,7 +52,7 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         this.relationship = relationship;
         this.filterSchemaTypes = new RelatedEntityFilterSchemaTypes({
             schemaBuilder,
-            entity: relationship,
+            relationship: relationship,
             schemaTypes,
         });
     }

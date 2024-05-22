@@ -162,6 +162,16 @@ describe("Scalars", () => {
               properties: RelatedNodeProperties
             }
 
+            input NodeTypeRelatedNodeEdgeListWhere {
+              AND: [NodeTypeRelatedNodeEdgeListWhere!]
+              NOT: NodeTypeRelatedNodeEdgeListWhere
+              OR: [NodeTypeRelatedNodeEdgeListWhere!]
+              all: NodeTypeRelatedNodeEdgeWhere
+              none: NodeTypeRelatedNodeEdgeWhere
+              single: NodeTypeRelatedNodeEdgeWhere
+              some: NodeTypeRelatedNodeEdgeWhere
+            }
+
             input NodeTypeRelatedNodeEdgeSort {
               node: RelatedNodeSort
               properties: RelatedNodePropertiesSort
@@ -173,6 +183,13 @@ describe("Scalars", () => {
               OR: [NodeTypeRelatedNodeEdgeWhere!]
               node: RelatedNodeWhere
               properties: RelatedNodePropertiesWhere
+            }
+
+            input NodeTypeRelatedNodeNestedOperationWhere {
+              AND: [NodeTypeRelatedNodeNestedOperationWhere!]
+              NOT: NodeTypeRelatedNodeNestedOperationWhere
+              OR: [NodeTypeRelatedNodeNestedOperationWhere!]
+              edges: NodeTypeRelatedNodeEdgeListWhere
             }
 
             type NodeTypeRelatedNodeOperation {
@@ -198,6 +215,7 @@ describe("Scalars", () => {
               idListNullable: IDListWhereNullable
               intList: IntListWhere
               intListNullable: IntListWhereNullable
+              relatedNode: NodeTypeRelatedNodeNestedOperationWhere
               stringList: StringListWhere
               stringListNullable: StringListWhereNullable
             }
