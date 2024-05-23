@@ -30,8 +30,9 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { withConnectionWhereInputType } from "./connection-where-input";
+import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 
 export function withDisconnectInputType({
     entityAdapter,
@@ -50,10 +51,12 @@ export function augmentDisconnectInputTypeWithDisconnectFieldInput({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
+    features: Neo4jFeaturesSettings | undefined;
 }) {
     if (relationshipAdapter.source instanceof UnionEntityAdapter) {
         throw new Error("Unexpected union source");
@@ -62,6 +65,7 @@ export function augmentDisconnectInputTypeWithDisconnectFieldInput({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
+        features,
     });
     if (!disconnectFieldInput) {
         return;
@@ -85,15 +89,17 @@ function makeDisconnectInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     if (relationshipAdapter.target instanceof UnionEntityAdapter) {
-        return withUnionDisconnectInputType({ relationshipAdapter, composer, deprecatedDirectives });
+        return withUnionDisconnectInputType({ relationshipAdapter, composer, deprecatedDirectives, features });
     }
-    return withDisconnectFieldInputType({ relationshipAdapter, composer });
+    return withDisconnectFieldInputType({ relationshipAdapter, composer, features });
 }
 function makeDisconnectInputTypeRelationshipField({
     relationshipAdapter,
@@ -124,10 +130,12 @@ function withUnionDisconnectInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.unionDisconnectInputTypeName;
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
@@ -136,7 +144,12 @@ function withUnionDisconnectInputType({
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
-    const fields = makeUnionDisconnectInputTypeFields({ relationshipAdapter, composer, deprecatedDirectives });
+    const fields = makeUnionDisconnectInputTypeFields({
+        relationshipAdapter,
+        composer,
+        deprecatedDirectives,
+        features,
+    });
     if (!Object.keys(fields).length) {
         return;
     }
@@ -151,10 +164,12 @@ function makeUnionDisconnectInputTypeFields({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
@@ -165,6 +180,7 @@ function makeUnionDisconnectInputTypeFields({
             relationshipAdapter,
             ifUnionMemberEntity: memberEntity,
             composer,
+            features,
         });
         if (fieldInput) {
             fields[memberEntity.name] = {
@@ -180,10 +196,12 @@ export function withDisconnectFieldInputType({
     relationshipAdapter,
     composer,
     ifUnionMemberEntity,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.getDisconnectFieldInputTypeName(ifUnionMemberEntity);
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
@@ -194,7 +212,7 @@ export function withDisconnectFieldInputType({
     }
     const disconnectFieldInput = composer.createInputTC({
         name: typeName,
-        fields: makeDisconnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity }),
+        fields: makeDisconnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity, features }),
     });
     return disconnectFieldInput;
 }
@@ -202,10 +220,12 @@ function makeDisconnectFieldInputTypeFields({
     relationshipAdapter,
     composer,
     ifUnionMemberEntity,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
@@ -240,6 +260,7 @@ function makeDisconnectFieldInputTypeFields({
             relationshipAdapter,
             memberEntity: ifUnionMemberEntity,
             composer,
+            features,
         });
 
         if (ifUnionMemberEntity.relationships.size) {

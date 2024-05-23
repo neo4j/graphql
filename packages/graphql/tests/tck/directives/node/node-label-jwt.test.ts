@@ -117,7 +117,7 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const token = createBearerToken("secret", { movielabel: "Film" });
+        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person"  });
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -138,8 +138,7 @@ describe("Label in Node directive", () => {
                     {
                         \\"title\\": \\"Titanic\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

@@ -31,14 +31,15 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { concreteEntityToUpdateInputFields, withArrayOperators, withMathOperators } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
 import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
+import { withConnectionWhereInputType } from "./connection-where-input";
 import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
 import { withCreateFieldInputType } from "./relation-input";
-import { withConnectionWhereInputType } from "./connection-where-input";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -90,11 +91,13 @@ export function augmentUpdateInputTypeWithUpdateFieldInput({
     composer,
     userDefinedFieldDirectives,
     deprecatedDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
+    features: Neo4jFeaturesSettings | undefined;
 }) {
     if (relationshipAdapter.source instanceof UnionEntityAdapter) {
         throw new Error("Unexpected union source");
@@ -104,6 +107,7 @@ export function augmentUpdateInputTypeWithUpdateFieldInput({
         composer,
         deprecatedDirectives,
         userDefinedFieldDirectives,
+        features,
     });
     if (!updateFieldInput) {
         return;
@@ -126,11 +130,13 @@ function makeUpdateInputType({
     composer,
     userDefinedFieldDirectives,
     deprecatedDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     if (relationshipAdapter.target instanceof UnionEntityAdapter) {
         return withUnionUpdateInputType({
@@ -138,9 +144,10 @@ function makeUpdateInputType({
             composer,
             deprecatedDirectives,
             userDefinedFieldDirectives,
+            features,
         });
     }
-    return withUpdateFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
+    return withUpdateFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives, features });
 }
 function makeUpdateInputTypeRelationshipField({
     relationshipAdapter,
@@ -172,11 +179,13 @@ function withUpdateFieldInputType({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.getUpdateFieldInputTypeName(ifUnionMemberEntity);
     if (!relationshipAdapter.shouldGenerateUpdateFieldInputType(ifUnionMemberEntity)) {
@@ -195,6 +204,7 @@ function withUpdateFieldInputType({
             composer,
             userDefinedFieldDirectives,
             ifUnionMemberEntity,
+            features,
         }),
     });
     return updateFieldInput;
@@ -205,11 +215,13 @@ function makeUpdateFieldInputTypeFields({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
     let connectOrCreateFieldInputType: InputTypeComposer | undefined;
@@ -232,6 +244,7 @@ function makeUpdateFieldInputTypeFields({
             relationshipAdapter,
             memberEntity: ifUnionMemberEntity,
             composer,
+            features,
         });
         connectOrCreateFieldInputType = withConnectOrCreateFieldInputType({
             relationshipAdapter,
@@ -265,6 +278,7 @@ function makeUpdateFieldInputTypeFields({
         relationshipAdapter,
         ifUnionMemberEntity,
         composer,
+        features,
     });
     if (disconnectFieldInputType) {
         fields["disconnect"] = {
@@ -296,7 +310,12 @@ function makeUpdateFieldInputTypeFields({
             directives: [],
         };
     }
-    const deleteFieldInputType = withDeleteFieldInputType({ relationshipAdapter, ifUnionMemberEntity, composer });
+    const deleteFieldInputType = withDeleteFieldInputType({
+        relationshipAdapter,
+        ifUnionMemberEntity,
+        composer,
+        features,
+    });
     if (deleteFieldInputType) {
         fields["delete"] = {
             type: relationshipAdapter.isList ? deleteFieldInputType.NonNull.List : deleteFieldInputType,
@@ -311,11 +330,13 @@ function withUnionUpdateInputType({
     composer,
     deprecatedDirectives,
     userDefinedFieldDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.unionUpdateInputTypeName;
     if (composer.has(typeName)) {
@@ -326,6 +347,7 @@ function withUnionUpdateInputType({
         composer,
         deprecatedDirectives,
         userDefinedFieldDirectives,
+        features,
     });
     if (!Object.keys(fields).length) {
         return;
@@ -341,11 +363,13 @@ function makeUnionUpdateInputTypeFields({
     composer,
     deprecatedDirectives,
     userDefinedFieldDirectives,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
@@ -357,6 +381,7 @@ function makeUnionUpdateInputTypeFields({
             ifUnionMemberEntity: memberEntity,
             composer,
             userDefinedFieldDirectives,
+            features,
         });
         if (fieldInput) {
             fields[memberEntity.name] = {

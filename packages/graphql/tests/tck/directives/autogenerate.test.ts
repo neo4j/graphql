@@ -57,8 +57,8 @@ describe("Cypher autogenerate directive", () => {
                 WITH create_var0
                 CREATE (create_this1:Movie)
                 SET
-                    create_this1.name = create_var0.name,
-                    create_this1.id = randomUUID()
+                    create_this1.id = randomUUID(),
+                    create_this1.name = create_var0.name
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id, .name }) AS data"
@@ -70,8 +70,7 @@ describe("Cypher autogenerate directive", () => {
                     {
                         \\"name\\": \\"dan\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

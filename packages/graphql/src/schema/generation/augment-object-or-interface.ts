@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type DirectiveNode, GraphQLInt, type GraphQLResolveInfo, GraphQLString } from "graphql";
+import { GraphQLInt, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
 import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
@@ -24,7 +24,7 @@ import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import type { ConnectionQueryArgs } from "../../types";
+import type { ConnectionQueryArgs, Neo4jFeaturesSettings } from "../../types";
 import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
@@ -89,7 +89,8 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
 export function augmentObjectOrInterfaceTypeWithConnectionField(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
-    schemaComposer: SchemaComposer
+    schemaComposer: SchemaComposer,
+    features: Neo4jFeaturesSettings | undefined
 ): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
     const deprecatedDirectives = graphqlDirectivesToCompose(
@@ -102,6 +103,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             where: makeConnectionWhereInputType({
                 relationshipAdapter,
                 composer: schemaComposer,
+                features,
             }),
             first: {
                 type: GraphQLInt,

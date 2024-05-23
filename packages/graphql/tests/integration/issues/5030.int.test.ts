@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/5030", () => {
 
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
-            ["customCypher"]: expect.toIncludeSameMembers([
+            customCypher: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                     released: 2001,

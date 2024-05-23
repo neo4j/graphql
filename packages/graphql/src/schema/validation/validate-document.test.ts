@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import type {
-    EnumTypeDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    ObjectTypeDefinitionNode,
-    UnionTypeDefinitionNode,
+import {
+    parse,
+    type EnumTypeDefinitionNode,
+    type InterfaceTypeDefinitionNode,
+    type ObjectTypeDefinitionNode,
+    type UnionTypeDefinitionNode,
 } from "graphql";
 import { gql } from "graphql-tag";
 import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
@@ -536,21 +537,77 @@ describe("validation 2.0", () => {
                     'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
                 );
             });
-            test("@populatedBy ok", () => {
-                const doc = gql`
+
+            test.each([
+                "Int",
+                "Float",
+                "String",
+                "Boolean",
+                "ID",
+                "BigInt",
+                "DateTime",
+                "Date",
+                "Time",
+                "LocalDateTime",
+                "LocalTime",
+                "Duration",
+            ])("@populatedBy does not throw with correct arguments on type %s", (type: string) => {
+                const doc = /* GraphQL */ `
                     type User {
-                        name: String @populatedBy(callback: "myCallback")
+                        name: ${type} @populatedBy(callback: "myCallback")
                     }
                 `;
 
                 expect(() =>
                     validateDocument({
-                        document: doc,
+                        document: parse(doc),
                         features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                         additionalDefinitions,
                     })
                 ).not.toThrow();
             });
+
+            test.each(["Point", "CartesianPoint"])(
+                "@populatedBy throws when used on invalid type %s",
+                (type: string) => {
+                    const doc = /* GraphQL */ `
+                    type User {
+                        name: ${type} @populatedBy(callback: "myCallback")
+                    }
+                `;
+
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: parse(doc),
+                            features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
+                            additionalDefinitions,
+                        });
+                    expect(executeValidate).toThrow(
+                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
+                    );
+                }
+            );
+
+            test.each(["Point", "CartesianPoint"])(
+                "@populatedBy throws when used on invalid type %s",
+                (type: string) => {
+                    const doc = /* GraphQL */ `
+                    type User {
+                        name: ${type} @populatedBy(callback: "myCallback")
+                    }
+                `;
+
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: parse(doc),
+                            features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
+                            additionalDefinitions,
+                        });
+                    expect(executeValidate).toThrow(
+                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
+                    );
+                }
+            );
         });
         describe("@relationship", () => {
             test("@relationship properties required", () => {
@@ -3559,13 +3616,19 @@ describe("validation 2.0", () => {
 
             const errors = getError(executeValidate);
 
-            expect(errors).toHaveLength(1);
+            expect(errors).toHaveLength(2);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Directive @populatedBy is not supported on fields of the Query type."
+                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
+            expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[1]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @populatedBy is not supported on fields of the Query type."
+            );
+            expect(errors[1]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
         });
 
         test("@authentication ok to be used on the field of a root type", () => {

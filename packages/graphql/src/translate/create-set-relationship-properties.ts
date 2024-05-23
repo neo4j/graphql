@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { Relationship } from "../classes";
+import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
-import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 
 function createSetRelationshipProperties({
     properties,
@@ -115,7 +115,7 @@ function createSetRelationshipPropertiesForProperties({
         }
     });
 
-    relationship.primitiveFields.forEach((field) =>
+    [...relationship.primitiveFields, ...relationship.temporalFields].forEach((field) =>
         addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
     );
 

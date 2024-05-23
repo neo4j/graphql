@@ -10,6 +10,6 @@ module.exports.createEngine = async function () {
             reconnectTimeout: 1000,
         });
         engine.events.setMaxListeners(0);
-        return engine
+        return engine;
     }
 };

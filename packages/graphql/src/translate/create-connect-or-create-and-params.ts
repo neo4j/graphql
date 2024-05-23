@@ -24,8 +24,8 @@ import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { PredicateReturn, PrimitiveField, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
+import { findConflictingProperties } from "../utils/find-conflicting-properties";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { findConflictingProperties } from "../utils/is-property-clash";
 import { asArray, omitFields } from "../utils/utils";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
@@ -432,7 +432,10 @@ function createAuthorizationAfterConnectOrCreate({
 }
 
 function getCallbackFields(node: Node | Relationship): PrimitiveField[] {
-    const callbackFields = node.primitiveFields.filter((f) => f.callback);
+    const callbackFields = [
+        ...node.primitiveFields.filter((f) => f.callback),
+        ...node.temporalFields.filter((f) => f.callback),
+    ];
     return callbackFields;
 }
 

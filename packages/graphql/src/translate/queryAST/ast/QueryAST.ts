@@ -27,6 +27,7 @@ import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import { DeleteOperation } from "./operations/DeleteOperation";
 import { ReadOperation } from "./operations/ReadOperation";
+import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
@@ -66,11 +67,11 @@ export class QueryAST {
 
     private buildQueryASTContext(
         neo4jGraphQLContext: Neo4jGraphQLTranslationContext,
-        varName = "this"
+        varName?: string
     ): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
-        const returnVariable = new Cypher.NamedVariable(varName);
         const node = this.getTargetFromOperation(varName);
+        const returnVariable = new Cypher.NamedVariable(varName ?? "this");
         return new QueryASTContext({
             target: node,
             env: queryASTEnv,
@@ -79,13 +80,14 @@ export class QueryAST {
         });
     }
 
-    private getTargetFromOperation(varName: string): Cypher.Node | undefined {
+    private getTargetFromOperation(varName?: string): Cypher.Node | undefined {
         if (
             this.operation instanceof ReadOperation ||
             this.operation instanceof ConnectionReadOperation ||
             this.operation instanceof V6ReadOperation ||
             this.operation instanceof DeleteOperation ||
-            this.operation instanceof AggregationOperation
+            this.operation instanceof AggregationOperation ||
+            this.operation instanceof UnwindCreateOperation
         ) {
             return createNode(varName);
         }

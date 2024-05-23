@@ -89,11 +89,11 @@ describe("Batch Create, Auth", () => {
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                	WITH count(create_this1_website_Website_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-                	RETURN c AS create_this1_website_Website_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)-[create_this2:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this2) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
+                    RETURN c AS create_var3
                 }
                 RETURN create_this1
             }
@@ -115,8 +115,7 @@ describe("Batch Create, Auth", () => {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
                 },
-                \\"create_param3\\": \\"admin\\",
-                \\"resolvedCallbacks\\": {}
+                \\"create_param3\\": \\"admin\\"
             }"
         `);
     });
@@ -154,21 +153,20 @@ describe("Batch Create, Auth", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Actor)
+                    CREATE (create_this3:Actor)
                     SET
-                        create_this5.name = create_var3.name,
-                        create_this5.id = randomUUID()
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
+                        create_this3.id = randomUUID(),
+                        create_this3.name = create_var2.node.name
+                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
                     SET
-                        create_this6.year = create_var4.year
-                    WITH create_this5
+                        create_this4.year = create_var2.edge.year
+                    WITH create_this3
                     CALL {
-                    	WITH create_this5
-                    	MATCH (create_this5)-[create_this5_website_Website_unique:HAS_WEBSITE]->(:Website)
-                    	WITH count(create_this5_website_Website_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
-                    	RETURN c AS create_this5_website_Website_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this5:HAS_WEBSITE]->(:Website)
+                        WITH count(create_this5) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one\\", [0])
+                        RETURN c AS create_var6
                     }
                     RETURN collect(NULL) AS create_var7
                 }
@@ -176,22 +174,22 @@ describe("Batch Create, Auth", () => {
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                	WITH count(create_this1_website_Website_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-                	RETURN c AS create_this1_website_Website_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)-[create_this8:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this8) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
+                    RETURN c AS create_var9
                 }
                 RETURN create_this1
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)<-[create_this8:ACTED_IN]-(create_this9:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this9.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH create_this9 { .name } AS create_this9
-                RETURN collect(create_this9) AS create_var10
+                MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this11.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this11 { .name } AS create_this11
+                RETURN collect(create_this11) AS create_var12
             }
-            RETURN collect(create_this1 { .id, actors: create_var10 }) AS data"
+            RETURN collect(create_this1 { .id, actors: create_var12 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -239,8 +237,7 @@ describe("Batch Create, Auth", () => {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
                 },
-                \\"create_param3\\": \\"admin\\",
-                \\"resolvedCallbacks\\": {}
+                \\"create_param3\\": \\"admin\\"
             }"
         `);
     });

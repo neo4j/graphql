@@ -22,7 +22,7 @@ import type { AttributeAdapter } from "../../../../schema-model/attribute/model-
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTContext } from "../QueryASTContext";
-import type { EntitySelection } from "../selection/EntitySelection";
+import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
 import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
@@ -58,10 +58,10 @@ export class CypherOperation extends ReadOperation {
         const authClauses = authPredicates.length
             ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
             : [];
-        
 
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
-        const clause = Cypher.concat(matchClause, fieldSubqueries, ...authClauses, ret);
+        const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => f.getSelection(nestedContext));
+        const clause = Cypher.concat(matchClause, ...extraMatches, fieldSubqueries, ...authClauses, ret);
         return {
             clauses: [clause],
             projectionExpr: context.returnVariable,

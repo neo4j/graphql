@@ -154,19 +154,25 @@ export function withSourceWhereInputType({
     composer,
     deprecatedDirectives,
     userDefinedDirectivesOnTargetFields,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
-    const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
+    const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives, features);
     whereInput.addFields(fields);
 
-    const connectionFields = augmentWhereInputTypeWithConnectionFields(relationshipAdapter, deprecatedDirectives);
+    const connectionFields = augmentWhereInputTypeWithConnectionFields(
+        relationshipAdapter,
+        deprecatedDirectives,
+        features
+    );
     whereInput.addFields(connectionFields);
 
     // TODO: Current unions are not supported as relationship targets beyond the above fields
@@ -179,6 +185,7 @@ export function withSourceWhereInputType({
         entityAdapter: relationshipTarget,
         composer: composer,
         userDefinedDirectivesOnTargetFields,
+        features,
     });
 
     if (relationshipAdapter.isFilterableByAggregate()) {

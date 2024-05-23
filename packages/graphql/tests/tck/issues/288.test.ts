@@ -76,8 +76,7 @@ describe("#288", () => {
                         \\"USERID\\": \\"userid\\",
                         \\"COMPANYID\\": \\"companyid\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

@@ -87,11 +87,11 @@ describe("Batch Create, Interface", () => {
                     create_this1.id = create_var0.id
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-                	WITH count(create_this1_website_Website_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-                	RETURN c AS create_this1_website_Website_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)-[create_this2:HAS_WEBSITE]->(:Website)
+                    WITH count(create_this2) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one\\", [0])
+                    RETURN c AS create_var3
                 }
                 RETURN create_this1
             }
@@ -107,8 +107,7 @@ describe("Batch Create, Interface", () => {
                     {
                         \\"id\\": \\"2\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

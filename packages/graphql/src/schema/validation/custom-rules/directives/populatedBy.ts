@@ -16,16 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
+import { Kind, type DirectiveNode, type FieldDefinitionNode } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { getInnerTypeName } from "../utils/utils";
 
 export function verifyPopulatedBy(callbacks?: Neo4jGraphQLCallbacks) {
-    return function ({ directiveNode }: { directiveNode: DirectiveNode }) {
+    return function ({
+        directiveNode,
+        traversedDef,
+    }: {
+        directiveNode: DirectiveNode;
+        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
+    }) {
         const callbackArg = directiveNode.arguments?.find((x) => x.name.value === "callback");
         if (!callbackArg) {
             // delegate to DirectiveArgumentOfCorrectType rule
+            return;
+        }
+        if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
+            // delegate to KnownDirectivesRule
             return;
         }
         const callbackName = parseValueNode(callbackArg.value);
@@ -38,6 +50,27 @@ export function verifyPopulatedBy(callbacks?: Neo4jGraphQLCallbacks) {
             throw new DocumentValidationError(`@populatedBy.callback \`${callbackName}\` must be of type Function.`, [
                 "callback",
             ]);
+        }
+        if (
+            ![
+                "Int",
+                "Float",
+                "String",
+                "Boolean",
+                "ID",
+                "BigInt",
+                "DateTime",
+                "Date",
+                "Time",
+                "LocalDateTime",
+                "LocalTime",
+                "Duration",
+            ].includes(getInnerTypeName(traversedDef.type))
+        ) {
+            throw new DocumentValidationError(
+                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration.",
+                []
+            );
         }
     };
 }

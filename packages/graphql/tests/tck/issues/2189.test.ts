@@ -81,37 +81,36 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 WITH create_var0
                 CREATE (create_this1:Test_Item)
                 SET
+                    create_this1.uuid = randomUUID(),
                     create_this1.int = create_var0.int,
                     create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool,
-                    create_this1.uuid = randomUUID()
+                    create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.feedback.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Test_Feedback)
+                    CREATE (create_this3:Test_Feedback)
                     SET
-                        create_this5.str = create_var3.str,
-                        create_this5.uuid = randomUUID()
-                    MERGE (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this5)
-                    WITH create_this5
+                        create_this3.uuid = randomUUID(),
+                        create_this3.str = create_var2.node.str
+                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                    WITH create_this3
                     CALL {
-                    	WITH create_this5
-                    	MATCH (create_this5)-[create_this5_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this5_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this5_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this5:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this5) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_var6
                     }
                     RETURN collect(NULL) AS create_var7
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this8) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_var9
                 }
                 RETURN create_this1
             }
@@ -143,8 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         \\"str\\": \\"two\\",
                         \\"bool\\": true
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -173,37 +171,36 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 WITH create_var0
                 CREATE (create_this1:Test_Item)
                 SET
+                    create_this1.uuid = randomUUID(),
                     create_this1.int = create_var0.int,
                     create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool,
-                    create_this1.uuid = randomUUID()
+                    create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.feedback.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Test_Feedback)
+                    CREATE (create_this3:Test_Feedback)
                     SET
-                        create_this5.str = create_var3.str,
-                        create_this5.uuid = randomUUID()
-                    MERGE (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this5)
-                    WITH create_this5
+                        create_this3.uuid = randomUUID(),
+                        create_this3.str = create_var2.node.str
+                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                    WITH create_this3
                     CALL {
-                    	WITH create_this5
-                    	MATCH (create_this5)-[create_this5_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this5_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this5_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this5:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this5) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_var6
                     }
                     RETURN collect(NULL) AS create_var7
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this8) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_var9
                 }
                 RETURN create_this1
             }
@@ -235,8 +232,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         \\"str\\": \\"two\\",
                         \\"bool\\": true
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -283,37 +279,36 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 WITH create_var0
                 CREATE (create_this1:Test_Item)
                 SET
+                    create_this1.uuid = randomUUID(),
                     create_this1.int = create_var0.int,
                     create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool,
-                    create_this1.uuid = randomUUID()
+                    create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.feedback.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Test_Feedback)
+                    CREATE (create_this3:Test_Feedback)
                     SET
-                        create_this5.str = create_var3.str,
-                        create_this5.uuid = randomUUID()
-                    MERGE (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this5)
-                    WITH create_this5
+                        create_this3.uuid = randomUUID(),
+                        create_this3.str = create_var2.node.str
+                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                    WITH create_this3
                     CALL {
-                    	WITH create_this5
-                    	MATCH (create_this5)-[create_this5_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this5_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this5_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this5:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this5) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_var6
                     }
                     RETURN collect(NULL) AS create_var7
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this8) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_var9
                 }
                 RETURN create_this1
             }
@@ -326,17 +321,17 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     RETURN t
                     LIMIT 1
                 }
-                WITH t AS create_this8
-                WITH create_this8 { .bool, .str, .int, .uuid } AS create_this8
-                RETURN head(collect(create_this8)) AS create_var9
+                WITH t AS create_this10
+                WITH create_this10 { .bool, .str, .int, .uuid } AS create_this10
+                RETURN head(collect(create_this10)) AS create_var11
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)<-[create_this10:TEST_RELATIONSHIP]-(create_this11:Test_Feedback)
-                WITH create_this11 { .uuid, .int, .str, .bool } AS create_this11
-                RETURN head(collect(create_this11)) AS create_var12
+                MATCH (create_this1)<-[create_this12:TEST_RELATIONSHIP]-(create_this13:Test_Feedback)
+                WITH create_this13 { .uuid, .int, .str, .bool } AS create_this13
+                RETURN head(collect(create_this13)) AS create_var14
             }
-            RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedbackCypher: create_var9, feedback: create_var12 }) AS data"
+            RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedbackCypher: create_var11, feedback: create_var14 }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -364,8 +359,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         \\"str\\": \\"two\\",
                         \\"bool\\": true
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -406,47 +400,46 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 WITH create_var0
                 CREATE (create_this1:Test_Item)
                 SET
+                    create_this1.uuid = randomUUID(),
                     create_this1.int = create_var0.int,
                     create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool,
-                    create_this1.uuid = randomUUID()
+                    create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.feedback.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Test_Feedback)
+                    CREATE (create_this3:Test_Feedback)
                     SET
-                        create_this5.str = create_var3.str,
-                        create_this5.uuid = randomUUID()
-                    MERGE (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this5)
-                    WITH create_this5
+                        create_this3.uuid = randomUUID(),
+                        create_this3.str = create_var2.node.str
+                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                    WITH create_this3
                     CALL {
-                    	WITH create_this5
-                    	MATCH (create_this5)-[create_this5_item_Test_Item_unique:TEST_RELATIONSHIP]->(:Test_Item)
-                    	WITH count(create_this5_item_Test_Item_unique) as c
-                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one', [0])
-                    	RETURN c AS create_this5_item_Test_Item_unique_ignored
+                        WITH create_this3
+                        MATCH (create_this3)-[create_this5:TEST_RELATIONSHIP]->(:Test_Item)
+                        WITH count(create_this5) AS c
+                        WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Feedback.item must be less than or equal to one\\", [0])
+                        RETURN c AS create_var6
                     }
                     RETURN collect(NULL) AS create_var7
                 }
                 WITH create_this1
                 CALL {
-                	WITH create_this1
-                	MATCH (create_this1)<-[create_this1_feedback_Test_Feedback_unique:TEST_RELATIONSHIP]-(:Test_Feedback)
-                	WITH count(create_this1_feedback_Test_Feedback_unique) as c
-                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one', [0])
-                	RETURN c AS create_this1_feedback_Test_Feedback_unique_ignored
+                    WITH create_this1
+                    MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(:Test_Feedback)
+                    WITH count(create_this8) AS c
+                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDTest_Item.feedback must be less than or equal to one\\", [0])
+                    RETURN c AS create_var9
                 }
                 RETURN create_this1
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(create_this9:Test_Feedback)
-                WITH create_this9 { .uuid, .int, .str, .bool } AS create_this9
-                RETURN head(collect(create_this9)) AS create_var10
+                MATCH (create_this1)<-[create_this10:TEST_RELATIONSHIP]-(create_this11:Test_Feedback)
+                WITH create_this11 { .uuid, .int, .str, .bool } AS create_this11
+                RETURN head(collect(create_this11)) AS create_var12
             }
-            RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedback: create_var10 }) AS data"
+            RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedback: create_var12 }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -474,8 +467,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         \\"str\\": \\"two\\",
                         \\"bool\\": true
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

@@ -47,13 +47,21 @@ export const GraphQLBigInt = new GraphQLScalarType({
             );
         }
 
-        return int(inputValue);
+        try {
+            return int(inputValue, { strictStringValidation: true });
+        } catch {
+            throw new GraphQLError("Value must be either a BigInt, or a string representing a BigInt value.");
+        }
     },
     parseLiteral(ast: ValueNode) {
         switch (ast.kind) {
             case Kind.INT:
             case Kind.STRING:
-                return int(ast.value);
+                try {
+                    return int(ast.value, { strictStringValidation: true });
+                } catch {
+                    throw new GraphQLError("Value must be either a BigInt, or a string representing a BigInt value.");
+                }
             default:
                 throw new GraphQLError("Value must be either a BigInt, or a string representing a BigInt value.");
         }

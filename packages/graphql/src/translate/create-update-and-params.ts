@@ -26,7 +26,7 @@ import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constan
 import type { BaseField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
-import { findConflictingProperties } from "../utils/is-property-clash";
+import { findConflictingProperties } from "../utils/find-conflicting-properties";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { checkAuthentication } from "./authorization/check-authentication";
@@ -43,7 +43,7 @@ import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-p
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { createEventMeta } from "./subscriptions/create-event-meta";
@@ -471,7 +471,7 @@ export default function createUpdateAndParams({
                                 intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
                             }
 
-                            const relationshipValidationStr = createRelationshipValidationStr({
+                            const relationshipValidationStr = createRelationshipValidationString({
                                 node: refNode,
                                 context,
                                 varName: nodeName,
@@ -525,7 +525,7 @@ export default function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        node.primitiveFields.forEach((field) =>
+        [...node.primitiveFields, ...node.temporalFields].forEach((field) =>
             addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
@@ -698,7 +698,7 @@ export default function createUpdateAndParams({
 
     const preArrayMethodValidationStr = "";
     const relationshipValidationStr = includeRelationshipValidation
-        ? createRelationshipValidationStr({ node, context, varName })
+        ? createRelationshipValidationString({ node, context, varName })
         : "";
 
     if (meta.preArrayMethodValidationStrs.length) {

@@ -126,8 +126,7 @@ describe("Cypher Auth Projection", () => {
                     {
                         \\"id\\": \\"id-2\\"
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

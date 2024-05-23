@@ -19,7 +19,6 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import type { Date as Neo4jDate, Integer } from "neo4j-driver";
 import neo4j, { isDate } from "neo4j-driver";
 
 const formatDateString = (dateString: string) => new Date(dateString).toISOString().split("T")[0];
@@ -40,11 +39,17 @@ export const GraphQLDate = new GraphQLScalarType({
     },
     parseValue: (inputValue: unknown) => {
         if (typeof inputValue === "string") {
-            return neo4j.types.Date.fromStandardDate(new Date(inputValue));
+            const date = new Date(inputValue);
+
+            if (date.toString() === "Invalid Date") {
+                throw new GraphQLError(`Date cannot represent non temporal value: ${inputValue}`);
+            }
+
+            return neo4j.types.Date.fromStandardDate(date);
         }
 
-        if (isDate(inputValue as object)) {
-            return inputValue as Neo4jDate<Integer>;
+        if (isDate(inputValue)) {
+            return inputValue;
         }
 
         throw new GraphQLError(`Date cannot represent non string value: ${inputValue}`);

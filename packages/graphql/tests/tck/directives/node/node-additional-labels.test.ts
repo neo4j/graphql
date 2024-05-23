@@ -119,12 +119,11 @@ describe("Node directive with additionalLabels", () => {
                 CALL {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:Actor:Person)
+                    CREATE (create_this3:Actor:Person)
                     SET
-                        create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
-                    RETURN collect(NULL) AS create_var7
+                        create_this3.name = create_var2.node.name
+                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                    RETURN collect(NULL) AS create_var5
                 }
                 RETURN create_this1
             }
@@ -158,8 +157,7 @@ describe("Node directive with additionalLabels", () => {
                             ]
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

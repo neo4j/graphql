@@ -401,8 +401,7 @@ describe("Cypher Points", () => {
                             \\"latitude\\": 2
                         }
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
