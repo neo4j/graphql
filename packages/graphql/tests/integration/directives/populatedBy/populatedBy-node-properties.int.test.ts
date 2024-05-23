@@ -11,12 +11,7 @@ describe("@populatedBy directive - Node properties", () => {
     describe("@populatedBy - Int", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const int1 = Number(
-                generate({
-                    charset: "numeric",
-                    length: 6,
-                })
-            );
+            const int1 = 123456;
 
             const callback = () => Promise.resolve(int1);
 
@@ -38,9 +33,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -70,12 +63,7 @@ describe("@populatedBy directive - Node properties", () => {
 
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const int1 = Number(
-                generate({
-                    charset: "numeric",
-                    length: 6,
-                })
-            );
+            const int1 = 123456;
 
             const callback = () => Promise.resolve(int1);
 
@@ -97,9 +85,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -133,18 +119,8 @@ describe("@populatedBy directive - Node properties", () => {
 
         test("Should use on CREATE and UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const int1 = Number(
-                generate({
-                    charset: "numeric",
-                    length: 6,
-                })
-            );
-            const int2 = Number(
-                generate({
-                    charset: "numeric",
-                    length: 6,
-                })
-            );
+            const int1 = 123456;
+            const int2 = 654321;
 
             let counter = 0;
             const callback = () => {
@@ -175,9 +151,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -242,9 +216,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -292,9 +264,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -345,9 +315,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -411,9 +379,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -478,9 +444,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -507,9 +471,7 @@ describe("@populatedBy directive - Node properties", () => {
     describe("@populatedBy - String", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
 
             const callback = () => Promise.resolve(string1);
 
@@ -531,9 +493,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -563,9 +523,7 @@ describe("@populatedBy directive - Node properties", () => {
 
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
 
             const callback = () => Promise.resolve(string1);
 
@@ -587,9 +545,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -623,12 +579,8 @@ describe("@populatedBy directive - Node properties", () => {
 
         test("Should use on CREATE and UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
-            const string2 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
+            const string2 = "string_two";
 
             let counter = 0;
             const callback = () => {
@@ -659,9 +611,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -726,9 +676,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -776,9 +724,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -829,9 +775,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -895,9 +839,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -962,9 +904,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1012,9 +952,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1065,9 +1003,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1131,9 +1067,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1198,9 +1132,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1248,9 +1180,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1301,9 +1231,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1367,9 +1295,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1434,9 +1360,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1464,7 +1388,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString());
 
@@ -1486,9 +1410,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1519,7 +1441,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString());
 
@@ -1541,9 +1463,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1598,9 +1518,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1628,7 +1546,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString());
 
@@ -1650,9 +1568,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1683,7 +1599,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString());
 
@@ -1705,9 +1621,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1762,9 +1676,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1792,7 +1704,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString().split("T")[1]);
 
@@ -1814,9 +1726,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1847,7 +1757,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString().split("T")[1]);
 
@@ -1869,9 +1779,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1926,9 +1834,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -1956,7 +1862,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString().split("Z")[0]);
 
@@ -1978,9 +1884,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2011,7 +1915,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString().split("Z")[0]);
 
@@ -2033,9 +1937,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2090,9 +1992,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2120,7 +2020,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString().split("Z")[0]?.split("T")[1]);
 
@@ -2142,9 +2042,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2175,7 +2073,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const date = new Date();
+            const date = new Date(1716458062912);
 
             const callback = () => Promise.resolve(date.toISOString().split("Z")[0]?.split("T")[1]);
 
@@ -2197,9 +2095,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2254,9 +2150,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2306,9 +2200,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2361,9 +2253,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2418,9 +2308,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2447,9 +2335,7 @@ describe("@populatedBy directive - Node properties", () => {
     describe("@populatedBy - Misc", () => {
         test("should not change the property when returning 'undefined'", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
 
             const callback = () => undefined;
 
@@ -2471,9 +2357,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2507,9 +2391,7 @@ describe("@populatedBy directive - Node properties", () => {
 
         test("should remove property when returning 'null'", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
 
             const callback = () => null;
 
@@ -2531,9 +2413,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2592,9 +2472,7 @@ describe("@populatedBy directive - Node properties", () => {
                 charset: "alphabetic",
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2647,13 +2525,9 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieTitle = generate({
-                charset: "alphabetic",
-            });
+            const movieTitle = "movie_title";
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2710,17 +2584,9 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieTitle = generate({
-                charset: "alphabetic",
-            });
-
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-
-            const testValue = generate({
-                charset: "alphabetic",
-            });
+            const movieTitle = "move_title";
+            const movieId = "movie_id";
+            const testValue = "test_value";
 
             const mutation = `
                     mutation {
@@ -2775,9 +2641,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
@@ -2828,9 +2692,7 @@ describe("@populatedBy directive - Node properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
             const mutation = `
                     mutation {
