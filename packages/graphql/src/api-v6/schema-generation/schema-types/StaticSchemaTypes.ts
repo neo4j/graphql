@@ -279,7 +279,7 @@ class StaticFilterTypes {
     private createStringOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
         return {
             equals: type,
-            matches: type,
+            // matches: type,
             contains: type,
             startsWith: type,
             endsWith: type,

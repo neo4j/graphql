@@ -328,7 +328,6 @@ describe("Scalars", () => {
               endsWith: String
               equals: String
               in: [String!]
-              matches: String
               startsWith: String
             }"
         `);
