@@ -227,7 +227,14 @@ describe("Temporals", () => {
               edges: NodeTypeRelatedNodeEdgeWhere
             }
 
-            input NodeTypeSort
+            input NodeTypeSort {
+              date: SortDirection
+              dateTime: SortDirection
+              duration: SortDirection
+              localDateTime: SortDirection
+              localTime: SortDirection
+              time: SortDirection
+            }
 
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
@@ -325,7 +332,14 @@ describe("Temporals", () => {
               time: TimeWhere
             }
 
-            input RelatedNodeSort
+            input RelatedNodeSort {
+              date: SortDirection
+              dateTime: SortDirection
+              duration: SortDirection
+              localDateTime: SortDirection
+              localTime: SortDirection
+              time: SortDirection
+            }
 
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
