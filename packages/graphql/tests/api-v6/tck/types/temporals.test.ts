@@ -83,7 +83,7 @@ describe("Temporal types", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN collect({ node: { dateTime: this0.dateTime, localDateTime: this0.localDateTime, duration: this0.duration, time: this0.time, localTime: this0.localTime, __resolveType: \\"TypeNode\\" } }) AS var1
+                RETURN collect({ node: { dateTime: apoc.date.convertFormat(toString(this0.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: this0.localDateTime, duration: this0.duration, time: this0.time, localTime: this0.localTime, __resolveType: \\"TypeNode\\" } }) AS var1
             }
             RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);
