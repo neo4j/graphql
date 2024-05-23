@@ -130,17 +130,11 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
                 }
                 return this.schemaTypes.staticTypes.staticFilterTypes.floatWhere;
             }
-            /**
-             * The date is commented as it will fail. I believe this is because another scalar Date is imported when generating the NodeWhere fields,
-             * as it's a built-in type from "graphql-compose": https://graphql-compose.github.io/docs/api/misc-api-methods.html#graphqldate
-             * A potential fix could be to add our built-in scalar so that other built-in scalars will not be added.
-             *
-             **/
-            /* 
+
             case Neo4jGraphQLTemporalType.Date: {
                 return this.schemaTypes.staticTypes.staticFilterTypes.dateWhere;
-            } 
-            */
+            }
+
             case Neo4jGraphQLTemporalType.DateTime: {
                 return this.schemaTypes.staticTypes.staticFilterTypes.dateTimeWhere;
             }

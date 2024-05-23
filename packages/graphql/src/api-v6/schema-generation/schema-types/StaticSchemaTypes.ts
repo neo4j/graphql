@@ -31,6 +31,8 @@ import {
 } from "../../../graphql/scalars";
 import type { SchemaBuilder } from "../SchemaBuilder";
 
+import * as Scalars from "../../../graphql/scalars";
+
 function nonNull(type: string): string {
     return `${type}!`;
 }
@@ -46,6 +48,13 @@ export class StaticSchemaTypes {
     constructor({ schemaBuilder }: { schemaBuilder: SchemaBuilder }) {
         this.schemaBuilder = schemaBuilder;
         this.staticFilterTypes = new StaticFilterTypes({ schemaBuilder });
+        this.addScalars();
+    }
+
+    private addScalars(): void {
+        Object.values(Scalars).forEach((scalar) => {
+            this.schemaBuilder.createScalar(scalar);
+        });
     }
 
     public get pageInfo(): ObjectTypeComposer {
@@ -105,7 +114,7 @@ class StaticFilterTypes {
                 fields: {
                     ...this.createBooleanOperators(itc),
                     in: list(nonNull(GraphQLDate.name)),
-                    ...this.createRelationalOperators(GraphQLDate),
+                    ...this.createNumericOperators(GraphQLDate),
                 },
             };
         });
@@ -117,7 +126,7 @@ class StaticFilterTypes {
                 fields: {
                     ...this.createBooleanOperators(itc),
                     in: list(nonNull(GraphQLDateTime.name)),
-                    ...this.createRelationalOperators(GraphQLDateTime),
+                    ...this.createNumericOperators(GraphQLDateTime),
                 },
             };
         });
@@ -128,7 +137,7 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createRelationalOperators(GraphQLLocalDateTime),
+                    ...this.createNumericOperators(GraphQLLocalDateTime),
                     in: list(nonNull(GraphQLLocalDateTime.name)),
                 },
             };
@@ -140,7 +149,7 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createRelationalOperators(GraphQLDuration),
+                    ...this.createNumericOperators(GraphQLDuration),
                     in: list(nonNull(GraphQLDuration.name)),
                 },
             };
@@ -152,7 +161,7 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createRelationalOperators(GraphQLTime),
+                    ...this.createNumericOperators(GraphQLTime),
                     in: list(nonNull(GraphQLTime.name)),
                 },
             };
@@ -164,7 +173,7 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createRelationalOperators(GraphQLLocalTime),
+                    ...this.createNumericOperators(GraphQLLocalTime),
                     in: list(nonNull(GraphQLLocalTime.name)),
                 },
             };
@@ -228,7 +237,7 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createRelationalOperators(GraphQLInt),
+                    ...this.createNumericOperators(GraphQLInt),
                     in: list(nonNull(GraphQLInt.name)),
                 },
             };
@@ -260,7 +269,7 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createRelationalOperators(GraphQLFloat),
+                    ...this.createNumericOperators(GraphQLFloat),
                     in: list(nonNull(GraphQLFloat.name)),
                 },
             };
@@ -277,7 +286,7 @@ class StaticFilterTypes {
         };
     }
 
-    private createRelationalOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
+    private createNumericOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
         return {
             equals: type,
             lt: type,

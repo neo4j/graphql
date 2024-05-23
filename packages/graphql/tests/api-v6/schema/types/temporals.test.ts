@@ -61,6 +61,7 @@ describe("Temporals", () => {
               query: Query
             }
 
+            \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
@@ -76,6 +77,18 @@ describe("Temporals", () => {
               in: [DateTime!]
               lt: DateTime
               lte: DateTime
+            }
+
+            input DateWhere {
+              AND: [DateWhere!]
+              NOT: DateWhere
+              OR: [DateWhere!]
+              equals: Date
+              gt: Date
+              gte: Date
+              in: [Date!]
+              lt: Date
+              lte: Date
             }
 
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
@@ -240,6 +253,7 @@ describe("Temporals", () => {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
+              date: DateWhere
               dateTime: DateTimeWhere
               duration: DurationWhere
               localDateTime: LocalDateTimeWhere
@@ -325,6 +339,7 @@ describe("Temporals", () => {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
+              date: DateWhere
               dateTime: DateTimeWhere
               duration: DurationWhere
               localDateTime: LocalDateTimeWhere
@@ -345,6 +360,7 @@ describe("Temporals", () => {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
+              date: DateWhere
               dateTime: DateTimeWhere
               duration: DurationWhere
               localDateTime: LocalDateTimeWhere
