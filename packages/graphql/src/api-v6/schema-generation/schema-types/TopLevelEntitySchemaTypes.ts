@@ -21,7 +21,11 @@ import type { GraphQLResolveInfo } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import { GraphQLBuiltInScalarType } from "../../../schema-model/attribute/AttributeType";
+import {
+    GraphQLBuiltInScalarType,
+    Neo4jGraphQLNumberType,
+    Neo4jGraphQLTemporalType,
+} from "../../../schema-model/attribute/AttributeType";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
@@ -112,8 +116,15 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                 filterTruthy(
                     this.getFields().map((field) => {
                         if (
-                            Object.values(GraphQLBuiltInScalarType).includes(
-                                field.type.name as GraphQLBuiltInScalarType
+                            [
+                                ...Object.values(GraphQLBuiltInScalarType),
+                                ...Object.values(Neo4jGraphQLNumberType),
+                                ...Object.values(Neo4jGraphQLTemporalType),
+                            ].includes(
+                                field.type.name as
+                                    | GraphQLBuiltInScalarType
+                                    | Neo4jGraphQLNumberType
+                                    | Neo4jGraphQLTemporalType
                             )
                         ) {
                             return [field.name, this.schemaTypes.staticTypes.sortDirection];
