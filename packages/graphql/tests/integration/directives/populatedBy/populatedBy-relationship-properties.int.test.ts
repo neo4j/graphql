@@ -31,9 +31,7 @@ describe("@populatedBy directive - Relationship properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const testGenre = testHelper.createUniqueType("Genre");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
 
             const callback = () => Promise.resolve(string1);
 
@@ -68,15 +66,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -140,9 +132,7 @@ describe("@populatedBy directive - Relationship properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const testGenre = testHelper.createUniqueType("Genre");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
 
             const callback = () => Promise.resolve(string1);
 
@@ -177,16 +167,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -249,9 +233,7 @@ describe("@populatedBy directive - Relationship properties", () => {
         test("Should use on CREATE and UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const testGenre = testHelper.createUniqueType("Genre");
-            const string1 = generate({
-                charset: "alphabetic",
-            });
+            const string1 = "string_one";
             const string2 = generate({
                 charset: "alphabetic",
             });
@@ -298,15 +280,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -455,15 +431,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -567,16 +537,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -694,15 +658,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -851,15 +809,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -963,16 +915,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1090,15 +1036,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1241,15 +1181,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1347,16 +1281,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1462,15 +1390,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1613,15 +1535,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1719,16 +1635,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1834,15 +1744,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -1983,15 +1887,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2102,15 +2000,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2208,16 +2100,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2323,15 +2209,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2472,15 +2352,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2553,7 +2427,7 @@ describe("@populatedBy directive - Relationship properties", () => {
         });
     });
 
-    const date = new Date();
+    const date = new Date(1716458062912);
 
     describe.each<{
         description: string;
@@ -2621,15 +2495,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2725,16 +2593,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2831,15 +2693,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -2966,15 +2822,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -3070,16 +2920,10 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
 
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -3176,15 +3020,9 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -3295,18 +3133,12 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
             const movieTitle = generate({
                 charset: "alphabetic",
             });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                     mutation {
@@ -3407,18 +3239,12 @@ describe("@populatedBy directive - Relationship properties", () => {
                 },
             });
 
-            const movieId = generate({
-                charset: "alphabetic",
-            });
+            const movieId = "movie_id";
             const movieTitle = generate({
                 charset: "alphabetic",
             });
-            const genreId = generate({
-                charset: "alphabetic",
-            });
-            const relId = generate({
-                charset: "alphabetic",
-            });
+            const genreId = "genre_id";
+            const relId = "relationship_id";
 
             const mutation = `
                 mutation {
