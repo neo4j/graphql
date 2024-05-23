@@ -17,9 +17,18 @@
  * limitations under the License.
  */
 
+import type { GraphQLScalarType } from "graphql";
 import { GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
-import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import {
+    GraphQLDate,
+    GraphQLDateTime,
+    GraphQLDuration,
+    GraphQLLocalDateTime,
+    GraphQLLocalTime,
+    GraphQLTime,
+} from "../../../graphql/scalars";
 import type { SchemaBuilder } from "../SchemaBuilder";
 
 function nonNull(type: string): string {
@@ -32,9 +41,11 @@ function list(type: string): string {
 
 export class StaticSchemaTypes {
     private schemaBuilder: SchemaBuilder;
+    public staticFilterTypes: StaticFilterTypes;
 
     constructor({ schemaBuilder }: { schemaBuilder: SchemaBuilder }) {
         this.schemaBuilder = schemaBuilder;
+        this.staticFilterTypes = new StaticFilterTypes({ schemaBuilder });
     }
 
     public get pageInfo(): ObjectTypeComposer {
@@ -47,13 +58,21 @@ export class StaticSchemaTypes {
     public get sortDirection(): EnumTypeComposer {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);
     }
+}
+
+class StaticFilterTypes {
+    private schemaBuilder: SchemaBuilder;
+
+    constructor({ schemaBuilder }: { schemaBuilder: SchemaBuilder }) {
+        this.schemaBuilder = schemaBuilder;
+    }
 
     public getStringListWhere(nullable: boolean): InputTypeComposer {
         if (nullable) {
             return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: "[String]",
+                        equals: list(GraphQLString.name),
                     },
                 };
             });
@@ -62,7 +81,7 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
             return {
                 fields: {
-                    equals: "[String!]",
+                    equals: list(nonNull(GraphQLString.name)),
                 },
             };
         });
@@ -72,15 +91,81 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("StringWhere", (itc) => {
             return {
                 fields: {
-                    OR: itc.NonNull.List,
-                    AND: itc.NonNull.List,
-                    NOT: itc,
-                    equals: GraphQLString,
+                    ...this.createBooleanOperators(itc),
+                    ...this.createStringOperators(GraphQLString),
                     in: list(nonNull(GraphQLString.name)),
-                    matches: GraphQLString,
-                    contains: GraphQLString,
-                    startsWith: GraphQLString,
-                    endsWith: GraphQLString,
+                },
+            };
+        });
+    }
+
+    public get dateWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("DateWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    in: list(nonNull(GraphQLDate.name)),
+                    ...this.createRelationalOperators(GraphQLDate),
+                },
+            };
+        });
+    }
+
+    public get dateTimeWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("DateTimeWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    in: list(nonNull(GraphQLDateTime.name)),
+                    ...this.createRelationalOperators(GraphQLDateTime),
+                },
+            };
+        });
+    }
+
+    public get localDateTimeWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("LocalDateTimeWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    ...this.createRelationalOperators(GraphQLLocalDateTime),
+                    in: list(nonNull(GraphQLLocalDateTime.name)),
+                },
+            };
+        });
+    }
+
+    public get durationWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("DurationWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    ...this.createRelationalOperators(GraphQLDuration),
+                    in: list(nonNull(GraphQLDuration.name)),
+                },
+            };
+        });
+    }
+
+    public get timeWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("TimeWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    ...this.createRelationalOperators(GraphQLTime),
+                    in: list(nonNull(GraphQLTime.name)),
+                },
+            };
+        });
+    }
+
+    public get localTimeWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("LocalTimeWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    ...this.createRelationalOperators(GraphQLLocalTime),
+                    in: list(nonNull(GraphQLLocalTime.name)),
                 },
             };
         });
@@ -88,10 +173,10 @@ export class StaticSchemaTypes {
 
     public getIdListWhere(nullable: boolean): InputTypeComposer {
         if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", (itc) => {
+            return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: "[String]",
+                        equals: list(GraphQLID.name),
                     },
                 };
             });
@@ -100,7 +185,7 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("IDListWhere", () => {
             return {
                 fields: {
-                    equals: "[String!]",
+                    equals: list(nonNull(GraphQLID.name)),
                 },
             };
         });
@@ -110,15 +195,9 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("IDWhere", (itc) => {
             return {
                 fields: {
-                    OR: itc.NonNull.List,
-                    AND: itc.NonNull.List,
-                    NOT: itc,
-                    equals: GraphQLID,
+                    ...this.createBooleanOperators(itc),
+                    ...this.createStringOperators(GraphQLID),
                     in: list(nonNull(GraphQLID.name)),
-                    matches: GraphQLID,
-                    contains: GraphQLID,
-                    startsWith: GraphQLID,
-                    endsWith: GraphQLID,
                 },
             };
         });
@@ -126,10 +205,10 @@ export class StaticSchemaTypes {
 
     public getIntListWhere(nullable: boolean): InputTypeComposer {
         if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("IntListWhereNullable", (itc) => {
+            return this.schemaBuilder.getOrCreateInputType("IntListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: "[Int]",
+                        equals: list(GraphQLInt.name),
                     },
                 };
             });
@@ -138,7 +217,7 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("IntListWhere", () => {
             return {
                 fields: {
-                    equals: "[Int!]",
+                    equals: list(nonNull(GraphQLInt.name)),
                 },
             };
         });
@@ -148,15 +227,9 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("IntWhere", (itc) => {
             return {
                 fields: {
-                    OR: itc.NonNull.List,
-                    AND: itc.NonNull.List,
-                    NOT: itc,
-                    equals: GraphQLInt,
+                    ...this.createBooleanOperators(itc),
+                    ...this.createRelationalOperators(GraphQLInt),
                     in: list(nonNull(GraphQLInt.name)),
-                    lt: GraphQLInt,
-                    lte: GraphQLInt,
-                    gt: GraphQLInt,
-                    gte: GraphQLInt,
                 },
             };
         });
@@ -164,10 +237,10 @@ export class StaticSchemaTypes {
 
     public getFloatListWhere(nullable: boolean): InputTypeComposer {
         if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("FloatListWhereNullable", (itc) => {
+            return this.schemaBuilder.getOrCreateInputType("FloatListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: "[Float]",
+                        equals: list(GraphQLFloat.name),
                     },
                 };
             });
@@ -176,7 +249,7 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("FloatListWhere", () => {
             return {
                 fields: {
-                    equals: "[Float!]",
+                    equals: list(nonNull(GraphQLFloat.name)),
                 },
             };
         });
@@ -186,20 +259,41 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInputType("FloatWhere", (itc) => {
             return {
                 fields: {
-                    OR: itc.NonNull.List,
-                    AND: itc.NonNull.List,
-                    NOT: itc,
-                    equals: GraphQLFloat,
+                    ...this.createBooleanOperators(itc),
+                    ...this.createRelationalOperators(GraphQLFloat),
                     in: list(nonNull(GraphQLFloat.name)),
-                    lt: GraphQLFloat,
-                    lte: GraphQLFloat,
-                    gt: GraphQLFloat,
-                    gte: GraphQLFloat,
                 },
             };
         });
     }
 
+    private createStringOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
+        return {
+            equals: type,
+            matches: type,
+            contains: type,
+            startsWith: type,
+            endsWith: type,
+        };
+    }
+
+    private createRelationalOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
+        return {
+            equals: type,
+            lt: type,
+            lte: type,
+            gt: type,
+            gte: type,
+        };
+    }
+
+    private createBooleanOperators(itc: InputTypeComposer): Record<string, ListComposer | InputTypeComposer> {
+        return {
+            OR: itc.NonNull.List,
+            AND: itc.NonNull.List,
+            NOT: itc,
+        };
+    }
     // private getListWhereFields(itc: InputTypeComposer, targetType: InputTypeComposer): Record<string, any> {
     //     return {
     //         OR: itc.NonNull.List,
