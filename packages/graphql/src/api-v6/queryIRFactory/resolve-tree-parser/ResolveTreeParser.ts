@@ -23,8 +23,8 @@ import type { Relationship } from "../../../schema-model/relationship/Relationsh
 import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLConnectionArgs,
+    GraphQLReadOperationArgs,
     GraphQLSortEdgeArgument,
-    GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeEdge,
     GraphQLTreeEdgeProperties,
@@ -34,18 +34,7 @@ import type {
     GraphQLTreeSortElement,
 } from "./graphql-tree";
 
-export function parseResolveInfoTree({
-    resolveTree,
-    entity,
-}: {
-    resolveTree: ResolveTree;
-    entity: ConcreteEntity;
-}): GraphQLTree {
-    const parser = new TopLevelTreeParser({ entity });
-    return parser.parseOperation(resolveTree);
-}
-
-abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
+export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     protected entity: T;
 
     constructor({ entity }: { entity: T }) {
@@ -61,13 +50,21 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
         );
 
         const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
-
+        const connectionOperationArgs = this.parseOperationArgs(resolveTree.args);
         return {
             alias: resolveTree.alias,
-            args: resolveTree.args,
+            args: connectionOperationArgs,
+            name: resolveTree.name,
             fields: {
                 connection,
             },
+        };
+    }
+
+    private parseOperationArgs(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgs {
+        // Not properly parsed, assuming the type is the same
+        return {
+            where: resolveTreeArgs.where,
         };
     }
 
@@ -82,6 +79,7 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
             return {
                 alias: resolveTree.alias,
                 args: resolveTree.args,
+                name: resolveTree.name,
                 fields: undefined,
             };
         }
@@ -118,7 +116,7 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
         fields: Record<string, ResolveTree>
     ): Record<string, GraphQLTreeLeafField | GraphQLTreeReadOperation> {
         const propertyFields: Record<string, GraphQLTreeLeafField | GraphQLTreeReadOperation> = {};
-        for (const fieldResolveTree of Object.values(fields)) {
+        for (const [key, fieldResolveTree] of Object.entries(fields)) {
             const fieldName = fieldResolveTree.name;
             const field =
                 this.parseRelationshipField(fieldResolveTree, this.targetNode) ??
@@ -126,7 +124,7 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
             if (!field) {
                 throw new ResolveTreeParserError(`${fieldName} is not a field of node`);
             }
-            propertyFields[fieldName] = field;
+            propertyFields[key] = field;
         }
         return propertyFields;
     }
@@ -202,30 +200,9 @@ abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     }
 }
 
-class TopLevelTreeParser extends ResolveTreeParser<ConcreteEntity> {
-    protected get targetNode(): ConcreteEntity {
-        return this.entity;
-    }
+export class ResolveTreeParserError extends Error {}
 
-    protected parseEdges(resolveTree: ResolveTree): GraphQLTreeEdge {
-        const edgeType = this.entity.typeNames.edge;
-
-        const nodeResolveTree = findFieldByName(resolveTree, edgeType, "node");
-
-        const node = nodeResolveTree ? this.parseNode(nodeResolveTree) : undefined;
-
-        return {
-            alias: resolveTree.alias,
-            args: resolveTree.args,
-            fields: {
-                node: node,
-                properties: undefined,
-            },
-        };
-    }
-}
-
-class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
+export class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
     protected get targetNode(): ConcreteEntity {
         return this.entity.target as ConcreteEntity;
     }
@@ -266,16 +243,14 @@ class RelationshipResolveTreeParser extends ResolveTreeParser<Relationship> {
 
     private getEdgePropertyFields(fields: Record<string, ResolveTree>): Record<string, GraphQLTreeLeafField> {
         const propertyFields: Record<string, GraphQLTreeLeafField> = {};
-        for (const fieldResolveTree of Object.values(fields)) {
+        for (const [key, fieldResolveTree] of Object.entries(fields)) {
             const fieldName = fieldResolveTree.name;
             const field = this.parseAttributeField(fieldResolveTree, this.entity);
             if (!field) {
                 throw new ResolveTreeParserError(`${fieldName} is not an attribute of edge`);
             }
-            propertyFields[fieldName] = field;
+            propertyFields[key] = field;
         }
         return propertyFields;
     }
 }
-
-class ResolveTreeParserError extends Error {}

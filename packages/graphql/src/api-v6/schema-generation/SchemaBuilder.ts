@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
+import { type GraphQLNamedInputType, type GraphQLSchema } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -76,13 +76,16 @@ export class SchemaBuilder {
 
     public getOrCreateInputType(
         name: string,
-        onCreate: () => {
-            fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>;
+        onCreate: (itc: InputTypeComposer) => {
+            fields: Record<
+                string,
+                EnumTypeComposer | string | GraphQLNamedInputType | WrappedComposer<InputTypeComposer>
+            >;
             description?: string;
         }
     ): InputTypeComposer {
         return this.composer.getOrCreateITC(name, (itc) => {
-            const { fields, description } = onCreate();
+            const { fields, description } = onCreate(itc);
             if (fields) {
                 itc.addFields(fields);
             }
@@ -116,10 +119,21 @@ export class SchemaBuilder {
         });
     }
 
-    public addQueryField(name: string, type: ObjectTypeComposer | string, resolver: (...args: any[]) => any): void {
+    public addQueryField({
+        name,
+        type,
+        args,
+        resolver,
+    }: {
+        name: string;
+        type: ObjectTypeComposer;
+        args: Record<string, InputTypeComposer>;
+        resolver: (...args: any[]) => any;
+    }): void {
         this.composer.Query.addFields({
             [name]: {
                 type: type,
+                args,
                 resolve: resolver,
             },
         });

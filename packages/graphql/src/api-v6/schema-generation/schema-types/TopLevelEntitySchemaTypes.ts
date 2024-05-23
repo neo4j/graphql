@@ -17,20 +17,26 @@
  * limitations under the License.
  */
 
+import type { GraphQLResolveInfo } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType } from "../../../schema-model/attribute/AttributeType";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
-import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { filterTruthy } from "../../../utils/utils";
+import type { TopLevelEntityTypeNames } from "../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { FieldDefinition, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
+import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterSchemaTypes";
 
-export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames> {
+export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityTypeNames> {
     private entity: ConcreteEntity;
+    private filterSchemaTypes: TopLevelFilterSchemaTypes;
 
     constructor({
         entity,
@@ -47,6 +53,25 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
             schemaTypes,
         });
         this.entity = entity;
+        this.filterSchemaTypes = new TopLevelFilterSchemaTypes({ schemaBuilder, entity, schemaTypes });
+    }
+
+    public addTopLevelQueryField(
+        resolver: (
+            _root: any,
+            args: any,
+            context: Neo4jGraphQLTranslationContext,
+            info: GraphQLResolveInfo
+        ) => Promise<any>
+    ): void {
+        this.schemaBuilder.addQueryField({
+            name: this.entity.typeNames.queryField,
+            type: this.connectionOperation,
+            args: {
+                where: this.filterSchemaTypes.operationWhere,
+            },
+            resolver,
+        });
     }
 
     protected get edge(): ObjectTypeComposer {
@@ -84,13 +109,27 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
     public get nodeSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.nodeSort, () => {
             const sortFields = Object.fromEntries(
-                this.getFields().map((field) => [field.name, this.schemaTypes.staticTypes.sortDirection])
+                filterTruthy(
+                    this.getFields().map((field) => {
+                        if (
+                            Object.values(GraphQLBuiltInScalarType).includes(
+                                field.type.name as GraphQLBuiltInScalarType
+                            )
+                        ) {
+                            return [field.name, this.schemaTypes.staticTypes.sortDirection];
+                        }
+                    })
+                )
             );
 
             return {
                 fields: sortFields,
             };
         });
+    }
+
+    public get nodeWhere(): InputTypeComposer {
+        return this.filterSchemaTypes.nodeWhere;
     }
 
     @Memoize()
@@ -103,7 +142,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
         return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
     }
 
-    private getRelationshipFields(): Record<string, ObjectTypeComposer> {
+    private getRelationshipFields(): Record<string, { type: ObjectTypeComposer; args: Record<string, any> }> {
         return Object.fromEntries(
             [...this.entity.relationships.values()].map((relationship) => {
                 const relationshipTypes = new RelatedEntitySchemaTypes({
@@ -113,8 +152,8 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<EntityTypeNames
                     schemaTypes: this.schemaTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;
-
-                return [relationship.name, relationshipType];
+                const operationWhere = relationshipTypes.filterSchemaTypes.operationWhere;
+                return [relationship.name, { type: relationshipType, args: { where: operationWhere } }];
             })
         );
     }

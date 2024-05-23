@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-import type { Entity } from "../../../schema-model/entity/Entity";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { TopLevelResolveTreeParser } from "./TopLevelResolveTreeParser";
+import type { GraphQLTree } from "./graphql-tree";
 
-/** Abstract class to hold the typenames of a given entity */
-export abstract class EntityTypeNames {
-    protected readonly entityName: string;
-
-    constructor(entity: Entity) {
-        this.entityName = entity.name;
-    }
-
-    public abstract get connectionOperation(): string;
-    public abstract get operationWhere(): string;
-    public abstract get connection(): string;
-    public abstract get connectionSort(): string;
-    public abstract get edge(): string;
-    public abstract get edgeSort(): string;
+export function parseResolveInfoTree({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity;
+}): GraphQLTree {
+    const parser = new TopLevelResolveTreeParser({ entity });
+    return parser.parseOperation(resolveTree);
 }

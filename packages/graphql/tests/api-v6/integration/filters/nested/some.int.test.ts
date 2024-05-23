@@ -17,31 +17,43 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Sort with alias", () => {
+describe("Relationship filters with some", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
+    let Actor: UniqueType;
+
     beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actors");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                title: String @alias(property: "movieTitle")
-                ratings: Int! @alias(property: "movieRatings")
-                description: String
+                title: String
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+            type ${Actor} @node {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                year: Int
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${Movie} {movieTitle: "The Matrix", description: "DVD edition", movieRatings: 5})
-            CREATE (:${Movie} {movieTitle: "The Matrix", description: "Cinema edition", movieRatings: 4})
-            CREATE (:${Movie} {movieTitle: "The Matrix 2", movieRatings: 2})
-            CREATE (:${Movie} {movieTitle: "The Matrix 3", movieRatings: 4})
-            CREATE (:${Movie} {movieTitle: "The Matrix 4", movieRatings: 3})
+            CREATE (a1:${Actor} {name: "Keanu"})
+            CREATE (a2:${Actor} {name: "Uneak"})
+            CREATE (m1:${Movie} {title: "The Matrix"})<-[:ACTED_IN {year: 1999}]-(a1)
+            CREATE (m1)<-[:ACTED_IN {year: 1999}]-(a2)
+            CREATE (:${Movie} {title: "The Matrix Reloaded"})<-[:ACTED_IN {year: 2001}]-(a1)
+            CREATE (:${Movie} {title: "A very cool movie"})<-[:ACTED_IN {year: 1999}]-(a2)
+            CREATE (:${Movie} {title: "unknown movie"})<-[:ACTED_IN {year: 3000}]-(a2)
         `);
     });
 
@@ -49,17 +61,18 @@ describe("Sort with alias", () => {
         await testHelper.close();
     });
 
-    test("should be able to sort by ASC order", async () => {
+    test("filter by nested node with some", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
-                    connection(sort: { edges: { node: { title: ASC } } }) {
+                ${Movie.plural}(
+                    where: { edges: { node: { actors: { edges: { some: { node: { name: { equals: "Keanu" } } } } } } } }
+                ) {
+                    connection {
                         edges {
                             node {
                                 title
                             }
                         }
-
                     }
                 }
             }
@@ -70,7 +83,7 @@ describe("Sort with alias", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
@@ -78,41 +91,27 @@ describe("Sort with alias", () => {
                         },
                         {
                             node: {
-                                title: "The Matrix",
+                                title: "The Matrix Reloaded",
                             },
                         },
-                        {
-                            node: {
-                                title: "The Matrix 2",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix 3",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix 4",
-                            },
-                        },
-                    ],
+                    ]),
                 },
             },
         });
     });
 
-    test("should be able to sort by DESC order", async () => {
+    test("filter by nested relationship properties with some", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
-                    connection(sort: { edges: { node: { title: DESC } } }) {
+                ${Movie.plural}(
+                    where: { edges: { node: { actors: { edges: { some: { properties: { year: { equals: 1999 } } } } } } } }
+                ) {
+                    connection {
                         edges {
                             node {
                                 title
                             }
                         }
-
                     }
                 }
             }
@@ -123,22 +122,7 @@ describe("Sort with alias", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
-                        {
-                            node: {
-                                title: "The Matrix 4",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix 3",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix 2",
-                            },
-                        },
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
@@ -146,28 +130,27 @@ describe("Sort with alias", () => {
                         },
                         {
                             node: {
-                                title: "The Matrix",
+                                title: "A very cool movie",
                             },
                         },
-                    ],
+                    ]),
                 },
             },
         });
     });
 
-    test("should be able to sort by multiple criteria", async () => {
+    test("filter by nested relationship properties with some and OR operator", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
-                    connection(sort: { edges: [{ node: { title: ASC } }, { node: { ratings: DESC } }]  }) {
+                ${Movie.plural}(
+                    where: { edges: { node: { actors: { edges: { some: { OR: [{ properties: { year: { equals: 1999 } } }, { node: { name: { equals: "Keanu" } } }] } } } } } }
+                ) {
+                    connection {
                         edges {
                             node {
                                 title
-                                description
-                                ratings
                             }
                         }
-
                     }
                 }
             }
@@ -178,44 +161,23 @@ describe("Sort with alias", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
                                 title: "The Matrix",
-                                description: "DVD edition",
-                                ratings: 5,
                             },
                         },
                         {
                             node: {
-                                title: "The Matrix",
-                                description: "Cinema edition",
-                                ratings: 4,
-                            },
-                        },
-
-                        {
-                            node: {
-                                title: "The Matrix 2",
-                                description: null,
-                                ratings: 2,
+                                title: "The Matrix Reloaded",
                             },
                         },
                         {
                             node: {
-                                title: "The Matrix 3",
-                                description: null,
-                                ratings: 4,
+                                title: "A very cool movie",
                             },
                         },
-                        {
-                            node: {
-                                title: "The Matrix 4",
-                                description: null,
-                                ratings: 3,
-                            },
-                        },
-                    ],
+                    ]),
                 },
             },
         });

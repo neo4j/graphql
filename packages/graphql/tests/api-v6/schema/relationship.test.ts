@@ -42,7 +42,7 @@ describe("Relationships", () => {
             }
 
             type Actor {
-              movies: ActorMoviesOperation
+              movies(where: ActorMoviesOperationWhere): ActorMoviesOperation
               name: String
             }
 
@@ -64,6 +64,13 @@ describe("Relationships", () => {
               node: ActorSort
             }
 
+            input ActorEdgeWhere {
+              AND: [ActorEdgeWhere!]
+              NOT: ActorEdgeWhere
+              OR: [ActorEdgeWhere!]
+              node: ActorWhere
+            }
+
             type ActorMoviesConnection {
               edges: [ActorMoviesEdge]
               pageInfo: PageInfo
@@ -78,24 +85,70 @@ describe("Relationships", () => {
               node: Movie
             }
 
+            input ActorMoviesEdgeListWhere {
+              AND: [ActorMoviesEdgeListWhere!]
+              NOT: ActorMoviesEdgeListWhere
+              OR: [ActorMoviesEdgeListWhere!]
+              all: ActorMoviesEdgeWhere
+              none: ActorMoviesEdgeWhere
+              single: ActorMoviesEdgeWhere
+              some: ActorMoviesEdgeWhere
+            }
+
             input ActorMoviesEdgeSort {
               node: MovieSort
+            }
+
+            input ActorMoviesEdgeWhere {
+              AND: [ActorMoviesEdgeWhere!]
+              NOT: ActorMoviesEdgeWhere
+              OR: [ActorMoviesEdgeWhere!]
+              node: MovieWhere
+            }
+
+            input ActorMoviesNestedOperationWhere {
+              AND: [ActorMoviesNestedOperationWhere!]
+              NOT: ActorMoviesNestedOperationWhere
+              OR: [ActorMoviesNestedOperationWhere!]
+              edges: ActorMoviesEdgeListWhere
             }
 
             type ActorMoviesOperation {
               connection(sort: ActorMoviesConnectionSort): ActorMoviesConnection
             }
 
+            input ActorMoviesOperationWhere {
+              AND: [ActorMoviesOperationWhere!]
+              NOT: ActorMoviesOperationWhere
+              OR: [ActorMoviesOperationWhere!]
+              edges: ActorMoviesEdgeWhere
+            }
+
             type ActorOperation {
               connection(sort: ActorConnectionSort): ActorConnection
+            }
+
+            input ActorOperationWhere {
+              AND: [ActorOperationWhere!]
+              NOT: ActorOperationWhere
+              OR: [ActorOperationWhere!]
+              edges: ActorEdgeWhere
             }
 
             input ActorSort {
               name: SortDirection
             }
 
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              movies: ActorMoviesNestedOperationWhere
+              name: StringWhere
+            }
+
             type Movie {
-              actors: MovieActorsOperation
+              actors(where: MovieActorsOperationWhere): MovieActorsOperation
               title: String
             }
 
@@ -113,12 +166,43 @@ describe("Relationships", () => {
               node: Actor
             }
 
+            input MovieActorsEdgeListWhere {
+              AND: [MovieActorsEdgeListWhere!]
+              NOT: MovieActorsEdgeListWhere
+              OR: [MovieActorsEdgeListWhere!]
+              all: MovieActorsEdgeWhere
+              none: MovieActorsEdgeWhere
+              single: MovieActorsEdgeWhere
+              some: MovieActorsEdgeWhere
+            }
+
             input MovieActorsEdgeSort {
               node: ActorSort
             }
 
+            input MovieActorsEdgeWhere {
+              AND: [MovieActorsEdgeWhere!]
+              NOT: MovieActorsEdgeWhere
+              OR: [MovieActorsEdgeWhere!]
+              node: ActorWhere
+            }
+
+            input MovieActorsNestedOperationWhere {
+              AND: [MovieActorsNestedOperationWhere!]
+              NOT: MovieActorsNestedOperationWhere
+              OR: [MovieActorsNestedOperationWhere!]
+              edges: MovieActorsEdgeListWhere
+            }
+
             type MovieActorsOperation {
               connection(sort: MovieActorsConnectionSort): MovieActorsConnection
+            }
+
+            input MovieActorsOperationWhere {
+              AND: [MovieActorsOperationWhere!]
+              NOT: MovieActorsOperationWhere
+              OR: [MovieActorsOperationWhere!]
+              edges: MovieActorsEdgeWhere
             }
 
             type MovieConnection {
@@ -139,12 +223,34 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actors: MovieActorsNestedOperationWhere
+              title: StringWhere
             }
 
             type PageInfo {
@@ -153,13 +259,25 @@ describe("Relationships", () => {
             }
 
             type Query {
-              actors: ActorOperation
-              movies: MovieOperation
+              actors(where: ActorOperationWhere): ActorOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });
@@ -195,8 +313,15 @@ describe("Relationships", () => {
               year: SortDirection
             }
 
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              year: IntWhere
+            }
+
             type Actor {
-              movies: ActorMoviesOperation
+              movies(where: ActorMoviesOperationWhere): ActorMoviesOperation
               name: String
             }
 
@@ -218,6 +343,13 @@ describe("Relationships", () => {
               node: ActorSort
             }
 
+            input ActorEdgeWhere {
+              AND: [ActorEdgeWhere!]
+              NOT: ActorEdgeWhere
+              OR: [ActorEdgeWhere!]
+              node: ActorWhere
+            }
+
             type ActorMoviesConnection {
               edges: [ActorMoviesEdge]
               pageInfo: PageInfo
@@ -233,25 +365,84 @@ describe("Relationships", () => {
               properties: ActedIn
             }
 
+            input ActorMoviesEdgeListWhere {
+              AND: [ActorMoviesEdgeListWhere!]
+              NOT: ActorMoviesEdgeListWhere
+              OR: [ActorMoviesEdgeListWhere!]
+              all: ActorMoviesEdgeWhere
+              none: ActorMoviesEdgeWhere
+              single: ActorMoviesEdgeWhere
+              some: ActorMoviesEdgeWhere
+            }
+
             input ActorMoviesEdgeSort {
               node: MovieSort
               properties: ActedInSort
+            }
+
+            input ActorMoviesEdgeWhere {
+              AND: [ActorMoviesEdgeWhere!]
+              NOT: ActorMoviesEdgeWhere
+              OR: [ActorMoviesEdgeWhere!]
+              node: MovieWhere
+              properties: ActedInWhere
+            }
+
+            input ActorMoviesNestedOperationWhere {
+              AND: [ActorMoviesNestedOperationWhere!]
+              NOT: ActorMoviesNestedOperationWhere
+              OR: [ActorMoviesNestedOperationWhere!]
+              edges: ActorMoviesEdgeListWhere
             }
 
             type ActorMoviesOperation {
               connection(sort: ActorMoviesConnectionSort): ActorMoviesConnection
             }
 
+            input ActorMoviesOperationWhere {
+              AND: [ActorMoviesOperationWhere!]
+              NOT: ActorMoviesOperationWhere
+              OR: [ActorMoviesOperationWhere!]
+              edges: ActorMoviesEdgeWhere
+            }
+
             type ActorOperation {
               connection(sort: ActorConnectionSort): ActorConnection
+            }
+
+            input ActorOperationWhere {
+              AND: [ActorOperationWhere!]
+              NOT: ActorOperationWhere
+              OR: [ActorOperationWhere!]
+              edges: ActorEdgeWhere
             }
 
             input ActorSort {
               name: SortDirection
             }
 
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              movies: ActorMoviesNestedOperationWhere
+              name: StringWhere
+            }
+
+            input IntWhere {
+              AND: [IntWhere!]
+              NOT: IntWhere
+              OR: [IntWhere!]
+              equals: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Movie {
-              actors: MovieActorsOperation
+              actors(where: MovieActorsOperationWhere): MovieActorsOperation
               title: String
             }
 
@@ -270,13 +461,45 @@ describe("Relationships", () => {
               properties: ActedIn
             }
 
+            input MovieActorsEdgeListWhere {
+              AND: [MovieActorsEdgeListWhere!]
+              NOT: MovieActorsEdgeListWhere
+              OR: [MovieActorsEdgeListWhere!]
+              all: MovieActorsEdgeWhere
+              none: MovieActorsEdgeWhere
+              single: MovieActorsEdgeWhere
+              some: MovieActorsEdgeWhere
+            }
+
             input MovieActorsEdgeSort {
               node: ActorSort
               properties: ActedInSort
             }
 
+            input MovieActorsEdgeWhere {
+              AND: [MovieActorsEdgeWhere!]
+              NOT: MovieActorsEdgeWhere
+              OR: [MovieActorsEdgeWhere!]
+              node: ActorWhere
+              properties: ActedInWhere
+            }
+
+            input MovieActorsNestedOperationWhere {
+              AND: [MovieActorsNestedOperationWhere!]
+              NOT: MovieActorsNestedOperationWhere
+              OR: [MovieActorsNestedOperationWhere!]
+              edges: MovieActorsEdgeListWhere
+            }
+
             type MovieActorsOperation {
               connection(sort: MovieActorsConnectionSort): MovieActorsConnection
+            }
+
+            input MovieActorsOperationWhere {
+              AND: [MovieActorsOperationWhere!]
+              NOT: MovieActorsOperationWhere
+              OR: [MovieActorsOperationWhere!]
+              edges: MovieActorsEdgeWhere
             }
 
             type MovieConnection {
@@ -297,12 +520,34 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
+            input MovieEdgeWhere {
+              AND: [MovieEdgeWhere!]
+              NOT: MovieEdgeWhere
+              OR: [MovieEdgeWhere!]
+              node: MovieWhere
+            }
+
             type MovieOperation {
               connection(sort: MovieConnectionSort): MovieConnection
             }
 
+            input MovieOperationWhere {
+              AND: [MovieOperationWhere!]
+              NOT: MovieOperationWhere
+              OR: [MovieOperationWhere!]
+              edges: MovieEdgeWhere
+            }
+
             input MovieSort {
               title: SortDirection
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actors: MovieActorsNestedOperationWhere
+              title: StringWhere
             }
 
             type PageInfo {
@@ -311,13 +556,25 @@ describe("Relationships", () => {
             }
 
             type Query {
-              actors: ActorOperation
-              movies: MovieOperation
+              actors(where: ActorOperationWhere): ActorOperation
+              movies(where: MovieOperationWhere): MovieOperation
             }
 
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              matches: String
+              startsWith: String
             }"
         `);
     });

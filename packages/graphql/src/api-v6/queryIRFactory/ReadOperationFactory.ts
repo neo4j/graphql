@@ -32,6 +32,7 @@ import { RelationshipSelection } from "../../translate/queryAST/ast/selection/Re
 import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
 import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
+import { FilterFactory } from "./FilterFactory";
 import type {
     GraphQLSortArgument,
     GraphQLTree,
@@ -43,9 +44,11 @@ import type {
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
+    private filterFactory: FilterFactory;
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel) {
         this.schemaModel = schemaModel;
+        this.filterFactory = new FilterFactory(schemaModel);
     }
 
     public createAST({
@@ -70,6 +73,7 @@ export class ReadOperationFactory {
         entity: ConcreteEntity;
     }): V6ReadOperation {
         const connectionTree = graphQLTree.fields.connection;
+
         if (!connectionTree) {
             throw new Error("No Connection");
         }
@@ -94,6 +98,7 @@ export class ReadOperationFactory {
                 node: nodeFields,
             },
             sortFields: sortInputFields,
+            filters: this.filterFactory.createFilters({ entity, where: graphQLTree.args.where }),
         });
     }
 
@@ -138,6 +143,11 @@ export class ReadOperationFactory {
                 node: nodeFields,
             },
             sortFields: sortInputFields,
+            filters: this.filterFactory.createFilters({
+                entity: relationshipAdapter.target.entity,
+                relationship,
+                where: parsedTree.args.where,
+            }),
         });
     }
 
@@ -152,8 +162,8 @@ export class ReadOperationFactory {
         }
 
         return filterTruthy(
-            Object.entries(propertiesTree.fields).map(([name, rawField]) => {
-                const attribute = target.findAttribute(name);
+            Object.values(propertiesTree.fields).map((rawField) => {
+                const attribute = target.findAttribute(rawField.name);
                 if (attribute) {
                     return new AttributeField({
                         alias: rawField.alias,
@@ -171,8 +181,8 @@ export class ReadOperationFactory {
         }
 
         return filterTruthy(
-            Object.entries(nodeResolveTree.fields).map(([name, rawField]) => {
-                const relationship = entity.findRelationship(name);
+            Object.values(nodeResolveTree.fields).map((rawField) => {
+                const relationship = entity.findRelationship(rawField.name);
                 if (relationship) {
                     // FIX casting here
                     return this.generateRelationshipField(rawField as GraphQLTreeReadOperation, relationship);

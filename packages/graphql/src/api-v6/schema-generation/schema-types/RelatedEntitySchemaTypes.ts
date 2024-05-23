@@ -28,9 +28,10 @@ import type { RelatedEntityTypeNames } from "../../schema-model/graphql-type-nam
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
-
+import { RelatedEntityFilterSchemaTypes } from "./filter-schema-types/RelatedEntityFilterSchemaTypes";
 export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTypeNames> {
     private relationship: Relationship;
+    public filterSchemaTypes: RelatedEntityFilterSchemaTypes;
 
     constructor({
         relationship,
@@ -49,6 +50,11 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
             schemaTypes,
         });
         this.relationship = relationship;
+        this.filterSchemaTypes = new RelatedEntityFilterSchemaTypes({
+            schemaBuilder,
+            relationship: relationship,
+            schemaTypes,
+        });
     }
 
     protected get edge(): ObjectTypeComposer {

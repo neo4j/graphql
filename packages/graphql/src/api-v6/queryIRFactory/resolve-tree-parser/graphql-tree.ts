@@ -24,11 +24,61 @@ interface GraphQLTreeElement {
     args: Record<string, any>;
 }
 
+type LogicalOperation<T> = {
+    AND?: Array<LogicalOperation<T>>;
+    OR?: Array<LogicalOperation<T>>;
+    NOT?: LogicalOperation<T>;
+} & T;
+
+export type StringFilters = {
+    equals?: string;
+    in?: string[];
+    matches?: string;
+    contains?: string;
+    startsWith?: string;
+    endsWith?: string;
+};
+export type NumberFilters = {
+    equals?: string;
+    in?: string[];
+    lt?: string;
+    lte?: string;
+    gt?: string;
+    gte?: string;
+};
+
+export type RelationshipFilters = {
+    edges?: {
+        some?: GraphQLEdgeWhereArgs;
+        single?: GraphQLEdgeWhereArgs;
+        all?: GraphQLEdgeWhereArgs;
+        none?: GraphQLEdgeWhereArgs;
+    };
+};
+
 export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
     fields: {
         connection?: GraphQLTreeConnection;
     };
+    args: GraphQLReadOperationArgs;
+    name: string;
 }
+
+export interface GraphQLReadOperationArgs {
+    where?: GraphQLWhereArgs;
+}
+
+export type GraphQLWhereArgs = LogicalOperation<{
+    edges?: GraphQLEdgeWhereArgs;
+}>;
+
+export type GraphQLEdgeWhereArgs = LogicalOperation<{
+    properties?: Record<string, GraphQLAttributeFilters>;
+    node?: Record<string, GraphQLNodeFilters>;
+}>;
+
+export type GraphQLAttributeFilters = StringFilters | NumberFilters;
+export type GraphQLNodeFilters = GraphQLAttributeFilters | RelationshipFilters;
 
 export interface GraphQLTreeConnection extends GraphQLTreeElement {
     fields: {
@@ -58,6 +108,7 @@ export interface GraphQLTreeEdgeProperties extends GraphQLTreeElement {
 
 export interface GraphQLTreeLeafField extends GraphQLTreeElement {
     fields: undefined;
+    name: string;
 }
 
 export interface GraphQLSortArgument {

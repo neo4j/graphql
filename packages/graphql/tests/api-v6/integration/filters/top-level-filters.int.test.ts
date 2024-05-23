@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Aura-api simple", () => {
+describe("Top level filters", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -30,12 +30,15 @@ describe("Aura-api simple", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
+                year: Int!
+                runtime: Float!
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {title: "The Matrix"})
+            CREATE (:${Movie} {title: "The Matrix", year: 1999, runtime: 90.5})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, runtime: 90.5})
         `);
     });
 
@@ -46,14 +49,19 @@ describe("Aura-api simple", () => {
     test("should be able to get a Movie", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                ${Movie.plural}(
+                    where: {
+                        edges: {
+                            node: { year: { equals: 1999 }, runtime: { equals: 90.5 } }
+                        }
+                    }
+                ) {
                     connection {
                         edges {
                             node {
                                 title
                             }
                         }
-
                     }
                 }
             }
