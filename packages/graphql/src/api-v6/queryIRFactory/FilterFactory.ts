@@ -105,9 +105,14 @@ export class FilterFactory {
         relationship?: Relationship;
         edgeWhere?: GraphQLEdgeWhereArgs;
     }): Filter[] {
-        const andFilters = this.createLogicalEdgeFilters(entity, "AND", edgeWhere.AND);
-        const orFilters = this.createLogicalEdgeFilters(entity, "OR", edgeWhere.OR);
-        const notFilters = this.createLogicalEdgeFilters(entity, "NOT", edgeWhere.NOT ? [edgeWhere.NOT] : undefined);
+        const andFilters = this.createLogicalEdgeFilters(entity, relationship, "AND", edgeWhere.AND);
+        const orFilters = this.createLogicalEdgeFilters(entity, relationship, "OR", edgeWhere.OR);
+        const notFilters = this.createLogicalEdgeFilters(
+            entity,
+            relationship,
+            "NOT",
+            edgeWhere.NOT ? [edgeWhere.NOT] : undefined
+        );
 
         const nodeFilters = this.createNodeFilter({ where: edgeWhere.node, entity });
 
@@ -123,6 +128,7 @@ export class FilterFactory {
 
     private createLogicalEdgeFilters(
         entity: ConcreteEntity,
+        relationship: Relationship | undefined,
         operation: LogicalOperators,
         where: GraphQLEdgeWhereArgs[] = []
     ): [] | [Filter] {
@@ -130,7 +136,7 @@ export class FilterFactory {
             return [];
         }
         const nestedFilters = where.flatMap((orWhere: GraphQLEdgeWhereArgs) => {
-            return this.createEdgeFilters({ entity, edgeWhere: orWhere });
+            return this.createEdgeFilters({ entity, relationship, edgeWhere: orWhere });
         });
 
         if (nestedFilters.length > 0) {
