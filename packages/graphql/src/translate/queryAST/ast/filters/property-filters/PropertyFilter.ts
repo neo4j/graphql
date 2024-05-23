@@ -19,14 +19,14 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { hasTarget } from "../../../utils/context-has-target";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
-import { hasTarget } from "../../../utils/context-has-target";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -48,7 +48,7 @@ export class PropertyFilter extends Filter {
         relationship?: RelationshipAdapter;
         comparisonValue: unknown;
         operator: FilterOperator;
-        isNot: boolean;
+        isNot?: boolean;
         attachedTo?: "node" | "relationship";
     }) {
         super();
@@ -56,7 +56,7 @@ export class PropertyFilter extends Filter {
         this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.operator = operator;
-        this.isNot = isNot;
+        this.isNot = Boolean(isNot);
         this.attachedTo = attachedTo ?? "node";
     }
 

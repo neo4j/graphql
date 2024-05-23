@@ -37,7 +37,6 @@ export function translateReadOperation({
     const readFactory = new ReadOperationFactory(context.schemaModel);
 
     const parsedTree = parseResolveInfoTree({ resolveTree: context.resolveTree, entity });
-
     const readOperation = readFactory.createAST({ graphQLTree: parsedTree, entity });
     debug(readOperation.print());
     const results = readOperation.build(context);

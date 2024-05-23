@@ -47,6 +47,15 @@ export type NumberFilters = {
     gte?: string;
 };
 
+export type RelationshipFilters = {
+    edges?: {
+        some?: GraphQLEdgeWhereArgs;
+        single?: GraphQLEdgeWhereArgs;
+        all?: GraphQLEdgeWhereArgs;
+        none?: GraphQLEdgeWhereArgs;
+    };
+};
+
 export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
     fields: {
         connection?: GraphQLTreeConnection;
@@ -64,11 +73,12 @@ export type GraphQLWhereArgs = LogicalOperation<{
 }>;
 
 export type GraphQLEdgeWhereArgs = LogicalOperation<{
-    properties?: GraphQLFilters;
-    node?: GraphQLFilters;
+    properties?: Record<string, GraphQLAttributeFilters>;
+    node?: Record<string, GraphQLNodeFilters>;
 }>;
 
-export type GraphQLFilters = Record<string, StringFilters | NumberFilters>;
+export type GraphQLAttributeFilters = StringFilters | NumberFilters;
+export type GraphQLNodeFilters = GraphQLAttributeFilters | RelationshipFilters;
 
 export interface GraphQLTreeConnection extends GraphQLTreeElement {
     fields: {
