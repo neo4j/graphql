@@ -113,7 +113,7 @@ function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingInd
             const propertyIsInIndex = existingIndex.properties.some((p) => p === index.propertyName);
             if (!propertyIsInIndex) {
                 indexErrors.push(
-                    `@vector index '${index.indexName}' on Node '${entity.name}' is missing field '${index.propertyName}'`
+                    `@vector index '${index.indexName}' on Node '${entity.name}' is missing property '${index.propertyName}'`
                 );
             }
 
