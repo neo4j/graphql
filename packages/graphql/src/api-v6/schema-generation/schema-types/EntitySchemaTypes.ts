@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLInt, GraphQLString } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
@@ -50,6 +51,8 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
                         type: this.connection,
                         args: {
                             sort: this.connectionSort,
+                            first: GraphQLInt.name,
+                            after: GraphQLString.name,
                         },
                     },
                 },

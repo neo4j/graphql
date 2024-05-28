@@ -92,67 +92,67 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
             case GraphQLBuiltInScalarType.Boolean: {
                 if (isList) {
                     const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.staticFilterTypes.getBooleanListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.filters.getBooleanListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.staticFilterTypes.booleanWhere;
+                return this.schemaTypes.staticTypes.filters.booleanWhere;
             }
 
             case GraphQLBuiltInScalarType.String: {
                 if (isList) {
                     const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.staticFilterTypes.getStringListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.filters.getStringListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.staticFilterTypes.stringWhere;
+                return this.schemaTypes.staticTypes.filters.stringWhere;
             }
 
             case GraphQLBuiltInScalarType.ID: {
                 if (isList) {
                     const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.staticFilterTypes.getIdListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.filters.getIdListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.staticFilterTypes.idWhere;
+                return this.schemaTypes.staticTypes.filters.idWhere;
             }
 
             case GraphQLBuiltInScalarType.Int: {
                 if (isList) {
                     const isNullable = !type.isRequired;
 
-                    return this.schemaTypes.staticTypes.staticFilterTypes.getIntListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.filters.getIntListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.staticFilterTypes.intWhere;
+                return this.schemaTypes.staticTypes.filters.intWhere;
             }
 
             case GraphQLBuiltInScalarType.Float: {
                 if (isList) {
                     const isNullable = !type.isRequired;
 
-                    return this.schemaTypes.staticTypes.staticFilterTypes.getFloatListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.filters.getFloatListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.staticFilterTypes.floatWhere;
+                return this.schemaTypes.staticTypes.filters.floatWhere;
             }
 
             case Neo4jGraphQLTemporalType.Date: {
-                return this.schemaTypes.staticTypes.staticFilterTypes.dateWhere;
+                return this.schemaTypes.staticTypes.filters.dateWhere;
             }
 
             case Neo4jGraphQLTemporalType.DateTime: {
-                return this.schemaTypes.staticTypes.staticFilterTypes.dateTimeWhere;
+                return this.schemaTypes.staticTypes.filters.dateTimeWhere;
             }
 
             case Neo4jGraphQLTemporalType.LocalDateTime: {
-                return this.schemaTypes.staticTypes.staticFilterTypes.localDateTimeWhere;
+                return this.schemaTypes.staticTypes.filters.localDateTimeWhere;
             }
 
             case Neo4jGraphQLTemporalType.Duration: {
-                return this.schemaTypes.staticTypes.staticFilterTypes.durationWhere;
+                return this.schemaTypes.staticTypes.filters.durationWhere;
             }
 
             case Neo4jGraphQLTemporalType.Time: {
-                return this.schemaTypes.staticTypes.staticFilterTypes.timeWhere;
+                return this.schemaTypes.staticTypes.filters.timeWhere;
             }
 
             case Neo4jGraphQLTemporalType.LocalTime: {
-                return this.schemaTypes.staticTypes.staticFilterTypes.localTimeWhere;
+                return this.schemaTypes.staticTypes.filters.localTimeWhere;
             }
 
             default: {

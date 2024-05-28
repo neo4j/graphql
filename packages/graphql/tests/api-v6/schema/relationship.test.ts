@@ -114,7 +114,7 @@ describe("Relationships", () => {
             }
 
             type ActorMoviesOperation {
-              connection(sort: ActorMoviesConnectionSort): ActorMoviesConnection
+              connection(after: String, first: Int, sort: ActorMoviesConnectionSort): ActorMoviesConnection
             }
 
             input ActorMoviesOperationWhere {
@@ -125,7 +125,7 @@ describe("Relationships", () => {
             }
 
             type ActorOperation {
-              connection(sort: ActorConnectionSort): ActorConnection
+              connection(after: String, first: Int, sort: ActorConnectionSort): ActorConnection
             }
 
             input ActorOperationWhere {
@@ -195,7 +195,7 @@ describe("Relationships", () => {
             }
 
             type MovieActorsOperation {
-              connection(sort: MovieActorsConnectionSort): MovieActorsConnection
+              connection(after: String, first: Int, sort: MovieActorsConnectionSort): MovieActorsConnection
             }
 
             input MovieActorsOperationWhere {
@@ -231,7 +231,7 @@ describe("Relationships", () => {
             }
 
             type MovieOperation {
-              connection(sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieOperationWhere {
@@ -395,7 +395,7 @@ describe("Relationships", () => {
             }
 
             type ActorMoviesOperation {
-              connection(sort: ActorMoviesConnectionSort): ActorMoviesConnection
+              connection(after: String, first: Int, sort: ActorMoviesConnectionSort): ActorMoviesConnection
             }
 
             input ActorMoviesOperationWhere {
@@ -406,7 +406,7 @@ describe("Relationships", () => {
             }
 
             type ActorOperation {
-              connection(sort: ActorConnectionSort): ActorConnection
+              connection(after: String, first: Int, sort: ActorConnectionSort): ActorConnection
             }
 
             input ActorOperationWhere {
@@ -491,7 +491,7 @@ describe("Relationships", () => {
             }
 
             type MovieActorsOperation {
-              connection(sort: MovieActorsConnectionSort): MovieActorsConnection
+              connection(after: String, first: Int, sort: MovieActorsConnectionSort): MovieActorsConnection
             }
 
             input MovieActorsOperationWhere {
@@ -527,7 +527,7 @@ describe("Relationships", () => {
             }
 
             type MovieOperation {
-              connection(sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieOperationWhere {

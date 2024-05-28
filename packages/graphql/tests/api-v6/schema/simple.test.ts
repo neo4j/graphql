@@ -66,7 +66,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieOperation {
-              connection(sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieOperationWhere {
@@ -161,7 +161,7 @@ describe("Simple Aura-API", () => {
             }
 
             type ActorOperation {
-              connection(sort: ActorConnectionSort): ActorConnection
+              connection(after: String, first: Int, sort: ActorConnectionSort): ActorConnection
             }
 
             input ActorOperationWhere {
@@ -212,7 +212,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieOperation {
-              connection(sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieOperationWhere {
@@ -308,7 +308,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieOperation {
-              connection(sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
 
             input MovieOperationWhere {

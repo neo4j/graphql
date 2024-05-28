@@ -135,7 +135,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeOperation {
-              connection(sort: NodeTypeConnectionSort): NodeTypeConnection
+              connection(after: String, first: Int, sort: NodeTypeConnectionSort): NodeTypeConnection
             }
 
             input NodeTypeOperationWhere {
@@ -191,7 +191,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeRelatedNodeOperation {
-              connection(sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
+              connection(after: String, first: Int, sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
             }
 
             input NodeTypeRelatedNodeOperationWhere {
@@ -265,7 +265,7 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeOperation {
-              connection(sort: RelatedNodeConnectionSort): RelatedNodeConnection
+              connection(after: String, first: Int, sort: RelatedNodeConnectionSort): RelatedNodeConnection
             }
 
             input RelatedNodeOperationWhere {

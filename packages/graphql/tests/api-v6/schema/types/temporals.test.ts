@@ -174,7 +174,7 @@ describe("Temporals", () => {
             }
 
             type NodeTypeOperation {
-              connection(sort: NodeTypeConnectionSort): NodeTypeConnection
+              connection(after: String, first: Int, sort: NodeTypeConnectionSort): NodeTypeConnection
             }
 
             input NodeTypeOperationWhere {
@@ -230,7 +230,7 @@ describe("Temporals", () => {
             }
 
             type NodeTypeRelatedNodeOperation {
-              connection(sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
+              connection(after: String, first: Int, sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
             }
 
             input NodeTypeRelatedNodeOperationWhere {
@@ -307,7 +307,7 @@ describe("Temporals", () => {
             }
 
             type RelatedNodeOperation {
-              connection(sort: RelatedNodeConnectionSort): RelatedNodeConnection
+              connection(after: String, first: Int, sort: RelatedNodeConnectionSort): RelatedNodeConnection
             }
 
             input RelatedNodeOperationWhere {
