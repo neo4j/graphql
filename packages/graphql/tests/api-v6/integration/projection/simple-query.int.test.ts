@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Numeric fields", () => {
+describe("Simple Query", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -29,14 +29,13 @@ describe("Numeric fields", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                year: Int!
-                rating: Float!
+                title: String!
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {year: 1999, rating: 4.0})
+            CREATE (movie:${Movie} {title: "The Matrix"})
         `);
     });
 
@@ -44,15 +43,14 @@ describe("Numeric fields", () => {
         await testHelper.close();
     });
 
-    test("should be able to get int and float fields", async () => {
+    test("should be able to get a Movie", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     connection {
                         edges {
                             node {
-                                year
-                                rating
+                                title
                             }
                         }
 
@@ -69,8 +67,7 @@ describe("Numeric fields", () => {
                     edges: [
                         {
                             node: {
-                                year: 1999,
-                                rating: 4.0,
+                                title: "The Matrix",
                             },
                         },
                     ],

@@ -18,8 +18,8 @@
  */
 
 import neo4jDriver from "neo4j-driver";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("DateTime", () => {
     const testHelper = new TestHelper({ v6Api: true });
