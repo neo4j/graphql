@@ -33,19 +33,18 @@ describe("DateTime", () => {
         await testHelper.close();
     });
 
-    describe("find", () => {
-        test("should find a movie (with a DateTime)", async () => {
-            const typeDefs = /* GraphQL */ `
+    test("should find a movie (with a DateTime)", async () => {
+        const typeDefs = /* GraphQL */ `
                 type ${Movie.name} @node {
                     datetime: DateTime
                 }
             `;
 
-            const date = new Date();
+        const date = new Date();
 
-            await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const query = /* GraphQL */ `
+        const query = /* GraphQL */ `
                 query {
                     ${Movie.plural}(where: { edges: { node: { datetime: { equals: "${date.toISOString()}" }} }}) {
                         connection{
@@ -59,45 +58,45 @@ describe("DateTime", () => {
                 }
             `;
 
-            const nDateTime = neo4jDriver.types.DateTime.fromStandardDate(date);
+        const nDateTime = neo4jDriver.types.DateTime.fromStandardDate(date);
 
-            await testHelper.executeCypher(
-                `
+        await testHelper.executeCypher(
+            `
                    CREATE (m:${Movie.name})
                    SET m.datetime = $nDateTime
                `,
-                { nDateTime }
-            );
+            { nDateTime }
+        );
 
-            const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)[Movie.plural]).toEqual({
-                connection: {
-                    edges: [
-                        {
-                            node: {
-                                datetime: date.toISOString(),
-                            },
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any)[Movie.plural]).toEqual({
+            connection: {
+                edges: [
+                    {
+                        node: {
+                            datetime: date.toISOString(),
                         },
-                    ],
-                },
-            });
+                    },
+                ],
+            },
         });
+    });
 
-        test("should find a movie (with a DateTime created with a timezone)", async () => {
-            const typeDefs = /* GraphQL */ `
+    test("should find a movie (with a DateTime created with a timezone)", async () => {
+        const typeDefs = /* GraphQL */ `
                 type ${Movie.name} @node {
                     name: String
                     datetime: DateTime
                 }
             `;
 
-            const date = new Date();
+        const date = new Date();
 
-            await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-            const query = /* GraphQL */ `
+        const query = /* GraphQL */ `
                 query {
                     ${Movie.plural}(where: { edges: { node: { name: { equals:  "${Movie.name}" } } } }) {
                         connection {
@@ -111,29 +110,25 @@ describe("DateTime", () => {
                 }
             `;
 
-            await testHelper.executeCypher(`
+        await testHelper.executeCypher(`
                    CREATE (m:${Movie.name})
                    SET m.name = "${Movie.name}"
                    SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
                `);
 
-            const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)[Movie.plural]).toEqual({
-                connection: {
-                    edges: [
-                        {
-                            node: {
-                                datetime: date.toISOString(),
-                            },
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any)[Movie.plural]).toEqual({
+            connection: {
+                edges: [
+                    {
+                        node: {
+                            datetime: date.toISOString(),
                         },
-                    ],
-                },
-            });
+                    },
+                ],
+            },
         });
     });
-
-    test.todo("packages/graphql/tests/integration/types/datetime.int.test.ts (create)");
-    test.todo("packages/graphql/tests/integration/types/datetime.int.test.ts (update)");
 });
