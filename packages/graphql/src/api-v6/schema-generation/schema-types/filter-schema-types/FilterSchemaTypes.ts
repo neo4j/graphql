@@ -18,7 +18,6 @@
  */
 
 import type { GraphQLScalarType } from "graphql";
-import { GraphQLBoolean } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import {
@@ -92,9 +91,10 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
                 if (isList) {
-                    return;
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.staticFilterTypes.getBooleanListWhere(isNullable);
                 }
-                return GraphQLBoolean;
+                return this.schemaTypes.staticTypes.staticFilterTypes.booleanWhere;
             }
 
             case GraphQLBuiltInScalarType.String: {

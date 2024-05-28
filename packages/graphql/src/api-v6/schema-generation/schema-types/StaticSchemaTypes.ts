@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLScalarType } from "graphql";
-import { GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import {
@@ -175,6 +175,39 @@ class StaticFilterTypes {
                     ...this.createBooleanOperators(itc),
                     ...this.createNumericOperators(GraphQLLocalTime),
                     in: list(nonNull(GraphQLLocalTime.name)),
+                },
+            };
+        });
+    }
+
+    public getBooleanListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
+                return {
+                    fields: {
+                        equals: "[Boolean]",
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
+            return {
+                fields: {
+                    equals: "[Boolean!]",
+                },
+            };
+        });
+    }
+
+    public get booleanWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("BooleanWhere", (itc) => {
+            return {
+                fields: {
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    equals: GraphQLBoolean,
                 },
             };
         });

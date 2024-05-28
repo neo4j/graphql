@@ -6,6 +6,10 @@ export function getFilterOperator(attribute: AttributeAdapter, operator: string)
         return getStringOperator(operator);
     }
 
+    if (attribute.typeHelper.isBoolean()) {
+        return getBooleanOperator(operator);
+    }
+
     if (attribute.typeHelper.isNumeric() || attribute.typeHelper.isTemporal()) {
         return getNumberOperator(operator);
     }
@@ -34,6 +38,15 @@ function getNumberOperator(operator: string): FilterOperator | undefined {
         lte: "LTE",
         gt: "GT",
         gte: "GTE",
+    } as const;
+
+    return numberOperatorMap[operator];
+}
+
+function getBooleanOperator(operator: string): FilterOperator | undefined {
+    // TODO: avoid this mapping
+    const numberOperatorMap = {
+        equals: "EQ",
     } as const;
 
     return numberOperatorMap[operator];

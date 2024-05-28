@@ -58,6 +58,13 @@ describe("Scalars", () => {
               query: Query
             }
 
+            input BooleanWhere {
+              AND: [BooleanWhere!]
+              NOT: BooleanWhere
+              OR: [BooleanWhere!]
+              equals: Boolean
+            }
+
             input FloatWhere {
               AND: [FloatWhere!]
               NOT: FloatWhere
@@ -78,7 +85,6 @@ describe("Scalars", () => {
               endsWith: ID
               equals: ID
               in: [ID!]
-              matches: ID
               startsWith: ID
             }
 
@@ -207,7 +213,7 @@ describe("Scalars", () => {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
-              boolean: Boolean
+              boolean: BooleanWhere
               float: FloatWhere
               id: IDWhere
               int: IntWhere
@@ -289,7 +295,7 @@ describe("Scalars", () => {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
-              boolean: Boolean
+              boolean: BooleanWhere
               float: FloatWhere
               id: IDWhere
               int: IntWhere
@@ -308,7 +314,7 @@ describe("Scalars", () => {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
-              boolean: Boolean
+              boolean: BooleanWhere
               float: FloatWhere
               id: IDWhere
               int: IntWhere
