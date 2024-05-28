@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../../tck/utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, formatParams, translateQuery } from "../../../tck/utils/tck-test-utils";
 
 describe("Simple Query", () => {
     let typeDefs: string;
