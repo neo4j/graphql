@@ -28,6 +28,7 @@ import type { Field } from "../../translate/queryAST/ast/fields/Field";
 import { OperationField } from "../../translate/queryAST/ast/fields/OperationField";
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../../translate/queryAST/ast/fields/attribute-fields/DateTimeField";
+import { Pagination } from "../../translate/queryAST/ast/pagination/Pagination";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
 import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
@@ -86,6 +87,10 @@ export class ReadOperationFactory {
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const sortArgument = connectionTree.args.sort;
+        const firstArgument = connectionTree.args.first;
+
+        const pagination = firstArgument ? new Pagination({ limit: firstArgument }) : undefined;
+
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({
             entity,
@@ -98,6 +103,7 @@ export class ReadOperationFactory {
                 edge: [],
                 node: nodeFields,
             },
+            pagination,
             sortFields: sortInputFields,
             filters: this.filterFactory.createFilters({ entity, where: graphQLTree.args.where }),
         });

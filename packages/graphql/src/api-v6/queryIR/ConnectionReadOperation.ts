@@ -54,6 +54,7 @@ export class V6ReadOperation extends Operation {
         selection,
         fields,
         sortFields,
+        pagination,
         filters,
     }: {
         relationship?: RelationshipAdapter;
@@ -63,6 +64,7 @@ export class V6ReadOperation extends Operation {
             node: Field[];
             edge: Field[];
         };
+        pagination?: Pagination;
         sortFields?: Array<{ node: Sort[]; edge: Sort[] }>;
         filters: Filter[];
     }) {
@@ -73,6 +75,7 @@ export class V6ReadOperation extends Operation {
         this.nodeFields = fields?.node ?? [];
         this.edgeFields = fields?.edge ?? [];
         this.sortFields = sortFields ?? [];
+        this.pagination = pagination;
         this.filters = filters ?? [];
     }
 
