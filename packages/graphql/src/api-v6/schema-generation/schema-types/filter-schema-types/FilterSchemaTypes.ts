@@ -21,7 +21,12 @@ import type { GraphQLScalarType } from "graphql";
 import { GraphQLBoolean } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
-import { GraphQLBuiltInScalarType, ListType } from "../../../../schema-model/attribute/AttributeType";
+import {
+    GraphQLBuiltInScalarType,
+    ListType,
+    Neo4jGraphQLTemporalType,
+    ScalarType,
+} from "../../../../schema-model/attribute/AttributeType";
 import { filterTruthy } from "../../../../utils/utils";
 import type { RelatedEntityTypeNames } from "../../../schema-model/graphql-type-names/RelatedEntityTypeNames";
 import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
@@ -64,7 +69,7 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
     }
 
     protected createPropertyFilters(attributes: Attribute[]): Record<string, InputTypeComposer> {
-        const fields: ([string, InputTypeComposer | GraphQLScalarType] | [])[] = filterTruthy(
+        const fields: Array<[string, InputTypeComposer | GraphQLScalarType] | []> = filterTruthy(
             attributes.map((attribute) => {
                 const propertyFilter = this.attributeToPropertyFilter(attribute);
                 if (propertyFilter) {
@@ -78,8 +83,13 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
     private attributeToPropertyFilter(attribute: Attribute): GraphQLScalarType | InputTypeComposer | undefined {
         const isList = attribute.type instanceof ListType;
         const wrappedType = isList ? attribute.type.ofType : attribute.type;
+        if (wrappedType instanceof ScalarType) {
+            return this.createScalarType(wrappedType, isList);
+        }
+    }
 
-        switch (wrappedType.name as GraphQLBuiltInScalarType) {
+    private createScalarType(type: ScalarType, isList: boolean): GraphQLScalarType | InputTypeComposer | undefined {
+        switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
                 if (isList) {
                     return;
@@ -89,36 +99,60 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
 
             case GraphQLBuiltInScalarType.String: {
                 if (isList) {
-                    const isNullable = !wrappedType.isRequired;
-                    return this.schemaTypes.staticTypes.getStringListWhere(isNullable);
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.staticFilterTypes.getStringListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.stringWhere;
+                return this.schemaTypes.staticTypes.staticFilterTypes.stringWhere;
             }
 
             case GraphQLBuiltInScalarType.ID: {
                 if (isList) {
-                    const isNullable = !wrappedType.isRequired;
-                    return this.schemaTypes.staticTypes.getIdListWhere(isNullable);
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.staticFilterTypes.getIdListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.idWhere;
+                return this.schemaTypes.staticTypes.staticFilterTypes.idWhere;
             }
 
             case GraphQLBuiltInScalarType.Int: {
                 if (isList) {
-                    const isNullable = !wrappedType.isRequired;
+                    const isNullable = !type.isRequired;
 
-                    return this.schemaTypes.staticTypes.getIntListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.staticFilterTypes.getIntListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.intWhere;
+                return this.schemaTypes.staticTypes.staticFilterTypes.intWhere;
             }
 
             case GraphQLBuiltInScalarType.Float: {
                 if (isList) {
-                    const isNullable = !wrappedType.isRequired;
+                    const isNullable = !type.isRequired;
 
-                    return this.schemaTypes.staticTypes.getFloatListWhere(isNullable);
+                    return this.schemaTypes.staticTypes.staticFilterTypes.getFloatListWhere(isNullable);
                 }
-                return this.schemaTypes.staticTypes.floatWhere;
+                return this.schemaTypes.staticTypes.staticFilterTypes.floatWhere;
+            }
+
+            case Neo4jGraphQLTemporalType.Date: {
+                return this.schemaTypes.staticTypes.staticFilterTypes.dateWhere;
+            }
+
+            case Neo4jGraphQLTemporalType.DateTime: {
+                return this.schemaTypes.staticTypes.staticFilterTypes.dateTimeWhere;
+            }
+
+            case Neo4jGraphQLTemporalType.LocalDateTime: {
+                return this.schemaTypes.staticTypes.staticFilterTypes.localDateTimeWhere;
+            }
+
+            case Neo4jGraphQLTemporalType.Duration: {
+                return this.schemaTypes.staticTypes.staticFilterTypes.durationWhere;
+            }
+
+            case Neo4jGraphQLTemporalType.Time: {
+                return this.schemaTypes.staticTypes.staticFilterTypes.timeWhere;
+            }
+
+            case Neo4jGraphQLTemporalType.LocalTime: {
+                return this.schemaTypes.staticTypes.staticFilterTypes.localTimeWhere;
             }
 
             default: {

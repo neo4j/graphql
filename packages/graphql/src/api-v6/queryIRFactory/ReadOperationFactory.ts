@@ -27,6 +27,7 @@ import { QueryAST } from "../../translate/queryAST/ast/QueryAST";
 import type { Field } from "../../translate/queryAST/ast/fields/Field";
 import { OperationField } from "../../translate/queryAST/ast/fields/OperationField";
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
+import { DateTimeField } from "../../translate/queryAST/ast/fields/attribute-fields/DateTimeField";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
 import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
@@ -165,9 +166,17 @@ export class ReadOperationFactory {
             Object.values(propertiesTree.fields).map((rawField) => {
                 const attribute = target.findAttribute(rawField.name);
                 if (attribute) {
+                    const attributeAdapter = new AttributeAdapter(attribute);
+                    if (attributeAdapter.typeHelper.isDateTime()) {
+                        return new DateTimeField({
+                            alias: rawField.alias,
+                            attribute: attributeAdapter,
+                        });
+                    }
+
                     return new AttributeField({
                         alias: rawField.alias,
-                        attribute: new AttributeAdapter(attribute),
+                        attribute: attributeAdapter,
                     });
                 }
                 return;

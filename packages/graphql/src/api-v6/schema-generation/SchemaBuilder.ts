@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { type GraphQLNamedInputType, type GraphQLSchema } from "graphql";
+import type { GraphQLNamedInputType, GraphQLScalarType, GraphQLSchema } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -54,6 +54,10 @@ export class SchemaBuilder {
 
     constructor() {
         this.composer = new SchemaComposer();
+    }
+
+    public createScalar(scalar: GraphQLScalarType): void {
+        this.composer.createScalarTC(scalar);
     }
 
     public getOrCreateObjectType(

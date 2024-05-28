@@ -6,7 +6,7 @@ export function getFilterOperator(attribute: AttributeAdapter, operator: string)
         return getStringOperator(operator);
     }
 
-    if (attribute.typeHelper.isNumeric()) {
+    if (attribute.typeHelper.isNumeric() || attribute.typeHelper.isTemporal()) {
         return getNumberOperator(operator);
     }
 }
