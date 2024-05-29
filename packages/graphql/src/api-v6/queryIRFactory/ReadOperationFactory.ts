@@ -142,6 +142,10 @@ export class ReadOperationFactory {
         const sortArgument = connectionTree.args.sort;
         const sortInputFields = this.getSortInputFields({ entity: relTarget, relationship, sortArgument });
 
+        const firstArgument = connectionTree.args.first;
+
+        const pagination = firstArgument ? new Pagination({ limit: firstArgument }) : undefined;
+
         return new V6ReadOperation({
             target: relationshipAdapter.target,
             selection,
@@ -155,6 +159,7 @@ export class ReadOperationFactory {
                 relationship,
                 where: parsedTree.args.where,
             }),
+            pagination,
         });
     }
 

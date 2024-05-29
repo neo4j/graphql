@@ -41,7 +41,6 @@ export type StringFilters = {
     endsWith?: string;
 };
 
-// TODO: this is incorrect?
 export type NumberFilters = {
     equals?: string;
     in?: string[];
