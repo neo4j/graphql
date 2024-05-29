@@ -19,7 +19,7 @@
 
 import type { GraphQLScalarType } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
-import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
+import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer, ListComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import {
     GraphQLDate,
@@ -185,7 +185,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: "[Boolean]",
+                        equals: list(nonNull(GraphQLBoolean.name)),
                     },
                 };
             });
@@ -194,7 +194,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
             return {
                 fields: {
-                    equals: "[Boolean!]",
+                    equals: list(nonNull(GraphQLBoolean.name)),
                 },
             };
         });
