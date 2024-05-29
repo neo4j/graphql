@@ -18,8 +18,8 @@
  */
 
 import type { GraphQLScalarType } from "graphql";
-import { GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
-import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
+import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer, ListComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import {
     GraphQLDate,
@@ -180,6 +180,39 @@ class StaticFilterTypes {
         });
     }
 
+    public getBooleanListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
+                return {
+                    fields: {
+                        equals: list(nonNull(GraphQLBoolean.name)),
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
+            return {
+                fields: {
+                    equals: list(nonNull(GraphQLBoolean.name)),
+                },
+            };
+        });
+    }
+
+    public get booleanWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("BooleanWhere", (itc) => {
+            return {
+                fields: {
+                    OR: itc.NonNull.List,
+                    AND: itc.NonNull.List,
+                    NOT: itc,
+                    equals: GraphQLBoolean,
+                },
+            };
+        });
+    }
+
     public getIdListWhere(nullable: boolean): InputTypeComposer {
         if (nullable) {
             return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", () => {
@@ -279,7 +312,7 @@ class StaticFilterTypes {
     private createStringOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
         return {
             equals: type,
-            matches: type,
+            // matches: type,
             contains: type,
             startsWith: type,
             endsWith: type,

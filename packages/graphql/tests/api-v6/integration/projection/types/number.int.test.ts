@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Simple Query", () => {
+describe("Numeric fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -29,13 +29,14 @@ describe("Simple Query", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                title: String!
+                year: Int!
+                rating: Float!
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {title: "The Matrix"})
+            CREATE (movie:${Movie} {year: 1999, rating: 4.0})
         `);
     });
 
@@ -43,14 +44,15 @@ describe("Simple Query", () => {
         await testHelper.close();
     });
 
-    test("should be able to get a Movie", async () => {
+    test("should be able to get int and float fields", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     connection {
                         edges {
                             node {
-                                title
+                                year
+                                rating
                             }
                         }
 
@@ -67,7 +69,8 @@ describe("Simple Query", () => {
                     edges: [
                         {
                             node: {
-                                title: "The Matrix",
+                                year: 1999,
+                                rating: 4.0,
                             },
                         },
                     ],

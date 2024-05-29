@@ -209,6 +209,8 @@ describe("Scalars", () => {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
+              booleanList: StringListWhere
+              booleanListNullable: StringListWhereNullable
               floatList: FloatListWhere
               floatListNullable: FloatListWhereNullable
               idList: IDListWhere
@@ -309,6 +311,8 @@ describe("Scalars", () => {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
+              booleanList: StringListWhere
+              booleanListNullable: StringListWhereNullable
               floatList: FloatListWhere
               floatListNullable: FloatListWhereNullable
               idList: IDListWhere
@@ -325,6 +329,8 @@ describe("Scalars", () => {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
+              booleanList: StringListWhere
+              booleanListNullable: StringListWhereNullable
               floatList: FloatListWhere
               floatListNullable: FloatListWhereNullable
               idList: IDListWhere

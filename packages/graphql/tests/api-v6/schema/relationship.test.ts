@@ -276,7 +276,6 @@ describe("Relationships", () => {
               endsWith: String
               equals: String
               in: [String!]
-              matches: String
               startsWith: String
             }"
         `);
@@ -573,7 +572,6 @@ describe("Relationships", () => {
               endsWith: String
               equals: String
               in: [String!]
-              matches: String
               startsWith: String
             }"
         `);

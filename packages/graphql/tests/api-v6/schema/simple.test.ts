@@ -109,7 +109,6 @@ describe("Simple Aura-API", () => {
               endsWith: String
               equals: String
               in: [String!]
-              matches: String
               startsWith: String
             }"
         `);
@@ -257,7 +256,6 @@ describe("Simple Aura-API", () => {
               endsWith: String
               equals: String
               in: [String!]
-              matches: String
               startsWith: String
             }"
         `);
@@ -353,7 +351,6 @@ describe("Simple Aura-API", () => {
               endsWith: String
               equals: String
               in: [String!]
-              matches: String
               startsWith: String
             }"
         `);

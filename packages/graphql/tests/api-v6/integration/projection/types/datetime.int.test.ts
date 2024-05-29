@@ -18,8 +18,8 @@
  */
 
 import neo4jDriver from "neo4j-driver";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("DateTime", () => {
     const testHelper = new TestHelper({ v6Api: true });
@@ -33,30 +33,14 @@ describe("DateTime", () => {
         await testHelper.close();
     });
 
-    test("should find a movie (with a DateTime)", async () => {
+    test("should return a movie created with a datetime parameter", async () => {
         const typeDefs = /* GraphQL */ `
                 type ${Movie.name} @node {
                     datetime: DateTime
                 }
             `;
 
-        const date = new Date();
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const query = /* GraphQL */ `
-                query {
-                    ${Movie.plural}(where: { edges: { node: { datetime: { equals: "${date.toISOString()}" }} }}) {
-                        connection{
-                            edges  {
-                                node {
-                                    datetime
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
+        const date = new Date(1716904582368);
 
         const nDateTime = neo4jDriver.types.DateTime.fromStandardDate(date);
 
@@ -67,6 +51,22 @@ describe("DateTime", () => {
                `,
             { nDateTime }
         );
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const query = /* GraphQL */ `
+                query {
+                    ${Movie.plural} {
+                        connection {
+                            edges  {
+                                node {
+                                    datetime
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -84,21 +84,24 @@ describe("DateTime", () => {
         });
     });
 
-    test("should find a movie (with a DateTime created with a timezone)", async () => {
+    test("should return a movie created with a datetime with timezone", async () => {
         const typeDefs = /* GraphQL */ `
                 type ${Movie.name} @node {
-                    name: String
                     datetime: DateTime
                 }
             `;
 
-        const date = new Date();
+        const date = new Date(1716904582368);
+        await testHelper.executeCypher(`
+                   CREATE (m:${Movie.name})
+                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
+               `);
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { name: { equals:  "${Movie.name}" } } } }) {
+                    ${Movie.plural} {
                         connection {
                             edges {
                                 node {
@@ -109,12 +112,6 @@ describe("DateTime", () => {
                     }
                 }
             `;
-
-        await testHelper.executeCypher(`
-                   CREATE (m:${Movie.name})
-                   SET m.name = "${Movie.name}"
-                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
-               `);
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
