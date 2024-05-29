@@ -1,5 +1,21 @@
 # @neo4j/graphql
 
+## 5.4.1
+
+### Patch Changes
+
+-   [#5147](https://github.com/neo4j/graphql/pull/5147) [`97b86b5`](https://github.com/neo4j/graphql/commit/97b86b55d117d6ef0f7b0ee5b7549193c9e48481) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix a bug that caused custom Cypher queries to fail when complex authorization rules are applied.
+
+-   [#5148](https://github.com/neo4j/graphql/pull/5148) [`1106af4`](https://github.com/neo4j/graphql/commit/1106af4554dedc35badea795725a15c96832bf49) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix schema error when defining matrix values as arguments on custom fields #5142.
+
+    For example:
+
+    ```graphql
+    type Query {
+        test(fields: [[String!]]!): String!
+    }
+    ```
+
 ## 5.4.0
 
 ### Minor Changes
