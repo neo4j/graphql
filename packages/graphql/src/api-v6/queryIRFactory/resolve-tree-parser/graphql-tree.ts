@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { Integer } from "neo4j-driver";
+
 export type GraphQLTree = GraphQLTreeReadOperation;
 
 interface GraphQLTreeElement {
@@ -38,6 +40,7 @@ export type StringFilters = {
     startsWith?: string;
     endsWith?: string;
 };
+
 export type NumberFilters = {
     equals?: string;
     in?: string[];
@@ -89,6 +92,8 @@ export interface GraphQLTreeConnection extends GraphQLTreeElement {
 
 export interface GraphQLConnectionArgs {
     sort?: GraphQLSortArgument;
+    first?: Integer;
+    after?: string;
 }
 
 export interface GraphQLTreeEdge extends GraphQLTreeElement {

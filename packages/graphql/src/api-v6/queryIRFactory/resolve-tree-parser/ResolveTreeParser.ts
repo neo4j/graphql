@@ -24,6 +24,7 @@ import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLConnectionArgs,
     GraphQLReadOperationArgs,
+    GraphQLSortArgument,
     GraphQLSortEdgeArgument,
     GraphQLTreeConnection,
     GraphQLTreeEdge,
@@ -142,14 +143,17 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     }
 
     private parseConnectionArgs(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgs {
-        if (!resolveTreeArgs.sort) {
-            return {};
+        let sortArg: GraphQLSortArgument | undefined;
+        if (resolveTreeArgs.sort) {
+            sortArg = {
+                edges: this.parseSortEdges(resolveTreeArgs.sort.edges),
+            };
         }
 
         return {
-            sort: {
-                edges: this.parseSortEdges(resolveTreeArgs.sort.edges),
-            },
+            sort: sortArg,
+            first: resolveTreeArgs.first,
+            after: resolveTreeArgs.after,
         };
     }
 

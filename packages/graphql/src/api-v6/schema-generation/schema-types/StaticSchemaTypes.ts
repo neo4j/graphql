@@ -43,11 +43,11 @@ function list(type: string): string {
 
 export class StaticSchemaTypes {
     private schemaBuilder: SchemaBuilder;
-    public staticFilterTypes: StaticFilterTypes;
+    public readonly filters: StaticFilterTypes;
 
     constructor({ schemaBuilder }: { schemaBuilder: SchemaBuilder }) {
         this.schemaBuilder = schemaBuilder;
-        this.staticFilterTypes = new StaticFilterTypes({ schemaBuilder });
+        this.filters = new StaticFilterTypes({ schemaBuilder });
         this.addScalars();
     }
 
