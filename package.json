@@ -19,7 +19,6 @@
         "test": "jest",
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky",
-        "changeset-version-dev": "changeset version --since dev && yarn",
         "release": "yarn build && changeset publish"
     },
     "devDependencies": {
