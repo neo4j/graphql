@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = /* GraphQL */ gql`
+        const query = gql`
             query {
                 myThings(where: { stuff: null }) {
                     id
