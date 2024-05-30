@@ -20,7 +20,7 @@
         "test:pr": "run-s lint test",
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky",
-        "changeset-version-dev": "changeset version --since dev && yarn",
+        "changeset-version": "changeset version --since $BRANCH && yarn",
         "release": "yarn build && changeset publish"
     },
     "devDependencies": {
