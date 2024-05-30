@@ -9,6 +9,7 @@ on:
     branches:
       - dev
       - "*.*.*"
+      - "*.x"
     paths-ignore:
       - "docs/**"
 
