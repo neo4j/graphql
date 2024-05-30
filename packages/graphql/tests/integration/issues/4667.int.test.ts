@@ -53,7 +53,13 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(driver, [MyThing, MyStuff]);
+        const session = await neo4j.getSession();
+        try {
+            await cleanNodes(session, [MyThing, MyStuff]);
+        } finally {
+            await session.close();
+        }
+        await driver.close();
     });
 
     afterAll(async () => {
