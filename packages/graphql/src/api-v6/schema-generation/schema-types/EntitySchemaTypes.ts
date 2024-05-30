@@ -51,8 +51,8 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
                         type: this.connection,
                         args: {
                             sort: this.connectionSort,
-                            first: GraphQLInt.name,
-                            after: GraphQLString.name,
+                            first: GraphQLInt,
+                            after: GraphQLString,
                         },
                     },
                 },

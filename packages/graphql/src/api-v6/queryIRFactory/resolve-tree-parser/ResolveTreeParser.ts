@@ -143,7 +143,7 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     }
 
     private parseConnectionArgs(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgs {
-        let sortArg: GraphQLSortArgument | undefined = undefined;
+        let sortArg: GraphQLSortArgument | undefined;
         if (resolveTreeArgs.sort) {
             sortArg = {
                 edges: this.parseSortEdges(resolveTreeArgs.sort.edges),
