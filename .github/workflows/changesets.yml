@@ -56,13 +56,14 @@ jobs:
         uses: changesets/action@aba318e9165b45b7948c60273e0b72fce0a64eb9 # v1.4.7
         with:
           title: changesets for branch `${{ github.ref_name }}`
-          version: yarn changeset version --since ${{ github.ref_name }} && yarn
+          version: yarn changeset-version
           publish: yarn release
           setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
+          BRANCH: ${{ github.ref_name }}
 
   slack-notify:
     needs:
