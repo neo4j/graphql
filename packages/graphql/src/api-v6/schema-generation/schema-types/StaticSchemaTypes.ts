@@ -59,7 +59,14 @@ export class StaticSchemaTypes {
 
     public get pageInfo(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType("PageInfo", () => {
-            return { fields: { hasNextPage: "Boolean", hasPreviousPage: "Boolean" } };
+            return {
+                fields: {
+                    hasNextPage: "Boolean",
+                    hasPreviousPage: "Boolean",
+                    startCursor: "String",
+                    endCursor: "String",
+                },
+            };
         });
     }
 

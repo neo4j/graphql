@@ -23,21 +23,22 @@ import { DEBUG_TRANSLATE } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { ReadOperationFactory } from "../queryIRFactory/ReadOperationFactory";
-import { parseResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
+import type { GraphQLTreeReadOperation } from "../queryIRFactory/resolve-tree-parser/graphql-tree";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
 export function translateReadOperation({
     context,
     entity,
+    graphQLTree,
 }: {
     context: Neo4jGraphQLTranslationContext;
+    graphQLTree: GraphQLTreeReadOperation;
     entity: ConcreteEntity;
 }): Cypher.CypherResult {
     const readFactory = new ReadOperationFactory(context.schemaModel);
 
-    const parsedTree = parseResolveInfoTree({ resolveTree: context.resolveTree, entity });
-    const readOperation = readFactory.createAST({ graphQLTree: parsedTree, entity });
+    const readOperation = readFactory.createAST({ graphQLTree, entity });
     debug(readOperation.print());
     const results = readOperation.build(context);
     return results.build();

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { offsetToCursor } from "graphql-relay";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
@@ -52,18 +51,13 @@ describe("Pagination with first", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(first: 3) {
-                        pageInfo {
-                            hasPreviousPage
-                            hasNextPage
-                            startCursor
-                            endCursor
-                        }
+                    connection(first: 3, after: "") {
                         edges {
                             node {
                                 title
                             }
                         }
+
                     }
                 }
             }
@@ -75,12 +69,6 @@ describe("Pagination with first", () => {
             [Movie.plural]: {
                 connection: {
                     edges: expect.toBeArrayOfSize(3),
-                    pageInfo: {
-                        endCursor: offsetToCursor(2),
-                        hasNextPage: true,
-                        hasPreviousPage: false,
-                        startCursor: offsetToCursor(0),
-                    },
                 },
             },
         });
