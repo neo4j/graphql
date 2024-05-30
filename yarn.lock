@@ -2805,7 +2805,7 @@ __metadata:
     cors: "npm:^2.8.5"
     graphql-ws: "npm:5.16.0"
     jest: "npm:29.7.0"
-    neo4j-driver: "npm:5.20.0"
+    neo4j-driver: "npm:5.21.0"
     pluralize: "npm:8.0.0"
     randomstring: "npm:1.3.0"
     supertest: "npm:7.0.0"
@@ -15242,6 +15242,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"neo4j-driver-bolt-connection@npm:5.21.0":
+  version: 5.21.0
+  resolution: "neo4j-driver-bolt-connection@npm:5.21.0"
+  dependencies:
+    buffer: "npm:^6.0.3"
+    neo4j-driver-core: "npm:5.21.0"
+    string_decoder: "npm:^1.3.0"
+  checksum: 10c0/429d1936d6e3b50fc2857cedc2919ad09bce9a2ff026dc9eee9c7d9baa80cc412352794d7d55661e8f88069fdd2e94ef6de828b2bdf75cb05c534d45269a6ba9
+  languageName: node
+  linkType: hard
+
 "neo4j-driver-core@npm:5.20.0":
   version: 5.20.0
   resolution: "neo4j-driver-core@npm:5.20.0"
@@ -15249,7 +15260,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.20.0, neo4j-driver@npm:^5.8.0":
+"neo4j-driver-core@npm:5.21.0":
+  version: 5.21.0
+  resolution: "neo4j-driver-core@npm:5.21.0"
+  checksum: 10c0/03a574ee3b7781196586343e8d8cf97d92f13a1c3b550259c4f99896f8f912819c90e154813e2b7504d8a885667c1cb80514fb792638b38e862028b076490166
+  languageName: node
+  linkType: hard
+
+"neo4j-driver@npm:5.21.0":
+  version: 5.21.0
+  resolution: "neo4j-driver@npm:5.21.0"
+  dependencies:
+    neo4j-driver-bolt-connection: "npm:5.21.0"
+    neo4j-driver-core: "npm:5.21.0"
+    rxjs: "npm:^7.8.1"
+  checksum: 10c0/278d719a669189f4d756ebc76996c7027331a44567ff187507c12fb749d426f63648bef1c2c36c5c7ee68d52e881445ae9d7c69a1a25dd261f566a491b82d58d
+  languageName: node
+  linkType: hard
+
+"neo4j-driver@npm:^5.8.0":
   version: 5.20.0
   resolution: "neo4j-driver@npm:5.20.0"
   dependencies:
@@ -15285,7 +15314,7 @@ __metadata:
     husky: "npm:9.0.11"
     jest: "npm:29.7.0"
     lint-staged: "npm:15.2.5"
-    neo4j-driver: "npm:5.20.0"
+    neo4j-driver: "npm:5.21.0"
     prettier: "npm:2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.1.4"
