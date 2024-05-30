@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 4.4.7
+
+### Patch Changes
+
+-   [#5173](https://github.com/neo4j/graphql/pull/5173) [`a77109e`](https://github.com/neo4j/graphql/commit/a77109e22f44eb8ffe2804bb57c99d203cb0a50c) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix non-existing relationships for 1 to 1 relationship.
+
 ## 4.4.6
 
 ### Patch Changes
