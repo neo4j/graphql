@@ -261,10 +261,10 @@ describe("Query aliasing", () => {
                 ${Movie.plural} {
                     connection {
                         info: pageInfo {
-                            hasPreviousPage
-                            hasNextPage
-                            startCursor
-                            endCursor
+                            previous: hasPreviousPage
+                            next: hasNextPage
+                            start: startCursor
+                            end: endCursor
                         }
                         info2: pageInfo {
                             hasPreviousPage
@@ -287,10 +287,10 @@ describe("Query aliasing", () => {
             [Movie.plural]: {
                 connection: {
                     info: {
-                        hasPreviousPage: false,
-                        hasNextPage: false,
-                        startCursor: offsetToCursor(0),
-                        endCursor: offsetToCursor(1),
+                        previous: false,
+                        next: false,
+                        start: offsetToCursor(0),
+                        end: offsetToCursor(1),
                     },
                     info2: {
                         hasPreviousPage: false,
