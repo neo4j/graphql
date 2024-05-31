@@ -20,7 +20,7 @@
 import type { GraphQLSchema } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import { generateReadResolver } from "../resolvers/readResolver";
+import { generateReadResolver } from "../resolvers/read-resolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
 import { StaticSchemaTypes } from "./schema-types/StaticSchemaTypes";
