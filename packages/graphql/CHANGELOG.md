@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.4.2
+
+### Patch Changes
+
+-   [#5189](https://github.com/neo4j/graphql/pull/5189) [`7046091`](https://github.com/neo4j/graphql/commit/70460916901c08aec69a170467c1a1cb290e9fac) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove parameters from transaction metadata
+
 ## 5.4.1
 
 ### Patch Changes
