@@ -25,22 +25,44 @@ describe("Pagination with first", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
+    let Actor: UniqueType;
+
     beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
+                ratings: Int!
+                description: String
+            }
+            type ${Actor} @node {
+                name: String
+                age: Int
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                year: Int
+                role: String
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${Movie} {title: "The Matrix 1"})
-            CREATE (:${Movie} {title: "The Matrix 2"})
-            CREATE (:${Movie} {title: "The Matrix 3"})
-            CREATE (:${Movie} {title: "The Matrix 4"})
-            CREATE (:${Movie} {title: "The Matrix 5"})
+            CREATE (a:${Movie} {title: "The Matrix", description: "DVD edition", ratings: 5})
+            CREATE (b:${Movie} {title: "The Matrix", description: "Cinema edition", ratings: 4})
+            CREATE (c:${Movie} {title: "The Matrix 2", ratings: 2})
+            CREATE (d:${Movie} {title: "The Matrix 3", ratings: 4})
+            CREATE (e:${Movie} {title: "The Matrix 4", ratings: 3})
+            CREATE (keanu:${Actor} {name: "Keanu", age: 55})
+            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Neo"}]->(a)
+            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Neo"}]->(b)
+            CREATE (keanu)-[:ACTED_IN {year: 2001, role: "Mr. Anderson"}]->(c)
+            CREATE (keanu)-[:ACTED_IN {year: 2003, role: "Neo"}]->(d)
+            CREATE (keanu)-[:ACTED_IN {year: 2021, role: "Neo"}]->(e)
+
         `);
     });
 
@@ -81,6 +103,51 @@ describe("Pagination with first", () => {
                         hasPreviousPage: false,
                         startCursor: offsetToCursor(0),
                     },
+                },
+            },
+        });
+    });
+
+    test("Get nested actors with first argument", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Actor.plural} {
+                    connection {
+                        edges {
+                            node {
+                                movies {
+                                    connection(first: 3) {
+                                        edges {
+                                            node {
+                                                title
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                movies: {
+                                    connection: {
+                                        edges: expect.toBeArrayOfSize(3),
+                                    },
+                                },
+                            },
+                        },
+                    ],
                 },
             },
         });
