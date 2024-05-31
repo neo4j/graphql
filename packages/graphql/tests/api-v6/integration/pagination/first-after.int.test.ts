@@ -21,7 +21,7 @@ import { offsetToCursor } from "graphql-relay";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Pagination with after", () => {
+describe("Pagination with first and after", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -53,7 +53,7 @@ describe("Pagination with after", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(after: "${afterCursor}") {
+                    connection(first: 2, after: "${afterCursor}") {
                         edges {
                             node {
                                 title
@@ -70,7 +70,7 @@ describe("Pagination with after", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: expect.toBeArrayOfSize(3),
+                    edges: expect.toBeArrayOfSize(2),
                 },
             },
         });
