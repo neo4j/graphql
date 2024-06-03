@@ -88,6 +88,7 @@ export class VectorFactory {
             target: entity,
             vector: vectorOptions,
             scoreVariable: vectorOptions.score,
+            settings: context.vector?.vectorSettings,
         });
         const operation = new VectorOperation({
             target: entity,

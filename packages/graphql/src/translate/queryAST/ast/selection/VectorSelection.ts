@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { mapLabelsWithContext } from "../../../../schema-model/utils/map-labels-with-context";
+import type { Neo4jVectorSettings } from "../../../../types";
 import { QueryASTContext } from "../QueryASTContext";
 import type { VectorOptions } from "../operations/VectorOperation";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
@@ -29,20 +30,24 @@ export class VectorSelection extends EntitySelection {
     private vector: VectorOptions;
 
     private scoreVariable: Cypher.Variable;
+    private settings?: Neo4jVectorSettings;
 
     constructor({
         target,
         vector,
         scoreVariable,
+        settings,
     }: {
         target: ConcreteEntityAdapter;
         vector: VectorOptions;
         scoreVariable: Cypher.Variable;
+        settings?: Neo4jVectorSettings;
     }) {
         super();
         this.target = target;
         this.vector = vector;
         this.scoreVariable = scoreVariable;
+        this.settings = settings;
     }
 
     public apply(context: QueryASTContext): {
@@ -51,49 +56,49 @@ export class VectorSelection extends EntitySelection {
     } {
         const node = new Cypher.Node();
         const vectorParam = new Cypher.Param(this.vector.vector);
-        // const phraseParam = new Cypher.Param(this.vector.phrase);
+        const phraseParam = new Cypher.Param(this.vector.phrase);
         const indexName = new Cypher.Literal(this.vector.index.indexName);
-
-        const vectorClause: Cypher.Yield = Cypher.db.index.vector
-            .queryNodes(indexName, 10, vectorParam) // TODO: Check if 10 is a good default value
-            .yield(["node", node], ["score", this.scoreVariable]);
+        let vectorClause: SelectionClause | undefined = undefined;
 
         // Different cases:
         // 1. Vector index without phrase, where the input is a List of Floats
-        // if (this.vector.vector) {
-        //     vectorClause = Cypher.db.index.vector
-        //         .queryNodes(indexName, 10, vectorParam) // TODO: Check if 10 is a good default value
-        //         .yield(["node", node], ["score", this.scoreVariable]);
-        // }
+        if (this.vector.vector) {
+            vectorClause = Cypher.db.index.vector
+                .queryNodes(indexName, 10, vectorParam) // TODO: Check if 10 is a good default value
+                .yield(["node", node], ["score", this.scoreVariable]);
+        }
 
         // 2. Vector index with phrase, where the input is a String, and there is a configured provider. We're going to use
         //    the GenAI plugin for this.
-        // if (this.vector.phrase && this.vector.index.provider) {
-        //     const asQueryString = new Cypher.Variable();
-        //     const asQueryVector = new Cypher.Variable();
+        if (this.vector.phrase && this.vector.index.provider) {
+            if (!this.settings || !this.settings[this.vector.index.provider]) {
+                throw new Error(
+                    `Missing settings for provider ${this.vector.index.provider}. Please check your configuration.`
+                );
+            }
 
-        //     // Get provider configuration from the data passed to the constructor
-        //     const provider = this.vector.index.provider;
+            const providerSettings = this.settings[this.vector.index.provider];
+            const asQueryVector = new Cypher.Variable();
+            const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 10, asQueryVector); // TODO: Check if 10 is a good default value
 
-        //     const vectorQueryNodesCall = Cypher.db.index.vector
-        //         .queryNodes("my_index", 10, asQueryVector)
-        //         .yield(["node", node], ["score", this.scoreVariable])
+            const encodeFunction = Cypher.genai.vector.encode(
+                phraseParam,
+                this.vector.index.provider,
+                providerSettings
+            );
 
-        //     const encodeFunction = Cypher.genai.vector.encode(phraseParam, this.vector.index.provider, {
-        //         token: new Cypher.Param("my-token"),
-        //         model: "my-model",
-        //         dimensions: 512,
-        //     });
-
-        //     vectorClause = Cypher.concat(
-        //         new Cypher.With([new Cypher.Literal("embeddings are cool"), asQueryString]),
-        //         new Cypher.With([encodeFunction, asQueryVector]),
-        //         vectorQueryNodesCall
-        //     );
-        // }
+            vectorClause = new Cypher.With([encodeFunction, asQueryVector])
+                .callProcedure(vectorProcedure)
+                .yield(["node", node], ["score", this.scoreVariable]);
+        }
 
         // 3. Vector index with phrase, where the input is a String, and there is no configured provider (and there is a callback).
         //    We're going to skip the use of the GenAI plugin for this.
+
+        if (!vectorClause) {
+            // This shouldn't occur. Probably requires a refactor so this code path is never reached.
+            throw new Error("Unsupported vector index configuration");
+        }
 
         const expectedLabels = mapLabelsWithContext(this.target.getLabels(), context.neo4jGraphQLContext);
 

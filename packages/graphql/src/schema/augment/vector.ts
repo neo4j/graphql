@@ -22,10 +22,10 @@ import type { SchemaComposer } from "graphql-compose";
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { VectorContext } from "../../types";
+import type { Neo4jFeaturesSettings, VectorContext } from "../../types";
 import {
     withVectorInputType,
-    withVectorResultType,
+    withVectorResultTypeConnection,
     withVectorSortInputType,
     withVectorWhereInputType,
 } from "../generation/vector-input";
@@ -34,9 +34,11 @@ import { vectorResolver } from "../resolvers/query/vector";
 export function augmentVectorSchema({
     composer,
     concreteEntityAdapter,
+    features,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
+    features?: Neo4jFeaturesSettings;
 }) {
     if (!concreteEntityAdapter.annotations.vector) {
         return;
@@ -56,10 +58,9 @@ export function augmentVectorSchema({
             queryType: "query",
             queryName,
             scoreVariable: new Cypher.Variable(),
+            vectorSettings: features?.vector || {},
         };
 
-        // If there is a provider, we will ask for the phrase
-        // If there is a callback, we will ask for the phrase
         const vectorArgs = {
             where: concreteEntityAdapter.operations.vectorTypeNames.where,
             sort: withVectorSortInputType({ concreteEntityAdapter, composer }).NonNull.List,
@@ -75,12 +76,22 @@ export function augmentVectorSchema({
 
         composer.Query.addFields({
             [queryName]: {
-                type: withVectorResultType({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
-                description:
-                    "Query a vector index using Vector. This query returns the query score, but does not allow for aggregations.",
+                type: withVectorResultTypeConnection({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
                 resolve: vectorResolver({ vectorContext, entityAdapter: concreteEntityAdapter }),
                 args: vectorArgs,
+                // entityAdapter: concreteEntityAdapter,
+                // propagatedDirectives,
             },
         });
+
+        // composer.Query.addFields({
+        //     [queryName]: {
+        //         type: withVectorResultType({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
+        //         description:
+        //             "Query a vector index using Vector. This query returns the query score, but does not allow for aggregations.",
+        //         resolve: vectorResolver({ vectorContext, entityAdapter: concreteEntityAdapter }),
+        //         args: vectorArgs,
+        //     },
+        // });
     });
 }

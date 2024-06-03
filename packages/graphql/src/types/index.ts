@@ -55,6 +55,7 @@ export type VectorContext = {
     queryName: string;
     queryType: string;
     scoreVariable: Cypher.Variable;
+    vectorSettings: Neo4jVectorSettings;
 };
 
 export type FullText = {
@@ -436,23 +437,23 @@ export interface Neo4jAuthorizationSettings {
 }
 
 export interface Neo4jVectorSettings {
-    ["VertexAI"]: {
+    ["VertexAI"]?: {
         token: string; // API access token.
         projectId: string; // GCP project ID.
         model?: string; // The name of the model you want to invoke.
         region?: string; // GCP region where to send the API requests.
     };
-    ["OpenAI"]: {
+    ["OpenAI"]?: {
         token: string; // API access token.
         model?: string; // The name of the model you want to invoke.
         dimensions?: number; // The number of dimensions you want to reduce the vector to. Only supported for certain models.
     };
-    ["AzureOpenAI"]: {
+    ["AzureOpenAI"]?: {
         token: string; // API access token.
         resource: string; // The name of the resource to which the model has been deployed.
         deployment: string; // The name of the model deployment.
     };
-    ["Bedrock"]: {
+    ["Bedrock"]?: {
         accessKeyId: string; // AWS access key ID.
         secretAccessKey: string; // AWS secret key.
         model?: string; // The name of the model you want to invoke.

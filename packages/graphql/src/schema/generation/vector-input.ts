@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLFloat, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 import type {
     InputTypeComposer,
     InputTypeComposerFieldConfigMapDefinition,
@@ -27,6 +27,7 @@ import type {
 import { SCORE_FIELD } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
 import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
+import { PageInfo } from "../../graphql/objects/PageInfo";
 import type { VectorField } from "../../schema-model/annotation/VectorAnnotation";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
@@ -174,4 +175,46 @@ export function withVectorResultType({
         },
     });
     return whereInput;
+}
+
+export function withVectorResultTypeConnection({
+    composer,
+    concreteEntityAdapter,
+}: {
+    composer: SchemaComposer;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}): ObjectTypeComposer {
+    const typeName = concreteEntityAdapter.operations.vectorTypeNames.result;
+    // const typeName = `${concreteEntityAdapter.upperFirstPlural}VectorConnection`; // TODO: move to operations
+    if (composer.has(typeName)) {
+        return composer.getOTC(typeName);
+    }
+
+    const edge = composer.createObjectTC({
+        name: `${concreteEntityAdapter.name}VectorEdge`, // TODO: move to operations
+        fields: {
+            cursor: new GraphQLNonNull(GraphQLString),
+            node: `${concreteEntityAdapter.name}!`,
+            [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
+        },
+        // directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+
+    const connection = composer.createObjectTC({
+        name: `${concreteEntityAdapter.upperFirstPlural}VectorConnection`,
+        fields: {
+            totalCount: new GraphQLNonNull(GraphQLInt),
+            pageInfo: new GraphQLNonNull(PageInfo),
+            edges: edge.NonNull.List.NonNull,
+        },
+        // directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+
+    const result = composer.createObjectTC({
+        name: typeName,
+        fields: {
+            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: connection.NonNull,
+        },
+    });
+    return result;
 }

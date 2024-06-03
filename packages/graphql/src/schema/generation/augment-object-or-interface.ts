@@ -130,7 +130,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             }).NonNull,
             args: composeNodeArgs,
             directives: deprecatedDirectives,
-            resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
+            resolve: (source: any, args: ConnectionQueryArgs, _ctx: any, info: GraphQLResolveInfo) => {
                 return connectionFieldResolver({
                     connectionFieldName: relationshipAdapter.operations.connectionFieldName,
                     args,

@@ -68,6 +68,7 @@ describe("Cypher -> vector -> Auth", () => {
                         movie {
                             title
                         }
+                        score
                     }
                 }
             `;
