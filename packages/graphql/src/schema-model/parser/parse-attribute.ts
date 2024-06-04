@@ -29,11 +29,12 @@ import {
     InputType,
     InterfaceType,
     ListType,
-    Neo4jCartesianPointType,
+    //Neo4jCartesianPointType,
     Neo4jGraphQLNumberType,
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
-    Neo4jPointType,
+    Neo4jSpatialType,
+    // Neo4jPointType,
     ObjectType,
     ScalarType,
     UnionType,
@@ -100,9 +101,11 @@ function parseTypeNode(
             if (isScalarType(typeNode.name.value)) {
                 return new ScalarType(typeNode.name.value, isRequired);
             } else if (isPoint(typeNode.name.value)) {
-                return new Neo4jPointType(isRequired);
+                return new Neo4jSpatialType(typeNode.name.value, isRequired);
+                // return new Neo4jPointType(isRequired);
             } else if (isCartesianPoint(typeNode.name.value)) {
-                return new Neo4jCartesianPointType(isRequired);
+                return new Neo4jSpatialType(typeNode.name.value, isRequired);
+                // return new Neo4jCartesianPointType(isRequired);
             } else if (isEnum(definitionCollection, typeNode.name.value)) {
                 return new EnumType(typeNode.name.value, isRequired);
             } else if (isUserScalar(definitionCollection, typeNode.name.value)) {
@@ -153,11 +156,11 @@ function isInput(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.inputTypes.has(name);
 }
 
-function isPoint(value: string): boolean {
+function isPoint(value: string): value is Neo4jGraphQLSpatialType.Point {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.Point;
 }
 
-function isCartesianPoint(value): boolean {
+function isCartesianPoint(value): value is Neo4jGraphQLSpatialType.CartesianPoint {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.CartesianPoint;
 }
 

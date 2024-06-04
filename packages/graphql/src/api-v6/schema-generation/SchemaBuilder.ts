@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLNamedInputType, GraphQLScalarType, GraphQLSchema } from "graphql";
+import type { GraphQLList, GraphQLNamedInputType, GraphQLNonNull, GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -39,10 +39,10 @@ type ListOrNullComposer<T extends ObjectOrInputTypeComposer> =
 
 type WrappedComposer<T extends ObjectOrInputTypeComposer> = T | ListOrNullComposer<T>;
 
-export type GraphQLResolver = () => any;
+export type GraphQLResolver = (...args) => any;
 
 export type FieldDefinition = {
-    resolver?: GraphQLResolver;
+    resolve?: GraphQLResolver;
     type: TypeDefinition;
     args?: Record<string, any>;
     deprecationReason?: string | null;
@@ -58,6 +58,10 @@ export class SchemaBuilder {
 
     public createScalar(scalar: GraphQLScalarType): void {
         this.composer.createScalarTC(scalar);
+    }
+
+    public createObject(object: GraphQLObjectType): void {
+        this.composer.createObjectTC(object);
     }
 
     public getOrCreateObjectType(
@@ -83,7 +87,12 @@ export class SchemaBuilder {
         onCreate: (itc: InputTypeComposer) => {
             fields: Record<
                 string,
-                EnumTypeComposer | string | GraphQLNamedInputType | WrappedComposer<InputTypeComposer>
+                | EnumTypeComposer
+                | string
+                | GraphQLNamedInputType
+                | GraphQLList<any>
+                | GraphQLNonNull<any>
+                | WrappedComposer<InputTypeComposer>
             >;
             description?: string;
         }

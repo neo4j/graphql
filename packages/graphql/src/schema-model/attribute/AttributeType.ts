@@ -55,20 +55,11 @@ export class ScalarType {
     }
 }
 
-export class Neo4jCartesianPointType {
-    public readonly name: string;
+export class Neo4jSpatialType {
+    public readonly name: Neo4jGraphQLSpatialType;
     public readonly isRequired: boolean;
-    constructor(isRequired: boolean) {
-        this.name = Neo4jGraphQLSpatialType.CartesianPoint;
-        this.isRequired = isRequired;
-    }
-}
-
-export class Neo4jPointType {
-    public readonly name: string;
-    public readonly isRequired: boolean;
-    constructor(isRequired: boolean) {
-        this.name = Neo4jGraphQLSpatialType.Point;
+    constructor(name: Neo4jGraphQLSpatialType, isRequired: boolean) {
+        this.name = name;
         this.isRequired = isRequired;
     }
 }

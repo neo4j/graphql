@@ -61,7 +61,7 @@ function serializeValue(value) {
 
 export function numericalResolver(source, args, context, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
-
+    
     if (Array.isArray(value)) {
         return value.map((v) => {
             return serializeValue(v);

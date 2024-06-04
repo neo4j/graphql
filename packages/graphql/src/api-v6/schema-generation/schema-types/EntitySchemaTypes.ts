@@ -45,15 +45,18 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
 
     public get connectionOperation(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connectionOperation, () => {
+            const args = {
+                first: GraphQLInt,
+                after: GraphQLString,
+            };
+            if (this.isSortable()) {
+                args["sort"] = this.connectionSort;
+            }
             return {
                 fields: {
                     connection: {
                         type: this.connection,
-                        args: {
-                            sort: this.connectionSort,
-                            first: GraphQLInt,
-                            after: GraphQLString,
-                        },
+                        args,
                     },
                 },
             };
@@ -86,4 +89,6 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
 
     public abstract get nodeType(): ObjectTypeComposer;
     public abstract get nodeSort(): InputTypeComposer;
+
+    public abstract isSortable(): boolean;
 }

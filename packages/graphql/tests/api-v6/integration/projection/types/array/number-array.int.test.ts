@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type) => {
+describe("Numeric array fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -30,17 +30,26 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                value: ${type}
-                title: String!
-            }
+                year: [Int!]!
+                rating: [Float!]!
+                viewings: [BigInt!]!
+                yearNullable: [Int]!
+                ratingNullable: [Float]!
+                viewingsNullable: [BigInt]!
 
+            }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${Movie} {value: 1999, title: "The Matrix"})
-            CREATE (:${Movie} {value: 2001, title: "The Matrix 2"})
-            CREATE (:${Movie} {value: 1989, title: "Bill And Ted"})
+            CREATE (movie:${Movie} {
+                yearNullable: [1999],
+                ratingNullable: [4.0],
+                viewingsNullable: [4294967297],
+                year: [1999],
+                rating: [4.0],
+                viewings: [4294967297]
+            })
         `);
     });
 
@@ -48,53 +57,22 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
         await testHelper.close();
     });
 
-    test("filter by 'in'", async () => {
+    test("should be able to get int and float fields", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { in: [1999, 2001] } } } }) {
+                ${Movie.plural} {
                     connection {
                         edges {
                             node {
-                                title
+                                year
+                                yearNullable
+                                viewings
+                                viewingsNullable
+                                rating
+                                ratingNullable
                             }
                         }
-                    }
-                }
-            }
-        `;
 
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: {
-                connection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                title: "The Matrix",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix 2",
-                            },
-                        },
-                    ]),
-                },
-            },
-        });
-    });
-
-    test("filter by NOT 'in'", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { in: [1999, 2001] } } } } }) {
-                    connection {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
                     }
                 }
             }
@@ -108,7 +86,12 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
                     edges: [
                         {
                             node: {
-                                title: "Bill And Ted",
+                                year: [1999],
+                                yearNullable: [1999],
+                                rating: [4.0],
+                                ratingNullable: [4.0],
+                                viewings: ["4294967297"],
+                                viewingsNullable: ["4294967297"],
                             },
                         },
                     ],

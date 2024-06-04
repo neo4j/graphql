@@ -20,6 +20,7 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
+import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
 describe("Temporals", () => {
     test("should generate the right types for all the temporal types", async () => {
@@ -54,7 +55,9 @@ describe("Temporals", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+        const schema = await neoSchema.getAuraSchema();
+        raiseOnInvalidSchema(schema);
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

@@ -20,6 +20,11 @@
 import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import {
+    GraphQLBuiltInScalarType,
+    Neo4jGraphQLNumberType,
+    Neo4jGraphQLTemporalType,
+} from "../../../schema-model/attribute/AttributeType";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
@@ -28,6 +33,7 @@ import type { RelatedEntityTypeNames } from "../../schema-model/graphql-type-nam
 import type { SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
+import type { TopLevelEntitySchemaTypes } from "./TopLevelEntitySchemaTypes";
 import { RelatedEntityFilterSchemaTypes } from "./filter-schema-types/RelatedEntityFilterSchemaTypes";
 
 export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTypeNames> {
@@ -77,12 +83,13 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
 
     protected get edgeSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeSort, () => {
-            const edgeSortFields = {
-                node: this.nodeSort,
-            };
+            const edgeSortFields = {};
             const properties = this.getEdgeSortProperties();
             if (properties) {
                 edgeSortFields["properties"] = properties;
+            }
+            if (this.getTargetEntitySchemaTypes().isSortable()) {
+                edgeSortFields["node"] = this.nodeSort;
             }
 
             return { fields: edgeSortFields };
@@ -90,23 +97,25 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
     }
 
     public get nodeType(): ObjectTypeComposer {
-        const target = this.relationship.target;
-        if (!(target instanceof ConcreteEntity)) {
-            throw new Error("Interfaces not supported yet");
-        }
-        const targetSchemaTypes = this.schemaTypes.getEntitySchemaTypes(target);
-
-        return targetSchemaTypes.nodeType;
+        return this.getTargetEntitySchemaTypes().nodeType;
     }
 
     public get nodeSort(): InputTypeComposer {
+        return this.getTargetEntitySchemaTypes().nodeSort;
+    }
+
+    @Memoize()
+    private getTargetEntitySchemaTypes(): TopLevelEntitySchemaTypes {
         const target = this.relationship.target;
         if (!(target instanceof ConcreteEntity)) {
             throw new Error("Interfaces not supported yet");
         }
-        const targetSchemaTypes = this.schemaTypes.getEntitySchemaTypes(target);
+        return this.schemaTypes.getEntitySchemaTypes(target);
+    }
 
-        return targetSchemaTypes.nodeSort;
+    public isSortable(): boolean {
+        const isTargetSortable = this.getTargetEntitySchemaTypes().isSortable();
+        return this.getRelationshipSortableFields().length > 0 || isTargetSortable;
     }
 
     @Memoize()
@@ -115,11 +124,10 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
     }
 
     private getEdgeSortProperties(): InputTypeComposer | undefined {
-        if (this.entityTypeNames.propertiesSort) {
+        if (this.entityTypeNames.propertiesSort && this.getRelationshipSortableFields().length > 0) {
             return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.propertiesSort, () => {
-                const fields = this.getRelationshipSortFields();
                 return {
-                    fields,
+                    fields: this.getRelationshipSortFields(),
                 };
             });
         }
@@ -132,10 +140,20 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
 
     private getRelationshipSortFields(): Record<string, EnumTypeComposer> {
         return Object.fromEntries(
-            this.getRelationshipFields().map((attribute) => [
+            this.getRelationshipSortableFields().map((attribute) => [
                 attribute.name,
                 this.schemaTypes.staticTypes.sortDirection,
             ])
+        );
+    }
+
+    @Memoize()
+    private getRelationshipSortableFields(): Attribute[] {
+        return this.getRelationshipFields().filter(
+            (field) =>
+                field.type.name === GraphQLBuiltInScalarType[GraphQLBuiltInScalarType[field.type.name]] ||
+                field.type.name === Neo4jGraphQLNumberType[Neo4jGraphQLNumberType[field.type.name]] ||
+                field.type.name === Neo4jGraphQLTemporalType[Neo4jGraphQLTemporalType[field.type.name]]
         );
     }
 

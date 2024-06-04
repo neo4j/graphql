@@ -23,11 +23,12 @@ import {
     InputType,
     InterfaceType,
     ListType,
-    Neo4jCartesianPointType,
+    Neo4jSpatialType,
+   // Neo4jCartesianPointType,
     Neo4jGraphQLNumberType,
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
-    Neo4jPointType,
+    //Neo4jPointType,
     ObjectType,
     ScalarType,
     UnionType,
@@ -84,12 +85,12 @@ export class AttributeTypeHelper {
 
     public isCartesianPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof Neo4jCartesianPointType;
+        return type instanceof Neo4jSpatialType && type.name === Neo4jGraphQLSpatialType.CartesianPoint;
     }
 
     public isPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof Neo4jPointType;
+        return type instanceof Neo4jSpatialType && type.name === Neo4jGraphQLSpatialType.Point;
     }
 
     public isBigInt(options = this.assertionOptions): boolean {

@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../../utils/graphql-types";
-import { TestHelper } from "../../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../../utils/tests-helper";
 
-describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type) => {
+describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals'", (type) => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -30,7 +30,8 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                value: ${type}
+                list: [${type}!]!
+                listNullable: [${type}]!
                 title: String!
             }
 
@@ -38,9 +39,9 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${Movie} {value: 1999, title: "The Matrix"})
-            CREATE (:${Movie} {value: 2001, title: "The Matrix 2"})
-            CREATE (:${Movie} {value: 1989, title: "Bill And Ted"})
+            CREATE (:${Movie} {list: [1999, 2000], listNullable: [1999, 2000], title: "The Matrix"})
+            CREATE (:${Movie} {list: [2001, 2000], listNullable: [2001, 2000], title: "The Matrix 2"})
+            CREATE (:${Movie} {list: [1999, 2000], listNullable: [1999, 2000], title: "Bill And Ted"})
         `);
     });
 
@@ -48,10 +49,42 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
         await testHelper.close();
     });
 
-    test("filter by 'in'", async () => {
+    test.each(["list", "listNullable"])("%s filter by 'equals'", async (field) => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { in: [1999, 2001] } } } }) {
+                ${Movie.plural}(where: { edges: { node: { ${field}: { equals: [2001, 2000] } } } }) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                title: "The Matrix 2",
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test.each(["list", "listNullable"])("%s filter by NOT 'equals'", async (field) => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(where: { edges: { NOT: { node: { ${field}: { equals: [2001, 2000] } } } } }) {
                     connection {
                         edges {
                             node {
@@ -76,42 +109,10 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
                         },
                         {
                             node: {
-                                title: "The Matrix 2",
-                            },
-                        },
-                    ]),
-                },
-            },
-        });
-    });
-
-    test("filter by NOT 'in'", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { in: [1999, 2001] } } } } }) {
-                    connection {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: {
-                connection: {
-                    edges: [
-                        {
-                            node: {
                                 title: "Bill And Ted",
                             },
                         },
-                    ],
+                    ]),
                 },
             },
         });

@@ -20,42 +20,83 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
+import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
 describe("Scalars", () => {
     test("should generate the right types for all the scalars", async () => {
         const typeDefs = /* GraphQL */ `
             type NodeType @node {
-                string: String
-                int: Int
-                float: Float
-                id: ID
-                boolean: Boolean
+                string: String!
+                int: Int!
+                float: Float!
+                id: ID!
+                boolean: Boolean!
+                bigInt: BigInt!
+                stringNullable: String
+                intNullable: Int
+                floatNullable: Float
+                idNullable: ID
+                booleanNullable: Boolean
+                bigIntNullable: BigInt
                 relatedNode: [RelatedNode!]!
                     @relationship(type: "RELATED_TO", direction: OUT, properties: "RelatedNodeProperties")
             }
 
             type RelatedNode @node {
-                string: String
-                int: Int
-                float: Float
-                id: ID
-                boolean: Boolean
+                string: String!
+                int: Int!
+                float: Float!
+                id: ID!
+                boolean: Boolean!
+                bigInt: BigInt!
+                stringNullable: String
+                intNullable: Int
+                floatNullable: Float
+                idNullable: ID
+                booleanNullable: Boolean
+                bigIntNullable: BigInt
             }
 
             type RelatedNodeProperties @relationshipProperties {
-                string: String
-                int: Int
-                float: Float
-                id: ID
-                boolean: Boolean
+                string: String!
+                int: Int!
+                float: Float!
+                id: ID!
+                boolean: Boolean!
+                bigInt: BigInt!
+                stringNullable: String
+                intNullable: Int
+                floatNullable: Float
+                idNullable: ID
+                booleanNullable: Boolean
+                bigIntNullable: BigInt
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+        const schema = await neoSchema.getAuraSchema();
+        raiseOnInvalidSchema(schema);
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+            }
+
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
+            scalar BigInt
+
+            input BigIntWhere {
+              AND: [BigIntWhere!]
+              NOT: BigIntWhere
+              OR: [BigIntWhere!]
+              equals: BigInt
+              gt: BigInt
+              gte: BigInt
+              in: [BigInt!]
+              lt: BigInt
+              lte: BigInt
             }
 
             input BooleanWhere {
@@ -101,12 +142,19 @@ describe("Scalars", () => {
             }
 
             type NodeType {
-              boolean: Boolean
-              float: Float
-              id: ID
-              int: Int
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
+              booleanNullable: Boolean
+              float: Float!
+              floatNullable: Float
+              id: ID!
+              idNullable: ID
+              int: Int!
+              intNullable: Int
               relatedNode(where: NodeTypeRelatedNodeOperationWhere): NodeTypeRelatedNodeOperation
-              string: String
+              string: String!
+              stringNullable: String
             }
 
             type NodeTypeConnection {
@@ -202,23 +250,37 @@ describe("Scalars", () => {
             }
 
             input NodeTypeSort {
+              bigInt: SortDirection
+              bigIntNullable: SortDirection
               boolean: SortDirection
+              booleanNullable: SortDirection
               float: SortDirection
+              floatNullable: SortDirection
               id: SortDirection
+              idNullable: SortDirection
               int: SortDirection
+              intNullable: SortDirection
               string: SortDirection
+              stringNullable: SortDirection
             }
 
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
+              bigInt: BigIntWhere
+              bigIntNullable: BigIntWhere
               boolean: BooleanWhere
+              booleanNullable: BooleanWhere
               float: FloatWhere
+              floatNullable: FloatWhere
               id: IDWhere
+              idNullable: IDWhere
               int: IntWhere
+              intNullable: IntWhere
               relatedNode: NodeTypeRelatedNodeNestedOperationWhere
               string: StringWhere
+              stringNullable: StringWhere
             }
 
             type PageInfo {
@@ -232,11 +294,18 @@ describe("Scalars", () => {
             }
 
             type RelatedNode {
-              boolean: Boolean
-              float: Float
-              id: ID
-              int: Int
-              string: String
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
+              booleanNullable: Boolean
+              float: Float!
+              floatNullable: Float
+              id: ID!
+              idNullable: ID
+              int: Int!
+              intNullable: Int
+              string: String!
+              stringNullable: String
             }
 
             type RelatedNodeConnection {
@@ -276,49 +345,84 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeProperties {
-              boolean: Boolean
-              float: Float
-              id: ID
-              int: Int
-              string: String
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
+              booleanNullable: Boolean
+              float: Float!
+              floatNullable: Float
+              id: ID!
+              idNullable: ID
+              int: Int!
+              intNullable: Int
+              string: String!
+              stringNullable: String
             }
 
             input RelatedNodePropertiesSort {
+              bigInt: SortDirection
+              bigIntNullable: SortDirection
               boolean: SortDirection
+              booleanNullable: SortDirection
               float: SortDirection
+              floatNullable: SortDirection
               id: SortDirection
+              idNullable: SortDirection
               int: SortDirection
+              intNullable: SortDirection
               string: SortDirection
+              stringNullable: SortDirection
             }
 
             input RelatedNodePropertiesWhere {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
+              bigInt: BigIntWhere
+              bigIntNullable: BigIntWhere
               boolean: BooleanWhere
+              booleanNullable: BooleanWhere
               float: FloatWhere
+              floatNullable: FloatWhere
               id: IDWhere
+              idNullable: IDWhere
               int: IntWhere
+              intNullable: IntWhere
               string: StringWhere
+              stringNullable: StringWhere
             }
 
             input RelatedNodeSort {
+              bigInt: SortDirection
+              bigIntNullable: SortDirection
               boolean: SortDirection
+              booleanNullable: SortDirection
               float: SortDirection
+              floatNullable: SortDirection
               id: SortDirection
+              idNullable: SortDirection
               int: SortDirection
+              intNullable: SortDirection
               string: SortDirection
+              stringNullable: SortDirection
             }
 
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
+              bigInt: BigIntWhere
+              bigIntNullable: BigIntWhere
               boolean: BooleanWhere
+              booleanNullable: BooleanWhere
               float: FloatWhere
+              floatNullable: FloatWhere
               id: IDWhere
+              idNullable: IDWhere
               int: IntWhere
+              intNullable: IntWhere
               string: StringWhere
+              stringNullable: StringWhere
             }
 
             enum SortDirection {

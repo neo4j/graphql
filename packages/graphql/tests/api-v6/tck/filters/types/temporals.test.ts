@@ -52,16 +52,27 @@ describe("Temporal types", () => {
                 localTime: LocalTime
             }
         `;
-
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
     });
 
-    test("should be possible to querying temporal fields - Top Level", async () => {
+    test("should filter temporal types - Top-Level", async () => {
         const query = /* GraphQL */ `
             query {
-                typeNodes {
+                typeNodes(
+                    where: {
+                        edges: {
+                            node: {
+                                dateTime: { equals: "2015-06-24T12:50:35.556+0100" }
+                                localDateTime: { gt: "2003-09-14T12:00:00" }
+                                duration: { gte: "P1Y" }
+                                time: { lt: "22:00:15.555" }
+                                localTime: { lte: "12:50:35.556" }
+                            }
+                        }
+                    }
+                ) {
                     connection {
                         edges {
                             node {
@@ -81,6 +92,7 @@ describe("Temporal types", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:TypeNode)
+            WHERE (this0.dateTime = $param0 AND this0.localDateTime > $param1 AND this0.duration >= $param2 AND this0.time < $param3 AND this0.localTime <= $param4)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -92,17 +104,76 @@ describe("Temporal types", () => {
             RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"year\\": 2015,
+                    \\"month\\": 6,
+                    \\"day\\": 24,
+                    \\"hour\\": 11,
+                    \\"minute\\": 50,
+                    \\"second\\": 35,
+                    \\"nanosecond\\": 556000000,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"param1\\": {
+                    \\"year\\": 2003,
+                    \\"month\\": 9,
+                    \\"day\\": 14,
+                    \\"hour\\": 12,
+                    \\"minute\\": 0,
+                    \\"second\\": 0,
+                    \\"nanosecond\\": 0
+                },
+                \\"param2\\": {
+                    \\"months\\": 12,
+                    \\"days\\": 0,
+                    \\"seconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    },
+                    \\"nanoseconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    }
+                },
+                \\"param3\\": {
+                    \\"hour\\": 22,
+                    \\"minute\\": 0,
+                    \\"second\\": 15,
+                    \\"nanosecond\\": 555000000,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"param4\\": {
+                    \\"hour\\": 12,
+                    \\"minute\\": 50,
+                    \\"second\\": 35,
+                    \\"nanosecond\\": 556000000
+                }
+            }"
+        `);
     });
 
-    test("should be possible to querying temporal fields - Nested", async () => {
+    test("should filter temporal types - Nested", async () => {
         const query = /* GraphQL */ `
             query {
                 typeNodes {
                     connection {
                         edges {
                             node {
-                                relatedNode {
+                                relatedNode(
+                                    where: {
+                                        edges: {
+                                            node: {
+                                                dateTime: { equals: "2015-06-24T12:50:35.556+0100" }
+                                                localDateTime: { gt: "2003-09-14T12:00:00" }
+                                                duration: { gte: "P1Y" }
+                                                time: { lt: "22:00:15.555" }
+                                                localTime: { lte: "12:50:35.556" }
+                                            }
+                                        }
+                                    }
+                                ) {
                                     connection {
                                         edges {
                                             node {
@@ -135,6 +206,7 @@ describe("Temporal types", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
+                    WHERE (relatedNode.dateTime = $param0 AND relatedNode.localDateTime > $param1 AND relatedNode.duration >= $param2 AND relatedNode.time < $param3 AND relatedNode.localTime <= $param4)
                     WITH collect({ node: relatedNode, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -150,17 +222,76 @@ describe("Temporal types", () => {
             RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"year\\": 2015,
+                    \\"month\\": 6,
+                    \\"day\\": 24,
+                    \\"hour\\": 11,
+                    \\"minute\\": 50,
+                    \\"second\\": 35,
+                    \\"nanosecond\\": 556000000,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"param1\\": {
+                    \\"year\\": 2003,
+                    \\"month\\": 9,
+                    \\"day\\": 14,
+                    \\"hour\\": 12,
+                    \\"minute\\": 0,
+                    \\"second\\": 0,
+                    \\"nanosecond\\": 0
+                },
+                \\"param2\\": {
+                    \\"months\\": 12,
+                    \\"days\\": 0,
+                    \\"seconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    },
+                    \\"nanoseconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    }
+                },
+                \\"param3\\": {
+                    \\"hour\\": 22,
+                    \\"minute\\": 0,
+                    \\"second\\": 15,
+                    \\"nanosecond\\": 555000000,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"param4\\": {
+                    \\"hour\\": 12,
+                    \\"minute\\": 50,
+                    \\"second\\": 35,
+                    \\"nanosecond\\": 556000000
+                }
+            }"
+        `);
     });
 
-    test("should be possible to querying temporal fields - Relationship properties", async () => {
+    test("should filter temporal types - Relationship properties", async () => {
         const query = /* GraphQL */ `
             query {
                 typeNodes {
                     connection {
                         edges {
                             node {
-                                relatedNode {
+                                relatedNode(
+                                    where: {
+                                        edges: {
+                                            properties: {
+                                                dateTime: { equals: "2015-06-24T12:50:35.556+0100" }
+                                                localDateTime: { gt: "2003-09-14T12:00:00" }
+                                                duration: { gte: "P1Y" }
+                                                time: { lt: "22:00:15.555" }
+                                                localTime: { lte: "12:50:35.556" }
+                                            }
+                                        }
+                                    }
+                                ) {
                                     connection {
                                         edges {
                                             properties {
@@ -193,6 +324,7 @@ describe("Temporal types", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
+                    WHERE (this1.dateTime = $param0 AND this1.localDateTime > $param1 AND this1.duration >= $param2 AND this1.time < $param3 AND this1.localTime <= $param4)
                     WITH collect({ node: relatedNode, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -208,6 +340,53 @@ describe("Temporal types", () => {
             RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"year\\": 2015,
+                    \\"month\\": 6,
+                    \\"day\\": 24,
+                    \\"hour\\": 11,
+                    \\"minute\\": 50,
+                    \\"second\\": 35,
+                    \\"nanosecond\\": 556000000,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"param1\\": {
+                    \\"year\\": 2003,
+                    \\"month\\": 9,
+                    \\"day\\": 14,
+                    \\"hour\\": 12,
+                    \\"minute\\": 0,
+                    \\"second\\": 0,
+                    \\"nanosecond\\": 0
+                },
+                \\"param2\\": {
+                    \\"months\\": 12,
+                    \\"days\\": 0,
+                    \\"seconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    },
+                    \\"nanoseconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    }
+                },
+                \\"param3\\": {
+                    \\"hour\\": 22,
+                    \\"minute\\": 0,
+                    \\"second\\": 15,
+                    \\"nanosecond\\": 555000000,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"param4\\": {
+                    \\"hour\\": 12,
+                    \\"minute\\": 50,
+                    \\"second\\": 35,
+                    \\"nanosecond\\": 556000000
+                }
+            }"
+        `);
     });
 });

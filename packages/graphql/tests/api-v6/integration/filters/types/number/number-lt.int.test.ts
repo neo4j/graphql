@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe.each(["Float", "Int"] as const)("%s Filtering - 'lt' and 'lte'", (type) => {
+describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering", (type) => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -80,7 +80,7 @@ describe.each(["Float", "Int"] as const)("%s Filtering - 'lt' and 'lte'", (type)
         });
     });
 
-    test("filter by NOT 'gt'", async () => {
+    test("filter by NOT 'lt'", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(where: { edges: { NOT: { node: { value: { lt: 1999 } } } } }) {
@@ -117,7 +117,7 @@ describe.each(["Float", "Int"] as const)("%s Filtering - 'lt' and 'lte'", (type)
         });
     });
 
-    test("filter by 'gte'", async () => {
+    test("filter by 'lte'", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(where: { edges: { node: { value: { lte: 1999 } } } }) {
@@ -154,7 +154,7 @@ describe.each(["Float", "Int"] as const)("%s Filtering - 'lt' and 'lte'", (type)
         });
     });
 
-    test("filter by NOT 'gte'", async () => {
+    test("filter by NOT 'lte'", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(where: { edges: { NOT: { node: { value: { lte: 1999 } } } } }) {

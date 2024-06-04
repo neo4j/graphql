@@ -18,10 +18,10 @@
  */
 
 import neo4jDriver from "neo4j-driver";
-import type { UniqueType } from "../../../../../utils/graphql-types";
-import { TestHelper } from "../../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../../utils/tests-helper";
 
-describe("DateTime - Equals", () => {
+describe("DateTime array - Equals", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let Movie: UniqueType;
 
@@ -37,14 +37,16 @@ describe("DateTime - Equals", () => {
         const typeDefs = /* GraphQL */ `
                 type ${Movie.name} @node {
                     title: String!
-                    datetime: DateTime
+                    datetime: [DateTime!]
                 }
             `;
 
         const date1 = new Date(1716904582368);
         const date2 = new Date(1716900000000);
-        const datetime1 = neo4jDriver.types.DateTime.fromStandardDate(date1);
-        const datetime2 = neo4jDriver.types.DateTime.fromStandardDate(date2);
+        const date3 = new Date(1716904582369);
+        const datetime1 = [neo4jDriver.types.DateTime.fromStandardDate(date1), neo4jDriver.types.DateTime.fromStandardDate(date3)];
+        const datetime2 = [neo4jDriver.types.DateTime.fromStandardDate(date2)];
+     
 
         await testHelper.executeCypher(
             `
@@ -58,7 +60,7 @@ describe("DateTime - Equals", () => {
 
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { datetime: { equals: "${date1.toISOString()}" }} }}) {
+                    ${Movie.plural}(where: { edges: { node: { datetime: { equals: ["${date1.toISOString()}", "${date3.toISOString()}"] }} }}) {
                         connection{
                             edges  {
                                 node {
@@ -80,7 +82,7 @@ describe("DateTime - Equals", () => {
                     {
                         node: {
                             title: "The Matrix",
-                            datetime: date1.toISOString(),
+                            datetime: [date1.toISOString(), date3.toISOString()],
                         },
                     },
                 ],

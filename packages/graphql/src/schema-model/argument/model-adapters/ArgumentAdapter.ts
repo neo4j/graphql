@@ -18,21 +18,8 @@
  */
 
 import type { AttributeType } from "../../attribute/AttributeType";
-import {
-    EnumType,
-    GraphQLBuiltInScalarType,
-    InterfaceType,
-    ListType,
-    Neo4jCartesianPointType,
-    Neo4jGraphQLNumberType,
-    Neo4jGraphQLSpatialType,
-    Neo4jGraphQLTemporalType,
-    Neo4jPointType,
-    ObjectType,
-    ScalarType,
-    UnionType,
-    UserScalarType,
-} from "../../attribute/AttributeType";
+import { ListType } from "../../attribute/AttributeType";
+import { AttributeTypeHelper } from "../../attribute/AttributeTypeHelper";
 import type { Argument } from "../Argument";
 
 // TODO: this file has a lot in common with AttributeAdapter
@@ -43,6 +30,7 @@ export class ArgumentAdapter {
     public type: AttributeType;
     public description?: string;
     public defaultValue?: string;
+    public typeHelper: AttributeTypeHelper;
     private assertionOptions: {
         includeLists: boolean;
     };
@@ -54,193 +42,29 @@ export class ArgumentAdapter {
         this.assertionOptions = {
             includeLists: true,
         };
-    }
 
-    /**
-     * Just a helper to get the wrapped type in case of a list, useful for the assertions
-     */
-    private getTypeForAssertion(includeLists: boolean) {
-        if (includeLists) {
-            return this.isList() ? this.type.ofType : this.type;
-        }
-        return this.type;
+        this.typeHelper = new AttributeTypeHelper(argument.type);
     }
-
-    isBoolean(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Boolean;
-    }
-
-    isID(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.ID;
-    }
-
-    isInt(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Int;
-    }
-
-    isFloat(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Float;
-    }
-
-    isString(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.String;
-    }
-
-    isCartesianPoint(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof Neo4jCartesianPointType;
-    }
-
-    isPoint(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof Neo4jPointType;
-    }
-
-    isBigInt(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLNumberType.BigInt;
-    }
-
-    isDate(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Date;
-    }
-
-    isDateTime(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.DateTime;
-    }
-
-    isLocalDateTime(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.LocalDateTime;
-    }
-
-    isTime(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Time;
-    }
-
-    isLocalTime(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.LocalTime;
-    }
-
-    isDuration(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.Duration;
-    }
-
-    isObject(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ObjectType;
-    }
-
-    isEnum(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof EnumType;
-    }
-
-    isInterface(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof InterfaceType;
-    }
-
-    isUnion(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof UnionType;
-    }
-
-    isList(): this is this & { type: ListType } {
-        return this.type instanceof ListType;
-    }
-
-    isUserScalar(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof UserScalarType;
-    }
-
-    isTemporal(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type.name in Neo4jGraphQLTemporalType;
-    }
-
-    isListElementRequired(): boolean {
-        if (!(this.type instanceof ListType)) {
-            return false;
-        }
-        return this.type.ofType.isRequired;
-    }
-
-    isRequired(): boolean {
-        return this.type.isRequired;
-    }
-
-    /**
-     *
-     * Schema Generator Stuff
-     *
-     */
-    isGraphQLBuiltInScalar(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type.name in GraphQLBuiltInScalarType;
-    }
-
-    isSpatial(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type.name in Neo4jGraphQLSpatialType;
-    }
-
-    isAbstract(options = this.assertionOptions): boolean {
-        return this.isInterface(options) || this.isUnion(options);
-    }
-    /**
-     * Returns true for both built-in and user-defined scalars
-     **/
-    isScalar(options = this.assertionOptions): boolean {
-        return (
-            this.isGraphQLBuiltInScalar(options) ||
-            this.isTemporal(options) ||
-            this.isBigInt(options) ||
-            this.isUserScalar(options)
-        );
-    }
-
-    isNumeric(options = this.assertionOptions): boolean {
-        return this.isBigInt(options) || this.isFloat(options) || this.isInt(options);
-    }
-
-    /**
-     *  END of category assertions
-     */
-
-    /**
-     *
-     * Schema Generator Stuff
-     *
-     */
 
     // Duplicate from AttributeAdapter
     getTypePrettyName(): string {
-        if (!this.isList()) {
-            return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
+        if (!this.typeHelper.isList()) {
+            return `${this.getTypeName()}${this.typeHelper.isRequired() ? "!" : ""}`;
         }
         const listType = this.type as ListType;
         if (listType.ofType instanceof ListType) {
             // matrix case
-            return `[[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]]${this.isRequired() ? "!" : ""}`;
+            return `[[${this.getTypeName()}${this.typeHelper.isListElementRequired() ? "!" : ""}]]${
+                this.typeHelper.isRequired() ? "!" : ""
+            }`;
         }
-        return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
+        return `[${this.getTypeName()}${this.typeHelper.isListElementRequired() ? "!" : ""}]${
+            this.typeHelper.isRequired() ? "!" : ""
+        }`;
     }
 
-    // Duplicate from AttributeAdapter
     getTypeName(): string {
-        if (!this.isList()) {
+        if (!this.typeHelper.isList()) {
             return this.type.name;
         }
         const listType = this.type as ListType;
