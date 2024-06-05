@@ -219,6 +219,7 @@ export class ConnectionFactory {
 
         return operation;
     }
+
     // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
     // This function temporary adjust some inconsistencies waiting for the new API.
     // TODO: Remove it when the new API is ready.
@@ -288,7 +289,7 @@ export class ConnectionFactory {
         };
     }
 
-    private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
+    public hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
         relationship,
         target,
         resolveTree,

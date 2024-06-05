@@ -104,6 +104,10 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
+    protected getConnectionVariables(_context: QueryASTContext): Cypher.Variable[] {
+        return [new Cypher.NamedVariable("edges")];
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error();
 
@@ -156,10 +160,10 @@ export class ConnectionReadOperation extends Operation {
             nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        const withCollectEdgesAndTotalCount = new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(
+        const withCollectEdgesAndTotalCount = new Cypher.With("*", [
+            Cypher.collect(nodeAndRelationshipMap),
             edgesVar,
-            [Cypher.size(edgesVar), totalCount]
-        );
+        ]).with(...this.getConnectionVariables(context), [Cypher.size(edgesVar), totalCount]);
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
@@ -212,7 +216,10 @@ export class ConnectionReadOperation extends Operation {
                 [edgeVar.property("relationship"), context.relationship]
             );
         } else {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(...this.getConnectionVariables(context), [
+                edgeVar.property("node"),
+                context.target,
+            ]);
         }
 
         const edgeProjectionMap = this.createProjectionMapForEdge(context);
@@ -227,22 +234,26 @@ export class ConnectionReadOperation extends Operation {
                 ...postPaginationSubqueries,
                 new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
             )
-        ).importWith(edgesVar);
+        ).importWith(...this.getConnectionVariables(context));
     }
 
-    private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
-        const nodeProjectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
-        if (nodeProjectionMap.size === 0) {
-            nodeProjectionMap.set({
+    protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+        const projectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
+        if (projectionMap.size === 0) {
+            projectionMap.set({
                 __id: Cypher.id(context.target),
             });
         }
-        nodeProjectionMap.set({
+        projectionMap.set({
             __resolveType: new Cypher.Literal(this.target.name),
         });
+        return projectionMap;
+    }
 
-        const edgeProjectionMap = new Cypher.Map();
-
+    protected addProjectionMapForRelationshipProperties(
+        context: QueryASTContext<Cypher.Node>,
+        edgeProjectionMap: Cypher.Map
+    ): void {
         if (context.relationship) {
             const propertiesProjectionMap = this.generateProjectionMapForFields(this.edgeFields, context.relationship);
             if (propertiesProjectionMap.size) {
@@ -256,12 +267,17 @@ export class ConnectionReadOperation extends Operation {
                 edgeProjectionMap.set("properties", propertiesProjectionMap);
             }
         }
+    }
 
-        edgeProjectionMap.set("node", nodeProjectionMap);
+    protected createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+        const edgeProjectionMap = new Cypher.Map();
+        this.addProjectionMapForRelationshipProperties(context, edgeProjectionMap);
+
+        edgeProjectionMap.set("node", this.createProjectionMapForNode(context));
         return edgeProjectionMap;
     }
 
-    private generateProjectionMapForFields(fields: Field[], target: Cypher.Variable): Cypher.Map {
+    protected generateProjectionMapForFields(fields: Field[], target: Cypher.Variable): Cypher.Map {
         const projectionMap = new Cypher.Map();
         fields
             .map((f) => f.getProjectionField(target))

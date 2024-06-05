@@ -26,8 +26,7 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ScoreField } from "../fields/ScoreField";
 import type { EntitySelection } from "../selection/EntitySelection";
-import { ReadOperation } from "./ReadOperation";
-import type { OperationTranspileResult } from "./operations";
+import { ConnectionReadOperation } from "./ConnectionReadOperation";
 
 export type VectorOptions = {
     index: VectorField;
@@ -36,7 +35,7 @@ export type VectorOptions = {
     score: Cypher.Variable;
 };
 
-export class VectorOperation extends ReadOperation {
+export class VectorOperation extends ConnectionReadOperation {
     private scoreField: ScoreField | undefined;
 
     constructor({
@@ -59,37 +58,21 @@ export class VectorOperation extends ReadOperation {
         this.scoreField = scoreField;
     }
 
-    public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
-        const { clauses, projectionExpr } = super.transpile(context);
-
-        const extraProjectionColumns: Array<[Cypher.Expr, Cypher.Variable]> = [];
-
-        if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(context.returnVariable);
-
-            extraProjectionColumns.push([scoreProjection.score, new Cypher.NamedVariable("score")]);
-        }
-
-        return {
-            clauses,
-            projectionExpr,
-            extraProjectionColumns,
-        };
-    }
-
     public getChildren(): QueryASTNode[] {
         return filterTruthy([...super.getChildren(), this.scoreField]);
     }
 
-    protected getReturnStatement(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
-        const returnClause = super.getReturnStatement(context, returnVariable);
+    protected getConnectionVariables(context: QueryASTContext): Cypher.Variable[] {
+        return [new Cypher.NamedVariable("edges"), context.neo4jGraphQLContext.vector!.scoreVariable];
+    }
 
-        if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(returnVariable);
+    protected createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+        const edgeProjectionMap = new Cypher.Map();
 
-            returnClause.addColumns([scoreProjection.score, "score"]);
+        edgeProjectionMap.set("node", this.createProjectionMapForNode(context));
+        if (this.scoreField && context.neo4jGraphQLContext.vector) {
+            edgeProjectionMap.set(this.scoreField.getProjectionField(context.neo4jGraphQLContext.vector.scoreVariable));
         }
-
-        return returnClause;
+        return edgeProjectionMap;
     }
 }

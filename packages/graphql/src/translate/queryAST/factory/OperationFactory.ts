@@ -72,11 +72,11 @@ export class OperationsFactory {
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;
     private fulltextFactory: FulltextFactory;
-    private vectorFactory: VectorFactory;
     private aggregateFactory: AggregateFactory;
     private customCypherFactory: CustomCypherFactory;
     private connectionFactory: ConnectionFactory;
     private readFactory: ReadFactory;
+    private vectorFactory: VectorFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.filterFactory = queryASTFactory.filterFactory;
@@ -87,11 +87,11 @@ export class OperationsFactory {
         this.updateFactory = new UpdateFactory(queryASTFactory);
         this.deleteFactory = new DeleteFactory(queryASTFactory);
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
-        this.vectorFactory = new VectorFactory(queryASTFactory);
         this.aggregateFactory = new AggregateFactory(queryASTFactory);
         this.customCypherFactory = new CustomCypherFactory(queryASTFactory);
         this.connectionFactory = new ConnectionFactory(queryASTFactory);
         this.readFactory = new ReadFactory(queryASTFactory);
+        this.vectorFactory = new VectorFactory(queryASTFactory);
     }
 
     public createTopLevelOperation({
@@ -125,22 +125,12 @@ export class OperationsFactory {
             return this.fulltextFactory.createFulltextOperation(entity, resolveTree, context);
         }
 
-        // TODO: move this kind of thing into parseTopLevelOperationField?
-        if (entity && isConcreteEntity(entity) && Boolean(entity.annotations.vector) && context.vector) {
-            assertIsConcreteEntity(entity);
-            return this.vectorFactory.createVectorOperation(entity, resolveTree, context);
-        }
-
-        const operationMatch = parseTopLevelOperationField(resolveTree.name, context.schemaModel, entity);
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
         switch (operationMatch) {
             case "READ": {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     assertIsConcreteEntity(entity);
                     return this.fulltextFactory.createFulltextOperation(entity, resolveTree, context);
-                }
-                if (context.resolveTree.args.vector) {
-                    assertIsConcreteEntity(entity);
-                    return this.vectorFactory.createVectorOperation(entity, resolveTree, context);
                 }
                 if (!entity) {
                     throw new Error("Entity is required for top level read operations");
@@ -152,6 +142,17 @@ export class OperationsFactory {
                     varName,
                     reference,
                 });
+            }
+            case "VECTOR": {
+                if (!entity) {
+                    throw new Error("Entity is required for top level connection read operations");
+                }
+                if (!isConcreteEntity(entity)) {
+                    throw new Error("Vector operations are only supported on concrete entities");
+                }
+                const topLevelConnectionResolveTree =
+                    this.connectionFactory.normalizeResolveTreeForTopLevelConnection(resolveTree);
+                return this.vectorFactory.createVectorOperation(entity, topLevelConnectionResolveTree, context);
             }
             case "CONNECTION": {
                 if (!entity) {
@@ -193,6 +194,9 @@ export class OperationsFactory {
             }
             case "CUSTOM_CYPHER": {
                 return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
+            }
+            default: {
+                throw new Error(`Unsupported top level operation: ${resolveTree.name}`);
             }
         }
     }
@@ -243,6 +247,7 @@ export class OperationsFactory {
     } {
         return this.connectionFactory.splitConnectionFields(rawFields);
     }
+
     public createConnectionOperationAST(arg: {
         relationship?: RelationshipAdapter;
         target: ConcreteEntityAdapter;
@@ -270,6 +275,17 @@ export class OperationsFactory {
         partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
         return this.readFactory.hydrateReadOperation(arg);
+    }
+
+    public hydrateConnectionOperation<T extends ConnectionReadOperation>(arg: {
+        relationship?: RelationshipAdapter;
+        target: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        operation: T;
+        whereArgs: Record<string, any>;
+    }): T {
+        return this.connectionFactory.hydrateConnectionOperationAST(arg);
     }
 
     public createCustomCypherOperation(arg: {

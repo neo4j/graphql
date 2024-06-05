@@ -41,6 +41,8 @@ type FulltextTypeNames = {
 
 type VectorTypeNames = {
     result: string;
+    connection: string;
+    edge: string;
     where: string;
     sort: string;
 };
@@ -60,18 +62,6 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
 
     public getFullTextIndexQueryFieldName(indexName: string): string {
         return `${this.entityAdapter.plural}Fulltext${upperFirst(indexName)}`;
-    }
-
-    public get vectorInputTypeName(): string {
-        return `${this.entityAdapter.name}VectorInput`;
-    }
-
-    public getVectorIndexInputTypeName(indexName: string): string {
-        return `${this.entityAdapter.name}${upperFirst(indexName)}Vector`;
-    }
-
-    public getVectorIndexQueryFieldName(indexName: string): string {
-        return `${this.entityAdapter.plural}Vector${upperFirst(indexName)}`;
     }
 
     public get relationshipsSubscriptionWhereInputTypeName(): string {
@@ -118,6 +108,8 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
     public get vectorTypeNames(): VectorTypeNames {
         return {
             result: `${this.pascalCaseSingular}VectorResult`,
+            connection: `${this.pascalCasePlural}VectorConnection`,
+            edge: `${this.pascalCaseSingular}VectorEdge`,
             where: `${this.pascalCaseSingular}VectorWhere`,
             sort: `${this.pascalCaseSingular}VectorSort`,
         };

@@ -125,7 +125,7 @@ export class SortAndPaginationFactory {
         }
 
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
-            // TODO: fix conflict with a a "score" fieldname
+            // TODO: fix conflict with a "score" fieldname
             if (fieldName === SCORE_FIELD && scoreVariable) {
                 return new FulltextScoreSort({
                     scoreVariable,

@@ -17,99 +17,13 @@
  * limitations under the License.
  */
 
-import { GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
-import type {
-    InputTypeComposer,
-    InputTypeComposerFieldConfigMapDefinition,
-    ObjectTypeComposer,
-    SchemaComposer,
-} from "graphql-compose";
+import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
+import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { SCORE_FIELD } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
 import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import { PageInfo } from "../../graphql/objects/PageInfo";
-import type { VectorField } from "../../schema-model/annotation/VectorAnnotation";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-
-export function withVectorInputType({
-    concreteEntityAdapter,
-    composer,
-}: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposer | undefined {
-    const typeName = concreteEntityAdapter.operations.vectorInputTypeName;
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-    const fields = makeVectorInputFields({ concreteEntityAdapter, composer });
-    const vectorInputType = composer.createInputTC({
-        name: typeName,
-        fields,
-    });
-    return vectorInputType;
-}
-
-function makeVectorInputFields({
-    concreteEntityAdapter,
-    composer,
-}: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposerFieldConfigMapDefinition {
-    const fields: InputTypeComposerFieldConfigMapDefinition = {};
-    if (!concreteEntityAdapter.annotations.vector) {
-        throw new Error("Expected vector annotation");
-    }
-    for (const index of concreteEntityAdapter.annotations.vector.indexes) {
-        if (index.indexName === undefined) {
-            throw new Error("The name of the vector index should be defined using the indexName argument.");
-        }
-        const fieldInput = withVectorIndexInputType({
-            concreteEntityAdapter,
-            index,
-            composer,
-        });
-        if (fieldInput) {
-            fields[index.indexName] = fieldInput;
-        }
-    }
-    return fields;
-}
-
-function withVectorIndexInputType({
-    composer,
-    concreteEntityAdapter,
-    index,
-}: {
-    composer: SchemaComposer;
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    index: VectorField;
-}): InputTypeComposer {
-    const typeName = concreteEntityAdapter.operations.getVectorIndexInputTypeName(index.indexName);
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-
-    // If there is a provider, we will ask for the phrase
-    // If there is a callback, we will ask for the phrase
-    if (index.provider !== undefined || index.callback !== undefined) {
-        return composer.createInputTC({
-            name: typeName,
-            fields: {
-                phrase: new GraphQLNonNull(GraphQLString),
-            },
-        });
-    }
-
-    // If there is no provider, or callback, we will ask for the List of Floats
-    return composer.createInputTC({
-        name: typeName,
-        fields: {
-            vector: new GraphQLList(new GraphQLNonNull(GraphQLFloat)),
-        },
-    });
-}
 
 export function withVectorWhereInputType({
     composer,
@@ -155,28 +69,6 @@ export function withVectorSortInputType({
     return whereInput;
 }
 
-export function withVectorResultType({
-    composer,
-    concreteEntityAdapter,
-}: {
-    composer: SchemaComposer;
-    concreteEntityAdapter: ConcreteEntityAdapter;
-}): ObjectTypeComposer {
-    const typeName = concreteEntityAdapter.operations.vectorTypeNames.result;
-    if (composer.has(typeName)) {
-        return composer.getOTC(typeName);
-    }
-    const whereInput = composer.createObjectTC({
-        name: typeName,
-        description: `The result of a Vector search on an index of ${concreteEntityAdapter.name}`,
-        fields: {
-            [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-            [concreteEntityAdapter.singular]: `${concreteEntityAdapter.name}!`,
-        },
-    });
-    return whereInput;
-}
-
 export function withVectorResultTypeConnection({
     composer,
     concreteEntityAdapter,
@@ -185,29 +77,26 @@ export function withVectorResultTypeConnection({
     concreteEntityAdapter: ConcreteEntityAdapter;
 }): ObjectTypeComposer {
     const typeName = concreteEntityAdapter.operations.vectorTypeNames.result;
-    // const typeName = `${concreteEntityAdapter.upperFirstPlural}VectorConnection`; // TODO: move to operations
     if (composer.has(typeName)) {
         return composer.getOTC(typeName);
     }
 
     const edge = composer.createObjectTC({
-        name: `${concreteEntityAdapter.name}VectorEdge`, // TODO: move to operations
+        name: concreteEntityAdapter.operations.vectorTypeNames.edge,
         fields: {
             cursor: new GraphQLNonNull(GraphQLString),
             node: `${concreteEntityAdapter.name}!`,
             [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
         },
-        // directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
     const connection = composer.createObjectTC({
-        name: `${concreteEntityAdapter.upperFirstPlural}VectorConnection`,
+        name: concreteEntityAdapter.operations.vectorTypeNames.connection,
         fields: {
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
             edges: edge.NonNull.List.NonNull,
         },
-        // directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
     const result = composer.createObjectTC({

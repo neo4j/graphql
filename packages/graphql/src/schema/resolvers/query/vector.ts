@@ -17,14 +17,16 @@
  * limitations under the License.
  */
 
-import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
+import type { GraphQLFieldResolver, GraphQLResolveInfo, SelectionSetNode } from "graphql";
+import type { PageInfo } from "graphql-relay";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { VectorContext } from "../../../types";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { isNeoInt } from "../../../utils/utils";
+import { createConnectionWithEdgeProperties } from "../../pagination";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function vectorResolver({
@@ -49,12 +51,12 @@ export function vectorResolver({
             offset: resolveTree.args.offset,
         };
 
-        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+        // (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateRead({
-            context: context as Neo4jGraphQLTranslationContext,
+            context: { ...context, resolveTree },
             entityAdapter,
-            varName: entityAdapter.singular,
+            varName: "this",
         });
         const executeResult = await execute({
             cypher,
@@ -63,6 +65,38 @@ export function vectorResolver({
             context,
             info,
         });
-        return executeResult.records;
+
+        let totalCount = 0;
+        let edges: any[] = [];
+        let pageInfo: PageInfo = {
+            hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: null,
+            endCursor: null,
+        };
+
+        if (executeResult.records[0]) {
+            const record = executeResult.records[0].this;
+
+            totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
+
+            const connection = createConnectionWithEdgeProperties({
+                selectionSet: resolveTree as unknown as SelectionSetNode,
+                source: { edges: record.edges },
+                args: { first: args.first, after: args.after },
+                totalCount,
+            });
+
+            edges = connection.edges as any[];
+            pageInfo = connection.pageInfo as PageInfo;
+        }
+
+        return {
+            [entityAdapter.operations.rootTypeFieldNames.connection]: {
+                totalCount,
+                edges,
+                pageInfo,
+            },
+        };
     };
 }

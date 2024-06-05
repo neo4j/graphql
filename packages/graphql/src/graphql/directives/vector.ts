@@ -44,7 +44,7 @@ export const vectorDirective = new GraphQLDirective({
                                 type: new GraphQLNonNull(GraphQLString),
                             },
                             queryName: {
-                                type: GraphQLString,
+                                type: new GraphQLNonNull(GraphQLString),
                             },
                             provider: {
                                 type: GraphQLString,

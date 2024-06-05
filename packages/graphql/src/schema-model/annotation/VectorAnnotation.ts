@@ -22,7 +22,7 @@ import type { Annotation } from "./Annotation";
 export type VectorField = {
     indexName: string;
     propertyName: string;
-    queryName?: string;
+    queryName: string;
     provider?: string;
     callback?: string;
 };

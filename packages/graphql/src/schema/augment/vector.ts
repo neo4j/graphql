@@ -24,7 +24,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings, VectorContext } from "../../types";
 import {
-    withVectorInputType,
     withVectorResultTypeConnection,
     withVectorSortInputType,
     withVectorWhereInputType,
@@ -44,19 +43,13 @@ export function augmentVectorSchema({
         return;
     }
 
-    withVectorInputType({ concreteEntityAdapter, composer });
     withVectorWhereInputType({ composer, concreteEntityAdapter });
 
     concreteEntityAdapter.annotations.vector.indexes.forEach((index) => {
-        let queryName = concreteEntityAdapter.operations.getVectorIndexQueryFieldName(index.indexName);
-        if (index.queryName) {
-            queryName = index.queryName;
-        }
-
         const vectorContext: VectorContext = {
             index,
             queryType: "query",
-            queryName,
+            queryName: index.queryName,
             scoreVariable: new Cypher.Variable(),
             vectorSettings: features?.vector || {},
         };
@@ -75,23 +68,11 @@ export function augmentVectorSchema({
         }
 
         composer.Query.addFields({
-            [queryName]: {
-                type: withVectorResultTypeConnection({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
+            [index.queryName]: {
+                type: withVectorResultTypeConnection({ composer, concreteEntityAdapter }).NonNull,
                 resolve: vectorResolver({ vectorContext, entityAdapter: concreteEntityAdapter }),
                 args: vectorArgs,
-                // entityAdapter: concreteEntityAdapter,
-                // propagatedDirectives,
             },
         });
-
-        // composer.Query.addFields({
-        //     [queryName]: {
-        //         type: withVectorResultType({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
-        //         description:
-        //             "Query a vector index using Vector. This query returns the query score, but does not allow for aggregations.",
-        //         resolve: vectorResolver({ vectorContext, entityAdapter: concreteEntityAdapter }),
-        //         args: vectorArgs,
-        //     },
-        // });
     });
 }

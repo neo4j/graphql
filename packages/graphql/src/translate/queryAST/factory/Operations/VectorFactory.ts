@@ -21,14 +21,14 @@ import type Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { ScoreField } from "../../ast/fields/ScoreField";
-import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { VectorOptions } from "../../ast/operations/VectorOperation";
 import { VectorOperation } from "../../ast/operations/VectorOperation";
 import { VectorSelection } from "../../ast/selection/VectorSelection";
 import type { QueryASTFactory } from "../QueryASTFactory";
+import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
+import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
 
 export class VectorFactory {
     private queryASTFactory: QueryASTFactory;
@@ -42,41 +42,7 @@ export class VectorFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): VectorOperation {
-        let resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
-        let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
-        let fieldsByTypeName = resolveTree.fieldsByTypeName;
-        const vectorOptions = this.getVectorOptions(context);
-        let scoreField: ScoreField | undefined;
-        let scoreFilter: ScoreFilter | undefined;
-
-        // Compatibility of top level operations
-        const vectorOperationDeprecatedFields = resolveTree.fieldsByTypeName[entity.operations.vectorTypeNames.result];
-
-        if (vectorOperationDeprecatedFields) {
-            const scoreWhere = resolveTreeWhere.score;
-            resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
-
-            const scoreRawField = vectorOperationDeprecatedFields.score;
-
-            const nestedResolveTree: Record<string, any> = vectorOperationDeprecatedFields[entity.singular] || {};
-
-            sortOptions = {
-                limit: sortOptions.limit,
-                offset: sortOptions.offset,
-                sort: filterTruthy((sortOptions.sort || []).map((field) => field[entity.singular] || field)),
-            };
-            fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
-            if (scoreRawField) {
-                scoreField = this.createVectorScoreField(scoreRawField, vectorOptions.score);
-            }
-            if (scoreWhere) {
-                scoreFilter = new ScoreFilter({
-                    scoreVariable: vectorOptions.score,
-                    min: scoreWhere.min,
-                    max: scoreWhere.max,
-                });
-            }
-        }
+        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
 
         checkEntityAuthentication({
             entity: entity.entity,
@@ -84,47 +50,39 @@ export class VectorFactory {
             context,
         });
 
-        const selection = new VectorSelection({
-            target: entity,
-            vector: vectorOptions,
-            scoreVariable: vectorOptions.score,
-            settings: context.vector?.vectorSettings,
-        });
+        let scoreField: ScoreField | undefined;
+        const vectorResultField = resolveTree.fieldsByTypeName[entity.operations.vectorTypeNames.result];
+        if (vectorResultField) {
+            const filteredResolveTree = findFieldsByNameInFieldsByTypeNameField(
+                vectorResultField,
+                entity.operations.rootTypeFieldNames.connection
+            );
+            const connectionFields = getFieldsByTypeName(
+                filteredResolveTree,
+                entity.operations.vectorTypeNames.connection
+            );
+            const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(connectionFields, "edges");
+            const edgeFields = getFieldsByTypeName(filteredResolveTreeEdges, entity.operations.vectorTypeNames.edge);
+            const scoreFields = findFieldsByNameInFieldsByTypeNameField(edgeFields, "score");
+            // We only care about the first score field
+            if (scoreFields.length > 0 && context.vector) {
+                scoreField = this.createVectorScoreField(scoreFields[0]!, context.vector.scoreVariable);
+            }
+        }
+
         const operation = new VectorOperation({
             target: entity,
             scoreField,
-            selection,
+            selection: this.getVectorSelection(entity, context),
         });
 
-        if (scoreFilter) {
-            operation.addFilters(scoreFilter);
-        }
-
-        this.queryASTFactory.operationsFactory.hydrateOperation({
-            operation,
-            entity,
-            fieldsByTypeName: fieldsByTypeName,
+        this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
+            target: entity,
+            resolveTree,
             context,
+            operation,
             whereArgs: resolveTreeWhere,
         });
-
-        // Override sort to support score
-        const sortOptions2 = this.queryASTFactory.operationsFactory.getOptions(entity, sortOptions);
-
-        if (sortOptions2) {
-            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
-                sortOptions2,
-                entity,
-                context,
-                vectorOptions.score
-            );
-            operation.addSort(...sort);
-
-            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(sortOptions2);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
-        }
 
         return operation;
     }
@@ -133,8 +91,9 @@ export class VectorFactory {
         const vectorOptions = this.getVectorOptions(context);
         return new VectorSelection({
             target: entity,
-            vector: vectorOptions,
+            vectorOptions,
             scoreVariable: vectorOptions.score,
+            settings: context.vector?.vectorSettings,
         });
     }
 

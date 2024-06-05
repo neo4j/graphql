@@ -27,42 +27,41 @@ import { EntitySelection, type SelectionClause } from "./EntitySelection";
 
 export class VectorSelection extends EntitySelection {
     private target: ConcreteEntityAdapter;
-    private vector: VectorOptions;
+    private vectorOptions: VectorOptions;
 
     private scoreVariable: Cypher.Variable;
     private settings?: Neo4jVectorSettings;
 
     constructor({
         target,
-        vector,
+        vectorOptions,
         scoreVariable,
         settings,
     }: {
         target: ConcreteEntityAdapter;
-        vector: VectorOptions;
+        vectorOptions: VectorOptions;
         scoreVariable: Cypher.Variable;
         settings?: Neo4jVectorSettings;
     }) {
         super();
         this.target = target;
-        this.vector = vector;
+        this.vectorOptions = vectorOptions;
         this.scoreVariable = scoreVariable;
         this.settings = settings;
     }
-
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
         const node = new Cypher.Node();
-        const vectorParam = new Cypher.Param(this.vector.vector);
-        const phraseParam = new Cypher.Param(this.vector.phrase);
-        const indexName = new Cypher.Literal(this.vector.index.indexName);
+        const vectorParam = new Cypher.Param(this.vectorOptions.vector);
+        const phraseParam = new Cypher.Param(this.vectorOptions.phrase);
+        const indexName = new Cypher.Literal(this.vectorOptions.index.indexName);
         let vectorClause: SelectionClause | undefined = undefined;
 
         // Different cases:
         // 1. Vector index without phrase, where the input is a List of Floats
-        if (this.vector.vector) {
+        if (this.vectorOptions.vector) {
             vectorClause = Cypher.db.index.vector
                 .queryNodes(indexName, 10, vectorParam) // TODO: Check if 10 is a good default value
                 .yield(["node", node], ["score", this.scoreVariable]);
@@ -70,20 +69,20 @@ export class VectorSelection extends EntitySelection {
 
         // 2. Vector index with phrase, where the input is a String, and there is a configured provider. We're going to use
         //    the GenAI plugin for this.
-        if (this.vector.phrase && this.vector.index.provider) {
-            if (!this.settings || !this.settings[this.vector.index.provider]) {
+        if (this.vectorOptions.phrase && this.vectorOptions.index.provider) {
+            if (!this.settings || !this.settings[this.vectorOptions.index.provider]) {
                 throw new Error(
-                    `Missing settings for provider ${this.vector.index.provider}. Please check your configuration.`
+                    `Missing settings for provider ${this.vectorOptions.index.provider}. Please check your configuration.`
                 );
             }
 
-            const providerSettings = this.settings[this.vector.index.provider];
+            const providerSettings = this.settings[this.vectorOptions.index.provider];
             const asQueryVector = new Cypher.Variable();
             const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 10, asQueryVector); // TODO: Check if 10 is a good default value
 
             const encodeFunction = Cypher.genai.vector.encode(
                 phraseParam,
-                this.vector.index.provider,
+                this.vectorOptions.index.provider,
                 providerSettings
             );
 

@@ -31,7 +31,6 @@ import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
@@ -48,12 +47,20 @@ export function rootConnectionResolver({
     entityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
 }) {
-    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+    async function resolve(
+        _root: any,
+        args: any,
+        context: Neo4jGraphQLComposedContext,
+        info: GraphQLResolveInfo
+    ): Promise<{
+        totalCount: number;
+        edges: any[];
+        pageInfo: PageInfoRelay;
+    }> {
         const resolveTree = getNeo4jResolveTree(info, { args });
-        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateRead({
-            context: context as Neo4jGraphQLTranslationContext,
+            context: { ...context, resolveTree },
             entityAdapter: entityAdapter,
             varName: "this",
         });
