@@ -21,12 +21,11 @@ import { offsetToCursor } from "graphql-relay";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Pagination with first", () => {
+describe("PageInfo", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
     let Actor: UniqueType;
-
     beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
@@ -34,35 +33,22 @@ describe("Pagination with first", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
-                ratings: Int!
-                description: String
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
             type ${Actor} @node {
                 name: String
-                age: Int
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ActedIn @relationshipProperties {
-                year: Int
-                role: String
-            }
+
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (a:${Movie} {title: "The Matrix", description: "DVD edition", ratings: 5})
-            CREATE (b:${Movie} {title: "The Matrix", description: "Cinema edition", ratings: 4})
-            CREATE (c:${Movie} {title: "The Matrix 2", ratings: 2})
-            CREATE (d:${Movie} {title: "The Matrix 3", ratings: 4})
-            CREATE (e:${Movie} {title: "The Matrix 4", ratings: 3})
-            CREATE (keanu:${Actor} {name: "Keanu", age: 55})
-            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Neo"}]->(a)
-            CREATE (keanu)-[:ACTED_IN {year: 1999, role: "Neo"}]->(b)
-            CREATE (keanu)-[:ACTED_IN {year: 2001, role: "Mr. Anderson"}]->(c)
-            CREATE (keanu)-[:ACTED_IN {year: 2003, role: "Neo"}]->(d)
-            CREATE (keanu)-[:ACTED_IN {year: 2021, role: "Neo"}]->(e)
-
+            CREATE (:${Movie} {title: "The Matrix 1"})
+            CREATE (m:${Movie} {title: "The Matrix 2"})
+            CREATE (:${Actor} { name: "Keanu" })-[:ACTED_IN]->(m)
+            CREATE (:${Actor} { name: "Carrie" })-[:ACTED_IN]->(m)
         `);
     });
 
@@ -70,11 +56,11 @@ describe("Pagination with first", () => {
         await testHelper.close();
     });
 
-    test("Get movies with first argument", async () => {
+    test("Get pageInfo and cursor information on top level connection", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(first: 3) {
+                    connection {
                         pageInfo {
                             hasPreviousPage
                             hasNextPage
@@ -82,8 +68,57 @@ describe("Pagination with first", () => {
                             endCursor
                         }
                         edges {
+                            cursor
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    pageInfo: {
+                        hasPreviousPage: false,
+                        hasNextPage: false,
+                        startCursor: offsetToCursor(0),
+                        endCursor: offsetToCursor(1),
+                    },
+                    edges: [
+                        {
+                            cursor: offsetToCursor(0),
+                        },
+                        {
+                            cursor: offsetToCursor(1),
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test("Get pageInfo and cursor information on nested level connection", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural} {
+                    connection {
+                        edges {
                             node {
-                                title
+                                actors {
+                                    connection {
+                                        pageInfo {
+                                            hasPreviousPage
+                                            hasNextPage
+                                            startCursor
+                                            endCursor
+                                        }
+                                        edges {
+                                            cursor
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -96,58 +131,45 @@ describe("Pagination with first", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: expect.toBeArrayOfSize(3),
-                    pageInfo: {
-                        endCursor: offsetToCursor(2),
-                        hasNextPage: true,
-                        hasPreviousPage: false,
-                        startCursor: offsetToCursor(0),
-                    },
-                },
-            },
-        });
-    });
-
-    test("Get nested actors with first argument", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Actor.plural} {
-                    connection {
-                        edges {
-                            node {
-                                movies {
-                                    connection(first: 3) {
-                                        edges {
-                                            node {
-                                                title
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Actor.plural]: {
-                connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
-                                movies: {
+                                actors: {
                                     connection: {
-                                        edges: expect.toBeArrayOfSize(3),
+                                        edges: [],
+                                        pageInfo: {
+                                            endCursor: null,
+                                            hasNextPage: false,
+                                            hasPreviousPage: false,
+                                            startCursor: null,
+                                        },
                                     },
                                 },
                             },
                         },
-                    ],
+                        {
+                            node: {
+                                actors: {
+                                    connection: {
+                                        edges: [
+                                            {
+                                                cursor: offsetToCursor(0),
+                                            },
+                                            {
+                                                cursor: offsetToCursor(1),
+                                            },
+                                        ],
+                                        pageInfo: {
+                                            endCursor: offsetToCursor(1),
+                                            hasNextPage: false,
+                                            hasPreviousPage: false,
+                                            startCursor: offsetToCursor(0),
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    ]),
                 },
             },
         });

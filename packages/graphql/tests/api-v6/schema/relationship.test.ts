@@ -254,8 +254,10 @@ describe("Relationships", () => {
             }
 
             type PageInfo {
+              endCursor: String
               hasNextPage: Boolean
               hasPreviousPage: Boolean
+              startCursor: String
             }
 
             type Query {
@@ -550,8 +552,10 @@ describe("Relationships", () => {
             }
 
             type PageInfo {
+              endCursor: String
               hasNextPage: Boolean
               hasPreviousPage: Boolean
+              startCursor: String
             }
 
             type Query {

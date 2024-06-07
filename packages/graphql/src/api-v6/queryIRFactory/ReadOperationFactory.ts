@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { cursorToOffset } from "graphql-relay";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
@@ -88,8 +89,10 @@ export class ReadOperationFactory {
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const sortArgument = connectionTree.args.sort;
         const firstArgument = connectionTree.args.first;
+        const afterArgument = connectionTree.args.after ? cursorToOffset(connectionTree.args.after) : undefined;
 
-        const pagination = firstArgument ? new Pagination({ limit: firstArgument }) : undefined;
+        const hasPagination = firstArgument || afterArgument;
+        const pagination = hasPagination ? new Pagination({ limit: firstArgument, skip: afterArgument }) : undefined;
 
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({
@@ -143,8 +146,10 @@ export class ReadOperationFactory {
         const sortInputFields = this.getSortInputFields({ entity: relTarget, relationship, sortArgument });
 
         const firstArgument = connectionTree.args.first;
+        const afterArgument = connectionTree.args.after ? cursorToOffset(connectionTree.args.after) : undefined;
 
-        const pagination = firstArgument ? new Pagination({ limit: firstArgument }) : undefined;
+        const hasPagination = firstArgument || afterArgument;
+        const pagination = hasPagination ? new Pagination({ limit: firstArgument, skip: afterArgument }) : undefined;
 
         return new V6ReadOperation({
             target: relationshipAdapter.target,

@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { offsetToCursor } from "graphql-relay";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Nested pagination with first", () => {
+describe("Pagination with after", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -69,7 +70,36 @@ describe("Nested pagination with first", () => {
         await testHelper.close();
     });
 
-    test("Get movies with first argument", async () => {
+    test("Get movies with after argument", async () => {
+        const afterCursor = offsetToCursor(2);
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural} {
+                    connection(after: "${afterCursor}") {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: expect.toBeArrayOfSize(3),
+                },
+            },
+        });
+    });
+
+    test("Get nested actors with after argument", async () => {
+        const afterArgument = offsetToCursor(2);
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
@@ -77,7 +107,7 @@ describe("Nested pagination with first", () => {
                         edges {
                             node {
                                 movies {
-                                    connection(first: 3) {
+                                    connection(after: "${afterArgument}") {
                                         edges {
                                             node {
                                                 title

@@ -19,6 +19,7 @@
 
 import { GraphQLInt, GraphQLString } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import { connectionOperationResolver } from "../../resolvers/connection-operation-resolver";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
 import type { SchemaTypes } from "./SchemaTypes";
@@ -54,6 +55,7 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
                             first: GraphQLInt,
                             after: GraphQLString,
                         },
+                        resolve: connectionOperationResolver,
                     },
                 },
             };
