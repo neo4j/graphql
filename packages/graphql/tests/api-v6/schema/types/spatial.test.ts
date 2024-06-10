@@ -70,12 +70,19 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
+            input CartesianPointInput {
+              x: Float!
+              y: Float!
+              z: Float
+            }
+
             input CartesianPointWhere {
-              equals: Float
-              gt: Float
-              gte: Float
-              lt: Float
-              lte: Float
+              AND: [CartesianPointWhere!]
+              NOT: CartesianPointWhere
+              OR: [CartesianPointWhere!]
+              distance: CartesianPointInput
+              in: [CartesianPointInput!]
             }
 
             type NodeType {
@@ -188,12 +195,31 @@ describe("Spatial Types", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
+            input PointDistance {
+              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+              distance: Float!
+              point: PointInput!
+            }
+
+            \\"\\"\\"Input type for a point\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
+
             input PointWhere {
-              equals: Float
-              gt: Float
-              gte: Float
-              lt: Float
-              lte: Float
+              AND: [PointWhere!]
+              NOT: PointWhere
+              OR: [PointWhere!]
+              distance: PointDistance
+              equals: PointInput
+              gt: PointDistance
+              gte: PointDistance
+              in: [PointInput!]
+              lt: PointDistance
+              lte: PointDistance
             }
 
             type Query {

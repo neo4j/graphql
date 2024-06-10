@@ -17,7 +17,16 @@
  * limitations under the License.
  */
 
-import type { GraphQLList, GraphQLNamedInputType, GraphQLNonNull, GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from "graphql";
+import type {
+    GraphQLInputObjectType,
+    GraphQLInputType,
+    GraphQLList,
+    GraphQLNamedInputType,
+    GraphQLNonNull,
+    GraphQLObjectType,
+    GraphQLScalarType,
+    GraphQLSchema,
+} from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -89,7 +98,7 @@ export class SchemaBuilder {
                 string,
                 | EnumTypeComposer
                 | string
-                | GraphQLNamedInputType
+                | GraphQLInputType
                 | GraphQLList<any>
                 | GraphQLNonNull<any>
                 | WrappedComposer<InputTypeComposer>

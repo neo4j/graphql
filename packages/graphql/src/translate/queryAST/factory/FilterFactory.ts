@@ -37,8 +37,8 @@ import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter"
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
-import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
+import { SpatialFilter } from "../ast/filters/property-filters/SpatialFilter";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
@@ -188,8 +188,8 @@ export class FilterFactory {
                 attachedTo,
             });
         }
-        if (attribute.typeHelper.isPoint() || attribute.typeHelper.isCartesianPoint()) {
-            return new PointFilter({
+        if (attribute.typeHelper.isSpatial()) {
+            return new SpatialFilter({
                 attribute,
                 comparisonValue,
                 isNot,

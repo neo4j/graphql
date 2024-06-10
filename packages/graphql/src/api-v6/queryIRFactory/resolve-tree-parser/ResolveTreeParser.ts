@@ -18,6 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { findFieldByName } from "./find-field-by-name";
@@ -31,7 +32,9 @@ import type {
     GraphQLTreeEdgeProperties,
     GraphQLTreeLeafField,
     GraphQLTreeNode,
+    GraphQLTreePoint,
     GraphQLTreeReadOperation,
+    GraphQLTreeScalarField,
     GraphQLTreeSortElement,
 } from "./graphql-tree";
 
@@ -75,8 +78,34 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     protected parseAttributeField(
         resolveTree: ResolveTree,
         entity: ConcreteEntity | Relationship
-    ): GraphQLTreeLeafField | undefined {
+    ): GraphQLTreeLeafField | GraphQLTreePoint | undefined {
         if (entity.hasAttribute(resolveTree.name)) {
+            const attribute = entity.findAttribute(resolveTree.name) as Attribute;
+            if (attribute.type.name === "Point") {
+                const longitude = findFieldByName(resolveTree, "Point", "longitude");
+                const latitude = findFieldByName(resolveTree, "Point", "latitude");
+                const height = findFieldByName(resolveTree, "Point", "height");
+                const crs = findFieldByName(resolveTree, "Point", "crs");
+                const srid = findFieldByName(resolveTree, "Point", "srid");
+
+                const pointField: GraphQLTreePoint = {
+                    alias: resolveTree.alias,
+                    args: resolveTree.args,
+                    name: resolveTree.name,
+                    fields: {
+                        longitude: resolveTreeToLeafField(longitude),
+                        latitude: resolveTreeToLeafField(latitude),
+                        height: resolveTreeToLeafField(height),
+                        crs: resolveTreeToLeafField(crs),
+                        srid: resolveTreeToLeafField(srid),
+                    },
+                };
+
+                return pointField;
+            }
+            if (attribute.type.name === "CartesianPoint") {
+                throw new ResolveTreeParserError("CartesianPoint is not supported");
+            }
             return {
                 alias: resolveTree.alias,
                 args: resolveTree.args,
@@ -257,4 +286,16 @@ export class RelationshipResolveTreeParser extends ResolveTreeParser<Relationshi
         }
         return propertyFields;
     }
+}
+
+function resolveTreeToLeafField(resolveTree: ResolveTree | undefined): GraphQLTreeScalarField | undefined {
+    if (!resolveTree) {
+        return undefined;
+    }
+    return {
+        alias: resolveTree.alias,
+        args: resolveTree.args,
+        name: resolveTree.name,
+        fields: undefined,
+    };
 }

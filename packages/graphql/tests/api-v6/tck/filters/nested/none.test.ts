@@ -63,7 +63,6 @@ describe("Nested Filters with none", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE NOT (EXISTS {
@@ -109,7 +108,6 @@ describe("Nested Filters with none", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE NOT (EXISTS {
@@ -171,7 +169,6 @@ describe("Nested Filters with none", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE EXISTS {

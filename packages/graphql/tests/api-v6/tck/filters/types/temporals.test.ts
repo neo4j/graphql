@@ -92,7 +92,7 @@ describe("Temporal types", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:TypeNode)
-            WHERE (this0.dateTime = $param0 AND this0.localDateTime > $param1 AND this0.duration >= $param2 AND this0.time < $param3 AND this0.localTime <= $param4)
+            WHERE (this0.dateTime = $param0 AND this0.localDateTime > $param1 AND (datetime() + this0.duration) >= (datetime() + $param2) AND this0.time < $param3 AND this0.localTime <= $param4)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -206,7 +206,7 @@ describe("Temporal types", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WHERE (relatedNode.dateTime = $param0 AND relatedNode.localDateTime > $param1 AND relatedNode.duration >= $param2 AND relatedNode.time < $param3 AND relatedNode.localTime <= $param4)
+                    WHERE (relatedNode.dateTime = $param0 AND relatedNode.localDateTime > $param1 AND (datetime() + relatedNode.duration) >= (datetime() + $param2) AND relatedNode.time < $param3 AND relatedNode.localTime <= $param4)
                     WITH collect({ node: relatedNode, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -324,7 +324,7 @@ describe("Temporal types", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WHERE (this1.dateTime = $param0 AND this1.localDateTime > $param1 AND this1.duration >= $param2 AND this1.time < $param3 AND this1.localTime <= $param4)
+                    WHERE (this1.dateTime = $param0 AND this1.localDateTime > $param1 AND (datetime() + this1.duration) >= (datetime() + $param2) AND this1.time < $param3 AND this1.localTime <= $param4)
                     WITH collect({ node: relatedNode, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLScalarType } from "graphql";
+import type { GraphQLInputType, GraphQLScalarType } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
@@ -32,6 +32,9 @@ import {
 } from "../../../graphql/scalars";
 import type { SchemaBuilder } from "../SchemaBuilder";
 
+import { CartesianPointInput } from "../../../graphql/input-objects/CartesianPointInput";
+import { PointDistance } from "../../../graphql/input-objects/PointDistance";
+import { PointInput } from "../../../graphql/input-objects/PointInput";
 import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
 import { Point } from "../../../graphql/objects/Point";
 import * as Scalars from "../../../graphql/scalars";
@@ -458,21 +461,34 @@ class StaticFilterTypes {
         });
     }
 
+    // TODO: Discuss, distance operator.
     public get cartesianPointWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("CartesianPointWhere", (_itc) => {
+        return this.schemaBuilder.getOrCreateInputType("CartesianPointWhere", (itc) => {
             return {
                 fields: {
-                    ...this.createNumericOperators(GraphQLFloat),
+                    ...this.createBooleanOperators(itc),
+                    //...this.createNumericOperators(CartesianPointDistance), // commented out as equals is of different type than the rest
+                    distance: CartesianPointInput,
+                    in: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
                 },
             };
         });
     }
 
+    // TODO: Discuss, distance operator.
     public get pointWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("PointWhere", (_itc) => {
+        return this.schemaBuilder.getOrCreateInputType("PointWhere", (itc) => {
             return {
                 fields: {
-                    ...this.createNumericOperators(GraphQLFloat),
+                    ...this.createBooleanOperators(itc),
+                    //...this.createNumericOperators(PointDistance), // commented out as equals is of different type than the rest
+                    equals: PointInput,
+                    lt: PointDistance,
+                    lte: PointDistance,
+                    gt: PointDistance,
+                    gte: PointDistance,
+                    distance: PointDistance,
+                    in: toGraphQLList(toGraphQLNonNull(PointInput)),
                 },
             };
         });
@@ -488,7 +504,7 @@ class StaticFilterTypes {
         };
     }
 
-    private createNumericOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
+    private createNumericOperators(type: GraphQLInputType): Record<string, GraphQLInputType> {
         return {
             equals: type,
             lt: type,

@@ -22,7 +22,7 @@ import type { AttributeAdapter } from "../../../../../schema-model/attribute/mod
 import type { WhereOperator } from "../Filter";
 import { PropertyFilter } from "./PropertyFilter";
 
-export class PointFilter extends PropertyFilter {
+export class SpatialFilter extends PropertyFilter {
     protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {
         return this.createPointOperation({
             operator: this.operator || "EQ",

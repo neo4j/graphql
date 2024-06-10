@@ -28,6 +28,7 @@ import type { Field } from "../../translate/queryAST/ast/fields/Field";
 import { OperationField } from "../../translate/queryAST/ast/fields/OperationField";
 import { AttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../../translate/queryAST/ast/fields/attribute-fields/DateTimeField";
+import { SpatialAttributeField } from "../../translate/queryAST/ast/fields/attribute-fields/SpatialAttributeField";
 import { Pagination } from "../../translate/queryAST/ast/pagination/Pagination";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
@@ -39,6 +40,7 @@ import type {
     GraphQLSortArgument,
     GraphQLTree,
     GraphQLTreeEdgeProperties,
+    GraphQLTreeLeafField,
     GraphQLTreeNode,
     GraphQLTreeReadOperation,
     GraphQLTreeSortElement,
@@ -177,6 +179,7 @@ export class ReadOperationFactory {
             Object.values(propertiesTree.fields).map((rawField) => {
                 const attribute = target.findAttribute(rawField.name);
                 if (attribute) {
+                    const field = rawField as GraphQLTreeLeafField;
                     const attributeAdapter = new AttributeAdapter(attribute);
                     if (attributeAdapter.typeHelper.isDateTime()) {
                         return new DateTimeField({
@@ -184,7 +187,17 @@ export class ReadOperationFactory {
                             attribute: attributeAdapter,
                         });
                     }
+                    if (attributeAdapter.typeHelper.isSpatial()) {
+                        /*   const typeName = attributeAdapter.typeHelper.isList()
+                            ? (attributeAdapter.type as ListType).ofType.name
+                            : attributeAdapter.type.name; */
 
+                        return new SpatialAttributeField({
+                            alias: rawField.alias,
+                            attribute: attributeAdapter,
+                            crs: Boolean(field?.fields?.crs),
+                        });
+                    }
                     return new AttributeField({
                         alias: rawField.alias,
                         attribute: attributeAdapter,
