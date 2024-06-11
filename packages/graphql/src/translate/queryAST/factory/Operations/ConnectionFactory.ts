@@ -181,13 +181,6 @@ export class ConnectionFactory {
         }
         const operation = new ConnectionReadOperation({ relationship, target, selection });
 
-        // const resolveTreeEdgeFields: Record<string, ResolveTree>
-        // = this.parseConnectionFields({
-        //     entityOrRel,
-        //     target,
-        //     resolveTree,
-        // });
-
         return this.hydrateConnectionOperationAST({
             relationship,
             target: target,
