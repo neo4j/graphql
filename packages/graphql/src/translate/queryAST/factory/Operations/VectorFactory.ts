@@ -52,22 +52,23 @@ export class VectorFactory {
 
         let scoreField: ScoreField | undefined;
         const vectorResultField = resolveTree.fieldsByTypeName[entity.operations.vectorTypeNames.result];
-        if (vectorResultField) {
-            const filteredResolveTree = findFieldsByNameInFieldsByTypeNameField(
-                vectorResultField,
-                entity.operations.rootTypeFieldNames.connection
-            );
-            const connectionFields = getFieldsByTypeName(
-                filteredResolveTree,
-                entity.operations.vectorTypeNames.connection
-            );
-            const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(connectionFields, "edges");
-            const edgeFields = getFieldsByTypeName(filteredResolveTreeEdges, entity.operations.vectorTypeNames.edge);
-            const scoreFields = findFieldsByNameInFieldsByTypeNameField(edgeFields, "score");
-            // We only care about the first score field
-            if (scoreFields.length > 0 && context.vector) {
-                scoreField = this.createVectorScoreField(scoreFields[0]!, context.vector.scoreVariable);
-            }
+        if (!vectorResultField) {
+            throw new Error("Vector result field not found");
+        }
+
+        const filteredResolveTree = findFieldsByNameInFieldsByTypeNameField(
+            vectorResultField,
+            entity.operations.rootTypeFieldNames.connection
+        );
+
+        const connectionFields = getFieldsByTypeName(filteredResolveTree, entity.operations.vectorTypeNames.connection);
+        const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(connectionFields, "edges");
+        const edgeFields = getFieldsByTypeName(filteredResolveTreeEdges, entity.operations.vectorTypeNames.edge);
+        const scoreFields = findFieldsByNameInFieldsByTypeNameField(edgeFields, "score");
+
+        // We only care about the first score field
+        if (scoreFields.length > 0 && context.vector) {
+            scoreField = this.createVectorScoreField(scoreFields[0]!, context.vector.scoreVariable);
         }
 
         const operation = new VectorOperation({
@@ -76,12 +77,18 @@ export class VectorFactory {
             selection: this.getVectorSelection(entity, context),
         });
 
+        const concreteEdgeFields = getFieldsByTypeName(
+            filteredResolveTreeEdges,
+            entity.operations.vectorTypeNames.edge
+        );
+
         this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
             target: entity,
-            resolveTree,
+            resolveTree: filteredResolveTree[0]!,
             context,
             operation,
             whereArgs: resolveTreeWhere,
+            resolveTreeEdgeFields: concreteEdgeFields,
         });
 
         return operation;

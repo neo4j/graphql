@@ -104,8 +104,23 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
-    protected getConnectionVariables(_context: QueryASTContext): Cypher.Variable[] {
-        return [new Cypher.NamedVariable("edges")];
+    protected getWithCollectEdgesAndTotalCount(
+        nestedContext: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        totalCount: Cypher.Variable
+    ): Cypher.With {
+        const nodeAndRelationshipMap = new Cypher.Map({
+            node: nestedContext.target,
+        });
+
+        if (nestedContext.relationship) {
+            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
+        }
+
+        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
+            Cypher.size(edgesVar),
+            totalCount,
+        ]);
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -151,19 +166,11 @@ export class ConnectionReadOperation extends Operation {
         } else {
             this.addFiltersToClause(selectionClause, nestedContext);
         }
-
-        const nodeAndRelationshipMap = new Cypher.Map({
-            node: nestedContext.target,
-        });
-
-        if (nestedContext.relationship) {
-            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
-        }
-
-        const withCollectEdgesAndTotalCount = new Cypher.With("*", [
-            Cypher.collect(nodeAndRelationshipMap),
+        const withCollectEdgesAndTotalCount = this.getWithCollectEdgesAndTotalCount(
+            nestedContext,
             edgesVar,
-        ]).with(...this.getConnectionVariables(context), [Cypher.size(edgesVar), totalCount]);
+            totalCount
+        );
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
@@ -201,6 +208,23 @@ export class ConnectionReadOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
+    protected getUnwindClause(
+        context: QueryASTContext<Cypher.Node>,
+        edgeVar: Cypher.Variable,
+        edgesVar: Cypher.Variable
+    ): Cypher.With {
+        let unwindClause: Cypher.With;
+        if (context.relationship) {
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
+                [edgeVar.property("node"), context.target],
+                [edgeVar.property("relationship"), context.relationship]
+            );
+        } else {
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
+        }
+        return unwindClause;
+    }
+
     private createUnwindAndProjectionSubquery(
         context: QueryASTContext<Cypher.Node>,
         edgesVar: Cypher.Variable,
@@ -209,18 +233,7 @@ export class ConnectionReadOperation extends Operation {
         const edgeVar = new Cypher.NamedVariable("edge");
         const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
 
-        let unwindClause: Cypher.With;
-        if (context.relationship) {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
-                [edgeVar.property("node"), context.target],
-                [edgeVar.property("relationship"), context.relationship]
-            );
-        } else {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(...this.getConnectionVariables(context), [
-                edgeVar.property("node"),
-                context.target,
-            ]);
-        }
+        const unwindClause = this.getUnwindClause(context, edgeVar, edgesVar);
 
         const edgeProjectionMap = this.createProjectionMapForEdge(context);
 
@@ -234,7 +247,7 @@ export class ConnectionReadOperation extends Operation {
                 ...postPaginationSubqueries,
                 new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
             )
-        ).importWith(...this.getConnectionVariables(context));
+        ).importWith(edgesVar);
     }
 
     protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {

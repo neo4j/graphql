@@ -284,6 +284,7 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         operation: T;
         whereArgs: Record<string, any>;
+        resolveTreeEdgeFields: Record<string, ResolveTree>;
     }): T {
         return this.connectionFactory.hydrateConnectionOperationAST(arg);
     }
