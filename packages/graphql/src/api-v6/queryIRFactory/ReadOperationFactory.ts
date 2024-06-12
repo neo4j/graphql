@@ -188,10 +188,6 @@ export class ReadOperationFactory {
                         });
                     }
                     if (attributeAdapter.typeHelper.isSpatial()) {
-                        /*   const typeName = attributeAdapter.typeHelper.isList()
-                            ? (attributeAdapter.type as ListType).ofType.name
-                            : attributeAdapter.type.name; */
-
                         return new SpatialAttributeField({
                             alias: rawField.alias,
                             attribute: attributeAdapter,

@@ -111,13 +111,7 @@ export interface GraphQLTreeEdgeProperties extends GraphQLTreeElement {
     fields: Record<string, GraphQLTreeLeafField>;
 }
 
-/* export interface GraphQLTreeLeafField extends GraphQLTreeElement {
-    fields: undefined;
-    name: string;
-}
- */
-
-export type GraphQLTreeLeafField = GraphQLTreeScalarField | GraphQLTreePoint;
+export type GraphQLTreeLeafField = GraphQLTreeScalarField | GraphQLTreePoint | GraphQLTreeCartesianPoint;
 export interface GraphQLTreeScalarField extends GraphQLTreeElement {
     fields: undefined;
     name: string;
@@ -127,6 +121,17 @@ export interface GraphQLTreePoint extends GraphQLTreeElement {
         longitude: GraphQLTreeScalarField | undefined;
         latitude: GraphQLTreeScalarField | undefined;
         height: GraphQLTreeScalarField | undefined;
+        crs: GraphQLTreeScalarField | undefined;
+        srid: GraphQLTreeScalarField | undefined;
+    };
+    name: string;
+}
+
+export interface GraphQLTreeCartesianPoint extends GraphQLTreeElement {
+    fields: {
+        x: GraphQLTreeScalarField | undefined;
+        y: GraphQLTreeScalarField | undefined;
+        z: GraphQLTreeScalarField | undefined;
         crs: GraphQLTreeScalarField | undefined;
         srid: GraphQLTreeScalarField | undefined;
     };

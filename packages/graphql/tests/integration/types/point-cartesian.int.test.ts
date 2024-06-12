@@ -55,7 +55,6 @@ describe("CartesianPoint", () => {
                             x
                             y
                             z
-                            crs
                         }
                     }
                 }

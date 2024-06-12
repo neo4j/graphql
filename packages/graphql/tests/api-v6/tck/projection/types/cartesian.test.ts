@@ -20,7 +20,7 @@
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../../tck/utils/tck-test-utils";
 
-describe("Point projection", () => {
+describe("Cartesian projection", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
@@ -28,7 +28,7 @@ describe("Point projection", () => {
         typeDefs = /* GraphQL */ `
             type Location @node {
                 id: String
-                value: Point
+                value: CartesianPoint
             }
         `;
 
@@ -45,9 +45,9 @@ describe("Point projection", () => {
                         edges {
                             node {
                                 value {
-                                    longitude
-                                    latitude
-                                    height
+                                    x
+                                    y
+                                    z
                                 }
                             }
                         }
@@ -85,9 +85,9 @@ describe("Point projection", () => {
                         edges {
                             node {
                                 value {
-                                    longitude
-                                    latitude
-                                    height
+                                    x
+                                    y
+                                    z
                                     crs
                                 }
                             }
@@ -126,9 +126,9 @@ describe("Point projection", () => {
                         edges {
                             node {
                                 value {
-                                    longitude
-                                    latitude
-                                    height
+                                    x
+                                    y
+                                    z
                                     srid
                                 }
                             }

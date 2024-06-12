@@ -70,6 +70,12 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
+            input CartesianPointDistance {
+              distance: Float!
+              point: CartesianPointInput!
+            }
+
             \\"\\"\\"Input type for a cartesian point\\"\\"\\"
             input CartesianPointInput {
               x: Float!
@@ -81,8 +87,13 @@ describe("Spatial Types", () => {
               AND: [CartesianPointWhere!]
               NOT: CartesianPointWhere
               OR: [CartesianPointWhere!]
-              distance: CartesianPointInput
+              distance: CartesianPointDistance
+              equals: CartesianPointInput
+              gt: CartesianPointDistance
+              gte: CartesianPointDistance
               in: [CartesianPointInput!]
+              lt: CartesianPointDistance
+              lte: CartesianPointDistance
             }
 
             type NodeType {

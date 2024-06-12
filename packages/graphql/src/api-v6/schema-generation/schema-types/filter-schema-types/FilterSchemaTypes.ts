@@ -199,18 +199,16 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
     private createSpatialType(type: Neo4jSpatialType, isList: boolean): InputTypeComposer {
         switch (type.name) {
             case Neo4jGraphQLSpatialType.CartesianPoint: {
-                /* if (isList) {
-                    const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.filters.getCartesianPointListWhere(isNullable);
-                } */
                 if (isList) {
-                    throw new Error("Not Implemented");
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getCartesianListWhere(isNullable);
                 }
                 return this.schemaTypes.staticTypes.filters.cartesianPointWhere;
             }
             case Neo4jGraphQLSpatialType.Point: {
                 if (isList) {
-                    throw new Error("Not Implemented");
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getPointListWhere(isNullable);
                 }
                 return this.schemaTypes.staticTypes.filters.pointWhere;
             }

@@ -32,6 +32,7 @@ import {
 } from "../../../graphql/scalars";
 import type { SchemaBuilder } from "../SchemaBuilder";
 
+import { CartesianPointDistance } from "../../../graphql/input-objects/CartesianPointDistance";
 import { CartesianPointInput } from "../../../graphql/input-objects/CartesianPointInput";
 import { PointDistance } from "../../../graphql/input-objects/PointDistance";
 import { PointInput } from "../../../graphql/input-objects/PointInput";
@@ -302,23 +303,8 @@ class StaticFilterTypes {
     }
 
     public getBooleanListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: toGraphQLList(toGraphQLNonNull(GraphQLBoolean)),
-                    },
-                };
-            });
-        }
-
-        return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
-            return {
-                fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLBoolean)),
-                },
-            };
-        });
+        //  TODO: verify correctness of this
+        return this.getStringListWhere(nullable);
     }
 
     public get booleanWhere(): InputTypeComposer {
@@ -461,34 +447,77 @@ class StaticFilterTypes {
         });
     }
 
-    // TODO: Discuss, distance operator.
-    public get cartesianPointWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("CartesianPointWhere", (itc) => {
+    public getCartesianListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhereNullable", () => {
+                return {
+                    fields: {
+                        equals: toGraphQLList(CartesianPointInput),
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhere", () => {
             return {
                 fields: {
-                    ...this.createBooleanOperators(itc),
-                    //...this.createNumericOperators(CartesianPointDistance), // commented out as equals is of different type than the rest
-                    distance: CartesianPointInput,
-                    in: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
+                    equals: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
                 },
             };
         });
     }
 
-    // TODO: Discuss, distance operator.
+    public getPointListWhere(nullable: boolean): InputTypeComposer {
+        if (nullable) {
+            return this.schemaBuilder.getOrCreateInputType("PointListPointWhereNullable", () => {
+                return {
+                    fields: {
+                        equals: toGraphQLList(PointInput),
+                    },
+                };
+            });
+        }
+
+        return this.schemaBuilder.getOrCreateInputType("PointListPointWhere", () => {
+            return {
+                fields: {
+                    equals: toGraphQLList(toGraphQLNonNull(PointInput)),
+                },
+            };
+        });
+    }
+
+    // TODO: Discuss distance operator and SpatialOperators in general as the API it may be improved.
+    public get cartesianPointWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("CartesianPointWhere", (itc) => {
+            return {
+                fields: {
+                    ...this.createBooleanOperators(itc),
+                    equals: CartesianPointInput,
+                    in: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
+                    lt: CartesianPointDistance,
+                    lte: CartesianPointDistance,
+                    gt: CartesianPointDistance,
+                    gte: CartesianPointDistance,
+                    distance: CartesianPointDistance,
+                },
+            };
+        });
+    }
+
+    // TODO: Discuss distance operator and SpatialOperators in general as the API it may be improved.
     public get pointWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("PointWhere", (itc) => {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    //...this.createNumericOperators(PointDistance), // commented out as equals is of different type than the rest
                     equals: PointInput,
+                    in: toGraphQLList(toGraphQLNonNull(PointInput)),
                     lt: PointDistance,
                     lte: PointDistance,
                     gt: PointDistance,
                     gte: PointDistance,
                     distance: PointDistance,
-                    in: toGraphQLList(toGraphQLNonNull(PointInput)),
                 },
             };
         });
