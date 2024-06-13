@@ -256,8 +256,11 @@ export type CallbackOperations = "CREATE" | "UPDATE";
   Object keys and enum values map to values at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options
 */
 export interface CypherQueryOptions {
-    runtime?: "interpreted" | "slotted" | "pipelined";
+    runtime?: "interpreted" | "slotted" | "pipelined" | "parallel";
     planner?: "cost" | "idp" | "dp";
+    /**
+     * @deprecated The Cypher query option `connectComponentsPlanner` is deprecated and will be removed without a replacement. https://neo4j.com/docs/cypher-manual/current/planning-and-tuning/query-tuning/#cypher-connect-components-planner
+     */
     connectComponentsPlanner?: "greedy" | "idp";
     updateStrategy?: "default" | "eager";
     expressionEngine?: "default" | "interpreted" | "compiled";
