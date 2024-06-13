@@ -5688,7 +5688,7 @@ __metadata:
     "@graphql-tools/wrap": "npm:^10.0.0"
     "@neo4j/graphql": "npm:^5.4.2"
     fork-ts-checker-webpack-plugin: "npm:9.0.2"
-    graphql: "npm:16.8.1"
+    graphql: "npm:16.8.2"
     graphql-tag: "npm:^2.12.6"
     neo4j-driver: "npm:^5.8.0"
     ts-loader: "npm:9.5.1"
@@ -11159,14 +11159,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.8.1":
-  version: 16.8.1
-  resolution: "graphql@npm:16.8.1"
-  checksum: 10c0/129c318156b466f440914de80dbf7bc67d17f776f2a088a40cb0da611d19a97c224b1c6d2b13cbcbc6e5776e45ed7468b8432f9c3536724e079b44f1a3d57a8a
-  languageName: node
-  linkType: hard
-
-"graphql@npm:^16.6.0, graphql@npm:^16.8.0":
+"graphql@npm:16.8.2, graphql@npm:^16.6.0, graphql@npm:^16.8.0":
   version: 16.8.2
   resolution: "graphql@npm:16.8.2"
   checksum: 10c0/921a6321c4efe2540fd5a752093c1542f96cd10b3907b1a8044819f054e6e8a6bca78d93a8eada065a07dfd4e53d89eef99ebdced2c372453e05480e12d8652e
@@ -15358,7 +15351,7 @@ __metadata:
     eslint-plugin-jsx-a11y: "npm:6.8.0"
     eslint-plugin-react: "npm:7.34.2"
     eslint-plugin-simple-import-sort: "npm:12.1.0"
-    graphql: "npm:16.8.1"
+    graphql: "npm:16.8.2"
     husky: "npm:9.0.11"
     jest: "npm:29.7.0"
     lint-staged: "npm:15.2.7"
