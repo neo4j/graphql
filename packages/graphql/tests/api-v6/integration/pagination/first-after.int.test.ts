@@ -48,18 +48,24 @@ describe("Pagination with first and after", () => {
         await testHelper.close();
     });
 
-    test("Get movies with first and after argument", async () => {
-        const afterCursor = offsetToCursor(2);
+    test.only("Get movies with first and after argument", async () => {
+        const afterCursor = offsetToCursor(4);
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(first: 2, after: "${afterCursor}") {
+                    connection(first: 1, after: "${afterCursor}", sort: { edges: { node: { title: ASC } } }) {
                         edges {
                             node {
                                 title
                             }
                         }
-
+                        pageInfo {
+                            hasPreviousPage
+                            hasNextPage
+                            startCursor
+                            endCursor
+                        }
+                        
                     }
                 }
             }
@@ -70,7 +76,19 @@ describe("Pagination with first and after", () => {
         expect(gqlResult.data).toEqual({
             [Movie.plural]: {
                 connection: {
-                    edges: expect.toBeArrayOfSize(2),
+                    edges: [
+                        {
+                            node: {
+                                title: "The Matrix 5",
+                            },
+                        },
+                    ],
+                    pageInfo: {
+                        endCursor: offsetToCursor(5),
+                        hasNextPage: false,
+                        hasPreviousPage: true,
+                        startCursor: offsetToCursor(5),
+                    },
                 },
             },
         });
