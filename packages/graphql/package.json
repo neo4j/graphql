@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "5.4.2",
+    "version": "5.4.3",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
