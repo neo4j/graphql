@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { GraphQLScalarType } from "graphql";
 import { GraphQLInt, GraphQLString } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { connectionOperationResolver } from "../../resolvers/connection-operation-resolver";
@@ -46,22 +47,18 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
 
     public get connectionOperation(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connectionOperation, () => {
-            const args = {
+            const args: { first: GraphQLScalarType; after: GraphQLScalarType; sort?: InputTypeComposer } = {
                 first: GraphQLInt,
                 after: GraphQLString,
             };
             if (this.isSortable()) {
-                args["sort"] = this.connectionSort;
+                args.sort = this.connectionSort;
             }
             return {
                 fields: {
                     connection: {
                         type: this.connection,
-                        args: {
-                            sort: this.connectionSort,
-                            first: GraphQLInt,
-                            after: GraphQLString,
-                        },
+                        args: args,
                         resolve: connectionOperationResolver,
                     },
                 },

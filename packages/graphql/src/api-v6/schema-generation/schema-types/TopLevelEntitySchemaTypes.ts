@@ -30,7 +30,6 @@ import {
     ScalarType,
 } from "../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-//import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
 import { idResolver } from "../../../schema/resolvers/field/id";
 import { numericalResolver } from "../../../schema/resolvers/field/numerical";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -130,7 +129,9 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
     public get nodeWhere(): InputTypeComposer {
         return this.filterSchemaTypes.nodeWhere;
     }
-
+    /**
+     * Used to avoid creating empty sort input which make the generated schema invalid
+     **/
     public isSortable(): boolean {
         return this.getSortableFields().length > 0;
     }

@@ -18,10 +18,8 @@
  */
 
 import type {
-    GraphQLInputObjectType,
     GraphQLInputType,
     GraphQLList,
-    GraphQLNamedInputType,
     GraphQLNonNull,
     GraphQLObjectType,
     GraphQLScalarType,
