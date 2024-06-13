@@ -91,8 +91,10 @@ describe("Simple Aura-API", () => {
             }
 
             type PageInfo {
+              endCursor: String
               hasNextPage: Boolean
               hasPreviousPage: Boolean
+              startCursor: String
             }
 
             type Query {
@@ -239,8 +241,10 @@ describe("Simple Aura-API", () => {
             }
 
             type PageInfo {
+              endCursor: String
               hasNextPage: Boolean
               hasPreviousPage: Boolean
+              startCursor: String
             }
 
             type Query {
@@ -337,8 +341,10 @@ describe("Simple Aura-API", () => {
             }
 
             type PageInfo {
+              endCursor: String
               hasNextPage: Boolean
               hasPreviousPage: Boolean
+              startCursor: String
             }
 
             type Query {

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { cursorToOffset } from "graphql-relay";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
@@ -37,6 +38,7 @@ import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { FilterFactory } from "./FilterFactory";
 import type {
+    GraphQLConnectionArgs,
     GraphQLSortArgument,
     GraphQLTree,
     GraphQLTreeEdgeProperties,
@@ -89,9 +91,7 @@ export class ReadOperationFactory {
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const sortArgument = connectionTree.args.sort;
-        const firstArgument = connectionTree.args.first;
-
-        const pagination = firstArgument ? new Pagination({ limit: firstArgument }) : undefined;
+        const pagination = this.getPagination(connectionTree.args);
 
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({
@@ -138,15 +138,14 @@ export class ReadOperationFactory {
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const propertiesResolveTree = connectionTree.fields.edges?.fields.properties;
         const relTarget = relationshipAdapter.target.entity;
-        const nodeFields = this.getNodeFields(relTarget, nodeResolveTree);
+
         const edgeFields = this.getAttributeFields(relationship, propertiesResolveTree);
 
         const sortArgument = connectionTree.args.sort;
+        const pagination = this.getPagination(connectionTree.args);
+
+        const nodeFields = this.getNodeFields(relTarget, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({ entity: relTarget, relationship, sortArgument });
-
-        const firstArgument = connectionTree.args.first;
-
-        const pagination = firstArgument ? new Pagination({ limit: firstArgument }) : undefined;
 
         return new V6ReadOperation({
             target: relationshipAdapter.target,
@@ -163,6 +162,15 @@ export class ReadOperationFactory {
             }),
             pagination,
         });
+    }
+
+    private getPagination(connectionTreeArgs: GraphQLConnectionArgs): Pagination | undefined {
+        const firstArgument = connectionTreeArgs.first;
+        const afterArgument = connectionTreeArgs.after ? cursorToOffset(connectionTreeArgs.after) : undefined;
+        const hasPagination = firstArgument ?? afterArgument;
+        if (hasPagination) {
+            return new Pagination({ limit: firstArgument, skip: afterArgument });
+        }
     }
 
     private getAttributeFields(target: ConcreteEntity, propertiesTree: GraphQLTreeNode | undefined): Field[];

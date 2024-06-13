@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { offsetToCursor } from "graphql-relay";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
@@ -254,7 +255,61 @@ describe("Query aliasing", () => {
         });
     });
 
-    // Check Original tests: connection/alias.int.test.ts
-    test.todo("should alias pageInfo");
-    test.todo("should alias cursor");
+    test("Should alias pageInfo and cursor", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural} {
+                    connection {
+                        info: pageInfo {
+                            previous: hasPreviousPage
+                            next: hasNextPage
+                            start: startCursor
+                            end: endCursor
+                        }
+                        info2: pageInfo {
+                            hasPreviousPage
+                            hasNextPage
+                            startCursor
+                            endCursor
+                        }
+                        edges {
+                            c: cursor
+                            c2: cursor
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    info: {
+                        previous: false,
+                        next: false,
+                        start: offsetToCursor(0),
+                        end: offsetToCursor(1),
+                    },
+                    info2: {
+                        hasPreviousPage: false,
+                        hasNextPage: false,
+                        startCursor: offsetToCursor(0),
+                        endCursor: offsetToCursor(1),
+                    },
+                    edges: [
+                        {
+                            c: offsetToCursor(0),
+                            c2: offsetToCursor(0),
+                        },
+                        {
+                            c: offsetToCursor(1),
+                            c2: offsetToCursor(1),
+                        },
+                    ],
+                },
+            },
+        });
+    });
 });

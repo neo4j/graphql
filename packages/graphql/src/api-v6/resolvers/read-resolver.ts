@@ -22,8 +22,8 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { execute } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { parseResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
 import { translateReadOperation } from "../translators/translate-read-operation";
-import { mapConnectionRecord } from "./mappers/connection-operation-mapper";
 
 export function generateReadResolver({ entity }: { entity: ConcreteEntity }) {
     return async function resolve(
@@ -35,8 +35,11 @@ export function generateReadResolver({ entity }: { entity: ConcreteEntity }) {
         const resolveTree = getNeo4jResolveTree(info, { args });
         context.resolveTree = resolveTree;
 
+        const graphQLTree = parseResolveInfoTree({ resolveTree: context.resolveTree, entity });
+
         const { cypher, params } = translateReadOperation({
             context: context,
+            graphQLTree,
             entity,
         });
         const executeResult = await execute({
@@ -47,6 +50,6 @@ export function generateReadResolver({ entity }: { entity: ConcreteEntity }) {
             info,
         });
 
-        return mapConnectionRecord(executeResult);
+        return executeResult.records[0]?.this;
     };
 }
