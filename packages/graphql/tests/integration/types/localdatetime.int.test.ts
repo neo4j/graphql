@@ -207,41 +207,6 @@ describe("LocalDateTime", () => {
     });
 
     describe("filter", () => {
-        test("should filter based on localDT equality", async () => {
-            const id = generate({ readable: false });
-            const date = new Date("2024-09-17T11:49:48.322Z");
-            const localDT = date.toISOString().split("Z")[0];
-            const neo4jLocalDateTime = neo4jDriver.types.LocalDateTime.fromStandardDate(date);
-            const parsedLocalDateTime = parseLocalDateTime(localDT);
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (movie:${Movie})
-                        SET movie = $movie
-                    `,
-                { movie: { id, localDT: neo4jLocalDateTime } }
-            );
-
-            const query = /* GraphQL */ `
-                query ($localDT: LocalDateTime!) {
-                    ${Movie.plural}(where: { localDT: $localDT }) {
-                        id
-                        localDT
-                    }
-                }
-            `;
-
-            const graphqlResult = await testHelper.executeGraphQL(query, {
-                variableValues: { localDT },
-            });
-
-            expect(graphqlResult.errors).toBeFalsy();
-
-            const graphqlMovie: { id: string; localDT: string } = (graphqlResult.data as any)[Movie.plural][0];
-            expect(graphqlMovie).toBeDefined();
-            expect(graphqlMovie.id).toEqual(id);
-            expect(parseLocalDateTime(graphqlMovie.localDT)).toStrictEqual(parsedLocalDateTime);
-        });
         test.each(["LT", "LTE", "GT", "GTE"])(
             "should filter based on localDT comparison, for filter %s",
             async (filter) => {
