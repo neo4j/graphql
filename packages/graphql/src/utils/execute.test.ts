@@ -18,10 +18,10 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import execute from "./execute";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { Executor } from "../classes/Executor";
+import execute from "./execute";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {
@@ -189,7 +189,7 @@ describe("execute", () => {
         `);
 
             const expectedCypher = trimmer(`
-            CYPHER runtime=interpreted planner=cost connectComponentsPlanner=greedy updateStrategy=default expressionEngine=compiled operatorEngine=compiled interpretedPipesFallback=all replan=default
+            CYPHER runtime=interpreted planner=cost updateStrategy=default expressionEngine=compiled operatorEngine=compiled interpretedPipesFallback=all replan=default
             CREATE (u:User {title: $title})
             RETURN u { .title } as u
         `);
@@ -257,7 +257,6 @@ describe("execute", () => {
                         cypherQueryOptions: {
                             runtime: "interpreted",
                             planner: "cost",
-                            connectComponentsPlanner: "greedy",
                             updateStrategy: "default",
                             expressionEngine: "compiled",
                             operatorEngine: "compiled",
