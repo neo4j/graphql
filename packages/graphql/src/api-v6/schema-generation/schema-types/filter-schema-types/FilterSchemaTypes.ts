@@ -96,10 +96,6 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
     private createScalarType(type: ScalarType, isList: boolean): InputTypeComposer {
         switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
-                if (isList) {
-                    const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.filters.getBooleanListWhere(isNullable);
-                }
                 return this.schemaTypes.staticTypes.filters.booleanWhere;
             }
 

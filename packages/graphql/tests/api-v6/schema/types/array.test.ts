@@ -131,6 +131,13 @@ describe("Scalars", () => {
               equals: [BigInt]
             }
 
+            input BooleanWhere {
+              AND: [BooleanWhere!]
+              NOT: BooleanWhere
+              OR: [BooleanWhere!]
+              equals: Boolean
+            }
+
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
@@ -321,8 +328,8 @@ describe("Scalars", () => {
               OR: [NodeTypeWhere!]
               bigIntList: BigIntListWhere
               bigIntListNullable: BigIntListWhereNullable
-              booleanList: StringListWhere
-              booleanListNullable: StringListWhereNullable
+              booleanList: BooleanWhere
+              booleanListNullable: BooleanWhere
               dateList: DateListWhere
               dateListNullable: DateListWhereNullable
               dateTimeList: DateTimeListWhere
@@ -446,8 +453,8 @@ describe("Scalars", () => {
               OR: [RelatedNodePropertiesWhere!]
               bigIntList: BigIntListWhere
               bigIntListNullable: BigIntListWhereNullable
-              booleanList: StringListWhere
-              booleanListNullable: StringListWhereNullable
+              booleanList: BooleanWhere
+              booleanListNullable: BooleanWhere
               dateList: DateListWhere
               dateListNullable: DateListWhereNullable
               dateTimeList: DateTimeListWhere
@@ -476,8 +483,8 @@ describe("Scalars", () => {
               OR: [RelatedNodeWhere!]
               bigIntList: BigIntListWhere
               bigIntListNullable: BigIntListWhereNullable
-              booleanList: StringListWhere
-              booleanListNullable: StringListWhereNullable
+              booleanList: BooleanWhere
+              booleanListNullable: BooleanWhere
               dateList: DateListWhere
               dateListNullable: DateListWhereNullable
               dateTimeList: DateTimeListWhere

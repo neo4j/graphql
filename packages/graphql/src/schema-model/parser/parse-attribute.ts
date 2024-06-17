@@ -100,10 +100,8 @@ function parseTypeNode(
                 return new ScalarType(typeNode.name.value, isRequired);
             } else if (isPoint(typeNode.name.value)) {
                 return new Neo4jSpatialType(typeNode.name.value, isRequired);
-                // return new Neo4jPointType(isRequired);
             } else if (isCartesianPoint(typeNode.name.value)) {
                 return new Neo4jSpatialType(typeNode.name.value, isRequired);
-                // return new Neo4jCartesianPointType(isRequired);
             } else if (isEnum(definitionCollection, typeNode.name.value)) {
                 return new EnumType(typeNode.name.value, isRequired);
             } else if (isUserScalar(definitionCollection, typeNode.name.value)) {
