@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import neo4jDriver from "neo4j-driver";
+import type neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
@@ -125,45 +125,6 @@ describe("Date", () => {
 
             movie.dates.forEach((dt) => {
                 expect(dt.toString()).toEqual(date.toISOString().split("T")[0]);
-            });
-        });
-    });
-
-    describe("find", () => {
-        test("should find a movie (with a Date)", async () => {
-            const typeDefs = /* GraphQL */ `
-                type ${Movie.name} {
-                    date: Date
-                }
-            `;
-
-            const date = new Date();
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const query = /* GraphQL */ `
-                query {
-                    ${Movie.plural}(where: { date: "${date.toISOString()}" }) {
-                        date
-                    }
-                }
-            `;
-
-            const nDate = neo4jDriver.types.Date.fromStandardDate(date);
-
-            await testHelper.executeCypher(
-                `
-                   CREATE (m:${Movie.name})
-                   SET m.date = $nDate
-               `,
-                { nDate }
-            );
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)[Movie.plural][0]).toEqual({
-                date: date.toISOString().split("T")[0],
             });
         });
     });

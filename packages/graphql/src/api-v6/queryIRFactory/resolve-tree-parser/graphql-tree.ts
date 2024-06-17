@@ -32,23 +32,23 @@ type LogicalOperation<T> = {
     NOT?: LogicalOperation<T>;
 } & T;
 
-export type StringFilters = {
+export type StringFilters = LogicalOperation<{
     equals?: string;
     in?: string[];
     matches?: string;
     contains?: string;
     startsWith?: string;
     endsWith?: string;
-};
+}>;
 
-export type NumberFilters = {
+export type NumberFilters = LogicalOperation<{
     equals?: string;
     in?: string[];
     lt?: string;
     lte?: string;
     gt?: string;
     gte?: string;
-};
+}>;
 
 export type RelationshipFilters = {
     edges?: {
@@ -111,8 +111,30 @@ export interface GraphQLTreeEdgeProperties extends GraphQLTreeElement {
     fields: Record<string, GraphQLTreeLeafField>;
 }
 
-export interface GraphQLTreeLeafField extends GraphQLTreeElement {
+export type GraphQLTreeLeafField = GraphQLTreeScalarField | GraphQLTreePoint | GraphQLTreeCartesianPoint;
+export interface GraphQLTreeScalarField extends GraphQLTreeElement {
     fields: undefined;
+    name: string;
+}
+export interface GraphQLTreePoint extends GraphQLTreeElement {
+    fields: {
+        longitude: GraphQLTreeScalarField | undefined;
+        latitude: GraphQLTreeScalarField | undefined;
+        height: GraphQLTreeScalarField | undefined;
+        crs: GraphQLTreeScalarField | undefined;
+        srid: GraphQLTreeScalarField | undefined;
+    };
+    name: string;
+}
+
+export interface GraphQLTreeCartesianPoint extends GraphQLTreeElement {
+    fields: {
+        x: GraphQLTreeScalarField | undefined;
+        y: GraphQLTreeScalarField | undefined;
+        z: GraphQLTreeScalarField | undefined;
+        crs: GraphQLTreeScalarField | undefined;
+        srid: GraphQLTreeScalarField | undefined;
+    };
     name: string;
 }
 

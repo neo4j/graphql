@@ -37,7 +37,7 @@ import type { AggregationField } from "../ast/fields/aggregation-fields/Aggregat
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
-import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
+import { SpatialAttributeField } from "../ast/fields/attribute-fields/SpatialAttributeField";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
@@ -213,12 +213,13 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.typeHelper.isPoint() || attribute.typeHelper.isCartesianPoint()) {
+        if (attribute.typeHelper.isSpatial()) {
             const typeName = attribute.typeHelper.isList()
                 ? (attribute.type as ListType).ofType.name
                 : attribute.type.name;
             const { crs } = field.fieldsByTypeName[typeName] as any;
-            return new PointAttributeField({
+      
+            return new SpatialAttributeField({
                 attribute,
                 alias: field.alias,
                 crs: Boolean(crs),

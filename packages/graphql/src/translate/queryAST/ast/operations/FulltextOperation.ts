@@ -34,6 +34,7 @@ export type FulltextOptions = {
     score: Cypher.Variable;
 };
 
+
 export class FulltextOperation extends ReadOperation {
     private scoreField: FulltextScoreField | undefined;
 

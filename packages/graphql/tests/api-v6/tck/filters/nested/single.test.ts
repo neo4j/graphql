@@ -65,7 +65,6 @@ describe("Nested Filters with single", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE single(this1 IN [(this0)<-[this2:ACTED_IN]-(this1:Actor) WHERE this1.name = $param0 | 1] WHERE true)
@@ -108,7 +107,6 @@ describe("Nested Filters with single", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE single(this2 IN [(this0)<-[this1:ACTED_IN]-(this2:Actor) WHERE this1.year = $param0 | 1] WHERE true)
@@ -167,7 +165,6 @@ describe("Nested Filters with single", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE single(this1 IN [(this0)<-[this2:ACTED_IN]-(this1:Actor) WHERE (this1.name = $param0 OR this1.name ENDS WITH $param1) | 1] WHERE true)

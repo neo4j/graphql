@@ -31,12 +31,13 @@ describe("Numeric fields", () => {
             type ${Movie} @node {
                 year: Int!
                 rating: Float!
+                viewings: BigInt!
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (movie:${Movie} {year: 1999, rating: 4.0})
+            CREATE (movie:${Movie} {year: 1999, rating: 4.0, viewings: 4294967297 })
         `);
     });
 
@@ -53,6 +54,7 @@ describe("Numeric fields", () => {
                             node {
                                 year
                                 rating
+                                viewings
                             }
                         }
 
@@ -71,6 +73,7 @@ describe("Numeric fields", () => {
                             node: {
                                 year: 1999,
                                 rating: 4.0,
+                                viewings: "4294967297",
                             },
                         },
                     ],

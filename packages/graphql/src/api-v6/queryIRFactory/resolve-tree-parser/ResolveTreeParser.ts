@@ -18,6 +18,10 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
+import { Point } from "../../../graphql/objects/Point";
+import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { findFieldByName } from "./find-field-by-name";
@@ -26,12 +30,15 @@ import type {
     GraphQLReadOperationArgs,
     GraphQLSortArgument,
     GraphQLSortEdgeArgument,
+    GraphQLTreeCartesianPoint,
     GraphQLTreeConnection,
     GraphQLTreeEdge,
     GraphQLTreeEdgeProperties,
     GraphQLTreeLeafField,
     GraphQLTreeNode,
+    GraphQLTreePoint,
     GraphQLTreeReadOperation,
+    GraphQLTreeScalarField,
     GraphQLTreeSortElement,
 } from "./graphql-tree";
 
@@ -75,8 +82,17 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     protected parseAttributeField(
         resolveTree: ResolveTree,
         entity: ConcreteEntity | Relationship
-    ): GraphQLTreeLeafField | undefined {
+    ): GraphQLTreeLeafField | GraphQLTreePoint | undefined {
         if (entity.hasAttribute(resolveTree.name)) {
+            const attribute = entity.findAttribute(resolveTree.name) as Attribute;
+            const wrappedTypeName =
+                attribute.type instanceof ListType ? attribute.type.ofType.name : attribute.type.name;
+            if (wrappedTypeName === "Point") {
+                return this.parsePointField(resolveTree);
+            }
+            if (wrappedTypeName === "CartesianPoint") {
+                return this.parseCartesianPointField(resolveTree);
+            }
             return {
                 alias: resolveTree.alias,
                 args: resolveTree.args,
@@ -84,6 +100,48 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
                 fields: undefined,
             };
         }
+    }
+
+    private parsePointField(resolveTree: ResolveTree): GraphQLTreePoint {
+        const longitude = findFieldByName(resolveTree, Point.name, "longitude");
+        const latitude = findFieldByName(resolveTree, Point.name, "latitude");
+        const height = findFieldByName(resolveTree, Point.name, "height");
+        const crs = findFieldByName(resolveTree, Point.name, "crs");
+        const srid = findFieldByName(resolveTree, Point.name, "srid");
+
+        return {
+            alias: resolveTree.alias,
+            args: resolveTree.args,
+            name: resolveTree.name,
+            fields: {
+                longitude: resolveTreeToLeafField(longitude),
+                latitude: resolveTreeToLeafField(latitude),
+                height: resolveTreeToLeafField(height),
+                crs: resolveTreeToLeafField(crs),
+                srid: resolveTreeToLeafField(srid),
+            },
+        };
+    }
+
+    private parseCartesianPointField(resolveTree: ResolveTree): GraphQLTreeCartesianPoint {
+        const x = findFieldByName(resolveTree, CartesianPoint.name, "x");
+        const y = findFieldByName(resolveTree, CartesianPoint.name, "y");
+        const z = findFieldByName(resolveTree, CartesianPoint.name, "z");
+        const crs = findFieldByName(resolveTree, CartesianPoint.name, "crs");
+        const srid = findFieldByName(resolveTree, CartesianPoint.name, "srid");
+
+        return {
+            alias: resolveTree.alias,
+            args: resolveTree.args,
+            name: resolveTree.name,
+            fields: {
+                x: resolveTreeToLeafField(x),
+                y: resolveTreeToLeafField(y),
+                z: resolveTreeToLeafField(z),
+                crs: resolveTreeToLeafField(crs),
+                srid: resolveTreeToLeafField(srid),
+            },
+        };
     }
 
     private parseConnection(resolveTree: ResolveTree): GraphQLTreeConnection {
@@ -257,4 +315,16 @@ export class RelationshipResolveTreeParser extends ResolveTreeParser<Relationshi
         }
         return propertyFields;
     }
+}
+
+function resolveTreeToLeafField(resolveTree: ResolveTree | undefined): GraphQLTreeScalarField | undefined {
+    if (!resolveTree) {
+        return undefined;
+    }
+    return {
+        alias: resolveTree.alias,
+        args: resolveTree.args,
+        name: resolveTree.name,
+        fields: undefined,
+    };
 }

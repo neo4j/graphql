@@ -216,49 +216,6 @@ describe("Time", () => {
     });
 
     describe("filter", () => {
-        test("should filter based on time equality", async () => {
-            const typeDefs = /* GraphQL */ `
-                type ${Movie} {
-                    id: ID!
-                    time: Time!
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const id = generate({ readable: false });
-            const date = new Date("2024-02-17T11:49:48.322Z");
-            const time = date.toISOString().split("T")[1];
-            const neo4jTime = Time.fromStandardDate(date);
-            const parsedTime = parseTime(time);
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (movie:${Movie})
-                        SET movie = $movie
-                    `,
-                { movie: { id, time: neo4jTime } }
-            );
-
-            const query = /* GraphQL */ `
-                    query ($time: Time!) {
-                        ${Movie.plural}(where: { time: $time }) {
-                            id
-                            time
-                        }
-                    }
-                `;
-
-            const graphqlResult = await testHelper.executeGraphQL(query, { variableValues: { time } });
-
-            expect(graphqlResult.errors).toBeFalsy();
-
-            const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)[Movie.plural][0];
-            expect(graphqlMovie).toBeDefined();
-            expect(graphqlMovie.id).toEqual(id);
-            expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
-        });
-
         test.each(["LT", "LTE", "GT", "GTE"])(
             "should filter based on time comparison for filter: %s",
             async (filter) => {

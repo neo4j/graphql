@@ -33,7 +33,7 @@ describe("DateTime - Equals", () => {
         await testHelper.close();
     });
 
-    test("datetime equasl to ISO string", async () => {
+    test("datetime equals to ISO string", async () => {
         const typeDefs = /* GraphQL */ `
                 type ${Movie.name} @node {
                     title: String!

@@ -20,6 +20,7 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
+import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
 describe("Scalars", () => {
     test("should generate the right types for all the scalars", async () => {
@@ -35,21 +36,22 @@ describe("Scalars", () => {
                 idListNullable: [ID]
                 booleanList: [Boolean!]
                 booleanListNullable: [Boolean]
+                dateList: [Date!]
+                dateListNullable: [Date]
+                dateTimeList: [DateTime!]
+                dateTimeListNullable: [DateTime]
+                localDateTimeList: [LocalDateTime!]
+                localDateTimeListNullable: [LocalDateTime]
+                durationList: [Duration!]
+                durationListNullable: [Duration]
+                timeList: [Time!]
+                timeListNullable: [Time]
+                localTimeList: [LocalTime!]
+                localTimeListNullable: [LocalTime]
+                bigIntList: [BigInt!]
+                bigIntListNullable: [BigInt]
                 relatedNode: [RelatedNode!]!
                     @relationship(type: "RELATED_TO", direction: OUT, properties: "RelatedNodeProperties")
-            }
-
-            type RelatedNode @node {
-                stringList: [String!]
-                stringListNullable: [String]
-                intList: [Int!]
-                intListNullable: [Int]
-                floatList: [Float!]
-                floatListNullable: [Float]
-                idList: [ID!]
-                idListNullable: [ID]
-                booleanList: [Boolean!]
-                booleanListNullable: [Boolean]
             }
 
             type RelatedNodeProperties @relationshipProperties {
@@ -63,14 +65,110 @@ describe("Scalars", () => {
                 idListNullable: [ID]
                 booleanList: [Boolean!]
                 booleanListNullable: [Boolean]
+                dateList: [Date!]
+                dateListNullable: [Date]
+                dateTimeList: [DateTime!]
+                dateTimeListNullable: [DateTime]
+                localDateTimeList: [LocalDateTime!]
+                localDateTimeListNullable: [LocalDateTime]
+                durationList: [Duration!]
+                durationListNullable: [Duration]
+                timeList: [Time!]
+                timeListNullable: [Time]
+                localTimeList: [LocalTime!]
+                localTimeListNullable: [LocalTime]
+                bigIntList: [BigInt!]
+                bigIntListNullable: [BigInt]
+            }
+
+            type RelatedNode @node {
+                stringList: [String!]
+                stringListNullable: [String]
+                intList: [Int!]
+                intListNullable: [Int]
+                floatList: [Float!]
+                floatListNullable: [Float]
+                idList: [ID!]
+                idListNullable: [ID]
+                booleanList: [Boolean!]
+                booleanListNullable: [Boolean]
+                dateList: [Date!]
+                dateListNullable: [Date]
+                dateTimeList: [DateTime!]
+                dateTimeListNullable: [DateTime]
+                localDateTimeList: [LocalDateTime!]
+                localDateTimeListNullable: [LocalDateTime]
+                durationList: [Duration!]
+                durationListNullable: [Duration]
+                timeList: [Time!]
+                timeListNullable: [Time]
+                localTimeList: [LocalTime!]
+                localTimeListNullable: [LocalTime]
+                bigIntList: [BigInt!]
+                bigIntListNullable: [BigInt]
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
 
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getAuraSchema();
+        raiseOnInvalidSchema(schema);
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+            }
+
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
+            scalar BigInt
+
+            input BigIntListWhere {
+              equals: [BigInt!]
+            }
+
+            input BigIntListWhereNullable {
+              equals: [BigInt]
+            }
+
+            input BooleanWhere {
+              AND: [BooleanWhere!]
+              NOT: BooleanWhere
+              OR: [BooleanWhere!]
+              equals: Boolean
+            }
+
+            \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
+            scalar Date
+
+            input DateListWhere {
+              equals: [Date!]
+            }
+
+            input DateListWhereNullable {
+              equals: [Date]
+            }
+
+            \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
+            scalar DateTime
+
+            input DateTimeListWhere {
+              equals: [DateTime!]
+            }
+
+            input DateTimeListWhereNullable {
+              equals: [DateTime]
+            }
+
+            \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
+            scalar Duration
+
+            input DurationListWhere {
+              equals: [Duration!]
+            }
+
+            input DurationListWhereNullable {
+              equals: [Duration]
             }
 
             input FloatListWhere {
@@ -97,18 +195,56 @@ describe("Scalars", () => {
               equals: [Int]
             }
 
+            \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
+            scalar LocalDateTime
+
+            input LocalDateTimeListWhere {
+              equals: [LocalDateTime!]
+            }
+
+            input LocalDateTimeListWhereNullable {
+              equals: [LocalDateTime]
+            }
+
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
+            scalar LocalTime
+
+            input LocalTimeListWhere {
+              equals: [LocalTime!]
+            }
+
+            input LocalTimeListWhereNullable {
+              equals: [LocalTime]
+            }
+
             type NodeType {
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
               booleanList: [Boolean!]
               booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
               floatList: [Float!]
               floatListNullable: [Float]
               idList: [ID!]
               idListNullable: [ID]
               intList: [Int!]
               intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
               relatedNode(where: NodeTypeRelatedNodeOperationWhere): NodeTypeRelatedNodeOperation
               stringList: [String!]
               stringListNullable: [String]
+              timeList: [Time!]
+              timeListNullable: [Time]
             }
 
             type NodeTypeConnection {
@@ -116,17 +252,9 @@ describe("Scalars", () => {
               pageInfo: PageInfo
             }
 
-            input NodeTypeConnectionSort {
-              edges: [NodeTypeEdgeSort!]
-            }
-
             type NodeTypeEdge {
               cursor: String
               node: NodeType
-            }
-
-            input NodeTypeEdgeSort {
-              node: NodeTypeSort
             }
 
             input NodeTypeEdgeWhere {
@@ -137,7 +265,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeOperation {
-              connection(after: String, first: Int, sort: NodeTypeConnectionSort): NodeTypeConnection
+              connection(after: String, first: Int): NodeTypeConnection
             }
 
             input NodeTypeOperationWhere {
@@ -150,10 +278,6 @@ describe("Scalars", () => {
             type NodeTypeRelatedNodeConnection {
               edges: [NodeTypeRelatedNodeEdge]
               pageInfo: PageInfo
-            }
-
-            input NodeTypeRelatedNodeConnectionSort {
-              edges: [NodeTypeRelatedNodeEdgeSort!]
             }
 
             type NodeTypeRelatedNodeEdge {
@@ -172,11 +296,6 @@ describe("Scalars", () => {
               some: NodeTypeRelatedNodeEdgeWhere
             }
 
-            input NodeTypeRelatedNodeEdgeSort {
-              node: RelatedNodeSort
-              properties: RelatedNodePropertiesSort
-            }
-
             input NodeTypeRelatedNodeEdgeWhere {
               AND: [NodeTypeRelatedNodeEdgeWhere!]
               NOT: NodeTypeRelatedNodeEdgeWhere
@@ -193,7 +312,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeRelatedNodeOperation {
-              connection(after: String, first: Int, sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
+              connection(after: String, first: Int): NodeTypeRelatedNodeConnection
             }
 
             input NodeTypeRelatedNodeOperationWhere {
@@ -203,23 +322,35 @@ describe("Scalars", () => {
               edges: NodeTypeRelatedNodeEdgeWhere
             }
 
-            input NodeTypeSort
-
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
-              booleanList: StringListWhere
-              booleanListNullable: StringListWhereNullable
+              bigIntList: BigIntListWhere
+              bigIntListNullable: BigIntListWhereNullable
+              booleanList: BooleanWhere
+              booleanListNullable: BooleanWhere
+              dateList: DateListWhere
+              dateListNullable: DateListWhereNullable
+              dateTimeList: DateTimeListWhere
+              dateTimeListNullable: DateTimeListWhereNullable
+              durationList: DurationListWhere
+              durationListNullable: DurationListWhereNullable
               floatList: FloatListWhere
               floatListNullable: FloatListWhereNullable
               idList: IDListWhere
               idListNullable: IDListWhereNullable
               intList: IntListWhere
               intListNullable: IntListWhereNullable
+              localDateTimeList: LocalDateTimeListWhere
+              localDateTimeListNullable: LocalDateTimeListWhereNullable
+              localTimeList: LocalTimeListWhere
+              localTimeListNullable: LocalTimeListWhereNullable
               relatedNode: NodeTypeRelatedNodeNestedOperationWhere
               stringList: StringListWhere
               stringListNullable: StringListWhereNullable
+              timeList: TimeListWhere
+              timeListNullable: TimeListWhereNullable
             }
 
             type PageInfo {
@@ -235,16 +366,30 @@ describe("Scalars", () => {
             }
 
             type RelatedNode {
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
               booleanList: [Boolean!]
               booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
               floatList: [Float!]
               floatListNullable: [Float]
               idList: [ID!]
               idListNullable: [ID]
               intList: [Int!]
               intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
               stringList: [String!]
               stringListNullable: [String]
+              timeList: [Time!]
+              timeListNullable: [Time]
             }
 
             type RelatedNodeConnection {
@@ -252,17 +397,9 @@ describe("Scalars", () => {
               pageInfo: PageInfo
             }
 
-            input RelatedNodeConnectionSort {
-              edges: [RelatedNodeEdgeSort!]
-            }
-
             type RelatedNodeEdge {
               cursor: String
               node: RelatedNode
-            }
-
-            input RelatedNodeEdgeSort {
-              node: RelatedNodeSort
             }
 
             input RelatedNodeEdgeWhere {
@@ -273,7 +410,7 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeOperation {
-              connection(after: String, first: Int, sort: RelatedNodeConnectionSort): RelatedNodeConnection
+              connection(after: String, first: Int): RelatedNodeConnection
             }
 
             input RelatedNodeOperationWhere {
@@ -284,68 +421,90 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeProperties {
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
               booleanList: [Boolean!]
               booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
               floatList: [Float!]
               floatListNullable: [Float]
               idList: [ID!]
               idListNullable: [ID]
               intList: [Int!]
               intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
               stringList: [String!]
               stringListNullable: [String]
-            }
-
-            input RelatedNodePropertiesSort {
-              booleanList: SortDirection
-              booleanListNullable: SortDirection
-              floatList: SortDirection
-              floatListNullable: SortDirection
-              idList: SortDirection
-              idListNullable: SortDirection
-              intList: SortDirection
-              intListNullable: SortDirection
-              stringList: SortDirection
-              stringListNullable: SortDirection
+              timeList: [Time!]
+              timeListNullable: [Time]
             }
 
             input RelatedNodePropertiesWhere {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
-              booleanList: StringListWhere
-              booleanListNullable: StringListWhereNullable
+              bigIntList: BigIntListWhere
+              bigIntListNullable: BigIntListWhereNullable
+              booleanList: BooleanWhere
+              booleanListNullable: BooleanWhere
+              dateList: DateListWhere
+              dateListNullable: DateListWhereNullable
+              dateTimeList: DateTimeListWhere
+              dateTimeListNullable: DateTimeListWhereNullable
+              durationList: DurationListWhere
+              durationListNullable: DurationListWhereNullable
               floatList: FloatListWhere
               floatListNullable: FloatListWhereNullable
               idList: IDListWhere
               idListNullable: IDListWhereNullable
               intList: IntListWhere
               intListNullable: IntListWhereNullable
+              localDateTimeList: LocalDateTimeListWhere
+              localDateTimeListNullable: LocalDateTimeListWhereNullable
+              localTimeList: LocalTimeListWhere
+              localTimeListNullable: LocalTimeListWhereNullable
               stringList: StringListWhere
               stringListNullable: StringListWhereNullable
+              timeList: TimeListWhere
+              timeListNullable: TimeListWhereNullable
             }
-
-            input RelatedNodeSort
 
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
-              booleanList: StringListWhere
-              booleanListNullable: StringListWhereNullable
+              bigIntList: BigIntListWhere
+              bigIntListNullable: BigIntListWhereNullable
+              booleanList: BooleanWhere
+              booleanListNullable: BooleanWhere
+              dateList: DateListWhere
+              dateListNullable: DateListWhereNullable
+              dateTimeList: DateTimeListWhere
+              dateTimeListNullable: DateTimeListWhereNullable
+              durationList: DurationListWhere
+              durationListNullable: DurationListWhereNullable
               floatList: FloatListWhere
               floatListNullable: FloatListWhereNullable
               idList: IDListWhere
               idListNullable: IDListWhereNullable
               intList: IntListWhere
               intListNullable: IntListWhereNullable
+              localDateTimeList: LocalDateTimeListWhere
+              localDateTimeListNullable: LocalDateTimeListWhereNullable
+              localTimeList: LocalTimeListWhere
+              localTimeListNullable: LocalTimeListWhereNullable
               stringList: StringListWhere
               stringListNullable: StringListWhereNullable
-            }
-
-            enum SortDirection {
-              ASC
-              DESC
+              timeList: TimeListWhere
+              timeListNullable: TimeListWhereNullable
             }
 
             input StringListWhere {
@@ -354,6 +513,17 @@ describe("Scalars", () => {
 
             input StringListWhereNullable {
               equals: [String]
+            }
+
+            \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
+            scalar Time
+
+            input TimeListWhere {
+              equals: [Time!]
+            }
+
+            input TimeListWhereNullable {
+              equals: [Time]
             }"
         `);
     });

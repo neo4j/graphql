@@ -25,10 +25,10 @@ import {
     GraphQLBuiltInScalarType,
     InterfaceType,
     ListType,
-    Neo4jCartesianPointType,
     Neo4jGraphQLNumberType,
+    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
-    Neo4jPointType,
+    Neo4jSpatialType,
     ObjectType,
     ScalarType,
     UnionType,
@@ -154,7 +154,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new Neo4jCartesianPointType(true),
+                    type: new Neo4jSpatialType(Neo4jGraphQLSpatialType.CartesianPoint, true),
                     args: [],
                 })
             );
@@ -167,7 +167,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new Neo4jPointType(true),
+                    type: new Neo4jSpatialType(Neo4jGraphQLSpatialType.Point, true),
                     args: [],
                 })
             );
@@ -421,7 +421,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new Neo4jCartesianPointType(true),
+                    type: new Neo4jSpatialType(Neo4jGraphQLSpatialType.CartesianPoint, true),
                     args: [],
                 })
             );

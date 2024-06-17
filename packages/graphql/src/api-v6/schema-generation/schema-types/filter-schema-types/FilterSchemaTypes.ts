@@ -23,7 +23,10 @@ import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import {
     GraphQLBuiltInScalarType,
     ListType,
+    Neo4jGraphQLNumberType,
+    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
+    Neo4jSpatialType,
     ScalarType,
 } from "../../../../schema-model/attribute/AttributeType";
 import { filterTruthy } from "../../../../utils/utils";
@@ -85,15 +88,14 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         if (wrappedType instanceof ScalarType) {
             return this.createScalarType(wrappedType, isList);
         }
+        if (wrappedType instanceof Neo4jSpatialType) {
+            return this.createSpatialType(wrappedType, isList);
+        }
     }
 
-    private createScalarType(type: ScalarType, isList: boolean): GraphQLScalarType | InputTypeComposer | undefined {
+    private createScalarType(type: ScalarType, isList: boolean): InputTypeComposer {
         switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
-                if (isList) {
-                    const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.filters.getBooleanListWhere(isNullable);
-                }
                 return this.schemaTypes.staticTypes.filters.booleanWhere;
             }
 
@@ -131,32 +133,80 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
                 return this.schemaTypes.staticTypes.filters.floatWhere;
             }
 
+            case Neo4jGraphQLNumberType.BigInt: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+
+                    return this.schemaTypes.staticTypes.filters.getBigIntListWhere(isNullable);
+                }
+                return this.schemaTypes.staticTypes.filters.bigIntWhere;
+            }
+
             case Neo4jGraphQLTemporalType.Date: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getDateListWhere(isNullable);
+                }
                 return this.schemaTypes.staticTypes.filters.dateWhere;
             }
 
             case Neo4jGraphQLTemporalType.DateTime: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getDateTimeListWhere(isNullable);
+                }
                 return this.schemaTypes.staticTypes.filters.dateTimeWhere;
             }
 
             case Neo4jGraphQLTemporalType.LocalDateTime: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getLocalDateTimeListWhere(isNullable);
+                }
                 return this.schemaTypes.staticTypes.filters.localDateTimeWhere;
             }
 
             case Neo4jGraphQLTemporalType.Duration: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getDurationListWhere(isNullable);
+                }
                 return this.schemaTypes.staticTypes.filters.durationWhere;
             }
 
             case Neo4jGraphQLTemporalType.Time: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getTimeListWhere(isNullable);
+                }
                 return this.schemaTypes.staticTypes.filters.timeWhere;
             }
 
             case Neo4jGraphQLTemporalType.LocalTime: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getLocalTimeListWhere(isNullable);
+                }
                 return this.schemaTypes.staticTypes.filters.localTimeWhere;
             }
+        }
+    }
 
-            default: {
-                return;
+    private createSpatialType(type: Neo4jSpatialType, isList: boolean): InputTypeComposer {
+        switch (type.name) {
+            case Neo4jGraphQLSpatialType.CartesianPoint: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getCartesianListWhere(isNullable);
+                }
+                return this.schemaTypes.staticTypes.filters.cartesianPointWhere;
+            }
+            case Neo4jGraphQLSpatialType.Point: {
+                if (isList) {
+                    const isNullable = !type.isRequired;
+                    return this.schemaTypes.staticTypes.filters.getPointListWhere(isNullable);
+                }
+                return this.schemaTypes.staticTypes.filters.pointWhere;
             }
         }
     }

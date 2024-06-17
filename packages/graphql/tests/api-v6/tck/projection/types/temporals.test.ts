@@ -32,6 +32,24 @@ describe("Temporal types", () => {
                 duration: Duration
                 time: Time
                 localTime: LocalTime
+                relatedNode: [RelatedNode!]!
+                    @relationship(type: "RELATED_TO", direction: OUT, properties: "RelatedNodeProperties")
+            }
+
+            type RelatedNodeProperties @relationshipProperties {
+                dateTime: DateTime
+                localDateTime: LocalDateTime
+                duration: Duration
+                time: Time
+                localTime: LocalTime
+            }
+
+            type RelatedNode @node {
+                dateTime: DateTime
+                localDateTime: LocalDateTime
+                duration: Duration
+                time: Time
+                localTime: LocalTime
             }
         `;
 
@@ -40,22 +58,10 @@ describe("Temporal types", () => {
         });
     });
 
-    test("Filter temporals types", async () => {
+    test("should be possible to querying temporal fields - Top Level", async () => {
         const query = /* GraphQL */ `
             query {
-                typeNodes(
-                    where: {
-                        edges: {
-                            node: {
-                                dateTime: { equals: "2015-06-24T12:50:35.556+0100" }
-                                localDateTime: { gt: "2003-09-14T12:00:00" }
-                                duration: { gte: "P1Y" }
-                                time: { lt: "22:00:15.555" }
-                                localTime: { lte: "12:50:35.556" }
-                            }
-                        }
-                    }
-                ) {
+                typeNodes {
                     connection {
                         edges {
                             node {
@@ -73,10 +79,8 @@ describe("Temporal types", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:TypeNode)
-            WHERE (this0.dateTime = $param0 AND this0.localDateTime > $param1 AND this0.duration >= $param2 AND this0.time < $param3 AND this0.localTime <= $param4)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -88,53 +92,122 @@ describe("Temporal types", () => {
             RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"year\\": 2015,
-                    \\"month\\": 6,
-                    \\"day\\": 24,
-                    \\"hour\\": 11,
-                    \\"minute\\": 50,
-                    \\"second\\": 35,
-                    \\"nanosecond\\": 556000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": {
-                    \\"year\\": 2003,
-                    \\"month\\": 9,
-                    \\"day\\": 14,
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0
-                },
-                \\"param2\\": {
-                    \\"months\\": 12,
-                    \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("should be possible to querying temporal fields - Nested", async () => {
+        const query = /* GraphQL */ `
+            query {
+                typeNodes {
+                    connection {
+                        edges {
+                            node {
+                                relatedNode {
+                                    connection {
+                                        edges {
+                                            node {
+                                                dateTime
+                                                localDateTime
+                                                duration
+                                                time
+                                                localTime
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                },
-                \\"param3\\": {
-                    \\"hour\\": 22,
-                    \\"minute\\": 0,
-                    \\"second\\": 15,
-                    \\"nanosecond\\": 555000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param4\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 50,
-                    \\"second\\": 35,
-                    \\"nanosecond\\": 556000000
                 }
-            }"
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, { v6Api: true });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:TypeNode)
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
+                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS relatedNode, edge.relationship AS this1
+                        RETURN collect({ node: { dateTime: apoc.date.convertFormat(toString(relatedNode.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: relatedNode.localDateTime, duration: relatedNode.duration, time: relatedNode.time, localTime: relatedNode.localTime, __resolveType: \\"RelatedNode\\" } }) AS var2
+                    }
+                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                }
+                RETURN collect({ node: { relatedNode: var3, __resolveType: \\"TypeNode\\" } }) AS var4
+            }
+            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
         `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("should be possible to querying temporal fields - Relationship properties", async () => {
+        const query = /* GraphQL */ `
+            query {
+                typeNodes {
+                    connection {
+                        edges {
+                            node {
+                                relatedNode {
+                                    connection {
+                                        edges {
+                                            properties {
+                                                dateTime
+                                                localDateTime
+                                                duration
+                                                time
+                                                localTime
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, { v6Api: true });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:TypeNode)
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
+                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS relatedNode, edge.relationship AS this1
+                        RETURN collect({ properties: { dateTime: apoc.date.convertFormat(toString(this1.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: this1.localDateTime, duration: this1.duration, time: this1.time, localTime: this1.localTime }, node: { __id: id(relatedNode), __resolveType: \\"RelatedNode\\" } }) AS var2
+                    }
+                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                }
+                RETURN collect({ node: { relatedNode: var3, __resolveType: \\"TypeNode\\" } }) AS var4
+            }
+            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

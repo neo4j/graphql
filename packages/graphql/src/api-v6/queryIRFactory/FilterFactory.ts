@@ -26,7 +26,9 @@ import { RelationshipAdapter } from "../../schema-model/relationship/model-adapt
 import { ConnectionFilter } from "../../translate/queryAST/ast/filters/ConnectionFilter";
 import type { Filter, LogicalOperators } from "../../translate/queryAST/ast/filters/Filter";
 import { LogicalFilter } from "../../translate/queryAST/ast/filters/LogicalFilter";
+import { DurationFilter } from "../../translate/queryAST/ast/filters/property-filters/DurationFilter";
 import { PropertyFilter } from "../../translate/queryAST/ast/filters/property-filters/PropertyFilter";
+import { SpatialFilter } from "../../translate/queryAST/ast/filters/property-filters/SpatialFilter";
 import { getFilterOperator, getRelationshipOperator } from "./FilterOperators";
 import type {
     GraphQLAttributeFilters,
@@ -217,16 +219,40 @@ export class FilterFactory {
             return this.createPropertyFilters(attributeAdapter, filters, "relationship");
         });
     }
-
+    // TODO: remove adapter from here
     private createPropertyFilters(
         attribute: AttributeAdapter,
         filters: GraphQLAttributeFilters,
         attachedTo: "node" | "relationship" = "node"
-    ): PropertyFilter[] {
+    ): Filter[] {
         return Object.entries(filters).map(([key, value]) => {
+            if (key === "AND" || key === "OR" || key === "NOT") {
+                return new LogicalFilter({
+                    operation: key as LogicalOperators,
+                    filters: this.createPropertyFilters(attribute, value),
+                });
+            }
             const operator = getFilterOperator(attribute, key);
-            if (!operator) throw new Error(`Invalid operator: ${key}`);
-
+            if (!operator) {
+                throw new Error(`Invalid operator: ${key}`);
+            }
+            if (attribute.typeHelper.isDuration()) {
+                return new DurationFilter({
+                    attribute,
+                    comparisonValue: value,
+                    operator,
+                    attachedTo,
+                });
+            }
+            if (attribute.typeHelper.isSpatial()) {
+                return new SpatialFilter({
+                    attribute,
+                    relationship: undefined,
+                    comparisonValue: value,
+                    operator,
+                    attachedTo,
+                });
+            }
             return new PropertyFilter({
                 attribute,
                 relationship: undefined,

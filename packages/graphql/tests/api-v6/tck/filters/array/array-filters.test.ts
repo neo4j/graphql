@@ -54,7 +54,6 @@ describe("Array filters", () => {
 
         const result = await translateQuery(neoSchema, query, { v6Api: true });
 
-        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
             WHERE this0.alternativeTitles = $param0

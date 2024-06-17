@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe.each(["Float", "Int"] as const)("%s Filtering - 'gt' and 'gte'", (type) => {
+describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'gt' and 'gte'", (type) => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;

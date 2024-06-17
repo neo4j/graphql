@@ -229,51 +229,6 @@ describe("Duration", () => {
     });
 
     describe("filter", () => {
-        test("should filter based on duration equality", async () => {
-            const typeDefs = /* GraphQL */ `
-                type ${Movie} {
-                    id: ID!
-                    duration: Duration!
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const id = generate({ readable: false });
-            const days = 4;
-            const duration = `P${days}D`;
-            const parsedDuration = parseDuration(duration);
-            const neo4jDuration = new neo4jDriver.types.Duration(0, days, 0, 0);
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (movie:${Movie})
-                        SET movie = $movie
-                    `,
-                { movie: { id, duration: neo4jDuration } }
-            );
-
-            const query = /* GraphQL */ `
-                    query ($id: ID!, $duration: Duration!) {
-                        ${Movie.plural}(where: { id: $id, duration: $duration }) {
-                            id
-                            duration
-                        }
-                    }
-                `;
-
-            const graphqlResult = await testHelper.executeGraphQL(query, {
-                variableValues: { id, duration },
-            });
-
-            expect(graphqlResult.errors).toBeFalsy();
-
-            const graphqlMovie: { id: string; duration: string } = (graphqlResult.data as any)[Movie.plural][0];
-            expect(graphqlMovie).toBeDefined();
-            expect(graphqlMovie.id).toEqual(id);
-            expect(parseDuration(graphqlMovie.duration)).toStrictEqual(parsedDuration);
-        });
-
         test.each(["LT", "LTE", "GT", "GTE"])(
             "should filter based on duration comparison, for filter: %s",
             async (filter) => {
@@ -323,7 +278,7 @@ describe("Duration", () => {
                                 SET medium = $medium
                                 CREATE (short:${Movie})
                                 SET short = $short
-                            `,
+                   `,
                     {
                         long: { id: longId, duration: neo4jLong },
                         medium: { id: mediumId, duration: neo4jMedium },

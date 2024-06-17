@@ -21,8 +21,8 @@ import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { AttributeField } from "./AttributeField";
 
-export class PointAttributeField extends AttributeField {
-    private crs: boolean;
+export class SpatialAttributeField extends AttributeField {
+    private crs: boolean; // crs flag is used to determine if the crs field should be included in the projection
 
     constructor({ attribute, alias, crs }: { attribute: AttributeAdapter; alias: string; crs: boolean }) {
         super({ alias, attribute });

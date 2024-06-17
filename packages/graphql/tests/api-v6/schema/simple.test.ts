@@ -20,6 +20,7 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
+import { raiseOnInvalidSchema } from "../../utils/raise-on-invalid-schema";
 
 describe("Simple Aura-API", () => {
     test("single type", async () => {
@@ -29,7 +30,9 @@ describe("Simple Aura-API", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+        const schema = await neoSchema.getAuraSchema();
+        raiseOnInvalidSchema(schema);
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -126,7 +129,9 @@ describe("Simple Aura-API", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+        const schema = await neoSchema.getAuraSchema();
+        raiseOnInvalidSchema(schema);
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -275,7 +280,9 @@ describe("Simple Aura-API", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getAuraSchema()));
+        const schema = await neoSchema.getAuraSchema();
+        raiseOnInvalidSchema(schema);
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

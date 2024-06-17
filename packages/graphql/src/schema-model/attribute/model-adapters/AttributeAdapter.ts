@@ -371,7 +371,6 @@ export class AttributeAdapter {
             return listType.ofType.ofType.name;
         }
         return listType.ofType.name;
-        // return this.isList() ? this.type.ofType.name : this.type.name;
     }
 
     getFieldTypeName(): string {
