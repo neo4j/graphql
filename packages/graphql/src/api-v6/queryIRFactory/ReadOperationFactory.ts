@@ -19,6 +19,7 @@
 
 import { cursorToOffset } from "graphql-relay";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { LimitAnnotation } from "../../schema-model/annotation/LimitAnnotation";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -48,6 +49,7 @@ import type {
     GraphQLTreeSortElement,
 } from "./resolve-tree-parser/graphql-tree";
 
+import type { Integer } from "neo4j-driver";
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
     private filterFactory: FilterFactory;
@@ -91,7 +93,7 @@ export class ReadOperationFactory {
 
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const sortArgument = connectionTree.args.sort;
-        const pagination = this.getPagination(connectionTree.args);
+        const pagination = this.getPagination(connectionTree.args, entity);
 
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({
@@ -137,12 +139,12 @@ export class ReadOperationFactory {
         // Fields
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const propertiesResolveTree = connectionTree.fields.edges?.fields.properties;
-        const relTarget = relationshipAdapter.target.entity;
 
         const edgeFields = this.getAttributeFields(relationship, propertiesResolveTree);
 
         const sortArgument = connectionTree.args.sort;
-        const pagination = this.getPagination(connectionTree.args);
+        const relTarget = relationshipAdapter.target.entity;
+        const pagination = this.getPagination(connectionTree.args, relTarget);
 
         const nodeFields = this.getNodeFields(relTarget, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({ entity: relTarget, relationship, sortArgument });
@@ -164,13 +166,31 @@ export class ReadOperationFactory {
         });
     }
 
-    private getPagination(connectionTreeArgs: GraphQLConnectionArgs): Pagination | undefined {
+    private getPagination(connectionTreeArgs: GraphQLConnectionArgs, entity: ConcreteEntity): Pagination | undefined {
         const firstArgument = connectionTreeArgs.first;
         const afterArgument = connectionTreeArgs.after ? cursorToOffset(connectionTreeArgs.after) : undefined;
         const hasPagination = firstArgument ?? afterArgument;
-        if (hasPagination) {
-            return new Pagination({ limit: firstArgument, skip: afterArgument });
+        const limitAnnotation = entity.annotations.limit;
+        if (hasPagination || limitAnnotation) {
+            const limit = this.calculatePaginationLimitArgument(firstArgument, limitAnnotation);
+            return new Pagination({ limit, skip: afterArgument });
         }
+    }
+
+    /**
+     * Computes the value passed to the LIMIT clause in the Cypher Query by using the first argument and the limit annotation.
+     * - Branch 1: if the first argument is defined, use the first argument value, only if it is less than the limit annotation max value.
+     * - Branch 2: if not reached Branch 1, then use the following precedence: first argument, `@limit.default`, `@limit.max`.
+     * In case the first argument and `@limit` annotation are not defined, return undefined.
+     **/
+    private calculatePaginationLimitArgument(
+        firstArgument: Integer | undefined,
+        limitAnnotation: LimitAnnotation | undefined
+    ): number | undefined {
+        if (firstArgument && limitAnnotation?.max) {
+            return Math.min(firstArgument.toNumber(), limitAnnotation.max);
+        }
+        return firstArgument?.toNumber() ?? limitAnnotation?.default ?? limitAnnotation?.max;
     }
 
     private getAttributeFields(target: ConcreteEntity, propertiesTree: GraphQLTreeNode | undefined): Field[];
