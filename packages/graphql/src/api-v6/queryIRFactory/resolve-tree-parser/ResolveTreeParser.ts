@@ -22,7 +22,7 @@ import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
 import { Point } from "../../../graphql/objects/Point";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { ListType } from "../../../schema-model/attribute/AttributeType";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { findFieldByName } from "./find-field-by-name";
 import type {
@@ -83,6 +83,17 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
         resolveTree: ResolveTree,
         entity: ConcreteEntity | Relationship
     ): GraphQLTreeLeafField | GraphQLTreePoint | undefined {
+        if (resolveTree.name === "id") {
+            if (entity instanceof ConcreteEntity && entity.globalIdField) {
+                return {
+                    alias: entity.globalIdField.name,
+                    args: resolveTree.args,
+                    name: resolveTree.name,
+                    fields: undefined,
+                };
+            }
+        }
+
         if (entity.hasAttribute(resolveTree.name)) {
             const attribute = entity.findAttribute(resolveTree.name) as Attribute;
             const wrappedTypeName =
