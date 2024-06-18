@@ -21,6 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
 import { Point } from "../../../graphql/objects/Point";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { findFieldByName } from "./find-field-by-name";
@@ -40,7 +41,6 @@ import type {
     GraphQLTreeScalarField,
     GraphQLTreeSortElement,
 } from "./graphql-tree";
-import { ListType } from "../../../schema-model/attribute/AttributeType";
 
 export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     protected entity: T;
@@ -85,50 +85,13 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     ): GraphQLTreeLeafField | GraphQLTreePoint | undefined {
         if (entity.hasAttribute(resolveTree.name)) {
             const attribute = entity.findAttribute(resolveTree.name) as Attribute;
-            const wrappedTypeName = attribute.type instanceof ListType ? attribute.type.ofType.name : attribute.type.name;
+            const wrappedTypeName =
+                attribute.type instanceof ListType ? attribute.type.ofType.name : attribute.type.name;
             if (wrappedTypeName === "Point") {
-                const longitude = findFieldByName(resolveTree, Point.name, "longitude");
-                const latitude = findFieldByName(resolveTree, Point.name, "latitude");
-                const height = findFieldByName(resolveTree, Point.name, "height");
-                const crs = findFieldByName(resolveTree, Point.name, "crs");
-                const srid = findFieldByName(resolveTree, Point.name, "srid");
-
-                const pointField: GraphQLTreePoint = {
-                    alias: resolveTree.alias,
-                    args: resolveTree.args,
-                    name: resolveTree.name,
-                    fields: {
-                        longitude: resolveTreeToLeafField(longitude),
-                        latitude: resolveTreeToLeafField(latitude),
-                        height: resolveTreeToLeafField(height),
-                        crs: resolveTreeToLeafField(crs),
-                        srid: resolveTreeToLeafField(srid),
-                    },
-                };
-
-                return pointField;
+                return this.parsePointField(resolveTree);
             }
             if (wrappedTypeName === "CartesianPoint") {
-                const x = findFieldByName(resolveTree, CartesianPoint.name, "x");
-                const y = findFieldByName(resolveTree, CartesianPoint.name, "y");
-                const z = findFieldByName(resolveTree, CartesianPoint.name, "z");
-                const crs = findFieldByName(resolveTree, CartesianPoint.name, "crs");
-                const srid = findFieldByName(resolveTree, CartesianPoint.name, "srid");
-
-                const cartesianPointField: GraphQLTreeCartesianPoint = {
-                    alias: resolveTree.alias,
-                    args: resolveTree.args,
-                    name: resolveTree.name,
-                    fields: {
-                        x: resolveTreeToLeafField(x),
-                        y: resolveTreeToLeafField(y),
-                        z: resolveTreeToLeafField(z),
-                        crs: resolveTreeToLeafField(crs),
-                        srid: resolveTreeToLeafField(srid),
-                    },
-                };
-
-                return cartesianPointField;
+                return this.parseCartesianPointField(resolveTree);
             }
             return {
                 alias: resolveTree.alias,
@@ -137,6 +100,48 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
                 fields: undefined,
             };
         }
+    }
+
+    private parsePointField(resolveTree: ResolveTree): GraphQLTreePoint {
+        const longitude = findFieldByName(resolveTree, Point.name, "longitude");
+        const latitude = findFieldByName(resolveTree, Point.name, "latitude");
+        const height = findFieldByName(resolveTree, Point.name, "height");
+        const crs = findFieldByName(resolveTree, Point.name, "crs");
+        const srid = findFieldByName(resolveTree, Point.name, "srid");
+
+        return {
+            alias: resolveTree.alias,
+            args: resolveTree.args,
+            name: resolveTree.name,
+            fields: {
+                longitude: resolveTreeToLeafField(longitude),
+                latitude: resolveTreeToLeafField(latitude),
+                height: resolveTreeToLeafField(height),
+                crs: resolveTreeToLeafField(crs),
+                srid: resolveTreeToLeafField(srid),
+            },
+        };
+    }
+
+    private parseCartesianPointField(resolveTree: ResolveTree): GraphQLTreeCartesianPoint {
+        const x = findFieldByName(resolveTree, CartesianPoint.name, "x");
+        const y = findFieldByName(resolveTree, CartesianPoint.name, "y");
+        const z = findFieldByName(resolveTree, CartesianPoint.name, "z");
+        const crs = findFieldByName(resolveTree, CartesianPoint.name, "crs");
+        const srid = findFieldByName(resolveTree, CartesianPoint.name, "srid");
+
+        return {
+            alias: resolveTree.alias,
+            args: resolveTree.args,
+            name: resolveTree.name,
+            fields: {
+                x: resolveTreeToLeafField(x),
+                y: resolveTreeToLeafField(y),
+                z: resolveTreeToLeafField(z),
+                crs: resolveTreeToLeafField(crs),
+                srid: resolveTreeToLeafField(srid),
+            },
+        };
     }
 
     private parseConnection(resolveTree: ResolveTree): GraphQLTreeConnection {

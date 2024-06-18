@@ -18,6 +18,7 @@
  */
 
 import { cursorToOffset } from "graphql-relay";
+import type { Integer } from "neo4j-driver";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { LimitAnnotation } from "../../schema-model/annotation/LimitAnnotation";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -49,7 +50,6 @@ import type {
     GraphQLTreeSortElement,
 } from "./resolve-tree-parser/graphql-tree";
 
-import { Integer } from "neo4j-driver";
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
     private filterFactory: FilterFactory;
@@ -177,15 +177,18 @@ export class ReadOperationFactory {
         }
     }
 
+    /**
+     * Computes the value passed to the LIMIT clause in the Cypher Query by using the first argument and the limit annotation.
+     * - Branch 1: if the first argument is defined, use the first argument value, only if it is less than the limit annotation max value.
+     * - Branch 2: if not reached Branch 1, then use the following precedence: first argument, `@limit.default`, `@limit.max`.
+     * In case the first argument and `@limit` annotation are not defined, return undefined.
+     **/
     private calculatePaginationLimitArgument(
         firstArgument: Integer | undefined,
         limitAnnotation: LimitAnnotation | undefined
     ): number | undefined {
         if (firstArgument && limitAnnotation?.max) {
             return Math.min(firstArgument.toNumber(), limitAnnotation.max);
-        }
-        if (firstArgument && firstArgument.toNumber() >= (limitAnnotation?.max ?? Number.MAX_SAFE_INTEGER)) {
-            return limitAnnotation?.max;
         }
         return firstArgument?.toNumber() ?? limitAnnotation?.default ?? limitAnnotation?.max;
     }

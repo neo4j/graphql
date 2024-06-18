@@ -21,6 +21,13 @@ import type { GraphQLInputType, GraphQLScalarType } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import { CartesianPointDistance } from "../../../graphql/input-objects/CartesianPointDistance";
+import { CartesianPointInput } from "../../../graphql/input-objects/CartesianPointInput";
+import { PointDistance } from "../../../graphql/input-objects/PointDistance";
+import { PointInput } from "../../../graphql/input-objects/PointInput";
+import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
+import { Point } from "../../../graphql/objects/Point";
+import * as Scalars from "../../../graphql/scalars";
 import {
     GraphQLBigInt,
     GraphQLDate,
@@ -31,14 +38,6 @@ import {
     GraphQLTime,
 } from "../../../graphql/scalars";
 import type { SchemaBuilder } from "../SchemaBuilder";
-
-import { CartesianPointDistance } from "../../../graphql/input-objects/CartesianPointDistance";
-import { CartesianPointInput } from "../../../graphql/input-objects/CartesianPointInput";
-import { PointDistance } from "../../../graphql/input-objects/PointDistance";
-import { PointInput } from "../../../graphql/input-objects/PointInput";
-import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
-import { Point } from "../../../graphql/objects/Point";
-import * as Scalars from "../../../graphql/scalars";
 import { toGraphQLList } from "../utils/to-graphql-list";
 import { toGraphQLNonNull } from "../utils/to-graphql-non-null";
 
@@ -307,11 +306,6 @@ class StaticFilterTypes {
                 },
             };
         });
-    }
-
-    public getBooleanListWhere(nullable: boolean): InputTypeComposer {
-        //  TODO: verify correctness of this
-        return this.getStringListWhere(nullable);
     }
 
     public get booleanWhere(): InputTypeComposer {
