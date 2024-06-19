@@ -20,7 +20,7 @@
 import { toGlobalId } from "../../../../../src/utils/global-ids";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("RelayId projection", () => {
+describe("RelayId projection with filters", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let movieDatabaseID: string;
     let genreDatabaseID: string;
@@ -54,10 +54,12 @@ describe("RelayId projection", () => {
         const randomID = "1234";
         const randomID2 = "abcd";
         const randomID3 = "ArthurId";
+        const randomID4 = "4321";
         await testHelper.executeCypher(`
          CREATE (m:${Movie.name} { title: "Movie1", dbId: "${randomID}" })
          CREATE (g:${Genre.name} { name: "Action", dbId: "${randomID2}" })
          CREATE (o:${Actor.name} { name: "Keanu", dbId: "${randomID3}" })
+         CREATE (:${Movie.name} { title: "Movie2", dbId: "${randomID4}" })
          CREATE (m)-[:HAS_GENRE]->(g)
          CREATE (m)-[:ACTED_IN]->(o)
      `);
@@ -71,9 +73,19 @@ describe("RelayId projection", () => {
     });
 
     test("should return the correct relayId ids using the connection API", async () => {
+        const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
+        const genreGlobalId = toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDatabaseID });
+        const actorGlobalId = toGlobalId({ typeName: Actor.name, field: "dbId", id: actorDatabaseID });
+
         const connectionQuery = `
             query {
-                ${Movie.plural} {
+                ${Movie.plural}(where: {
+                    edges: {
+                        node: {
+                            id: { equals: "${movieGlobalId}"}
+                        }
+                    }
+                }) {
                     connection {
                         edges {
                             node {
@@ -114,10 +126,6 @@ describe("RelayId projection", () => {
         expect(connectionQueryResult.errors).toBeUndefined();
         expect(connectionQueryResult.data).toBeDefined();
 
-        const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
-        const genreGlobalId = toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDatabaseID });
-        const actorGlobalId = toGlobalId({ typeName: Actor.name, field: "dbId", id: actorDatabaseID });
-
         expect(connectionQueryResult.data?.[Movie.plural]).toEqual({
             connection: {
                 edges: [
@@ -146,95 +154,6 @@ describe("RelayId projection", () => {
                                             node: {
                                                 id: actorGlobalId,
                                                 dbId: actorDatabaseID,
-                                                name: "Keanu",
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
-        });
-    });
-
-    test("should return the correct relayId ids using the connection API with aliased fields", async () => {
-        const connectionQuery = `
-            query {
-                ${Movie.plural} {
-                    connection {
-                        edges {
-                            node {
-                                testAliasId: id
-                                testAliasDbId: dbId
-                                title
-                                genre {
-                                    connection {
-                                        edges {
-                                            node {
-                                                testAliasId: id
-                                                testAliasDbId: dbId
-                                                name
-                                            }
-                                        }
-                                    }
-                                }
-                                actors {
-                                    connection {
-                                        edges {
-                                            node {
-                                                testAliasId: id
-                                                testAliasDbId: dbId
-                                                name
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const connectionQueryResult = await testHelper.executeGraphQL(connectionQuery);
-
-        expect(connectionQueryResult.errors).toBeUndefined();
-        expect(connectionQueryResult.data).toBeDefined();
-
-        const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
-        const genreGlobalId = toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDatabaseID });
-        const actorGlobalId = toGlobalId({ typeName: Actor.name, field: "dbId", id: actorDatabaseID });
-
-        expect(connectionQueryResult.data?.[Movie.plural]).toEqual({
-            connection: {
-                edges: [
-                    {
-                        node: {
-                            testAliasId: movieGlobalId,
-                            testAliasDbId: movieDatabaseID,
-                            title: "Movie1",
-                            genre: {
-                                connection: {
-                                    edges: [
-                                        {
-                                            node: {
-                                                testAliasId: genreGlobalId,
-                                                testAliasDbId: genreDatabaseID,
-                                                name: "Action",
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                            actors: {
-                                connection: {
-                                    edges: [
-                                        {
-                                            node: {
-                                                testAliasId: actorGlobalId,
-                                                testAliasDbId: actorDatabaseID,
                                                 name: "Keanu",
                                             },
                                         },
