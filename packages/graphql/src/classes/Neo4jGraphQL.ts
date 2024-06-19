@@ -27,6 +27,7 @@ import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { Memoize } from "typescript-memoize";
 import { SchemaGenerator } from "../api-v6/schema-generation/SchemaGenerator";
+import { validateV6Document } from "../api-v6/validation/validate-v6-document";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
@@ -37,8 +38,8 @@ import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { wrapSubscription, type WrapSubscriptionArgs } from "../schema/resolvers/composition/wrap-subscription";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
-import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
+import { validateDocument } from "../schema/validation/validate-document";
 import type { ContextFeatures, Neo4jFeaturesSettings, Neo4jGraphQLSubscriptionsEngine } from "../types";
 import { asArray } from "../utils/utils";
 import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
@@ -116,9 +117,24 @@ class Neo4jGraphQL {
     public async getSchema(): Promise<GraphQLSchema> {
         return this.getExecutableSchema();
     }
+
     @Memoize()
     public getAuraSchema(): Promise<GraphQLSchema> {
         const document = this.normalizeTypeDefinitions(this.typeDefs);
+        if (this.validate) {
+            const {
+                enumTypes: enums,
+                interfaceTypes: interfaces,
+                unionTypes: unions,
+                objectTypes: objects,
+            } = getDefinitionNodes(document);
+
+            validateV6Document({
+                document: document,
+                features: this.features,
+                additionalDefinitions: { enums, interfaces, unions, objects },
+            });
+        }
         this.schemaModel = this.generateSchemaModel(document, true);
         const schemaGenerator = new SchemaGenerator();
 
