@@ -64,6 +64,7 @@ export class TopLevelFilterSchemaTypes extends FilterSchemaTypes<TopLevelEntityT
                     NOT: itc,
                     ...this.createPropertyFilters([...this.entity.attributes.values()]),
                     ...this.createRelationshipFilters([...this.entity.relationships.values()]),
+                    ...this.createGlobalIdFilters(this.entity),
                 },
             };
         });

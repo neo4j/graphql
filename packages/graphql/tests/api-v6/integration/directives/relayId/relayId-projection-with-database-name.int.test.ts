@@ -18,11 +18,11 @@
  */
 
 import { generate } from "randomstring";
-import { toGlobalId } from "../../../../src/utils/global-ids";
-import { TestHelper } from "../../../utils/tests-helper";
+import { toGlobalId } from "../../../../../src/utils/global-ids";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("RelayId projection with different database name", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ v6Api: true });
     let movieDatabaseID: string;
     let genreDatabaseID: string;
     let actorDatabaseID: string;

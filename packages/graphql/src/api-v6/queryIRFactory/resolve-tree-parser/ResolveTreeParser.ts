@@ -83,15 +83,9 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
         resolveTree: ResolveTree,
         entity: ConcreteEntity | Relationship
     ): GraphQLTreeLeafField | GraphQLTreePoint | undefined {
-        if (resolveTree.name === "id") {
-            if (entity instanceof ConcreteEntity && entity.globalIdField) {
-                return {
-                    alias: entity.globalIdField.name,
-                    args: resolveTree.args,
-                    name: resolveTree.name,
-                    fields: undefined,
-                };
-            }
+        const globalIdField = this.parseGlobalIdField(resolveTree, entity);
+        if (globalIdField) {
+            return globalIdField;
         }
 
         if (entity.hasAttribute(resolveTree.name)) {
@@ -110,6 +104,22 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
                 name: resolveTree.name,
                 fields: undefined,
             };
+        }
+    }
+
+    private parseGlobalIdField(
+        resolveTree: ResolveTree,
+        entity: ConcreteEntity | Relationship
+    ): GraphQLTreeLeafField | undefined {
+        if (resolveTree.name === "id") {
+            if (entity instanceof ConcreteEntity && entity.globalIdField) {
+                return {
+                    alias: entity.globalIdField.name,
+                    args: resolveTree.args,
+                    name: resolveTree.name,
+                    fields: undefined,
+                };
+            }
         }
     }
 

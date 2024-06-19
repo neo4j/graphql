@@ -187,6 +187,11 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         });
 
         const fields = Object.fromEntries(entries);
+        this.addGlobalIdField(fields);
+        return fields;
+    }
+
+    private addGlobalIdField(fields: Record<string, FieldDefinition>): void {
         const globalIdField = this.entity.globalIdField;
         if (globalIdField) {
             fields["id"] = {
@@ -196,7 +201,6 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                 resolve: generateGlobalIdResolver({ entity: this.entity }),
             };
         }
-        return fields;
     }
 
     private getRelationshipFields(): Record<string, { type: ObjectTypeComposer; args: Record<string, any> }> {

@@ -157,22 +157,5 @@ describe("RelayId projection", () => {
                 ],
             },
         });
-        // const id = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.id;
-        // const dbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.dbId;
-        // expect(dbId).toBe(movieDatabaseID);
-        // expect(id).toBe(toGlobalId({ typeName: Movie.name, field: "dbId", id: dbId }));
-
-        // const genreId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre?.id;
-        // const genreDbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre
-        //     ?.dbId;
-        // expect(genreDbId).toBe(genreDatabaseID);
-        // expect(genreId).toBe(toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDbId }));
-
-        // const actorId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.actors[0]
-        //     ?.id;
-        // const actorDbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.actors[0]
-        //     ?.dbId;
-        // expect(actorDbId).toBe(actorDatabaseID);
-        // expect(actorId).toBe(toGlobalId({ typeName: Actor.name, field: "dbId", id: actorDbId }));
     });
 });
