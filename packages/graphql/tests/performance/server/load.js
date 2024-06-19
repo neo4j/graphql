@@ -27,15 +27,15 @@ import { queries } from "./queries.js";
 
 const CONFIG = {
     maxVUs: 10,
-    duration: 90,
+    duration: 30,
     skipChecks: false,
-    query: queries.simpleQuery,
+    query: queries.highComplexityQuery,
     api: "http://localhost:4000/graphql",
 };
 
-const dbQueryTrend = new Trend("neo4j/graphql_database_query_time", true);
-const translationTimeTrend = new Trend("neo4j/graphql_translation_time", true);
-const wrapperTimeTrend = new Trend("neo4j/graphql_wrapper_time", true);
+const dbQueryTrend = new Trend("neo4j_graphql_database_query_time", true);
+const translationTimeTrend = new Trend("neo4j_graphql_translation_time", true);
+const wrapperTimeTrend = new Trend("neo4j_graphql_wrapper_time", true);
 
 export const options = {
     scenarios: {
