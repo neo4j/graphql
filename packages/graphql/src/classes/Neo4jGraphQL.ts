@@ -39,7 +39,7 @@ import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query
 import { wrapSubscription, type WrapSubscriptionArgs } from "../schema/resolvers/composition/wrap-subscription";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
-import { validateDocument } from "../schema/validation/validate-document";
+import validateDocument from "../schema/validation/validate-document";
 import type { ContextFeatures, Neo4jFeaturesSettings, Neo4jGraphQLSubscriptionsEngine } from "../types";
 import { asArray } from "../utils/utils";
 import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
