@@ -39,6 +39,10 @@ describe("RelayId", () => {
               query: Query
             }
 
+            input GlobalIdWhere {
+              equals: String
+            }
+
             input IDWhere {
               AND: [IDWhere!]
               NOT: IDWhere
@@ -52,6 +56,7 @@ describe("RelayId", () => {
 
             type Movie {
               dbId: ID!
+              id: ID!
               title: String
             }
 
@@ -101,6 +106,7 @@ describe("RelayId", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               dbId: IDWhere
+              id: GlobalIdWhere
               title: StringWhere
             }
 

@@ -30,7 +30,7 @@ describe("@alias directive", () => {
         Movie = testHelper.createUniqueType("Movie");
         Director = testHelper.createUniqueType("Director");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Director} @node {
                 name: String
                 nameAgain: String @alias(property: "name")
