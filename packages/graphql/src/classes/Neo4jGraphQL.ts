@@ -121,6 +121,7 @@ class Neo4jGraphQL {
     @Memoize()
     public getAuraSchema(): Promise<GraphQLSchema> {
         const document = this.normalizeTypeDefinitions(this.typeDefs);
+
         if (this.validate) {
             const {
                 enumTypes: enums,
@@ -135,6 +136,7 @@ class Neo4jGraphQL {
                 additionalDefinitions: { enums, interfaces, unions, objects },
             });
         }
+
         this.schemaModel = this.generateSchemaModel(document, true);
         const schemaGenerator = new SchemaGenerator();
 
