@@ -22,6 +22,8 @@ import { generate } from "randomstring";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../../../utils/tests-helper";
 
+const queryName = "myQueryName";
+
 describe("@vector directive", () => {
     let driver: Driver;
     const testHelper = new TestHelper();
@@ -78,7 +80,7 @@ describe("@vector directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @vector(indexes: [{ name: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
             }
         `;

@@ -68,7 +68,10 @@ export class FulltextFactory {
             };
             fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
             if (scoreRawField) {
-                scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
+                scoreField = new ScoreField({
+                    alias: scoreRawField.alias,
+                    score: fulltextOptions.score,
+                });
             }
             if (scoreWhere) {
                 scoreFilter = new ScoreFilter({
@@ -171,12 +174,5 @@ export class FulltextFactory {
             phrase: indexInput.phrase,
             score: new Cypher.Variable(),
         };
-    }
-
-    private createFulltextScoreField(field: ResolveTree, scoreVar: Cypher.Variable): ScoreField {
-        return new ScoreField({
-            alias: field.alias,
-            score: scoreVar,
-        });
     }
 }

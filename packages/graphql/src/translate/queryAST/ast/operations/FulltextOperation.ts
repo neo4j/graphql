@@ -63,7 +63,7 @@ export class FulltextOperation extends ReadOperation {
         const extraProjectionColumns: Array<[Cypher.Expr, Cypher.Variable]> = [];
 
         if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(context.returnVariable);
+            const scoreProjection = this.scoreField.getProjectionField();
 
             extraProjectionColumns.push([scoreProjection.score, new Cypher.NamedVariable("score")]);
         }
@@ -83,7 +83,7 @@ export class FulltextOperation extends ReadOperation {
         const returnClause = super.getReturnStatement(context, returnVariable);
 
         if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(returnVariable);
+            const scoreProjection = this.scoreField.getProjectionField();
 
             returnClause.addColumns([scoreProjection.score, "score"]);
         }

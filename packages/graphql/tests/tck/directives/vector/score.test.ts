@@ -21,13 +21,15 @@ import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 import { testVector } from "./shared-vector";
 
+const queryName = "moviesVectorQuery";
+
 describe("Cypher -> vector -> Score", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector" }]) {
+            type Movie @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }]) {
                 title: String!
             }
         `;
@@ -40,10 +42,14 @@ describe("Cypher -> vector -> Score", () => {
     test("with score filtering", async () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
-                moviesVectorMovie_index(vector: $vector, where: { score: { min: 0.5 } }) {
-                    score
-                    movie {
-                        title
+                ${queryName}(vector: $vector, where: { score: { min: 0.5 } }) {
+                    moviesConnection {
+                        edges {
+                            node {
+                                title
+                            }
+                            score
+                        }
                     }
                 }
             }
@@ -58,7 +64,15 @@ describe("Cypher -> vector -> Score", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND var1 >= $param2)
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -202,10 +216,14 @@ describe("Cypher -> vector -> Score", () => {
     test("with score sorting", async () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
-                moviesVectorMovie_index(vector: $vector, sort: { score: ASC }) {
-                    score
-                    movie {
-                        title
+                ${queryName}(vector: $vector, sort: { score: ASC }) {
+                    moviesConnection {
+                        edges {
+                            node {
+                                title
+                            }
+                            score
+                        }
                     }
                 }
             }
@@ -220,9 +238,15 @@ describe("Cypher -> vector -> Score", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            WITH *
-            ORDER BY var1 ASC
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -365,10 +389,14 @@ describe("Cypher -> vector -> Score", () => {
     test("with score and normal sorting", async () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
-                moviesVectorMovie_index(vector: $vector, sort: [{ score: ASC }, { movie: { title: DESC } }]) {
-                    score
-                    movie {
-                        title
+                ${queryName}(vector: $vector, sort: [{ score: ASC }, { movie: { title: DESC } }]) {
+                    moviesConnection {
+                        edges {
+                            node {
+                                title
+                            }
+                            score
+                        }
                     }
                 }
             }
@@ -383,9 +411,15 @@ describe("Cypher -> vector -> Score", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            WITH *
-            ORDER BY var1 ASC, this0.title DESC
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

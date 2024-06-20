@@ -49,11 +49,11 @@ export const vectorDirective = new GraphQLDirective({
                             provider: {
                                 type: GraphQLString,
                             },
-                            callback: {
-                                description:
-                                    "The name of the callback function that will be used to populate the fields values.",
-                                type: GraphQLString,
-                            },
+                            // callback: {
+                            //     description:
+                            //         "The name of the callback function that will be used to populate the fields values.",
+                            //     type: GraphQLString,
+                            // },
                         },
                     })
                 )

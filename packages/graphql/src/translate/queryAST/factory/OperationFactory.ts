@@ -339,7 +339,7 @@ export class OperationsFactory {
             });
             operation.addFilters(...filters);
         } else {
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs, context);
             operation.addFilters(...filters);
         }
 

@@ -22,6 +22,16 @@ import { generate } from "randomstring";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../../../utils/tests-helper";
 
+const queryName = "myQueryName";
+
+// CREATE VECTOR INDEX moviePlots IF NOT EXISTS
+// FOR (m:Movie)
+// ON m.embedding
+// OPTIONS {indexConfig: {
+//  `vector.dimensions`: 1536,
+//  `vector.similarity_function`: 'cosine'
+// }}
+
 describe("@vector directive - indexes constraints", () => {
     let driver: Driver;
     const testHelper = new TestHelper();
@@ -76,7 +86,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
             }
         `;
@@ -120,8 +130,8 @@ describe("@vector directive - indexes constraints", () => {
         expect(record?.properties).toEqual(["title"]);
 
         await testHelper.executeCypher(`
-                CREATE (:${type.name} { title: "${title}" })
-            `);
+            CREATE (:${type.name} { title: "${title}" })
+        `);
     });
 
     test("should create index if it doesn't exist (using node label)", async () => {
@@ -135,7 +145,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) @node(labels: ["${label}"]) {
                 title: String!
             }
         `;
@@ -190,7 +200,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) @node(labels: ["${label}"]) {
                 title: String! @alias(property: "newTitle")
             }
         `;
@@ -233,8 +243,8 @@ describe("@vector directive - indexes constraints", () => {
         expect(record?.properties).toEqual(["newTitle"]);
 
         await testHelper.executeCypher(`
-                CREATE (:${label} { newTitle: "${title}" })
-            `);
+            CREATE (:${label} { newTitle: "${title}" })
+        `);
     });
 
     test("should throw when missing index", async () => {
@@ -247,7 +257,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
             }
         `;
@@ -273,7 +283,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
                 description: String!
             }
@@ -307,7 +317,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
                 description: String! @alias(property: "${alias}")
             }
@@ -320,7 +330,7 @@ describe("@vector directive - indexes constraints", () => {
             [
                 `CREATE VECTOR INDEX ${indexName}`,
                 `IF NOT EXISTS FOR (n:${type.name})`,
-                `ON EACH [n.title, n.description]`,
+                // `ON EACH [n.title, n.description]`, // TODO: Change to propertyName
             ].join(" ")
         );
 
@@ -346,7 +356,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
             }
         `;
@@ -414,7 +424,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "title", queryName: "${queryName}" }]) {
                 title: String!
                 description: String!
             }
@@ -425,8 +435,8 @@ describe("@vector directive - indexes constraints", () => {
 
         await testHelper.executeCypher(
             `CREATE VECTOR INDEX ${indexName}
-                IF NOT EXISTS FOR (n:${type.name})
-                ON EACH [n.title]`
+            IF NOT EXISTS FOR (n:${type.name})
+            ON EACH [n.title]`
         );
 
         await expect(
@@ -451,7 +461,7 @@ describe("@vector directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", fields: ["id"] }]) {
+            type ${type.name} @vector(indexes: [{ indexName: "${indexName}", propertyName: "id", queryName: "${queryName}" }]) {
                 id: ID!
             }
         `;

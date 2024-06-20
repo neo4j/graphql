@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
@@ -67,8 +66,11 @@ export class VectorFactory {
         const scoreFields = findFieldsByNameInFieldsByTypeNameField(edgeFields, "score");
 
         // We only care about the first score field
-        if (scoreFields.length > 0 && context.vector) {
-            scoreField = this.createVectorScoreField(scoreFields[0]!, context.vector.scoreVariable);
+        if (scoreFields.length > 0 && scoreFields[0] && context.vector) {
+            scoreField = new ScoreField({
+                alias: scoreFields[0].alias,
+                score: context.vector.scoreVariable,
+            });
         }
 
         const operation = new VectorOperation({
@@ -148,12 +150,5 @@ export class VectorFactory {
         //     phrase: indexInput.phrase,
         //     score: new Cypher.Variable(),
         // };
-    }
-
-    private createVectorScoreField(field: ResolveTree, scoreVar: Cypher.Variable): ScoreField {
-        return new ScoreField({
-            alias: field.alias,
-            score: scoreVar,
-        });
     }
 }

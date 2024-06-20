@@ -28,9 +28,11 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../../../utils/tests-helper";
 
+const queryName = "myQueryName";
+
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
-        type ${personType.name} @vector(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }]) {
+        type ${personType.name} @vector(indexes: [{ indexName: "${personType.name}Index", propertyName: "name", queryName: "${queryName}" }]) {
             name: String!
             born: Int!
             actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -92,7 +94,7 @@ describe("@vector directive", () => {
         let personType: UniqueType;
         let movieType: UniqueType;
         let personTypeLowerFirst: string;
-        let queryType: string;
+        let connectionType: string;
 
         const person1 = {
             name: "this is a name",
@@ -126,7 +128,7 @@ describe("@vector directive", () => {
 
             personType = testHelper.createUniqueType("Person");
             movieType = testHelper.createUniqueType("Movie");
-            queryType = `${personType.plural}Vector${upperFirst(personType.name)}Index`;
+            connectionType = `${movieType.plural}Connection`;
             personTypeLowerFirst = personType.singular;
 
             const typeDefs = generatedTypeDefs(personType, movieType);
@@ -166,31 +168,35 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
+                    ${queryName}(phrase: "a different name") {
+                        ${connectionType}{
+                            edges {
+                                score
+                                node {
+                                    name
+                                }
+                            }
+                        }
                     }
                 }
             `;
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual({
                 name: person2.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual({
                 name: person1.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[2][SCORE_FIELD]
             );
         });
 
@@ -203,31 +209,33 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "some name") {
+                    ${queryName}(phrase: "some name") {
+                    {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
-                        } 
+                        }
+                        }
                     }
                 }
             `;
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual({
                 name: person1.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person2.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[2][SCORE_FIELD]
             );
         });
 
@@ -240,9 +248,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "should not match") {
+                    ${queryName}(phrase: "should not match") {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -251,7 +259,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([]);
+            expect(gqlResult.data?.[queryName]).toEqual([]);
         });
 
         test("Filters node to single result", async () => {
@@ -263,9 +271,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -274,9 +282,9 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Filters node to multiple results", async () => {
@@ -288,8 +296,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { born_GTE: ${person2.born} } }) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { born_GTE: ${person2.born} } }) {
+                        node {
                             name
                         } 
                     }
@@ -298,7 +306,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: {
                         name: person2.name,
@@ -321,9 +329,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name_CONTAINS: "not in anything!!" } }) {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name_CONTAINS: "not in anything!!" } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -333,7 +341,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([]);
+            expect(gqlResult.data?.[queryName]).toEqual([]);
         });
 
         test("Filters score to single result", async () => {
@@ -345,9 +353,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { min: 0.5 } }) {
+                    ${queryName}(phrase: "a different name", where: { score: { min: 0.5 } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -356,9 +364,9 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Filters score to multiple results", async () => {
@@ -370,9 +378,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
+                    ${queryName}(phrase: "a different name", where: { score: { max: 0.5 } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -381,12 +389,12 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person3.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst].name).toBe(person3.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(2);
         });
 
         test("Filters score to no results", async () => {
@@ -398,9 +406,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { min: 100 } }) {
+                    ${queryName}(phrase: "a different name", where: { score: { min: 100 } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -409,7 +417,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([]);
+            expect(gqlResult.data?.[queryName]).toEqual([]);
         });
 
         test("Filters score with combined min and max", async () => {
@@ -421,9 +429,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
+                    ${queryName}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -432,9 +440,9 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Filters score with max score of 0", async () => {
@@ -446,9 +454,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { max: 0 } }) {
+                    ${queryName}(phrase: "a different name", where: { score: { max: 0 } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -457,7 +465,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([]);
+            expect(gqlResult.data?.[queryName]).toEqual([]);
         });
 
         test("Throws error if score filtered with a non-number", async () => {
@@ -470,9 +478,9 @@ describe("@vector directive", () => {
             const nonNumberScoreInput = "not a number";
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { max: "${nonNumberScoreInput}" } }) {
+                    ${queryName}(phrase: "a different name", where: { score: { max: "${nonNumberScoreInput}" } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -494,9 +502,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             actedInMovies(options: { sort: [{ released: DESC }] }) {
                                 title
@@ -509,15 +517,15 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].actedInMovies).toEqual([
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].actedInMovies).toEqual([
                 {
                     title: movie1.title,
                     released: movie1.released,
                 },
             ]);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].actedInMovies).toEqual([
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst].actedInMovies).toEqual([
                 {
                     title: movie2.title,
                     released: movie2.released,
@@ -527,10 +535,10 @@ describe("@vector directive", () => {
                     released: movie1.released,
                 },
             ]);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(2);
         });
 
         test("Filters a related node to a single value", async () => {
@@ -542,8 +550,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
+                        node {
                             name
                             actedInMovies {
                                 title
@@ -556,7 +564,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: {
                         name: person2.name,
@@ -580,9 +588,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             actedInMovies {
                                 title
@@ -595,7 +603,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([]);
+            expect(gqlResult.data?.[queryName]).toEqual([]);
         });
 
         test("Throws an error for a non-string phrase", async () => {
@@ -608,9 +616,9 @@ describe("@vector directive", () => {
             const nonStringValue = '["not", "a", "string"]';
             const query = `
                 query {
-                    ${queryType}(phrase: ${nonStringValue}) {
+                    ${queryName}(phrase: ${nonStringValue}) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             actedInMovies {
                                 title
@@ -637,9 +645,9 @@ describe("@vector directive", () => {
             const invalidField = "not_a_field";
             const query = `
                 query {
-                    ${queryType}(phrase: "some name", where: { ${personTypeLowerFirst}: { ${invalidField}: "invalid" } }) {
+                    ${queryName}(phrase: "some name", where: { ${personTypeLowerFirst}: { ${invalidField}: "invalid" } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             actedInMovies {
                                 title
@@ -665,9 +673,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", sort: { score: ASC }) {
+                    ${queryName}(phrase: "a different name", sort: { score: ASC }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -676,14 +684,14 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person2.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryName] as any[])[2][personTypeLowerFirst].name).toBe(person2.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[2][SCORE_FIELD]
             );
         });
 
@@ -696,9 +704,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", sort: [{ ${personTypeLowerFirst}: { name: ASC } }]) {
+                    ${queryName}(phrase: "a different name", sort: [{ ${personTypeLowerFirst}: { name: ASC } }]) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                         } 
                     }
@@ -707,12 +715,12 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person2.name);
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst].name).toBe(person2.name);
+            expect((gqlResult.data?.[queryName] as any[])[2][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryName] as any[])[2][SCORE_FIELD]).toBeNumber();
         });
 
         test("Unordered sorting", async () => {
@@ -724,8 +732,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC, name: DESC } }) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC, name: DESC } }) {
+                        node {
                             name
                             born
                         } 
@@ -735,7 +743,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: person1,
                 },
@@ -773,8 +781,8 @@ describe("@vector directive", () => {
 
             const query1 = `
                 query {
-                    ${queryType}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { born: DESC } }, { ${personTypeLowerFirst}: { name: ASC } }]) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { born: DESC } }, { ${personTypeLowerFirst}: { name: ASC } }]) {
+                        node {
                             name
                             born
                         } 
@@ -783,8 +791,8 @@ describe("@vector directive", () => {
             `;
             const query2 = `
                 query {
-                    ${queryType}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { ${personTypeLowerFirst}: { born: DESC } }]) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { ${personTypeLowerFirst}: { born: DESC } }]) {
+                        node {
                             name
                             born
                         } 
@@ -796,11 +804,11 @@ describe("@vector directive", () => {
 
             expect(gqlResult1.errors).toBeFalsy();
             expect(gqlResult2.errors).toBeFalsy();
-            expect(gqlResult1.data?.[queryType]).toEqual([
+            expect(gqlResult1.data?.[queryName]).toEqual([
                 { [personTypeLowerFirst]: person2 },
                 { [personTypeLowerFirst]: person1 },
             ]);
-            expect(gqlResult2.data?.[queryType]).toEqual([
+            expect(gqlResult2.data?.[queryName]).toEqual([
                 { [personTypeLowerFirst]: person1 },
                 { [personTypeLowerFirst]: person2 },
             ]);
@@ -834,9 +842,9 @@ describe("@vector directive", () => {
 
             const query1 = `
                 query {
-                    ${queryType}(phrase: "b d", sort: [{ score: DESC }, { ${personTypeLowerFirst}: { name: ASC } }]) {
+                    ${queryName}(phrase: "b d", sort: [{ score: DESC }, { ${personTypeLowerFirst}: { name: ASC } }]) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             born
                         } 
@@ -845,9 +853,9 @@ describe("@vector directive", () => {
             `;
             const query2 = `
                 query {
-                    ${queryType}(phrase: "b d", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { score: DESC }]) {
+                    ${queryName}(phrase: "b d", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { score: DESC }]) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             born
                         } 
@@ -859,14 +867,14 @@ describe("@vector directive", () => {
 
             expect(gqlResult1.errors).toBeFalsy();
             expect(gqlResult2.errors).toBeFalsy();
-            expect((gqlResult1.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult1.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult1.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person1);
-            expect((gqlResult1.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult2.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person1);
-            expect((gqlResult2.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult2.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult2.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult1.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual(person2);
+            expect((gqlResult1.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult1.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual(person1);
+            expect((gqlResult1.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult2.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual(person1);
+            expect((gqlResult2.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult2.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual(person2);
+            expect((gqlResult2.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeNumber();
         });
 
         test("Sort on nested field", async () => {
@@ -878,8 +886,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a name") {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a name") {
+                        node {
                             name
                             actedInMovies(options: { sort: [{ released: ASC }] }) {
                                 title
@@ -892,7 +900,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: {
                         name: person1.name,
@@ -942,9 +950,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", sort: { score: ASC }, where: { score: { min: 0.2 } }) {
+                    ${queryName}(phrase: "a name", sort: { score: ASC }, where: { score: { min: 0.2 } }) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             born
                         } 
@@ -954,12 +962,12 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person1);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual(person2);
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual(person1);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(2);
         });
 
         test("Limiting is possible", async () => {
@@ -971,8 +979,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", limit: 2) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a name", limit: 2) {
+                        node {
                             name
                             born
                         } 
@@ -982,7 +990,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryName]).toBeArrayOfSize(2);
         });
 
         test("Offsetting is possible", async () => {
@@ -994,8 +1002,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", offset: 2) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a name", offset: 2) {
+                        node {
                             name
                             born
                         } 
@@ -1005,7 +1013,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: person3,
                 },
@@ -1021,9 +1029,9 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", limit: 1, offset: 1) {
+                    ${queryName}(phrase: "a name", limit: 1, offset: 1) {
                         score
-                        ${personTypeLowerFirst} {
+                        node {
                             name
                             born
                         } 
@@ -1033,9 +1041,9 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual(person2);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Sorting by score when the score is not returned", async () => {
@@ -1047,8 +1055,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", sort: { score: ASC }) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a different name", sort: { score: ASC }) {
+                        node {
                             name
                         } 
                     }
@@ -1057,7 +1065,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: {
                         name: person3.name,
@@ -1085,7 +1093,7 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC } }) {
+                    ${queryName}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC } }) {
                         score
                     }
                 }
@@ -1093,11 +1101,11 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toBeUndefined();
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toBeUndefined();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toBeUndefined();
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst]).toBeUndefined();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(2);
         });
 
         test("Filters by node when node is not returned", async () => {
@@ -1109,7 +1117,7 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
+                    ${queryName}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
                         score
                     }
                 }
@@ -1117,9 +1125,9 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toBeUndefined();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toBeUndefined();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Filters by score when no score is returned", async () => {
@@ -1131,8 +1139,8 @@ describe("@vector directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
-                        ${personTypeLowerFirst} {
+                    ${queryName}(phrase: "a different name", where: { score: { max: 0.5 } }) {
+                        node {
                             name
                         } 
                     }
@@ -1141,7 +1149,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult.data?.[queryName]).toEqual([
                 {
                     [personTypeLowerFirst]: {
                         name: person1.name,
@@ -1160,7 +1168,7 @@ describe("@vector directive", () => {
         let personType: UniqueType;
         let movieType: UniqueType;
         let personTypeLowerFirst: string;
-        let queryType: string;
+        let queryName: string;
 
         const person1 = {
             name: "this is a name",
@@ -1194,7 +1202,7 @@ describe("@vector directive", () => {
 
             personType = testHelper.createUniqueType("Person");
             movieType = testHelper.createUniqueType("Movie");
-            queryType = `${personType.plural}Vector${upperFirst(personType.name)}Index`;
+            queryName = `${personType.plural}Vector${upperFirst(personType.name)}Index`;
             personTypeLowerFirst = personType.singular;
 
             await testHelper.executeCypher(
@@ -1253,7 +1261,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name") {
+                        ${queryName}(phrase: "a name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1267,11 +1275,11 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual({
                 name: person1.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Works with @auth 'where' when unauthenticated", async () => {
@@ -1314,7 +1322,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name") {
+                        ${queryName}(phrase: "a name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1328,7 +1336,7 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(0);
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(0);
         });
 
         test("Works with @auth 'roles' when authenticated", async () => {
@@ -1375,7 +1383,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name") {
+                        ${queryName}(phrase: "a name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1389,22 +1397,22 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual({
                 name: person1.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual({
                 name: person2.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[2][SCORE_FIELD]
             );
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(3);
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(3);
         });
 
         test("Works with @auth 'roles' when unauthenticated", async () => {
@@ -1451,7 +1459,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name") {
+                        ${queryName}(phrase: "a name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1507,7 +1515,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${person2.name}" } }) {
+                        ${queryName}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${person2.name}" } }) {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1521,9 +1529,9 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
-            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect(gqlResult.data?.[queryName] as any[]).toBeArrayOfSize(1);
         });
 
         test("Works with @auth 'allow' when one match", async () => {
@@ -1566,7 +1574,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name") {
+                        ${queryName}(phrase: "a name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1626,7 +1634,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name") {
+                        ${queryName}(phrase: "a name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1650,7 +1658,7 @@ describe("@vector directive", () => {
             }
 
             const moveTypeLowerFirst = movieType.singular;
-            queryType = `${movieType.plural}Vector${upperFirst(movieType.name)}Index`;
+            queryName = `${movieType.plural}Vector${upperFirst(movieType.name)}Index`;
             const typeDefs = `
                     type ${personType.name} {
                         name: String!
@@ -1678,7 +1686,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "some description") {
+                        ${queryName}(phrase: "some description") {
                             score
                             ${moveTypeLowerFirst} {
                                 title
@@ -1690,16 +1698,16 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][moveTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][moveTypeLowerFirst]).toEqual({
                 title: movie1.title,
                 description: movie1.description,
             });
-            expect((gqlResult.data?.[queryType] as any[])[1][moveTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[1][moveTypeLowerFirst]).toEqual({
                 title: movie2.title,
                 description: movie2.description,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
         });
 
@@ -1712,7 +1720,7 @@ describe("@vector directive", () => {
 
             personType = testHelper.createUniqueType("Person");
             personTypeLowerFirst = personType.singular;
-            queryType = "CustomQueryName";
+            queryName = "CustomQueryName";
 
             await testHelper.executeCypher(
                 `
@@ -1727,7 +1735,7 @@ describe("@vector directive", () => {
             );
 
             const typeDefs = `
-                    type ${personType.name} @vector(indexes: [{ queryName: "${queryType}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
+                    type ${personType.name} @vector(indexes: [{ queryName: "${queryName}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
                         name: String!
                         born: Int!
                     }
@@ -1745,7 +1753,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a different name") {
+                        ${queryName}(phrase: "a different name") {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1756,20 +1764,20 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][personTypeLowerFirst]).toEqual({
                 name: person2.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[1][personTypeLowerFirst]).toEqual({
                 name: person1.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[2][SCORE_FIELD]
             );
         });
 
@@ -1781,9 +1789,9 @@ describe("@vector directive", () => {
             }
 
             const moveTypeLowerFirst = movieType.singular;
-            queryType = "SomeCustomQueryName";
+            queryName = "SomeCustomQueryName";
             const typeDefs = `
-                    type ${movieType.name} @vector(indexes: [{ queryName: "${queryType}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                    type ${movieType.name} @vector(indexes: [{ queryName: "${queryName}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
                         title: String!
                         description: String
                         released: Int!
@@ -1802,7 +1810,7 @@ describe("@vector directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "some description") {
+                        ${queryName}(phrase: "some description") {
                             score
                             ${moveTypeLowerFirst} {
                                 title
@@ -1814,16 +1822,16 @@ describe("@vector directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][moveTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[0][moveTypeLowerFirst]).toEqual({
                 title: movie1.title,
                 description: movie1.description,
             });
-            expect((gqlResult.data?.[queryType] as any[])[1][moveTypeLowerFirst]).toEqual({
+            expect((gqlResult.data?.[queryName] as any[])[1][moveTypeLowerFirst]).toEqual({
                 title: movie2.title,
                 description: movie2.description,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+            expect((gqlResult.data?.[queryName] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryName] as any[])[1][SCORE_FIELD]
             );
         });
 
@@ -1836,8 +1844,8 @@ describe("@vector directive", () => {
 
             movieType = testHelper.createUniqueType("Movie");
             const movieTypeLowerFirst = movieType.singular;
-            const queryType1 = "CustomQueryName";
-            const queryType2 = "CustomQueryName2";
+            const queryName1 = "CustomQueryName";
+            const queryName2 = "CustomQueryName2";
 
             await testHelper.executeCypher(
                 `
@@ -1851,8 +1859,8 @@ describe("@vector directive", () => {
 
             const typeDefs = `
                     type ${movieType.name} @vector(indexes: [
-                            { queryName: "${queryType1}", indexName: "${movieType.name}CustomIndex", fields: ["title"] },
-                            { queryName: "${queryType2}", indexName: "${movieType.name}CustomIndex2", fields: ["description"] }
+                            { queryName: "${queryName1}", indexName: "${movieType.name}CustomIndex", fields: ["title"] },
+                            { queryName: "${queryName2}", indexName: "${movieType.name}CustomIndex2", fields: ["description"] }
                         ]) {
                         title: String!
                         description: String!
@@ -1871,7 +1879,7 @@ describe("@vector directive", () => {
 
             const query1 = `
                     query {
-                        ${queryType1}(phrase: "some title") {
+                        ${queryName1}(phrase: "some title") {
                             score
                             ${movieTypeLowerFirst} {
                                 title
@@ -1881,7 +1889,7 @@ describe("@vector directive", () => {
                 `;
             const query2 = `
                     query {
-                        ${queryType2}(phrase: "some description") {
+                        ${queryName2}(phrase: "some description") {
                             score
                             ${movieTypeLowerFirst} {
                                 title
@@ -1893,25 +1901,25 @@ describe("@vector directive", () => {
             const gqlResult2 = await testHelper.executeGraphQL(query2);
 
             expect(gqlResult1.errors).toBeFalsy();
-            expect((gqlResult1.data?.[queryType1] as any[])[0][movieTypeLowerFirst]).toEqual({
+            expect((gqlResult1.data?.[queryName1] as any[])[0][movieTypeLowerFirst]).toEqual({
                 title: movie1.title,
             });
-            expect((gqlResult1.data?.[queryType1] as any[])[1][movieTypeLowerFirst]).toEqual({
+            expect((gqlResult1.data?.[queryName1] as any[])[1][movieTypeLowerFirst]).toEqual({
                 title: movie2.title,
             });
-            expect((gqlResult1.data?.[queryType1] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult1.data?.[queryType1] as any[])[1][SCORE_FIELD]
+            expect((gqlResult1.data?.[queryName1] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult1.data?.[queryName1] as any[])[1][SCORE_FIELD]
             );
 
             expect(gqlResult2.errors).toBeFalsy();
-            expect((gqlResult2.data?.[queryType2] as any[])[0][movieTypeLowerFirst]).toEqual({
+            expect((gqlResult2.data?.[queryName2] as any[])[0][movieTypeLowerFirst]).toEqual({
                 title: movie1.title,
             });
-            expect((gqlResult2.data?.[queryType2] as any[])[1][movieTypeLowerFirst]).toEqual({
+            expect((gqlResult2.data?.[queryName2] as any[])[1][movieTypeLowerFirst]).toEqual({
                 title: movie2.title,
             });
-            expect((gqlResult2.data?.[queryType2] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult2.data?.[queryType2] as any[])[1][SCORE_FIELD]
+            expect((gqlResult2.data?.[queryName2] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult2.data?.[queryName2] as any[])[1][SCORE_FIELD]
             );
         });
     });

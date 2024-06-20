@@ -102,7 +102,10 @@ export class VectorOperation extends ConnectionReadOperation {
                 nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
             }
 
-            nodeAndRelationshipMap.set("score", nestedContext.neo4jGraphQLContext.vector.scoreVariable);
+            const scoreProjection = this.scoreField.getProjectionField();
+            for (const [key, value] of Object.entries(scoreProjection)) {
+                nodeAndRelationshipMap.set(key, value);
+            }
 
             return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
                 Cypher.size(edgesVar),
