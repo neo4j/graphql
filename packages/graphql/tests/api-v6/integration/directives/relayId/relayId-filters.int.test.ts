@@ -31,7 +31,7 @@ describe("RelayId projection with filters", () => {
     const Actor = testHelper.createUniqueType("Actor");
 
     beforeAll(async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 dbId: ID! @id @unique @relayId
                 title: String!
@@ -77,7 +77,7 @@ describe("RelayId projection with filters", () => {
         const genreGlobalId = toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDatabaseID });
         const actorGlobalId = toGlobalId({ typeName: Actor.name, field: "dbId", id: actorDatabaseID });
 
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
             query {
                 ${Movie.plural}(where: {
                     edges: {
@@ -126,43 +126,45 @@ describe("RelayId projection with filters", () => {
         expect(connectionQueryResult.errors).toBeUndefined();
         expect(connectionQueryResult.data).toBeDefined();
 
-        expect(connectionQueryResult.data?.[Movie.plural]).toEqual({
-            connection: {
-                edges: [
-                    {
-                        node: {
-                            id: movieGlobalId,
-                            dbId: movieDatabaseID,
-                            title: "Movie1",
-                            genre: {
-                                connection: {
-                                    edges: [
-                                        {
-                                            node: {
-                                                id: genreGlobalId,
-                                                dbId: genreDatabaseID,
-                                                name: "Action",
+        expect(connectionQueryResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                id: movieGlobalId,
+                                dbId: movieDatabaseID,
+                                title: "Movie1",
+                                genre: {
+                                    connection: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    id: genreGlobalId,
+                                                    dbId: genreDatabaseID,
+                                                    name: "Action",
+                                                },
                                             },
-                                        },
-                                    ],
+                                        ],
+                                    },
                                 },
-                            },
-                            actors: {
-                                connection: {
-                                    edges: [
-                                        {
-                                            node: {
-                                                id: actorGlobalId,
-                                                dbId: actorDatabaseID,
-                                                name: "Keanu",
+                                actors: {
+                                    connection: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    id: actorGlobalId,
+                                                    dbId: actorDatabaseID,
+                                                    name: "Keanu",
+                                                },
                                             },
-                                        },
-                                    ],
+                                        ],
+                                    },
                                 },
                             },
                         },
-                    },
-                ],
+                    ],
+                },
             },
         });
     });

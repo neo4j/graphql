@@ -118,11 +118,12 @@ class StaticFilterTypes {
     }
 
     public get globalIdWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("GlobalIdWhere", (itc) => {
+        return this.schemaBuilder.getOrCreateInputType("GlobalIdWhere", (_itc) => {
             return {
                 fields: {
-                    // ...this.createBooleanOperators(itc),
                     equals: GraphQLString,
+                    // TODO: Boolean fields and IN operator:
+                    // ...this.createBooleanOperators(itc),
                     // in: toGraphQLList(toGraphQLNonNull(GraphQLString)),
                 },
             };
