@@ -19,9 +19,10 @@
 
 import { cursorToOffset } from "graphql-relay";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { Attribute } from "../../schema-model/attribute/Attribute";
 import type { LimitAnnotation } from "../../schema-model/annotation/LimitAnnotation";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Relationship } from "../../schema-model/relationship/Relationship";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -205,7 +206,15 @@ export class ReadOperationFactory {
 
         return filterTruthy(
             Object.values(propertiesTree.fields).map((rawField) => {
-                const attribute = target.findAttribute(rawField.name);
+                let attribute: Attribute | undefined;
+
+                const isGlobalId = rawField.name === "id" && target instanceof ConcreteEntity && target.globalIdField;
+                if (isGlobalId) {
+                    attribute = target.globalIdField;
+                } else {
+                    attribute = target.findAttribute(rawField.name);
+                }
+
                 if (attribute) {
                     const field = rawField as GraphQLTreeLeafField;
                     const attributeAdapter = new AttributeAdapter(attribute);

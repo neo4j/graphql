@@ -117,6 +117,19 @@ class StaticFilterTypes {
         });
     }
 
+    public get globalIdWhere(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType("GlobalIdWhere", (_itc) => {
+            return {
+                fields: {
+                    equals: GraphQLString,
+                    // TODO: Boolean fields and IN operator:
+                    // ...this.createBooleanOperators(itc),
+                    // in: toGraphQLList(toGraphQLNonNull(GraphQLString)),
+                },
+            };
+        });
+    }
+
     public get dateWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("DateWhere", (itc) => {
             return {

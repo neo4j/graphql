@@ -33,6 +33,7 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { idResolver } from "../../../schema/resolvers/field/id";
 import { numericalResolver } from "../../../schema/resolvers/field/numerical";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { generateGlobalIdResolver } from "../../resolvers/global-id-resolver";
 import type { TopLevelEntityTypeNames } from "../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { FieldDefinition, GraphQLResolver, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
@@ -184,7 +185,22 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                 },
             ];
         });
-        return Object.fromEntries(entries);
+
+        const fields = Object.fromEntries(entries);
+        this.addGlobalIdField(fields);
+        return fields;
+    }
+
+    private addGlobalIdField(fields: Record<string, FieldDefinition>): void {
+        const globalIdField = this.entity.globalIdField;
+        if (globalIdField) {
+            fields["id"] = {
+                type: "ID!",
+                args: {},
+                description: "",
+                resolve: generateGlobalIdResolver({ entity: this.entity }),
+            };
+        }
     }
 
     private getRelationshipFields(): Record<string, { type: ObjectTypeComposer; args: Record<string, any> }> {

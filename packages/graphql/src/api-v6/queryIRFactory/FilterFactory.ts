@@ -18,6 +18,7 @@
  */
 
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { Attribute } from "../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -29,6 +30,7 @@ import { LogicalFilter } from "../../translate/queryAST/ast/filters/LogicalFilte
 import { DurationFilter } from "../../translate/queryAST/ast/filters/property-filters/DurationFilter";
 import { PropertyFilter } from "../../translate/queryAST/ast/filters/property-filters/PropertyFilter";
 import { SpatialFilter } from "../../translate/queryAST/ast/filters/property-filters/SpatialFilter";
+import { fromGlobalId } from "../../utils/global-ids";
 import { getFilterOperator, getRelationshipOperator } from "./FilterOperators";
 import type {
     GraphQLAttributeFilters,
@@ -161,8 +163,14 @@ export class FilterFactory {
         where?: Record<string, GraphQLNodeFilters>;
     }): Filter[] {
         return Object.entries(where).flatMap(([fieldName, filters]) => {
-            // TODO: Logical filters here
-            const attribute = entity.findAttribute(fieldName);
+            let attribute: Attribute | undefined;
+            if (fieldName === "id" && entity.globalIdField) {
+                attribute = entity.globalIdField;
+                filters = this.parseGlobalIdFilters(entity, filters);
+            } else {
+                attribute = entity.findAttribute(fieldName);
+            }
+
             if (attribute) {
                 const attributeAdapter = new AttributeAdapter(attribute);
                 // We need to cast for now because filters can be plain attribute or relationships, but the check is done by checking the findAttribute
@@ -176,6 +184,20 @@ export class FilterFactory {
             }
             return [];
         });
+    }
+
+    /** Transforms globalId filters into normal property filters */
+    private parseGlobalIdFilters(entity: ConcreteEntity, filters: GraphQLNodeFilters): GraphQLNodeFilters {
+        return Object.entries(filters).reduce((acc, [key, value]) => {
+            const relayIdData = fromGlobalId(value);
+            const { typeName, field, id } = relayIdData;
+
+            if (typeName !== entity.name || !field || !id) {
+                throw new Error(`Cannot query Relay Id on "${entity.name}"`);
+            }
+            acc[key] = id;
+            return acc;
+        }, {});
     }
 
     private createRelationshipFilters(relationship: Relationship, filters: RelationshipFilters): Filter[] {
@@ -219,6 +241,7 @@ export class FilterFactory {
             return this.createPropertyFilters(attributeAdapter, filters, "relationship");
         });
     }
+
     // TODO: remove adapter from here
     private createPropertyFilters(
         attribute: AttributeAdapter,

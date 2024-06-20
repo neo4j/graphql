@@ -29,6 +29,7 @@ import {
     Neo4jSpatialType,
     ScalarType,
 } from "../../../../schema-model/attribute/AttributeType";
+import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterTruthy } from "../../../../utils/utils";
 import type { RelatedEntityTypeNames } from "../../../schema-model/graphql-type-names/RelatedEntityTypeNames";
 import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
@@ -82,7 +83,17 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         return Object.fromEntries(fields);
     }
 
-    private attributeToPropertyFilter(attribute: Attribute): GraphQLScalarType | InputTypeComposer | undefined {
+    protected createGlobalIdFilters(entity: ConcreteEntity): Record<string, InputTypeComposer> {
+        const globalIdField = entity.globalIdField;
+        if (globalIdField) {
+            return {
+                id: this.schemaTypes.staticTypes.filters.globalIdWhere,
+            };
+        }
+        return {};
+    }
+
+    private attributeToPropertyFilter(attribute: Attribute): InputTypeComposer | undefined {
         const isList = attribute.type instanceof ListType;
         const wrappedType = isList ? attribute.type.ofType : attribute.type;
         if (wrappedType instanceof ScalarType) {

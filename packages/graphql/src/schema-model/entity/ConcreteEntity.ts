@@ -76,6 +76,15 @@ export class ConcreteEntity implements Entity {
         return new TopLevelEntityTypeNames(this);
     }
 
+    @Memoize()
+    get globalIdField(): Attribute | undefined {
+        for (const attr of this.attributes.values()) {
+            if (attr.annotations.relayId) {
+                return attr;
+            }
+        }
+    }
+
     public isConcreteEntity(): this is ConcreteEntity {
         return true;
     }
