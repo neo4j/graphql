@@ -18,7 +18,7 @@
  */
 
 import { type GraphQLResolveInfo } from "graphql";
-import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../../../schema-model/attribute/AttributeType";
@@ -107,8 +107,14 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
             const fields = this.getNodeFieldsDefinitions();
             const relationships = this.getRelationshipFields();
 
+            let iface: InterfaceTypeComposer | undefined;
+            if (this.entity.isConcreteEntity() && this.entity.globalIdField) {
+                iface = this.schemaTypes.staticTypes.globalNodeInterface;
+            }
+
             return {
                 fields: { ...fields, ...relationships },
+                iface,
             };
         });
     }

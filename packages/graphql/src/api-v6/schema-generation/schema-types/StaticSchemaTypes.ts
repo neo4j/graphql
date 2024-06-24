@@ -19,7 +19,13 @@
 
 import type { GraphQLInputType, GraphQLScalarType } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
-import type { EnumTypeComposer, InputTypeComposer, ListComposer, ObjectTypeComposer } from "graphql-compose";
+import type {
+    EnumTypeComposer,
+    InputTypeComposer,
+    InterfaceTypeComposer,
+    ListComposer,
+    ObjectTypeComposer,
+} from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import { CartesianPointDistance } from "../../../graphql/input-objects/CartesianPointDistance";
 import { CartesianPointInput } from "../../../graphql/input-objects/CartesianPointInput";
@@ -75,6 +81,16 @@ export class StaticSchemaTypes {
     @Memoize()
     public get sortDirection(): EnumTypeComposer {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);
+    }
+
+    public get globalNodeInterface(): InterfaceTypeComposer {
+        return this.schemaBuilder.getOrCreateInterfaceType("Node", () => {
+            return {
+                fields: {
+                    id: "ID!",
+                },
+            };
+        });
     }
 }
 

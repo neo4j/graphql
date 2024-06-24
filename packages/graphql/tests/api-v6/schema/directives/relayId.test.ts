@@ -54,7 +54,7 @@ describe("RelayId", () => {
               startsWith: ID
             }
 
-            type Movie {
+            type Movie implements Node {
               dbId: ID!
               id: ID!
               title: String
@@ -110,6 +110,10 @@ describe("RelayId", () => {
               title: StringWhere
             }
 
+            interface Node {
+              id: ID!
+            }
+
             type PageInfo {
               endCursor: String
               hasNextPage: Boolean
@@ -119,6 +123,8 @@ describe("RelayId", () => {
 
             type Query {
               movies(where: MovieOperationWhere): MovieOperation
+              \\"\\"\\"Fetches an object given its ID\\"\\"\\"
+              node(id: ID!): Node
             }
 
             enum SortDirection {

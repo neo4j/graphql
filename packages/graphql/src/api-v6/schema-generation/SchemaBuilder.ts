@@ -28,6 +28,7 @@ import type {
 import type {
     EnumTypeComposer,
     InputTypeComposer,
+    InterfaceTypeComposer,
     ListComposer,
     NonNullComposer,
     ObjectTypeComposer,
@@ -76,10 +77,33 @@ export class SchemaBuilder {
         onCreate: () => {
             fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>;
             description?: string;
+            iface?: InterfaceTypeComposer;
         }
     ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
+            const { fields, description, iface } = onCreate();
+            if (fields) {
+                tc.addFields(fields);
+            }
+            if (description) {
+                tc.setDescription(description);
+            }
+            if (iface) {
+                tc.addInterface(iface);
+            }
+        });
+    }
+
+    public getOrCreateInterfaceType(
+        name: string,
+        onCreate: () => {
+            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>;
+            description?: string;
+        }
+    ): InterfaceTypeComposer {
+        return this.composer.getOrCreateIFTC(name, (tc) => {
             const { fields, description } = onCreate();
+
             if (fields) {
                 tc.addFields(fields);
             }
@@ -144,17 +168,20 @@ export class SchemaBuilder {
         type,
         args,
         resolver,
+        description,
     }: {
         name: string;
-        type: ObjectTypeComposer;
-        args: Record<string, InputTypeComposer>;
+        type: ObjectTypeComposer | InterfaceTypeComposer;
+        args: Record<string, InputTypeComposer | string>;
         resolver: (...args: any[]) => any;
+        description?: string;
     }): void {
         this.composer.Query.addFields({
             [name]: {
                 type: type,
                 args,
                 resolve: resolver,
+                description,
             },
         });
     }
