@@ -110,6 +110,11 @@ export class SchemaBuilder {
             if (description) {
                 tc.setDescription(description);
             }
+
+            // This is used for global node, not sure if needed for other interfaces
+            tc.setResolveType((obj) => {
+                return obj.__resolveType;
+            });
         });
     }
 

@@ -3,7 +3,7 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { ConnectionQueryArgs } from "../../types";
 import { toGlobalId } from "../../utils/global-ids";
 
-/** Maps the database id to globalId*/
+/** Maps the database id field to globalId */
 export function generateGlobalIdFieldResolver({ entity }: { entity: ConcreteEntity }) {
     return function resolve(source, _args: ConnectionQueryArgs, _ctx, _info: GraphQLResolveInfo) {
         const globalAttribute = entity.globalIdField;

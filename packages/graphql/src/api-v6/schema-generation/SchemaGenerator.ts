@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
 import { generateReadResolver } from "../resolvers/read-resolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
@@ -47,9 +47,7 @@ export class SchemaGenerator {
     private generateGlobalNodeQuery(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
         for (const entity of schemaModel.entities.values()) {
             if (entity.isConcreteEntity() && entity.globalIdField) {
-                // const globalEntities = schemaModel.concreteEntities
-                //     .map((e) => new ConcreteEntityAdapter(e))
-                //     .filter((e) => e.isGlobalNode());
+                const globalEntities = schemaModel.concreteEntities.filter((e) => e.globalIdField);
 
                 this.schemaBuilder.addQueryField({
                     name: "node",
@@ -58,10 +56,7 @@ export class SchemaGenerator {
                         id: "ID!",
                     },
                     description: "Fetches an object given its ID",
-                    resolver(_root: any, args: any, context: Neo4jGraphQLTranslationContext, info: GraphQLResolveInfo) {
-                        // TODO
-                        return undefined;
-                    },
+                    resolver: generateGlobalNodeResolver({ globalEntities }),
                 });
                 return;
             }

@@ -217,6 +217,10 @@ export interface ConnectionQueryArgs {
     sort?: ConnectionSortArg[];
 }
 
+export interface GlobalNodeArgs {
+    id: string;
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
