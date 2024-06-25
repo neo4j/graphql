@@ -4,7 +4,7 @@ import type { ConnectionQueryArgs } from "../../types";
 import { toGlobalId } from "../../utils/global-ids";
 
 /** Maps the database id to globalId*/
-export function generateGlobalIdResolver({ entity }: { entity: ConcreteEntity }) {
+export function generateGlobalIdFieldResolver({ entity }: { entity: ConcreteEntity }) {
     return function resolve(source, _args: ConnectionQueryArgs, _ctx, _info: GraphQLResolveInfo) {
         const globalAttribute = entity.globalIdField;
         if (!globalAttribute) {

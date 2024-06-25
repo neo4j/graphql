@@ -33,7 +33,7 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { idResolver } from "../../../schema/resolvers/field/id";
 import { numericalResolver } from "../../../schema/resolvers/field/numerical";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { generateGlobalIdResolver } from "../../resolvers/global-id-resolver";
+import { generateGlobalIdFieldResolver } from "../../resolvers/global-id-field-resolver";
 import type { TopLevelEntityTypeNames } from "../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { FieldDefinition, GraphQLResolver, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
@@ -204,7 +204,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                 type: "ID!",
                 args: {},
                 description: "",
-                resolve: generateGlobalIdResolver({ entity: this.entity }),
+                resolve: generateGlobalIdFieldResolver({ entity: this.entity }),
             };
         }
     }
