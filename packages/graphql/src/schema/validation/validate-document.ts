@@ -225,7 +225,7 @@ function runValidationRulesOnFilteredDocument({
     if (filteredErrors.length) {
         throw filteredErrors;
     }
-}
+} 
 
 function validateDocument({
     document,

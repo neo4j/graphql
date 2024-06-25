@@ -18,6 +18,7 @@
  */
 
 import { cursorToOffset } from "graphql-relay";
+import type { Integer } from "neo4j-driver";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Attribute } from "../../schema-model/attribute/Attribute";
 import type { LimitAnnotation } from "../../schema-model/annotation/LimitAnnotation";
@@ -50,7 +51,6 @@ import type {
     GraphQLTreeSortElement,
 } from "./resolve-tree-parser/graphql-tree";
 
-import type { Integer } from "neo4j-driver";
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
     private filterFactory: FilterFactory;
