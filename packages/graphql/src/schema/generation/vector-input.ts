@@ -41,7 +41,7 @@ export function withVectorWhereInputType({
         description: `The input for filtering a Vector query on an index of ${concreteEntityAdapter.name}`,
         fields: {
             [SCORE_FIELD]: FloatWhere.name,
-            [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.whereInputTypeName,
+            ["node"]: concreteEntityAdapter.operations.whereInputTypeName,
         },
     });
     return whereInput;

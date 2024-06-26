@@ -22,6 +22,7 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { ScoreField } from "../../ast/fields/ScoreField";
+import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { VectorOptions } from "../../ast/operations/VectorOperation";
 import { VectorOperation } from "../../ast/operations/VectorOperation";
 import { VectorSelection } from "../../ast/selection/VectorSelection";
@@ -41,7 +42,8 @@ export class VectorFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): VectorOperation {
-        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+        const resolveTreeWhere: Record<string, any> =
+            this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree).node ?? {};
 
         checkEntityAuthentication({
             entity: entity.entity,
@@ -84,6 +86,11 @@ export class VectorFactory {
             entity.operations.vectorTypeNames.edge
         );
 
+        this.addVectorScoreFilter({
+            operation,
+            context,
+            whereArgs: resolveTreeWhere,
+        });
         this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
             target: entity,
             resolveTree: filteredResolveTree[0]!,
@@ -94,6 +101,25 @@ export class VectorFactory {
         });
 
         return operation;
+    }
+
+    private addVectorScoreFilter({
+        operation,
+        whereArgs,
+        context,
+    }: {
+        operation: VectorOperation;
+        whereArgs: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+    }): void {
+        if (whereArgs.score && context?.vector) {
+            const scoreFilter = new ScoreFilter({
+                scoreVariable: context.vector.scoreVariable,
+                min: whereArgs.score.min,
+                max: whereArgs.score.max,
+            });
+            operation.addFilters(scoreFilter);
+        }
     }
 
     public getVectorSelection(entity: ConcreteEntityAdapter, context: Neo4jGraphQLTranslationContext): VectorSelection {
@@ -111,6 +137,7 @@ export class VectorFactory {
             throw new Error("Vector context is missing");
         }
 
+        // TODO: improve this
         if (context.resolveTree.args.vector) {
             const vector = context.resolveTree.args.vector;
 

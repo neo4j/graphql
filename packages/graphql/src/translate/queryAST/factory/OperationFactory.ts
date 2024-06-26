@@ -150,6 +150,7 @@ export class OperationsFactory {
                 if (!isConcreteEntity(entity)) {
                     throw new Error("Vector operations are only supported on concrete entities");
                 }
+
                 const topLevelConnectionResolveTree =
                     this.connectionFactory.normalizeResolveTreeForTopLevelConnection(resolveTree);
                 return this.vectorFactory.createVectorOperation(entity, topLevelConnectionResolveTree, context);
