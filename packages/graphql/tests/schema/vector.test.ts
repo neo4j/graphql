@@ -130,13 +130,13 @@ describe("@vector schema", () => {
 
             \\"\\"\\"The input for sorting a Vector query on an index of Movie\\"\\"\\"
             input MovieVectorSort {
-              movie: MovieSort
+              node: MovieSort
               score: SortDirection
             }
 
             \\"\\"\\"The input for filtering a Vector query on an index of Movie\\"\\"\\"
             input MovieVectorWhere {
-              movie: MovieWhere
+              node: MovieWhere
               score: FloatWhere
             }
 

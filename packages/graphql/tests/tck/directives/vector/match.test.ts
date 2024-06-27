@@ -396,7 +396,7 @@ describe("Vector index match", () => {
     test("simple match with single property with sorting", async () => {
         const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
-                    ${queryName}(vector: $vector, sort: { movie: { title: DESC } }) {
+                    ${queryName}(vector: $vector, sort: { node: { title: DESC } }) {
                         moviesConnection {
                             edges {
                                 score
@@ -416,18 +416,20 @@ describe("Vector index match", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH collect({ node: this0, score: var1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this0, edge.score AS var1
-                    RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS this"
-            `);
+            "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                WITH *
+                ORDER BY this0.title DESC
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{

@@ -209,7 +209,7 @@ export class ConnectionFactory {
         let options: Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined;
         const target = isRelationshipEntity(entityOrRel) ? entityOrRel.target : entityOrRel;
         if (!isUnionEntity(target)) {
-            options = this.queryASTFactory.operationsFactory.getConnectionOptions(target, resolveTree.args);
+            options = this.getConnectionOptions(target, resolveTree.args);
         } else {
             options = resolveTree.args;
         }
@@ -288,7 +288,7 @@ export class ConnectionFactory {
         };
     }
 
-    public getConnectionOptions(
+    private getConnectionOptions(
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
         options: Record<string, any>
     ): Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined {

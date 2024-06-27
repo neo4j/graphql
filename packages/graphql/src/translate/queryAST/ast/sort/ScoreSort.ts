@@ -23,7 +23,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
 
-export class FulltextScoreSort extends Sort {
+export class ScoreSort extends Sort {
     private direction: Cypher.Order;
     private scoreVariable: Cypher.Variable;
 

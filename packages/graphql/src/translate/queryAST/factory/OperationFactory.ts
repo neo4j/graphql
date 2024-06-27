@@ -26,7 +26,7 @@ import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-a
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
+import type { GraphQLOptionsArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
@@ -151,9 +151,7 @@ export class OperationsFactory {
                     throw new Error("Vector operations are only supported on concrete entities");
                 }
 
-                const topLevelConnectionResolveTree =
-                    this.connectionFactory.normalizeResolveTreeForTopLevelConnection(resolveTree);
-                return this.vectorFactory.createVectorOperation(entity, topLevelConnectionResolveTree, context);
+                return this.vectorFactory.createVectorOperation(entity, resolveTree, context);
             }
             case "CONNECTION": {
                 if (!entity) {
@@ -232,13 +230,6 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
         return this.aggregateFactory.createAggregationOperation(entityOrRel, resolveTree, context);
-    }
-
-    public getConnectionOptions(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
-        options: Record<string, any>
-    ): Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined {
-        return this.connectionFactory.getConnectionOptions(entity, options);
     }
 
     public splitConnectionFields(rawFields: Record<string, ResolveTree>): {

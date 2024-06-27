@@ -236,7 +236,6 @@ export class ConnectionReadOperation extends Operation {
         const unwindClause = this.getUnwindClause(context, edgeVar, edgesVar);
 
         const edgeProjectionMap = this.createProjectionMapForEdge(context);
-
         const paginationWith = this.generateSortAndPaginationClause(context);
 
         return new Cypher.Call(

@@ -63,7 +63,7 @@ export function withVectorSortInputType({
         description: `The input for sorting a Vector query on an index of ${concreteEntityAdapter.name}`,
         fields: {
             [SCORE_FIELD]: SortDirection.name,
-            [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.sortInputTypeName,
+            node: concreteEntityAdapter.operations.sortInputTypeName,
         },
     });
     return whereInput;
