@@ -22,11 +22,11 @@ import { QueryOptions } from "../../../graphql/input-objects/QueryOptions";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { translateRead } from "../../../translate";
+import { isConcreteEntity } from "../../../translate/queryAST/utils/is-concrete-entity";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import { isConcreteEntity } from "../../../translate/queryAST/utils/is-concrete-entity";
 
 export function findResolver({ entityAdapter }: { entityAdapter: EntityAdapter }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
