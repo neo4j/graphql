@@ -97,16 +97,7 @@ export class VectorFactory {
             whereArgs: resolveTreeWhere,
         });
 
-        const sortArguments: Record<string, SortDirection>[] = (filteredResolveTree.args.sort ?? []) as any;
-        for (const sortArgument of sortArguments) {
-            if (sortArgument[SCORE_FIELD] && context?.vector) {
-                const scoreSort = new ScoreSort({
-                    scoreVariable: context.vector.scoreVariable,
-                    direction: sortArgument[SCORE_FIELD],
-                });
-                operation.addSort({ node: [scoreSort], edge: [] });
-            }
-        }
+        this.addScoreSort(operation, filteredResolveTree, context);
 
         this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
             target: entity,
@@ -118,6 +109,24 @@ export class VectorFactory {
         });
 
         return operation;
+    }
+
+    private addScoreSort(
+        operation: VectorOperation,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ) {
+        const sortArguments: Record<string, SortDirection>[] = (resolveTree.args.sort ?? []) as any;
+
+        for (const sortArgument of sortArguments) {
+            if (sortArgument[SCORE_FIELD] && context?.vector) {
+                const scoreSort = new ScoreSort({
+                    scoreVariable: context.vector.scoreVariable,
+                    direction: sortArgument[SCORE_FIELD],
+                });
+                operation.addSort({ node: [scoreSort], edge: [] });
+            }
+        }
     }
 
     private addVectorScoreFilter({
@@ -154,7 +163,6 @@ export class VectorFactory {
             throw new Error("Vector context is missing");
         }
 
-        // TODO: improve this
         if (context.resolveTree.args.vector) {
             const vector = context.resolveTree.args.vector;
 
