@@ -34,6 +34,7 @@ describe("@vector directive - Query", () => {
     let neoSchema: Neo4jGraphQL;
 
     let Movie: UniqueType;
+    let Person: UniqueType;
 
     const movie1 = {
         title: "Some Title",
@@ -66,12 +67,19 @@ describe("@vector directive - Query", () => {
         }
 
         Movie = testHelper.createUniqueType("Movie");
+        Person = testHelper.createUniqueType("Person");
 
-        const typeDefs = `
-        type ${Movie.name}  @vector(indexes: [{ indexName: "${Movie}Index", propertyName: "embedding", queryName: "${queryName}" }]) {
-            title: String!
-            released: Int!
-        }`;
+        const typeDefs = /* GraphQL */ `
+            type ${Movie}  @vector(indexes: [{ indexName: "${Movie}Index", propertyName: "embedding", queryName: "${queryName}" }]) {
+                title: String!
+                released: Int!
+                actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+            
+            type ${Person} {
+                name: String!
+            }
+        `;
 
         neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
@@ -97,6 +105,7 @@ describe("@vector directive - Query", () => {
                 CREATE (movie2:${Movie})
                 SET movie1 = $movie1
                 SET movie2 = $movie2
+                CREATE (:${Person} {name: "Keanu"})-[:ACTED_IN]->(movie1)
                         `,
             { movie1, movie2 }
         );
@@ -124,7 +133,7 @@ describe("@vector directive - Query", () => {
 
         const query = `
                 query($vector: [Float!]) {
-                    ${queryName}(vector: $vector ) {
+                    ${queryName}(vector: $vector) {
                         ${Movie.operations.connection}{
                             edges {
                                 score
@@ -152,6 +161,71 @@ describe("@vector directive - Query", () => {
                         {
                             node: {
                                 title: "Another Title",
+                            },
+                            score: expect.closeTo(0.56),
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test("Retrieve nodes with relationships", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        const query = `
+                query($vector: [Float!]) {
+                    ${queryName}(vector: $vector) {
+                        ${Movie.operations.connection}{
+                            edges {
+                                score
+                                node {
+                                    title
+                                    actorsConnection {
+                                        edges {
+                                            node {
+                                                name
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+        const gqlResult = await testHelper.executeGraphQL(query, { variableValues: { vector: testVectors[0] } });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [queryName]: {
+                [Movie.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "Some Title",
+                                actorsConnection: {
+                                    edges: [
+                                        {
+                                            node: {
+                                                name: "Keanu",
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                            score: 1,
+                        },
+                        {
+                            node: {
+                                title: "Another Title",
+                                actorsConnection: {
+                                    edges: [],
+                                },
                             },
                             score: expect.closeTo(0.56),
                         },
