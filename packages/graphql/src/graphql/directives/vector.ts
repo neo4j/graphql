@@ -46,10 +46,9 @@ export const vectorDirective = new GraphQLDirective({
                             queryName: {
                                 type: new GraphQLNonNull(GraphQLString),
                             },
-                            // DISABLE PLUGIN for now
-                            // provider: {
-                            //     type: GraphQLString,
-                            // },
+                            provider: {
+                                type: GraphQLString,
+                            },
                             // callback: {
                             //     description:
                             //         "The name of the callback function that will be used to populate the fields values.",

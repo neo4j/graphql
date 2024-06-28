@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test
 
 const queryName = "moviesVectorQuery";
 
-describe.skip("phrase input - genAI plugin", () => {
+describe("phrase input - genAI plugin", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
     beforeAll(() => {
