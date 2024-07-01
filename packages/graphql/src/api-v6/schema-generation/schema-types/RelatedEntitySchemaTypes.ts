@@ -69,7 +69,7 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
             const properties = this.getEdgeProperties();
             const fields = {
                 node: this.nodeType,
-                cursor: "String",
+                cursor: this.schemaBuilder.types.string,
             };
 
             if (properties) {

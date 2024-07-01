@@ -86,7 +86,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
             return {
                 fields: {
                     node: this.nodeType,
-                    cursor: "String",
+                    cursor: this.schemaBuilder.types.string,
                 },
             };
         });
@@ -201,7 +201,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         const globalIdField = this.entity.globalIdField;
         if (globalIdField) {
             fields["id"] = {
-                type: "ID!",
+                type: this.schemaBuilder.types.id.NonNull,
                 args: {},
                 description: "",
                 resolve: generateGlobalIdFieldResolver({ entity: this.entity }),

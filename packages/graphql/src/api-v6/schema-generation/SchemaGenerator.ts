@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
+import { type GraphQLSchema } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
@@ -29,25 +29,29 @@ import { TopLevelEntitySchemaTypes } from "./schema-types/TopLevelEntitySchemaTy
 
 export class SchemaGenerator {
     private schemaBuilder: SchemaBuilder;
+    private staticTypes: StaticSchemaTypes;
 
     constructor() {
         this.schemaBuilder = new SchemaBuilder();
+        this.staticTypes = new StaticSchemaTypes({ schemaBuilder: this.schemaBuilder });
     }
 
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
-        const staticTypes = new StaticSchemaTypes({ schemaBuilder: this.schemaBuilder });
-        this.generateEntityTypes(schemaModel, staticTypes);
-        this.generateGlobalNodeQuery(schemaModel, staticTypes);
+        const entityTypesMap = this.generateEntityTypes(schemaModel);
+        this.generateTopLevelQueryFields(entityTypesMap);
+
+        this.generateGlobalNodeQueryField(schemaModel);
 
         return this.schemaBuilder.build();
     }
 
-    private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
-        const resultMap = new Map<ConcreteEntity, TopLevelEntitySchemaTypes>();
+    private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel): Map<ConcreteEntity, TopLevelEntitySchemaTypes> {
+        const entityTypesMap = new Map<ConcreteEntity, TopLevelEntitySchemaTypes>();
         const schemaTypes = new SchemaTypes({
-            staticTypes,
-            entitySchemas: resultMap,
+            staticTypes: this.staticTypes,
+            entitySchemas: entityTypesMap,
         });
+
         for (const entity of schemaModel.entities.values()) {
             if (entity.isConcreteEntity()) {
                 const entitySchemaTypes = new TopLevelEntitySchemaTypes({
@@ -55,10 +59,15 @@ export class SchemaGenerator {
                     schemaBuilder: this.schemaBuilder,
                     schemaTypes,
                 });
-                resultMap.set(entity, entitySchemaTypes);
+                entityTypesMap.set(entity, entitySchemaTypes);
             }
         }
-        for (const [entity, entitySchemaTypes] of resultMap.entries()) {
+
+        return entityTypesMap;
+    }
+
+    private generateTopLevelQueryFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
+        for (const [entity, entitySchemaTypes] of entityTypesMap.entries()) {
             const resolver = generateReadResolver({
                 entity,
             });
@@ -66,15 +75,15 @@ export class SchemaGenerator {
         }
     }
 
-    private generateGlobalNodeQuery(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
+    private generateGlobalNodeQueryField(schemaModel: Neo4jGraphQLSchemaModel): void {
         const globalEntities = schemaModel.concreteEntities.filter((e) => e.globalIdField);
 
         if (globalEntities.length > 0) {
             this.schemaBuilder.addQueryField({
                 name: "node",
-                type: staticTypes.globalNodeInterface,
+                type: this.staticTypes.globalNodeInterface,
                 args: {
-                    id: "ID!",
+                    id: this.schemaBuilder.types.id.NonNull,
                 },
                 description: "Fetches an object given its ID",
                 resolver: generateGlobalNodeResolver({ globalEntities }),

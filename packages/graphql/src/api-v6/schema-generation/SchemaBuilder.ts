@@ -32,20 +32,22 @@ import type {
     ListComposer,
     NonNullComposer,
     ObjectTypeComposer,
+    ScalarTypeComposer,
 } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
+import { SchemaBuilderTypes } from "./SchemaBuilderTypes";
 
-export type TypeDefinition = string | ListComposer<ObjectTypeComposer> | ObjectTypeComposer;
+export type TypeDefinition = string | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>;
 
 type ObjectOrInputTypeComposer = ObjectTypeComposer | InputTypeComposer;
 
-type ListOrNullComposer<T extends ObjectOrInputTypeComposer> =
+type ListOrNullComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer> =
     | ListComposer<T>
     | ListComposer<NonNullComposer<T>>
     | NonNullComposer<T>
     | NonNullComposer<ListComposer<T>>;
 
-type WrappedComposer<T extends ObjectOrInputTypeComposer> = T | ListOrNullComposer<T>;
+type WrappedComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer> = T | ListOrNullComposer<T>;
 
 export type GraphQLResolver = (...args) => any;
 
@@ -58,10 +60,12 @@ export type FieldDefinition = {
 };
 
 export class SchemaBuilder {
+    public readonly types: SchemaBuilderTypes;
     private composer: SchemaComposer;
 
     constructor() {
         this.composer = new SchemaComposer();
+        this.types = new SchemaBuilderTypes(this.composer);
     }
 
     public createScalar(scalar: GraphQLScalarType): void {
@@ -75,7 +79,7 @@ export class SchemaBuilder {
     public getOrCreateObjectType(
         name: string,
         onCreate: () => {
-            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>;
+            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
             description?: string;
             iface?: InterfaceTypeComposer;
         }
@@ -97,7 +101,7 @@ export class SchemaBuilder {
     public getOrCreateInterfaceType(
         name: string,
         onCreate: () => {
-            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer>>;
+            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
             description?: string;
         }
     ): InterfaceTypeComposer {
@@ -128,7 +132,7 @@ export class SchemaBuilder {
                 | GraphQLInputType
                 | GraphQLList<any>
                 | GraphQLNonNull<any>
-                | WrappedComposer<InputTypeComposer>
+                | WrappedComposer<InputTypeComposer | ScalarTypeComposer>
             >;
             description?: string;
         }
@@ -177,7 +181,7 @@ export class SchemaBuilder {
     }: {
         name: string;
         type: ObjectTypeComposer | InterfaceTypeComposer;
-        args: Record<string, InputTypeComposer | string>;
+        args: Record<string, InputTypeComposer | string | WrappedComposer<ScalarTypeComposer>>;
         resolver: (...args: any[]) => any;
         description?: string;
     }): void {
