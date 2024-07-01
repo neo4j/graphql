@@ -18,7 +18,7 @@
  */
 
 import { type GraphQLResolveInfo } from "graphql";
-import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../../../schema-model/attribute/AttributeType";
@@ -33,7 +33,7 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { idResolver } from "../../../schema/resolvers/field/id";
 import { numericalResolver } from "../../../schema/resolvers/field/numerical";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { generateGlobalIdResolver } from "../../resolvers/global-id-resolver";
+import { generateGlobalIdFieldResolver } from "../../resolvers/global-id-field-resolver";
 import type { TopLevelEntityTypeNames } from "../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { FieldDefinition, GraphQLResolver, SchemaBuilder } from "../SchemaBuilder";
 import { EntitySchemaTypes } from "./EntitySchemaTypes";
@@ -107,8 +107,14 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
             const fields = this.getNodeFieldsDefinitions();
             const relationships = this.getRelationshipFields();
 
+            let iface: InterfaceTypeComposer | undefined;
+            if (this.entity.isConcreteEntity() && this.entity.globalIdField) {
+                iface = this.schemaTypes.staticTypes.globalNodeInterface;
+            }
+
             return {
                 fields: { ...fields, ...relationships },
+                iface,
             };
         });
     }
@@ -198,7 +204,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                 type: "ID!",
                 args: {},
                 description: "",
-                resolve: generateGlobalIdResolver({ entity: this.entity }),
+                resolve: generateGlobalIdFieldResolver({ entity: this.entity }),
             };
         }
     }

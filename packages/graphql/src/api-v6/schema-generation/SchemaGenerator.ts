@@ -20,6 +20,7 @@
 import type { GraphQLSchema } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
 import { generateReadResolver } from "../resolvers/read-resolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
@@ -36,6 +37,8 @@ export class SchemaGenerator {
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
         const staticTypes = new StaticSchemaTypes({ schemaBuilder: this.schemaBuilder });
         this.generateEntityTypes(schemaModel, staticTypes);
+        this.generateGlobalNodeQuery(schemaModel, staticTypes);
+
         return this.schemaBuilder.build();
     }
 
@@ -60,6 +63,22 @@ export class SchemaGenerator {
                 entity,
             });
             entitySchemaTypes.addTopLevelQueryField(resolver);
+        }
+    }
+
+    private generateGlobalNodeQuery(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
+        const globalEntities = schemaModel.concreteEntities.filter((e) => e.globalIdField);
+
+        if (globalEntities.length > 0) {
+            this.schemaBuilder.addQueryField({
+                name: "node",
+                type: staticTypes.globalNodeInterface,
+                args: {
+                    id: "ID!",
+                },
+                description: "Fetches an object given its ID",
+                resolver: generateGlobalNodeResolver({ globalEntities }),
+            });
         }
     }
 }
