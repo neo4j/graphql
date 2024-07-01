@@ -37,30 +37,9 @@ export class SchemaGenerator {
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
         const staticTypes = new StaticSchemaTypes({ schemaBuilder: this.schemaBuilder });
         this.generateEntityTypes(schemaModel, staticTypes);
-        // Taken from makeAugmentedSchema
-        // const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
         this.generateGlobalNodeQuery(schemaModel, staticTypes);
 
         return this.schemaBuilder.build();
-    }
-
-    private generateGlobalNodeQuery(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
-        for (const entity of schemaModel.entities.values()) {
-            if (entity.isConcreteEntity() && entity.globalIdField) {
-                const globalEntities = schemaModel.concreteEntities.filter((e) => e.globalIdField);
-
-                this.schemaBuilder.addQueryField({
-                    name: "node",
-                    type: staticTypes.globalNodeInterface,
-                    args: {
-                        id: "ID!",
-                    },
-                    description: "Fetches an object given its ID",
-                    resolver: generateGlobalNodeResolver({ globalEntities }),
-                });
-                return;
-            }
-        }
     }
 
     private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
@@ -84,6 +63,22 @@ export class SchemaGenerator {
                 entity,
             });
             entitySchemaTypes.addTopLevelQueryField(resolver);
+        }
+    }
+
+    private generateGlobalNodeQuery(schemaModel: Neo4jGraphQLSchemaModel, staticTypes: StaticSchemaTypes): void {
+        const globalEntities = schemaModel.concreteEntities.filter((e) => e.globalIdField);
+
+        if (globalEntities.length > 0) {
+            this.schemaBuilder.addQueryField({
+                name: "node",
+                type: staticTypes.globalNodeInterface,
+                args: {
+                    id: "ID!",
+                },
+                description: "Fetches an object given its ID",
+                resolver: generateGlobalNodeResolver({ globalEntities }),
+            });
         }
     }
 }
