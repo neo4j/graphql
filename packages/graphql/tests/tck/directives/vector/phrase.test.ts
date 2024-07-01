@@ -28,7 +28,7 @@ describe("phrase input - genAI plugin", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}", provider: "OpenAI" }]) {
+                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}", provider: OpenAI }]) {
                 title: String!
                 released: Int!
             }

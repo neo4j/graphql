@@ -20,11 +20,23 @@
 import {
     DirectiveLocation,
     GraphQLDirective,
+    GraphQLEnumType,
     GraphQLInputObjectType,
     GraphQLList,
     GraphQLNonNull,
     GraphQLString,
 } from "graphql";
+
+export const VectorProviderNames = ["VertexAI", "OpenAI", "AzureOpenAI", "Bedrock"] as const;
+
+const VectorProviderEnum = new GraphQLEnumType({
+    name: "VectorProvider",
+    description: "*For use in the @vector directive only",
+    values: VectorProviderNames.reduce((acc, name) => {
+        acc[name] = {};
+        return acc;
+    }, {}),
+});
 
 export const vectorDirective = new GraphQLDirective({
     name: "vector",
@@ -47,7 +59,7 @@ export const vectorDirective = new GraphQLDirective({
                                 type: new GraphQLNonNull(GraphQLString),
                             },
                             provider: {
-                                type: GraphQLString,
+                                type: VectorProviderEnum,
                             },
                             // callback: {
                             //     description:
