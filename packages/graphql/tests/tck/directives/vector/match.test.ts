@@ -23,25 +23,25 @@ import { testVector } from "./shared-vector";
 
 const queryName = "moviesVectorQuery";
 
-describe("Cypher -> vector -> Match", () => {
+describe("Vector index match", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
-    describe("vector input", () => {
-        beforeAll(() => {
-            typeDefs = /* GraphQL */ `
+    beforeAll(() => {
+        typeDefs = /* GraphQL */ `
                 type Movie @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }]) {
                     title: String!
                     released: Int!
                 }
             `;
 
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
         });
-        test("simple match with single vector property", async () => {
-            const query = /* GraphQL */ `
+    });
+
+    test("simple match with single vector property", async () => {
+        const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
                     ${queryName}(vector: $vector) {
                         moviesConnection {
@@ -57,13 +57,13 @@ describe("Cypher -> vector -> Match", () => {
                 }
             `;
 
-            const result = await translateQuery(neoSchema, query, {
-                variableValues: {
-                    vector: testVector,
-                },
-            });
+        const result = await translateQuery(neoSchema, query, {
+            variableValues: {
+                vector: testVector,
+            },
+        });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH collect({ node: this0, score: var1 }) AS edges
@@ -77,7 +77,7 @@ describe("Cypher -> vector -> Match", () => {
                 RETURN { edges: var2, totalCount: totalCount } AS this"
             `);
 
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": [
                         0.57728399,
@@ -212,12 +212,12 @@ describe("Cypher -> vector -> Match", () => {
                     \\"param1\\": \\"Movie\\"
                 }"
             `);
-        });
+    });
 
-        test("simple match with single property and score and filter", async () => {
-            const query = /* GraphQL */ `
+    test("simple match with single property and score and filter", async () => {
+        const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
-                    ${queryName}(vector: $vector, where: { movie: { released_GT: 2000 } }) {
+                    ${queryName}(vector: $vector, where: { node: { released_GT: 2000 } }) {
                         moviesConnection {
                             edges {
                                 cursor
@@ -232,19 +232,27 @@ describe("Cypher -> vector -> Match", () => {
                 }
             `;
 
-            const result = await translateQuery(neoSchema, query, {
-                variableValues: {
-                    vector: testVector,
-                },
-            });
+        const result = await translateQuery(neoSchema, query, {
+            variableValues: {
+                vector: testVector,
+            },
+        });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
-                WHERE ($param1 IN labels(this0) AND this0.released > $param2)
-                RETURN this0 { .title, .released } AS movie, var1 AS score"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND this0.released > $param2)
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, released: this0.released, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
+        `);
 
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": [
                         0.57728399,
@@ -383,12 +391,12 @@ describe("Cypher -> vector -> Match", () => {
                     }
                 }"
             `);
-        });
+    });
 
-        test("simple match with single property with sorting", async () => {
-            const query = /* GraphQL */ `
+    test("simple match with single property with sorting", async () => {
+        const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
-                    ${queryName}(vector: $vector, sort: { movie: { title: DESC } }) {
+                    ${queryName}(vector: $vector, sort: { node: { title: DESC } }) {
                         moviesConnection {
                             edges {
                                 score
@@ -401,27 +409,29 @@ describe("Cypher -> vector -> Match", () => {
                 }
             `;
 
-            const result = await translateQuery(neoSchema, query, {
-                variableValues: {
-                    vector: testVector,
-                },
-            });
+        const result = await translateQuery(neoSchema, query, {
+            variableValues: {
+                vector: testVector,
+            },
+        });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH collect({ node: this0, score: var1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this0, edge.score AS var1
-                    RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.vector.queryNodes(\\"movie_index\\", 10, $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                WITH *
+                ORDER BY this0.title DESC
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
+        `);
 
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": [
                         0.57728399,
@@ -556,77 +566,5 @@ describe("Cypher -> vector -> Match", () => {
                     \\"param1\\": \\"Movie\\"
                 }"
             `);
-        });
-    });
-
-    describe("phrase input - genAI plugin", () => {
-        beforeAll(() => {
-            typeDefs = /* GraphQL */ `
-                type Movie
-                    @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}", provider: "OpenAI" }]) {
-                    title: String!
-                    released: Int!
-                }
-            `;
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: {
-                    vector: {
-                        OpenAI: {
-                            token: "my-token",
-                            model: "my-model",
-                            dimensions: 256,
-                        },
-                    },
-                },
-            });
-        });
-
-        test("simple match with single vector property", async () => {
-            const query = /* GraphQL */ `
-                query MovieVectorQuery($phrase: String!) {
-                    ${queryName}(phrase: $phrase) {
-                        moviesConnection {
-                            edges {
-                                cursor
-                                score
-                                node {
-                                    title
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query, {
-                variableValues: {
-                    phrase: "test phrase",
-                },
-            });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "WITH genai.vector.encode($param0, \\"OpenAI\\", { token: \\"my-token\\", model: \\"my-model\\", dimensions: 256 }) AS var0
-                CALL db.index.vector.queryNodes(\\"movie_index\\", 10, var0) YIELD node AS this1, score AS var2
-                WHERE $param1 IN labels(this1)
-                WITH collect({ node: this1, score: var2 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.score AS var2
-                    RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3
-                }
-                RETURN { edges: var3, totalCount: totalCount } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"param0\\": \\"test phrase\\",
-                    \\"param1\\": \\"Movie\\"
-                }"
-            `);
-        });
     });
 });

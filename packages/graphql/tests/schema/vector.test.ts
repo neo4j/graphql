@@ -130,13 +130,13 @@ describe("@vector schema", () => {
 
             \\"\\"\\"The input for sorting a Vector query on an index of Movie\\"\\"\\"
             input MovieVectorSort {
-              movie: MovieSort
+              node: MovieSort
               score: SortDirection
             }
 
             \\"\\"\\"The input for filtering a Vector query on an index of Movie\\"\\"\\"
             input MovieVectorWhere {
-              movie: MovieWhere
+              node: MovieWhere
               score: FloatWhere
             }
 
@@ -193,11 +193,11 @@ describe("@vector schema", () => {
             }
 
             type Query {
-              descriptionQuery(limit: Int, offset: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
+              descriptionQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              titleQuery(limit: Int, offset: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
+              titleQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

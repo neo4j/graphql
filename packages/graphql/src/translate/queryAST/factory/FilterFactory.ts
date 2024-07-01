@@ -40,7 +40,6 @@ import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
-import { ScoreFilter } from "../ast/filters/property-filters/ScoreFilter";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
@@ -383,15 +382,6 @@ export class FilterFactory {
                 if (!attr) {
                     if (fieldName === "id" && entity.globalIdField) {
                         return this.createRelayIdPropertyFilter(entity, isNot, operator, value);
-                    }
-
-                    if (fieldName === "score" && entity.annotations.vector && context?.vector && whereFields.score) {
-                        return new ScoreFilter({
-                            scoreVariable: context.vector.scoreVariable,
-                            min: whereFields.score.min,
-                            max: whereFields.score.max,
-                        });
-                        // return this.createScorePropertyFilter(entity, isNot, operator, value);
                     }
 
                     throw new Error(`Attribute ${fieldName} not found`);

@@ -18,13 +18,17 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { SCORE_FIELD } from "../../../../constants";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { SortDirection } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { ScoreField } from "../../ast/fields/ScoreField";
+import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { VectorOptions } from "../../ast/operations/VectorOperation";
 import { VectorOperation } from "../../ast/operations/VectorOperation";
 import { VectorSelection } from "../../ast/selection/VectorSelection";
+import { ScoreSort } from "../../ast/sort/ScoreSort";
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
@@ -41,7 +45,8 @@ export class VectorFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): VectorOperation {
-        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+        const resolveTreeWhere: Record<string, any> =
+            this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree) ?? {};
 
         checkEntityAuthentication({
             entity: entity.entity,
@@ -58,7 +63,9 @@ export class VectorFactory {
         const filteredResolveTree = findFieldsByNameInFieldsByTypeNameField(
             vectorResultField,
             entity.operations.rootTypeFieldNames.connection
-        );
+        )[0]!;
+        // Adds the args to the nested resolve tree for vector
+        filteredResolveTree.args = resolveTree.args;
 
         const connectionFields = getFieldsByTypeName(filteredResolveTree, entity.operations.vectorTypeNames.connection);
         const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(connectionFields, "edges");
@@ -84,9 +91,17 @@ export class VectorFactory {
             entity.operations.vectorTypeNames.edge
         );
 
+        this.addVectorScoreFilter({
+            operation,
+            context,
+            whereArgs: resolveTreeWhere,
+        });
+
+        this.addScoreSort(operation, filteredResolveTree, context);
+
         this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
             target: entity,
-            resolveTree: filteredResolveTree[0]!,
+            resolveTree: filteredResolveTree,
             context,
             operation,
             whereArgs: resolveTreeWhere,
@@ -94,6 +109,43 @@ export class VectorFactory {
         });
 
         return operation;
+    }
+
+    private addScoreSort(
+        operation: VectorOperation,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ) {
+        const sortArguments: Record<string, SortDirection>[] = (resolveTree.args.sort ?? []) as any;
+
+        for (const sortArgument of sortArguments) {
+            if (sortArgument[SCORE_FIELD] && context?.vector) {
+                const scoreSort = new ScoreSort({
+                    scoreVariable: context.vector.scoreVariable,
+                    direction: sortArgument[SCORE_FIELD],
+                });
+                operation.addSort({ node: [scoreSort], edge: [] });
+            }
+        }
+    }
+
+    private addVectorScoreFilter({
+        operation,
+        whereArgs,
+        context,
+    }: {
+        operation: VectorOperation;
+        whereArgs: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+    }): void {
+        if (whereArgs.score && context?.vector) {
+            const scoreFilter = new ScoreFilter({
+                scoreVariable: context.vector.scoreVariable,
+                min: whereArgs.score.min,
+                max: whereArgs.score.max,
+            });
+            operation.addFilters(scoreFilter);
+        }
     }
 
     public getVectorSelection(entity: ConcreteEntityAdapter, context: Neo4jGraphQLTranslationContext): VectorSelection {
