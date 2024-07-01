@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import type { GraphQLInputType, GraphQLScalarType } from "graphql";
-import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import type { GraphQLInputType } from "graphql";
+import { GraphQLBoolean, GraphQLID } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
     InterfaceTypeComposer,
     ListComposer,
     ObjectTypeComposer,
+    ScalarTypeComposer,
 } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import { CartesianPointDistance } from "../../../graphql/input-objects/CartesianPointDistance";
@@ -69,10 +70,10 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateObjectType("PageInfo", () => {
             return {
                 fields: {
-                    hasNextPage: "Boolean",
-                    hasPreviousPage: "Boolean",
-                    startCursor: "String",
-                    endCursor: "String",
+                    hasNextPage: this.schemaBuilder.types.boolean,
+                    hasPreviousPage: this.schemaBuilder.types.boolean,
+                    startCursor: this.schemaBuilder.types.string,
+                    endCursor: this.schemaBuilder.types.string,
                 },
             };
         });
@@ -87,7 +88,7 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateInterfaceType("Node", () => {
             return {
                 fields: {
-                    id: "ID!",
+                    id: this.schemaBuilder.types.id.NonNull,
                 },
             };
         });
@@ -106,7 +107,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLString),
+                        equals: this.schemaBuilder.types.string.List,
                     },
                 };
             });
@@ -115,7 +116,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLString)),
+                    equals: this.schemaBuilder.types.string.NonNull.List,
                 },
             };
         });
@@ -126,8 +127,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createStringOperators(GraphQLString),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLString)),
+                    ...this.createStringOperators(this.schemaBuilder.types.string),
+                    in: this.schemaBuilder.types.string.NonNull.List,
                 },
             };
         });
@@ -137,7 +138,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("GlobalIdWhere", (_itc) => {
             return {
                 fields: {
-                    equals: GraphQLString,
+                    equals: this.schemaBuilder.types.string,
                     // TODO: Boolean fields and IN operator:
                     // ...this.createBooleanOperators(itc),
                     // in: toGraphQLList(toGraphQLNonNull(GraphQLString)),
@@ -375,8 +376,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createStringOperators(GraphQLID),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLID)),
+                    ...this.createStringOperators(this.schemaBuilder.types.id),
+                    in: this.schemaBuilder.types.id.NonNull.List,
                 },
             };
         });
@@ -387,7 +388,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("IntListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLInt),
+                        equals: this.schemaBuilder.types.int.List,
                     },
                 };
             });
@@ -396,7 +397,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("IntListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLInt)),
+                    equals: this.schemaBuilder.types.int.NonNull.List,
                 },
             };
         });
@@ -406,8 +407,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLInt),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLInt)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.int),
+                    in: this.schemaBuilder.types.int.NonNull.List,
                 },
             };
         });
@@ -450,7 +451,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("FloatListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLFloat),
+                        equals: this.schemaBuilder.types.float.List,
                     },
                 };
             });
@@ -459,7 +460,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("FloatListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLFloat)),
+                    equals: this.schemaBuilder.types.float.NonNull.List,
                 },
             };
         });
@@ -470,8 +471,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLFloat),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLFloat)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.float),
+                    in: this.schemaBuilder.types.float.NonNull.List,
                 },
             };
         });
@@ -553,7 +554,7 @@ class StaticFilterTypes {
         });
     }
 
-    private createStringOperators(type: GraphQLScalarType): Record<string, GraphQLScalarType> {
+    private createStringOperators(type: ScalarTypeComposer): Record<string, ScalarTypeComposer> {
         return {
             equals: type,
             // matches: type,
@@ -563,7 +564,9 @@ class StaticFilterTypes {
         };
     }
 
-    private createNumericOperators(type: GraphQLInputType): Record<string, GraphQLInputType> {
+    private createNumericOperators(
+        type: GraphQLInputType | ScalarTypeComposer
+    ): Record<string, GraphQLInputType | ScalarTypeComposer> {
         return {
             equals: type,
             lt: type,
