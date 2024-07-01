@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
-      - uses: reviewdog/action-actionlint@fd627997c9688c2f39e13917aed23873c031b834 # v1.48.0
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: reviewdog/action-actionlint@afad3b6ab835e5611bda8c8193377e2d5c21413d # v1.51.0
         with:
           reporter: github-check
           fail_on_error: true

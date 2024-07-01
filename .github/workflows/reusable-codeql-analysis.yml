@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version: lts/*
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@530d4feaa9c62aaab2d250371e2061eb7a172363 # v3
+        uses: github/codeql-action/init@b611370bb5703a7efb587f9d136a52ea24c5c38c # v3
         with:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@530d4feaa9c62aaab2d250371e2061eb7a172363 # v3
+        uses: github/codeql-action/analyze@b611370bb5703a7efb587f9d136a52ea24c5c38c # v3
