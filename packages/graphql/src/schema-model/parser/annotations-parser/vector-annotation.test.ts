@@ -17,18 +17,51 @@
  * limitations under the License.
  */
 
-import { makeDirectiveNode } from "@graphql-tools/utils";
-import type { DirectiveNode } from "graphql";
-import { vectorDirective } from "../../../graphql/directives";
+import { Kind, type DirectiveNode } from "graphql";
 import { parseVectorAnnotation } from "./vector-annotation";
 
 describe("parseVectorAnnotation", () => {
     it("should parse correctly", () => {
-        const directive: DirectiveNode = makeDirectiveNode(
-            "vector",
-            { indexes: [{ indexName: "ProductName", propertyName: "name", provider: "OpenAI" }] },
-            vectorDirective
-        );
+        const directive: DirectiveNode = {
+            kind: Kind.DIRECTIVE,
+            name: { kind: Kind.NAME, value: "vector" },
+            arguments: [
+                {
+                    kind: Kind.ARGUMENT,
+                    name: { kind: Kind.NAME, value: "indexes" },
+                    value: {
+                        kind: Kind.LIST,
+                        values: [
+                            {
+                                kind: Kind.OBJECT,
+                                fields: [
+                                    {
+                                        kind: Kind.OBJECT_FIELD,
+                                        name: { kind: Kind.NAME, value: "indexName" },
+                                        value: { kind: Kind.STRING, value: "ProductName" },
+                                    },
+                                    {
+                                        kind: Kind.OBJECT_FIELD,
+                                        name: { kind: Kind.NAME, value: "propertyName" },
+                                        value: { kind: Kind.STRING, value: "name" },
+                                    },
+                                    {
+                                        kind: Kind.OBJECT_FIELD,
+                                        name: { kind: Kind.NAME, value: "queryName" },
+                                        value: { kind: Kind.STRING, value: "myQueryName" },
+                                    },
+                                    {
+                                        kind: Kind.OBJECT_FIELD,
+                                        name: { kind: Kind.NAME, value: "provider" },
+                                        value: { kind: Kind.ENUM, value: "OpenAI" },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            ],
+        };
         const vectorAnnotation = parseVectorAnnotation(directive);
         expect(vectorAnnotation).toEqual({
             name: "vector",
@@ -36,6 +69,7 @@ describe("parseVectorAnnotation", () => {
                 {
                     indexName: "ProductName",
                     propertyName: "name",
+                    queryName: "myQueryName",
                     provider: "OpenAI",
                 },
             ],
