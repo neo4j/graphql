@@ -28,8 +28,10 @@ import { testVectors } from "./shared-vector";
 describe("@vector directive - filtering", () => {
     const queryName = "myQueryName";
     const testHelper = new TestHelper();
+
     let driver: Driver;
     let MULTIDB_SUPPORT = true;
+    let VECTOR_SUPPORT = true;
     let neoSchema: Neo4jGraphQL;
 
     let Movie: UniqueType;
@@ -51,6 +53,14 @@ describe("@vector directive - filtering", () => {
     };
 
     beforeAll(async () => {
+        const dbInfo = await testHelper.getDatabaseInfo();
+        // No vector support, so we skip tests
+        if (!dbInfo.gte("5.15")) {
+            VECTOR_SUPPORT = false;
+            await testHelper.close();
+            return;
+        }
+
         const databaseName = generate({ readable: true, charset: "alphabetic" });
 
         try {
@@ -115,7 +125,7 @@ describe("@vector directive - filtering", () => {
     });
 
     afterAll(async () => {
-        if (MULTIDB_SUPPORT) {
+        if (MULTIDB_SUPPORT && VECTOR_SUPPORT) {
             await testHelper.dropDatabase();
             await testHelper.close();
         }
@@ -125,6 +135,12 @@ describe("@vector directive - filtering", () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        // Skip if vector not supported
+        if (!VECTOR_SUPPORT) {
+            console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -171,6 +187,12 @@ describe("@vector directive - filtering", () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        // Skip if vector not supported
+        if (!VECTOR_SUPPORT) {
+            console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 

@@ -31,6 +31,7 @@ describe("@vector directive - Query", () => {
 
     let driver: Driver;
     let MULTIDB_SUPPORT = true;
+    let VECTOR_SUPPORT = true;
     let neoSchema: Neo4jGraphQL;
 
     let Movie: UniqueType;
@@ -47,6 +48,14 @@ describe("@vector directive - Query", () => {
     };
 
     beforeAll(async () => {
+        const dbInfo = await testHelper.getDatabaseInfo();
+        // No vector support, so we skip tests
+        if (!dbInfo.gte("5.15")) {
+            VECTOR_SUPPORT = false;
+            await testHelper.close();
+            return;
+        }
+
         const databaseName = generate({ readable: true, charset: "alphabetic" });
 
         try {
@@ -109,13 +118,19 @@ describe("@vector directive - Query", () => {
     });
 
     afterAll(async () => {
-        if (MULTIDB_SUPPORT) {
+        if (MULTIDB_SUPPORT && VECTOR_SUPPORT) {
             await testHelper.dropDatabase();
             await testHelper.close();
         }
     });
 
     test("Retrieve nodes ordered by score DESC", async () => {
+        // Skip if vector not supported
+        if (!VECTOR_SUPPORT) {
+            console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
@@ -162,6 +177,12 @@ describe("@vector directive - Query", () => {
     });
 
     test("Retrieve nodes ordered by score ASC", async () => {
+        // Skip if vector not supported
+        if (!VECTOR_SUPPORT) {
+            console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
@@ -208,6 +229,12 @@ describe("@vector directive - Query", () => {
     });
 
     test("Retrieve nodes ordered by node property", async () => {
+        // Skip if vector not supported
+        if (!VECTOR_SUPPORT) {
+            console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
