@@ -26,6 +26,7 @@ const queryName = "moviesVectorQuery";
 describe("Vector index match", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
+    let verifyTCK;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
@@ -38,6 +39,17 @@ describe("Vector index match", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+    });
+
+    afterAll(() => {
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
     });
 
     test("simple match with single vector property", async () => {

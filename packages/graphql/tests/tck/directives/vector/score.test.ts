@@ -26,6 +26,7 @@ const queryName = "moviesVectorQuery";
 describe("Cypher -> vector -> Score", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
+    let verifyTCK;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
@@ -37,6 +38,17 @@ describe("Cypher -> vector -> Score", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+    });
+
+    afterAll(() => {
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
     });
 
     test("with score filtering", async () => {

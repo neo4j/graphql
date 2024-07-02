@@ -25,6 +25,8 @@ const queryName = "moviesVectorQuery";
 describe("phrase input - genAI plugin", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
+    let verifyTCK;
+
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie
@@ -46,6 +48,17 @@ describe("phrase input - genAI plugin", () => {
                 },
             },
         });
+
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+    });
+
+    afterAll(() => {
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
     });
 
     test("simple match with single vector property", async () => {
