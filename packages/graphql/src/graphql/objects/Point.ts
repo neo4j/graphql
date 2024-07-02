@@ -18,6 +18,7 @@
  */
 
 import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { numericalResolver } from "../../schema/resolvers/field/numerical";
 
 export const Point = new GraphQLObjectType({
     name: "Point",
@@ -41,7 +42,7 @@ export const Point = new GraphQLObjectType({
         },
         srid: {
             type: new GraphQLNonNull(GraphQLInt),
-            resolve: (source) => source.point.srid,
+            resolve: (source, args, context, info) => numericalResolver(source.point, args, context, info),
         },
     },
 });
