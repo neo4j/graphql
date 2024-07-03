@@ -52,11 +52,14 @@ export class CypherOperation extends ReadOperation {
             ...this.getCypherFieldsSubqueries(nestedContext)
         );
 
-        const authSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
+            new Cypher.Call(sq).importWith(nestedContext.target)
+        );
+
         const authPredicates = this.getAuthFilterPredicate(nestedContext);
 
         const authClauses = authPredicates.length
-            ? [...authSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
+            ? [...authFilterSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
             : [];
 
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
