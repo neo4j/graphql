@@ -20,7 +20,8 @@
 import type { UniqueType } from "../../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../../utils/tests-helper";
 
-describe("Point 2d array EQ", () => {
+// Skip Spatial types waiting for the new operator design
+describe.skip("Point 3d array EQ", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
@@ -50,7 +51,7 @@ describe("Point 2d array EQ", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-    test("wgs-84-2d point filter by EQ", async () => {
+    test("wgs-84-3d point filter by EQ", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Location.plural}(where: { edges: { node: { value: { equals: [{ longitude: ${London.longitude}, latitude: ${London.latitude}, height: ${London.height} }, { longitude: ${Paris.longitude}, latitude: ${Paris.latitude}, height: ${Paris.height} }] } } } }) {

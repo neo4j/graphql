@@ -70,32 +70,6 @@ describe("Spatial Types", () => {
               z: Float
             }
 
-            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
-            input CartesianPointDistance {
-              distance: Float!
-              point: CartesianPointInput!
-            }
-
-            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
-            input CartesianPointInput {
-              x: Float!
-              y: Float!
-              z: Float
-            }
-
-            input CartesianPointWhere {
-              AND: [CartesianPointWhere!]
-              NOT: CartesianPointWhere
-              OR: [CartesianPointWhere!]
-              distance: CartesianPointDistance
-              equals: CartesianPointInput
-              gt: CartesianPointDistance
-              gte: CartesianPointDistance
-              in: [CartesianPointInput!]
-              lt: CartesianPointDistance
-              lte: CartesianPointDistance
-            }
-
             type NodeType {
               cartesianPoint: CartesianPoint!
               cartesianPointNullable: CartesianPoint
@@ -183,10 +157,6 @@ describe("Spatial Types", () => {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
               OR: [NodeTypeWhere!]
-              cartesianPoint: CartesianPointWhere
-              cartesianPointNullable: CartesianPointWhere
-              point: PointWhere
-              pointNullable: PointWhere
               relatedNode: NodeTypeRelatedNodeNestedOperationWhere
             }
 
@@ -206,33 +176,6 @@ describe("Spatial Types", () => {
               latitude: Float!
               longitude: Float!
               srid: Int!
-            }
-
-            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
-            input PointDistance {
-              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
-              distance: Float!
-              point: PointInput!
-            }
-
-            \\"\\"\\"Input type for a point\\"\\"\\"
-            input PointInput {
-              height: Float
-              latitude: Float!
-              longitude: Float!
-            }
-
-            input PointWhere {
-              AND: [PointWhere!]
-              NOT: PointWhere
-              OR: [PointWhere!]
-              distance: PointDistance
-              equals: PointInput
-              gt: PointDistance
-              gte: PointDistance
-              in: [PointInput!]
-              lt: PointDistance
-              lte: PointDistance
             }
 
             type Query {
@@ -286,20 +229,12 @@ describe("Spatial Types", () => {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
-              cartesianPoint: CartesianPointWhere
-              cartesianPointNullable: CartesianPointWhere
-              point: PointWhere
-              pointNullable: PointWhere
             }
 
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
               OR: [RelatedNodeWhere!]
-              cartesianPoint: CartesianPointWhere
-              cartesianPointNullable: CartesianPointWhere
-              point: PointWhere
-              pointNullable: PointWhere
             }"
         `);
     });
