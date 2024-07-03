@@ -31,11 +31,11 @@ describe("Global node query", () => {
     const Actor = testHelper.createUniqueType("Actor");
 
     beforeAll(async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 dbId: ID! @id @unique @relayId
                 title: String!
-                genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
+                genre: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
@@ -70,7 +70,7 @@ describe("Global node query", () => {
     test("should return the correct relayId nodes using the global node API", async () => {
         const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
 
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
         query {
             node(id: "${movieGlobalId}") {
               ... on ${Movie} {
@@ -97,7 +97,7 @@ describe("Global node query", () => {
     test("should return the correct relayId nodes using the global node API with relationships", async () => {
         const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
 
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
         query {
             node(id: "${movieGlobalId}") {
               ... on ${Movie} {
