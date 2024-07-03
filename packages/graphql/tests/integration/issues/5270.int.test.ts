@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
@@ -37,7 +36,6 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
             type ${User} @node(labels: ["${User}"]) @authorization(
                 filter: [
                     { where: { node: { NOT: { blockedUsers_SOME: { to: { id: "$jwt.sub" } } } } } },
-                    #{ where: { node: { blockedUsers_NONE: { to: { id: "$jwt.sub" } } } } },
                 ]
             ) {
                 id: ID! @unique @id
@@ -82,12 +80,10 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
             }
         `;
 
-        const userId = generate({
-            charset: "alphabetic",
-        });
+        const userId = "my-user-id";
 
         await testHelper.executeCypher(`
-                CREATE (:${User.name} {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
         const token = createBearerToken(secret, {
@@ -97,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
         });
 
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-
-        expect((gqlResult.data as any).getMe).toEqual([{ id: userId }]);
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any).getMe).toEqual({ id: userId, __typename: User.name });
     });
 });
