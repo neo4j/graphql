@@ -90,6 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
 
         await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
+                CREATE (:${User} {id: "1234"})
                 CREATE (:${Thing})
             `);
 
