@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { createBearerToken } from "../../utils/create-bearer-token";
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/5270", () => {
     let User: UniqueType;
     let UserBlockedUser: UniqueType;
+    let Thing: UniqueType;
 
     const secret = "secret";
     const testHelper = new TestHelper();
@@ -31,6 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
     beforeEach(async () => {
         User = testHelper.createUniqueType("User");
         UserBlockedUser = testHelper.createUniqueType("UserBlockedUser");
+        Thing = testHelper.createUniqueType("Thing");
 
         const typeDefs = /* GraphQL */ `
             type ${User} @node(labels: ["${User}"]) @authorization(
@@ -51,10 +53,12 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
                 from: ${User}! @relationship(type: "HAS_BLOCKED", direction: IN) @settable(onCreate: true, onUpdate: false)
                 to: ${User}! @relationship(type: "IS_BLOCKING", direction: OUT) @settable(onCreate: true, onUpdate: false)
             }
-        
-            type Query {
-                getMe: ${User} @cypher(statement: "OPTIONAL MATCH (u:${User} {id: $jwt.sub}) RETURN u", columnName: "u")
+
+            type ${Thing} {
+                user: ${User} @cypher(statement: "OPTIONAL MATCH (u:${User} {id: $jwt.sub}) RETURN u", columnName: "u")
             }
+        
+
         `;
         await testHelper.initNeo4jGraphQL({
             typeDefs,
@@ -70,12 +74,14 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
         await testHelper.close();
     });
 
-    test("should return filtered results according to authorization rule", async () => {
+    test("should nested users with cypher directive filtered according to authorization rule", async () => {
         const query = `
             query GetMe {
-                getMe {
-                    id
-                    __typename
+                ${Thing.plural} {
+                    user {
+                        id
+                        __typename
+                    }
                 }
             }
         `;
@@ -84,6 +90,8 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
 
         await testHelper.executeCypher(`
                 CREATE (:${User} {id: "${userId}"})
+                CREATE (:${User} {id: "1234"})
+                CREATE (:${Thing})
             `);
 
         const token = createBearerToken(secret, {
@@ -94,6 +102,6 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
 
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({ getMe: { id: userId, __typename: User.name } });
+        expect(gqlResult.data).toEqual({ [Thing.plural]: [{ user: { id: userId, __typename: User.name } }] });
     });
 });
