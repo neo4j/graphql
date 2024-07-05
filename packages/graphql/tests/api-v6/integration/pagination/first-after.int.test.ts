@@ -48,7 +48,7 @@ describe("Pagination with first and after", () => {
         await testHelper.close();
     });
 
-    test.only("Get movies with first and after argument", async () => {
+    test("Get movies with first and after argument", async () => {
         const afterCursor = offsetToCursor(4);
         const query = /* GraphQL */ `
             query {

@@ -31,11 +31,11 @@ describe("RelayId projection", () => {
     const Actor = testHelper.createUniqueType("Actor");
 
     beforeAll(async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 dbId: ID! @id @unique @relayId
                 title: String!
-                genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
+                genre: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 

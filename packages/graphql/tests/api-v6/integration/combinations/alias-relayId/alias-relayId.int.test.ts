@@ -35,7 +35,7 @@ describe("RelayId projection with alias directive", () => {
             type ${Movie} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "serverId")
                 title: String!
-                genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
+                genre: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
