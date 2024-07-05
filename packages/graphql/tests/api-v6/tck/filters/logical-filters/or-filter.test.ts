@@ -135,7 +135,7 @@ describe("OR filters", () => {
         `);
     });
 
-    test.skip("OR logical filter in nodes", async () => {
+    test("OR logical filter in nodes", async () => {
         const query = /* GraphQL */ `
             query {
                 movies(

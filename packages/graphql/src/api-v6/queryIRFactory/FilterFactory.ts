@@ -36,6 +36,7 @@ import type {
     GraphQLAttributeFilters,
     GraphQLEdgeWhereArgs,
     GraphQLNodeFilters,
+    GraphQLNodeWhereArgs,
     GraphQLWhereArgs,
     RelationshipFilters,
 } from "./resolve-tree-parser/graphql-tree";
@@ -139,8 +140,8 @@ export class FilterFactory {
         if (where.length === 0) {
             return [];
         }
-        const nestedFilters = where.flatMap((orWhere: GraphQLEdgeWhereArgs) => {
-            return this.createEdgeFilters({ entity, relationship, edgeWhere: orWhere });
+        const nestedFilters = where.flatMap((logicalWhere: GraphQLEdgeWhereArgs) => {
+            return this.createEdgeFilters({ entity, relationship, edgeWhere: logicalWhere });
         });
 
         if (nestedFilters.length > 0) {
@@ -160,9 +161,19 @@ export class FilterFactory {
         entity,
     }: {
         entity: ConcreteEntity;
-        where?: Record<string, GraphQLNodeFilters>;
+        where?: GraphQLNodeWhereArgs;
     }): Filter[] {
-        return Object.entries(where).flatMap(([fieldName, filters]) => {
+        const andFilters = this.createLogicalNodeFilters(entity, "AND", where.AND);
+        const orFilters = this.createLogicalNodeFilters(entity, "OR", where.OR);
+        const notFilters = this.createLogicalNodeFilters(entity, "NOT", where.NOT ? [where.NOT] : undefined);
+
+        const nodePropertiesFilters = Object.entries(where).flatMap(([fieldName, filtersWithLogical]) => {
+            if (["AND", "OR", "NOT"].includes(fieldName)) {
+                return [];
+            }
+
+            let filters = filtersWithLogical as GraphQLNodeFilters;
+
             let attribute: Attribute | undefined;
             if (fieldName === "id" && entity.globalIdField) {
                 attribute = entity.globalIdField;
@@ -184,6 +195,32 @@ export class FilterFactory {
             }
             return [];
         });
+
+        return [...andFilters, ...orFilters, ...notFilters, ...nodePropertiesFilters];
+    }
+
+    private createLogicalNodeFilters(
+        entity: ConcreteEntity,
+        operation: LogicalOperators,
+        where: GraphQLNodeWhereArgs[] = []
+    ): [] | [Filter] {
+        if (where.length === 0) {
+            return [];
+        }
+        const nestedFilters = where.flatMap((logicalWhere) => {
+            return this.createNodeFilter({ entity, where: logicalWhere });
+        });
+
+        if (nestedFilters.length > 0) {
+            return [
+                new LogicalFilter({
+                    operation,
+                    filters: nestedFilters,
+                }),
+            ];
+        }
+
+        return [];
     }
 
     /** Transforms globalId filters into normal property filters */
