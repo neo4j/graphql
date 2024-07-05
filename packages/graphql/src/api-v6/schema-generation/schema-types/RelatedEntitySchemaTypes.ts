@@ -133,9 +133,9 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         }
     }
 
-    private getRelationshipFieldsDefinition(): Record<string, string> {
+    private getRelationshipFieldsDefinition(): Record<string, any> {
         const entityAttributes = this.getRelationshipFields().map((attribute) => new AttributeAdapter(attribute));
-        return attributeAdapterToComposeFields(entityAttributes, new Map()) as Record<string, any>;
+        return attributeAdapterToComposeFields(entityAttributes, new Map());
     }
 
     private getRelationshipSortFields(): Record<string, EnumTypeComposer> {
@@ -151,9 +151,9 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
     private getRelationshipSortableFields(): Attribute[] {
         return this.getRelationshipFields().filter(
             (field) =>
-                field.type.name === GraphQLBuiltInScalarType[GraphQLBuiltInScalarType[field.type.name]] ||
-                field.type.name === Neo4jGraphQLNumberType[Neo4jGraphQLNumberType[field.type.name]] ||
-                field.type.name === Neo4jGraphQLTemporalType[Neo4jGraphQLTemporalType[field.type.name]]
+                field.type.name === GraphQLBuiltInScalarType[field.type.name] ||
+                field.type.name === Neo4jGraphQLNumberType[field.type.name] ||
+                field.type.name === Neo4jGraphQLTemporalType[field.type.name]
         );
     }
 

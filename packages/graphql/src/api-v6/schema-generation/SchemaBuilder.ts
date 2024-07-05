@@ -17,14 +17,7 @@
  * limitations under the License.
  */
 
-import type {
-    GraphQLInputType,
-    GraphQLList,
-    GraphQLNonNull,
-    GraphQLObjectType,
-    GraphQLScalarType,
-    GraphQLSchema,
-} from "graphql";
+import type { GraphQLInputType, GraphQLNonNull, GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -79,7 +72,7 @@ export class SchemaBuilder {
     public getOrCreateObjectType(
         name: string,
         onCreate: () => {
-            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
+            fields: Record<string, FieldDefinition | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
             description?: string;
             iface?: InterfaceTypeComposer;
         }
@@ -101,7 +94,7 @@ export class SchemaBuilder {
     public getOrCreateInterfaceType(
         name: string,
         onCreate: () => {
-            fields: Record<string, FieldDefinition | string | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
+            fields: Record<string, FieldDefinition | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
             description?: string;
         }
     ): InterfaceTypeComposer {
@@ -128,9 +121,7 @@ export class SchemaBuilder {
             fields: Record<
                 string,
                 | EnumTypeComposer
-                | string
                 | GraphQLInputType
-                | GraphQLList<any>
                 | GraphQLNonNull<any>
                 | WrappedComposer<InputTypeComposer | ScalarTypeComposer>
             >;
@@ -150,7 +141,7 @@ export class SchemaBuilder {
 
     public createInputObjectType(
         name: string,
-        fields: Record<string, EnumTypeComposer | string | WrappedComposer<InputTypeComposer>>,
+        fields: Record<string, EnumTypeComposer | WrappedComposer<InputTypeComposer>>,
         description?: string
     ): InputTypeComposer {
         return this.composer.createInputTC({
@@ -181,7 +172,7 @@ export class SchemaBuilder {
     }: {
         name: string;
         type: ObjectTypeComposer | InterfaceTypeComposer;
-        args: Record<string, InputTypeComposer | string | WrappedComposer<ScalarTypeComposer>>;
+        args: Record<string, InputTypeComposer | WrappedComposer<ScalarTypeComposer>>;
         resolver: (...args: any[]) => any;
         description?: string;
     }): void {
