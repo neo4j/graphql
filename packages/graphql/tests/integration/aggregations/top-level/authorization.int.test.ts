@@ -25,8 +25,6 @@ describe("aggregations-top_level authorization", () => {
     const testHelper = new TestHelper();
     const secret = "secret";
 
-    beforeEach(() => {});
-
     afterEach(async () => {
         await testHelper.close();
     });

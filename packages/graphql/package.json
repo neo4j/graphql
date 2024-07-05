@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "5.4.4",
+    "version": "5.4.5",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -71,7 +71,7 @@
         "ts-jest": "29.1.5",
         "ts-node": "10.9.2",
         "typescript": "5.1.6",
-        "ws": "8.17.1"
+        "ws": "8.18.0"
     },
     "dependencies": {
         "@apollo/subgraph": "^2.2.3",

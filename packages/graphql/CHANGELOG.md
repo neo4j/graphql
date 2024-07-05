@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.4.5
+
+### Patch Changes
+
+-   [#5304](https://github.com/neo4j/graphql/pull/5304) [`92fdf2e`](https://github.com/neo4j/graphql/commit/92fdf2eca41d08b0a81877c7ff6a65c3ef3b7d4f) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix bug on generated Cypher with the @cypher directive and authorization rules #5270
+
 ## 5.4.4
 
 ### Patch Changes
