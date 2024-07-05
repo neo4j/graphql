@@ -21,7 +21,7 @@ import { buildSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import type { IResolvers, TypeSource } from "@graphql-tools/utils";
 import type {
-    ConstDirectiveNode,
+    DirectiveNode,
     DocumentNode,
     GraphQLDirective,
     GraphQLNamedType,
@@ -30,12 +30,12 @@ import type {
 } from "graphql";
 import { Kind, parse, print } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { isInArray } from "../utils/is-in-array";
-import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import type { ValueOf } from "../utils/value-of";
 
 // TODO fetch the directive names from the spec
@@ -189,7 +189,7 @@ export class Subgraph {
 
     private findFederationLinkMeta(
         typeDefs: TypeSource
-    ): { extension: SchemaExtensionNode; directive: ConstDirectiveNode } | undefined {
+    ): { extension: SchemaExtensionNode; directive: DirectiveNode } | undefined {
         const document = mergeTypeDefs(typeDefs);
 
         for (const definition of document.definitions) {
@@ -221,7 +221,7 @@ export class Subgraph {
         return name.replace("@", "");
     }
 
-    private parseLinkImportArgument(directive: ConstDirectiveNode): void {
+    private parseLinkImportArgument(directive: DirectiveNode): void {
         const argument = directive.arguments?.find((arg) => arg.name.value === "import");
 
         if (argument) {
