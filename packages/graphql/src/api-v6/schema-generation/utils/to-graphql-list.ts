@@ -20,6 +20,6 @@
 import type { GraphQLType } from "graphql";
 import { GraphQLList } from "graphql";
 
-export function toGraphQLList<T extends GraphQLType>(type: T): GraphQLList<T> {
+export function toGraphQLList<T extends GraphQLType>(type: T): GraphQLList<GraphQLType> {
     return new GraphQLList(type);
 }

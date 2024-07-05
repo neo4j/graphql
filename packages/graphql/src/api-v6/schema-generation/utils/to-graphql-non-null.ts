@@ -20,6 +20,6 @@
 import type { GraphQLType } from "graphql";
 import { GraphQLNonNull } from "graphql";
 
-export function toGraphQLNonNull<T extends GraphQLType>(type: T): GraphQLNonNull<T> {
+export function toGraphQLNonNull<T extends GraphQLType>(type: T): GraphQLNonNull<GraphQLType> {
     return new GraphQLNonNull(type);
 }
