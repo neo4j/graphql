@@ -41,13 +41,11 @@ describe("Cypher Auth Allow", () => {
 
             extend type User
                 @authorization(
-                    validate: [
-                        {
-                            when: AFTER
-                            operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { id: "$jwt.sub" } }
-                        }
-                    ]
+                    validate: {
+                        when: AFTER
+                        operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+                        where: { node: { id: "$jwt.sub" } }
+                    }
                 )
 
             extend type Post
