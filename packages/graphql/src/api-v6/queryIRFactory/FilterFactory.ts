@@ -282,9 +282,12 @@ export class FilterFactory {
     // TODO: remove adapter from here
     private createPropertyFilters(
         attribute: AttributeAdapter,
-        filters: GraphQLAttributeFilters,
+        filters: GraphQLAttributeFilters | null,
         attachedTo: "node" | "relationship" = "node"
     ): Filter[] {
+        if (!filters) {
+            return [];
+        }
         return Object.entries(filters).map(([key, value]) => {
             if (key === "AND" || key === "OR" || key === "NOT") {
                 return new LogicalFilter({
