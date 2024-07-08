@@ -172,4 +172,38 @@ describe("Relationship filters with none", () => {
             },
         });
     });
+
+    test("filter by nested node with none and NOT operator", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(
+                    where: { edges: { node: { actors: { edges: { none: { NOT: { node: { name: { equals: "Keanu" } } } } } } } } }
+                ) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                title: "The Matrix Reloaded",
+                            },
+                        },
+                    ]),
+                },
+            },
+        });
+    });
 });
