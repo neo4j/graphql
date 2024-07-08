@@ -70,7 +70,7 @@ describe("Global node query", () => {
     test("should return the correct relayId nodes using the global node API", async () => {
         const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
 
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
         query {
             node(id: "${movieGlobalId}") {
               ... on ${Movie} {
@@ -97,7 +97,7 @@ describe("Global node query", () => {
     test("should return the correct relayId nodes using the global node API with relationships", async () => {
         const movieGlobalId = toGlobalId({ typeName: Movie.name, field: "dbId", id: movieDatabaseID });
 
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
         query {
             node(id: "${movieGlobalId}") {
               ... on ${Movie} {

@@ -28,10 +28,6 @@ import type {
     ScalarTypeComposer,
 } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
-import { CartesianPointDistance } from "../../../graphql/input-objects/CartesianPointDistance";
-import { CartesianPointInput } from "../../../graphql/input-objects/CartesianPointInput";
-import { PointDistance } from "../../../graphql/input-objects/PointDistance";
-import { PointInput } from "../../../graphql/input-objects/PointInput";
 import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
 import { Point } from "../../../graphql/objects/Point";
 import * as Scalars from "../../../graphql/scalars";
@@ -478,81 +474,79 @@ class StaticFilterTypes {
         });
     }
 
-    public getCartesianListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: toGraphQLList(CartesianPointInput),
-                    },
-                };
-            });
-        }
+    // public getCartesianListWhere(nullable: boolean): InputTypeComposer {
+    //     if (nullable) {
+    //         return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhereNullable", () => {
+    //             return {
+    //                 fields: {
+    //                     equals: toGraphQLList(CartesianPointInput),
+    //                 },
+    //             };
+    //         });
+    //     }
 
-        return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhere", () => {
-            return {
-                fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
-                },
-            };
-        });
-    }
+    //     return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhere", () => {
+    //         return {
+    //             fields: {
+    //                 equals: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
+    //             },
+    //         };
+    //     });
+    // }
 
-    public getPointListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("PointListPointWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: toGraphQLList(PointInput),
-                    },
-                };
-            });
-        }
+    // public getPointListWhere(nullable: boolean): InputTypeComposer {
+    //     if (nullable) {
+    //         return this.schemaBuilder.getOrCreateInputType("PointListPointWhereNullable", () => {
+    //             return {
+    //                 fields: {
+    //                     equals: toGraphQLList(PointInput),
+    //                 },
+    //             };
+    //         });
+    //     }
 
-        return this.schemaBuilder.getOrCreateInputType("PointListPointWhere", () => {
-            return {
-                fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(PointInput)),
-                },
-            };
-        });
-    }
+    //     return this.schemaBuilder.getOrCreateInputType("PointListPointWhere", () => {
+    //         return {
+    //             fields: {
+    //                 equals: toGraphQLList(toGraphQLNonNull(PointInput)),
+    //             },
+    //         };
+    //     });
+    // }
 
-    // TODO: Discuss distance operator and SpatialOperators in general as the API it may be improved.
-    public get cartesianPointWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("CartesianPointWhere", (itc) => {
-            return {
-                fields: {
-                    ...this.createBooleanOperators(itc),
-                    equals: CartesianPointInput,
-                    in: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
-                    lt: CartesianPointDistance,
-                    lte: CartesianPointDistance,
-                    gt: CartesianPointDistance,
-                    gte: CartesianPointDistance,
-                    distance: CartesianPointDistance,
-                },
-            };
-        });
-    }
+    // public get cartesianPointWhere(): InputTypeComposer {
+    //     return this.schemaBuilder.getOrCreateInputType("CartesianPointWhere", (itc) => {
+    //         return {
+    //             fields: {
+    //                 ...this.createBooleanOperators(itc),
+    //                 equals: CartesianPointInput,
+    //                 in: toGraphQLList(toGraphQLNonNull(CartesianPointInput)),
+    //                 lt: CartesianPointDistance,
+    //                 lte: CartesianPointDistance,
+    //                 gt: CartesianPointDistance,
+    //                 gte: CartesianPointDistance,
+    //                 distance: CartesianPointDistance,
+    //             },
+    //         };
+    //     });
+    // }
 
-    // TODO: Discuss distance operator and SpatialOperators in general as the API it may be improved.
-    public get pointWhere(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType("PointWhere", (itc) => {
-            return {
-                fields: {
-                    ...this.createBooleanOperators(itc),
-                    equals: PointInput,
-                    in: toGraphQLList(toGraphQLNonNull(PointInput)),
-                    lt: PointDistance,
-                    lte: PointDistance,
-                    gt: PointDistance,
-                    gte: PointDistance,
-                    distance: PointDistance,
-                },
-            };
-        });
-    }
+    // public get pointWhere(): InputTypeComposer {
+    //     return this.schemaBuilder.getOrCreateInputType("PointWhere", (itc) => {
+    //         return {
+    //             fields: {
+    //                 ...this.createBooleanOperators(itc),
+    //                 equals: PointInput,
+    //                 in: toGraphQLList(toGraphQLNonNull(PointInput)),
+    //                 lt: PointDistance,
+    //                 lte: PointDistance,
+    //                 gt: PointDistance,
+    //                 gte: PointDistance,
+    //                 distance: PointDistance,
+    //             },
+    //         };
+    //     });
+    // }
 
     private createStringOperators(type: ScalarTypeComposer): Record<string, ScalarTypeComposer> {
         return {

@@ -24,9 +24,7 @@ import {
     GraphQLBuiltInScalarType,
     ListType,
     Neo4jGraphQLNumberType,
-    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
-    Neo4jSpatialType,
     ScalarType,
 } from "../../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
@@ -99,9 +97,9 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         if (wrappedType instanceof ScalarType) {
             return this.createScalarType(wrappedType, isList);
         }
-        if (wrappedType instanceof Neo4jSpatialType) {
-            return this.createSpatialType(wrappedType, isList);
-        }
+        // if (wrappedType instanceof Neo4jSpatialType) {
+        //     return this.createSpatialType(wrappedType, isList);
+        // }
     }
 
     private createScalarType(type: ScalarType, isList: boolean): InputTypeComposer {
@@ -203,24 +201,24 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         }
     }
 
-    private createSpatialType(type: Neo4jSpatialType, isList: boolean): InputTypeComposer {
-        switch (type.name) {
-            case Neo4jGraphQLSpatialType.CartesianPoint: {
-                if (isList) {
-                    const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.filters.getCartesianListWhere(isNullable);
-                }
-                return this.schemaTypes.staticTypes.filters.cartesianPointWhere;
-            }
-            case Neo4jGraphQLSpatialType.Point: {
-                if (isList) {
-                    const isNullable = !type.isRequired;
-                    return this.schemaTypes.staticTypes.filters.getPointListWhere(isNullable);
-                }
-                return this.schemaTypes.staticTypes.filters.pointWhere;
-            }
-        }
-    }
+    // private createSpatialType(type: Neo4jSpatialType, isList: boolean): InputTypeComposer {
+    //     switch (type.name) {
+    //         case Neo4jGraphQLSpatialType.CartesianPoint: {
+    //             if (isList) {
+    //                 const isNullable = !type.isRequired;
+    //                 return this.schemaTypes.staticTypes.filters.getCartesianListWhere(isNullable);
+    //             }
+    //             return this.schemaTypes.staticTypes.filters.cartesianPointWhere;
+    //         }
+    //         case Neo4jGraphQLSpatialType.Point: {
+    //             if (isList) {
+    //                 const isNullable = !type.isRequired;
+    //                 return this.schemaTypes.staticTypes.filters.getPointListWhere(isNullable);
+    //             }
+    //             return this.schemaTypes.staticTypes.filters.pointWhere;
+    //         }
+    //     }
+    // }
 
     protected abstract get edgeWhere(): InputTypeComposer;
     protected abstract get nodeWhere(): InputTypeComposer;

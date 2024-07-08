@@ -20,7 +20,9 @@
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("CartesianPoint 2d GT", () => {
+// Skip Spatial types waiting for the new operator design
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip("CartesianPoint 2d GT", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;

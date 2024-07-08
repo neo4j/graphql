@@ -71,7 +71,7 @@ describe("RelayId projection", () => {
     });
 
     test("should return the correct relayId ids using the connection API", async () => {
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     connection {
@@ -160,7 +160,7 @@ describe("RelayId projection", () => {
     });
 
     test("should return the correct relayId ids using the connection API with aliased fields", async () => {
-        const connectionQuery = `
+        const connectionQuery = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     connection {

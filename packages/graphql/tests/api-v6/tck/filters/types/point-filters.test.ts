@@ -20,7 +20,9 @@
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../../tck/utils/tck-test-utils";
 
-describe("Point filters", () => {
+// Skip Spatial types waiting for the new operator design
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip("Point filters", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
