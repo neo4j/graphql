@@ -75,9 +75,11 @@ export type GraphQLWhereArgs = LogicalOperation<{
     edges?: GraphQLEdgeWhereArgs;
 }>;
 
+export type GraphQLNodeWhereArgs = LogicalOperation<Record<string, GraphQLNodeFilters>>;
+
 export type GraphQLEdgeWhereArgs = LogicalOperation<{
     properties?: Record<string, GraphQLAttributeFilters>;
-    node?: Record<string, GraphQLNodeFilters>;
+    node?: GraphQLNodeWhereArgs;
 }>;
 
 export type GraphQLAttributeFilters = StringFilters | NumberFilters;
