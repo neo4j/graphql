@@ -68,7 +68,7 @@ export class FilterFactory {
 
         const edgeFilters = this.createEdgeFilters({ entity, relationship, edgeWhere: where.edges });
 
-        return [...edgeFilters, ...andFilters, ...orFilters, ...notFilters];
+        return [...this.mergeFiltersWithAnd(edgeFilters), ...andFilters, ...orFilters, ...notFilters];
     }
 
     private createLogicalFilters({
@@ -128,7 +128,13 @@ export class FilterFactory {
                 relationship,
             });
         }
-        return [...nodeFilters, ...edgePropertiesFilters, ...andFilters, ...orFilters, ...notFilters];
+        return [
+            ...this.mergeFiltersWithAnd(nodeFilters),
+            ...edgePropertiesFilters,
+            ...andFilters,
+            ...orFilters,
+            ...notFilters,
+        ];
     }
 
     private createLogicalEdgeFilters(
@@ -196,7 +202,7 @@ export class FilterFactory {
             return [];
         });
 
-        return [...andFilters, ...orFilters, ...notFilters, ...nodePropertiesFilters];
+        return [...andFilters, ...orFilters, ...notFilters, ...this.mergeFiltersWithAnd(nodePropertiesFilters)];
     }
 
     private createLogicalNodeFilters(
@@ -324,5 +330,17 @@ export class FilterFactory {
                 attachedTo,
             });
         });
+    }
+
+    private mergeFiltersWithAnd(filters: Filter[]): Filter[] {
+        if (filters.length > 1) {
+            return [
+                new LogicalFilter({
+                    operation: "AND",
+                    filters: filters,
+                }),
+            ];
+        }
+        return filters;
     }
 }

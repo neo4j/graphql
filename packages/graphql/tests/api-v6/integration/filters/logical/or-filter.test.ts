@@ -190,4 +190,43 @@ describe("Filters OR", () => {
             },
         });
     });
+
+    test("top level OR filter combined with implicit AND", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(
+                    where: {
+                        OR: [
+                            { edges: { node: { title: { equals: "The Matrix" }, year: { equals: 2001 } } } }
+                            { edges: { node: { year: { equals: 2002 } } } }
+                        ]
+                    }
+                ) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                title: "The Matrix Revelations",
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
 });
