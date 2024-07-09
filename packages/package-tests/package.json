@@ -25,6 +25,6 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "rimraf": "5.0.7"
+        "rimraf": "5.0.9"
     }
 }

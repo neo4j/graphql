@@ -129,7 +129,7 @@ describe("ConcreteEntity generation", () => {
                     },
                 },
             ]);
-            expect(authAnnotation?.validate).toBeUndefined();
+            expect(authAnnotation?.validate).toEqual([]);
         });
 
         test("authorization annotation is correct on User entity", () => {

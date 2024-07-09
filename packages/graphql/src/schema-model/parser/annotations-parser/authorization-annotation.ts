@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
+import { asArray } from "../../../utils/utils";
 import type {
     AuthorizationFilterRuleConstructor,
     AuthorizationValidateRuleConstructor,
@@ -34,7 +35,7 @@ export function parseAuthorizationAnnotation(directive: DirectiveNode): Authoriz
         validate?: Record<string, any>[];
     };
     const filterRules = filter?.map((rule) => new AuthorizationFilterRule(rule as AuthorizationFilterRuleConstructor));
-    const validateRules = validate?.map(
+    const validateRules = asArray(validate).map(
         (rule) => new AuthorizationValidateRule(rule as AuthorizationValidateRuleConstructor)
     );
 
