@@ -46,7 +46,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth where", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(filter: [{ where: { node: { director: { id: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
@@ -246,7 +246,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth allow", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
@@ -446,7 +446,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth allow ALL", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [{ when: [BEFORE], where: { node: { director_ALL: { id: "$jwt.sub" } } } }]
                 ) {
@@ -651,7 +651,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth allow on connection node", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { node: { directorConnection: { node: { id: "$jwt.sub" } } } } }
@@ -855,7 +855,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth allow on connection node ALL", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
                         {
@@ -1065,7 +1065,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth allow on connection edge", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { node: { directorConnection: { edge: { year: 2020 } } } } }
@@ -1270,7 +1270,7 @@ describe("Cypher -> vector -> Auth", () => {
     test("simple match with auth allow on connection edge ALL", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }])
+                @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { node: { directorConnection_ALL: { edge: { year: 2020 } } } } }

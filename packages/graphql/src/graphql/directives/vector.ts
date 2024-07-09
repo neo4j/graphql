@@ -52,7 +52,7 @@ export const vectorDirective = new GraphQLDirective({
                             indexName: {
                                 type: new GraphQLNonNull(GraphQLString),
                             },
-                            propertyName: {
+                            embeddingProperty: {
                                 type: new GraphQLNonNull(GraphQLString),
                             },
                             queryName: {

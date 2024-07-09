@@ -110,10 +110,10 @@ function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingInd
                 return;
             }
 
-            const propertyIsInIndex = existingIndex.properties.some((p) => p === index.propertyName);
+            const propertyIsInIndex = existingIndex.properties.some((p) => p === index.embeddingProperty);
             if (!propertyIsInIndex) {
                 indexErrors.push(
-                    `@vector index '${index.indexName}' on Node '${entity.name}' is missing property '${index.propertyName}'`
+                    `@vector index '${index.indexName}' on Node '${entity.name}' is missing embedding property '${index.embeddingProperty}'`
                 );
             }
 

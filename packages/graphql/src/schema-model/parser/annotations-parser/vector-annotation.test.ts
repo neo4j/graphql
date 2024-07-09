@@ -42,7 +42,7 @@ describe("parseVectorAnnotation", () => {
                                     },
                                     {
                                         kind: Kind.OBJECT_FIELD,
-                                        name: { kind: Kind.NAME, value: "propertyName" },
+                                        name: { kind: Kind.NAME, value: "embeddingProperty" },
                                         value: { kind: Kind.STRING, value: "name" },
                                     },
                                     {
@@ -68,7 +68,7 @@ describe("parseVectorAnnotation", () => {
             indexes: [
                 {
                     indexName: "ProductName",
-                    propertyName: "name",
+                    embeddingProperty: "name",
                     queryName: "myQueryName",
                     provider: "OpenAI",
                 },

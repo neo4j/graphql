@@ -28,8 +28,12 @@ describe("@vector schema", () => {
             type Movie
                 @vector(
                     indexes: [
-                        { indexName: "MovieTitle", propertyName: "title", queryName: "titleQuery" }
-                        { indexName: "MovieDescription", propertyName: "description", queryName: "descriptionQuery" }
+                        { indexName: "MovieTitle", embeddingProperty: "title", queryName: "titleQuery" }
+                        {
+                            indexName: "MovieDescription"
+                            embeddingProperty: "description"
+                            queryName: "descriptionQuery"
+                        }
                     ]
                 ) {
                 title: String

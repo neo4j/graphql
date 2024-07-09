@@ -142,7 +142,7 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
@@ -221,7 +221,7 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
@@ -298,7 +298,7 @@ describe("@vector directive - Auth", () => {
                 roles: [String!]!
             }
 
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String!
                 born: Int!
@@ -394,7 +394,7 @@ describe("@vector directive - Auth", () => {
                 roles: [String!]!
             }
 
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String!
                 born: Int!
@@ -461,7 +461,7 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
@@ -541,7 +541,7 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
@@ -612,7 +612,7 @@ describe("@vector directive - Auth", () => {
                 roles: [String!]!
             }
 
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", propertyName: "embedding", queryName: "${queryName}" }])
+            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String!
                 born: Int!

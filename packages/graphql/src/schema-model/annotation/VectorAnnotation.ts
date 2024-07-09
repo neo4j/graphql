@@ -21,7 +21,7 @@ import type { Annotation } from "./Annotation";
 
 export type VectorField = {
     indexName: string;
-    propertyName: string;
+    embeddingProperty: string;
     queryName: string;
     provider?: string;
     callback?: string;

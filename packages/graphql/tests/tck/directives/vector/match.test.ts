@@ -30,7 +30,7 @@ describe("Vector index match", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-                type Movie @vector(indexes: [{ indexName: "movie_index", propertyName: "movieVector", queryName: "${queryName}" }]) {
+                type Movie @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }]) {
                     title: String!
                     released: Int!
                 }
