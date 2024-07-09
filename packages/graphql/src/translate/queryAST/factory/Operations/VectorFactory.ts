@@ -192,15 +192,4 @@ export class VectorFactory {
             score: context.vector.scoreVariable,
         };
 
-        // const entries = Object.entries(context.resolveTree.args.vector || {});
-        // if (entries.length > 1) {
-        //     throw new Error("Can only call one search at any given time");
-        // }
-        // const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
-        // return {
-        //     index: indexName,
-        //     phrase: indexInput.phrase,
-        //     score: new Cypher.Variable(),
-        // };
-    }
 }

@@ -51,8 +51,6 @@ export function vectorResolver({
             offset: resolveTree.args.offset,
         };
 
-        // (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
-
         const { cypher, params } = translateRead({
             context: { ...context, resolveTree },
             entityAdapter,
