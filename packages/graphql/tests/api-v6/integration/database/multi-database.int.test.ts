@@ -18,20 +18,20 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import { generate } from "randomstring";
-import type { UniqueType } from "../utils/graphql-types";
-import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
-import { TestHelper } from "../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("multi-database", () => {
     let driver: Driver;
-    const testHelper = new TestHelper();
-    const id = generate({
-        charset: "alphabetic",
-    });
+    const testHelper = new TestHelper({ v6Api: true });
+    const id = "movie-id";
+
     let MULTIDB_SUPPORT = true;
     const dbName = "non-default-db-name";
     let Movie: UniqueType;
+
+    let typeDefs: string;
 
     beforeAll(async () => {
         try {
@@ -53,6 +53,12 @@ describe("multi-database", () => {
         if (MULTIDB_SUPPORT) {
             driver = await testHelper.getDriver();
             Movie = testHelper.createUniqueType("Movie");
+
+            typeDefs = `
+                type ${Movie} @node {
+                    id: ID!
+                }
+            `;
 
             await testHelper.executeCypher(`CREATE (:${Movie} {id: $id})`, { id });
         }
@@ -78,18 +84,18 @@ describe("multi-database", () => {
             return;
         }
 
-        const typeDefs = `
-            type ${Movie} {
-                id: ID!
-            }
-        `;
-
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
-                ${Movie.plural}(where: { id: "${id}" }) {
-                    id
+                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -100,6 +106,7 @@ describe("multi-database", () => {
         });
         expect((result.errors as any)[0].message).toBeTruthy();
     });
+
     test("should specify the database via context", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
@@ -107,27 +114,39 @@ describe("multi-database", () => {
             return;
         }
 
-        const typeDefs = `
-            type ${Movie} {
-                id: ID!
-            }
-        `;
-
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
-                ${Movie.plural}(where: { id: "${id}" }) {
-                    id
+                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
 
         const result = await testHelper.executeGraphQL(query, {
-            variableValues: { id },
             contextValue: { executionContext: driver, sessionConfig: { database: dbName } },
         });
-        expect((result.data as any)[Movie.plural][0].id).toBe(id);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                id: id,
+                            },
+                        },
+                    ],
+                },
+            },
+        });
     });
 
     test("should fail for non-existing database specified via neo4j construction", async () => {
@@ -137,18 +156,18 @@ describe("multi-database", () => {
             return;
         }
 
-        const typeDefs = `
-            type ${Movie} {
-                id: ID!
-            }
-        `;
-
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
-                ${Movie.plural}(where: { id: "${id}" }) {
-                    id
+                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -163,6 +182,7 @@ describe("multi-database", () => {
             "Database does not exist. Database name: 'non-existing-db'.",
         ]).toContain((result.errors as any)[0].message);
     });
+
     test("should specify the database via neo4j construction", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
@@ -170,17 +190,18 @@ describe("multi-database", () => {
             return;
         }
 
-        const typeDefs = `
-            type ${Movie} {
-                id: ID!
-            }
-        `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = `
             query {
-                ${Movie.plural}(where: { id: "${id}" }) {
-                    id
+                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -189,6 +210,18 @@ describe("multi-database", () => {
             variableValues: { id },
             contextValue: { sessionConfig: { database: dbName } }, // This is needed, otherwise the context in resolvers will be undefined
         });
-        expect((result.data as any)[Movie.plural][0].id).toBe(id);
+        expect(result.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                id: id,
+                            },
+                        },
+                    ],
+                },
+            },
+        });
     });
 });
