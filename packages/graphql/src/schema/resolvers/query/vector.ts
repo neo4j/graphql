@@ -18,7 +18,6 @@
  */
 
 import type { GraphQLFieldResolver, GraphQLResolveInfo, SelectionSetNode } from "graphql";
-import type { PageInfo } from "graphql-relay";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
@@ -28,6 +27,7 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import { emptyConnection } from "./shared";
 
 export function vectorResolver({
     vectorContext,
@@ -64,36 +64,24 @@ export function vectorResolver({
             info,
         });
 
-        let totalCount = 0;
-        let edges: any[] = [];
-        let pageInfo: PageInfo = {
-            hasNextPage: false,
-            hasPreviousPage: false,
-            startCursor: null,
-            endCursor: null,
-        };
-
-        if (executeResult.records[0]) {
-            const record = executeResult.records[0].this;
-
-            totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
-
-            const connection = createConnectionWithEdgeProperties({
-                selectionSet: resolveTree as unknown as SelectionSetNode,
-                source: { edges: record.edges },
-                args: { first: args.first, after: args.after },
-                totalCount,
-            });
-
-            edges = connection.edges as any[];
-            pageInfo = connection.pageInfo as PageInfo;
+        if (!executeResult.records[0]) {
+            return { [entityAdapter.operations.rootTypeFieldNames.connection]: emptyConnection };
         }
+
+        const record = executeResult.records[0].this;
+        const totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
+        const connection = createConnectionWithEdgeProperties({
+            selectionSet: resolveTree as unknown as SelectionSetNode,
+            source: { edges: record.edges },
+            args: { first: args.first, after: args.after },
+            totalCount,
+        });
 
         return {
             [entityAdapter.operations.rootTypeFieldNames.connection]: {
                 totalCount,
-                edges,
-                pageInfo,
+                edges: connection.edges,
+                pageInfo: connection.pageInfo,
             },
         };
     };

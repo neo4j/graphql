@@ -26,7 +26,6 @@ import {
     type SelectionSetNode,
 } from "graphql";
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
-import type { PageInfo as PageInfoRelay } from "graphql-relay";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -37,6 +36,7 @@ import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import { emptyConnection } from "./shared";
 
 export function rootConnectionResolver({
     composer,
@@ -47,16 +47,7 @@ export function rootConnectionResolver({
     entityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
 }) {
-    async function resolve(
-        _root: any,
-        args: any,
-        context: Neo4jGraphQLComposedContext,
-        info: GraphQLResolveInfo
-    ): Promise<{
-        totalCount: number;
-        edges: any[];
-        pageInfo: PageInfoRelay;
-    }> {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         const { cypher, params } = translateRead({
@@ -72,36 +63,24 @@ export function rootConnectionResolver({
             context,
         });
 
-        let totalCount = 0;
-        let edges: any[] = [];
-        let pageInfo: PageInfoRelay = {
-            hasNextPage: false,
-            hasPreviousPage: false,
-            startCursor: null,
-            endCursor: null,
-        };
-
-        if (executeResult.records[0]) {
-            const record = executeResult.records[0].this;
-
-            totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
-
-            const connection = createConnectionWithEdgeProperties({
-                selectionSet: resolveTree as unknown as SelectionSetNode,
-                source: { edges: record.edges },
-                args: { first: args.first, after: args.after },
-                totalCount,
-            });
-
-            // TODO: Question why are these not taking into account the potential aliases?
-            edges = connection.edges as any[];
-            pageInfo = connection.pageInfo as PageInfoRelay;
+        if (!executeResult.records[0]) {
+            return emptyConnection;
         }
+
+        const record = executeResult.records[0].this;
+        const totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
+
+        const connection = createConnectionWithEdgeProperties({
+            selectionSet: resolveTree as unknown as SelectionSetNode,
+            source: { edges: record.edges },
+            args: { first: args.first, after: args.after },
+            totalCount,
+        });
 
         return {
             totalCount,
-            edges,
-            pageInfo,
+            edges: connection.edges,
+            pageInfo: connection.pageInfo,
         };
     }
 
