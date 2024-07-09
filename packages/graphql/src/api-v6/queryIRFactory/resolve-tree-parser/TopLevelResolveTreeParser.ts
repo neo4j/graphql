@@ -21,11 +21,42 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ResolveTreeParser } from "./ResolveTreeParser";
 import { findFieldByName } from "./find-field-by-name";
-import type { GraphQLTreeEdge } from "./graphql-tree";
+import type {
+    GraphQLReadOperationArgsTopLevel,
+    GraphQLTreeEdge,
+    GraphQLTreeReadOperationTopLevel,
+} from "./graphql-tree";
 
 export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity> {
     protected get targetNode(): ConcreteEntity {
         return this.entity;
+    }
+
+    /** Parse a resolveTree into a Neo4j GraphQLTree */
+    public parseOperationTopLevel(resolveTree: ResolveTree): GraphQLTreeReadOperationTopLevel {
+        const connectionResolveTree = findFieldByName(
+            resolveTree,
+            this.entity.typeNames.connectionOperation,
+            "connection"
+        );
+
+        const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
+        const connectionOperationArgs = this.parseOperationArgsTopLevel(resolveTree.args);
+        return {
+            alias: resolveTree.alias,
+            args: connectionOperationArgs,
+            name: resolveTree.name,
+            fields: {
+                connection,
+            },
+        };
+    }
+
+    private parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgsTopLevel {
+        // Not properly parsed, assuming the type is the same
+        return {
+            where: resolveTreeArgs.where,
+        };
     }
 
     protected parseEdges(resolveTree: ResolveTree): GraphQLTreeEdge {

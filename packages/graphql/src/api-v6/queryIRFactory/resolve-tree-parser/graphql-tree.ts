@@ -19,7 +19,7 @@
 
 import type { Integer } from "neo4j-driver";
 
-export type GraphQLTree = GraphQLTreeReadOperation;
+export type GraphQLTree = GraphQLTreeReadOperationTopLevel;
 
 interface GraphQLTreeElement {
     alias: string;
@@ -59,12 +59,24 @@ export type RelationshipFilters = {
     };
 };
 
+export interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
+    name: string;
+    fields: {
+        connection?: GraphQLTreeConnection;
+    };
+    args: GraphQLReadOperationArgsTopLevel;
+}
+
 export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
+    name: string;
     fields: {
         connection?: GraphQLTreeConnection;
     };
     args: GraphQLReadOperationArgs;
-    name: string;
+}
+
+export interface GraphQLReadOperationArgsTopLevel {
+    where?: GraphQLNodeWhereArgs;
 }
 
 export interface GraphQLReadOperationArgs {
