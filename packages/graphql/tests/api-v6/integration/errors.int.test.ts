@@ -19,15 +19,15 @@
 
 import type { GraphQLError } from "graphql";
 import { graphql } from "graphql";
-import { Neo4jGraphQL } from "../../src/classes";
-import { UniqueType } from "../utils/graphql-types";
+import { Neo4jGraphQL } from "../../../src";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Errors", () => {
     test("An error should be thrown if no driver is supplied", async () => {
         const Movie = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
             }
         `;
@@ -37,13 +37,19 @@ describe("Errors", () => {
         const query = `
             query {
                 ${Movie.plural} {
-                    id
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
 
         const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema: await neoSchema.getAuraSchema(),
             source: query,
         });
 
