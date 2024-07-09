@@ -88,13 +88,6 @@ describe("Spatial Types", () => {
               node: NodeType
             }
 
-            input NodeTypeEdgeWhere {
-              AND: [NodeTypeEdgeWhere!]
-              NOT: NodeTypeEdgeWhere
-              OR: [NodeTypeEdgeWhere!]
-              node: NodeTypeWhere
-            }
-
             type NodeTypeOperation {
               connection(after: String, first: Int): NodeTypeConnection
             }
@@ -103,7 +96,7 @@ describe("Spatial Types", () => {
               AND: [NodeTypeOperationWhere!]
               NOT: NodeTypeOperationWhere
               OR: [NodeTypeOperationWhere!]
-              edges: NodeTypeEdgeWhere
+              node: NodeTypeWhere
             }
 
             type NodeTypeRelatedNodeConnection {
@@ -200,13 +193,6 @@ describe("Spatial Types", () => {
               node: RelatedNode
             }
 
-            input RelatedNodeEdgeWhere {
-              AND: [RelatedNodeEdgeWhere!]
-              NOT: RelatedNodeEdgeWhere
-              OR: [RelatedNodeEdgeWhere!]
-              node: RelatedNodeWhere
-            }
-
             type RelatedNodeOperation {
               connection(after: String, first: Int): RelatedNodeConnection
             }
@@ -215,7 +201,7 @@ describe("Spatial Types", () => {
               AND: [RelatedNodeOperationWhere!]
               NOT: RelatedNodeOperationWhere
               OR: [RelatedNodeOperationWhere!]
-              edges: RelatedNodeEdgeWhere
+              node: RelatedNodeWhere
             }
 
             type RelatedNodeProperties {
