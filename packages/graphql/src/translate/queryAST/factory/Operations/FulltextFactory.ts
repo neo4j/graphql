@@ -162,8 +162,6 @@ export class FulltextFactory {
             };
         }
 
-        // QUESTION: Is this ever reached?
-
         const entries = Object.entries(context.resolveTree.args.fulltext || {});
         if (entries.length > 1) {
             throw new Error("Can only call one search at any given time");

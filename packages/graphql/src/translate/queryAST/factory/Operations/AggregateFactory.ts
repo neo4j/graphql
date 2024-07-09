@@ -135,11 +135,9 @@ export class AggregateFactory {
         } else {
             if (isConcreteEntity(entity)) {
                 let selection: EntitySelection;
+                // NOTE: If we introduce vector index aggregation, checking the phrase will cause a problem
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
-                    // QUESTION: Why can't we just check for context.resolveTree.args.fulltext?
                     selection = this.queryASTFactory.operationsFactory.getFulltextSelection(entity, context);
-                } else if (context.resolveTree.args.vector) {
-                    selection = this.queryASTFactory.operationsFactory.getVectorSelection(entity, context);
                 } else {
                     selection = new NodeSelection({
                         target: entity,
