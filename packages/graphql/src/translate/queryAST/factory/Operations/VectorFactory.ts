@@ -191,5 +191,5 @@ export class VectorFactory {
             phrase,
             score: context.vector.scoreVariable,
         };
-
+    }
 }
