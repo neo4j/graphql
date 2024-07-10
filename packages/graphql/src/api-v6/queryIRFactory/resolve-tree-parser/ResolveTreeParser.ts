@@ -165,7 +165,7 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
         };
     }
 
-    private parseConnection(resolveTree: ResolveTree): GraphQLTreeConnection {
+    protected parseConnection(resolveTree: ResolveTree): GraphQLTreeConnection {
         const entityTypes = this.entity.typeNames;
         const edgesResolveTree = findFieldByName(resolveTree, entityTypes.connection, "edges");
         const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;

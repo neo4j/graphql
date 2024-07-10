@@ -58,7 +58,7 @@ describe("Date - LT", () => {
 
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { date: { lt: "${neoDate2.toString()}" }} }}) {
+                    ${Movie.plural}(where: { node: { date: { lt: "${neoDate2.toString()}" }}}) {
                         connection{
                             edges  {
                                 node {

@@ -80,10 +80,8 @@ describe("RelayId projection with filters", () => {
         const connectionQuery = /* GraphQL */ `
             query {
                 ${Movie.plural}(where: {
-                    edges: {
-                        node: {
-                            id: { equals: "${movieGlobalId}"}
-                        }
+                    node: {
+                        id: { equals: "${movieGlobalId}"}
                     }
                 }) {
                     connection {

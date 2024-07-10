@@ -61,13 +61,6 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
-            input MovieEdgeWhere {
-              AND: [MovieEdgeWhere!]
-              NOT: MovieEdgeWhere
-              OR: [MovieEdgeWhere!]
-              node: MovieWhere
-            }
-
             type MovieOperation {
               connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
@@ -76,7 +69,7 @@ describe("Simple Aura-API", () => {
               AND: [MovieOperationWhere!]
               NOT: MovieOperationWhere
               OR: [MovieOperationWhere!]
-              edges: MovieEdgeWhere
+              node: MovieWhere
             }
 
             input MovieSort {
@@ -160,13 +153,6 @@ describe("Simple Aura-API", () => {
               node: ActorSort
             }
 
-            input ActorEdgeWhere {
-              AND: [ActorEdgeWhere!]
-              NOT: ActorEdgeWhere
-              OR: [ActorEdgeWhere!]
-              node: ActorWhere
-            }
-
             type ActorOperation {
               connection(after: String, first: Int, sort: ActorConnectionSort): ActorConnection
             }
@@ -175,7 +161,7 @@ describe("Simple Aura-API", () => {
               AND: [ActorOperationWhere!]
               NOT: ActorOperationWhere
               OR: [ActorOperationWhere!]
-              edges: ActorEdgeWhere
+              node: ActorWhere
             }
 
             input ActorSort {
@@ -211,13 +197,6 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
-            input MovieEdgeWhere {
-              AND: [MovieEdgeWhere!]
-              NOT: MovieEdgeWhere
-              OR: [MovieEdgeWhere!]
-              node: MovieWhere
-            }
-
             type MovieOperation {
               connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
@@ -226,7 +205,7 @@ describe("Simple Aura-API", () => {
               AND: [MovieOperationWhere!]
               NOT: MovieOperationWhere
               OR: [MovieOperationWhere!]
-              edges: MovieEdgeWhere
+              node: MovieWhere
             }
 
             input MovieSort {
@@ -311,13 +290,6 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
-            input MovieEdgeWhere {
-              AND: [MovieEdgeWhere!]
-              NOT: MovieEdgeWhere
-              OR: [MovieEdgeWhere!]
-              node: MovieWhere
-            }
-
             type MovieOperation {
               connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
             }
@@ -326,7 +298,7 @@ describe("Simple Aura-API", () => {
               AND: [MovieOperationWhere!]
               NOT: MovieOperationWhere
               OR: [MovieOperationWhere!]
-              edges: MovieEdgeWhere
+              node: MovieWhere
             }
 
             input MovieSort {

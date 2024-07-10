@@ -68,7 +68,7 @@ describe("Duration - LT", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { duration: { lt: "${duration2.toString()}" }} }}) {
+                    ${Movie.plural}(where: { node: { duration: { lt: "${duration2.toString()}" }} }) {
                         connection{
                             edges  {
                                 node {

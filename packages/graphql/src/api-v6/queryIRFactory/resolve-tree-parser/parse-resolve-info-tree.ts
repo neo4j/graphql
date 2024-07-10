@@ -31,7 +31,7 @@ export function parseResolveInfoTree({
     entity: ConcreteEntity;
 }): GraphQLTree {
     const parser = new TopLevelResolveTreeParser({ entity });
-    return parser.parseOperation(resolveTree);
+    return parser.parseOperationTopLevel(resolveTree);
 }
 
 export function parseGlobalNodeResolveInfoTree({
@@ -42,5 +42,5 @@ export function parseGlobalNodeResolveInfoTree({
     entity: ConcreteEntity;
 }): GraphQLTree {
     const parser = new GlobalNodeResolveTreeParser({ entity });
-    return parser.parseOperation(resolveTree);
+    return parser.parseTopLevelOperation(resolveTree);
 }

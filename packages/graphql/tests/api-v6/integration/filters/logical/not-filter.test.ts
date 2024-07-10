@@ -61,55 +61,7 @@ describe("Filters NOT", () => {
     test("top level NOT filter by node", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(
-                    where: {
-                        NOT: 
-                            { edges: { node: { title: { equals: "The Matrix" } } } }
-                    }
-                ) {
-                    connection {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: {
-                connection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                title: "The Matrix Revelations",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix Reloaded",
-                            },
-                        },
-                    ]),
-                },
-            },
-        });
-    });
-
-    test("NOT filter in edges by node", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(
-                    where: {
-                        edges: {
-                            NOT: { node: { title: { equals: "The Matrix" } } }
-                        }
-                    }
-                ) {
+                ${Movie.plural}(where: { NOT: { node: { title: { equals: "The Matrix" } } } }) {
                     connection {
                         edges {
                             node {

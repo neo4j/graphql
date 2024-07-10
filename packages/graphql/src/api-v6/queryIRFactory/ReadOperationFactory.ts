@@ -20,8 +20,8 @@
 import { cursorToOffset } from "graphql-relay";
 import type { Integer } from "neo4j-driver";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
-import type { Attribute } from "../../schema-model/attribute/Attribute";
 import type { LimitAnnotation } from "../../schema-model/annotation/LimitAnnotation";
+import type { Attribute } from "../../schema-model/attribute/Attribute";
 import { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -60,13 +60,7 @@ export class ReadOperationFactory {
         this.filterFactory = new FilterFactory(schemaModel);
     }
 
-    public createAST({
-        graphQLTree,
-        entity,
-    }: {
-        graphQLTree: GraphQLTreeReadOperation;
-        entity: ConcreteEntity;
-    }): QueryAST {
+    public createAST({ graphQLTree, entity }: { graphQLTree: GraphQLTree; entity: ConcreteEntity }): QueryAST {
         const operation = this.generateOperation({
             graphQLTree,
             entity,
@@ -110,7 +104,7 @@ export class ReadOperationFactory {
             },
             pagination,
             sortFields: sortInputFields,
-            filters: this.filterFactory.createFilters({ entity, where: graphQLTree.args.where }),
+            filters: this.filterFactory.createTopLevelFilters({ entity, where: graphQLTree.args.where }),
         });
     }
 

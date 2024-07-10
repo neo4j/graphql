@@ -43,9 +43,7 @@ describe("Top level filters", () => {
             query {
                 movies(
                     where: {
-                        edges: {
-                            node: { title: { equals: "The Matrix" }, year: { equals: 100 }, runtime: { equals: 90.5 } }
-                        }
+                        node: { title: { equals: "The Matrix" }, year: { equals: 100 }, runtime: { equals: 90.5 } }
                     }
                 ) {
                     connection {

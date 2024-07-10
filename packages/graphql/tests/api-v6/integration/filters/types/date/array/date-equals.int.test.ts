@@ -62,7 +62,7 @@ describe("Date array - Equals", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const query = /* GraphQL */ `
             query movies($date1: Date!, $date3: Date!) {
-              ${Movie.plural}(where: { edges: { node: { date: { equals: [$date1, $date3] }} }}) {
+              ${Movie.plural}(where: { node: { date: { equals: [$date1, $date3] }}}) {
                   connection{
                       edges  {
                           node {

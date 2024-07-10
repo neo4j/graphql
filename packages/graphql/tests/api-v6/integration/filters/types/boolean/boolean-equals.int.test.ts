@@ -50,7 +50,7 @@ describe("Boolean Filtering", () => {
     test("filter by true", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { equals:  true } } } }) {
+                ${Movie.plural}(where: { node: { value: { equals:  true } } }) {
                     connection {
                         edges {
                             node {
@@ -82,7 +82,7 @@ describe("Boolean Filtering", () => {
     test("filter by false", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { equals: false } } } }) {
+                ${Movie.plural}(where: { node: { value: { equals: false } } }) {
                     connection {
                         edges {
                             node {
@@ -114,7 +114,7 @@ describe("Boolean Filtering", () => {
     test("filter by NOT", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { equals: true } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { equals: true } } } }) {
                     connection {
                         edges {
                             node {

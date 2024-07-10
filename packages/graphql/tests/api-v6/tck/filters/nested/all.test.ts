@@ -47,9 +47,7 @@ describe("Nested Filters with all", () => {
     test("query nested relationship with all filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(
-                    where: { edges: { node: { actors: { edges: { all: { node: { name: { equals: "Keanu" } } } } } } } }
-                ) {
+                movies(where: { node: { actors: { edges: { all: { node: { name: { equals: "Keanu" } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -93,11 +91,7 @@ describe("Nested Filters with all", () => {
     test("query nested relationship properties with all filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        edges: { node: { actors: { edges: { all: { properties: { year: { equals: 1999 } } } } } } }
-                    }
-                ) {
+                movies(where: { node: { actors: { edges: { all: { properties: { year: { equals: 1999 } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -146,16 +140,14 @@ describe("Nested Filters with all", () => {
             query {
                 movies(
                     where: {
-                        edges: {
-                            node: {
-                                actors: {
-                                    edges: {
-                                        all: {
-                                            OR: [
-                                                { node: { name: { equals: "Keanu" } } }
-                                                { node: { name: { endsWith: "eeves" } } }
-                                            ]
-                                        }
+                        node: {
+                            actors: {
+                                edges: {
+                                    all: {
+                                        OR: [
+                                            { node: { name: { equals: "Keanu" } } }
+                                            { node: { name: { endsWith: "eeves" } } }
+                                        ]
                                     }
                                 }
                             }
