@@ -27,13 +27,18 @@ import {
     GraphQLString,
 } from "graphql";
 
-export const VectorProviderNames = ["VertexAI", "OpenAI", "AzureOpenAI", "Bedrock"] as const;
+export const vectorProviderNames = {
+    VERTEX_AI: "VertexAI",
+    OPEN_AI: "OpenAI",
+    AZURE_OPEN_AI: "AzureOpenAI",
+    BEDROCK: "Bedrock",
+} as const;
 
 const VectorProviderEnum = new GraphQLEnumType({
     name: "VectorProvider",
     description: "*For use in the @vector directive only",
-    values: VectorProviderNames.reduce((acc, name) => {
-        acc[name] = {};
+    values: Object.keys(vectorProviderNames).reduce((acc, key) => {
+        acc[key] = { value: vectorProviderNames[key] };
         return acc;
     }, {}),
 });
