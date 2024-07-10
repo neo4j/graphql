@@ -27,7 +27,7 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import { emptyConnection } from "./empty-connection.ts";
+import { emptyConnection } from "./empty-connection";
 
 export function vectorResolver({
     vectorContext,

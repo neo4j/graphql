@@ -36,7 +36,7 @@ import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import { emptyConnection } from "./empty-connection.ts";
+import { emptyConnection } from "./empty-connection";
 
 export function rootConnectionResolver({
     composer,
