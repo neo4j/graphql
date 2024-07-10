@@ -49,6 +49,7 @@ describe("phrase input - genAI plugin", () => {
             },
         });
 
+        // NOTE: tck verification is skipped for vector tests as vector is not supported on Neo4j 4.x
         if (process.env.VERIFY_TCK) {
             verifyTCK = process.env.VERIFY_TCK;
             delete process.env.VERIFY_TCK;
