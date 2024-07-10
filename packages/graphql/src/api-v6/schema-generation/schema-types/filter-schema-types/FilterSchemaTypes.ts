@@ -53,8 +53,6 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         this.schemaTypes = schemaTypes;
     }
 
-    // TODO: Perhaps we can reduce the duplication in the following methods. The only
-    // difference is node: this.nodeWhere vs edges: this.edgeWhere
     public get operationWhereTopLevel(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(
             this.entityTypeNames.operationWhere,
