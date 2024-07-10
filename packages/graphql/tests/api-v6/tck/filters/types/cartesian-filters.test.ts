@@ -42,7 +42,7 @@ describe.skip("CartesianPoint filters", () => {
     test("CartesianPoint EQUALS", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { equals: { x: 1.0, y: 2.0 } } } } }) {
+                locations(where: { node: { value: { equals: { x: 1.0, y: 2.0 } } } }) {
                     connection {
                         edges {
                             node {
@@ -90,7 +90,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point NOT EQUALS", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { NOT: { equals: { x: 1.0, y: 2.0 } } } } } }) {
+                locations(where: { node: { value: { NOT: { equals: { x: 1.0, y: 2.0  } }  } }) {
                     connection {
                         edges {
                             node {
@@ -137,7 +137,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point IN", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { in: [{ x: 1.0, y: 2.0 }] } } } }) {
+                locations(where: { node: { value: { in: [{ x: 1.0, y: 2.0 }] } } }) {
                     connection {
                         edges {
                             node {
@@ -186,7 +186,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point NOT IN", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { NOT: { in: [{ x: 1.0, y: 2.0 }] } } } } }) {
+                locations(where: { node: { value: { NOT: { in: [{ x: 1.0, y: 2.0 }] } } } }) {
                     connection {
                         edges {
                             node {
@@ -236,7 +236,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point LT", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { lt: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } } }) {
+                locations(where: { node: { value: { lt: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } }) {
                     connection {
                         edges {
                             node {
@@ -286,9 +286,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point LTE", async () => {
         const query = /* GraphQL */ `
             {
-                locations(
-                    where: { edges: { node: { value: { lte: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } } }
-                ) {
+                locations(where: { node: { value: { lte: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } }) {
                     connection {
                         edges {
                             node {
@@ -338,7 +336,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point GT", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { gt: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } } }) {
+                locations(where: { node: { value: { gt: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } }) {
                     connection {
                         edges {
                             node {
@@ -388,9 +386,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point GTE", async () => {
         const query = /* GraphQL */ `
             {
-                locations(
-                    where: { edges: { node: { value: { gte: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } } }
-                ) {
+                locations(where: { node: { value: { gte: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } }) {
                     connection {
                         edges {
                             node {
@@ -440,9 +436,7 @@ describe.skip("CartesianPoint filters", () => {
     test("Simple Point DISTANCE EQ", async () => {
         const query = /* GraphQL */ `
             {
-                locations(
-                    where: { edges: { node: { value: { distance: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } } }
-                ) {
+                locations(where: { node: { value: { distance: { point: { x: 1.1, y: 2.2 }, distance: 3.3 } } } }) {
                     connection {
                         edges {
                             node {

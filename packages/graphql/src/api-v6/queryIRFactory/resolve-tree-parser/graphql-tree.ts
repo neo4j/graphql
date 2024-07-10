@@ -76,7 +76,7 @@ export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
 }
 
 export interface GraphQLReadOperationArgsTopLevel {
-    where?: GraphQLNodeWhereArgs;
+    where?: GraphQLWhereArgsTopLevel;
 }
 
 export interface GraphQLReadOperationArgs {
@@ -85,6 +85,10 @@ export interface GraphQLReadOperationArgs {
 
 export type GraphQLWhereArgs = LogicalOperation<{
     edges?: GraphQLEdgeWhereArgs;
+}>;
+
+export type GraphQLWhereArgsTopLevel = LogicalOperation<{
+    node?: GraphQLNodeWhereArgs;
 }>;
 
 export type GraphQLNodeWhereArgs = LogicalOperation<Record<string, GraphQLNodeFilters>>;

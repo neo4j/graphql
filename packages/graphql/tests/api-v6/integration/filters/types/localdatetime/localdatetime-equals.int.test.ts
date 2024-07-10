@@ -59,9 +59,7 @@ describe("LocalDateTime - Equals", () => {
 
         const query = /* GraphQL */ `
                 query {
-                    ${
-                        Movie.plural
-                    }(where: { edges: { node: { localDateTime: { equals: "${localdatetime1.toString()}" }} }}) {
+                    ${Movie.plural}(where: { node: { localDateTime: { equals: "${localdatetime1.toString()}" }} }) {
                         connection{
                             edges  {
                                 node {

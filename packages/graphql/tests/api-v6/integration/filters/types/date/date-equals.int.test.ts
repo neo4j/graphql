@@ -58,7 +58,7 @@ describe("Date - Equals", () => {
 
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { date: { equals: "${datetime1.toString()}" }} }}) {
+                    ${Movie.plural}(where: { node: { date: { equals: "${datetime1.toString()}" }} }) {
                         connection{
                             edges  {
                                 node {

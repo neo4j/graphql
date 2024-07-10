@@ -42,7 +42,7 @@ describe.skip("Point filters", () => {
     test("Simple Point EQUALS", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { equals: { longitude: 1.0, latitude: 2.0 } } } } }) {
+                locations(where: { node: { value: { equals: { longitude: 1.0, latitude: 2.0 } } } }) {
                     connection {
                         edges {
                             node {
@@ -90,9 +90,7 @@ describe.skip("Point filters", () => {
     test("Simple Point NOT EQUALS", async () => {
         const query = /* GraphQL */ `
             {
-                locations(
-                    where: { edges: { node: { value: { NOT: { equals: { longitude: 1.0, latitude: 2.0 } } } } } }
-                ) {
+                locations(where: { node: { value: { NOT: { equals: { longitude: 1.0, latitude: 2.0 } } } } }) {
                     connection {
                         edges {
                             node {
@@ -139,7 +137,7 @@ describe.skip("Point filters", () => {
     test("Simple Point IN", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { in: [{ longitude: 1.0, latitude: 2.0 }] } } } }) {
+                locations(where: { node: { value: { in: [{ longitude: 1.0, latitude: 2.0 }] } } }) {
                     connection {
                         edges {
                             node {
@@ -188,7 +186,7 @@ describe.skip("Point filters", () => {
     test("Simple Point NOT IN", async () => {
         const query = /* GraphQL */ `
             {
-                locations(where: { edges: { node: { value: { NOT: { in: [{ longitude: 1.0, latitude: 2.0 }] } } } } }) {
+                locations(where: { node: { value: { NOT: { in: [{ longitude: 1.0, latitude: 2.0 }] } } } }) {
                     connection {
                         edges {
                             node {
@@ -239,9 +237,7 @@ describe.skip("Point filters", () => {
         const query = /* GraphQL */ `
             {
                 locations(
-                    where: {
-                        edges: { node: { value: { lt: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
-                    }
+                    where: { node: { value: { lt: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
                 ) {
                     connection {
                         edges {
@@ -293,9 +289,7 @@ describe.skip("Point filters", () => {
         const query = /* GraphQL */ `
             {
                 locations(
-                    where: {
-                        edges: { node: { value: { lte: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
-                    }
+                    where: { node: { value: { lte: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
                 ) {
                     connection {
                         edges {
@@ -347,9 +341,7 @@ describe.skip("Point filters", () => {
         const query = /* GraphQL */ `
             {
                 locations(
-                    where: {
-                        edges: { node: { value: { gt: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
-                    }
+                    where: { node: { value: { gt: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
                 ) {
                     connection {
                         edges {
@@ -401,9 +393,7 @@ describe.skip("Point filters", () => {
         const query = /* GraphQL */ `
             {
                 locations(
-                    where: {
-                        edges: { node: { value: { gte: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
-                    }
+                    where: { node: { value: { gte: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } } }
                 ) {
                     connection {
                         edges {
@@ -456,9 +446,7 @@ describe.skip("Point filters", () => {
             {
                 locations(
                     where: {
-                        edges: {
-                            node: { value: { distance: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } }
-                        }
+                        node: { value: { distance: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } } }
                     }
                 ) {
                     connection {

@@ -157,12 +157,16 @@ describe("Temporals", () => {
             }
 
             input NodeTypeConnectionSort {
-              node: [NodeTypeSort!]
+              edges: [NodeTypeEdgeSort!]
             }
 
             type NodeTypeEdge {
               cursor: String
               node: NodeType
+            }
+
+            input NodeTypeEdgeSort {
+              node: NodeTypeSort
             }
 
             type NodeTypeOperation {
@@ -281,12 +285,16 @@ describe("Temporals", () => {
             }
 
             input RelatedNodeConnectionSort {
-              node: [RelatedNodeSort!]
+              edges: [RelatedNodeEdgeSort!]
             }
 
             type RelatedNodeEdge {
               cursor: String
               node: RelatedNode
+            }
+
+            input RelatedNodeEdgeSort {
+              node: RelatedNodeSort
             }
 
             type RelatedNodeOperation {

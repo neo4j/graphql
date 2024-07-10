@@ -55,12 +55,16 @@ describe("Relationships", () => {
             }
 
             input ActorConnectionSort {
-              node: [ActorSort!]
+              edges: [ActorEdgeSort!]
             }
 
             type ActorEdge {
               cursor: String
               node: Actor
+            }
+
+            input ActorEdgeSort {
+              node: ActorSort
             }
 
             type ActorMoviesConnection {
@@ -203,12 +207,16 @@ describe("Relationships", () => {
             }
 
             input MovieConnectionSort {
-              node: [MovieSort!]
+              edges: [MovieEdgeSort!]
             }
 
             type MovieEdge {
               cursor: String
               node: Movie
+            }
+
+            input MovieEdgeSort {
+              node: MovieSort
             }
 
             type MovieOperation {
@@ -315,12 +323,16 @@ describe("Relationships", () => {
             }
 
             input ActorConnectionSort {
-              node: [ActorSort!]
+              edges: [ActorEdgeSort!]
             }
 
             type ActorEdge {
               cursor: String
               node: Actor
+            }
+
+            input ActorEdgeSort {
+              node: ActorSort
             }
 
             type ActorMoviesConnection {
@@ -481,12 +493,16 @@ describe("Relationships", () => {
             }
 
             input MovieConnectionSort {
-              node: [MovieSort!]
+              edges: [MovieEdgeSort!]
             }
 
             type MovieEdge {
               cursor: String
               node: Movie
+            }
+
+            input MovieEdgeSort {
+              node: MovieSort
             }
 
             type MovieOperation {

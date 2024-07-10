@@ -40,7 +40,7 @@ describe("Array filters", () => {
     test("array filters", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { edges: { node: { alternativeTitles: { equals: ["potato"] } } } }) {
+                movies(where: { node: { alternativeTitles: { equals: ["potato"] } } }) {
                     connection {
                         edges {
                             node {

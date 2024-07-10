@@ -104,7 +104,7 @@ export class ReadOperationFactory {
             },
             pagination,
             sortFields: sortInputFields,
-            filters: this.filterFactory.createFilters({ entity, where: graphQLTree.args.where }),
+            filters: this.filterFactory.createTopLevelFilters({ entity, where: graphQLTree.args.where }),
         });
     }
 

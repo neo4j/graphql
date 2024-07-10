@@ -42,60 +42,7 @@ describe("OR filters", () => {
         const query = /* GraphQL */ `
             query {
                 movies(
-                    where: {
-                        OR: [
-                            { edges: { node: { title: { equals: "The Matrix" } } } }
-                            { edges: { node: { year: { equals: 100 } } } }
-                        ]
-                    }
-                ) {
-                    connection {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query, { v6Api: true });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
-            WHERE (this0.title = $param0 OR this0.year = $param1)
-            WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
-            }
-            RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Matrix\\",
-                \\"param1\\": {
-                    \\"low\\": 100,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("OR logical filter in edges", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies(
-                    where: {
-                        edges: {
-                            OR: [{ node: { title: { equals: "The Matrix" } } }, { node: { year: { equals: 100 } } }]
-                        }
-                    }
+                    where: { OR: [{ node: { title: { equals: "The Matrix" } } }, { node: { year: { equals: 100 } } }] }
                 ) {
                     connection {
                         edges {
@@ -138,9 +85,7 @@ describe("OR filters", () => {
     test("OR logical filter in nodes", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(
-                    where: { edges: { node: { OR: [{ title: { equals: "The Matrix" } }, { year: { equals: 100 } }] } } }
-                ) {
+                movies(where: { node: { OR: [{ title: { equals: "The Matrix" } }, { year: { equals: 100 } }] } }) {
                     connection {
                         edges {
                             node {

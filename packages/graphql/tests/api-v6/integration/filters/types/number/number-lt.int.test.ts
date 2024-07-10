@@ -51,7 +51,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering", (type) => {
     test("filter by 'lt'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { lt: 1999 } } } }) {
+                ${Movie.plural}(where: { node: { value: { lt: 1999 } } }) {
                     connection {
                         edges {
                             node {
@@ -83,7 +83,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering", (type) => {
     test("filter by NOT 'lt'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { lt: 1999 } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { lt: 1999 } } } }) {
                     connection {
                         edges {
                             node {
@@ -120,7 +120,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering", (type) => {
     test("filter by 'lte'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { lte: 1999 } } } }) {
+                ${Movie.plural}(where: { node: { value: { lte: 1999 } } }) {
                     connection {
                         edges {
                             node {
@@ -157,7 +157,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering", (type) => {
     test("filter by NOT 'lte'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { lte: 1999 } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { lte: 1999 } } } }) {
                     connection {
                         edges {
                             node {

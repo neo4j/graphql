@@ -50,7 +50,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'endsWith'", (type) => 
     test("filter by 'endsWith'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { endsWith: "The Matrix" } } } }) {
+                ${Movie.plural}(where: { node: { value: { endsWith: "The Matrix" } } }) {
                     connection {
                         edges {
                             node {
@@ -87,7 +87,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'endsWith'", (type) => 
     test("filter by NOT 'endsWith'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { endsWith: "The Matrix" } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { endsWith: "The Matrix" } } } }) {
                     connection {
                         edges {
                             node {

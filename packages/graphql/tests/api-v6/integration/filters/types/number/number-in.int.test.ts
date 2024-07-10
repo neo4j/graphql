@@ -51,7 +51,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
     test("filter by 'in'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { in: [1999, 2001] } } } }) {
+                ${Movie.plural}(where: { node: { value: { in: [1999, 2001] } } }) {
                     connection {
                         edges {
                             node {
@@ -88,7 +88,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'in'", (type)
     test("filter by NOT 'in'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { in: [1999, 2001] } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { in: [1999, 2001] } } } }) {
                     connection {
                         edges {
                             node {

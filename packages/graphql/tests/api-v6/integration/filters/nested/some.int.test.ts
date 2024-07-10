@@ -65,7 +65,7 @@ describe("Relationship filters with some", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { edges: { node: { actors: { edges: { some: { node: { name: { equals: "Keanu" } } } } } } } }
+                    where: { node: { actors: { edges: { some: { node: { name: { equals: "Keanu" } } } } } } }
                 ) {
                     connection {
                         edges {
@@ -104,7 +104,7 @@ describe("Relationship filters with some", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { edges: { node: { actors: { edges: { some: { properties: { year: { equals: 1999 } } } } } } } }
+                    where: { node: { actors: { edges: { some: { properties: { year: { equals: 1999 } } } } } } }
                 ) {
                     connection {
                         edges {
@@ -143,7 +143,7 @@ describe("Relationship filters with some", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { edges: { node: { actors: { edges: { some: { OR: [{ properties: { year: { equals: 1999 } } }, { node: { name: { equals: "Keanu" } } }] } } } } } }
+                    where: { node: { actors: { edges: { some: { OR: [{ properties: { year: { equals: 1999 } } }, { node: { name: { equals: "Keanu" } } }] } } } } }
                 ) {
                     connection {
                         edges {

@@ -50,7 +50,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'startsWith'", (type) =
     test("filter by 'startsWith'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { startsWith: "The" } } } }) {
+                ${Movie.plural}(where: { node: { value: { startsWith: "The" } } }) {
                     connection {
                         edges {
                             node {
@@ -87,7 +87,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'startsWith'", (type) =
     test("filter by NOT 'startsWith'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { startsWith: "The" } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { startsWith: "The" } } } }) {
                     connection {
                         edges {
                             node {

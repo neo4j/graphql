@@ -81,15 +81,15 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         });
     }
 
-    protected get connectionSort(): InputTypeComposer {
-        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
-            return {
-                fields: {
-                    node: this.nodeSort.NonNull.List,
-                },
-            };
-        });
-    }
+    // protected get connectionSort(): InputTypeComposer {
+    //     return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
+    //         return {
+    //             fields: {
+    //                 node: this.nodeSort.NonNull.List,
+    //             },
+    //         };
+    //     });
+    // }
 
     protected get edge(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.edge, () => {

@@ -20,8 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { TopLevelResolveTreeParser } from "./TopLevelResolveTreeParser";
-import { findFieldByName } from "./find-field-by-name";
-import type { GraphQLTreeReadOperation, GraphQLTreeReadOperationTopLevel } from "./graphql-tree";
+import type { GraphQLTree } from "./graphql-tree";
 
 export class GlobalNodeResolveTreeParser extends TopLevelResolveTreeParser {
     constructor({ entity }: { entity: ConcreteEntity }) {
@@ -29,28 +28,7 @@ export class GlobalNodeResolveTreeParser extends TopLevelResolveTreeParser {
     }
 
     /** Parse a resolveTree into a Neo4j GraphQLTree */
-    public parseOperationTopLevel(resolveTree: ResolveTree): GraphQLTreeReadOperationTopLevel {
-        // FIXME
-        const connectionResolveTree = findFieldByName(
-            resolveTree,
-            this.entity.typeNames.connectionOperation,
-            "connection"
-        );
-
-        const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
-        const connectionOperationArgs = this.parseOperationArgsTopLevel(resolveTree.args);
-        return {
-            alias: resolveTree.alias,
-            args: connectionOperationArgs,
-            name: resolveTree.name,
-            fields: {
-                connection,
-            },
-        };
-    }
-
-    /** Parse a resolveTree into a Neo4j GraphQLTree */
-    public parseOperation(resolveTree: ResolveTree): GraphQLTreeReadOperation {
+    public parseTopLevelOperation(resolveTree: ResolveTree): GraphQLTree {
         const entityTypes = this.targetNode.typeNames;
         resolveTree.fieldsByTypeName[entityTypes.node] = {
             ...resolveTree.fieldsByTypeName["Node"],
@@ -62,10 +40,8 @@ export class GlobalNodeResolveTreeParser extends TopLevelResolveTreeParser {
             alias: resolveTree.alias,
             args: {
                 where: {
-                    edges: {
-                        node: {
-                            id: { equals: resolveTree.args.id as any },
-                        },
+                    node: {
+                        id: { equals: resolveTree.args.id as any },
                     },
                 },
             },

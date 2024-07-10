@@ -66,12 +66,16 @@ describe("RelayId", () => {
             }
 
             input MovieConnectionSort {
-              node: [MovieSort!]
+              edges: [MovieEdgeSort!]
             }
 
             type MovieEdge {
               cursor: String
               node: Movie
+            }
+
+            input MovieEdgeSort {
+              node: MovieSort
             }
 
             type MovieOperation {

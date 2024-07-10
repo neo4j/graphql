@@ -51,7 +51,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'gt' and 'gte
     test("filter by 'gt'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { gt: 1999 } } } }) {
+                ${Movie.plural}(where: { node: { value: { gt: 1999 } } }) {
                     connection {
                         edges {
                             node {
@@ -83,7 +83,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'gt' and 'gte
     test("filter by NOT 'gt'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { gt: 1999 } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { gt: 1999 } } } }) {
                     connection {
                         edges {
                             node {
@@ -120,7 +120,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'gt' and 'gte
     test("filter by 'gte'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { gte: 1999 } } } }) {
+                ${Movie.plural}(where: { node: { value: { gte: 1999 } } }) {
                     connection {
                         edges {
                             node {
@@ -157,7 +157,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering - 'gt' and 'gte
     test("filter by NOT 'gte'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { gte: 1999 } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { gte: 1999 } } } }) {
                     connection {
                         edges {
                             node {

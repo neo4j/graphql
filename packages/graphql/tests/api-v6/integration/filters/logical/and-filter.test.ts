@@ -65,8 +65,8 @@ describe("Filters AND", () => {
                 ${Movie.plural}(
                     where: {
                         AND: [
-                            { edges: { node: { runtime: { equals: 90.5 } } } }
-                            { edges: { node: { year: { equals: 1999 } } } }
+                            { node: { runtime: { equals: 90.5 } } } 
+                            { node: { year: { equals: 1999 } } } 
                         ]
                     }
                 ) {
@@ -110,52 +110,9 @@ describe("Filters AND", () => {
                     where: {
                         AND: {
                             AND: [
-                                { edges: { node: { runtime: { equals: 90.5 } } } }
-                                { edges: { node: { year: { equals: 1999 } } } }
+                                { node: { runtime: { equals: 90.5 } } } 
+                                {  node: { year: { equals: 1999 } } } 
                             ]
-                        }
-                    }
-                ) {
-                    connection {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: {
-                connection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                title: "The Matrix",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix Thingy",
-                            },
-                        },
-                    ]),
-                },
-            },
-        });
-    });
-
-    test("AND filter in edges by node", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(
-                    where: {
-                        edges: {
-                            AND: [{ node: { runtime: { equals: 90.5 } } }, { node: { year: { equals: 1999 } } }]
                         }
                     }
                 ) {
