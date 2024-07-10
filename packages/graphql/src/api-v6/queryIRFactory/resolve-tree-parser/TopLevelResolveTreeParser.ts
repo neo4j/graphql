@@ -52,7 +52,7 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
         };
     }
 
-    private parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgsTopLevel {
+    protected parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgsTopLevel {
         // Not properly parsed, assuming the type is the same
         return {
             where: resolveTreeArgs.where,

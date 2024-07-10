@@ -35,7 +35,6 @@ describe("Top level filters", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            debug: true,
         });
     });
 
