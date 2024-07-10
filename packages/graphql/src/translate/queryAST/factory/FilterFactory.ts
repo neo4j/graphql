@@ -486,26 +486,6 @@ export class FilterFactory {
         });
     }
 
-    // private createScorePropertyFilter(
-    //     entity: ConcreteEntityAdapter,
-    //     isNot: boolean,
-    //     operator: WhereOperator | undefined,
-    //     value: string
-    // ): Filter {
-    //     // Value will be in shape { min: number, max: number } like { min: 0.5, max: 1.0 }
-    //     const scoreAttribute = entity.findAttribute("score");
-    //     if (!scoreAttribute) {
-    //         throw new Error(`score attribute not found`);
-    //     }
-
-    //     return this.createPropertyFilter({
-    //         attribute: scoreAttribute,
-    //         comparisonValue: "score",
-    //         isNot,
-    //         operator,
-    //     });
-    // }
-
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
         const filterASTs = Object.entries(where).flatMap(([key, value]): Filter | Filter[] | undefined => {
             if (isLogicalOperator(key)) {
