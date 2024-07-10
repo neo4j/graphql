@@ -53,7 +53,7 @@ describe("parseVectorAnnotation", () => {
                                     {
                                         kind: Kind.OBJECT_FIELD,
                                         name: { kind: Kind.NAME, value: "provider" },
-                                        value: { kind: Kind.ENUM, value: "OpenAI" },
+                                        value: { kind: Kind.ENUM, value: "OPEN_AI" },
                                     },
                                 ],
                             },

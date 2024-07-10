@@ -9,16 +9,29 @@ The directive enables two forms of user input, depending on the index configurat
 For example to use the `@vector` directive with a vector index, you would define a type like this:
 
 ```graphql
-type Movie @vector( indexes: [{ indexName: "myVectorIndexName", propertyName: "embedding", queryName: "searchForRelatedMovies" }]) {
-  title: String!
+type Movie
+    @vector(
+        indexes: [{ indexName: "myVectorIndexName", propertyName: "embedding", queryName: "searchForRelatedMovies" }]
+    ) {
+    title: String!
 }
 ```
 
 To configure a provider to use the GenAI plugin and have phrase input, you would define a type like this:
 
 ```graphql
-type Movie @vector(indexes: [{ indexName: "myVectorIndexName", propertyName: "embedding", queryName: "searchForRelatedMovies", provider: OpenAI  }]) {
-  title: String!
+type Movie
+    @vector(
+        indexes: [
+            {
+                indexName: "myVectorIndexName"
+                propertyName: "embedding"
+                queryName: "searchForRelatedMovies"
+                provider: OPEN_AI
+            }
+        ]
+    ) {
+    title: String!
 }
 ```
 
