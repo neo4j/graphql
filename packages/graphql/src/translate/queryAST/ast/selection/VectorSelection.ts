@@ -63,7 +63,7 @@ export class VectorSelection extends EntitySelection {
         // 1. Vector index without phrase, where the input is a List of Floats
         if (this.vectorOptions.vector) {
             vectorClause = Cypher.db.index.vector
-                .queryNodes(indexName, 10, vectorParam) // TODO: Check if 10 is a good default value
+                .queryNodes(indexName, 4, vectorParam)
                 .yield(["node", node], ["score", this.scoreVariable]);
         }
 
@@ -78,7 +78,7 @@ export class VectorSelection extends EntitySelection {
 
             const providerSettings = this.settings[this.vectorOptions.index.provider];
             const asQueryVector = new Cypher.Variable();
-            const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 10, asQueryVector); // TODO: Check if 10 is a good default value
+            const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 4, asQueryVector);
 
             const encodeFunction = Cypher.genai.vector.encode(
                 phraseParam,
