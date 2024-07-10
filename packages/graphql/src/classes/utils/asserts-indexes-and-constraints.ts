@@ -99,7 +99,7 @@ async function getExistingIndexes({ session }: { session: Session }): Promise<Ex
     return existingIndexes;
 }
 
-function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingIndexes, indexErrors: string[]) {
+function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingIndexes, indexErrors: string[]): void {
     if (entity.annotations.vector) {
         entity.annotations.vector.indexes.forEach((index) => {
             const existingIndex = existingIndexes[index.indexName];
@@ -139,7 +139,7 @@ async function createIndexesAndConstraints({
 }: {
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
-}) {
+}): Promise<void> {
     const constraintsToCreate = await getMissingConstraints({ schemaModel, session });
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
@@ -241,7 +241,7 @@ async function checkIndexesAndConstraints({
 }: {
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
-}) {
+}): Promise<void> {
     const missingConstraints = await getMissingConstraints({ schemaModel, session });
 
     if (missingConstraints.length) {
