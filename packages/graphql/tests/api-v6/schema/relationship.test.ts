@@ -55,16 +55,12 @@ describe("Relationships", () => {
             }
 
             input ActorConnectionSort {
-              edges: [ActorEdgeSort!]
+              node: ActorSort
             }
 
             type ActorEdge {
               cursor: String
               node: Actor
-            }
-
-            input ActorEdgeSort {
-              node: ActorSort
             }
 
             type ActorMoviesConnection {
@@ -73,7 +69,7 @@ describe("Relationships", () => {
             }
 
             input ActorMoviesConnectionSort {
-              edges: [ActorMoviesEdgeSort!]
+              edges: ActorMoviesEdgeSort
             }
 
             type ActorMoviesEdge {
@@ -110,7 +106,7 @@ describe("Relationships", () => {
             }
 
             type ActorMoviesOperation {
-              connection(after: String, first: Int, sort: ActorMoviesConnectionSort): ActorMoviesConnection
+              connection(after: String, first: Int, sort: [ActorMoviesConnectionSort!]): ActorMoviesConnection
             }
 
             input ActorMoviesOperationWhere {
@@ -121,7 +117,7 @@ describe("Relationships", () => {
             }
 
             type ActorOperation {
-              connection(after: String, first: Int, sort: ActorConnectionSort): ActorConnection
+              connection(after: String, first: Int, sort: [ActorConnectionSort!]): ActorConnection
             }
 
             input ActorOperationWhere {
@@ -154,7 +150,7 @@ describe("Relationships", () => {
             }
 
             input MovieActorsConnectionSort {
-              edges: [MovieActorsEdgeSort!]
+              edges: MovieActorsEdgeSort
             }
 
             type MovieActorsEdge {
@@ -191,7 +187,7 @@ describe("Relationships", () => {
             }
 
             type MovieActorsOperation {
-              connection(after: String, first: Int, sort: MovieActorsConnectionSort): MovieActorsConnection
+              connection(after: String, first: Int, sort: [MovieActorsConnectionSort!]): MovieActorsConnection
             }
 
             input MovieActorsOperationWhere {
@@ -207,7 +203,7 @@ describe("Relationships", () => {
             }
 
             input MovieConnectionSort {
-              edges: [MovieEdgeSort!]
+              node: MovieSort
             }
 
             type MovieEdge {
@@ -215,12 +211,8 @@ describe("Relationships", () => {
               node: Movie
             }
 
-            input MovieEdgeSort {
-              node: MovieSort
-            }
-
             type MovieOperation {
-              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: [MovieConnectionSort!]): MovieConnection
             }
 
             input MovieOperationWhere {
@@ -323,16 +315,12 @@ describe("Relationships", () => {
             }
 
             input ActorConnectionSort {
-              edges: [ActorEdgeSort!]
+              node: ActorSort
             }
 
             type ActorEdge {
               cursor: String
               node: Actor
-            }
-
-            input ActorEdgeSort {
-              node: ActorSort
             }
 
             type ActorMoviesConnection {
@@ -341,7 +329,7 @@ describe("Relationships", () => {
             }
 
             input ActorMoviesConnectionSort {
-              edges: [ActorMoviesEdgeSort!]
+              edges: ActorMoviesEdgeSort
             }
 
             type ActorMoviesEdge {
@@ -381,7 +369,7 @@ describe("Relationships", () => {
             }
 
             type ActorMoviesOperation {
-              connection(after: String, first: Int, sort: ActorMoviesConnectionSort): ActorMoviesConnection
+              connection(after: String, first: Int, sort: [ActorMoviesConnectionSort!]): ActorMoviesConnection
             }
 
             input ActorMoviesOperationWhere {
@@ -392,7 +380,7 @@ describe("Relationships", () => {
             }
 
             type ActorOperation {
-              connection(after: String, first: Int, sort: ActorConnectionSort): ActorConnection
+              connection(after: String, first: Int, sort: [ActorConnectionSort!]): ActorConnection
             }
 
             input ActorOperationWhere {
@@ -437,7 +425,7 @@ describe("Relationships", () => {
             }
 
             input MovieActorsConnectionSort {
-              edges: [MovieActorsEdgeSort!]
+              edges: MovieActorsEdgeSort
             }
 
             type MovieActorsEdge {
@@ -477,7 +465,7 @@ describe("Relationships", () => {
             }
 
             type MovieActorsOperation {
-              connection(after: String, first: Int, sort: MovieActorsConnectionSort): MovieActorsConnection
+              connection(after: String, first: Int, sort: [MovieActorsConnectionSort!]): MovieActorsConnection
             }
 
             input MovieActorsOperationWhere {
@@ -493,7 +481,7 @@ describe("Relationships", () => {
             }
 
             input MovieConnectionSort {
-              edges: [MovieEdgeSort!]
+              node: MovieSort
             }
 
             type MovieEdge {
@@ -501,12 +489,8 @@ describe("Relationships", () => {
               node: Movie
             }
 
-            input MovieEdgeSort {
-              node: MovieSort
-            }
-
             type MovieOperation {
-              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: [MovieConnectionSort!]): MovieConnection
             }
 
             input MovieOperationWhere {

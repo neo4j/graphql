@@ -157,7 +157,7 @@ describe("Temporals", () => {
             }
 
             input NodeTypeConnectionSort {
-              edges: [NodeTypeEdgeSort!]
+              node: NodeTypeSort
             }
 
             type NodeTypeEdge {
@@ -165,12 +165,8 @@ describe("Temporals", () => {
               node: NodeType
             }
 
-            input NodeTypeEdgeSort {
-              node: NodeTypeSort
-            }
-
             type NodeTypeOperation {
-              connection(after: String, first: Int, sort: NodeTypeConnectionSort): NodeTypeConnection
+              connection(after: String, first: Int, sort: [NodeTypeConnectionSort!]): NodeTypeConnection
             }
 
             input NodeTypeOperationWhere {
@@ -186,7 +182,7 @@ describe("Temporals", () => {
             }
 
             input NodeTypeRelatedNodeConnectionSort {
-              edges: [NodeTypeRelatedNodeEdgeSort!]
+              edges: NodeTypeRelatedNodeEdgeSort
             }
 
             type NodeTypeRelatedNodeEdge {
@@ -226,7 +222,7 @@ describe("Temporals", () => {
             }
 
             type NodeTypeRelatedNodeOperation {
-              connection(after: String, first: Int, sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
+              connection(after: String, first: Int, sort: [NodeTypeRelatedNodeConnectionSort!]): NodeTypeRelatedNodeConnection
             }
 
             input NodeTypeRelatedNodeOperationWhere {
@@ -285,7 +281,7 @@ describe("Temporals", () => {
             }
 
             input RelatedNodeConnectionSort {
-              edges: [RelatedNodeEdgeSort!]
+              node: RelatedNodeSort
             }
 
             type RelatedNodeEdge {
@@ -293,12 +289,8 @@ describe("Temporals", () => {
               node: RelatedNode
             }
 
-            input RelatedNodeEdgeSort {
-              node: RelatedNodeSort
-            }
-
             type RelatedNodeOperation {
-              connection(after: String, first: Int, sort: RelatedNodeConnectionSort): RelatedNodeConnection
+              connection(after: String, first: Int, sort: [RelatedNodeConnectionSort!]): RelatedNodeConnection
             }
 
             input RelatedNodeOperationWhere {

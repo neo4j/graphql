@@ -53,7 +53,7 @@ describe("Pagination with first and after", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(first: 1, after: "${afterCursor}", sort: { edges: { node: { title: ASC } } }) {
+                    connection(first: 1, after: "${afterCursor}", sort: { node: { title: ASC } }) {
                         edges {
                             node {
                                 title
