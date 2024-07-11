@@ -174,7 +174,7 @@ describe("Relationship filters with single", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { edges: { node: { actors: { edges: { single: { NOT: { node: { name: { equals: "Keanu" } } } } } } } } }
+                    where: { node: { actors: { edges: { single: { NOT: { node: { name: { equals: "Keanu" } } } } } } } }
                 ) {
                     connection {
                         edges {

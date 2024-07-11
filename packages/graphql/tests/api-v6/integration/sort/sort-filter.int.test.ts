@@ -72,8 +72,8 @@ describe("Sort with filter", () => {
     test("filter and sort by ASC order and return filtered properties", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { title: { in: ["The Matrix 2", "The Matrix 4"] } } } }) {
-                    connection(sort: { edges: { node: { title: ASC } } }) {
+                ${Movie.plural}(where: { node: { title: { in: ["The Matrix 2", "The Matrix 4"] } } }) {
+                    connection(sort: { node: { title: ASC } }) {
                         edges {
                             node {
                                 title
@@ -109,8 +109,8 @@ describe("Sort with filter", () => {
     test("filter and sort by DESC order and return filtered properties", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { title: { in: ["The Matrix 2", "The Matrix 4"] } } } }) {
-                    connection(sort: { edges: { node: { title: DESC } } }) {
+                ${Movie.plural}(where: { node: { title: { in: ["The Matrix 2", "The Matrix 4"] } } }) {
+                    connection(sort: { node: { title: DESC } }) {
                         edges {
                             node {
                                 title

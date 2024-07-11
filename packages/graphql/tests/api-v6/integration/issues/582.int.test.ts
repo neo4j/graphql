@@ -71,20 +71,18 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
         const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
-                    edges: {
-                        node: {
-                            type: { equals: "Cat" },
-                            children: {
-                                edges: {
-                                    some: {
-                                        node: {
-                                            type: { equals: "Dog" },
-                                            parents: {
-                                                edges: {
-                                                    some: {
-                                                        node: {
-                                                            type: { equals: "Bird" },
-                                                        },
+                    node: {
+                        type: { equals: "Cat" },
+                        children: {
+                            edges: {
+                                some: {
+                                    node: {
+                                        type: { equals: "Dog" },
+                                        parents: {
+                                            edges: {
+                                                some: {
+                                                    node: {
+                                                        type: { equals: "Bird" },
                                                     },
                                                 },
                                             },
@@ -118,25 +116,23 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
         const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
-                    edges: {
-                        node: {
-                            type: { equals: "Cat" },
-                            children: {
-                                edges: {
-                                    some: {
-                                        node: {
-                                            type: { equals: "Dog" },
-                                            parents: {
-                                                edges: {
-                                                    some: {
-                                                        node: {
-                                                            type: { equals: "Bird" },
-                                                            children: {
-                                                                edges: {
-                                                                    some: {
-                                                                        node: {
-                                                                            type: { equals: "Fish" },
-                                                                        },
+                    node: {
+                        type: { equals: "Cat" },
+                        children: {
+                            edges: {
+                                some: {
+                                    node: {
+                                        type: { equals: "Dog" },
+                                        parents: {
+                                            edges: {
+                                                some: {
+                                                    node: {
+                                                        type: { equals: "Bird" },
+                                                        children: {
+                                                            edges: {
+                                                                some: {
+                                                                    node: {
+                                                                        type: { equals: "Fish" },
                                                                     },
                                                                 },
                                                             },

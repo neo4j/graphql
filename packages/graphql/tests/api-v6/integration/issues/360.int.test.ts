@@ -43,9 +43,9 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             typeDefs,
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { edges: { node: { AND: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } } }) {
+                ${type.plural}(where: { node: { AND: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } }) {
                     connection {
                         edges {
                             node {
@@ -94,9 +94,9 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             typeDefs,
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { edges: { node: { OR: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } } }) {
+                ${type.plural}(where: { node: { OR: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } }) {
                     connection {
                         edges {
                             node {
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
     test("should recreate given test in issue and return correct results", async () => {
         const type = testHelper.createUniqueType("Event");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${type.name} @node {
                 id: ID!
                 name: String
@@ -148,9 +148,9 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const rangeStart = new Date().toISOString();
         const rangeEnd = new Date().toISOString();
 
-        const query = `
+        const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { edges: { node: { OR: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } } }) {
+                ${type.plural}(where: { node: { OR: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } }) {
                     connection {
                         edges {
                             node {

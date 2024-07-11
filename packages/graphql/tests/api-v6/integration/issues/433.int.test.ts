@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
 
         const query = `
             query {
-               ${Movie.plural}(where: {edges: {node: {title: {equals: "${movieTitle}"}}}}) {
+               ${Movie.plural}(where: {node: {title: {equals: "${movieTitle}"}}}) {
                     connection {
                         edges {
                             node {

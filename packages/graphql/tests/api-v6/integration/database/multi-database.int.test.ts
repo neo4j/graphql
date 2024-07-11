@@ -88,7 +88,7 @@ describe("multi-database", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                ${Movie.plural}(where: { node: { id: { equals: "${id}"}}}) {
                     connection {
                         edges {
                             node {
@@ -118,7 +118,7 @@ describe("multi-database", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                ${Movie.plural}(where: { node: { id: { equals: "${id}"}}}) {
                     connection {
                         edges {
                             node {
@@ -158,9 +158,9 @@ describe("multi-database", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                ${Movie.plural}(where: { node: { id: { equals: "${id}"}}}) {
                     connection {
                         edges {
                             node {
@@ -192,9 +192,9 @@ describe("multi-database", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { id: { equals: "${id}"}}}}) {
+                ${Movie.plural}(where: { node: { id: { equals: "${id}"}}}) {
                     connection {
                         edges {
                             node {

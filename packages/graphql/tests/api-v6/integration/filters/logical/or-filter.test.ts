@@ -146,8 +146,8 @@ describe("Filters OR", () => {
                 ${Movie.plural}(
                     where: {
                         OR: [
-                            { edges: { node: { title: { equals: "The Matrix" }, year: { equals: 2001 } } } }
-                            { edges: { node: { year: { equals: 2002 } } } }
+                            { node: { title: { equals: "The Matrix" }, year: { equals: 2001 } } }
+                            { node: { year: { equals: 2002 } } }
                         ]
                     }
                 ) {

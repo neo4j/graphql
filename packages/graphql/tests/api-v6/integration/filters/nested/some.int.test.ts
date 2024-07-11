@@ -187,7 +187,7 @@ describe("Relationship filters with some", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { edges: { node: { actors: { edges: { some: { NOT: { node: { name: { equals: "Keanu" } } } } } } } } }
+                    where: { node: { actors: { edges: { some: { NOT: { node: { name: { equals: "Keanu" } } } } } } } }
                 ) {
                     connection {
                         edges {

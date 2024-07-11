@@ -50,9 +50,7 @@ describe("Null filtering", () => {
             query {
                 ${Movie.plural}(
                     where: {
-                        edges: {
-                            node: { optional: { equals: null } }
-                        }
+                        node: { optional: { equals: null } }
                     }
                 ) {
                     connection {
@@ -88,9 +86,7 @@ describe("Null filtering", () => {
             query {
                 ${Movie.plural}(
                     where: {
-                        edges: {
-                            node: { optional: { NOT: { equals: null } } }
-                        }
+                        node: { optional: { NOT: { equals: null } } }
                     }
                 ) {
                     connection {
@@ -126,9 +122,7 @@ describe("Null filtering", () => {
             query {
                 ${Movie.plural}(
                     where: {
-                        edges: {
-                            node: { optional: null }
-                        }
+                        node: { optional: null }
                     }
                 ) {
                     connection {

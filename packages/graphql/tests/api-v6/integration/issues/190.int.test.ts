@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     test("Example 1", async () => {
         const query = /* GraphQL */ `
             query {
-                ${User.plural}(where: { edges: { node: { demographics: { edges: { some: {node: { type: { equals: "Gender" }, value: { equals: "Female" } } } } } } } }) {
+                ${User.plural}(where: { node: { demographics: { edges: { some: {node: { type: { equals: "Gender" }, value: { equals: "Female" } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -139,14 +139,12 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             query {
                 ${User.plural} (
                     where: {
-                        edges: {
-                            node: {
-                                demographics: {
-                                    edges: {
-                                        some: {
-                                            node: {
-                                                OR: [{ type: {equals: "Gender"}, value:{equals:  "Female"} }, { type: {equals: "State"} }, { type: {equals: "Age"} }]
-                                            }
+                        node: {
+                            demographics: {
+                                edges: {
+                                    some: {
+                                        node: {
+                                            OR: [{ type: {equals: "Gender"}, value:{equals:  "Female"} }, { type: {equals: "State"} }, { type: {equals: "Age"} }]
                                         }
                                     }
                                 }

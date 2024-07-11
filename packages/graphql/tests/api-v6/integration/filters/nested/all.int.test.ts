@@ -172,7 +172,7 @@ describe("Relationship filters with all", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { edges: { node: { actors: { edges: { all: { NOT: { node: { name: { equals: "Keanu" } } } } } } } } }
+                    where: { node: { actors: { edges: { all: { NOT: { node: { name: { equals: "Keanu" } } } } } } } }
                 ) {
                     connection {
                         edges {
