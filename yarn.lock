@@ -11042,11 +11042,11 @@ __metadata:
   linkType: hard
 
 "graphql-relay@npm:^0.10.0":
-  version: 0.10.1
-  resolution: "graphql-relay@npm:0.10.1"
+  version: 0.10.2
+  resolution: "graphql-relay@npm:0.10.2"
   peerDependencies:
     graphql: ^16.2.0
-  checksum: 10c0/5ed5d2fd0ba43f3237d7c49360e0ea603576139c1e0a65b73cc32ff7f99ffbab18a4741aad9a715f8f1ad221293c1f09713852341a565ac133f770f41b84402d
+  checksum: 10c0/312748377c699c812541551cb2079308be6efef99e5398928dbbeca7596581d1fd8d939f60b2c77d184a185b64717e8c2b62b102a8f85167d379fd49cad39a3d
   languageName: node
   linkType: hard
 
