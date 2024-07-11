@@ -22,7 +22,10 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { ResolveTreeParser } from "./ResolveTreeParser";
 import { findFieldByName } from "./find-field-by-name";
 import type {
+    GraphQLConnectionArgsTopLevel,
     GraphQLReadOperationArgsTopLevel,
+    GraphQLSortEdgeArgument,
+    GraphQLTreeConnectionTopLevel,
     GraphQLTreeEdge,
     GraphQLTreeReadOperationTopLevel,
 } from "./graphql-tree";
@@ -40,7 +43,7 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
             "connection"
         );
 
-        const connection = connectionResolveTree ? this.parseConnection(connectionResolveTree) : undefined;
+        const connection = connectionResolveTree ? this.parseTopLevelConnection(connectionResolveTree) : undefined;
         const connectionOperationArgs = this.parseOperationArgsTopLevel(resolveTree.args);
         return {
             alias: resolveTree.alias,
@@ -49,6 +52,36 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
             fields: {
                 connection,
             },
+        };
+    }
+
+    private parseTopLevelConnection(resolveTree: ResolveTree): GraphQLTreeConnectionTopLevel {
+        const entityTypes = this.entity.typeNames;
+        const edgesResolveTree = findFieldByName(resolveTree, entityTypes.connection, "edges");
+        const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
+        const connectionArgs = this.parseConnectionArgsTopLevel(resolveTree.args);
+
+        return {
+            alias: resolveTree.alias,
+            args: connectionArgs,
+            fields: {
+                edges: edgeResolveTree,
+            },
+        };
+    }
+
+    private parseConnectionArgsTopLevel(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgsTopLevel {
+        let sortArg: GraphQLSortEdgeArgument[] | undefined;
+        if (resolveTreeArgs.sort) {
+            sortArg = resolveTreeArgs.sort.map((sortArg) => {
+                return this.parseSortEdges(sortArg);
+            });
+        }
+
+        return {
+            sort: sortArg,
+            first: resolveTreeArgs.first,
+            after: resolveTreeArgs.after,
         };
     }
 

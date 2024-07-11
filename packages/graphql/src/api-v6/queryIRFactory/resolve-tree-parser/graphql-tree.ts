@@ -62,7 +62,7 @@ export type RelationshipFilters = {
 export interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
     name: string;
     fields: {
-        connection?: GraphQLTreeConnection;
+        connection?: GraphQLTreeConnectionTopLevel;
     };
     args: GraphQLReadOperationArgsTopLevel;
 }
@@ -108,8 +108,20 @@ export interface GraphQLTreeConnection extends GraphQLTreeElement {
     args: GraphQLConnectionArgs;
 }
 
+export interface GraphQLTreeConnectionTopLevel extends GraphQLTreeElement {
+    fields: {
+        edges?: GraphQLTreeEdge;
+    };
+    args: GraphQLConnectionArgsTopLevel;
+}
+
 export interface GraphQLConnectionArgs {
-    sort?: GraphQLSortArgument;
+    sort?: GraphQLSortArgument[];
+    first?: Integer;
+    after?: string;
+}
+export interface GraphQLConnectionArgsTopLevel {
+    sort?: GraphQLSortEdgeArgument[];
     first?: Integer;
     after?: string;
 }
@@ -157,7 +169,7 @@ export interface GraphQLTreeCartesianPoint extends GraphQLTreeElement {
 }
 
 export interface GraphQLSortArgument {
-    edges: GraphQLSortEdgeArgument[];
+    edges: GraphQLSortEdgeArgument;
 }
 
 export interface GraphQLSortEdgeArgument {

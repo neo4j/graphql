@@ -222,13 +222,12 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     }
 
     private parseConnectionArgs(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgs {
-        let sortArg: GraphQLSortArgument | undefined;
+        let sortArg: GraphQLSortArgument[] | undefined;
         if (resolveTreeArgs.sort) {
-            sortArg = {
-                edges: this.parseSortEdges(resolveTreeArgs.sort.edges),
-            };
+            sortArg = resolveTreeArgs.sort.map((sortArg): GraphQLSortArgument => {
+                return { edges: this.parseSortEdges(sortArg.edges) };
+            });
         }
-
         return {
             sort: sortArg,
             first: resolveTreeArgs.first,
@@ -236,28 +235,24 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
         };
     }
 
-    private parseSortEdges(
-        sortEdges: Array<{
-            node: Record<string, string> | undefined;
-            properties: Record<string, string> | undefined;
-        }>
-    ): GraphQLSortEdgeArgument[] {
-        return sortEdges.map((edge) => {
-            const sortFields: GraphQLSortEdgeArgument = {};
-            const nodeFields = edge.node;
+    protected parseSortEdges(sortEdges: {
+        node: Record<string, string> | undefined;
+        properties: Record<string, string> | undefined;
+    }): GraphQLSortEdgeArgument {
+        const sortFields: GraphQLSortEdgeArgument = {};
+        const nodeFields = sortEdges.node;
 
-            if (nodeFields) {
-                const fields = this.parseSort(this.targetNode, nodeFields);
-                sortFields.node = fields;
-            }
-            const edgeProperties = edge.properties;
+        if (nodeFields) {
+            const fields = this.parseSort(this.targetNode, nodeFields);
+            sortFields.node = fields;
+        }
+        const edgeProperties = sortEdges.properties;
 
-            if (edgeProperties) {
-                const fields = this.parseSort(this.entity, edgeProperties);
-                sortFields.properties = fields;
-            }
-            return sortFields;
-        });
+        if (edgeProperties) {
+            const fields = this.parseSort(this.entity, edgeProperties);
+            sortFields.properties = fields;
+        }
+        return sortFields;
     }
 
     private parseSort(

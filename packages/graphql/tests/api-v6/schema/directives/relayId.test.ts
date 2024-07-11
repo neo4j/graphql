@@ -66,7 +66,7 @@ describe("RelayId", () => {
             }
 
             input MovieConnectionSort {
-              edges: [MovieEdgeSort!]
+              node: MovieSort
             }
 
             type MovieEdge {
@@ -74,12 +74,8 @@ describe("RelayId", () => {
               node: Movie
             }
 
-            input MovieEdgeSort {
-              node: MovieSort
-            }
-
             type MovieOperation {
-              connection(after: String, first: Int, sort: MovieConnectionSort): MovieConnection
+              connection(after: String, first: Int, sort: [MovieConnectionSort!]): MovieConnection
             }
 
             input MovieOperationWhere {

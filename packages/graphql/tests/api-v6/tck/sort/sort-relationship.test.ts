@@ -115,7 +115,9 @@ describe("Sort relationship", () => {
                             node {
                                 title
                                 actors {
-                                    connection(sort: { edges: [{ node: { name: DESC } }, { node: { age: DESC } }] }) {
+                                    connection(
+                                        sort: [{ edges: { node: { name: DESC } } }, { edges: { node: { age: DESC } } }]
+                                    ) {
                                         edges {
                                             node {
                                                 name
@@ -220,7 +222,7 @@ describe("Sort relationship", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("should respect input order on sorting", async () => {
+    test("Should respect input order on sorting", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
@@ -230,13 +232,11 @@ describe("Sort relationship", () => {
                                 title
                                 actors {
                                     connection(
-                                        sort: {
-                                            edges: [
-                                                { properties: { year: DESC } }
-                                                { node: { name: ASC } }
-                                                { properties: { role: ASC } }
-                                            ]
-                                        }
+                                        sort: [
+                                            { edges: { properties: { year: DESC } } }
+                                            { edges: { node: { name: ASC } } }
+                                            { edges: { properties: { role: ASC } } }
+                                        ]
                                     ) {
                                         edges {
                                             node {

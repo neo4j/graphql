@@ -42,7 +42,9 @@ import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { FilterFactory } from "./FilterFactory";
 import type {
     GraphQLConnectionArgs,
+    GraphQLConnectionArgsTopLevel,
     GraphQLSortArgument,
+    GraphQLSortEdgeArgument,
     GraphQLTree,
     GraphQLTreeEdgeProperties,
     GraphQLTreeLeafField,
@@ -89,9 +91,8 @@ export class ReadOperationFactory {
         const nodeResolveTree = connectionTree.fields.edges?.fields.node;
         const sortArgument = connectionTree.args.sort;
         const pagination = this.getPagination(connectionTree.args, entity);
-
         const nodeFields = this.getNodeFields(entity, nodeResolveTree);
-        const sortInputFields = this.getSortInputFields({
+        const sortInputFields = this.getTopLevelSortInputFields({
             entity,
             sortArgument,
         });
@@ -161,7 +162,10 @@ export class ReadOperationFactory {
         });
     }
 
-    private getPagination(connectionTreeArgs: GraphQLConnectionArgs, entity: ConcreteEntity): Pagination | undefined {
+    private getPagination(
+        connectionTreeArgs: GraphQLConnectionArgs | GraphQLConnectionArgsTopLevel,
+        entity: ConcreteEntity
+    ): Pagination | undefined {
         const firstArgument = connectionTreeArgs.first;
         const afterArgument = connectionTreeArgs.after ? cursorToOffset(connectionTreeArgs.after) : undefined;
         const hasPagination = firstArgument ?? afterArgument;
@@ -264,22 +268,58 @@ export class ReadOperationFactory {
     }: {
         entity: ConcreteEntity;
         relationship?: Relationship;
-        sortArgument: GraphQLSortArgument | undefined;
+        sortArgument: GraphQLSortArgument[] | undefined;
     }): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
         if (!sortArgument) {
             return [];
         }
-        return sortArgument.edges.map((edge): { edge: PropertySort[]; node: PropertySort[] } => {
-            const nodeSortFields = edge.node ? this.getPropertiesSort({ target: entity, sortArgument: edge.node }) : [];
-            const edgeSortFields =
-                edge.properties && relationship
-                    ? this.getPropertiesSort({ target: relationship, sortArgument: edge.properties })
-                    : [];
-            return {
-                edge: edgeSortFields,
-                node: nodeSortFields,
-            };
+        return sortArgument.map(({ edges }): { edge: PropertySort[]; node: PropertySort[] } => {
+            return this.getEdgeSortInput({
+                entity,
+                relationship,
+                edges,
+            });
         });
+    }
+    private getTopLevelSortInputFields({
+        entity,
+        relationship,
+        sortArgument,
+    }: {
+        entity: ConcreteEntity;
+        relationship?: Relationship;
+        sortArgument: GraphQLSortEdgeArgument[] | undefined;
+    }): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
+        if (!sortArgument) {
+            return [];
+        }
+        return sortArgument.map((edges): { edge: PropertySort[]; node: PropertySort[] } => {
+            return this.getEdgeSortInput({
+                entity,
+                relationship,
+                edges,
+            });
+        });
+    }
+
+    private getEdgeSortInput({
+        entity,
+        relationship,
+        edges,
+    }: {
+        entity: ConcreteEntity;
+        relationship?: Relationship;
+        edges: GraphQLSortEdgeArgument;
+    }): { edge: PropertySort[]; node: PropertySort[] } {
+        const nodeSortFields = edges.node ? this.getPropertiesSort({ target: entity, sortArgument: edges.node }) : [];
+        const edgeSortFields =
+            edges.properties && relationship
+                ? this.getPropertiesSort({ target: relationship, sortArgument: edges.properties })
+                : [];
+        return {
+            edge: edgeSortFields,
+            node: nodeSortFields,
+        };
     }
 
     private getPropertiesSort({
