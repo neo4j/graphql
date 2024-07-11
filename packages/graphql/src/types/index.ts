@@ -27,6 +27,7 @@ import type { Integer } from "neo4j-driver";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
+import type { VectorField } from "../schema-model/annotation/VectorAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
@@ -47,6 +48,14 @@ export type FulltextContext = {
     queryName: string | undefined;
     indexName: string | undefined; // TODO: not undefined once name is removed.
     scoreVariable: Cypher.Variable;
+};
+
+export type VectorContext = {
+    index: VectorField;
+    queryName: string;
+    queryType: string;
+    scoreVariable: Cypher.Variable;
+    vectorSettings: Neo4jVectorSettings;
 };
 
 export type FullText = {
@@ -426,6 +435,32 @@ export interface Neo4jAuthorizationSettings {
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
 }
+
+export interface Neo4jVectorSettings {
+    ["VertexAI"]?: {
+        token: string; // API access token.
+        projectId: string; // GCP project ID.
+        model?: string; // The name of the model you want to invoke.
+        region?: string; // GCP region where to send the API requests.
+    };
+    ["OpenAI"]?: {
+        token: string; // API access token.
+        model?: string; // The name of the model you want to invoke.
+        dimensions?: number; // The number of dimensions you want to reduce the vector to. Only supported for certain models.
+    };
+    ["AzureOpenAI"]?: {
+        token: string; // API access token.
+        resource: string; // The name of the resource to which the model has been deployed.
+        deployment: string; // The name of the model deployment.
+    };
+    ["Bedrock"]?: {
+        accessKeyId: string; // AWS access key ID.
+        secretAccessKey: string; // AWS secret key.
+        model?: string; // The name of the model you want to invoke.
+        region?: string; // AWS region where to send the API requests.
+    };
+}
+
 export interface RemoteJWKS {
     url: string | URL;
     options?: RemoteJWKSetOptions;
@@ -449,6 +484,7 @@ export type Neo4jFeaturesSettings = {
         stringAggregation?: boolean;
         aggregationFilters?: boolean;
     };
+    vector?: Neo4jVectorSettings;
 };
 
 /** Parsed features used in context */

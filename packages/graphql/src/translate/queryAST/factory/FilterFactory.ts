@@ -23,6 +23,7 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { fromGlobalId } from "../../../utils/global-ids";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
@@ -116,11 +117,13 @@ export class FilterFactory {
         entity,
         where,
         partialOf,
+        context,
     }: {
         rel?: RelationshipAdapter;
         entity: EntityAdapter;
         where: GraphQLWhereArg | GraphQLWhereArg[];
         partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
+        context?: Neo4jGraphQLTranslationContext;
     }): Filter[] {
         let entityWhere = where;
         if (rel && isUnionEntity(rel.target) && where[entity.name]) {
@@ -156,7 +159,7 @@ export class FilterFactory {
                             relationship: rel,
                         });
                     }
-                    return this.createNodeFilters(entity, value);
+                    return this.createNodeFilters(entity, value, context);
                 }
             });
         });
@@ -211,7 +214,8 @@ export class FilterFactory {
     private createRelationshipFilter(
         relationship: RelationshipAdapter,
         where: GraphQLWhereArg,
-        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
+        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined },
+        context?: Neo4jGraphQLTranslationContext
     ): Filter[] {
         /**
          * The logic below can be confusing, but it's to handle the following cases:
@@ -237,7 +241,7 @@ export class FilterFactory {
 
             if (!isNull) {
                 const entityWhere = where[concreteEntity.name] ?? where;
-                const targetNodeFilters = this.createNodeFilters(concreteEntity, entityWhere);
+                const targetNodeFilters = this.createNodeFilters(concreteEntity, entityWhere, context);
                 relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
             }
 
@@ -272,11 +276,13 @@ export class FilterFactory {
         targetEntity,
         whereFields,
         relationship,
+        context,
     }: {
         entity: InterfaceEntityAdapter;
         targetEntity?: ConcreteEntityAdapter;
         whereFields: Record<string, any>;
         relationship?: RelationshipAdapter;
+        context?: Neo4jGraphQLTranslationContext;
     }): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
@@ -313,6 +319,7 @@ export class FilterFactory {
                         isNot,
                         isConnection,
                         isAggregate,
+                        context,
                     });
                 }
 
@@ -336,7 +343,8 @@ export class FilterFactory {
 
     public createNodeFilters(
         entity: ConcreteEntityAdapter | UnionEntityAdapter,
-        whereFields: Record<string, any>
+        whereFields: Record<string, any>,
+        context?: Neo4jGraphQLTranslationContext
     ): Filter[] {
         if (isUnionEntity(entity)) {
             return [];
@@ -346,7 +354,7 @@ export class FilterFactory {
                 const valueAsArray = asArray(value);
                 if (isLogicalOperator(key)) {
                     const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
-                        return this.createNodeFilters(entity, nestedWhere);
+                        return this.createNodeFilters(entity, nestedWhere, context);
                     });
                     return new LogicalFilter({
                         operation: key,
@@ -375,6 +383,7 @@ export class FilterFactory {
                     if (fieldName === "id" && entity.globalIdField) {
                         return this.createRelayIdPropertyFilter(entity, isNot, operator, value);
                     }
+
                     throw new Error(`Attribute ${fieldName} not found`);
                 }
 
@@ -397,6 +406,7 @@ export class FilterFactory {
         isNot,
         isConnection,
         isAggregate,
+        context,
     }: {
         relationship: RelationshipAdapter;
         value: any;
@@ -404,6 +414,7 @@ export class FilterFactory {
         isNot: boolean;
         isConnection: boolean;
         isAggregate: boolean;
+        context?: Neo4jGraphQLTranslationContext;
     }): Filter | Filter[] {
         if (isAggregate) {
             return this.createAggregationFilter(relationship, value as AggregateWhereInput);
@@ -417,10 +428,15 @@ export class FilterFactory {
                 operator,
             });
         }
-        return this.createRelationshipFilter(relationship, value as GraphQLWhereArg, {
-            isNot,
-            operator,
-        });
+        return this.createRelationshipFilter(
+            relationship,
+            value as GraphQLWhereArg,
+            {
+                isNot,
+                operator,
+            },
+            context
+        );
     }
 
     private getLogicalOperatorForRelatedNodeFilters(

@@ -17,53 +17,55 @@
  * limitations under the License.
  */
 
-import { IDAnnotation } from "./IDAnnotation";
-import { RelayIDAnnotation } from "./RelayIDAnnotation";
-import { parseCypherAnnotation } from "../parser/annotations-parser/cypher-annotation";
-import { parseAuthorizationAnnotation } from "../parser/annotations-parser/authorization-annotation";
+import type { DirectiveNode } from "graphql";
 import { parseAuthenticationAnnotation } from "../parser/annotations-parser/authentication-annotation";
+import { parseAuthorizationAnnotation } from "../parser/annotations-parser/authorization-annotation";
 import { parseCoalesceAnnotation } from "../parser/annotations-parser/coalesce-annotation";
 import { parseCustomResolverAnnotation } from "../parser/annotations-parser/custom-resolver-annotation";
+import { parseCypherAnnotation } from "../parser/annotations-parser/cypher-annotation";
 import { parseDefaultAnnotation } from "../parser/annotations-parser/default-annotation";
 import { parseFilterableAnnotation } from "../parser/annotations-parser/filterable-annotation";
 import { parseFullTextAnnotation } from "../parser/annotations-parser/full-text-annotation";
 import { parseJWTClaimAnnotation } from "../parser/annotations-parser/jwt-claim-annotation";
+import { parseKeyAnnotation } from "../parser/annotations-parser/key-annotation";
+import { parseLimitAnnotation } from "../parser/annotations-parser/limit-annotation";
 import { parseMutationAnnotation } from "../parser/annotations-parser/mutation-annotation";
 import { parsePluralAnnotation } from "../parser/annotations-parser/plural-annotation";
 import { parsePopulatedByAnnotation } from "../parser/annotations-parser/populated-by-annotation";
 import { parseQueryAnnotation } from "../parser/annotations-parser/query-annotation";
-import { parseLimitAnnotation } from "../parser/annotations-parser/limit-annotation";
 import { parseSelectableAnnotation } from "../parser/annotations-parser/selectable-annotation";
 import { parseSettableAnnotation } from "../parser/annotations-parser/settable-annotation";
 import { parseSubscriptionAnnotation } from "../parser/annotations-parser/subscription-annotation";
 import { parseSubscriptionsAuthorizationAnnotation } from "../parser/annotations-parser/subscriptions-authorization-annotation";
 import { parseTimestampAnnotation } from "../parser/annotations-parser/timestamp-annotation";
 import { parseUniqueAnnotation } from "../parser/annotations-parser/unique-annotation";
-import type { DirectiveNode } from "graphql";
-import { parseKeyAnnotation } from "../parser/annotations-parser/key-annotation";
-import { PrivateAnnotation } from "./PrivateAnnotation";
-import type { PluralAnnotation } from "./PluralAnnotation";
-import type { CustomResolverAnnotation } from "./CustomResolverAnnotation";
-import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
-import type { SelectableAnnotation } from "./SelectableAnnotation";
-import type { PopulatedByAnnotation } from "./PopulatedByAnnotation";
-import type { SubscriptionAnnotation } from "./SubscriptionAnnotation";
-import type { AuthorizationAnnotation } from "./AuthorizationAnnotation";
-import type { DefaultAnnotation } from "./DefaultAnnotation";
-import type { SettableAnnotation } from "./SettableAnnotation";
-import type { CypherAnnotation } from "./CypherAnnotation";
-import type { FullTextAnnotation } from "./FullTextAnnotation";
-import type { LimitAnnotation } from "./LimitAnnotation";
-import type { KeyAnnotation } from "./KeyAnnotation";
+import { parseVectorAnnotation } from "../parser/annotations-parser/vector-annotation";
 import type { AuthenticationAnnotation } from "./AuthenticationAnnotation";
-import type { TimestampAnnotation } from "./TimestampAnnotation";
-import type { FilterableAnnotation } from "./FilterableAnnotation";
-import type { JWTClaimAnnotation } from "./JWTClaimAnnotation";
-import type { QueryAnnotation } from "./QueryAnnotation";
+import type { AuthorizationAnnotation } from "./AuthorizationAnnotation";
 import type { CoalesceAnnotation } from "./CoalesceAnnotation";
-import type { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
+import type { CustomResolverAnnotation } from "./CustomResolverAnnotation";
+import type { CypherAnnotation } from "./CypherAnnotation";
+import type { DefaultAnnotation } from "./DefaultAnnotation";
+import type { FilterableAnnotation } from "./FilterableAnnotation";
+import type { FullTextAnnotation } from "./FullTextAnnotation";
+import { IDAnnotation } from "./IDAnnotation";
+import type { JWTClaimAnnotation } from "./JWTClaimAnnotation";
+import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
+import type { KeyAnnotation } from "./KeyAnnotation";
+import type { LimitAnnotation } from "./LimitAnnotation";
 import type { MutationAnnotation } from "./MutationAnnotation";
+import type { PluralAnnotation } from "./PluralAnnotation";
+import type { PopulatedByAnnotation } from "./PopulatedByAnnotation";
+import { PrivateAnnotation } from "./PrivateAnnotation";
+import type { QueryAnnotation } from "./QueryAnnotation";
+import { RelayIDAnnotation } from "./RelayIDAnnotation";
+import type { SelectableAnnotation } from "./SelectableAnnotation";
+import type { SettableAnnotation } from "./SettableAnnotation";
+import type { SubscriptionAnnotation } from "./SubscriptionAnnotation";
+import type { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
+import type { TimestampAnnotation } from "./TimestampAnnotation";
 import type { UniqueAnnotation } from "./UniqueAnnotation";
+import type { VectorAnnotation } from "./VectorAnnotation";
 
 export interface Annotation {
     readonly name: string;
@@ -75,30 +77,31 @@ type CheckAnnotationName<T> = {
 };
 
 export type Annotations = CheckAnnotationName<{
-    private: PrivateAnnotation;
-    plural: PluralAnnotation;
-    customResolver: CustomResolverAnnotation;
-    jwt: JWTPayloadAnnotation;
-    selectable: SelectableAnnotation;
-    populatedBy: PopulatedByAnnotation;
-    subscription: SubscriptionAnnotation;
-    authorization: AuthorizationAnnotation;
-    default: DefaultAnnotation;
-    settable: SettableAnnotation;
-    cypher: CypherAnnotation;
-    fulltext: FullTextAnnotation;
-    limit: LimitAnnotation;
-    id: IDAnnotation;
-    key: KeyAnnotation;
     authentication: AuthenticationAnnotation;
-    timestamp: TimestampAnnotation;
-    filterable: FilterableAnnotation;
-    jwtClaim: JWTClaimAnnotation;
-    query: QueryAnnotation;
+    authorization: AuthorizationAnnotation;
     coalesce: CoalesceAnnotation;
-    subscriptionsAuthorization: SubscriptionsAuthorizationAnnotation;
+    customResolver: CustomResolverAnnotation;
+    cypher: CypherAnnotation;
+    default: DefaultAnnotation;
+    filterable: FilterableAnnotation;
+    fulltext: FullTextAnnotation;
+    vector: VectorAnnotation;
+    id: IDAnnotation;
+    jwt: JWTPayloadAnnotation;
+    jwtClaim: JWTClaimAnnotation;
+    key: KeyAnnotation;
+    limit: LimitAnnotation;
     mutation: MutationAnnotation;
+    plural: PluralAnnotation;
+    populatedBy: PopulatedByAnnotation;
+    private: PrivateAnnotation;
+    query: QueryAnnotation;
     relayId: RelayIDAnnotation;
+    selectable: SelectableAnnotation;
+    settable: SettableAnnotation;
+    subscription: SubscriptionAnnotation;
+    subscriptionsAuthorization: SubscriptionsAuthorizationAnnotation;
+    timestamp: TimestampAnnotation;
     unique: UniqueAnnotation;
 }>;
 
@@ -133,4 +136,5 @@ export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<
     timestamp: parseTimestampAnnotation,
     unique: parseUniqueAnnotation,
     relayId: () => new RelayIDAnnotation(),
+    vector: parseVectorAnnotation,
 };

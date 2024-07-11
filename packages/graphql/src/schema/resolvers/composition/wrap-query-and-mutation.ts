@@ -29,7 +29,7 @@ import { DEBUG_GRAPHQL } from "../../../constants";
 import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
 import { debugObject } from "../../../debug/debug-object";
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
-import type { AuthorizationContext, ContextFeatures, FulltextContext } from "../../../types";
+import type { AuthorizationContext, ContextFeatures, FulltextContext, VectorContext } from "../../../types";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import { getAuthorizationContext } from "./utils/get-authorization-context";
 
@@ -65,6 +65,7 @@ export interface Neo4jGraphQLComposedContext extends Neo4jGraphQLContext {
     authorization: AuthorizationContext;
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     fulltext?: FulltextContext;
+    vector?: VectorContext;
 }
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;

@@ -97,3 +97,4 @@ export const DBMS_COMPONENTS_QUERY =
 export const DEPRECATED = "deprecated";
 export const SHAREABLE = "shareable";
 export const PROPAGATED_DIRECTIVES = [SHAREABLE, DEPRECATED] as const;
+export const SCORE_FIELD = "score";

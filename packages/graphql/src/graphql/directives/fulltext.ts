@@ -30,7 +30,6 @@ const deprecationReason =
     "The name argument has been deprecated and will be removed in future versions " +
     "Please use indexName instead. More information about the changes to @fulltext can be found at " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
-export const SCORE_FIELD = "score";
 
 export const fulltextDirective = new GraphQLDirective({
     name: "fulltext",

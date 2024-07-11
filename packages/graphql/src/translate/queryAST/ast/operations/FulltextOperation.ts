@@ -23,7 +23,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { FulltextScoreField } from "../fields/FulltextScoreField";
+import type { ScoreField } from "../fields/ScoreField";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
@@ -35,7 +35,7 @@ export type FulltextOptions = {
 };
 
 export class FulltextOperation extends ReadOperation {
-    private scoreField: FulltextScoreField | undefined;
+    private scoreField: ScoreField | undefined;
 
     constructor({
         target,
@@ -45,7 +45,7 @@ export class FulltextOperation extends ReadOperation {
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
-        scoreField: FulltextScoreField | undefined;
+        scoreField: ScoreField | undefined;
         selection: EntitySelection;
     }) {
         super({
@@ -63,7 +63,7 @@ export class FulltextOperation extends ReadOperation {
         const extraProjectionColumns: Array<[Cypher.Expr, Cypher.Variable]> = [];
 
         if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(context.returnVariable);
+            const scoreProjection = this.scoreField.getProjectionField();
 
             extraProjectionColumns.push([scoreProjection.score, new Cypher.NamedVariable("score")]);
         }
@@ -83,7 +83,7 @@ export class FulltextOperation extends ReadOperation {
         const returnClause = super.getReturnStatement(context, returnVariable);
 
         if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(returnVariable);
+            const scoreProjection = this.scoreField.getProjectionField();
 
             returnClause.addColumns([scoreProjection.score, "score"]);
         }

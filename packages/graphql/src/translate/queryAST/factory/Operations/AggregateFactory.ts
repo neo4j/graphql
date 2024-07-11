@@ -135,6 +135,7 @@ export class AggregateFactory {
         } else {
             if (isConcreteEntity(entity)) {
                 let selection: EntitySelection;
+                // NOTE: If we introduce vector index aggregation, checking the phrase will cause a problem
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     selection = this.queryASTFactory.operationsFactory.getFulltextSelection(entity, context);
                 } else {
@@ -181,7 +182,11 @@ export class AggregateFactory {
                     (resolveTree.args.options ?? {}) as any
                 );
                 if (options) {
-                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
+                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
+                        options,
+                        entity,
+                        context
+                    );
                     operation.addSort(...sort);
 
                     const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);

@@ -18,7 +18,7 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
-import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
+import { SCORE_FIELD } from "../../../constants";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
@@ -26,8 +26,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
-import { FulltextScoreSort } from "../ast/sort/FulltextScoreSort";
 import { PropertySort } from "../ast/sort/PropertySort";
+import { ScoreSort } from "../ast/sort/ScoreSort";
 import type { Sort } from "../ast/sort/Sort";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isRelationshipEntity } from "../utils/is-relationship-entity";
@@ -125,9 +125,9 @@ export class SortAndPaginationFactory {
         }
 
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
-            // TODO: fix conflict with a a "score" fieldname
+            // TODO: fix conflict with a "score" fieldname
             if (fieldName === SCORE_FIELD && scoreVariable) {
-                return new FulltextScoreSort({
+                return new ScoreSort({
                     scoreVariable,
                     direction: sortDir,
                 });
