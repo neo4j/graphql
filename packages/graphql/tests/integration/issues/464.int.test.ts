@@ -242,7 +242,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const books = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: await testHelper.getContextValue(),
+                contextValue: await testHelper.getContextValue({ executionContext: session }),
             });
 
             expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
