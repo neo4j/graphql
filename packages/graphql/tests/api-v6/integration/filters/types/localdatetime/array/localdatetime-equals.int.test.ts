@@ -48,7 +48,7 @@ describe("LocalDateTime array - Equals", () => {
 
         const date3 = new Date("2026-09-17T11:49:48.322Z");
         const localdatetime3 = neo4jDriver.types.LocalDateTime.fromStandardDate(date3);
-        
+
         const dateList1 = [localdatetime1, localdatetime3];
         const dateList2 = [localdatetime2];
 
@@ -63,7 +63,7 @@ describe("LocalDateTime array - Equals", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const query = /* GraphQL */ `
             query movies($date1: LocalDateTime!, $date3: LocalDateTime!) {
-              ${Movie.plural}(where: { edges: { node: { localDateTime: { equals: [$date1, $date3] }} }}) {
+              ${Movie.plural}(where: { node: { localDateTime: { equals: [$date1, $date3] }}}) {
                   connection{
                       edges  {
                           node {

@@ -17,7 +17,13 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, ObjectTypeComposer, ScalarTypeComposer } from "graphql-compose";
+import type {
+    InputTypeComposer,
+    ListComposer,
+    NonNullComposer,
+    ObjectTypeComposer,
+    ScalarTypeComposer,
+} from "graphql-compose";
 import { connectionOperationResolver } from "../../resolvers/connection-operation-resolver";
 import type { EntityTypeNames } from "../../schema-model/graphql-type-names/EntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
@@ -45,12 +51,16 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
 
     public get connectionOperation(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connectionOperation, () => {
-            const args: { first: ScalarTypeComposer; after: ScalarTypeComposer; sort?: InputTypeComposer } = {
+            const args: {
+                first: ScalarTypeComposer;
+                after: ScalarTypeComposer;
+                sort?: ListComposer<NonNullComposer<InputTypeComposer>>;
+            } = {
                 first: this.schemaBuilder.types.int,
                 after: this.schemaBuilder.types.string,
             };
             if (this.isSortable()) {
-                args.sort = this.connectionSort;
+                args.sort = this.connectionSort.NonNull.List;
             }
             return {
                 fields: {
@@ -79,7 +89,7 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
             return {
                 fields: {
-                    edges: this.edgeSort.NonNull.List,
+                    edges: this.edgeSort,
                 },
             };
         });

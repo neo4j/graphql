@@ -19,7 +19,7 @@
 
 import type { Integer } from "neo4j-driver";
 
-export type GraphQLTree = GraphQLTreeReadOperation;
+export type GraphQLTree = GraphQLTreeReadOperationTopLevel;
 
 interface GraphQLTreeElement {
     alias: string;
@@ -59,12 +59,24 @@ export type RelationshipFilters = {
     };
 };
 
+export interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
+    name: string;
+    fields: {
+        connection?: GraphQLTreeConnectionTopLevel;
+    };
+    args: GraphQLReadOperationArgsTopLevel;
+}
+
 export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
+    name: string;
     fields: {
         connection?: GraphQLTreeConnection;
     };
     args: GraphQLReadOperationArgs;
-    name: string;
+}
+
+export interface GraphQLReadOperationArgsTopLevel {
+    where?: GraphQLWhereArgsTopLevel;
 }
 
 export interface GraphQLReadOperationArgs {
@@ -73,6 +85,10 @@ export interface GraphQLReadOperationArgs {
 
 export type GraphQLWhereArgs = LogicalOperation<{
     edges?: GraphQLEdgeWhereArgs;
+}>;
+
+export type GraphQLWhereArgsTopLevel = LogicalOperation<{
+    node?: GraphQLNodeWhereArgs;
 }>;
 
 export type GraphQLNodeWhereArgs = LogicalOperation<Record<string, GraphQLNodeFilters | null>>;
@@ -92,8 +108,20 @@ export interface GraphQLTreeConnection extends GraphQLTreeElement {
     args: GraphQLConnectionArgs;
 }
 
+export interface GraphQLTreeConnectionTopLevel extends GraphQLTreeElement {
+    fields: {
+        edges?: GraphQLTreeEdge;
+    };
+    args: GraphQLConnectionArgsTopLevel;
+}
+
 export interface GraphQLConnectionArgs {
-    sort?: GraphQLSortArgument;
+    sort?: GraphQLSortArgument[];
+    first?: Integer;
+    after?: string;
+}
+export interface GraphQLConnectionArgsTopLevel {
+    sort?: GraphQLSortEdgeArgument[];
     first?: Integer;
     after?: string;
 }
@@ -141,7 +169,7 @@ export interface GraphQLTreeCartesianPoint extends GraphQLTreeElement {
 }
 
 export interface GraphQLSortArgument {
-    edges: GraphQLSortEdgeArgument[];
+    edges: GraphQLSortEdgeArgument;
 }
 
 export interface GraphQLSortEdgeArgument {

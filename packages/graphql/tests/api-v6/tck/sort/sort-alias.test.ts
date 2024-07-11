@@ -41,7 +41,7 @@ describe("Sort with alias", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    connection(sort: { edges: { node: { title: DESC } } }) {
+                    connection(sort: { node: { title: DESC } }) {
                         edges {
                             node {
                                 title
@@ -76,7 +76,7 @@ describe("Sort with alias", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    connection(sort: { edges: [{ node: { title: DESC } }, { node: { ratings: DESC } }] }) {
+                    connection(sort: [{ node: { title: DESC } }, { node: { ratings: DESC } }]) {
                         edges {
                             node {
                                 title

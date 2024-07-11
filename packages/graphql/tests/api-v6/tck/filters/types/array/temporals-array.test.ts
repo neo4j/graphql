@@ -77,19 +77,17 @@ describe("Temporal types", () => {
             query {
                 typeNodes(
                     where: {
-                        edges: {
-                            node: {
-                                dateTime: { equals: ["2015-06-24T12:50:35.556+0100"] }
-                                localDateTime: { equals: ["2003-09-14T12:00:00"] }
-                                duration: { equals: ["P1Y"] }
-                                time: { equals: ["22:00:15.555"] }
-                                localTime: { equals: ["12:50:35.556"] }
-                                dateTimeNullable: { equals: ["2015-06-24T12:50:35.556+0100"] }
-                                localDateTimeNullable: { equals: ["2003-09-14T12:00:00"] }
-                                durationNullable: { equals: ["P1Y"] }
-                                timeNullable: { equals: ["22:00:15.555"] }
-                                localTimeNullable: { equals: ["12:50:35.556"] }
-                            }
+                        node: {
+                            dateTime: { equals: ["2015-06-24T12:50:35.556+0100"] }
+                            localDateTime: { equals: ["2003-09-14T12:00:00"] }
+                            duration: { equals: ["P1Y"] }
+                            time: { equals: ["22:00:15.555"] }
+                            localTime: { equals: ["12:50:35.556"] }
+                            dateTimeNullable: { equals: ["2015-06-24T12:50:35.556+0100"] }
+                            localDateTimeNullable: { equals: ["2003-09-14T12:00:00"] }
+                            durationNullable: { equals: ["P1Y"] }
+                            timeNullable: { equals: ["22:00:15.555"] }
+                            localTimeNullable: { equals: ["12:50:35.556"] }
                         }
                     }
                 ) {

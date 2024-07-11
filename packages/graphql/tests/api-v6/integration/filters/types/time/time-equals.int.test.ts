@@ -58,7 +58,7 @@ describe("Time - Equals", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { time: { equals: "${time1.toString()}" }} }}) {
+                    ${Movie.plural}(where: { node: { time: { equals: "${time1.toString()}" }}}) {
                         connection{
                             edges  {
                                 node {

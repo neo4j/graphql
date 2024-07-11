@@ -50,7 +50,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'in'", (type) => {
     test("filter by 'in'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { in: ["The Matrix", "The Matrix 2"] } } } }) {
+                ${Movie.plural}(where: { node: { value: { in: ["The Matrix", "The Matrix 2"] } } }) {
                     connection {
                         edges {
                             node {
@@ -87,7 +87,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'in'", (type) => {
     test("filter by NOT 'in'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { in: ["The Matrix", "The Matrix 2"] } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { in: ["The Matrix", "The Matrix 2"] } } } }) {
                     connection {
                         edges {
                             node {

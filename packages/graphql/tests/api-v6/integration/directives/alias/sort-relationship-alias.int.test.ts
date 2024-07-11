@@ -224,7 +224,7 @@ describe("Sort relationship with alias", () => {
                             node {
                                 name
                                 movies {
-                                    connection(sort: { edges: [{ node: { title: ASC } }, { node: { ratings: DESC } }] }) {
+                                    connection(sort: [{edges: { node: { title: ASC } }}, {edges: { node: { ratings: DESC } }}]) {
                                         edges {
                                             node {
                                                 title
@@ -310,7 +310,7 @@ describe("Sort relationship with alias", () => {
                             node {
                                 name
                                 movies {
-                                    connection(sort: { edges: [{ properties: { role: DESC } }, { properties: { year: ASC } } ] }) {
+                                    connection(sort: [{edges:{ properties: { role: DESC } }}, {edges:{ properties: { year: ASC } }} ]) {
                                         edges {
                                             properties {
                                                 year
@@ -391,13 +391,13 @@ describe("Sort relationship with alias", () => {
                             node {
                                 name
                                 movies {
-                                    connection(sort: { edges: [
-                                            { properties: { role: DESC } },
-                                            { node: { title: ASC } },                                           
-                                            { properties: { year: DESC } },
-                                            { node: { description: ASC } }
+                                    connection(sort: [
+                                            {edges: { properties: { role: DESC } } },
+                                            {edges: { node: { title: ASC } } },                                           
+                                            {edges: { properties: { year: DESC } } },
+                                            {edges: { node: { description: ASC } } }
                                          
-                                        ] }) {
+                                        ]) {
                                         edges {
                                             properties {
                                                 year

@@ -62,14 +62,12 @@ describe("Temporal types", () => {
             query {
                 typeNodes(
                     where: {
-                        edges: {
-                            node: {
-                                dateTime: { equals: "2015-06-24T12:50:35.556+0100" }
-                                localDateTime: { gt: "2003-09-14T12:00:00" }
-                                duration: { gte: "P1Y" }
-                                time: { lt: "22:00:15.555" }
-                                localTime: { lte: "12:50:35.556" }
-                            }
+                        node: {
+                            dateTime: { equals: "2015-06-24T12:50:35.556+0100" }
+                            localDateTime: { gt: "2003-09-14T12:00:00" }
+                            duration: { gte: "P1Y" }
+                            time: { lt: "22:00:15.555" }
+                            localTime: { lte: "12:50:35.556" }
                         }
                     }
                 ) {

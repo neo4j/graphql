@@ -50,7 +50,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'equals'", (type) => {
     test("filter by 'equals'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { equals: "The Matrix" } } } }) {
+                ${Movie.plural}(where: { node: { value: { equals: "The Matrix" } } }) {
                     connection {
                         edges {
                             node {
@@ -82,7 +82,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'equals'", (type) => {
     test("filter by NOT 'equals'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { equals: "The Matrix" } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { equals: "The Matrix" } } } }) {
                     connection {
                         edges {
                             node {

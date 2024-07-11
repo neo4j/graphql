@@ -62,12 +62,7 @@ describe("Filters OR", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: {
-                        OR: [
-                            { edges: { node: { title: { equals: "The Matrix" } } } }
-                            { edges: { node: { year: { equals: 2001 } } } }
-                        ]
-                    }
+                    where: { OR: [{ node: { title: { equals: "The Matrix" } } }, { node: { year: { equals: 2001 } } }] }
                 ) {
                     connection {
                         edges {
@@ -108,52 +103,6 @@ describe("Filters OR", () => {
                 ${Movie.plural}(
                     where: {
                         OR: {
-                            OR: [
-                                { edges: { node: { title: { equals: "The Matrix" } } } }
-                                { edges: { node: { year: { equals: 2001 } } } }
-                            ]
-                        }
-                    }
-                ) {
-                    connection {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: {
-                connection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                title: "The Matrix",
-                            },
-                        },
-                        {
-                            node: {
-                                title: "The Matrix Reloaded",
-                            },
-                        },
-                    ]),
-                },
-            },
-        });
-    });
-
-    test("OR filter in edges by node", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(
-                    where: {
-                        edges: {
                             OR: [{ node: { title: { equals: "The Matrix" } } }, { node: { year: { equals: 2001 } } }]
                         }
                     }

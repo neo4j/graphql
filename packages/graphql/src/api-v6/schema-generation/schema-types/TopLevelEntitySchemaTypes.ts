@@ -75,9 +75,19 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
             name: this.entity.typeNames.queryField,
             type: this.connectionOperation,
             args: {
-                where: this.filterSchemaTypes.operationWhere,
+                where: this.filterSchemaTypes.operationWhereTopLevel,
             },
             resolver,
+        });
+    }
+
+    protected get connectionSort(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
+            return {
+                fields: {
+                    node: this.nodeSort,
+                },
+            };
         });
     }
 
@@ -219,7 +229,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                     schemaTypes: this.schemaTypes,
                 });
                 const relationshipType = relationshipTypes.connectionOperation;
-                const operationWhere = relationshipTypes.filterSchemaTypes.operationWhere;
+                const operationWhere = relationshipTypes.filterSchemaTypes.operationWhereNested;
                 return [relationship.name, { type: relationshipType, args: { where: operationWhere } }];
             })
         );

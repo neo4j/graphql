@@ -44,9 +44,11 @@ describe("DateTime array - Equals", () => {
         const date1 = new Date(1716904582368);
         const date2 = new Date(1716900000000);
         const date3 = new Date(1716904582369);
-        const datetime1 = [neo4jDriver.types.DateTime.fromStandardDate(date1), neo4jDriver.types.DateTime.fromStandardDate(date3)];
+        const datetime1 = [
+            neo4jDriver.types.DateTime.fromStandardDate(date1),
+            neo4jDriver.types.DateTime.fromStandardDate(date3),
+        ];
         const datetime2 = [neo4jDriver.types.DateTime.fromStandardDate(date2)];
-     
 
         await testHelper.executeCypher(
             `
@@ -60,7 +62,9 @@ describe("DateTime array - Equals", () => {
 
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { edges: { node: { datetime: { equals: ["${date1.toISOString()}", "${date3.toISOString()}"] }} }}) {
+                    ${
+                        Movie.plural
+                    }(where: { node: { datetime: { equals: ["${date1.toISOString()}", "${date3.toISOString()}"] }}}) {
                         connection{
                             edges  {
                                 node {

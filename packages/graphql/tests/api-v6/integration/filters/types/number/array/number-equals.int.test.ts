@@ -52,7 +52,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals
     test.each(["list", "listNullable"])("%s filter by 'equals'", async (field) => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { ${field}: { equals: [2001, 2000] } } } }) {
+                ${Movie.plural}(where: { node: { ${field}: { equals: [2001, 2000] } } }) {
                     connection {
                         edges {
                             node {
@@ -84,7 +84,7 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals
     test.each(["list", "listNullable"])("%s filter by NOT 'equals'", async (field) => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { ${field}: { equals: [2001, 2000] } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { ${field}: { equals: [2001, 2000] } } } }) {
                     connection {
                         edges {
                             node {

@@ -62,7 +62,7 @@ describe("Date - IN", () => {
                 query {
                     ${
                         Movie.plural
-                    }(where: { edges: { node: { date: { in: ["${neoDate1.toString()}", "${neoDate3.toString()}"] }} }}) {
+                    }(where: { node: { date: { in: ["${neoDate1.toString()}", "${neoDate3.toString()}"] }} }) {
                         connection{
                             edges  {
                                 node {
@@ -123,7 +123,7 @@ describe("Date - IN", () => {
                 query {
                     ${
                         Movie.plural
-                    }(where: { edges: { node: { date: { NOT: { in: ["${neoDate1.toString()}", "${neoDate3.toString()}"] } }} }}) {
+                    }(where: { node: { date: { NOT: { in: ["${neoDate1.toString()}", "${neoDate3.toString()}"] } }} }) {
                         connection{
                             edges  {
                                 node {

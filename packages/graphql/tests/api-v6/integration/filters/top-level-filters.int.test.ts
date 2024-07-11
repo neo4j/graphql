@@ -49,13 +49,7 @@ describe("Top level filters", () => {
     test("should be able to get a Movie", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(
-                    where: {
-                        edges: {
-                            node: { year: { equals: 1999 }, runtime: { equals: 90.5 } }
-                        }
-                    }
-                ) {
+                ${Movie.plural}(where: { node: { year: { equals: 1999 }, runtime: { equals: 90.5 } } }) {
                     connection {
                         edges {
                             node {

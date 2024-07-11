@@ -21,11 +21,75 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ResolveTreeParser } from "./ResolveTreeParser";
 import { findFieldByName } from "./find-field-by-name";
-import type { GraphQLTreeEdge } from "./graphql-tree";
+import type {
+    GraphQLConnectionArgsTopLevel,
+    GraphQLReadOperationArgsTopLevel,
+    GraphQLSortEdgeArgument,
+    GraphQLTreeConnectionTopLevel,
+    GraphQLTreeEdge,
+    GraphQLTreeReadOperationTopLevel,
+} from "./graphql-tree";
 
 export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity> {
     protected get targetNode(): ConcreteEntity {
         return this.entity;
+    }
+
+    /** Parse a resolveTree into a Neo4j GraphQLTree */
+    public parseOperationTopLevel(resolveTree: ResolveTree): GraphQLTreeReadOperationTopLevel {
+        const connectionResolveTree = findFieldByName(
+            resolveTree,
+            this.entity.typeNames.connectionOperation,
+            "connection"
+        );
+
+        const connection = connectionResolveTree ? this.parseTopLevelConnection(connectionResolveTree) : undefined;
+        const connectionOperationArgs = this.parseOperationArgsTopLevel(resolveTree.args);
+        return {
+            alias: resolveTree.alias,
+            args: connectionOperationArgs,
+            name: resolveTree.name,
+            fields: {
+                connection,
+            },
+        };
+    }
+
+    private parseTopLevelConnection(resolveTree: ResolveTree): GraphQLTreeConnectionTopLevel {
+        const entityTypes = this.entity.typeNames;
+        const edgesResolveTree = findFieldByName(resolveTree, entityTypes.connection, "edges");
+        const edgeResolveTree = edgesResolveTree ? this.parseEdges(edgesResolveTree) : undefined;
+        const connectionArgs = this.parseConnectionArgsTopLevel(resolveTree.args);
+
+        return {
+            alias: resolveTree.alias,
+            args: connectionArgs,
+            fields: {
+                edges: edgeResolveTree,
+            },
+        };
+    }
+
+    private parseConnectionArgsTopLevel(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgsTopLevel {
+        let sortArg: GraphQLSortEdgeArgument[] | undefined;
+        if (resolveTreeArgs.sort) {
+            sortArg = resolveTreeArgs.sort.map((sortArg) => {
+                return this.parseSortEdges(sortArg);
+            });
+        }
+
+        return {
+            sort: sortArg,
+            first: resolveTreeArgs.first,
+            after: resolveTreeArgs.after,
+        };
+    }
+
+    protected parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgsTopLevel {
+        // Not properly parsed, assuming the type is the same
+        return {
+            where: resolveTreeArgs.where,
+        };
     }
 
     protected parseEdges(resolveTree: ResolveTree): GraphQLTreeEdge {

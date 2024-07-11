@@ -53,7 +53,7 @@ describe("Sort with alias", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(sort: { edges: { node: { title: ASC } } }) {
+                    connection(sort: { node: { title: ASC } }) {
                         edges {
                             node {
                                 title
@@ -106,7 +106,7 @@ describe("Sort with alias", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(sort: { edges: { node: { title: DESC } } }) {
+                    connection(sort: { node: { title: DESC } }) {
                         edges {
                             node {
                                 title
@@ -159,7 +159,7 @@ describe("Sort with alias", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(sort: { edges: [{ node: { title: ASC } }, { node: { ratings: DESC } }]  }) {
+                    connection(sort: [{ node: { title: ASC } }, { node: { ratings: DESC } }]) {
                         edges {
                             node {
                                 title

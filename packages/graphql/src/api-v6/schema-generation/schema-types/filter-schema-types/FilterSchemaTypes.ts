@@ -53,7 +53,23 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         this.schemaTypes = schemaTypes;
     }
 
-    public get operationWhere(): InputTypeComposer {
+    public get operationWhereTopLevel(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(
+            this.entityTypeNames.operationWhere,
+            (itc: InputTypeComposer) => {
+                return {
+                    fields: {
+                        AND: itc.NonNull.List,
+                        OR: itc.NonNull.List,
+                        NOT: itc,
+                        node: this.nodeWhere,
+                    },
+                };
+            }
+        );
+    }
+
+    public get operationWhereNested(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(
             this.entityTypeNames.operationWhere,
             (itc: InputTypeComposer) => {

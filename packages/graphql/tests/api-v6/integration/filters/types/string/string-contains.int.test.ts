@@ -50,7 +50,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'contains'", (type) => 
     test("filter by 'contains'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { node: { value: { contains: "Matrix" } } } }) {
+                ${Movie.plural}(where: { node: { value: { contains: "Matrix" } } }) {
                     connection {
                         edges {
                             node {
@@ -87,7 +87,7 @@ describe.each(["ID", "String"] as const)("%s Filtering - 'contains'", (type) => 
     test("filter by NOT 'contains'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { edges: { NOT: { node: { value: { contains: "Matrix" } } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { value: { contains: "Matrix" } } } }) {
                     connection {
                         edges {
                             node {

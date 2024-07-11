@@ -157,7 +157,7 @@ describe("Temporals", () => {
             }
 
             input NodeTypeConnectionSort {
-              edges: [NodeTypeEdgeSort!]
+              node: NodeTypeSort
             }
 
             type NodeTypeEdge {
@@ -165,26 +165,15 @@ describe("Temporals", () => {
               node: NodeType
             }
 
-            input NodeTypeEdgeSort {
-              node: NodeTypeSort
-            }
-
-            input NodeTypeEdgeWhere {
-              AND: [NodeTypeEdgeWhere!]
-              NOT: NodeTypeEdgeWhere
-              OR: [NodeTypeEdgeWhere!]
-              node: NodeTypeWhere
-            }
-
             type NodeTypeOperation {
-              connection(after: String, first: Int, sort: NodeTypeConnectionSort): NodeTypeConnection
+              connection(after: String, first: Int, sort: [NodeTypeConnectionSort!]): NodeTypeConnection
             }
 
             input NodeTypeOperationWhere {
               AND: [NodeTypeOperationWhere!]
               NOT: NodeTypeOperationWhere
               OR: [NodeTypeOperationWhere!]
-              edges: NodeTypeEdgeWhere
+              node: NodeTypeWhere
             }
 
             type NodeTypeRelatedNodeConnection {
@@ -193,7 +182,7 @@ describe("Temporals", () => {
             }
 
             input NodeTypeRelatedNodeConnectionSort {
-              edges: [NodeTypeRelatedNodeEdgeSort!]
+              edges: NodeTypeRelatedNodeEdgeSort
             }
 
             type NodeTypeRelatedNodeEdge {
@@ -233,7 +222,7 @@ describe("Temporals", () => {
             }
 
             type NodeTypeRelatedNodeOperation {
-              connection(after: String, first: Int, sort: NodeTypeRelatedNodeConnectionSort): NodeTypeRelatedNodeConnection
+              connection(after: String, first: Int, sort: [NodeTypeRelatedNodeConnectionSort!]): NodeTypeRelatedNodeConnection
             }
 
             input NodeTypeRelatedNodeOperationWhere {
@@ -292,7 +281,7 @@ describe("Temporals", () => {
             }
 
             input RelatedNodeConnectionSort {
-              edges: [RelatedNodeEdgeSort!]
+              node: RelatedNodeSort
             }
 
             type RelatedNodeEdge {
@@ -300,26 +289,15 @@ describe("Temporals", () => {
               node: RelatedNode
             }
 
-            input RelatedNodeEdgeSort {
-              node: RelatedNodeSort
-            }
-
-            input RelatedNodeEdgeWhere {
-              AND: [RelatedNodeEdgeWhere!]
-              NOT: RelatedNodeEdgeWhere
-              OR: [RelatedNodeEdgeWhere!]
-              node: RelatedNodeWhere
-            }
-
             type RelatedNodeOperation {
-              connection(after: String, first: Int, sort: RelatedNodeConnectionSort): RelatedNodeConnection
+              connection(after: String, first: Int, sort: [RelatedNodeConnectionSort!]): RelatedNodeConnection
             }
 
             input RelatedNodeOperationWhere {
               AND: [RelatedNodeOperationWhere!]
               NOT: RelatedNodeOperationWhere
               OR: [RelatedNodeOperationWhere!]
-              edges: RelatedNodeEdgeWhere
+              node: RelatedNodeWhere
             }
 
             type RelatedNodeProperties {

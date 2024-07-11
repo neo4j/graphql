@@ -54,7 +54,7 @@ describe("Sort", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(sort: { edges: { node: { title: ASC } } }, first: 3) {
+                    connection(sort: { node: { title: ASC } }, first: 3) {
                         edges {
                             node {
                                 title
@@ -97,7 +97,7 @@ describe("Sort", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
-                    connection(sort: { edges: { node: { title: DESC } } }, first: 3) {
+                    connection(sort: { node: { title: DESC } }, first: 3) {
                         edges {
                             node {
                                 title
