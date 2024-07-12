@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { TopLevelResolveTreeParser } from "./TopLevelResolveTreeParser";
-import type { GraphQLTree } from "./graphql-tree";
+import type { GraphQLTree } from "./graphql-tree/graphql-tree";
 
 export class GlobalNodeResolveTreeParser extends TopLevelResolveTreeParser {
     constructor({ entity }: { entity: ConcreteEntity }) {
