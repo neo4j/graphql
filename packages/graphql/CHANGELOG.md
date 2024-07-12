@@ -1,5 +1,65 @@
 # @neo4j/graphql
 
+## 5.5.0
+
+### Minor Changes
+
+-   [#5316](https://github.com/neo4j/graphql/pull/5316) [`a26f32f`](https://github.com/neo4j/graphql/commit/a26f32f9726c5e5befd664a87588a22f8a4a9e3e) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Add `@vector` directive.
+
+    The directive enables two forms of user input, depending on the index configuration: vector input which in GraphQL is a `[Float!]`, and phrase input which is a `String`.
+
+    For example to use the `@vector` directive with a vector index, you would define a type like this:
+
+    ```graphql
+    type Movie
+        @vector(
+            indexes: [
+                { indexName: "myVectorIndexName", propertyName: "embedding", queryName: "searchForRelatedMovies" }
+            ]
+        ) {
+        title: String!
+    }
+    ```
+
+    To configure a provider to use the GenAI plugin and have phrase input, you would define a type like this:
+
+    ```graphql
+    type Movie
+        @vector(
+            indexes: [
+                {
+                    indexName: "myVectorIndexName"
+                    propertyName: "embedding"
+                    queryName: "searchForRelatedMovies"
+                    provider: OPEN_AI
+                }
+            ]
+        ) {
+        title: String!
+    }
+    ```
+
+    The constructor of the `Neo4jGraphQL` class would need to be updated to include the `OpenAI` provider under the `vector` feature like this:
+
+    ```javascript
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        driver,
+        features: {
+            vector: {
+                OpenAI: {
+                    token: "my-open-ai-token",
+                    model: "text-embedding-3-small",
+                },
+            },
+        },
+    });
+    ```
+
+### Patch Changes
+
+-   [#5317](https://github.com/neo4j/graphql/pull/5317) [`f4c41fe`](https://github.com/neo4j/graphql/commit/f4c41fef566c670fe837dddb7d4bae12f87bc001) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix non-array validate argument on authorization directive #4534
+
 ## 5.4.5
 
 ### Patch Changes
