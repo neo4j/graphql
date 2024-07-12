@@ -169,4 +169,48 @@ describe("Relationship filters with single", () => {
             },
         });
     });
+
+    test("filter by nested node with single and NOT operator", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(
+                    where: { node: { actors: { edges: { single: { NOT: { node: { name: { equals: "Keanu" } } } } } } } }
+                ) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                title: "The Matrix",
+                            },
+                        },
+                        {
+                            node: {
+                                title: "A very cool movie",
+                            },
+                        },
+                        {
+                            node: {
+                                title: "unknown movie",
+                            },
+                        },
+                    ]),
+                },
+            },
+        });
+    });
 });

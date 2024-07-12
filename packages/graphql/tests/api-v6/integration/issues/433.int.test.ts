@@ -18,11 +18,11 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/433", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ v6Api: true });
     let Movie: UniqueType;
     let Person: UniqueType;
     let typeDefs: string;
@@ -39,12 +39,12 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
     test("should recreate issue and return correct data", async () => {
         typeDefs = `
             # Cannot use 'type Node'
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Person} {
+            type ${Person} @node {
                 name: String
             }
         `;
@@ -61,14 +61,22 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
 
         const query = `
             query {
-               ${Movie.plural}(where: {title: "${movieTitle}"}) {
-                    title
-                    actorsConnection(where: {}) {
-                      edges {
-                        node {
-                          name
+               ${Movie.plural}(where: {node: {title: {equals: "${movieTitle}"}}}) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                                actors(where: {}) {
+                                    connection {
+                                        edges {
+                                            node {
+                                                name
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                      }
                     }
                 }
             }
@@ -85,15 +93,23 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
 
         expect(result.errors).toBeFalsy();
 
-        expect(result.data as any).toEqual({
-            [Movie.plural]: [
-                {
-                    title: movieTitle,
-                    actorsConnection: {
-                        edges: [{ node: { name: personName } }],
-                    },
+        expect(result.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                title: movieTitle,
+                                actors: {
+                                    connection: {
+                                        edges: [{ node: { name: personName } }],
+                                    },
+                                },
+                            },
+                        },
+                    ],
                 },
-            ],
+            },
         });
     });
 });

@@ -155,7 +155,7 @@ describe("Sort", () => {
         });
     });
 
-    test("should be able to sort by multiple criteria", async () => {
+    test("should be able to sort by multiple criteria, not in the selection set", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
@@ -164,7 +164,6 @@ describe("Sort", () => {
                             node {
                                 title
                                 description
-                                ratings
                             }
                         }
 
@@ -183,14 +182,12 @@ describe("Sort", () => {
                             node: {
                                 title: "The Matrix",
                                 description: "DVD edition",
-                                ratings: 5,
                             },
                         },
                         {
                             node: {
                                 title: "The Matrix",
                                 description: "Cinema edition",
-                                ratings: 4,
                             },
                         },
 
@@ -198,21 +195,18 @@ describe("Sort", () => {
                             node: {
                                 title: "The Matrix 2",
                                 description: null,
-                                ratings: 2,
                             },
                         },
                         {
                             node: {
                                 title: "The Matrix 3",
                                 description: null,
-                                ratings: 4,
                             },
                         },
                         {
                             node: {
                                 title: "The Matrix 4",
                                 description: null,
-                                ratings: 3,
                             },
                         },
                     ],

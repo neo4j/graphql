@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/360", () => {
-    const testHelper = new TestHelper();
-
-    beforeEach(() => {});
+    const testHelper = new TestHelper({ v6Api: true });
 
     afterEach(async () => {
         await testHelper.close();
@@ -32,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
-            type ${type.name} {
+            type ${type.name} @node {
                 id: ID!
                 name: String
                 start: DateTime
@@ -45,10 +43,16 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             typeDefs,
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
-                    id
+                ${type.plural}(where: { node: { AND: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } }) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -64,14 +68,20 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
+        expect(gqlResult.data).toEqual({
+            [type.plural]: {
+                connection: {
+                    edges: expect.toBeArrayOfSize(3),
+                },
+            },
+        });
     });
 
     test("should return all nodes when OR is used and members are optional", async () => {
         const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
-            type ${type.name} {
+            type ${type.name} @node {
                 id: ID!
                 name: String
                 start: DateTime
@@ -84,10 +94,16 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
             typeDefs,
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
-                    id
+                ${type.plural}(where: { node: { OR: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } }) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -103,14 +119,20 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
+        expect(gqlResult.data).toEqual({
+            [type.plural]: {
+                connection: {
+                    edges: expect.toBeArrayOfSize(3),
+                },
+            },
+        });
     });
 
     test("should recreate given test in issue and return correct results", async () => {
         const type = testHelper.createUniqueType("Event");
 
-        const typeDefs = `
-            type ${type.name} {
+        const typeDefs = /* GraphQL */ `
+            type ${type.name} @node {
                 id: ID!
                 name: String
                 start: DateTime
@@ -126,10 +148,16 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const rangeStart = new Date().toISOString();
         const rangeEnd = new Date().toISOString();
 
-        const query = `
+        const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
-                    id
+                ${type.plural}(where: { node: { OR: [{ start: { gte: $rangeStart } }, { start: { lte: $rangeEnd } }, { activity: { equals: $activity } }] } }) {
+                    connection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -148,6 +176,12 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
+        expect(gqlResult.data).toEqual({
+            [type.plural]: {
+                connection: {
+                    edges: expect.toBeArrayOfSize(3),
+                },
+            },
+        });
     });
 });

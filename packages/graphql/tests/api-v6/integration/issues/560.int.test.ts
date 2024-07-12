@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
+import gql from "graphql-tag";
 import { generate } from "randomstring";
-import { TestHelper } from "../../utils/tests-helper";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/560", () => {
-    const testHelper = new TestHelper();
-
-    beforeEach(() => {});
+    const testHelper = new TestHelper({ v6Api: true });
 
     afterEach(async () => {
         await testHelper.close();
@@ -34,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
         const testLog = testHelper.createUniqueType("Log");
 
         const typeDefs = gql`
-            type ${testLog.name} {
+            type ${testLog} @node {
                 id: ID!
                 location: Point
             }
@@ -46,17 +44,23 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${testLog.plural} {
-                  id
-                  location {
-                    longitude
-                    latitude
-                    height
-                    crs
-                    srid
-                  }
+                    connection {
+                        edges {
+                            node {
+                                id
+                                location {
+                                  longitude
+                                  latitude
+                                  height
+                                  crs
+                                  srid
+                                }
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -66,20 +70,21 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             `);
 
         const result = await testHelper.executeGraphQL(query);
-
-        if (result.errors) {
-            console.log(JSON.stringify(result.errors, null, 2));
-        }
-
         expect(result.errors).toBeFalsy();
 
-        expect(result.data as any).toEqual({
-            [testLog.plural]: [
-                {
-                    id: logId,
-                    location: null,
+        expect(result.data).toEqual({
+            [testLog.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                id: logId,
+                                location: null,
+                            },
+                        },
+                    ],
                 },
-            ],
+            },
         });
     });
 
@@ -87,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
         const testLog = testHelper.createUniqueType("Log");
 
         const typeDefs = gql`
-            type ${testLog.name} {
+            type ${testLog.name} @node {
                 id: ID!
                 location: CartesianPoint
             }
@@ -99,17 +104,23 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${testLog.plural} {
-                  id
-                  location {
-                    x
-                    y
-                    z
-                    crs
-                    srid
-                  }
+                    connection {
+                        edges {
+                            node {
+                                id
+                                location {
+                                    x
+                                    y
+                                    z
+                                    crs
+                                    srid
+                                }
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -120,19 +131,21 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
 
         const result = await testHelper.executeGraphQL(query);
 
-        if (result.errors) {
-            console.log(JSON.stringify(result.errors, null, 2));
-        }
-
         expect(result.errors).toBeFalsy();
 
-        expect(result.data as any).toEqual({
-            [testLog.plural]: [
-                {
-                    id: logId,
-                    location: null,
+        expect(result.data).toEqual({
+            [testLog.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                id: logId,
+                                location: null,
+                            },
+                        },
+                    ],
                 },
-            ],
+            },
         });
     });
 });

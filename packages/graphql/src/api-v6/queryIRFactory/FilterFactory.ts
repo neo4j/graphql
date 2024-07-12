@@ -69,7 +69,7 @@ export class FilterFactory {
 
         const edgeFilters = this.createEdgeFilters({ entity, relationship, edgeWhere: where.edges });
 
-        return [...edgeFilters, ...andFilters, ...orFilters, ...notFilters];
+        return [...this.mergeFiltersWithAnd(edgeFilters), ...andFilters, ...orFilters, ...notFilters];
     }
 
     public createTopLevelFilters({
@@ -88,7 +88,12 @@ export class FilterFactory {
         });
 
         const edgeFilters = this.createNodeFilter({ entity, where: where.node });
-        return [...edgeFilters, ...andFilters, ...orFilters, ...notFilters];
+        return this.mergeFiltersWithAnd([
+            ...this.mergeFiltersWithAnd(edgeFilters),
+            ...andFilters,
+            ...orFilters,
+            ...notFilters,
+        ]);
     }
 
     private createTopLevelLogicalFilters({
@@ -176,7 +181,13 @@ export class FilterFactory {
                 relationship,
             });
         }
-        return [...nodeFilters, ...edgePropertiesFilters, ...andFilters, ...orFilters, ...notFilters];
+        return this.mergeFiltersWithAnd([
+            ...this.mergeFiltersWithAnd(nodeFilters),
+            ...edgePropertiesFilters,
+            ...andFilters,
+            ...orFilters,
+            ...notFilters,
+        ]);
     }
 
     private createLogicalEdgeFilters(
@@ -244,7 +255,7 @@ export class FilterFactory {
             return [];
         });
 
-        return [...andFilters, ...orFilters, ...notFilters, ...nodePropertiesFilters];
+        return [...andFilters, ...orFilters, ...notFilters, ...this.mergeFiltersWithAnd(nodePropertiesFilters)];
     }
 
     private createLogicalNodeFilters(
@@ -330,9 +341,12 @@ export class FilterFactory {
     // TODO: remove adapter from here
     private createPropertyFilters(
         attribute: AttributeAdapter,
-        filters: GraphQLAttributeFilters,
+        filters: GraphQLAttributeFilters | null,
         attachedTo: "node" | "relationship" = "node"
     ): Filter[] {
+        if (!filters) {
+            return [];
+        }
         return Object.entries(filters).map(([key, value]) => {
             if (key === "AND" || key === "OR" || key === "NOT") {
                 return new LogicalFilter({
@@ -369,5 +383,17 @@ export class FilterFactory {
                 attachedTo,
             });
         });
+    }
+
+    private mergeFiltersWithAnd(filters: Filter[]): Filter[] {
+        if (filters.length > 1) {
+            return [
+                new LogicalFilter({
+                    operation: "AND",
+                    filters: filters,
+                }),
+            ];
+        }
+        return filters;
     }
 }

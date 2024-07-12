@@ -34,7 +34,6 @@ export function generateReadResolver({ entity }: { entity: ConcreteEntity }) {
     ) {
         const resolveTree = getNeo4jResolveTree(info, { args });
         context.resolveTree = resolveTree;
-
         const graphQLTree = parseResolveInfoTree({ resolveTree: context.resolveTree, entity });
         const { cypher, params } = translateReadOperation({
             context: context,

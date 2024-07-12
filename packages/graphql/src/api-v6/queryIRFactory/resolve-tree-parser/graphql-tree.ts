@@ -91,10 +91,10 @@ export type GraphQLWhereArgsTopLevel = LogicalOperation<{
     node?: GraphQLNodeWhereArgs;
 }>;
 
-export type GraphQLNodeWhereArgs = LogicalOperation<Record<string, GraphQLNodeFilters>>;
+export type GraphQLNodeWhereArgs = LogicalOperation<Record<string, GraphQLNodeFilters | null>>;
 
 export type GraphQLEdgeWhereArgs = LogicalOperation<{
-    properties?: Record<string, GraphQLAttributeFilters>;
+    properties?: Record<string, GraphQLAttributeFilters | null>;
     node?: GraphQLNodeWhereArgs;
 }>;
 
