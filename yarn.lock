@@ -2824,7 +2824,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": "npm:^5.0.0"
     "@graphql-codegen/typescript": "npm:^4.0.0"
     "@graphql-tools/merge": "npm:^9.0.0"
-    "@neo4j/graphql": "npm:^5.4.5"
+    "@neo4j/graphql": "npm:^5.5.0"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.14.10"
     camelcase: "npm:6.3.0"
@@ -2848,7 +2848,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:^5.0.0, @neo4j/graphql@npm:^5.3.4, @neo4j/graphql@npm:^5.4.0, @neo4j/graphql@npm:^5.4.5, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:^5.0.0, @neo4j/graphql@npm:^5.3.4, @neo4j/graphql@npm:^5.4.0, @neo4j/graphql@npm:^5.5.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -5685,7 +5685,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.0"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
-    "@neo4j/graphql": "npm:^5.4.5"
+    "@neo4j/graphql": "npm:^5.5.0"
     fork-ts-checker-webpack-plugin: "npm:9.0.2"
     graphql: "npm:16.9.0"
     graphql-tag: "npm:^2.12.6"
@@ -5693,7 +5693,7 @@ __metadata:
     ts-loader: "npm:9.5.1"
     tsconfig-paths-webpack-plugin: "npm:4.1.0"
     typescript: "npm:5.1.6"
-    webpack: "npm:5.92.1"
+    webpack: "npm:5.93.0"
   languageName: unknown
   linkType: soft
 
@@ -11042,11 +11042,11 @@ __metadata:
   linkType: hard
 
 "graphql-relay@npm:^0.10.0":
-  version: 0.10.1
-  resolution: "graphql-relay@npm:0.10.1"
+  version: 0.10.2
+  resolution: "graphql-relay@npm:0.10.2"
   peerDependencies:
     graphql: ^16.2.0
-  checksum: 10c0/5ed5d2fd0ba43f3237d7c49360e0ea603576139c1e0a65b73cc32ff7f99ffbab18a4741aad9a715f8f1ad221293c1f09713852341a565ac133f770f41b84402d
+  checksum: 10c0/312748377c699c812541551cb2079308be6efef99e5398928dbbeca7596581d1fd8d939f60b2c77d184a185b64717e8c2b62b102a8f85167d379fd49cad39a3d
   languageName: node
   linkType: hard
 
@@ -20461,9 +20461,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.92.1":
-  version: 5.92.1
-  resolution: "webpack@npm:5.92.1"
+"webpack@npm:5.93.0":
+  version: 5.93.0
+  resolution: "webpack@npm:5.93.0"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.3"
     "@types/estree": "npm:^1.0.5"
@@ -20494,7 +20494,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10c0/43ca7c76b9c1005bd85f05303d048f918bac10276a209e3ef5e359353fbfef4e5fcee876265e6bc305bf5ef326576e02df63bc7e5af878fb7f06d7e1795b811a
+  checksum: 10c0/f0c72f1325ff57a4cc461bb978e6e1296f2a7d45c9765965271aa686ccdd448512956f4d7fdcf8c164d073af046c5a0aba17ce85ea98e33e5e2bfbfe13aa5808
   languageName: node
   linkType: hard
 
