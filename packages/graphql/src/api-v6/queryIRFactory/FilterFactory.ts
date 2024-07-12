@@ -88,7 +88,12 @@ export class FilterFactory {
         });
 
         const edgeFilters = this.createNodeFilter({ entity, where: where.node });
-        return [...edgeFilters, ...andFilters, ...orFilters, ...notFilters];
+        return this.mergeFiltersWithAnd([
+            ...this.mergeFiltersWithAnd(edgeFilters),
+            ...andFilters,
+            ...orFilters,
+            ...notFilters,
+        ]);
     }
 
     private createTopLevelLogicalFilters({
@@ -176,13 +181,13 @@ export class FilterFactory {
                 relationship,
             });
         }
-        return [
+        return this.mergeFiltersWithAnd([
             ...this.mergeFiltersWithAnd(nodeFilters),
             ...edgePropertiesFilters,
             ...andFilters,
             ...orFilters,
             ...notFilters,
-        ];
+        ]);
     }
 
     private createLogicalEdgeFilters(

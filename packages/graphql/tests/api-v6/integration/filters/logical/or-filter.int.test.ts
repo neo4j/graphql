@@ -34,6 +34,7 @@ describe("Filters OR", () => {
             type ${Movie} @node {
                 title: String
                 year: Int
+                runtime: Float
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             type ${Actor} @node {
@@ -147,6 +148,48 @@ describe("Filters OR", () => {
                     where: {
                         OR: [
                             { node: { title: { equals: "The Matrix" }, year: { equals: 2001 } } }
+                            { node: { year: { equals: 2002 } } }
+                        ]
+                    }
+                ) {
+                    connection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: {
+                connection: {
+                    edges: [
+                        {
+                            node: {
+                                title: "The Matrix Revelations",
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    });
+
+    test("top level OR filter combined with implicit AND and nested not", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural} (
+                    where: {
+                        OR: [
+                            {
+                                NOT: { node: { runtime: { equals: 90.5 } } }
+                                node: { title: { equals: "The Matrix" }, year: { equals: 1999 } }
+                            }
                             { node: { year: { equals: 2002 } } }
                         ]
                     }

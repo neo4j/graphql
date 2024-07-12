@@ -124,7 +124,7 @@ describe("OR filters", () => {
         `);
     });
 
-    test.only("bug with OR", async () => {
+    test("top level OR filter combined with implicit AND and nested not", async () => {
         const query = /* GraphQL */ `
             query {
                 movies(
@@ -153,7 +153,7 @@ describe("OR filters", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
-            WHERE ((this0.title = $param0 AND this0.year = $param1) OR NOT (this0.runtime = $param2) OR this0.year = $param3)
+            WHERE (((this0.title = $param0 AND this0.year = $param1) AND NOT (this0.runtime = $param2)) OR this0.year = $param3)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
