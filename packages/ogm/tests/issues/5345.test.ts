@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/5345", () => {
 
         const model = ogm.model("TestNode");
 
-        const result = await model.aggregate({
+        const fullTextResult = await model.aggregate({
             fulltext: {
                 simpleTestIndex: {
                     phrase: "jane",
@@ -94,6 +94,13 @@ describe("https://github.com/neo4j/graphql/issues/5345", () => {
             },
         });
 
-        expect(result.count).toBe(1);
+        const nonFullTextResult = await model.aggregate({
+            aggregate: {
+                count: true,
+            },
+        });
+
+        expect(fullTextResult.count).toBe(1);
+        expect(nonFullTextResult.count).toBe(2);
     });
 });
