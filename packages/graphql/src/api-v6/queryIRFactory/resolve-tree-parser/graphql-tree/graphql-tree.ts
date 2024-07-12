@@ -19,9 +19,9 @@
 
 import type { Integer } from "neo4j-driver";
 import type { GraphQLTreeLeafField } from "./attributes";
-import type { GraphQLSortArgument, GraphQLSortEdgeArgument } from "./sort";
+import type { GraphQLSort, GraphQLSortEdge } from "./sort";
 import type { GraphQLTreeElement } from "./tree-element";
-import type { GraphQLWhereArgs, GraphQLWhereArgsTopLevel } from "./where";
+import type { GraphQLWhere, GraphQLWhereTopLevel } from "./where";
 
 export type GraphQLTree = GraphQLTreeReadOperationTopLevel;
 
@@ -31,7 +31,7 @@ interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
         connection?: GraphQLTreeConnectionTopLevel;
     };
     args: {
-        where?: GraphQLWhereArgsTopLevel;
+        where?: GraphQLWhereTopLevel;
     };
 }
 
@@ -41,7 +41,7 @@ export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
         connection?: GraphQLTreeConnection;
     };
     args: {
-        where?: GraphQLWhereArgs;
+        where?: GraphQLWhere;
     };
 }
 
@@ -50,7 +50,7 @@ export interface GraphQLTreeConnection extends GraphQLTreeElement {
         edges?: GraphQLTreeEdge;
     };
     args: {
-        sort?: GraphQLSortArgument[];
+        sort?: GraphQLSort[];
         first?: Integer;
         after?: string;
     };
@@ -61,7 +61,7 @@ export interface GraphQLTreeConnectionTopLevel extends GraphQLTreeElement {
         edges?: GraphQLTreeEdge;
     };
     args: {
-        sort?: GraphQLSortEdgeArgument[];
+        sort?: GraphQLSortEdge[];
         first?: Integer;
         after?: string;
     };

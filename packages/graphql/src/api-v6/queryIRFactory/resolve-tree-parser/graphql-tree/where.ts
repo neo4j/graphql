@@ -18,12 +18,12 @@
  */
 
 /** Args for `where` in nested connections (with edge -> node) */
-export type GraphQLWhereArgs = LogicalOperation<{
+export type GraphQLWhere = LogicalOperation<{
     edges?: GraphQLEdgeWhere;
 }>;
 
 /** Args for `where` in top level connections only (i.e. no edge available) */
-export type GraphQLWhereArgsTopLevel = LogicalOperation<{
+export type GraphQLWhereTopLevel = LogicalOperation<{
     node?: GraphQLNodeWhere;
 }>;
 

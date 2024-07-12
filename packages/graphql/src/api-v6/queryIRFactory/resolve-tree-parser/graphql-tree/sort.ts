@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-export interface GraphQLSortArgument {
-    edges: GraphQLSortEdgeArgument;
+export interface GraphQLSort {
+    edges: GraphQLSortEdge;
 }
 
-export interface GraphQLSortEdgeArgument {
+export interface GraphQLSortEdge {
     node?: GraphQLTreeSortElement;
     properties?: GraphQLTreeSortElement;
 }

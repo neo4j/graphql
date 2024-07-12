@@ -37,8 +37,8 @@ import type {
     GraphQLEdgeWhere,
     GraphQLNodeFilters,
     GraphQLNodeWhere,
-    GraphQLWhereArgs,
-    GraphQLWhereArgsTopLevel,
+    GraphQLWhere,
+    GraphQLWhereTopLevel,
     RelationshipFilters,
 } from "./resolve-tree-parser/graphql-tree/where";
 
@@ -56,7 +56,7 @@ export class FilterFactory {
     }: {
         entity: ConcreteEntity;
         relationship?: Relationship;
-        where?: GraphQLWhereArgs;
+        where?: GraphQLWhere;
     }): Filter[] {
         const andFilters = this.createLogicalFilters({ operation: "AND", entity, relationship, where: where.AND });
         const orFilters = this.createLogicalFilters({ operation: "OR", entity, relationship, where: where.OR });
@@ -77,7 +77,7 @@ export class FilterFactory {
         entity,
     }: {
         entity: ConcreteEntity;
-        where?: GraphQLWhereArgsTopLevel;
+        where?: GraphQLWhereTopLevel;
     }): Filter[] {
         const andFilters = this.createTopLevelLogicalFilters({ operation: "AND", entity, where: where.AND });
         const orFilters = this.createTopLevelLogicalFilters({ operation: "OR", entity, where: where.OR });
@@ -98,12 +98,12 @@ export class FilterFactory {
     }: {
         entity: ConcreteEntity;
         operation: LogicalOperators;
-        where?: GraphQLWhereArgsTopLevel[];
+        where?: GraphQLWhereTopLevel[];
     }): [] | [Filter] {
         if (where.length === 0) {
             return [];
         }
-        const nestedFilters = where.flatMap((orWhere: GraphQLWhereArgsTopLevel) => {
+        const nestedFilters = where.flatMap((orWhere: GraphQLWhereTopLevel) => {
             return this.createTopLevelFilters({ entity, where: orWhere });
         });
 

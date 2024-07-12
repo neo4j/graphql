@@ -39,7 +39,7 @@ import type {
     GraphQLTreeNode,
     GraphQLTreeReadOperation,
 } from "./graphql-tree/graphql-tree";
-import type { GraphQLSortArgument, GraphQLSortEdgeArgument, GraphQLTreeSortElement } from "./graphql-tree/sort";
+import type { GraphQLSort, GraphQLSortEdge, GraphQLTreeSortElement } from "./graphql-tree/sort";
 import { findFieldByName } from "./utils/find-field-by-name";
 
 export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
@@ -222,9 +222,9 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     }
 
     private parseConnectionArgs(resolveTreeArgs: { [str: string]: any }): GraphQLTreeConnection["args"] {
-        let sortArg: GraphQLSortArgument[] | undefined;
+        let sortArg: GraphQLSort[] | undefined;
         if (resolveTreeArgs.sort) {
-            sortArg = resolveTreeArgs.sort.map((sortArg): GraphQLSortArgument => {
+            sortArg = resolveTreeArgs.sort.map((sortArg): GraphQLSort => {
                 return { edges: this.parseSortEdges(sortArg.edges) };
             });
         }
@@ -238,8 +238,8 @@ export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship>
     protected parseSortEdges(sortEdges: {
         node: Record<string, string> | undefined;
         properties: Record<string, string> | undefined;
-    }): GraphQLSortEdgeArgument {
-        const sortFields: GraphQLSortEdgeArgument = {};
+    }): GraphQLSortEdge {
+        const sortFields: GraphQLSortEdge = {};
         const nodeFields = sortEdges.node;
 
         if (nodeFields) {

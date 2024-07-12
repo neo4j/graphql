@@ -50,11 +50,7 @@ import type {
     GraphQLTreeNode,
     GraphQLTreeReadOperation,
 } from "./resolve-tree-parser/graphql-tree/graphql-tree";
-import type {
-    GraphQLSortArgument,
-    GraphQLSortEdgeArgument,
-    GraphQLTreeSortElement,
-} from "./resolve-tree-parser/graphql-tree/sort";
+import type { GraphQLSort, GraphQLSortEdge, GraphQLTreeSortElement } from "./resolve-tree-parser/graphql-tree/sort";
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -271,7 +267,7 @@ export class ReadOperationFactory {
     }: {
         entity: ConcreteEntity;
         relationship?: Relationship;
-        sortArgument: GraphQLSortArgument[] | undefined;
+        sortArgument: GraphQLSort[] | undefined;
     }): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
         if (!sortArgument) {
             return [];
@@ -291,7 +287,7 @@ export class ReadOperationFactory {
     }: {
         entity: ConcreteEntity;
         relationship?: Relationship;
-        sortArgument: GraphQLSortEdgeArgument[] | undefined;
+        sortArgument: GraphQLSortEdge[] | undefined;
     }): Array<{ edge: PropertySort[]; node: PropertySort[] }> {
         if (!sortArgument) {
             return [];
@@ -312,7 +308,7 @@ export class ReadOperationFactory {
     }: {
         entity: ConcreteEntity;
         relationship?: Relationship;
-        edges: GraphQLSortEdgeArgument;
+        edges: GraphQLSortEdge;
     }): { edge: PropertySort[]; node: PropertySort[] } {
         const nodeSortFields = edges.node ? this.getPropertiesSort({ target: entity, sortArgument: edges.node }) : [];
         const edgeSortFields =

@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ResolveTreeParser } from "./ResolveTreeParser";
 import type { GraphQLTree, GraphQLTreeConnectionTopLevel, GraphQLTreeEdge } from "./graphql-tree/graphql-tree";
-import type { GraphQLSortEdgeArgument } from "./graphql-tree/sort";
+import type { GraphQLSortEdge } from "./graphql-tree/sort";
 import { findFieldByName } from "./utils/find-field-by-name";
 
 export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity> {
@@ -67,7 +67,7 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
     private parseConnectionArgsTopLevel(resolveTreeArgs: {
         [str: string]: any;
     }): GraphQLTreeConnectionTopLevel["args"] {
-        let sortArg: GraphQLSortEdgeArgument[] | undefined;
+        let sortArg: GraphQLSortEdge[] | undefined;
         if (resolveTreeArgs.sort) {
             sortArg = resolveTreeArgs.sort.map((sortArg) => {
                 return this.parseSortEdges(sortArg);
