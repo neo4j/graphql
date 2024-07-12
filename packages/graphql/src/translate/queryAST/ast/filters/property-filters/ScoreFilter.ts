@@ -23,7 +23,7 @@ import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
 
 /** A property which comparison has already been parsed into a Param */
-export class FulltextScoreFilter extends Filter {
+export class ScoreFilter extends Filter {
     private scoreVariable: Cypher.Variable;
     private min?: number;
     private max?: number;

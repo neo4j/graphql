@@ -167,6 +167,7 @@ export class ReadFactory {
             partialOf,
         });
     }
+
     private hydrateCompositeReadOperationWithPagination(
         entity: EntityAdapter,
         operation: CompositeReadOperation | ReadOperation,

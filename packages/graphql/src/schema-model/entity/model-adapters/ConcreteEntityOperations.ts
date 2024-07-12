@@ -39,6 +39,14 @@ type FulltextTypeNames = {
     sort: string;
 };
 
+type VectorTypeNames = {
+    result: string;
+    connection: string;
+    edge: string;
+    where: string;
+    sort: string;
+};
+
 export class ConcreteEntityOperations extends ImplementingEntityOperations<ConcreteEntityAdapter> {
     constructor(concreteEntityAdapter: ConcreteEntityAdapter) {
         super(concreteEntityAdapter);
@@ -94,6 +102,16 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
             result: `${this.pascalCaseSingular}FulltextResult`,
             where: `${this.pascalCaseSingular}FulltextWhere`,
             sort: `${this.pascalCaseSingular}FulltextSort`,
+        };
+    }
+
+    public get vectorTypeNames(): VectorTypeNames {
+        return {
+            result: `${this.pascalCaseSingular}VectorResult`,
+            connection: `${this.pascalCasePlural}VectorConnection`,
+            edge: `${this.pascalCaseSingular}VectorEdge`,
+            where: `${this.pascalCaseSingular}VectorWhere`,
+            sort: `${this.pascalCaseSingular}VectorSort`,
         };
     }
 }

@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
+import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type {
     InputTypeComposer,
     InputTypeComposerFieldConfigMapDefinition,
     ObjectTypeComposer,
     SchemaComposer,
 } from "graphql-compose";
-import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
-import { SCORE_FIELD } from "../../graphql/directives/fulltext";
-import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
+import { SCORE_FIELD } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
+import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export function withFullTextInputType({
     concreteEntityAdapter,

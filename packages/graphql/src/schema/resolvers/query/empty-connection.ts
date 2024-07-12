@@ -17,26 +17,13 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-import type { Variable } from "@neo4j/cypher-builder";
-import type { QueryASTNode } from "../QueryASTNode";
-import { Field } from "./Field";
-
-export class FulltextScoreField extends Field {
-    private score: Cypher.Variable;
-
-    constructor({ alias, score }: { alias: string; score: Cypher.Variable }) {
-        super(alias);
-        this.score = score;
-    }
-
-    public getProjectionField(_variable: Variable): Record<"score", Cypher.Variable> {
-        return {
-            score: this.score,
-        };
-    }
-
-    public getChildren(): QueryASTNode[] {
-        return [];
-    }
-}
+export const emptyConnection = {
+    totalCount: 0,
+    edges: [],
+    pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null,
+    },
+};

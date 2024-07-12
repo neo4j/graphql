@@ -43,7 +43,12 @@ export function connectionFieldResolver({
     args: ConnectionQueryArgs;
     info: GraphQLResolveInfo;
 }) {
-    const firstField = info.fieldNodes[0] as FieldNode;
+    const firstField = info.fieldNodes[0];
+
+    if (!firstField) {
+        throw new Error("Field not found");
+    }
+
     const { selectionSet } = firstField;
 
     let value = source[connectionFieldName];
@@ -90,7 +95,7 @@ export function createConnectionWithEdgeProperties({
 
     const selections = selectionSet?.selections || [];
 
-    const edgesField = selections.find((x) => x.kind === Kind.FIELD && x.name.value === "edges") as FieldNode;
+    const edgesField = selections.find((x): x is FieldNode => x.kind === Kind.FIELD && x.name.value === "edges");
     const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
     const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
 
@@ -109,7 +114,7 @@ export function createConnectionWithEdgeProperties({
 
     const pageInfoKey = getAliasKey({ selectionSet, key: "pageInfo" });
     const edgesKey = getAliasKey({ selectionSet, key: "edges" });
-    const pageInfoField = selections.find((x) => x.kind === Kind.FIELD && x.name.value === "pageInfo") as FieldNode;
+    const pageInfoField = selections.find((x): x is FieldNode => x.kind === Kind.FIELD && x.name.value === "pageInfo");
     const pageInfoSelectionSet = pageInfoField?.selectionSet;
     const startCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "startCursor" });
     const endCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "endCursor" });

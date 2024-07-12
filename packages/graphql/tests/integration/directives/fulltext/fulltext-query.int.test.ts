@@ -21,7 +21,7 @@ import { gql } from "graphql-tag";
 import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { Neo4jGraphQL } from "../../../../src/classes";
-import { SCORE_FIELD } from "../../../../src/graphql/directives/fulltext";
+import { SCORE_FIELD } from "../../../../src/constants";
 import { upperFirst } from "../../../../src/utils/upper-first";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";

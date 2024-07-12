@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { SCORE_FIELD } from "../constants";
 import type { AuthorizationOperation } from "../schema-model/annotation/AuthorizationAnnotation";
 import type { GraphQLWhereArg } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";

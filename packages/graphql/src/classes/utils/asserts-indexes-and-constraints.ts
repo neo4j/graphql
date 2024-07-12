@@ -21,6 +21,7 @@ import Debug from "debug";
 import type { Driver, Session } from "neo4j-driver";
 import { DEBUG_EXECUTE } from "../../constants";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
@@ -56,14 +57,23 @@ export async function assertIndexesAndConstraints({
     }
 }
 
-async function getExistingIndexes({
-    session,
-}: {
-    session: Session;
-}): Promise<Record<string, { labelsOrTypes: string; properties: string[] }>> {
-    const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
+type ExistingIndexes = Record<
+    string,
+    { labelsOrTypes: string; properties: string[]; options: Record<string, unknown> }
+>;
 
-    const indexesCypher = "SHOW INDEXES";
+async function getExistingIndexes({ session }: { session: Session }): Promise<ExistingIndexes> {
+    const existingIndexes: ExistingIndexes = {};
+
+    const indexesCypher = `
+        SHOW INDEXES YIELD
+        name AS name,
+        type AS type,
+        entityType AS entityType,
+        labelsOrTypes AS labelsOrTypes,
+        properties AS properties,
+        options AS options
+    `;
 
     debug(`About to execute Cypher: ${indexesCypher}`);
     const indexesResult = await session.run(indexesCypher);
@@ -71,7 +81,7 @@ async function getExistingIndexes({
     indexesResult.records.forEach((record) => {
         const index = record.toObject();
 
-        if (index.type !== "FULLTEXT" || index.entityType !== "NODE") {
+        if ((index.type !== "FULLTEXT" && index.type !== "VECTOR") || index.entityType !== "NODE") {
             return;
         }
 
@@ -82,10 +92,45 @@ async function getExistingIndexes({
         existingIndexes[index.name] = {
             labelsOrTypes: index.labelsOrTypes,
             properties: index.properties,
+            options: index.options,
         };
     });
 
     return existingIndexes;
+}
+
+function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingIndexes, indexErrors: string[]): void {
+    if (entity.annotations.vector) {
+        entity.annotations.vector.indexes.forEach((index) => {
+            const existingIndex = existingIndexes[index.indexName];
+
+            if (!existingIndex) {
+                indexErrors.push(`Missing @vector index '${index.indexName}' on Node '${entity.name}'`);
+
+                return;
+            }
+
+            const propertyIsInIndex = existingIndex.properties.some((p) => p === index.embeddingProperty);
+            if (!propertyIsInIndex) {
+                indexErrors.push(
+                    `@vector index '${index.indexName}' on Node '${entity.name}' is missing embedding property '${index.embeddingProperty}'`
+                );
+            }
+
+            if (!existingIndex.options) {
+                indexErrors.push(`@vector index '${index.indexName}' on Node '${entity.name}' is missing options`);
+
+                return;
+            }
+
+            const indexConfig = existingIndex.options["indexConfig"];
+            if (!indexConfig) {
+                indexErrors.push(`@vector index '${index.indexName}' on Node '${entity.name}' is missing indexConfig`);
+
+                return;
+            }
+        });
+    }
 }
 
 async function createIndexesAndConstraints({
@@ -94,7 +139,7 @@ async function createIndexesAndConstraints({
 }: {
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
-}) {
+}): Promise<void> {
     const constraintsToCreate = await getMissingConstraints({ schemaModel, session });
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
@@ -150,6 +195,9 @@ async function createIndexesAndConstraints({
                 }
             });
         }
+
+        // Even though this is the create path, we still check for vector indexes to ensure they are correct
+        checkVectorIndexes(entity, existingIndexes, indexErrors);
     }
 
     if (indexErrors.length) {
@@ -193,7 +241,7 @@ async function checkIndexesAndConstraints({
 }: {
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
-}) {
+}): Promise<void> {
     const missingConstraints = await getMissingConstraints({ schemaModel, session });
 
     if (missingConstraints.length) {
@@ -244,6 +292,8 @@ async function checkIndexesAndConstraints({
                 });
             });
         }
+
+        checkVectorIndexes(entity, existingIndexes, indexErrors);
     }
 
     if (indexErrors.length) {

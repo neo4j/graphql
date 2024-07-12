@@ -72,6 +72,7 @@ import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionE
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { filterTruthy } from "../utils/utils";
+import { augmentVectorSchema } from "./augment/vector";
 import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
@@ -536,6 +537,7 @@ function generateObjectType({
      * Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
      */
     augmentFulltextSchema(node, composer, concreteEntityAdapter);
+    augmentVectorSchema({ composer, concreteEntityAdapter, features });
     withUniqueWhereInputType({ concreteEntityAdapter, composer });
     withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
     withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });

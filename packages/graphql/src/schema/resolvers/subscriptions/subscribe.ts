@@ -31,8 +31,8 @@ import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionAuthorization } from "./where/authorization";
 import { subscriptionWhere } from "./where/where";
 
-export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
-    if (!payload) {
+export function subscriptionResolve(payload: SubscriptionsEvent[]): SubscriptionsEvent {
+    if (payload === undefined || payload[0] === undefined) {
         throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
     }
     return payload[0];
@@ -41,6 +41,24 @@ export function subscriptionResolve(payload: [SubscriptionsEvent]): Subscription
 type SubscriptionArgs = {
     where?: Record<string, any>;
 };
+
+function isNodeSubscriptionEvent(event: SubscriptionsEvent | undefined): event is NodeSubscriptionsEvent {
+    if (event === undefined) {
+        return false;
+    }
+
+    return "typename" in event;
+}
+
+function isRelationshipSubscriptionEvent(
+    event: SubscriptionsEvent | undefined
+): event is RelationshipSubscriptionsEvent {
+    if (event === undefined) {
+        return false;
+    }
+
+    return "toTypename" in event && "fromTypename" in event;
+}
 
 export function generateSubscribeMethod({
     entityAdapter,
@@ -54,16 +72,20 @@ export function generateSubscribeMethod({
         args: SubscriptionArgs,
         context: Neo4jGraphQLComposedSubscriptionsContext,
         resolveInfo: GraphQLResolveInfo
-    ): AsyncIterator<[SubscriptionsEvent]> => {
+    ): AsyncIterator<SubscriptionsEvent[]> => {
         checkAuthenticationOnSelectionSet(resolveInfo, entityAdapter, type, context);
 
         checkAuthentication({ authenticated: entityAdapter, operation: "SUBSCRIBE", context });
 
-        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.subscriptionsEngine.events, type);
+        const iterable: AsyncIterableIterator<SubscriptionsEvent[]> = on(context.subscriptionsEngine.events, type);
         if (["create", "update", "delete"].includes(type)) {
-            return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
+            return filterAsyncIterator<SubscriptionsEvent[]>(iterable, (data) => {
+                if (!isNodeSubscriptionEvent(data[0])) {
+                    return false;
+                }
+
                 return (
-                    (data[0] as NodeSubscriptionsEvent).typename === entityAdapter.name &&
+                    data[0].typename === entityAdapter.name &&
                     subscriptionAuthorization({ event: data[0], entity: entityAdapter, context }) &&
                     subscriptionWhere({ where: args.where, event: data[0], entityAdapter }) &&
                     updateDiffFilter(data[0])
@@ -72,8 +94,12 @@ export function generateSubscribeMethod({
         }
 
         if (["create_relationship", "delete_relationship"].includes(type)) {
-            return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-                const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
+            return filterAsyncIterator<SubscriptionsEvent[]>(iterable, (data) => {
+                if (!isRelationshipSubscriptionEvent(data[0])) {
+                    return false;
+                }
+
+                const relationEventPayload = data[0];
                 const isOfRelevantType =
                     relationEventPayload.toTypename === entityAdapter.name ||
                     relationEventPayload.fromTypename === entityAdapter.name;

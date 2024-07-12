@@ -22,6 +22,7 @@ import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapte
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { isUnionEntity } from "../../utils/is-union-entity";
 
@@ -32,24 +33,28 @@ export type TopLevelOperationFieldMatch =
     | "CREATE"
     | "UPDATE"
     | "DELETE"
-    | "CUSTOM_CYPHER";
+    | "CUSTOM_CYPHER"
+    | "VECTOR";
 
 export function parseTopLevelOperationField(
     field: string,
-    schemaModel: Neo4jGraphQLSchemaModel,
+    context: Neo4jGraphQLTranslationContext,
     entityAdapter?: EntityAdapter
 ): TopLevelOperationFieldMatch {
     if (!entityAdapter) {
         return "CUSTOM_CYPHER";
     }
+    if (context.vector) {
+        return "VECTOR";
+    }
     if (isInterfaceEntity(entityAdapter)) {
-        return parseInterfaceOperationField(field, schemaModel, entityAdapter);
+        return parseInterfaceOperationField(field, context.schemaModel, entityAdapter);
     }
     if (isUnionEntity(entityAdapter)) {
-        return parseUnionOperationField(field, schemaModel, entityAdapter);
+        return parseUnionOperationField(field, context.schemaModel, entityAdapter);
     }
 
-    return parseOperationField(field, schemaModel, entityAdapter);
+    return parseOperationField(field, context.schemaModel, entityAdapter);
 }
 
 function parseOperationField(
@@ -76,7 +81,7 @@ function parseOperationField(
         case rootTypeFieldNames.delete:
             return "DELETE";
         default:
-            throw new Error(`Interface does not support this operation: ${field}`);
+            throw new Error(`Type does not support this operation: ${field}`);
     }
 }
 

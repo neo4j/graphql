@@ -23,8 +23,8 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
-import { FulltextScoreField } from "../../ast/fields/FulltextScoreField";
-import { FulltextScoreFilter } from "../../ast/filters/property-filters/FulltextScoreFilter";
+import { ScoreField } from "../../ast/fields/ScoreField";
+import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { FulltextOptions } from "../../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../../ast/operations/FulltextOperation";
 import { FulltextSelection } from "../../ast/selection/FulltextSelection";
@@ -46,8 +46,8 @@ export class FulltextFactory {
         let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
         let fieldsByTypeName = resolveTree.fieldsByTypeName;
         const fulltextOptions = this.getFulltextOptions(context);
-        let scoreField: FulltextScoreField | undefined;
-        let scoreFilter: FulltextScoreFilter | undefined;
+        let scoreField: ScoreField | undefined;
+        let scoreFilter: ScoreFilter | undefined;
 
         // Compatibility of top level operations
         const fulltextOperationDeprecatedFields =
@@ -68,10 +68,13 @@ export class FulltextFactory {
             };
             fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
             if (scoreRawField) {
-                scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
+                scoreField = new ScoreField({
+                    alias: scoreRawField.alias,
+                    score: fulltextOptions.score,
+                });
             }
             if (scoreWhere) {
-                scoreFilter = new FulltextScoreFilter({
+                scoreFilter = new ScoreFilter({
                     scoreVariable: fulltextOptions.score,
                     min: scoreWhere.min,
                     max: scoreWhere.max,
@@ -169,12 +172,5 @@ export class FulltextFactory {
             phrase: indexInput.phrase,
             score: new Cypher.Variable(),
         };
-    }
-
-    private createFulltextScoreField(field: ResolveTree, scoreVar: Cypher.Variable): FulltextScoreField {
-        return new FulltextScoreField({
-            alias: field.alias,
-            score: scoreVar,
-        });
     }
 }
