@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { GlobalNodeResolveTreeParser } from "./GlobalNodeResolveTreeParser";
 import { TopLevelResolveTreeParser } from "./TopLevelResolveTreeParser";
-import type { GraphQLTree } from "./graphql-tree";
+import type { GraphQLTree } from "./graphql-tree/graphql-tree";
 
 export function parseResolveInfoTree({
     resolveTree,

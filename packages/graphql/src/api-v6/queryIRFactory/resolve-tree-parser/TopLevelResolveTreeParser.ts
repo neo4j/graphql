@@ -20,14 +20,8 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ResolveTreeParser } from "./ResolveTreeParser";
-import type {
-    GraphQLConnectionArgsTopLevel,
-    GraphQLReadOperationArgsTopLevel,
-    GraphQLSortEdgeArgument,
-    GraphQLTree,
-    GraphQLTreeConnectionTopLevel,
-    GraphQLTreeEdge,
-} from "./graphql-tree";
+import type { GraphQLTree, GraphQLTreeConnectionTopLevel, GraphQLTreeEdge } from "./graphql-tree/graphql-tree";
+import type { GraphQLSortEdgeArgument } from "./graphql-tree/sort";
 import { findFieldByName } from "./utils/find-field-by-name";
 
 export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity> {
@@ -70,7 +64,9 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
         };
     }
 
-    private parseConnectionArgsTopLevel(resolveTreeArgs: { [str: string]: any }): GraphQLConnectionArgsTopLevel {
+    private parseConnectionArgsTopLevel(resolveTreeArgs: {
+        [str: string]: any;
+    }): GraphQLTreeConnectionTopLevel["args"] {
         let sortArg: GraphQLSortEdgeArgument[] | undefined;
         if (resolveTreeArgs.sort) {
             sortArg = resolveTreeArgs.sort.map((sortArg) => {
@@ -85,7 +81,7 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
         };
     }
 
-    protected parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLReadOperationArgsTopLevel {
+    protected parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLTree["args"] {
         // Not properly parsed, assuming the type is the same
         return {
             where: resolveTreeArgs.where,

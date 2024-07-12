@@ -40,18 +40,21 @@ import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
 import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { FilterFactory } from "./FilterFactory";
+
+import type { GraphQLTreePoint } from "./resolve-tree-parser/graphql-tree/attributes";
 import type {
-    GraphQLConnectionArgs,
-    GraphQLConnectionArgsTopLevel,
-    GraphQLSortArgument,
-    GraphQLSortEdgeArgument,
     GraphQLTree,
+    GraphQLTreeConnection,
+    GraphQLTreeConnectionTopLevel,
     GraphQLTreeEdgeProperties,
-    GraphQLTreeLeafField,
     GraphQLTreeNode,
     GraphQLTreeReadOperation,
+} from "./resolve-tree-parser/graphql-tree/graphql-tree";
+import type {
+    GraphQLSortArgument,
+    GraphQLSortEdgeArgument,
     GraphQLTreeSortElement,
-} from "./resolve-tree-parser/graphql-tree";
+} from "./resolve-tree-parser/graphql-tree/sort";
 
 export class ReadOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -163,7 +166,7 @@ export class ReadOperationFactory {
     }
 
     private getPagination(
-        connectionTreeArgs: GraphQLConnectionArgs | GraphQLConnectionArgsTopLevel,
+        connectionTreeArgs: GraphQLTreeConnection["args"] | GraphQLTreeConnectionTopLevel["args"],
         entity: ConcreteEntity
     ): Pagination | undefined {
         const firstArgument = connectionTreeArgs.first;
@@ -214,7 +217,7 @@ export class ReadOperationFactory {
                 }
 
                 if (attribute) {
-                    const field = rawField as GraphQLTreeLeafField;
+                    const field = rawField;
                     const attributeAdapter = new AttributeAdapter(attribute);
                     if (attributeAdapter.typeHelper.isDateTime()) {
                         return new DateTimeField({
@@ -226,7 +229,7 @@ export class ReadOperationFactory {
                         return new SpatialAttributeField({
                             alias: rawField.alias,
                             attribute: attributeAdapter,
-                            crs: Boolean(field?.fields?.crs),
+                            crs: Boolean((field as GraphQLTreePoint)?.fields?.crs),
                         });
                     }
                     return new AttributeField({
