@@ -1,5 +1,14 @@
 # @neo4j/graphql-ogm
 
+## 5.5.1
+
+### Patch Changes
+
+-   [#5346](https://github.com/neo4j/graphql/pull/5346) [`fd78490`](https://github.com/neo4j/graphql/commit/fd784906040fda19c27f5c67e6f1ff2b59a0837c) Thanks [@nicecatch](https://github.com/nicecatch)! - Fixed the `fulltext` argument in OGM aggregate queries
+
+-   Updated dependencies []:
+    -   @neo4j/graphql@5.5.1
+
 ## 5.5.0
 
 ### Patch Changes
