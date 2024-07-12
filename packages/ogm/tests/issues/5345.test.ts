@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/5345", () => {
         await driver.close();
     });
 
-    test("Should aggregate using fulltext index ", async () => {
+    test("Should aggregate using fulltext index", async () => {
         const ogm = new OGM({
             typeDefs,
             driver,
