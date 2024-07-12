@@ -24,7 +24,6 @@ import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import { ListType } from "../../../schema-model/attribute/AttributeType";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
-import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLConnectionArgs,
     GraphQLReadOperationArgs,
@@ -41,6 +40,7 @@ import type {
     GraphQLTreeScalarField,
     GraphQLTreeSortElement,
 } from "./graphql-tree";
+import { findFieldByName } from "./utils/find-field-by-name";
 
 export abstract class ResolveTreeParser<T extends ConcreteEntity | Relationship> {
     protected entity: T;

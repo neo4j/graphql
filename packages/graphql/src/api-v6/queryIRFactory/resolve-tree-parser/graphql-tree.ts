@@ -32,6 +32,22 @@ type LogicalOperation<T> = {
     NOT?: LogicalOperation<T>;
 } & T;
 
+interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
+    name: string;
+    fields: {
+        connection?: GraphQLTreeConnectionTopLevel;
+    };
+    args: GraphQLReadOperationArgsTopLevel;
+}
+
+export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
+    name: string;
+    fields: {
+        connection?: GraphQLTreeConnection;
+    };
+    args: GraphQLReadOperationArgs;
+}
+
 export type StringFilters = LogicalOperation<{
     equals?: string;
     in?: string[];
@@ -58,22 +74,6 @@ export type RelationshipFilters = {
         none?: GraphQLEdgeWhereArgs;
     };
 };
-
-export interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
-    name: string;
-    fields: {
-        connection?: GraphQLTreeConnectionTopLevel;
-    };
-    args: GraphQLReadOperationArgsTopLevel;
-}
-
-export interface GraphQLTreeReadOperation extends GraphQLTreeElement {
-    name: string;
-    fields: {
-        connection?: GraphQLTreeConnection;
-    };
-    args: GraphQLReadOperationArgs;
-}
 
 export interface GraphQLReadOperationArgsTopLevel {
     where?: GraphQLWhereArgsTopLevel;
@@ -141,9 +141,9 @@ export interface GraphQLTreeEdgeProperties extends GraphQLTreeElement {
     fields: Record<string, GraphQLTreeLeafField>;
 }
 
-export type GraphQLTreeLeafField = GraphQLTreeScalarField | GraphQLTreePoint | GraphQLTreeCartesianPoint;
+type GraphQLTreeLeafField = GraphQLTreeScalarField | GraphQLTreePoint | GraphQLTreeCartesianPoint;
+
 export interface GraphQLTreeScalarField extends GraphQLTreeElement {
-    fields: undefined;
     name: string;
 }
 export interface GraphQLTreePoint extends GraphQLTreeElement {

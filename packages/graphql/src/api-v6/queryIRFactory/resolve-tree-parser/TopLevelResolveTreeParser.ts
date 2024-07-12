@@ -20,15 +20,15 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ResolveTreeParser } from "./ResolveTreeParser";
-import { findFieldByName } from "./find-field-by-name";
 import type {
     GraphQLConnectionArgsTopLevel,
     GraphQLReadOperationArgsTopLevel,
     GraphQLSortEdgeArgument,
+    GraphQLTree,
     GraphQLTreeConnectionTopLevel,
     GraphQLTreeEdge,
-    GraphQLTreeReadOperationTopLevel,
 } from "./graphql-tree";
+import { findFieldByName } from "./utils/find-field-by-name";
 
 export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity> {
     protected get targetNode(): ConcreteEntity {
@@ -36,7 +36,7 @@ export class TopLevelResolveTreeParser extends ResolveTreeParser<ConcreteEntity>
     }
 
     /** Parse a resolveTree into a Neo4j GraphQLTree */
-    public parseOperationTopLevel(resolveTree: ResolveTree): GraphQLTreeReadOperationTopLevel {
+    public parseOperationTopLevel(resolveTree: ResolveTree): GraphQLTree {
         const connectionResolveTree = findFieldByName(
             resolveTree,
             this.entity.typeNames.connectionOperation,
