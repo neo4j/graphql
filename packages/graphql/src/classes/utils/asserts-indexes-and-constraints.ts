@@ -301,7 +301,11 @@ async function getMissingConstraints({
                 if (!constraintsForLabel) {
                     return false;
                 }
-                return constraintsForLabel.get(uniqueField.databaseName) === constraintName;
+                // TODO: remove default value once the constraintName argument is required
+                return (
+                    constraintsForLabel.get(uniqueField.databaseName) ===
+                    (constraintName ?? `${entity.name}_${uniqueField.databaseName}`)
+                );
             });
 
             if (!hasUniqueConstraint) {
