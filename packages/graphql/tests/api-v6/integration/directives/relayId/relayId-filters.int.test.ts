@@ -33,19 +33,19 @@ describe("RelayId projection with filters", () => {
     beforeAll(async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @unique(constraintName: "FIELD_UNIQUE") @relayId
                 title: String!
                 genre: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type ${Genre} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @unique(constraintName: "FIELD_UNIQUE") @relayId
                 name: String!
             }
 
             type ${Actor} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @unique(constraintName: "FIELD_UNIQUE") @relayId
                 name: String!
             }
         `;

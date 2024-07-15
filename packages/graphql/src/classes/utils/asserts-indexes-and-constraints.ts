@@ -262,53 +262,49 @@ async function getMissingConstraints({
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
 }): Promise<MissingConstraint[]> {
-    const existingConstraints: Record<string, string[]> = {};
-
-    const constraintsCypher = "SHOW UNIQUE CONSTRAINTS";
-    debug(`About to execute Cypher: ${constraintsCypher}`);
-    const constraintsResult = await session.run<{ labelsOrTypes: [string]; properties: [string] }>(constraintsCypher);
-
-    constraintsResult.records
+    const CYPHER_SHOW_UNIQUE_CONSTRAINTS = "SHOW UNIQUE CONSTRAINTS";
+    debug(`About to execute Cypher: ${CYPHER_SHOW_UNIQUE_CONSTRAINTS}`);
+    const constraintsQueryResult = await session.run<{ labelsOrTypes: [string]; properties: [string]; name: string }>(
+        CYPHER_SHOW_UNIQUE_CONSTRAINTS
+    );
+    // Map that holds as key the label name and as value an object with properties -> constraint name
+    const existingConstraints: Map<string, Map<string, string>> = constraintsQueryResult.records
         .map((record) => {
             return record.toObject();
         })
-        .forEach((constraint) => {
-            const label = constraint.labelsOrTypes[0];
-            const property = constraint.properties[0];
-
-            const existingConstraint = existingConstraints[label];
-
-            if (existingConstraint) {
-                existingConstraint.push(property);
-            } else {
-                existingConstraints[label] = [property];
+        .reduce((acc, current) => {
+            const label = current.labelsOrTypes[0];
+            const property = current.properties[0];
+            if (acc.has(label)) {
+                acc.get(label)?.set(property, current.name);
+                return acc;
             }
-        });
+            acc.set(label, new Map([[property, current.name]]));
+            return acc;
+        }, new Map<string, Map<string, string>>());
 
     const missingConstraints: MissingConstraint[] = [];
 
     for (const entity of schemaModel.concreteEntities) {
         const entityAdapter = new ConcreteEntityAdapter(entity);
+        if (!entityAdapter.uniqueFields.length) {
+            continue;
+        }
         for (const uniqueField of entityAdapter.uniqueFields) {
             if (!uniqueField.annotations.unique) {
                 continue;
             }
+            const constraintName = uniqueField.annotations.unique.constraintName;
 
-            let anyLabelHasConstraint = false;
-            for (const label of entity.labels) {
-                // If any of the constraints for the label already exist, skip to the next unique field
-                if (existingConstraints[label]?.includes(uniqueField.databaseName)) {
-                    anyLabelHasConstraint = true;
-                    break;
+            const hasUniqueConstraint = [...entity.labels].some((label) => {
+                const constraintsForLabel = existingConstraints.get(label);
+                if (!constraintsForLabel) {
+                    return false;
                 }
-            }
+                return constraintsForLabel.get(uniqueField.databaseName) === constraintName;
+            });
 
-            if (anyLabelHasConstraint === false) {
-                // TODO: The fallback value of `${entity.name}_${uniqueField.databaseName}` should be changed to use the main label of the entity
-                // But this can only be done once the translation layer has been updated to use the schema model instead of the Node class
-                const constraintName =
-                    uniqueField.annotations.unique.constraintName || `${entity.name}_${uniqueField.databaseName}`;
-
+            if (!hasUniqueConstraint) {
                 missingConstraints.push({
                     constraintName,
                     label: entityAdapter.getMainLabel(),

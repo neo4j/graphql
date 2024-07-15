@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLNonNull, GraphQLString } from "graphql";
 
 export const uniqueDirective = new GraphQLDirective({
     name: "unique",
@@ -27,8 +27,8 @@ export const uniqueDirective = new GraphQLDirective({
     args: {
         constraintName: {
             description:
-                "The name which should be used for this constraint. By default; type name, followed by an underscore, followed by the field name.",
-            type: GraphQLString,
+                "The name which should be used for this constraint",
+            type: new GraphQLNonNull(GraphQLString),
         },
     },
 });
