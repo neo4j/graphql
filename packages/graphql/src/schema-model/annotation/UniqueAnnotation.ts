@@ -21,9 +21,9 @@ import type { Annotation } from "./Annotation";
 
 export class UniqueAnnotation implements Annotation {
     readonly name = "unique";
-    public readonly constraintName: string;
+    public readonly constraintName?: string;
 
-    constructor({ constraintName }: { constraintName: string }) {
+    constructor({ constraintName }: { constraintName?: string }) {
         this.constraintName = constraintName;
     }
 }

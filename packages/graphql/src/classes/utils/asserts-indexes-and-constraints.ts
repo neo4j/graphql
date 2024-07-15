@@ -306,7 +306,7 @@ async function getMissingConstraints({
 
             if (!hasUniqueConstraint) {
                 missingConstraints.push({
-                    constraintName,
+                    constraintName: constraintName ?? `${entity.name}_${uniqueField.databaseName}`, // TODO: remove default value once the constraintName argument is required
                     label: entityAdapter.getMainLabel(),
                     property: uniqueField.databaseName,
                 });

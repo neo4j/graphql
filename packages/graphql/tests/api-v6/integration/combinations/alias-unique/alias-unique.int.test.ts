@@ -164,5 +164,3 @@ describe("assertIndexesAndConstraints/alias-unique", () => {
         ).resolves.not.toThrow();
     });
 });
-
-// @alias(property: "internationalStandardBookNumber")
