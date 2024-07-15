@@ -24,7 +24,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-t
 import { execute } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 import { fromGlobalId } from "../../utils/global-ids";
-import { parseGlobalNodeResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
+import { parseGlobalNodeResolveInfoTree } from "../queryIRFactory/resolve-tree-parser/parse-global-resolve-info-tree";
 import { translateReadOperation } from "../translators/translate-read-operation";
 
 /** Maps the database id field to globalId */
