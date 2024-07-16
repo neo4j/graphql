@@ -18,11 +18,11 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { isMultiDbUnsupportedError } from "../../../../utils/is-multi-db-unsupported-error";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("assertIndexesAndConstraints/alias-unique", () => {
+describe("assertIndexesAndConstraints with @alias and @unique", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let databaseName: string;
     let IS_MULTI_DB_SUPPORTED = true;

@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import type { Driver, Session } from "neo4j-driver";
+import { type Driver, type Session } from "neo4j-driver";
 import { DEBUG_EXECUTE } from "../../constants";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -262,13 +262,55 @@ async function getMissingConstraints({
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
 }): Promise<MissingConstraint[]> {
+    const existingUniqueConstraints = await getExistingUniqueConstraints(session);
+    const missingConstraints: MissingConstraint[] = [];
+
+    for (const entity of schemaModel.concreteEntities) {
+        const entityAdapter = new ConcreteEntityAdapter(entity);
+        if (!entityAdapter.uniqueFields.length) {
+            continue;
+        }
+        for (const uniqueField of entityAdapter.uniqueFields) {
+            if (!uniqueField.annotations.unique) {
+                continue;
+            }
+            // TODO: remove default value once the constraintName argument is required
+            const constraintName =
+                uniqueField.annotations.unique.constraintName ?? `${entity.name}_${uniqueField.databaseName}`;
+
+            const hasUniqueConstraint = [...entity.labels].some((label) => {
+                const constraintsForLabel = existingUniqueConstraints.get(label);
+                if (!constraintsForLabel) {
+                    return false;
+                }
+
+                return constraintsForLabel.get(uniqueField.databaseName) === constraintName;
+            });
+
+            if (!hasUniqueConstraint) {
+                missingConstraints.push({
+                    constraintName: constraintName,
+                    label: entityAdapter.getMainLabel(),
+                    property: uniqueField.databaseName,
+                });
+            }
+        }
+    }
+
+    return missingConstraints;
+}
+
+// Map that holds as key the label name and as value a Map with properties -> constraint name
+type UniqueConstraints = Map<string, Map<string, string>>;
+
+async function getExistingUniqueConstraints(session: Session): Promise<UniqueConstraints> {
     const CYPHER_SHOW_UNIQUE_CONSTRAINTS = "SHOW UNIQUE CONSTRAINTS";
     debug(`About to execute Cypher: ${CYPHER_SHOW_UNIQUE_CONSTRAINTS}`);
     const constraintsQueryResult = await session.run<{ labelsOrTypes: [string]; properties: [string]; name: string }>(
         CYPHER_SHOW_UNIQUE_CONSTRAINTS
     );
-    // Map that holds as key the label name and as value an object with properties -> constraint name
-    const existingConstraints: Map<string, Map<string, string>> = constraintsQueryResult.records
+
+    const existingConstraints: UniqueConstraints = constraintsQueryResult.records
         .map((record) => {
             return record.toObject();
         })
@@ -282,41 +324,5 @@ async function getMissingConstraints({
             acc.set(label, new Map([[property, current.name]]));
             return acc;
         }, new Map<string, Map<string, string>>());
-
-    const missingConstraints: MissingConstraint[] = [];
-
-    for (const entity of schemaModel.concreteEntities) {
-        const entityAdapter = new ConcreteEntityAdapter(entity);
-        if (!entityAdapter.uniqueFields.length) {
-            continue;
-        }
-        for (const uniqueField of entityAdapter.uniqueFields) {
-            if (!uniqueField.annotations.unique) {
-                continue;
-            }
-            const constraintName = uniqueField.annotations.unique.constraintName;
-
-            const hasUniqueConstraint = [...entity.labels].some((label) => {
-                const constraintsForLabel = existingConstraints.get(label);
-                if (!constraintsForLabel) {
-                    return false;
-                }
-                // TODO: remove default value once the constraintName argument is required
-                return (
-                    constraintsForLabel.get(uniqueField.databaseName) ===
-                    (constraintName ?? `${entity.name}_${uniqueField.databaseName}`)
-                );
-            });
-
-            if (!hasUniqueConstraint) {
-                missingConstraints.push({
-                    constraintName: constraintName ?? `${entity.name}_${uniqueField.databaseName}`, // TODO: remove default value once the constraintName argument is required
-                    label: entityAdapter.getMainLabel(),
-                    property: uniqueField.databaseName,
-                });
-            }
-        }
-    }
-
-    return missingConstraints;
+    return existingConstraints;
 }
