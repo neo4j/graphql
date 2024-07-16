@@ -31,6 +31,7 @@ import { DurationFilter } from "../../translate/queryAST/ast/filters/property-fi
 import { PropertyFilter } from "../../translate/queryAST/ast/filters/property-filters/PropertyFilter";
 import { SpatialFilter } from "../../translate/queryAST/ast/filters/property-filters/SpatialFilter";
 import { fromGlobalId } from "../../utils/global-ids";
+import { asArray, filterTruthy } from "../../utils/utils";
 import { getFilterOperator, getRelationshipOperator } from "./FilterOperators";
 import type {
     GraphQLAttributeFilters,
@@ -56,176 +57,85 @@ export class FilterFactory {
     }: {
         entity: ConcreteEntity;
         relationship?: Relationship;
-        where?: GraphQLWhere;
-    }): Filter[] {
-        const andFilters = this.createLogicalFilters({ operation: "AND", entity, relationship, where: where.AND });
-        const orFilters = this.createLogicalFilters({ operation: "OR", entity, relationship, where: where.OR });
-        const notFilters = this.createLogicalFilters({
-            operation: "NOT",
-            entity,
-            relationship,
-            where: where.NOT ? [where.NOT] : undefined,
+        where?: GraphQLWhere | GraphQLWhereTopLevel | GraphQLEdgeWhere;
+    }): Filter | undefined {
+        const filters = filterTruthy(
+            Object.entries(where).map(([key, value]) => {
+                if (key === "AND" || key === "OR" || key === "NOT") {
+                    const whereInLogicalOperation = asArray(value) as Array<
+                        GraphQLWhere | GraphQLWhereTopLevel | GraphQLEdgeWhere
+                    >;
+                    const nestedFilters = whereInLogicalOperation.map((nestedWhere) => {
+                        return this.createFilters({
+                            where: nestedWhere,
+                            relationship,
+                            entity,
+                        });
+                    });
+
+                    return new LogicalFilter({
+                        operation: key,
+                        filters: filterTruthy(nestedFilters),
+                    });
+                }
+
+                if (key === "edges") {
+                    return this.createFilters({ entity, relationship, where: value });
+                }
+
+                if (key === "node") {
+                    return this.createNodeFilter({ entity, where: value });
+                }
+
+                if (key === "properties" && relationship) {
+                    const edgePropertiesFilters = this.createEdgePropertiesFilters({
+                        where: value,
+                        relationship,
+                    });
+
+                    return new LogicalFilter({
+                        operation: "AND",
+                        filters: filterTruthy(edgePropertiesFilters),
+                    });
+                }
+            })
+        );
+
+        if (filters.length <= 1) {
+            return filters[0];
+        }
+
+        // Implicit AND
+        return new LogicalFilter({
+            operation: "AND",
+            filters: filters,
         });
-
-        const edgeFilters = this.createEdgeFilters({ entity, relationship, edgeWhere: where.edges });
-
-        return [...this.mergeFiltersWithAnd(edgeFilters), ...andFilters, ...orFilters, ...notFilters];
     }
 
-    public createTopLevelFilters({
+    private createNodeFilter({
         where = {},
         entity,
     }: {
         entity: ConcreteEntity;
-        where?: GraphQLWhereTopLevel;
-    }): Filter[] {
-        const andFilters = this.createTopLevelLogicalFilters({ operation: "AND", entity, where: where.AND });
-        const orFilters = this.createTopLevelLogicalFilters({ operation: "OR", entity, where: where.OR });
-        const notFilters = this.createTopLevelLogicalFilters({
-            operation: "NOT",
-            entity,
-            where: where.NOT ? [where.NOT] : undefined,
-        });
+        where?: GraphQLNodeWhere;
+    }): Filter | undefined {
+        const nodePropertiesFilters = Object.entries(where).flatMap(([fieldName, nestedWhere]) => {
+            if (fieldName === "AND" || fieldName === "OR" || fieldName === "NOT") {
+                const whereInLogicalOperator = asArray(nestedWhere) as Array<GraphQLNodeWhere>;
+                const nestedFilters = whereInLogicalOperator.map((nestedWhere) => {
+                    return this.createNodeFilter({
+                        where: nestedWhere,
+                        entity,
+                    });
+                });
 
-        const edgeFilters = this.createNodeFilter({ entity, where: where.node });
-        return this.mergeFiltersWithAnd([
-            ...this.mergeFiltersWithAnd(edgeFilters),
-            ...andFilters,
-            ...orFilters,
-            ...notFilters,
-        ]);
-    }
-
-    private createTopLevelLogicalFilters({
-        where = [],
-        operation,
-        entity,
-    }: {
-        entity: ConcreteEntity;
-        operation: LogicalOperators;
-        where?: GraphQLWhereTopLevel[];
-    }): [] | [Filter] {
-        if (where.length === 0) {
-            return [];
-        }
-        const nestedFilters = where.flatMap((orWhere: GraphQLWhereTopLevel) => {
-            return this.createTopLevelFilters({ entity, where: orWhere });
-        });
-
-        if (nestedFilters.length > 0) {
-            return [
-                new LogicalFilter({
-                    operation,
-                    filters: nestedFilters,
-                }),
-            ];
-        }
-
-        return [];
-    }
-
-    private createLogicalFilters({
-        where = [],
-        relationship,
-        operation,
-        entity,
-    }: {
-        entity: ConcreteEntity;
-        relationship?: Relationship;
-        operation: LogicalOperators;
-        where?: GraphQLEdgeWhere[];
-    }): [] | [Filter] {
-        if (where.length === 0) {
-            return [];
-        }
-        const nestedFilters = where.flatMap((orWhere: GraphQLEdgeWhere) => {
-            return this.createFilters({ entity, relationship, where: orWhere });
-        });
-
-        if (nestedFilters.length > 0) {
-            return [
-                new LogicalFilter({
-                    operation,
-                    filters: nestedFilters,
-                }),
-            ];
-        }
-
-        return [];
-    }
-
-    private createEdgeFilters({
-        edgeWhere = {},
-        relationship,
-        entity,
-    }: {
-        entity: ConcreteEntity;
-        relationship?: Relationship;
-        edgeWhere?: GraphQLEdgeWhere;
-    }): Filter[] {
-        const andFilters = this.createLogicalEdgeFilters(entity, relationship, "AND", edgeWhere.AND);
-        const orFilters = this.createLogicalEdgeFilters(entity, relationship, "OR", edgeWhere.OR);
-        const notFilters = this.createLogicalEdgeFilters(
-            entity,
-            relationship,
-            "NOT",
-            edgeWhere.NOT ? [edgeWhere.NOT] : undefined
-        );
-
-        const nodeFilters = this.createNodeFilter({ where: edgeWhere.node, entity });
-
-        let edgePropertiesFilters: Filter[] = [];
-        if (relationship) {
-            edgePropertiesFilters = this.createEdgePropertiesFilters({
-                where: edgeWhere.properties,
-                relationship,
-            });
-        }
-        return this.mergeFiltersWithAnd([
-            ...this.mergeFiltersWithAnd(nodeFilters),
-            ...edgePropertiesFilters,
-            ...andFilters,
-            ...orFilters,
-            ...notFilters,
-        ]);
-    }
-
-    private createLogicalEdgeFilters(
-        entity: ConcreteEntity,
-        relationship: Relationship | undefined,
-        operation: LogicalOperators,
-        where: GraphQLEdgeWhere[] = []
-    ): [] | [Filter] {
-        if (where.length === 0) {
-            return [];
-        }
-        const nestedFilters = where.flatMap((logicalWhere: GraphQLEdgeWhere) => {
-            return this.createEdgeFilters({ entity, relationship, edgeWhere: logicalWhere });
-        });
-
-        if (nestedFilters.length > 0) {
-            return [
-                new LogicalFilter({
-                    operation,
-                    filters: nestedFilters,
-                }),
-            ];
-        }
-
-        return [];
-    }
-
-    private createNodeFilter({ where = {}, entity }: { entity: ConcreteEntity; where?: GraphQLNodeWhere }): Filter[] {
-        const andFilters = this.createLogicalNodeFilters(entity, "AND", where.AND);
-        const orFilters = this.createLogicalNodeFilters(entity, "OR", where.OR);
-        const notFilters = this.createLogicalNodeFilters(entity, "NOT", where.NOT ? [where.NOT] : undefined);
-
-        const nodePropertiesFilters = Object.entries(where).flatMap(([fieldName, filtersWithLogical]) => {
-            if (["AND", "OR", "NOT"].includes(fieldName)) {
-                return [];
+                return new LogicalFilter({
+                    operation: fieldName,
+                    filters: filterTruthy(nestedFilters),
+                });
             }
 
-            let filters = filtersWithLogical as GraphQLNodeFilters;
+            let filters = nestedWhere as GraphQLNodeFilters;
 
             let attribute: Attribute | undefined;
             if (fieldName === "id" && entity.globalIdField) {
@@ -249,31 +159,10 @@ export class FilterFactory {
             return [];
         });
 
-        return [...andFilters, ...orFilters, ...notFilters, ...this.mergeFiltersWithAnd(nodePropertiesFilters)];
-    }
-
-    private createLogicalNodeFilters(
-        entity: ConcreteEntity,
-        operation: LogicalOperators,
-        where: GraphQLNodeWhere[] = []
-    ): [] | [Filter] {
-        if (where.length === 0) {
-            return [];
-        }
-        const nestedFilters = where.flatMap((logicalWhere) => {
-            return this.createNodeFilter({ entity, where: logicalWhere });
+        return new LogicalFilter({
+            operation: "AND",
+            filters: filterTruthy(nodePropertiesFilters),
         });
-
-        if (nestedFilters.length > 0) {
-            return [
-                new LogicalFilter({
-                    operation,
-                    filters: nestedFilters,
-                }),
-            ];
-        }
-
-        return [];
     }
 
     /** Transforms globalId filters into normal property filters */
@@ -297,8 +186,8 @@ export class FilterFactory {
         const edgeFilters = filters.edges ?? {};
 
         return Object.entries(edgeFilters).map(([rawOperator, filter]) => {
-            const relatedNodeFilters = this.createEdgeFilters({
-                edgeWhere: filter,
+            const relatedNodeFilters = this.createFilters({
+                where: filter,
                 relationship: relationship,
                 entity: relationship.target as ConcreteEntity,
             });
@@ -308,23 +197,21 @@ export class FilterFactory {
                 target,
                 operator,
             });
-            relationshipFilter.addFilters(relatedNodeFilters);
+            if (relatedNodeFilters) {
+                relationshipFilter.addFilters([relatedNodeFilters]);
+            }
             return relationshipFilter;
         });
     }
 
     private createEdgePropertiesFilters({
-        where,
+        where = {},
         relationship,
     }: {
         where: GraphQLEdgeWhere["properties"];
         relationship: Relationship;
     }): Filter[] {
-        if (!where) {
-            return [];
-        }
         return Object.entries(where).flatMap(([fieldName, filters]) => {
-            // TODO: Logical filters here
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) return [];
             const attributeAdapter = new AttributeAdapter(attribute);
@@ -377,17 +264,5 @@ export class FilterFactory {
                 attachedTo,
             });
         });
-    }
-
-    private mergeFiltersWithAnd(filters: Filter[]): Filter[] {
-        if (filters.length > 1) {
-            return [
-                new LogicalFilter({
-                    operation: "AND",
-                    filters: filters,
-                }),
-            ];
-        }
-        return filters;
     }
 }

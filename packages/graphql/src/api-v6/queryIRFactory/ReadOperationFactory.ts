@@ -95,6 +95,8 @@ export class ReadOperationFactory {
             entity,
             sortArgument,
         });
+
+        const filters = filterTruthy([this.filterFactory.createFilters({ entity, where: graphQLTree.args.where })]);
         return new V6ReadOperation({
             target,
             selection,
@@ -104,7 +106,7 @@ export class ReadOperationFactory {
             },
             pagination,
             sortFields: sortInputFields,
-            filters: this.filterFactory.createTopLevelFilters({ entity, where: graphQLTree.args.where }),
+            filters,
         });
     }
 
@@ -144,6 +146,14 @@ export class ReadOperationFactory {
         const nodeFields = this.getNodeFields(relTarget, nodeResolveTree);
         const sortInputFields = this.getSortInputFields({ entity: relTarget, relationship, sortArgument });
 
+        const filters = filterTruthy([
+            this.filterFactory.createFilters({
+                entity: relationshipAdapter.target.entity,
+                relationship,
+                where: parsedTree.args.where,
+            }),
+        ]);
+
         return new V6ReadOperation({
             target: relationshipAdapter.target,
             selection,
@@ -152,11 +162,7 @@ export class ReadOperationFactory {
                 node: nodeFields,
             },
             sortFields: sortInputFields,
-            filters: this.filterFactory.createFilters({
-                entity: relationshipAdapter.target.entity,
-                relationship,
-                where: parsedTree.args.where,
-            }),
+            filters: filters,
             pagination,
         });
     }
