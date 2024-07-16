@@ -26,9 +26,8 @@ export const uniqueDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         constraintName: {
-            description:
-                "The name which should be used for this constraint. By default; type name, followed by an underscore, followed by the field name.",
-            type: GraphQLString,
+            description: "The name which should be used for this constraint",
+            type: GraphQLString, // TODO: make the constraintName required in v6
         },
     },
 });
