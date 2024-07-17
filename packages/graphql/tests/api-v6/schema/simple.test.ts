@@ -81,8 +81,8 @@ describe("Simple Aura-API", () => {
 
             type PageInfo {
               endCursor: String
-              hasNextPage: Boolean
-              hasPreviousPage: Boolean
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
               startCursor: String
             }
 
@@ -209,8 +209,8 @@ describe("Simple Aura-API", () => {
 
             type PageInfo {
               endCursor: String
-              hasNextPage: Boolean
-              hasPreviousPage: Boolean
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
               startCursor: String
             }
 
@@ -298,8 +298,8 @@ describe("Simple Aura-API", () => {
 
             type PageInfo {
               endCursor: String
-              hasNextPage: Boolean
-              hasPreviousPage: Boolean
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
               startCursor: String
             }
 

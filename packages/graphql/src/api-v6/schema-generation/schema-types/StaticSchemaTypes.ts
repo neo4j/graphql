@@ -66,8 +66,8 @@ export class StaticSchemaTypes {
         return this.schemaBuilder.getOrCreateObjectType("PageInfo", () => {
             return {
                 fields: {
-                    hasNextPage: this.schemaBuilder.types.boolean,
-                    hasPreviousPage: this.schemaBuilder.types.boolean,
+                    hasNextPage: this.schemaBuilder.types.boolean.NonNull,
+                    hasPreviousPage: this.schemaBuilder.types.boolean.NonNull,
                     startCursor: this.schemaBuilder.types.string,
                     endCursor: this.schemaBuilder.types.string,
                 },
