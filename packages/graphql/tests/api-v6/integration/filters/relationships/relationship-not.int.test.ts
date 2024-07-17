@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Relationship filters", () => {
     const testHelper = new TestHelper({ v6Api: true });
@@ -48,6 +48,7 @@ describe("Relationship filters", () => {
 
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999, runtime: 90.5})<-[:ACTED_IN {year: 1999}]-(a:${Actor} {name: "Keanu"})
+            CREATE (:${Movie} {title: "The Animatrix", year: 1999, runtime: 90.5})<-[:ACTED_IN {year: 2000}]-(:${Actor} {name: "Uneak"})
             CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, runtime: 90.5})<-[:ACTED_IN {year: 2001}]-(a)
         `);
     });
@@ -56,18 +57,19 @@ describe("Relationship filters", () => {
         await testHelper.close();
     });
 
-    test("filter by nested node", async () => {
+    test("NOT operator on nested edge properties", async () => {
         const query = /* GraphQL */ `
-            query {
-                ${Actor.plural} {
+           query {
+                ${Movie.plural} {
                     connection {
                         edges {
                             node {
-                                movies(where: { edges: { node: { title: { equals: "The Matrix Reloaded" } } } }) {
+                                title
+                                actors(where: { edges: { properties: { NOT: { year: { equals: 1999 } } } } }) {
                                     connection {
                                         edges {
                                             node {
-                                                title
+                                                name
                                             }
                                         }
                                     }
@@ -82,17 +84,28 @@ describe("Relationship filters", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [Actor.plural]: {
+            [Movie.plural]: {
                 connection: {
-                    edges: [
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: {
-                                movies: {
+                                title: "The Matrix",
+                                actors: {
+                                    connection: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            node: {
+                                title: "The Animatrix",
+                                actors: {
                                     connection: {
                                         edges: [
                                             {
                                                 node: {
-                                                    title: "The Matrix Reloaded",
+                                                    name: "Uneak",
                                                 },
                                             },
                                         ],
@@ -100,49 +113,15 @@ describe("Relationship filters", () => {
                                 },
                             },
                         },
-                    ],
-                },
-            },
-        });
-    });
-
-    test("filter by edge properties", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Actor.plural} {
-                    connection {
-                        edges {
-                            node {
-                                movies(where: { edges: { properties: { year: { equals: 1999 } } } }) {
-                                    connection {
-                                        edges {
-                                            node {
-                                                title
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Actor.plural]: {
-                connection: {
-                    edges: [
                         {
                             node: {
-                                movies: {
+                                title: "The Matrix Reloaded",
+                                actors: {
                                     connection: {
                                         edges: [
                                             {
                                                 node: {
-                                                    title: "The Matrix",
+                                                    name: "Keanu",
                                                 },
                                             },
                                         ],
@@ -150,7 +129,7 @@ describe("Relationship filters", () => {
                                 },
                             },
                         },
-                    ],
+                    ]),
                 },
             },
         });

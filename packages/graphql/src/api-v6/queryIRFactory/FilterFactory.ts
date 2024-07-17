@@ -88,28 +88,15 @@ export class FilterFactory {
                 }
 
                 if (key === "properties" && relationship) {
-                    const edgePropertiesFilters = this.createEdgePropertiesFilters({
+                    return this.createEdgePropertiesFilters({
                         where: value,
                         relationship,
-                    });
-
-                    return new LogicalFilter({
-                        operation: "AND",
-                        filters: filterTruthy(edgePropertiesFilters),
                     });
                 }
             })
         );
 
-        if (filters.length <= 1) {
-            return filters[0];
-        }
-
-        // Implicit AND
-        return new LogicalFilter({
-            operation: "AND",
-            filters: filters,
-        });
+        return this.mergeFilters(filters);
     }
 
     private createNodeFilter({
@@ -210,13 +197,30 @@ export class FilterFactory {
     }: {
         where: GraphQLEdgeWhere["properties"];
         relationship: Relationship;
-    }): Filter[] {
-        return Object.entries(where).flatMap(([fieldName, filters]) => {
+    }): Filter | undefined {
+        const filters = Object.entries(where).flatMap(([fieldName, filters]) => {
+            if (fieldName === "AND" || fieldName === "OR" || fieldName === "NOT") {
+                const whereInLogicalOperator = asArray(filters) as Array<GraphQLEdgeWhere["properties"]>;
+                const nestedFilters = whereInLogicalOperator.map((nestedWhere) => {
+                    return this.createEdgePropertiesFilters({
+                        where: nestedWhere,
+                        relationship,
+                    });
+                });
+
+                return new LogicalFilter({
+                    operation: fieldName,
+                    filters: filterTruthy(nestedFilters),
+                });
+            }
+
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) return [];
             const attributeAdapter = new AttributeAdapter(attribute);
             return this.createPropertyFilters(attributeAdapter, filters, "relationship");
         });
+
+        return this.mergeFilters(filters);
     }
 
     // TODO: remove adapter from here
@@ -263,6 +267,20 @@ export class FilterFactory {
                 operator,
                 attachedTo,
             });
+        });
+    }
+
+    private mergeFilters(filters: Filter[]): Filter | undefined {
+        if (filters.length == 0) {
+            return undefined;
+        }
+        if (filters.length === 1) {
+            return filters[0];
+        }
+
+        return new LogicalFilter({
+            operation: "AND",
+            filters: filters,
         });
     }
 }
