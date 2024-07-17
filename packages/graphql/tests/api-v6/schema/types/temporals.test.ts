@@ -256,8 +256,8 @@ describe("Temporals", () => {
 
             type PageInfo {
               endCursor: String
-              hasNextPage: Boolean
-              hasPreviousPage: Boolean
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
               startCursor: String
             }
 
