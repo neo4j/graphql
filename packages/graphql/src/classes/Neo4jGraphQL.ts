@@ -23,7 +23,8 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import type { DocumentNode, GraphQLSchema, SchemaExtensionNode } from "graphql";
+import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { Memoize } from "typescript-memoize";
 import { SchemaGenerator } from "../api-v6/schema-generation/SchemaGenerator";
@@ -144,6 +145,109 @@ class Neo4jGraphQL {
         this._relationships = [];
 
         return Promise.resolve(this.composeSchema(schemaGenerator.generate(this.schemaModel)));
+    }
+
+    @Memoize()
+    public async getAuraSubgraphSchema(): Promise<GraphQLSchema> {
+        const document = this.normalizeTypeDefinitions(this.typeDefs);
+        const { Subgraph } = await import("./Subgraph");
+
+        const subgraph = new Subgraph(this.typeDefs);
+
+        const { directives, types } = subgraph.getValidationDefinitions();
+
+        const {
+            enumTypes: enums,
+            interfaceTypes: interfaces,
+            unionTypes: unions,
+            objectTypes: objects,
+            schemaExtensions,
+        } = getDefinitionNodes(document);
+        if (this.validate) {
+            validateV6Document({
+                document: document,
+                features: this.features,
+                additionalDefinitions: {
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                    enums,
+                    interfaces,
+                    unions,
+                    objects,
+                },
+                // userCustomResolvers: this.resolvers,
+            });
+        }
+
+        this.schemaModel = this.generateSchemaModel(document, true);
+        const schemaGenerator = new SchemaGenerator();
+
+        this._nodes = [];
+        this._relationships = [];
+
+        const referenceResolvers = subgraph.getReferenceResolvers(this.schemaModel);
+
+        schemaGenerator.addShareableTypes(subgraph);
+
+        const { documentNode, resolvers } = schemaGenerator.getSchemaModule(this.schemaModel);
+
+        // do not propagate Neo4jGraphQL directives on schema extensions
+        const schemaExtensionsWithoutNeo4jDirectives = schemaExtensions.map((schemaExtension): SchemaExtensionNode => {
+            return {
+                kind: schemaExtension.kind,
+                loc: schemaExtension.loc,
+                operationTypes: schemaExtension.operationTypes,
+                directives: schemaExtension.directives?.filter(
+                    (schemaDirective) =>
+                        !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)
+                ),
+            };
+        });
+
+        const seen = {};
+        const parsedDoc = {
+            ...documentNode,
+            definitions: [
+                ...documentNode.definitions.filter((definition) => {
+                    // Filter out default scalars, they are not needed and can cause issues
+                    if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
+                        if (
+                            [
+                                GraphQLBoolean.name,
+                                GraphQLFloat.name,
+                                GraphQLID.name,
+                                GraphQLInt.name,
+                                GraphQLString.name,
+                            ].includes(definition.name.value)
+                        ) {
+                            return false;
+                        }
+                    }
+
+                    if (!("name" in definition)) {
+                        return true;
+                    }
+
+                    const n = definition.name?.value as string;
+
+                    if (seen[n]) {
+                        return false;
+                    }
+
+                    seen[n] = n;
+
+                    return true;
+                }),
+                ...schemaExtensionsWithoutNeo4jDirectives,
+            ],
+        };
+
+        const subGraphSchema = subgraph.buildSchema({
+            typeDefs: parsedDoc,
+            resolvers: mergeResolvers([resolvers, referenceResolvers]),
+        });
+
+        return this.composeSchema(subGraphSchema);
     }
 
     public async getExecutableSchema(): Promise<GraphQLSchema> {

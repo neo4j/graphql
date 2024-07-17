@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-import { type GraphQLSchema } from "graphql";
+import type { IResolvers } from "@graphql-tools/utils";
+import type { DocumentNode, GraphQLSchema } from "graphql";
+import { parse } from "graphql";
+import type { Directive } from "graphql-compose";
+import type { Subgraph } from "../../classes/Subgraph";
+import { SHAREABLE } from "../../constants";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
@@ -45,6 +50,36 @@ export class SchemaGenerator {
         return this.schemaBuilder.build();
     }
 
+    /** Returns the schema as typedefs and resolvers for Apollo Federation */
+    public getSchemaModule(schemaModel: Neo4jGraphQLSchemaModel): {
+        documentNode: DocumentNode;
+        resolvers: IResolvers;
+    } {
+        // TODO: use getFullyQualifiedDirectiveName
+        const entityTypesMap = this.generateEntityTypes(schemaModel);
+        this.generateTopLevelQueryFields(entityTypesMap);
+
+        this.generateGlobalNodeQueryField(schemaModel);
+
+        const sdl = this.schemaBuilder.toSDL();
+        const documentNode = parse(sdl);
+
+        const resolvers = this.schemaBuilder.getResolvers();
+
+        return {
+            documentNode,
+            resolvers,
+        };
+    }
+
+    public addShareableTypes(subgraph: Subgraph): void {
+        const shareable = subgraph.getFullyQualifiedDirectiveName(SHAREABLE);
+        // This is only for federations
+        [this.staticTypes.pageInfo].forEach((typeComposer) => {
+            typeComposer.setDirectiveByName(shareable);
+        });
+    }
+
     private generateEntityTypes(schemaModel: Neo4jGraphQLSchemaModel): Map<ConcreteEntity, TopLevelEntitySchemaTypes> {
         const entityTypesMap = new Map<ConcreteEntity, TopLevelEntitySchemaTypes>();
         const schemaTypes = new SchemaTypes({
@@ -54,10 +89,15 @@ export class SchemaGenerator {
 
         for (const entity of schemaModel.entities.values()) {
             if (entity.isConcreteEntity()) {
+                const extraDirectives: Directive[] = [];
+                if (entity.annotations.shareable) {
+                    extraDirectives.push({ name: SHAREABLE });
+                }
                 const entitySchemaTypes = new TopLevelEntitySchemaTypes({
                     entity,
                     schemaBuilder: this.schemaBuilder,
                     schemaTypes,
+                    extraDirectives,
                 });
                 entityTypesMap.set(entity, entitySchemaTypes);
             }

@@ -35,6 +35,7 @@ import { parsePopulatedByAnnotation } from "../parser/annotations-parser/populat
 import { parseQueryAnnotation } from "../parser/annotations-parser/query-annotation";
 import { parseSelectableAnnotation } from "../parser/annotations-parser/selectable-annotation";
 import { parseSettableAnnotation } from "../parser/annotations-parser/settable-annotation";
+import { parseShareableAnnotation } from "../parser/annotations-parser/shareable-annotation";
 import { parseSubscriptionAnnotation } from "../parser/annotations-parser/subscription-annotation";
 import { parseSubscriptionsAuthorizationAnnotation } from "../parser/annotations-parser/subscriptions-authorization-annotation";
 import { parseTimestampAnnotation } from "../parser/annotations-parser/timestamp-annotation";
@@ -61,6 +62,7 @@ import type { QueryAnnotation } from "./QueryAnnotation";
 import { RelayIDAnnotation } from "./RelayIDAnnotation";
 import type { SelectableAnnotation } from "./SelectableAnnotation";
 import type { SettableAnnotation } from "./SettableAnnotation";
+import type { ShareableAnnotation } from "./ShareableAnnotation";
 import type { SubscriptionAnnotation } from "./SubscriptionAnnotation";
 import type { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
 import type { TimestampAnnotation } from "./TimestampAnnotation";
@@ -103,6 +105,7 @@ export type Annotations = CheckAnnotationName<{
     subscriptionsAuthorization: SubscriptionsAuthorizationAnnotation;
     timestamp: TimestampAnnotation;
     unique: UniqueAnnotation;
+    shareable: ShareableAnnotation;
 }>;
 
 export type AnnotationParser<T extends Annotation> = (
@@ -131,6 +134,7 @@ export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<
     limit: parseLimitAnnotation,
     selectable: parseSelectableAnnotation,
     settable: parseSettableAnnotation,
+    shareable: parseShareableAnnotation,
     subscription: parseSubscriptionAnnotation,
     subscriptionsAuthorization: parseSubscriptionsAuthorizationAnnotation,
     timestamp: parseTimestampAnnotation,

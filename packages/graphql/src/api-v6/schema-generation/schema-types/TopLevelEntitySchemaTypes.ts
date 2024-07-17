@@ -18,7 +18,7 @@
  */
 
 import { type GraphQLResolveInfo } from "graphql";
-import type { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { Directive, InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../../../schema-model/attribute/AttributeType";
@@ -44,15 +44,18 @@ import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterS
 export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityTypeNames> {
     private entity: ConcreteEntity;
     private filterSchemaTypes: TopLevelFilterSchemaTypes;
+    private extraDirectives: Directive[] = [];
 
     constructor({
         entity,
         schemaBuilder,
         schemaTypes,
+        extraDirectives = [],
     }: {
         schemaBuilder: SchemaBuilder;
         entity: ConcreteEntity;
         schemaTypes: SchemaTypes;
+        extraDirectives?: Directive[];
     }) {
         super({
             schemaBuilder,
@@ -61,6 +64,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         });
         this.entity = entity;
         this.filterSchemaTypes = new TopLevelFilterSchemaTypes({ schemaBuilder, entity, schemaTypes });
+        this.extraDirectives = extraDirectives;
     }
 
     public addTopLevelQueryField(
@@ -98,6 +102,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                     node: this.nodeType,
                     cursor: this.schemaBuilder.types.string,
                 },
+                directives: this.extraDirectives,
             };
         });
     }
@@ -125,6 +130,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
             return {
                 fields: { ...fields, ...relationships },
                 iface,
+                directives: this.extraDirectives,
             };
         });
     }

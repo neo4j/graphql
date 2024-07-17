@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type { GraphQLInputType, GraphQLNonNull, GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from "graphql";
 import type {
+    Directive,
     EnumTypeComposer,
     InputTypeComposer,
     InterfaceTypeComposer,
@@ -75,10 +77,11 @@ export class SchemaBuilder {
             fields: Record<string, FieldDefinition | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>>;
             description?: string;
             iface?: InterfaceTypeComposer;
+            directives?: Directive[];
         }
     ): ObjectTypeComposer {
         return this.composer.getOrCreateOTC(name, (tc) => {
-            const { fields, description, iface } = onCreate();
+            const { fields, description, iface, directives } = onCreate();
             if (fields) {
                 tc.addFields(fields);
             }
@@ -87,6 +90,9 @@ export class SchemaBuilder {
             }
             if (iface) {
                 tc.addInterface(iface);
+            }
+            if (directives) {
+                tc.setDirectives(directives);
             }
         });
     }
@@ -188,5 +194,13 @@ export class SchemaBuilder {
 
     public build(): GraphQLSchema {
         return this.composer.buildSchema();
+    }
+
+    public toSDL(): string {
+        return this.composer.toSDL();
+    }
+
+    public getResolvers(): IResolvers {
+        return this.composer.getResolveMethods();
     }
 }
