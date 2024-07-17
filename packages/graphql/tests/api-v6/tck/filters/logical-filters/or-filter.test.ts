@@ -153,7 +153,7 @@ describe("OR filters", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
-            WHERE (((this0.title = $param0 AND this0.year = $param1) AND NOT (this0.runtime = $param2)) OR this0.year = $param3)
+            WHERE ((NOT (this0.runtime = $param0) AND (this0.title = $param1 AND this0.year = $param2)) OR this0.year = $param3)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -167,12 +167,12 @@ describe("OR filters", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\",
-                \\"param1\\": {
+                \\"param0\\": 2,
+                \\"param1\\": \\"The Matrix\\",
+                \\"param2\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 },
-                \\"param2\\": 2,
                 \\"param3\\": {
                     \\"low\\": 100,
                     \\"high\\": 0

@@ -18,26 +18,26 @@
  */
 
 /** Args for `where` in nested connections (with edge -> node) */
-export type GraphQLWhere = LogicalOperation<{
+export type GraphQLWhere = WithLogicalOperations<{
     edges?: GraphQLEdgeWhere;
 }>;
 
 /** Args for `where` in top level connections only (i.e. no edge available) */
-export type GraphQLWhereTopLevel = LogicalOperation<{
+export type GraphQLWhereTopLevel = WithLogicalOperations<{
     node?: GraphQLNodeWhere;
 }>;
 
-export type GraphQLEdgeWhere = LogicalOperation<{
+export type GraphQLEdgeWhere = WithLogicalOperations<{
     properties?: Record<string, GraphQLAttributeFilters | null>;
     node?: GraphQLNodeWhere;
 }>;
 
-export type GraphQLNodeWhere = LogicalOperation<Record<string, GraphQLNodeFilters | null>>;
+export type GraphQLNodeWhere = WithLogicalOperations<Record<string, GraphQLNodeFilters | null>>;
 export type GraphQLNodeFilters = GraphQLAttributeFilters | RelationshipFilters;
 
 export type GraphQLAttributeFilters = StringFilters | NumberFilters;
 
-export type StringFilters = LogicalOperation<{
+export type StringFilters = WithLogicalOperations<{
     equals?: string;
     in?: string[];
     matches?: string;
@@ -46,7 +46,7 @@ export type StringFilters = LogicalOperation<{
     endsWith?: string;
 }>;
 
-export type NumberFilters = LogicalOperation<{
+export type NumberFilters = WithLogicalOperations<{
     equals?: string;
     in?: string[];
     lt?: string;
@@ -64,8 +64,8 @@ export type RelationshipFilters = {
     };
 };
 
-type LogicalOperation<T> = {
-    AND?: Array<LogicalOperation<T>>;
-    OR?: Array<LogicalOperation<T>>;
-    NOT?: LogicalOperation<T>;
+type WithLogicalOperations<T> = {
+    AND?: Array<WithLogicalOperations<T>>;
+    OR?: Array<WithLogicalOperations<T>>;
+    NOT?: WithLogicalOperations<T>;
 } & T;
