@@ -11595,12 +11595,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:9.1.0":
-  version: 9.1.0
-  resolution: "husky@npm:9.1.0"
+"husky@npm:9.1.1":
+  version: 9.1.1
+  resolution: "husky@npm:9.1.1"
   bin:
     husky: bin.js
-  checksum: 10c0/2d2d202cbad1fdd32112270391d04006b52232b0ab8314176b7352c58727725275d783bbc76d79b2868aa658d90e0164479ca241e09c3e445dd1dc1d11ce4bcc
+  checksum: 10c0/56394f5a08201badece23a8599bd76fe8c41e4510a956022fe54897645900c5c5a96a740ffb0604e99e808dffc3714bae982f1cbda4a069082cc713414f17ad3
   languageName: node
   linkType: hard
 
@@ -15313,7 +15313,7 @@ __metadata:
     eslint-plugin-react: "npm:7.34.4"
     eslint-plugin-simple-import-sort: "npm:12.1.1"
     graphql: "npm:16.9.0"
-    husky: "npm:9.1.0"
+    husky: "npm:9.1.1"
     jest: "npm:29.7.0"
     lint-staged: "npm:15.2.7"
     neo4j-driver: "npm:5.22.0"
