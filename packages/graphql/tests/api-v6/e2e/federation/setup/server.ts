@@ -17,20 +17,10 @@
  * limitations under the License.
  */
 
-import type { Annotation } from "./Annotation";
+import type { ApolloServer } from "@apollo/server";
 
-export class KeyAnnotation implements Annotation {
-    readonly name = "key";
-    // fields from the @key directive is intentionally excluded as it is not in use by our schema model
-    public resolvable: boolean; // Defaults to true
-    public _fields: Set<string>;
-
-    constructor({ resolvable = true, fields }: { resolvable?: boolean; fields: string[] }) {
-        this.resolvable = resolvable;
-        this._fields = new Set(fields);
-    }
-
-    public get fields(): string {
-        return Array.from(this._fields).join(" ");
-    }
+export interface Server {
+    server: ApolloServer;
+    start(): Promise<string>;
+    stop(): Promise<void>;
 }

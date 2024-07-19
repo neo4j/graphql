@@ -24,6 +24,7 @@ import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 export function parseKeyAnnotation(_: DirectiveNode, directives: readonly DirectiveNode[]): KeyAnnotation {
     let isResolvable = false;
 
+    const keyFields: string[] = [];
     directives.forEach((directive) => {
         // fields is a recognized argument but we don't use it, hence we ignore the non-usage of the variable.
         const { fields, resolvable, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
@@ -38,9 +39,11 @@ export function parseKeyAnnotation(_: DirectiveNode, directives: readonly Direct
         }
 
         isResolvable = isResolvable || resolvable;
+        keyFields.push(fields);
     });
 
     return new KeyAnnotation({
         resolvable: isResolvable,
+        fields: keyFields,
     });
 }

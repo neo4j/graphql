@@ -126,10 +126,23 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
                 iface = this.schemaTypes.staticTypes.globalNodeInterface;
             }
 
+            // ADD key
+            const keyAnnotation = this.entity.annotations.key;
+            const extraDirectives = [...this.extraDirectives];
+            if (keyAnnotation) {
+                const keyDirective: Directive = {
+                    name: "key",
+                    args: {
+                        resolvable: keyAnnotation.resolvable,
+                        fields: keyAnnotation.fields,
+                    },
+                };
+                extraDirectives.push(keyDirective);
+            }
             return {
                 fields: { ...fields, ...relationships },
                 iface,
-                directives: this.extraDirectives,
+                directives: extraDirectives,
             };
         });
     }
