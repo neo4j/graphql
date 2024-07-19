@@ -23,7 +23,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
 describe("Apollo Federation", () => {
-    test.only("@shareable", async () => {
+    test("@shareable", async () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
@@ -48,7 +48,6 @@ describe("Apollo Federation", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@shareable\\"]) {
               query: Query
-              mutation: Mutation
             }
 
             directive @federation__extends on INTERFACE | OBJECT
@@ -71,549 +70,223 @@ describe("Apollo Federation", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo @shareable {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreatePostsMutationResponse {
-              info: CreateInfo!
-              posts: [Post!]!
-            }
-
-            type CreateUsersMutationResponse @shareable {
-              info: CreateInfo!
-              users: [User!]!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo @shareable {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type Mutation {
-              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
-              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse! @shareable
-              deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
-              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo! @shareable
-              updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse! @shareable
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo @shareable {
               endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
+              hasNextPage: Boolean
+              hasPreviousPage: Boolean
               startCursor: String
             }
 
             type Post {
-              author: User!
-              authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
-              authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
+              author(where: PostAuthorOperationWhere): PostAuthorOperation
               content: String!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
-            }
-
-            input PostAuthorAggregateInput {
-              AND: [PostAuthorAggregateInput!]
-              NOT: PostAuthorAggregateInput
-              OR: [PostAuthorAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: PostAuthorNodeAggregationWhereInput
-            }
-
-            input PostAuthorConnectFieldInput {
-              connect: UserConnectInput
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: UserConnectWhere
             }
 
             type PostAuthorConnection {
-              edges: [PostAuthorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
+              edges: [PostAuthorEdge]
+              pageInfo: PageInfo
             }
 
             input PostAuthorConnectionSort {
+              edges: PostAuthorEdgeSort
+            }
+
+            type PostAuthorEdge {
+              cursor: String
+              node: User
+            }
+
+            input PostAuthorEdgeListWhere {
+              AND: [PostAuthorEdgeListWhere!]
+              NOT: PostAuthorEdgeListWhere
+              OR: [PostAuthorEdgeListWhere!]
+              all: PostAuthorEdgeWhere
+              none: PostAuthorEdgeWhere
+              single: PostAuthorEdgeWhere
+              some: PostAuthorEdgeWhere
+            }
+
+            input PostAuthorEdgeSort {
               node: UserSort
             }
 
-            input PostAuthorConnectionWhere {
-              AND: [PostAuthorConnectionWhere!]
-              NOT: PostAuthorConnectionWhere
-              OR: [PostAuthorConnectionWhere!]
+            input PostAuthorEdgeWhere {
+              AND: [PostAuthorEdgeWhere!]
+              NOT: PostAuthorEdgeWhere
+              OR: [PostAuthorEdgeWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input PostAuthorCreateFieldInput {
-              node: UserCreateInput!
+            input PostAuthorNestedOperationWhere {
+              AND: [PostAuthorNestedOperationWhere!]
+              NOT: PostAuthorNestedOperationWhere
+              OR: [PostAuthorNestedOperationWhere!]
+              edges: PostAuthorEdgeListWhere
             }
 
-            input PostAuthorDeleteFieldInput {
-              delete: UserDeleteInput
-              where: PostAuthorConnectionWhere
+            type PostAuthorOperation {
+              connection(after: String, first: Int, sort: [PostAuthorConnectionSort!]): PostAuthorConnection
             }
 
-            input PostAuthorDisconnectFieldInput {
-              disconnect: UserDisconnectInput
-              where: PostAuthorConnectionWhere
+            input PostAuthorOperationWhere {
+              AND: [PostAuthorOperationWhere!]
+              NOT: PostAuthorOperationWhere
+              OR: [PostAuthorOperationWhere!]
+              edges: PostAuthorEdgeWhere
             }
 
-            input PostAuthorFieldInput {
-              connect: PostAuthorConnectFieldInput
-              create: PostAuthorCreateFieldInput
+            type PostConnection {
+              edges: [PostEdge]
+              pageInfo: PageInfo
             }
 
-            input PostAuthorNodeAggregationWhereInput {
-              AND: [PostAuthorNodeAggregationWhereInput!]
-              NOT: PostAuthorNodeAggregationWhereInput
-              OR: [PostAuthorNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type PostAuthorRelationship {
-              cursor: String!
-              node: User!
-            }
-
-            input PostAuthorUpdateConnectionInput {
-              node: UserUpdateInput
-            }
-
-            input PostAuthorUpdateFieldInput {
-              connect: PostAuthorConnectFieldInput
-              create: PostAuthorCreateFieldInput
-              delete: PostAuthorDeleteFieldInput
-              disconnect: PostAuthorDisconnectFieldInput
-              update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
-            }
-
-            input PostConnectInput {
-              author: PostAuthorConnectFieldInput
-            }
-
-            input PostConnectWhere {
-              node: PostWhere!
-            }
-
-            input PostCreateInput {
-              author: PostAuthorFieldInput
-              content: String!
-            }
-
-            input PostDeleteInput {
-              author: PostAuthorDeleteFieldInput
-            }
-
-            input PostDisconnectInput {
-              author: PostAuthorDisconnectFieldInput
+            input PostConnectionSort {
+              node: PostSort
             }
 
             type PostEdge {
-              cursor: String!
-              node: Post!
+              cursor: String
+              node: Post
             }
 
-            input PostOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PostSort!]
+            type PostOperation {
+              connection(after: String, first: Int, sort: [PostConnectionSort!]): PostConnection
             }
 
-            input PostRelationInput {
-              author: PostAuthorCreateFieldInput
+            input PostOperationWhere {
+              AND: [PostOperationWhere!]
+              NOT: PostOperationWhere
+              OR: [PostOperationWhere!]
+              node: PostWhere
             }
 
-            \\"\\"\\"
-            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
-            \\"\\"\\"
             input PostSort {
               content: SortDirection
-            }
-
-            input PostUpdateInput {
-              author: PostAuthorUpdateFieldInput
-              content: String
-            }
-
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
-            type PostUserAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              author: UserWhere
-              authorAggregate: PostAuthorAggregateInput
-              authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
-              content: String
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_IN: [String!]
-              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_STARTS_WITH: String
-            }
-
-            type PostsConnection {
-              edges: [PostEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
+              author: PostAuthorNestedOperationWhere
+              content: StringWhere
             }
 
             type Query {
               _service: _Service!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]! @shareable
-              usersAggregate(where: UserWhere): UserAggregateSelection! @shareable
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
+              posts(where: PostOperationWhere): PostOperation
+              users(where: UserOperationWhere): UserOperation
             }
 
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
             }
 
-            type StringAggregateSelection @shareable {
-              longest: String
-              shortest: String
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo @shareable {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdatePostsMutationResponse {
-              info: UpdateInfo!
-              posts: [Post!]!
-            }
-
-            type UpdateUsersMutationResponse @shareable {
-              info: UpdateInfo!
-              users: [User!]!
+            input StringWhere {
+              AND: [StringWhere!]
+              NOT: StringWhere
+              OR: [StringWhere!]
+              contains: String
+              endsWith: String
+              equals: String
+              in: [String!]
+              startsWith: String
             }
 
             type User @shareable {
               name: String!
-              posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
-              postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
+              posts(where: UserPostsOperationWhere): UserPostsOperation
             }
 
-            type UserAggregateSelection @shareable {
-              count: Int!
-              name: StringAggregateSelection!
+            type UserConnection @shareable {
+              edges: [UserEdge]
+              pageInfo: PageInfo
             }
 
-            input UserConnectInput {
-              posts: [UserPostsConnectFieldInput!]
-            }
-
-            input UserConnectWhere {
-              node: UserWhere!
-            }
-
-            input UserCreateInput {
-              name: String!
-              posts: UserPostsFieldInput
-            }
-
-            input UserDeleteInput {
-              posts: [UserPostsDeleteFieldInput!]
-            }
-
-            input UserDisconnectInput {
-              posts: [UserPostsDisconnectFieldInput!]
+            input UserConnectionSort {
+              node: UserSort
             }
 
             type UserEdge @shareable {
-              cursor: String!
-              node: User!
+              cursor: String
+              node: User
             }
 
-            input UserOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserSort!]
+            type UserOperation @shareable {
+              connection(after: String, first: Int, sort: [UserConnectionSort!]): UserConnection
             }
 
-            type UserPostPostsAggregationSelection {
-              count: Int!
-              node: UserPostPostsNodeAggregateSelection
-            }
-
-            type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelection!
-            }
-
-            input UserPostsAggregateInput {
-              AND: [UserPostsAggregateInput!]
-              NOT: UserPostsAggregateInput
-              OR: [UserPostsAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: UserPostsNodeAggregationWhereInput
-            }
-
-            input UserPostsConnectFieldInput {
-              connect: [PostConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: PostConnectWhere
+            input UserOperationWhere {
+              AND: [UserOperationWhere!]
+              NOT: UserOperationWhere
+              OR: [UserOperationWhere!]
+              node: UserWhere
             }
 
             type UserPostsConnection {
-              edges: [UserPostsRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
+              edges: [UserPostsEdge]
+              pageInfo: PageInfo
             }
 
             input UserPostsConnectionSort {
+              edges: UserPostsEdgeSort
+            }
+
+            type UserPostsEdge {
+              cursor: String
+              node: Post
+            }
+
+            input UserPostsEdgeListWhere {
+              AND: [UserPostsEdgeListWhere!]
+              NOT: UserPostsEdgeListWhere
+              OR: [UserPostsEdgeListWhere!]
+              all: UserPostsEdgeWhere
+              none: UserPostsEdgeWhere
+              single: UserPostsEdgeWhere
+              some: UserPostsEdgeWhere
+            }
+
+            input UserPostsEdgeSort {
               node: PostSort
             }
 
-            input UserPostsConnectionWhere {
-              AND: [UserPostsConnectionWhere!]
-              NOT: UserPostsConnectionWhere
-              OR: [UserPostsConnectionWhere!]
+            input UserPostsEdgeWhere {
+              AND: [UserPostsEdgeWhere!]
+              NOT: UserPostsEdgeWhere
+              OR: [UserPostsEdgeWhere!]
               node: PostWhere
-              node_NOT: PostWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input UserPostsCreateFieldInput {
-              node: PostCreateInput!
+            input UserPostsNestedOperationWhere {
+              AND: [UserPostsNestedOperationWhere!]
+              NOT: UserPostsNestedOperationWhere
+              OR: [UserPostsNestedOperationWhere!]
+              edges: UserPostsEdgeListWhere
             }
 
-            input UserPostsDeleteFieldInput {
-              delete: PostDeleteInput
-              where: UserPostsConnectionWhere
+            type UserPostsOperation {
+              connection(after: String, first: Int, sort: [UserPostsConnectionSort!]): UserPostsConnection
             }
 
-            input UserPostsDisconnectFieldInput {
-              disconnect: PostDisconnectInput
-              where: UserPostsConnectionWhere
+            input UserPostsOperationWhere {
+              AND: [UserPostsOperationWhere!]
+              NOT: UserPostsOperationWhere
+              OR: [UserPostsOperationWhere!]
+              edges: UserPostsEdgeWhere
             }
 
-            input UserPostsFieldInput {
-              connect: [UserPostsConnectFieldInput!]
-              create: [UserPostsCreateFieldInput!]
-            }
-
-            input UserPostsNodeAggregationWhereInput {
-              AND: [UserPostsNodeAggregationWhereInput!]
-              NOT: UserPostsNodeAggregationWhereInput
-              OR: [UserPostsNodeAggregationWhereInput!]
-              content_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_AVERAGE_LENGTH_EQUAL: Float
-              content_AVERAGE_LENGTH_GT: Float
-              content_AVERAGE_LENGTH_GTE: Float
-              content_AVERAGE_LENGTH_LT: Float
-              content_AVERAGE_LENGTH_LTE: Float
-              content_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              content_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              content_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              content_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_LONGEST_LENGTH_EQUAL: Int
-              content_LONGEST_LENGTH_GT: Int
-              content_LONGEST_LENGTH_GTE: Int
-              content_LONGEST_LENGTH_LT: Int
-              content_LONGEST_LENGTH_LTE: Int
-              content_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              content_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              content_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_SHORTEST_LENGTH_EQUAL: Int
-              content_SHORTEST_LENGTH_GT: Int
-              content_SHORTEST_LENGTH_GTE: Int
-              content_SHORTEST_LENGTH_LT: Int
-              content_SHORTEST_LENGTH_LTE: Int
-              content_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              content_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type UserPostsRelationship {
-              cursor: String!
-              node: Post!
-            }
-
-            input UserPostsUpdateConnectionInput {
-              node: PostUpdateInput
-            }
-
-            input UserPostsUpdateFieldInput {
-              connect: [UserPostsConnectFieldInput!]
-              create: [UserPostsCreateFieldInput!]
-              delete: [UserPostsDeleteFieldInput!]
-              disconnect: [UserPostsDisconnectFieldInput!]
-              update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere
-            }
-
-            input UserRelationInput {
-              posts: [UserPostsCreateFieldInput!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-            \\"\\"\\"
             input UserSort {
               name: SortDirection
-            }
-
-            input UserUpdateInput {
-              name: String
-              posts: [UserPostsUpdateFieldInput!]
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-              posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
-              postsAggregate: UserPostsAggregateInput
-              postsConnection: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
-              \\"\\"\\"
-              Return Users where all of the related UserPostsConnections match this filter
-              \\"\\"\\"
-              postsConnection_ALL: UserPostsConnectionWhere
-              \\"\\"\\"
-              Return Users where none of the related UserPostsConnections match this filter
-              \\"\\"\\"
-              postsConnection_NONE: UserPostsConnectionWhere
-              postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
-              \\"\\"\\"
-              Return Users where one of the related UserPostsConnections match this filter
-              \\"\\"\\"
-              postsConnection_SINGLE: UserPostsConnectionWhere
-              \\"\\"\\"
-              Return Users where some of the related UserPostsConnections match this filter
-              \\"\\"\\"
-              postsConnection_SOME: UserPostsConnectionWhere
-              \\"\\"\\"Return Users where all of the related Posts match this filter\\"\\"\\"
-              posts_ALL: PostWhere
-              \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
-              posts_NONE: PostWhere
-              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
-              \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
-              posts_SINGLE: PostWhere
-              \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
-              posts_SOME: PostWhere
-            }
-
-            type UsersConnection @shareable {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
+              name: StringWhere
+              posts: UserPostsNestedOperationWhere
             }
 
             scalar _Any
@@ -659,15 +332,35 @@ describe("Apollo Federation", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
+            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\"]) {
               query: Query
               mutation: Mutation
             }
 
+            directive @federation__extends on INTERFACE | OBJECT
+
+            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
+
+            directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @federation__override(from: String!) on FIELD_DEFINITION
+
+            directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__shareable on FIELD_DEFINITION | OBJECT
+
+            directive @federation__tag(name: String!) repeatable on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on INTERFACE | OBJECT
+
+            directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
-            type CreateInfo {
+            type CreateInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
@@ -686,7 +379,7 @@ describe("Apollo Federation", () => {
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
-            type DeleteInfo {
+            type DeleteInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
@@ -702,7 +395,7 @@ describe("Apollo Federation", () => {
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
+            type PageInfo @federation__shareable {
               endCursor: String
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
@@ -710,7 +403,7 @@ describe("Apollo Federation", () => {
             }
 
             type Post {
-              author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              author: User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
@@ -919,6 +612,8 @@ describe("Apollo Federation", () => {
             }
 
             type Query {
+              _entities(representations: [_Any!]!): [_Entity]!
+              _service: _Service!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
@@ -935,7 +630,7 @@ describe("Apollo Federation", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelection @federation__shareable {
               longest: String
               shortest: String
             }
@@ -943,7 +638,7 @@ describe("Apollo Federation", () => {
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
-            type UpdateInfo {
+            type UpdateInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
@@ -961,7 +656,7 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
-            type User {
+            type User @key(fields: \\"name\\", resolvable: false) {
               name: String!
             }
 
@@ -1023,6 +718,29 @@ describe("Apollo Federation", () => {
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            scalar _Any
+
+            union _Entity = User
+
+            type _Service {
+              sdl: String
+            }
+
+            scalar federation__FieldSet
+
+            scalar link__Import
+
+            enum link__Purpose {
+              \\"\\"\\"
+              \`EXECUTION\` features provide metadata necessary for operation execution.
+              \\"\\"\\"
+              EXECUTION
+              \\"\\"\\"
+              \`SECURITY\` features provide metadata necessary to securely resolve fields.
+              \\"\\"\\"
+              SECURITY
             }"
         `);
     });

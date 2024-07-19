@@ -51,11 +51,14 @@ export class SchemaGenerator {
     }
 
     /** Returns the schema as typedefs and resolvers for Apollo Federation */
-    public getSchemaModule(schemaModel: Neo4jGraphQLSchemaModel): {
+    public getSchemaModule(
+        schemaModel: Neo4jGraphQLSchemaModel,
+        subgraph: Subgraph
+    ): {
         documentNode: DocumentNode;
         resolvers: IResolvers;
     } {
-        // TODO: use getFullyQualifiedDirectiveName
+        this.addShareableTypesToStaticTypes(subgraph);
         const entityTypesMap = this.generateEntityTypes(schemaModel);
         this.generateTopLevelQueryFields(entityTypesMap);
 
@@ -72,7 +75,7 @@ export class SchemaGenerator {
         };
     }
 
-    public addShareableTypes(subgraph: Subgraph): void {
+    private addShareableTypesToStaticTypes(subgraph: Subgraph): void {
         const shareable = subgraph.getFullyQualifiedDirectiveName(SHAREABLE);
         // This is only for federations
         [this.staticTypes.pageInfo].forEach((typeComposer) => {

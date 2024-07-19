@@ -187,9 +187,7 @@ class Neo4jGraphQL {
 
         const referenceResolvers = subgraph.getReferenceResolvers(this.schemaModel);
 
-        schemaGenerator.addShareableTypes(subgraph);
-
-        const { documentNode, resolvers } = schemaGenerator.getSchemaModule(this.schemaModel);
+        const { documentNode, resolvers } = schemaGenerator.getSchemaModule(this.schemaModel, subgraph);
 
         // do not propagate Neo4jGraphQL directives on schema extensions
         const schemaExtensionsWithoutNeo4jDirectives = schemaExtensions.map((schemaExtension): SchemaExtensionNode => {

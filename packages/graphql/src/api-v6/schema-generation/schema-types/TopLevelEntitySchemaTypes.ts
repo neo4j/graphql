@@ -44,7 +44,6 @@ import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterS
 export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityTypeNames> {
     private entity: ConcreteEntity;
     private filterSchemaTypes: TopLevelFilterSchemaTypes;
-    private extraDirectives: Directive[] = [];
 
     constructor({
         entity,

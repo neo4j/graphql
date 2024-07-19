@@ -18,6 +18,7 @@
  */
 
 import type {
+    Directive,
     InputTypeComposer,
     ListComposer,
     NonNullComposer,
@@ -34,6 +35,7 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
     protected schemaBuilder: SchemaBuilder;
     protected entityTypeNames: T;
     protected schemaTypes: SchemaTypes;
+    protected extraDirectives: Directive[] = [];
 
     constructor({
         schemaBuilder,
@@ -70,6 +72,7 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
                         resolve: connectionOperationResolver,
                     },
                 },
+                directives: this.extraDirectives,
             };
         });
     }
@@ -81,6 +84,7 @@ export abstract class EntitySchemaTypes<T extends EntityTypeNames> {
                     pageInfo: this.schemaTypes.staticTypes.pageInfo,
                     edges: this.edge.List,
                 },
+                directives: this.extraDirectives,
             };
         });
     }

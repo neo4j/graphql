@@ -20,10 +20,5 @@ import type { DirectiveNode } from "graphql";
 import { ShareableAnnotation } from "../../annotation/ShareableAnnotation";
 
 export function parseShareableAnnotation(_directive: DirectiveNode): ShareableAnnotation {
-    // const { onCreate, onUpdate } = parseArguments<{
-    //     onCreate: boolean;
-    //     onUpdate: boolean;
-    // }>(settableDirective, directive);
-
     return new ShareableAnnotation();
 }
