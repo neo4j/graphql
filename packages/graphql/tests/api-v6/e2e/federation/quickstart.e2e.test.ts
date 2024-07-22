@@ -44,7 +44,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         const locations = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") @shareable {
+            type ${Location} @node @key(fields: "id") @shareable {
                 id: ID!
                 "The name of the location"
                 name: String
@@ -58,7 +58,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         const reviews = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") @shareable {
+            type ${Location} @node @key(fields: "id") @shareable {
                 id: ID!
                 "The calculated overall rating based on all reviews"
                 overallRating: Float
@@ -66,14 +66,14 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 reviewsForLocation: [${Review}!]! @relationship(type: "HAS_REVIEW", direction: OUT)
             }
 
-            type ${Review} {
+            type ${Review} @node {
                 id: ID!
                 "Written text"
                 comment: String
                 "A number from 1 - 5 with 1 being lowest and 5 being highest"
                 rating: Int
                 "The location the review is about"
-                location: ${Location} @relationship(type: "HAS_REVIEW", direction: IN)
+                location: [${Location}!]! @relationship(type: "HAS_REVIEW", direction: IN)
             }
         `;
 
@@ -122,16 +122,28 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
             query: `
             {
                 ${Location.plural} {
-                  description
-                  id
-                  name
-                  overallRating
-                  photo
-                  reviewsForLocation {
-                    id
-                    comment
-                    rating
-                  }
+                    connection {
+                        edges {
+                            node {
+                                description
+                                id
+                                name
+                                overallRating
+                                photo
+                                reviewsForLocation {
+                                    connection {
+                                        edges {
+                                            node {
+                                                id
+                                                comment
+                                                rating
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
               }
         `,
@@ -140,19 +152,29 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             data: {
-                [Location.plural]: [
-                    {
-                        description: "description",
-                        id: "1",
-                        name: "name",
-                        overallRating: 5.5,
-                        photo: "photo",
-                        reviewsForLocation: expect.toIncludeSameMembers([
-                            { id: "1", comment: "Good", rating: 10 },
-                            { id: "2", comment: "Bad", rating: 1 },
-                        ]),
+                [Location.plural]: {
+                    connection: {
+                        edges: [
+                            {
+                                node: {
+                                    description: "description",
+                                    id: "1",
+                                    name: "name",
+                                    overallRating: 5.5,
+                                    photo: "photo",
+                                    reviewsForLocation: {
+                                        connection: {
+                                            edges: expect.toIncludeSameMembers([
+                                                { node: { id: "1", comment: "Good", rating: 10 } },
+                                                { node: { id: "2", comment: "Bad", rating: 1 } },
+                                            ]),
+                                        },
+                                    },
+                                },
+                            },
+                        ],
                     },
-                ],
+                },
             },
         });
     });

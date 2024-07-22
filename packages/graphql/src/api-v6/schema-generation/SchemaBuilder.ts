@@ -175,12 +175,14 @@ export class SchemaBuilder {
         args,
         resolver,
         description,
+        directives,
     }: {
         name: string;
         type: ObjectTypeComposer | InterfaceTypeComposer;
         args: Record<string, InputTypeComposer | WrappedComposer<ScalarTypeComposer>>;
         resolver: (...args: any[]) => any;
         description?: string;
+        directives?: Directive[];
     }): void {
         this.composer.Query.addFields({
             [name]: {
@@ -188,6 +190,7 @@ export class SchemaBuilder {
                 args,
                 resolve: resolver,
                 description,
+                directives,
             },
         });
     }

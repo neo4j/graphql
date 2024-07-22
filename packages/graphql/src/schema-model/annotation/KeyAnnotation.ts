@@ -25,7 +25,7 @@ export class KeyAnnotation implements Annotation {
     public resolvable: boolean; // Defaults to true
     public _fields: Set<string>;
 
-    constructor({ resolvable = true, fields }: { resolvable?: boolean; fields: string[] }) {
+    constructor({ resolvable = true, fields = [] }: { resolvable?: boolean; fields?: string[] }) {
         this.resolvable = resolvable;
         this._fields = new Set(fields);
     }

@@ -80,6 +80,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
             args: {
                 where: this.filterSchemaTypes.operationWhereTopLevel,
             },
+            directives: this.extraDirectives,
             resolver,
         });
     }

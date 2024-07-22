@@ -106,22 +106,47 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
             query: `
             {
                 ${Review.plural} {
-                  description
-                  score
-                  product {
-                    id
-                    name
-                    price
+                  connection {
+                    edges {
+                        node {
+                            description
+                            score
+                            product {
+                                connection {
+                                    edges {
+                                        node {
+                                            id
+                                            name
+                                            price
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                   }
                 }
               }
         `,
         });
-
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             data: {
-                [Review.plural]: [{ description: "review", score: 5, product: { id: "1", price: 5, name: "product" } }],
+                [Review.plural]: {
+                    connection: {
+                        edges: [
+                            {
+                                node: {
+                                    description: "review",
+                                    score: 5,
+                                    product: {
+                                        connection: { edges: [{ node: { id: "1", price: 5, name: "product" } }] },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
             },
         });
     });
