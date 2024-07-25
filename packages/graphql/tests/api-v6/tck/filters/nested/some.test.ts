@@ -47,7 +47,7 @@ describe("Nested Filters with some", () => {
     test("query nested relationship with some filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { node: { actors: { edges: { some: { node: { name: { equals: "Keanu" } } } } } } }) {
+                movies(where: { node: { actors: { some: { edges: { node: { name: { equals: "Keanu" } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -88,7 +88,7 @@ describe("Nested Filters with some", () => {
     test("query nested relationship properties with some filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { node: { actors: { edges: { some: { properties: { year: { equals: 1999 } } } } } } }) {
+                movies(where: { node: { actors: { some: { edges: { properties: { year: { equals: 1999 } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -136,8 +136,8 @@ describe("Nested Filters with some", () => {
                     where: {
                         node: {
                             actors: {
-                                edges: {
-                                    some: {
+                                some: {
+                                    edges: {
                                         OR: [
                                             { node: { name: { equals: "Keanu" } } }
                                             { node: { name: { endsWith: "eeves" } } }

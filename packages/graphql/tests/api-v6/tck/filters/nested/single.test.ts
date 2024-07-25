@@ -47,7 +47,7 @@ describe("Nested Filters with single", () => {
     test("query nested relationship with single filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { node: { actors: { edges: { single: { node: { name: { equals: "Keanu" } } } } } } }) {
+                movies(where: { node: { actors: { single: { edges: { node: { name: { equals: "Keanu" } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -85,7 +85,7 @@ describe("Nested Filters with single", () => {
     test("query nested relationship properties with single filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { node: { actors: { edges: { single: { properties: { year: { equals: 1999 } } } } } } }) {
+                movies(where: { node: { actors: { single: { edges: { properties: { year: { equals: 1999 } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -130,8 +130,8 @@ describe("Nested Filters with single", () => {
                     where: {
                         node: {
                             actors: {
-                                edges: {
-                                    single: {
+                                single: {
+                                    edges: {
                                         OR: [
                                             { node: { name: { equals: "Keanu" } } }
                                             { node: { name: { endsWith: "eeves" } } }

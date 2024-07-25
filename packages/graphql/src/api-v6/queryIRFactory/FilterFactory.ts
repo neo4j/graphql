@@ -170,9 +170,9 @@ export class FilterFactory {
         const relationshipAdapter = new RelationshipAdapter(relationship);
 
         const target = relationshipAdapter.target as ConcreteEntityAdapter;
-        const edgeFilters = filters.edges ?? {};
 
-        return Object.entries(edgeFilters).map(([rawOperator, filter]) => {
+        return Object.entries(filters).map(([rawOperator, edgeFilter]) => {
+            const filter = edgeFilter.edges;
             const relatedNodeFilters = this.createFilters({
                 where: filter,
                 relationship: relationship,
