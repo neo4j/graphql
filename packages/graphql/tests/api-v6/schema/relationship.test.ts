@@ -81,10 +81,7 @@ describe("Relationships", () => {
               AND: [ActorMoviesEdgeListWhere!]
               NOT: ActorMoviesEdgeListWhere
               OR: [ActorMoviesEdgeListWhere!]
-              all: ActorMoviesEdgeWhere
-              none: ActorMoviesEdgeWhere
-              single: ActorMoviesEdgeWhere
-              some: ActorMoviesEdgeWhere
+              edges: ActorMoviesEdgeWhere
             }
 
             input ActorMoviesEdgeSort {
@@ -102,7 +99,10 @@ describe("Relationships", () => {
               AND: [ActorMoviesNestedOperationWhere!]
               NOT: ActorMoviesNestedOperationWhere
               OR: [ActorMoviesNestedOperationWhere!]
-              edges: ActorMoviesEdgeListWhere
+              all: ActorMoviesEdgeListWhere
+              none: ActorMoviesEdgeListWhere
+              single: ActorMoviesEdgeListWhere
+              some: ActorMoviesEdgeListWhere
             }
 
             type ActorMoviesOperation {
@@ -162,10 +162,7 @@ describe("Relationships", () => {
               AND: [MovieActorsEdgeListWhere!]
               NOT: MovieActorsEdgeListWhere
               OR: [MovieActorsEdgeListWhere!]
-              all: MovieActorsEdgeWhere
-              none: MovieActorsEdgeWhere
-              single: MovieActorsEdgeWhere
-              some: MovieActorsEdgeWhere
+              edges: MovieActorsEdgeWhere
             }
 
             input MovieActorsEdgeSort {
@@ -183,7 +180,10 @@ describe("Relationships", () => {
               AND: [MovieActorsNestedOperationWhere!]
               NOT: MovieActorsNestedOperationWhere
               OR: [MovieActorsNestedOperationWhere!]
-              edges: MovieActorsEdgeListWhere
+              all: MovieActorsEdgeListWhere
+              none: MovieActorsEdgeListWhere
+              single: MovieActorsEdgeListWhere
+              some: MovieActorsEdgeListWhere
             }
 
             type MovieActorsOperation {
@@ -342,10 +342,7 @@ describe("Relationships", () => {
               AND: [ActorMoviesEdgeListWhere!]
               NOT: ActorMoviesEdgeListWhere
               OR: [ActorMoviesEdgeListWhere!]
-              all: ActorMoviesEdgeWhere
-              none: ActorMoviesEdgeWhere
-              single: ActorMoviesEdgeWhere
-              some: ActorMoviesEdgeWhere
+              edges: ActorMoviesEdgeWhere
             }
 
             input ActorMoviesEdgeSort {
@@ -365,7 +362,10 @@ describe("Relationships", () => {
               AND: [ActorMoviesNestedOperationWhere!]
               NOT: ActorMoviesNestedOperationWhere
               OR: [ActorMoviesNestedOperationWhere!]
-              edges: ActorMoviesEdgeListWhere
+              all: ActorMoviesEdgeListWhere
+              none: ActorMoviesEdgeListWhere
+              single: ActorMoviesEdgeListWhere
+              some: ActorMoviesEdgeListWhere
             }
 
             type ActorMoviesOperation {
@@ -438,10 +438,7 @@ describe("Relationships", () => {
               AND: [MovieActorsEdgeListWhere!]
               NOT: MovieActorsEdgeListWhere
               OR: [MovieActorsEdgeListWhere!]
-              all: MovieActorsEdgeWhere
-              none: MovieActorsEdgeWhere
-              single: MovieActorsEdgeWhere
-              some: MovieActorsEdgeWhere
+              edges: MovieActorsEdgeWhere
             }
 
             input MovieActorsEdgeSort {
@@ -461,7 +458,10 @@ describe("Relationships", () => {
               AND: [MovieActorsNestedOperationWhere!]
               NOT: MovieActorsNestedOperationWhere
               OR: [MovieActorsNestedOperationWhere!]
-              edges: MovieActorsEdgeListWhere
+              all: MovieActorsEdgeListWhere
+              none: MovieActorsEdgeListWhere
+              single: MovieActorsEdgeListWhere
+              some: MovieActorsEdgeListWhere
             }
 
             type MovieActorsOperation {
