@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.5.2
+
+### Patch Changes
+
+-   [#5387](https://github.com/neo4j/graphql/pull/5387) [`a40182d`](https://github.com/neo4j/graphql/commit/a40182df5d94da27e3372d747daff87dfe669ea6) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix connection operations with a fulltext argument
+
 ## 5.5.1
 
 ## 5.5.0
