@@ -18,16 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { V6ReadOperation } from "../../../api-v6/queryIR/ConnectionReadOperation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNode } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
-import { AggregationOperation } from "./operations/AggregationOperation";
-import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
-import { DeleteOperation } from "./operations/DeleteOperation";
-import { ReadOperation } from "./operations/ReadOperation";
-import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
+import { CompositeAggregationOperation } from "./operations/composite/CompositeAggregationOperation";
+import { CompositeConnectionReadOperation } from "./operations/composite/CompositeConnectionReadOperation";
+import { CompositeReadOperation } from "./operations/composite/CompositeReadOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
@@ -82,15 +79,14 @@ export class QueryAST {
 
     private getTargetFromOperation(varName?: string): Cypher.Node | undefined {
         if (
-            this.operation instanceof ReadOperation ||
-            this.operation instanceof ConnectionReadOperation ||
-            this.operation instanceof V6ReadOperation ||
-            this.operation instanceof DeleteOperation ||
-            this.operation instanceof AggregationOperation ||
-            this.operation instanceof UnwindCreateOperation
+            this.operation instanceof CompositeReadOperation ||
+            this.operation instanceof CompositeConnectionReadOperation ||
+            this.operation instanceof CompositeAggregationOperation
         ) {
-            return createNode(varName);
+            return;
         }
+        return createNode(varName);
+  
     }
 
     public print(): string {
