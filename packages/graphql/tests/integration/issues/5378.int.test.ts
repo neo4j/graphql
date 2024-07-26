@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
     });
 
     beforeEach(async () => {
-        if (MULTIDB_SUPPORT) {
+        if (!MULTIDB_SUPPORT) {
             return;
         }
         Space = testHelper.createUniqueType("Space");
@@ -73,7 +73,9 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
     });
 
     afterEach(async () => {
-        await testHelper.close();
+        if (MULTIDB_SUPPORT) {
+            await testHelper.close();
+        }
     });
 
     afterAll(async () => {
