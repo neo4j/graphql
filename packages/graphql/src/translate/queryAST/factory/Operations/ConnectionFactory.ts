@@ -46,12 +46,15 @@ import { isUnionEntity } from "../../utils/is-union-entity";
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
+import { FulltextFactory } from "./FulltextFactory";
 
 export class ConnectionFactory {
     private queryASTFactory: QueryASTFactory;
+    private fulltextFactory: FulltextFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
+        this.fulltextFactory = new FulltextFactory(queryASTFactory);
     }
 
     public createCompositeConnectionOperationAST({
@@ -170,9 +173,13 @@ export class ConnectionFactory {
                 resolveTree,
             });
         } else {
-            selection = new NodeSelection({
-                target,
-            });
+            if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                selection = this.fulltextFactory.getFulltextSelection(target, context);
+            } else {
+                selection = new NodeSelection({
+                    target,
+                });
+            }
             resolveTreeEdgeFields = this.parseConnectionFields({
                 entityOrRel: target,
                 target,
