@@ -47,6 +47,9 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
     });
 
     beforeEach(async () => {
+        if (MULTIDB_SUPPORT) {
+            return;
+        }
         Space = testHelper.createUniqueType("Space");
 
         const typeDefs = /* GraphQL */ `
@@ -81,6 +84,11 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
     });
 
     test("should return filtered results according to authorization rule", async () => {
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const query = /* GraphQL */ `
             query SpacesSearchConnection {
                 ${Space.operations.connection}(fulltext: {
