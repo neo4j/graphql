@@ -62,6 +62,7 @@ describe("Temporals", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
@@ -141,6 +142,11 @@ describe("Temporals", () => {
               lte: LocalTime
             }
 
+            type Mutation {
+              createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
+              createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+            }
+
             type NodeType {
               date: Date
               dateTime: DateTime
@@ -158,6 +164,24 @@ describe("Temporals", () => {
 
             input NodeTypeConnectionSort {
               node: NodeTypeSort
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input NodeTypeCreateInput {
+              node: NodeTypeCreateNode
+            }
+
+            input NodeTypeCreateNode {
+              _emptyInput: Boolean
+            }
+
+            type NodeTypeCreateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             type NodeTypeEdge {
@@ -282,6 +306,24 @@ describe("Temporals", () => {
 
             input RelatedNodeConnectionSort {
               node: RelatedNodeSort
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input RelatedNodeCreateInput {
+              node: RelatedNodeCreateNode
+            }
+
+            input RelatedNodeCreateNode {
+              _emptyInput: Boolean
+            }
+
+            type RelatedNodeCreateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             type RelatedNodeEdge {

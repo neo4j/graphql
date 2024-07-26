@@ -37,6 +37,7 @@ describe("RelayId", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             input GlobalIdWhere {
@@ -69,6 +70,26 @@ describe("RelayId", () => {
               node: MovieSort
             }
 
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input MovieCreateInput {
+              node: MovieCreateNode
+            }
+
+            input MovieCreateNode {
+              _emptyInput: Boolean
+              dbId: ID
+              title: String
+            }
+
+            type MovieCreateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -97,6 +118,10 @@ describe("RelayId", () => {
               dbId: IDWhere
               id: GlobalIdWhere
               title: StringWhere
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
             }
 
             interface Node {

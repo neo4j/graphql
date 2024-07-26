@@ -57,6 +57,7 @@ describe("Spatial Types", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             \\"\\"\\"
@@ -70,6 +71,11 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            type Mutation {
+              createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
+              createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+            }
+
             type NodeType {
               cartesianPoint: CartesianPoint!
               cartesianPointNullable: CartesianPoint
@@ -81,6 +87,24 @@ describe("Spatial Types", () => {
             type NodeTypeConnection {
               edges: [NodeTypeEdge]
               pageInfo: PageInfo
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input NodeTypeCreateInput {
+              node: NodeTypeCreateNode
+            }
+
+            input NodeTypeCreateNode {
+              _emptyInput: Boolean
+            }
+
+            type NodeTypeCreateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             type NodeTypeEdge {
@@ -186,6 +210,24 @@ describe("Spatial Types", () => {
             type RelatedNodeConnection {
               edges: [RelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input RelatedNodeCreateInput {
+              node: RelatedNodeCreateNode
+            }
+
+            input RelatedNodeCreateNode {
+              _emptyInput: Boolean
+            }
+
+            type RelatedNodeCreateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             type RelatedNodeEdge {

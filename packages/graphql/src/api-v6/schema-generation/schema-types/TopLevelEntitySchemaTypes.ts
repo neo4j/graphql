@@ -47,6 +47,7 @@ import type { FieldDefinition, GraphQLResolver, SchemaBuilder } from "../SchemaB
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
 import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterSchemaTypes";
+import { TopLevelCreateSchemaTypes } from "./mutation-schema-types/TopLevelCreateSchemaTypes";
 
 export class TopLevelEntitySchemaTypes {
     private entity: ConcreteEntity;
@@ -54,6 +55,7 @@ export class TopLevelEntitySchemaTypes {
     private schemaBuilder: SchemaBuilder;
     private entityTypeNames: TopLevelEntityTypeNames;
     private schemaTypes: SchemaTypes;
+    private createSchemaTypes: TopLevelCreateSchemaTypes;
 
     constructor({
         entity,
@@ -69,6 +71,7 @@ export class TopLevelEntitySchemaTypes {
         this.schemaBuilder = schemaBuilder;
         this.entityTypeNames = entity.typeNames;
         this.schemaTypes = schemaTypes;
+        this.createSchemaTypes = new TopLevelCreateSchemaTypes({ schemaBuilder, entity, schemaTypes });
     }
 
     public addTopLevelQueryField(
@@ -125,7 +128,25 @@ export class TopLevelEntitySchemaTypes {
         });
     }
 
-    private get connectionSort(): InputTypeComposer {
+    public addTopLevelCreateField(
+        resolver: (
+            _root: any,
+            args: any,
+            context: Neo4jGraphQLTranslationContext,
+            info: GraphQLResolveInfo
+        ) => Promise<any>
+    ) {
+        this.schemaBuilder.addMutationField({
+            name: this.entity.typeNames.createField,
+            type: this.createType,
+            args: {
+                input: this.createSchemaTypes.createInput.NonNull.List.NonNull,
+            },
+            resolver,
+        });
+    }
+
+    protected get connectionSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
             return {
                 fields: {
@@ -277,6 +298,31 @@ export class TopLevelEntitySchemaTypes {
                 return [relationship.name, { type: relationshipType, args: { where: operationWhere } }];
             })
         );
+    }
+
+    public get createType(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.createResponse, () => {
+            const nodeType = this.nodeType;
+            const info = this.createInfo;
+
+            return {
+                fields: {
+                    [this.entityTypeNames.queryField]: nodeType.NonNull.List.NonNull,
+                    info,
+                },
+            };
+        });
+    }
+
+    public get createInfo(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.createInfo, () => {
+            return {
+                fields: {
+                    nodesCreated: this.schemaBuilder.types.int.NonNull,
+                    relationshipsCreated: this.schemaBuilder.types.int.NonNull,
+                },
+            };
+        });
     }
 }
 

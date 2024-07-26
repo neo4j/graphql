@@ -116,6 +116,7 @@ describe("Scalars", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             \\"\\"\\"
@@ -219,6 +220,11 @@ describe("Scalars", () => {
               equals: [LocalTime]
             }
 
+            type Mutation {
+              createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
+              createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+            }
+
             type NodeType {
               bigIntList: [BigInt!]
               bigIntListNullable: [BigInt]
@@ -250,6 +256,24 @@ describe("Scalars", () => {
             type NodeTypeConnection {
               edges: [NodeTypeEdge]
               pageInfo: PageInfo
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input NodeTypeCreateInput {
+              node: NodeTypeCreateNode
+            }
+
+            input NodeTypeCreateNode {
+              _emptyInput: Boolean
+            }
+
+            type NodeTypeCreateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             type NodeTypeEdge {
@@ -388,6 +412,24 @@ describe("Scalars", () => {
             type RelatedNodeConnection {
               edges: [RelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input RelatedNodeCreateInput {
+              node: RelatedNodeCreateNode
+            }
+
+            input RelatedNodeCreateNode {
+              _emptyInput: Boolean
+            }
+
+            type RelatedNodeCreateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             type RelatedNodeEdge {

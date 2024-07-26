@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLInputType } from "graphql";
-import { GraphQLBoolean, GraphQLID } from "graphql";
+import { GraphQLBoolean } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -352,7 +352,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLID),
+                        equals: this.schemaBuilder.types.id.List,
                     },
                 };
             });
@@ -361,7 +361,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("IDListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLID)),
+                    equals: this.schemaBuilder.types.id.NonNull.List,
                 },
             };
         });

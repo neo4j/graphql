@@ -24,7 +24,7 @@ import type { GraphQLTreeLeafField } from "./graphql-tree/attributes";
 import type { GraphQLTreeEdge, GraphQLTreeEdgeProperties } from "./graphql-tree/graphql-tree";
 import { parseAttributeField } from "./parse-attribute-fields";
 import { parseNode } from "./parse-node";
-import { ResolveTreeParserError } from "./parse-resolve-info-tree";
+import { ResolveTreeParserError } from "./resolve-tree-parser-error";
 import { findFieldByName } from "./utils/find-field-by-name";
 
 export function parseEdges(resolveTree: ResolveTree, entity: Relationship | ConcreteEntity): GraphQLTreeEdge {

@@ -38,7 +38,8 @@ type ListOrNullComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer
     | ListComposer<T>
     | ListComposer<NonNullComposer<T>>
     | NonNullComposer<T>
-    | NonNullComposer<ListComposer<T>>;
+    | NonNullComposer<ListComposer<T>>
+    | NonNullComposer<ListComposer<NonNullComposer<T>>>;
 
 type WrappedComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer> = T | ListOrNullComposer<T>;
 
@@ -177,6 +178,29 @@ export class SchemaBuilder {
         description?: string;
     }): void {
         this.composer.Query.addFields({
+            [name]: {
+                type: type,
+                args,
+                resolve: resolver,
+                description,
+            },
+        });
+    }
+
+    public addMutationField({
+        name,
+        type,
+        args,
+        resolver,
+        description,
+    }: {
+        name: string;
+        type: ObjectTypeComposer | InterfaceTypeComposer;
+        args: Record<string, WrappedComposer<InputTypeComposer | ScalarTypeComposer>>;
+        resolver: (...args: any[]) => any;
+        description?: string;
+    }): void {
+        this.composer.Mutation.addFields({
             [name]: {
                 type: type,
                 args,

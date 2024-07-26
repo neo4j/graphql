@@ -26,6 +26,7 @@ import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
 import { StaticSchemaTypes } from "./schema-types/StaticSchemaTypes";
 import { TopLevelEntitySchemaTypes } from "./schema-types/TopLevelEntitySchemaTypes";
+import { generateCreateResolver } from "../resolvers/translate-create-resolver";
 
 export class SchemaGenerator {
     private schemaBuilder: SchemaBuilder;
@@ -39,6 +40,7 @@ export class SchemaGenerator {
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
         const entityTypesMap = this.generateEntityTypes(schemaModel);
         this.generateTopLevelQueryFields(entityTypesMap);
+        this.generateTopLevelCreateFields(entityTypesMap);
 
         this.generateGlobalNodeQueryField(schemaModel);
 
@@ -72,6 +74,15 @@ export class SchemaGenerator {
                 entity,
             });
             entitySchemaTypes.addTopLevelQueryField(resolver);
+        }
+    }
+
+    private generateTopLevelCreateFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
+        for (const [entity, entitySchemaTypes] of entityTypesMap.entries()) {
+            const resolver = generateCreateResolver({
+                entity,
+            });
+            entitySchemaTypes.addTopLevelCreateField(resolver);
         }
     }
 
