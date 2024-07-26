@@ -47,7 +47,7 @@ describe("Nested Filters with none", () => {
     test("query nested relationship with none filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { node: { actors: { edges: { none: { node: { name: { equals: "Keanu" } } } } } } }) {
+                movies(where: { node: { actors: { none: { edges: { node: { name: { equals: "Keanu" } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -88,7 +88,7 @@ describe("Nested Filters with none", () => {
     test("query nested relationship properties with none filter", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { node: { actors: { edges: { none: { properties: { year: { equals: 1999 } } } } } } }) {
+                movies(where: { node: { actors: { none: { edges: { properties: { year: { equals: 1999 } } } } } } }) {
                     connection {
                         edges {
                             node {
@@ -136,8 +136,8 @@ describe("Nested Filters with none", () => {
                     where: {
                         node: {
                             actors: {
-                                edges: {
-                                    some: {
+                                some: {
+                                    edges: {
                                         OR: [
                                             { node: { name: { equals: "Keanu" } } }
                                             { node: { name: { endsWith: "eeves" } } }

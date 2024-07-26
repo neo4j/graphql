@@ -195,10 +195,7 @@ describe("Temporals", () => {
               AND: [NodeTypeRelatedNodeEdgeListWhere!]
               NOT: NodeTypeRelatedNodeEdgeListWhere
               OR: [NodeTypeRelatedNodeEdgeListWhere!]
-              all: NodeTypeRelatedNodeEdgeWhere
-              none: NodeTypeRelatedNodeEdgeWhere
-              single: NodeTypeRelatedNodeEdgeWhere
-              some: NodeTypeRelatedNodeEdgeWhere
+              edges: NodeTypeRelatedNodeEdgeWhere
             }
 
             input NodeTypeRelatedNodeEdgeSort {
@@ -218,7 +215,10 @@ describe("Temporals", () => {
               AND: [NodeTypeRelatedNodeNestedOperationWhere!]
               NOT: NodeTypeRelatedNodeNestedOperationWhere
               OR: [NodeTypeRelatedNodeNestedOperationWhere!]
-              edges: NodeTypeRelatedNodeEdgeListWhere
+              all: NodeTypeRelatedNodeEdgeListWhere
+              none: NodeTypeRelatedNodeEdgeListWhere
+              single: NodeTypeRelatedNodeEdgeListWhere
+              some: NodeTypeRelatedNodeEdgeListWhere
             }
 
             type NodeTypeRelatedNodeOperation {

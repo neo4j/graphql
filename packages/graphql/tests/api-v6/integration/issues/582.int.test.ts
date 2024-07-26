@@ -74,13 +74,13 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     node: {
                         type: { equals: "Cat" },
                         children: {
-                            edges: {
-                                some: {
+                            some: {
+                                edges: {
                                     node: {
                                         type: { equals: "Dog" },
                                         parents: {
-                                            edges: {
-                                                some: {
+                                            some: {
+                                                edges: {
                                                     node: {
                                                         type: { equals: "Bird" },
                                                     },
@@ -119,18 +119,18 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     node: {
                         type: { equals: "Cat" },
                         children: {
-                            edges: {
-                                some: {
+                            some: {
+                                edges: {
                                     node: {
                                         type: { equals: "Dog" },
                                         parents: {
-                                            edges: {
-                                                some: {
+                                            some: {
+                                                edges: {
                                                     node: {
                                                         type: { equals: "Bird" },
                                                         children: {
-                                                            edges: {
-                                                                some: {
+                                                            some: {
+                                                                edges: {
                                                                     node: {
                                                                         type: { equals: "Fish" },
                                                                     },

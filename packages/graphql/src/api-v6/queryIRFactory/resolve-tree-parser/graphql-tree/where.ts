@@ -56,12 +56,14 @@ export type NumberFilters = WithLogicalOperations<{
 }>;
 
 export type RelationshipFilters = {
-    edges?: {
-        some?: GraphQLEdgeWhere;
-        single?: GraphQLEdgeWhere;
-        all?: GraphQLEdgeWhere;
-        none?: GraphQLEdgeWhere;
-    };
+    some?: RelationshipEdgeWhere;
+    single?: RelationshipEdgeWhere;
+    all?: RelationshipEdgeWhere;
+    none?: RelationshipEdgeWhere;
+};
+
+type RelationshipEdgeWhere = {
+    edges: GraphQLEdgeWhere;
 };
 
 type WithLogicalOperations<T> = {

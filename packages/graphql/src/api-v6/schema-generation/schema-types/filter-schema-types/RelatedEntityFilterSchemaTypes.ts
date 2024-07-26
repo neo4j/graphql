@@ -64,7 +64,10 @@ export class RelatedEntityFilterSchemaTypes extends FilterSchemaTypes<RelatedEnt
                         AND: itc.NonNull.List,
                         OR: itc.NonNull.List,
                         NOT: itc,
-                        edges: this.edgeListWhere,
+                        all: this.edgeListWhere,
+                        none: this.edgeListWhere,
+                        single: this.edgeListWhere,
+                        some: this.edgeListWhere,
                     },
                 };
             }
@@ -78,10 +81,7 @@ export class RelatedEntityFilterSchemaTypes extends FilterSchemaTypes<RelatedEnt
                     AND: itc.NonNull.List,
                     OR: itc.NonNull.List,
                     NOT: itc,
-                    all: this.edgeWhere,
-                    none: this.edgeWhere,
-                    single: this.edgeWhere,
-                    some: this.edgeWhere,
+                    edges: this.edgeWhere,
                 },
             };
         });
