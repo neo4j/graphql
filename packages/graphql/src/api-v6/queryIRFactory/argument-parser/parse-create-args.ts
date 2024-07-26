@@ -30,8 +30,6 @@ function parseCreateOperationInput(resolveTreeCreateInput: any): GraphQLTreeCrea
         throw new ResolveTreeParserError(`Invalid create input field: ${resolveTreeCreateInput}`);
     }
     return resolveTreeCreateInput.map((input) => {
-        return {
-            ...input.node,
-        };
+        return input.node;
     });
 }

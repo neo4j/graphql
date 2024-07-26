@@ -23,15 +23,10 @@ import type { GraphQLSort, GraphQLSortEdge } from "./sort";
 import type { GraphQLTreeElement } from "./tree-element";
 import type { GraphQLWhere, GraphQLWhereTopLevel } from "./where";
 
-export type GraphQLTree = GraphQLTreeReadOperationTopLevel;
-export type GraphQLTreeCreate = GraphQLTreeCreateOperationTopLevel;
-
-// TODO: Add support for other built-in primitive types as Cartesian Point, Point Date, BigInt etc.
-type PrimitiveType = string | number | boolean;
-
 // TODO GraphQLTreeCreateInput should be a union of PrimitiveTypes and relationship fields
-export type GraphQLTreeCreateInput = Record<string, PrimitiveType>;
-interface GraphQLTreeCreateOperationTopLevel extends GraphQLTreeElement {
+export type GraphQLTreeCreateInput = Record<string, unknown>;
+
+export interface GraphQLTreeCreate extends GraphQLTreeElement {
     name: string;
     fields: Record<string, GraphQLTreeLeafField>;
     args: {
@@ -39,7 +34,7 @@ interface GraphQLTreeCreateOperationTopLevel extends GraphQLTreeElement {
     };
 }
 
-interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
+export interface GraphQLTree extends GraphQLTreeElement {
     name: string;
     fields: {
         connection?: GraphQLTreeConnectionTopLevel;
