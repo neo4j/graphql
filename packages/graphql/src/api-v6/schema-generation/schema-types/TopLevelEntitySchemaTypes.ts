@@ -18,7 +18,14 @@
  */
 
 import { type GraphQLResolveInfo } from "graphql";
-import type { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type {
+    InputTypeComposer,
+    InterfaceTypeComposer,
+    ListComposer,
+    NonNullComposer,
+    ObjectTypeComposer,
+    ScalarTypeComposer,
+} from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../../../schema-model/attribute/AttributeType";
@@ -33,17 +40,20 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { idResolver } from "../../../schema/resolvers/field/id";
 import { numericalResolver } from "../../../schema/resolvers/field/numerical";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { connectionOperationResolver } from "../../resolvers/connection-operation-resolver";
 import { generateGlobalIdFieldResolver } from "../../resolvers/global-id-field-resolver";
 import type { TopLevelEntityTypeNames } from "../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { FieldDefinition, GraphQLResolver, SchemaBuilder } from "../SchemaBuilder";
-import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
 import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterSchemaTypes";
 
-export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityTypeNames> {
+export class TopLevelEntitySchemaTypes {
     private entity: ConcreteEntity;
     private filterSchemaTypes: TopLevelFilterSchemaTypes;
+    private schemaBuilder: SchemaBuilder;
+    private entityTypeNames: TopLevelEntityTypeNames;
+    private schemaTypes: SchemaTypes;
 
     constructor({
         entity,
@@ -54,13 +64,11 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         entity: ConcreteEntity;
         schemaTypes: SchemaTypes;
     }) {
-        super({
-            schemaBuilder,
-            entityTypeNames: entity.typeNames,
-            schemaTypes,
-        });
         this.entity = entity;
         this.filterSchemaTypes = new TopLevelFilterSchemaTypes({ schemaBuilder, entity, schemaTypes });
+        this.schemaBuilder = schemaBuilder;
+        this.entityTypeNames = entity.typeNames;
+        this.schemaTypes = schemaTypes;
     }
 
     public addTopLevelQueryField(
@@ -81,7 +89,43 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         });
     }
 
-    protected get connectionSort(): InputTypeComposer {
+    public get connectionOperation(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connectionOperation, () => {
+            const args: {
+                first: ScalarTypeComposer;
+                after: ScalarTypeComposer;
+                sort?: ListComposer<NonNullComposer<InputTypeComposer>>;
+            } = {
+                first: this.schemaBuilder.types.int,
+                after: this.schemaBuilder.types.string,
+            };
+            if (this.isSortable()) {
+                args.sort = this.connectionSort.NonNull.List;
+            }
+            return {
+                fields: {
+                    connection: {
+                        type: this.connection,
+                        args: args,
+                        resolve: connectionOperationResolver,
+                    },
+                },
+            };
+        });
+    }
+
+    private get connection(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connection, () => {
+            return {
+                fields: {
+                    pageInfo: this.schemaTypes.staticTypes.pageInfo,
+                    edges: this.edge.List,
+                },
+            };
+        });
+    }
+
+    private get connectionSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
             return {
                 fields: {
@@ -91,7 +135,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         });
     }
 
-    protected get edge(): ObjectTypeComposer {
+    private get edge(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.edge, () => {
             return {
                 fields: {
@@ -102,7 +146,7 @@ export class TopLevelEntitySchemaTypes extends EntitySchemaTypes<TopLevelEntityT
         });
     }
 
-    protected get edgeSort(): InputTypeComposer {
+    private get edgeSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeSort, () => {
             return {
                 fields: {

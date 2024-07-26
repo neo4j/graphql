@@ -17,7 +17,14 @@
  * limitations under the License.
  */
 
-import type { EnumTypeComposer, InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type {
+    EnumTypeComposer,
+    InputTypeComposer,
+    ListComposer,
+    NonNullComposer,
+    ObjectTypeComposer,
+    ScalarTypeComposer,
+} from "graphql-compose";
 import { Memoize } from "typescript-memoize";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
 import {
@@ -29,16 +36,19 @@ import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { attributeAdapterToComposeFields } from "../../../schema/to-compose";
+import { connectionOperationResolver } from "../../resolvers/connection-operation-resolver";
 import type { RelatedEntityTypeNames } from "../../schema-model/graphql-type-names/RelatedEntityTypeNames";
 import type { SchemaBuilder } from "../SchemaBuilder";
-import { EntitySchemaTypes } from "./EntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
 import type { TopLevelEntitySchemaTypes } from "./TopLevelEntitySchemaTypes";
 import { RelatedEntityFilterSchemaTypes } from "./filter-schema-types/RelatedEntityFilterSchemaTypes";
 
-export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTypeNames> {
-    private relationship: Relationship;
+export class RelatedEntitySchemaTypes {
     public filterSchemaTypes: RelatedEntityFilterSchemaTypes;
+    private relationship: Relationship;
+    private schemaBuilder: SchemaBuilder;
+    private entityTypeNames: RelatedEntityTypeNames;
+    private schemaTypes: SchemaTypes;
 
     constructor({
         relationship,
@@ -51,20 +61,64 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         schemaTypes: SchemaTypes;
         entityTypeNames: RelatedEntityTypeNames;
     }) {
-        super({
-            schemaBuilder,
-            entityTypeNames,
-            schemaTypes,
-        });
         this.relationship = relationship;
         this.filterSchemaTypes = new RelatedEntityFilterSchemaTypes({
             schemaBuilder,
             relationship: relationship,
             schemaTypes,
         });
+        this.schemaBuilder = schemaBuilder;
+        this.entityTypeNames = entityTypeNames;
+        this.schemaTypes = schemaTypes;
     }
 
-    protected get edge(): ObjectTypeComposer {
+    public get connectionOperation(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connectionOperation, () => {
+            const args: {
+                first: ScalarTypeComposer;
+                after: ScalarTypeComposer;
+                sort?: ListComposer<NonNullComposer<InputTypeComposer>>;
+            } = {
+                first: this.schemaBuilder.types.int,
+                after: this.schemaBuilder.types.string,
+            };
+            if (this.isSortable()) {
+                args.sort = this.connectionSort.NonNull.List;
+            }
+            return {
+                fields: {
+                    connection: {
+                        type: this.connection,
+                        args: args,
+                        resolve: connectionOperationResolver,
+                    },
+                },
+            };
+        });
+    }
+
+    private get connection(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.connection, () => {
+            return {
+                fields: {
+                    pageInfo: this.schemaTypes.staticTypes.pageInfo,
+                    edges: this.edge.List,
+                },
+            };
+        });
+    }
+
+    private get connectionSort(): InputTypeComposer {
+        return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
+            return {
+                fields: {
+                    edges: this.edgeSort,
+                },
+            };
+        });
+    }
+
+    private get edge(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.edge, () => {
             const properties = this.getEdgeProperties();
             const fields = {
@@ -81,7 +135,7 @@ export class RelatedEntitySchemaTypes extends EntitySchemaTypes<RelatedEntityTyp
         });
     }
 
-    protected get edgeSort(): InputTypeComposer {
+    private get edgeSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.edgeSort, () => {
             const edgeSortFields = {};
             const properties = this.getEdgeSortProperties();
