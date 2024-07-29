@@ -65,7 +65,16 @@ describe("Top-Level Create", () => {
                     this1.released = var0.released
                 RETURN this1
             }
-            RETURN \\"Query cannot conclude with CALL\\""
+            WITH *
+            WITH collect({ node: this1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this1
+                RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+            }
+            RETURN { connection: { edges: var2, totalCount: totalCount } } AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

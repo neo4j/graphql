@@ -32,7 +32,6 @@ import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
 import { Point } from "../../../graphql/objects/Point";
 import * as Scalars from "../../../graphql/scalars";
 import {
-    GraphQLBigInt,
     GraphQLDate,
     GraphQLDateTime,
     GraphQLDuration,
@@ -415,7 +414,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("BigIntListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLBigInt),
+                        equals: this.schemaBuilder.types.bigInt.List,
                     },
                 };
             });
@@ -424,7 +423,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("BigIntListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLBigInt)),
+                    equals: this.schemaBuilder.types.bigInt.NonNull.List,
                 },
             };
         });
@@ -435,8 +434,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLBigInt),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLBigInt)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.bigInt),
+                    in: this.schemaBuilder.types.bigInt.NonNull.List,
                 },
             };
         });

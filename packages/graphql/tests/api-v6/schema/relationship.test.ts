@@ -65,7 +65,7 @@ describe("Relationships", () => {
             }
 
             input ActorCreateInput {
-              node: ActorCreateNode
+              node: ActorCreateNode!
             }
 
             input ActorCreateNode {
@@ -232,7 +232,7 @@ describe("Relationships", () => {
             }
 
             input MovieCreateInput {
-              node: MovieCreateNode
+              node: MovieCreateNode!
             }
 
             input MovieCreateNode {
@@ -369,7 +369,7 @@ describe("Relationships", () => {
             }
 
             input ActorCreateInput {
-              node: ActorCreateNode
+              node: ActorCreateNode!
             }
 
             input ActorCreateNode {
@@ -554,7 +554,7 @@ describe("Relationships", () => {
             }
 
             input MovieCreateInput {
-              node: MovieCreateNode
+              node: MovieCreateNode!
             }
 
             input MovieCreateNode {

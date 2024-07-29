@@ -76,7 +76,7 @@ describe("RelayId", () => {
             }
 
             input MovieCreateInput {
-              node: MovieCreateNode
+              node: MovieCreateNode!
             }
 
             input MovieCreateNode {

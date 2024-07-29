@@ -20,7 +20,11 @@
 import type { GraphQLScalarType } from "graphql";
 import type { InputTypeComposer, ScalarTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
-import { GraphQLBuiltInScalarType, ScalarType } from "../../../../schema-model/attribute/AttributeType";
+import {
+    GraphQLBuiltInScalarType,
+    Neo4jGraphQLNumberType,
+    ScalarType,
+} from "../../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterTruthy } from "../../../../utils/utils";
 import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
@@ -47,12 +51,12 @@ export class TopLevelCreateSchemaTypes {
         this.schemaBuilder = schemaBuilder;
         this.schemaTypes = schemaTypes;
     }
-    
+
     public get createInput(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.createInput, (_itc: InputTypeComposer) => {
             return {
                 fields: {
-                    node: this.createNode,
+                    node: this.createNode.NonNull,
                 },
             };
         });
@@ -63,7 +67,7 @@ export class TopLevelCreateSchemaTypes {
             return {
                 fields: {
                     ...this.getInputFields([...this.entity.attributes.values()]),
-                    _emptyInput: this.schemaBuilder.types.boolean,
+                    _emptyInput: this.schemaBuilder.types.boolean, // TODO: discuss if we want handle empty input in a different way.
                 },
             };
         });
@@ -109,6 +113,9 @@ export class TopLevelCreateSchemaTypes {
             }
             case GraphQLBuiltInScalarType.Float: {
                 return this.schemaBuilder.types.float;
+            }
+            case Neo4jGraphQLNumberType.BigInt: {
+                return this.schemaBuilder.types.bigInt;
             }
         }
     }

@@ -170,7 +170,7 @@ export class V6CreateOperation extends MutationOperation {
         return this.target;
     }
 
-    protected getNestedContext(context: QueryASTContext): QueryASTContext {
+    private getNestedContext(context: QueryASTContext): QueryASTContext {
         if (this.target instanceof RelationshipAdapter) {
             const target = new Cypher.Node();
             const relationship = new Cypher.Relationship();

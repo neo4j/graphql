@@ -59,7 +59,7 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieCreateInput {
-              node: MovieCreateNode
+              node: MovieCreateNode!
             }
 
             input MovieCreateNode {
@@ -171,7 +171,7 @@ describe("Simple Aura-API", () => {
             }
 
             input ActorCreateInput {
-              node: ActorCreateNode
+              node: ActorCreateNode!
             }
 
             input ActorCreateNode {
@@ -230,7 +230,7 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieCreateInput {
-              node: MovieCreateNode
+              node: MovieCreateNode!
             }
 
             input MovieCreateNode {
@@ -344,7 +344,7 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieCreateInput {
-              node: MovieCreateNode
+              node: MovieCreateNode!
             }
 
             input MovieCreateNode {

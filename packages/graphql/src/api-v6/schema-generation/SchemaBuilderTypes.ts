@@ -21,6 +21,7 @@ import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } fr
 import type { SchemaComposer } from "graphql-compose";
 import { ScalarTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import { GraphQLBigInt } from "../../graphql/scalars";
 
 export class SchemaBuilderTypes {
     private composer: SchemaComposer;
@@ -41,6 +42,10 @@ export class SchemaBuilderTypes {
     @Memoize()
     public get float(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLFloat, this.composer);
+    }
+    @Memoize()
+    public get bigInt(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLBigInt, this.composer);
     }
     @Memoize()
     public get string(): ScalarTypeComposer {
