@@ -41,6 +41,7 @@ import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { FilterFactory } from "./FilterFactory";
 
+import { WithWildCardsSelection } from "../../translate/queryAST/ast/selection/WithWildCardsSelection";
 import type { GraphQLTreePoint } from "./resolve-tree-parser/graphql-tree/attributes";
 import type {
     GraphQLTree,
@@ -67,6 +68,29 @@ export class ReadOperationFactory {
             entity,
         });
         return new QueryAST(operation);
+    }
+
+    public generateMutationOperation({
+        graphQLTreeNode,
+        entity,
+    }: {
+        graphQLTreeNode: GraphQLTreeNode;
+        entity: ConcreteEntity;
+    }): V6ReadOperation {
+        const target = new ConcreteEntityAdapter(entity);
+
+        const nodeResolveTree = graphQLTreeNode;
+        const nodeFields = this.getNodeFields(entity, nodeResolveTree);
+
+        return new V6ReadOperation({
+            target,
+            fields: {
+                edge: [],
+                node: nodeFields,
+            },
+            filters: [],
+            selection: new WithWildCardsSelection(),
+        });
     }
 
     private generateOperation({

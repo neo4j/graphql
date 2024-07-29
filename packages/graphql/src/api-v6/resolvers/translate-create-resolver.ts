@@ -48,7 +48,11 @@ export function generateCreateResolver({ entity }: { entity: ConcreteEntity }) {
             context,
             info,
         });
-
-        return executeResult.records[0]?.this;
+        // TODO: AVOID MAPPING here
+        return {
+            [entity.typeNames.queryField]: executeResult.records[0]?.data.connection.edges.map(
+                (edge: any) => edge.node
+            ),
+        };
     };
 }

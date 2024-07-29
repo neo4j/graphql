@@ -26,13 +26,16 @@ import type { AttributeAdapter } from "../../schema-model/attribute/model-adapte
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { PropertyInputField } from "../../translate/queryAST/ast/input-fields/PropertyInputField";
 import { V6CreateOperation } from "../queryIR/CreateOperation";
+import { ReadOperationFactory } from "./ReadOperationFactory";
 import type { GraphQLTreeCreate, GraphQLTreeCreateInput } from "./resolve-tree-parser/graphql-tree/graphql-tree";
 
 export class CreateOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
+    private readFactory: ReadOperationFactory;
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel) {
         this.schemaModel = schemaModel;
+        this.readFactory = new ReadOperationFactory(schemaModel);
     }
 
     public createAST({
@@ -63,8 +66,13 @@ export class CreateOperationFactory {
             createInput: topLevelCreateInput,
             argumentToUnwind: new Cypher.Param(topLevelCreateInput),
         });
-
-        unwindCreate.addProjectionOperations([]);
+        if (graphQLTreeCreate.fields) {
+            const projection = this.readFactory.generateMutationOperation({
+                graphQLTreeNode: graphQLTreeCreate,
+                entity,
+            });
+            unwindCreate.addProjectionOperations([projection]);
+        }
         return unwindCreate;
     }
 

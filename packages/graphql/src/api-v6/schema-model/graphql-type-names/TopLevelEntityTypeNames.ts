@@ -28,10 +28,6 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
         return plural(this.entityName);
     }
 
-    public get createNode(): string {
-        return `${upperFirst(this.entityName)}CreateNode`;
-    }
-
     public get connectionOperation(): string {
         return `${this.entityName}Operation`;
     }
@@ -76,6 +72,11 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     public get createField(): string {
         return `create${upperFirst(plural(this.entityName))}`;
     }
+
+    public get createNode(): string {
+        return `${upperFirst(this.entityName)}CreateNode`;
+    }
+
     // TODO: do we need to memoize the upperFirst/plural calls?
     public get createInput(): string {
         return `${upperFirst(this.entityName)}CreateInput`;

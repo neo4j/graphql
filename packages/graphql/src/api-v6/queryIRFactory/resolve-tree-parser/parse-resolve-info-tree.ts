@@ -35,6 +35,7 @@ import type {
     GraphQLTreeReadOperation,
 } from "./graphql-tree/graphql-tree";
 import { parseEdges } from "./parse-edges";
+import { getNodeFields } from "./parse-node";
 import { findFieldByName } from "./utils/find-field-by-name";
 
 export function parseResolveInfoTree({
@@ -65,17 +66,24 @@ export function parseResolveInfoTreeCreate({
     resolveTree: ResolveTree;
     entity: ConcreteEntity;
 }): GraphQLTreeCreate {
-    const createResponse = findFieldByName(resolveTree, entity.typeNames.createResponse, entity.typeNames.queryField);
+    const entityTypes = entity.typeNames;
+    const createResponse = findFieldByName(resolveTree, entityTypes.createResponse, entityTypes.queryField);
     const createArgs = parseCreateOperationArgsTopLevel(resolveTree.args);
-    console.log("createResponse", createResponse);
-    console.log("createInput", createArgs);
+    if (!createResponse) {
+        return {
+            alias: resolveTree.alias,
+            name: resolveTree.name,
+            args: createArgs,
+            fields: {},
+        };
+    }
+    const fieldsResolveTree = createResponse.fieldsByTypeName[entityTypes.node] ?? {};
+    const fields = getNodeFields(fieldsResolveTree, entity);
     return {
         alias: resolveTree.alias,
         name: resolveTree.name,
-        fields: {
-            // TODO: add tree for selection
-        },
         args: createArgs,
+        fields,
     };
 }
 

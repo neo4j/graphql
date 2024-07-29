@@ -20,24 +20,20 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { checkEntityAuthentication } from "../../translate/authorization/check-authentication";
 import { createRelationshipValidationClauses } from "../../translate/create-relationship-validation-clauses";
 import { QueryASTContext } from "../../translate/queryAST/ast/QueryASTContext";
 import type { QueryASTNode } from "../../translate/queryAST/ast/QueryASTNode";
-import type { AuthorizationFilters } from "../../translate/queryAST/ast/filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../../translate/queryAST/ast/input-fields/InputField";
-import { PropertyInputField } from "../../translate/queryAST/ast/input-fields/PropertyInputField";
-import type { ReadOperation } from "../../translate/queryAST/ast/operations/ReadOperation";
 import type { OperationTranspileResult } from "../../translate/queryAST/ast/operations/operations";
 import { MutationOperation } from "../../translate/queryAST/ast/operations/operations";
 import { getEntityLabels } from "../../translate/queryAST/utils/create-node-from-entity";
 import { assertIsConcreteEntity } from "../../translate/queryAST/utils/is-concrete-entity";
+import type { V6ReadOperation } from "./ConnectionReadOperation";
 
 export class V6CreateOperation extends MutationOperation {
     public readonly inputFields: Map<string, InputField>;
     public readonly target: ConcreteEntityAdapter | RelationshipAdapter;
-    public readonly projectionOperations: ReadOperation[] = [];
-    protected readonly authFilters: AuthorizationFilters[] = [];
+    public readonly projectionOperations: V6ReadOperation[] = [];
     private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
     private readonly unwindVariable: Cypher.Variable;
     private isNested: boolean;
@@ -56,13 +52,11 @@ export class V6CreateOperation extends MutationOperation {
         this.unwindVariable = new Cypher.Variable();
         this.isNested = target instanceof RelationshipAdapter;
     }
+
     public getChildren(): QueryASTNode[] {
-        return [...this.inputFields.values(), ...this.authFilters, ...this.projectionOperations];
+        return [...this.inputFields.values(), ...this.projectionOperations];
     }
 
-    public addAuthFilters(...filter: AuthorizationFilters[]) {
-        this.authFilters.push(...filter);
-    }
     /**
      * Get and set field methods are utilities to remove duplicate fields between separate inputs
      * TODO: This logic should be handled in the factory.
@@ -81,7 +75,7 @@ export class V6CreateOperation extends MutationOperation {
         return this.unwindVariable;
     }
 
-    public addProjectionOperations(operations: ReadOperation[]) {
+    public addProjectionOperations(operations: V6ReadOperation[]) {
         this.projectionOperations.push(...operations);
     }
 
@@ -93,20 +87,7 @@ export class V6CreateOperation extends MutationOperation {
             throw new Error("No parent node found!");
         }
         const target = this.getTarget();
-        checkEntityAuthentication({
-            context: nestedContext.neo4jGraphQLContext,
-            entity: target.entity,
-            targetOperations: ["CREATE"],
-        });
-        this.inputFields.forEach((field) => {
-            if (field.attachedTo === "node" && field instanceof PropertyInputField)
-                checkEntityAuthentication({
-                    context: nestedContext.neo4jGraphQLContext,
-                    entity: target.entity,
-                    targetOperations: ["CREATE"],
-                    field: field.name,
-                });
-        });
+
         const unwindClause = new Cypher.Unwind([this.argumentToUnwind, this.unwindVariable]);
 
         const createClause = new Cypher.Create(
@@ -127,8 +108,6 @@ export class V6CreateOperation extends MutationOperation {
             new Cypher.With(nestedContext.target, this.unwindVariable),
             new Cypher.Call(clause).importWith(nestedContext.target, this.unwindVariable),
         ]);
-
-        const authorizationClauses = this.getAuthorizationClauses(nestedContext);
         const cardinalityClauses = createRelationshipValidationClauses({
             entity: target,
             context: nestedContext.neo4jGraphQLContext,
@@ -138,7 +117,6 @@ export class V6CreateOperation extends MutationOperation {
             createClause,
             mergeClause,
             ...nestedSubqueries,
-            ...authorizationClauses,
             ...(cardinalityClauses.length ? [new Cypher.With(nestedContext.target), ...cardinalityClauses] : [])
         );
 
@@ -205,44 +183,6 @@ export class V6CreateOperation extends MutationOperation {
         }
 
         return context;
-    }
-
-    private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { selections, subqueries, predicates } = this.getAuthFilters(context);
-        const lastSelection = selections[selections.length - 1];
-        if (lastSelection) {
-            lastSelection.where(Cypher.and(...predicates));
-            return [...subqueries, new Cypher.With("*"), ...selections];
-        }
-        if (predicates.length) {
-            return [...subqueries, new Cypher.With("*").where(Cypher.and(...predicates))];
-        }
-        return [...subqueries];
-    }
-
-    private getAuthFilters(context: QueryASTContext): {
-        selections: (Cypher.With | Cypher.Match)[];
-        subqueries: Cypher.Clause[];
-        predicates: Cypher.Predicate[];
-    } {
-        const selections: (Cypher.With | Cypher.Match)[] = [];
-        const subqueries: Cypher.Clause[] = [];
-        const predicates: Cypher.Predicate[] = [];
-        for (const authFilter of this.authFilters) {
-            const extraSelections = authFilter.getSelection(context);
-            const authSubqueries = authFilter.getSubqueries(context);
-            const authPredicate = authFilter.getPredicate(context);
-            if (extraSelections) {
-                selections.push(...extraSelections);
-            }
-            if (authSubqueries) {
-                subqueries.push(...authSubqueries);
-            }
-            if (authPredicate) {
-                predicates.push(authPredicate);
-            }
-        }
-        return { selections, subqueries, predicates };
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {

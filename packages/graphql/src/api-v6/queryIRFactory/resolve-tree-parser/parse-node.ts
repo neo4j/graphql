@@ -38,7 +38,7 @@ export function parseNode(resolveTree: ResolveTree, targetNode: ConcreteEntity):
     };
 }
 
-function getNodeFields(
+export function getNodeFields(
     fields: Record<string, ResolveTree>,
     targetNode: ConcreteEntity
 ): Record<string, GraphQLTreeLeafField | GraphQLTreeReadOperation> {
