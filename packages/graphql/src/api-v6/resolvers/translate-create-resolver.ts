@@ -35,7 +35,6 @@ export function generateCreateResolver({ entity }: { entity: ConcreteEntity }) {
         const resolveTree = getNeo4jResolveTree(info, { args });
         context.resolveTree = resolveTree;
         const graphQLTreeCreate = parseResolveInfoTreeCreate({ resolveTree: context.resolveTree, entity });
-        console.log("graphQLTree", JSON.stringify(graphQLTreeCreate, null, 2));
         const { cypher, params } = translateCreateResolver({
             context: context,
             graphQLTreeCreate,
@@ -48,11 +47,13 @@ export function generateCreateResolver({ entity }: { entity: ConcreteEntity }) {
             context,
             info,
         });
-        // TODO: AVOID MAPPING here
         return {
             [entity.typeNames.queryField]: executeResult.records[0]?.data.connection.edges.map(
                 (edge: any) => edge.node
             ),
+            info: {
+                ...executeResult.statistics,
+            },
         };
     };
 }

@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Top-Level Create projection", () => {
+describe("Create with @alias", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -29,8 +29,8 @@ describe("Top-Level Create projection", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                title: String!
-                released: Int
+                title: String! @alias(property: "name")
+                released: Int @alias(property: "year")
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -63,30 +63,6 @@ describe("Top-Level Create projection", () => {
                     { title: "The Matrix", released: null },
                     { title: "The Matrix 2", released: 2001 },
                 ]),
-            },
-        });
-    });
-
-    test("should create two movies and project the info object", async () => {
-        const mutation = /* GraphQL */ `
-            mutation {
-                ${Movie.operations.create}(input: [ 
-                        { node: { title: "The Matrix" } }, 
-                        { node: { title: "The Matrix 2", released: 2001 } } 
-                    ]) {
-                    info {
-                        nodesCreated
-                        relationshipsCreated
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(mutation);
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.create]: {
-                info: { nodesCreated: 2, relationshipsCreated: 0 },
             },
         });
     });
