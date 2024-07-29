@@ -2883,7 +2883,7 @@ __metadata:
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.5.8"
     "@types/supertest": "npm:6.0.2"
-    "@types/ws": "npm:8.5.11"
+    "@types/ws": "npm:8.5.12"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
     dot-prop: "npm:^6.0.1"
@@ -4822,12 +4822,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.11":
-  version: 8.5.11
-  resolution: "@types/ws@npm:8.5.11"
+"@types/ws@npm:8.5.12":
+  version: 8.5.12
+  resolution: "@types/ws@npm:8.5.12"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10c0/50bd2e1a12659fa024a97d7e8c267fbf2a2c2251f1edf2057aa7dfc99682f5c025a188df9e27414675c78d3b189346a3567e1e4c218ad79a9d2b0f1f2b860c3a
+  checksum: 10c0/3fd77c9e4e05c24ce42bfc7647f7506b08c40a40fe2aea236ef6d4e96fc7cb4006a81ed1b28ec9c457e177a74a72924f4768b7b4652680b42dfd52bc380e15f9
   languageName: node
   linkType: hard
 
