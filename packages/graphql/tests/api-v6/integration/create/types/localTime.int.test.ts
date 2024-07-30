@@ -18,10 +18,10 @@
  */
 
 import neo4jDriver from "neo4j-driver";
-import type { UniqueType } from "../../../../../utils/graphql-types";
-import { TestHelper } from "../../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Create Node with Time", () => {
+describe("Create Nodes with LocalTime fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let Movie: UniqueType;
 
@@ -29,7 +29,7 @@ describe("Create Node with Time", () => {
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = /* GraphQL */ `
         type ${Movie.name} @node {
-            time: Time
+            localTime: LocalTime
         }
     `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -39,21 +39,21 @@ describe("Create Node with Time", () => {
         await testHelper.close();
     });
 
-    test("should return a movie created with a Time parameter", async () => {
+    test("should be able to create nodes with LocalTime fields", async () => {
         const time1 = new Date("2024-02-17T11:49:48.322Z");
         const time2 = new Date("2025-02-17T12:49:48.322Z");
 
-        const neoTime1 = neo4jDriver.Time.fromStandardDate(time1);
-        const neoTime2 = neo4jDriver.Time.fromStandardDate(time2);
+        const neoTime1 = neo4jDriver.LocalTime.fromStandardDate(time1);
+        const neoTime2 = neo4jDriver.LocalTime.fromStandardDate(time2);
 
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [
-                        { node: { time: "${neoTime1.toString()}" } }
-                        { node: { time: "${neoTime2.toString()}" } }
+                        { node: { localTime: "${neoTime1.toString()}" } }
+                        { node: { localTime: "${neoTime2.toString()}" } }
                     ]) {
                     ${Movie.plural} {
-                        time
+                        localTime
                     }
                 }
             }
@@ -65,8 +65,8 @@ describe("Create Node with Time", () => {
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    { time: neoTime1.toString() },
-                    { time: neoTime2.toString() },
+                    { localTime: neoTime1.toString() },
+                    { localTime: neoTime2.toString() },
                 ]),
             },
         });
