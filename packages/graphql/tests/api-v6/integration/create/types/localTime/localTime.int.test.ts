@@ -17,74 +17,56 @@
  * limitations under the License.
  */
 
+import neo4jDriver from "neo4j-driver";
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("Create Nodes with Numeric array fields", () => {
+describe("Create Nodes with LocalTime fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
-
     let Movie: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
-
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node {
-                year: [Int!]!
-                rating: [Float!]!
-                viewings: [BigInt!]!
-            }
-        `;
+        type ${Movie.name} @node {
+            localTime: LocalTime
+        }
+    `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
-    test("should be able to create nodes with Numeric fields", async () => {
+    test("should be able to create nodes with LocalTime fields", async () => {
+        const time1 = new Date("2024-02-17T11:49:48.322Z");
+        const time2 = new Date("2025-02-17T12:49:48.322Z");
+
+        const neoTime1 = neo4jDriver.LocalTime.fromStandardDate(time1);
+        const neoTime2 = neo4jDriver.LocalTime.fromStandardDate(time2);
+
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [
-                    { 
-                        node: {
-                            year: [1999],
-                            rating: [4.0],
-                            viewings: ["4294967297"], 
-                        }
-                    }
-                    { 
-                        node: {
-                            year: [2001],
-                            rating: [4.2],
-                            viewings: ["194967297"], 
-                        }
-                    }
+                        { node: { localTime: "${neoTime1.toString()}" } }
+                        { node: { localTime: "${neoTime2.toString()}" } }
                     ]) {
                     ${Movie.plural} {
-                        year
-                        rating
-                        viewings
+                        localTime
                     }
                 }
             }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(mutation);
+
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    {
-                        year: [1999],
-                        rating: [4.0],
-                        viewings: ["4294967297"],
-                    },
-                    {
-                        year: [2001],
-                        rating: [4.2],
-                        viewings: ["194967297"],
-                    },
+                    { localTime: neoTime1.toString() },
+                    { localTime: neoTime2.toString() },
                 ]),
             },
         });

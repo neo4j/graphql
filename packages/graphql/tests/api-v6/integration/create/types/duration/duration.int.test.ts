@@ -17,74 +17,52 @@
  * limitations under the License.
  */
 
+import neo4jDriver from "neo4j-driver";
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("Create Nodes with Numeric array fields", () => {
+describe("Create Nodes with Duration fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
-
     let Movie: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
-
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node {
-                year: [Int!]!
-                rating: [Float!]!
-                viewings: [BigInt!]!
-            }
-        `;
+        type ${Movie.name} @node {
+            duration: Duration
+        }
+    `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
+    test("should be able to create nodes with Duration fields", async () => {
+        const duration1 = new neo4jDriver.Duration(1, 2, 3, 4);
+        const duration2 = new neo4jDriver.Duration(5, 6, 7, 8);
 
-    test("should be able to create nodes with Numeric fields", async () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [
-                    { 
-                        node: {
-                            year: [1999],
-                            rating: [4.0],
-                            viewings: ["4294967297"], 
-                        }
-                    }
-                    { 
-                        node: {
-                            year: [2001],
-                            rating: [4.2],
-                            viewings: ["194967297"], 
-                        }
-                    }
+                        { node: { duration: "${duration1.toString()}" } }
+                        { node: { duration: "${duration2.toString()}" } }
                     ]) {
                     ${Movie.plural} {
-                        year
-                        rating
-                        viewings
+                        duration
                     }
                 }
             }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(mutation);
+
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    {
-                        year: [1999],
-                        rating: [4.0],
-                        viewings: ["4294967297"],
-                    },
-                    {
-                        year: [2001],
-                        rating: [4.2],
-                        viewings: ["194967297"],
-                    },
+                    { duration: duration1.toString() },
+                    { duration: duration2.toString() },
                 ]),
             },
         });

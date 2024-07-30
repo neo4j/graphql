@@ -176,7 +176,6 @@ describe("Temporals", () => {
             }
 
             input NodeTypeCreateNode {
-              _emptyInput: Boolean
               date: Date
               dateTime: DateTime
               duration: Duration
@@ -324,7 +323,6 @@ describe("Temporals", () => {
             }
 
             input RelatedNodeCreateNode {
-              _emptyInput: Boolean
               date: Date
               dateTime: DateTime
               duration: Duration

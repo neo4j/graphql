@@ -69,7 +69,6 @@ describe("Relationships", () => {
             }
 
             input ActorCreateNode {
-              _emptyInput: Boolean
               name: String
             }
 
@@ -236,7 +235,6 @@ describe("Relationships", () => {
             }
 
             input MovieCreateNode {
-              _emptyInput: Boolean
               title: String
             }
 
@@ -373,7 +371,6 @@ describe("Relationships", () => {
             }
 
             input ActorCreateNode {
-              _emptyInput: Boolean
               name: String
             }
 
@@ -558,7 +555,6 @@ describe("Relationships", () => {
             }
 
             input MovieCreateNode {
-              _emptyInput: Boolean
               title: String
             }
 

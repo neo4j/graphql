@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Numeric fields", () => {
+describe("Create Nodes with Numeric fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -42,7 +42,7 @@ describe("Numeric fields", () => {
         await testHelper.close();
     });
 
-    test("should be able to create int and float fields", async () => {
+    test("should be able to create nodes with numeric fields", async () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [

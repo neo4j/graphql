@@ -63,7 +63,6 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieCreateNode {
-              _emptyInput: Boolean
               title: String
             }
 
@@ -175,7 +174,6 @@ describe("Simple Aura-API", () => {
             }
 
             input ActorCreateNode {
-              _emptyInput: Boolean
               name: String
             }
 
@@ -234,7 +232,6 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieCreateNode {
-              _emptyInput: Boolean
               title: String
             }
 
@@ -348,7 +345,6 @@ describe("Simple Aura-API", () => {
             }
 
             input MovieCreateNode {
-              _emptyInput: Boolean
               title: String
             }
 

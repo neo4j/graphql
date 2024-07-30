@@ -43,22 +43,22 @@ describe("Date - Equals", () => {
 
         const date1 = new Date(1716904582368);
         const date2 = new Date(1736900000000);
-        const datetime1 = neo4jDriver.types.Date.fromStandardDate(date1);
-        const datetime2 = neo4jDriver.types.Date.fromStandardDate(date2);
+        const neoDate1 = neo4jDriver.types.Date.fromStandardDate(date1);
+        const neoDate2 = neo4jDriver.types.Date.fromStandardDate(date2);
 
         await testHelper.executeCypher(
             `
                    CREATE (:${Movie.name} {title: "The Matrix", date: $datetime1})
                    CREATE (:${Movie.name} {title: "The Matrix 2", date: $datetime2})
                `,
-            { datetime1, datetime2 }
+            { datetime1: neoDate1, datetime2: neoDate2 }
         );
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { node: { date: { equals: "${datetime1.toString()}" }} }) {
+                    ${Movie.plural}(where: { node: { date: { equals: "${neoDate1.toString()}" }} }) {
                         connection{
                             edges  {
                                 node {
@@ -81,7 +81,7 @@ describe("Date - Equals", () => {
                         {
                             node: {
                                 title: "The Matrix",
-                                date: datetime1.toString(),
+                                date: neoDate1.toString(),
                             },
                         },
                     ],

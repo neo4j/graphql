@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe.skip("DateTime", () => {
+describe("Create Nodes with DateTime fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let Movie: UniqueType;
 
@@ -38,7 +38,7 @@ describe.skip("DateTime", () => {
         await testHelper.close();
     });
 
-    test.only("should return a movie created with a datetime parameter", async () => {
+    test("should be able to create nodes with DateTime fields", async () => {
         const date1 = new Date(1716904582368);
         const date2 = new Date(1796904582368);
 
@@ -49,7 +49,7 @@ describe.skip("DateTime", () => {
                         { node: { datetime: "${date2.toISOString()}" } }
                     ]) {
                     ${Movie.plural} {
-                        dateTime
+                        datetime
                     }
                 }
             }
@@ -61,54 +61,9 @@ describe.skip("DateTime", () => {
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    { dateTime: date1.toISOString() },
-                    { dateTime: date1.toISOString() },
+                    { datetime: date1.toISOString() },
+                    { datetime: date2.toISOString() },
                 ]),
-            },
-        });
-    });
-
-    test("should return a movie created with a datetime with timezone", async () => {
-        const typeDefs = /* GraphQL */ `
-                type ${Movie.name} @node {
-                    datetime: DateTime
-                }
-            `;
-
-        const date = new Date(1716904582368);
-        await testHelper.executeCypher(`
-                   CREATE (m:${Movie.name})
-                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
-               `);
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const query = /* GraphQL */ `
-                query {
-                    ${Movie.plural} {
-                        connection {
-                            edges {
-                                node {
-                                    datetime
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Movie.plural]).toEqual({
-            connection: {
-                edges: [
-                    {
-                        node: {
-                            datetime: date.toISOString(),
-                        },
-                    },
-                ],
             },
         });
     });

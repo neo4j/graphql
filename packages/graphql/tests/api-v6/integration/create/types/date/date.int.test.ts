@@ -17,74 +17,55 @@
  * limitations under the License.
  */
 
+import neo4jDriver from "neo4j-driver";
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("Create Nodes with Numeric array fields", () => {
+describe("Create Nodes with Date fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
-
     let Movie: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
-
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node {
-                year: [Int!]!
-                rating: [Float!]!
-                viewings: [BigInt!]!
-            }
-        `;
+        type ${Movie.name} @node {
+            date: Date
+        }
+    `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
-    test("should be able to create nodes with Numeric fields", async () => {
+    test("should be able to create nodes with date fields", async () => {
+        const date1 = new Date(1716904582368);
+        const date2 = new Date(1736900000000);
+        const neoDate1 = neo4jDriver.types.Date.fromStandardDate(date1);
+        const neoDate2 = neo4jDriver.types.Date.fromStandardDate(date2);
+
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [
-                    { 
-                        node: {
-                            year: [1999],
-                            rating: [4.0],
-                            viewings: ["4294967297"], 
-                        }
-                    }
-                    { 
-                        node: {
-                            year: [2001],
-                            rating: [4.2],
-                            viewings: ["194967297"], 
-                        }
-                    }
+                        { node: { date: "${neoDate1.toString()}" } }
+                        { node: { date: "${neoDate2.toString()}" } }
                     ]) {
                     ${Movie.plural} {
-                        year
-                        rating
-                        viewings
+                        date
                     }
                 }
             }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(mutation);
+
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    {
-                        year: [1999],
-                        rating: [4.0],
-                        viewings: ["4294967297"],
-                    },
-                    {
-                        year: [2001],
-                        rating: [4.2],
-                        viewings: ["194967297"],
-                    },
+                    { date: neoDate1.toString() },
+                    { date: neoDate2.toString() },
                 ]),
             },
         });

@@ -182,7 +182,6 @@ describe("Scalars", () => {
             }
 
             input NodeTypeCreateNode {
-              _emptyInput: Boolean
               bigInt: BigInt!
               bigIntNullable: BigInt
               boolean: Boolean!
@@ -354,7 +353,6 @@ describe("Scalars", () => {
             }
 
             input RelatedNodeCreateNode {
-              _emptyInput: Boolean
               bigInt: BigInt!
               bigIntNullable: BigInt
               boolean: Boolean!

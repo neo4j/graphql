@@ -68,11 +68,11 @@ export class TopLevelCreateSchemaTypes {
 
     public get createNode(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.createNode, (_itc: InputTypeComposer) => {
+            const inputFields = this.getInputFields([...this.entity.attributes.values()]);
+            const isEmpty = Object.keys(inputFields).length === 0;
+            const fields = isEmpty ? { _emptyInput: this.schemaBuilder.types.boolean } : inputFields;
             return {
-                fields: {
-                    ...this.getInputFields([...this.entity.attributes.values()]),
-                    _emptyInput: this.schemaBuilder.types.boolean, // TODO: discuss if we want handle empty input in a different way.
-                },
+                fields,
             };
         });
     }
@@ -91,6 +91,9 @@ export class TopLevelCreateSchemaTypes {
 
     private attributeToInputField(type: AttributeType): any {
         if (type instanceof ListType) {
+            if (type.isRequired) {
+                return this.attributeToInputField(type.ofType).List.NonNull;
+            }
             return this.attributeToInputField(type.ofType).List;
         }
         if (type instanceof ScalarType) {
@@ -99,11 +102,6 @@ export class TopLevelCreateSchemaTypes {
         if (type instanceof Neo4jTemporalType) {
             return this.createTemporalFieldInput(type);
         }
-        /*  const isList = attribute.type instanceof ListType;
-        const wrappedType = isList ? attribute.type.ofType : attribute.type;
-        if (wrappedType instanceof ScalarType) {
-            return this.createScalarType(wrappedType, isList);
-        } */
     }
 
     private createBuiltInFieldInput(type: ScalarType): ScalarTypeComposer | NonNullComposer<ScalarTypeComposer> {
