@@ -26,9 +26,7 @@ import {
     Neo4jGraphQLNumberType,
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
-    Neo4jSpatialType,
     ObjectType,
-    ScalarType,
     UnionType,
     UserScalarType,
 } from "./AttributeType";
@@ -58,72 +56,72 @@ export class AttributeTypeHelper {
 
     public isBoolean(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Boolean;
+        return GraphQLBuiltInScalarType[type.name] === GraphQLBuiltInScalarType.Boolean;
     }
 
     public isID(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.ID;
+        return GraphQLBuiltInScalarType[type.name] === GraphQLBuiltInScalarType.ID;
     }
 
     public isInt(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Int;
+        return GraphQLBuiltInScalarType[type.name] === GraphQLBuiltInScalarType.Int;
     }
 
     public isFloat(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Float;
+        return GraphQLBuiltInScalarType[type.name] === GraphQLBuiltInScalarType.Float;
     }
 
     public isString(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.String;
+        return GraphQLBuiltInScalarType[type.name] === GraphQLBuiltInScalarType.String;
     }
 
     public isCartesianPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof Neo4jSpatialType && type.name === Neo4jGraphQLSpatialType.CartesianPoint;
+        return Neo4jGraphQLSpatialType[type.name] === Neo4jGraphQLSpatialType.CartesianPoint;
     }
 
     public isPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof Neo4jSpatialType && type.name === Neo4jGraphQLSpatialType.Point;
+        return Neo4jGraphQLSpatialType[type.name] === Neo4jGraphQLSpatialType.Point;
     }
 
     public isBigInt(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLNumberType.BigInt;
+        return Neo4jGraphQLNumberType[type.name] === Neo4jGraphQLNumberType.BigInt;
     }
 
     public isDate(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Date;
+        return Neo4jGraphQLTemporalType[type.name] === Neo4jGraphQLTemporalType.Date;
     }
 
     public isDateTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.DateTime;
+        return Neo4jGraphQLTemporalType[type.name] === Neo4jGraphQLTemporalType.DateTime;
     }
 
     public isLocalDateTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.LocalDateTime;
+        return Neo4jGraphQLTemporalType[type.name] === Neo4jGraphQLTemporalType.LocalDateTime;
     }
 
     public isTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Time;
+        return Neo4jGraphQLTemporalType[type.name] === Neo4jGraphQLTemporalType.Time;
     }
 
     public isLocalTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.LocalTime;
+        return Neo4jGraphQLTemporalType[type.name] === Neo4jGraphQLTemporalType.LocalTime;
     }
 
     public isDuration(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
-        return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.Duration;
+        return Neo4jGraphQLTemporalType[type.name] === Neo4jGraphQLTemporalType.Duration;
     }
 
     public isObject(options = this.assertionOptions): boolean {

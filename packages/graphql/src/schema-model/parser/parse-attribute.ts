@@ -33,6 +33,7 @@ import {
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     Neo4jSpatialType,
+    Neo4jTemporalType,
     ObjectType,
     ScalarType,
     UnionType,
@@ -98,6 +99,8 @@ function parseTypeNode(
         case Kind.NAMED_TYPE: {
             if (isScalarType(typeNode.name.value)) {
                 return new ScalarType(typeNode.name.value, isRequired);
+            } else if (isNeo4jGraphQLTemporalType(typeNode.name.value)) {
+                return new Neo4jTemporalType(typeNode.name.value, isRequired);
             } else if (isPoint(typeNode.name.value)) {
                 return new Neo4jSpatialType(typeNode.name.value, isRequired);
             } else if (isCartesianPoint(typeNode.name.value)) {
@@ -164,8 +167,8 @@ export function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLS
     return Object.values<string>(Neo4jGraphQLSpatialType).includes(value);
 }
 
-export function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
-    return isGraphQLBuiltInScalar(value) || isNeo4jGraphQLNumberType(value) || isNeo4jGraphQLTemporalType(value);
+export function isScalarType(value: string): value is Neo4jGraphQLScalarType {
+    return isGraphQLBuiltInScalar(value) || isNeo4jGraphQLNumberType(value);
 }
 
 function isGraphQLBuiltInScalar(value: string): value is GraphQLBuiltInScalarType {

@@ -227,9 +227,9 @@ export class TopLevelEntitySchemaTypes {
     private getSortableFields(): Attribute[] {
         return this.getFields().filter(
             (field) =>
-                field.type.name === GraphQLBuiltInScalarType[GraphQLBuiltInScalarType[field.type.name]] ||
-                field.type.name === Neo4jGraphQLNumberType[Neo4jGraphQLNumberType[field.type.name]] ||
-                field.type.name === Neo4jGraphQLTemporalType[Neo4jGraphQLTemporalType[field.type.name]]
+                field.type.name in GraphQLBuiltInScalarType ||
+                field.type.name in Neo4jGraphQLNumberType ||
+                field.type.name in Neo4jGraphQLTemporalType
         );
     }
 
@@ -326,7 +326,7 @@ export class TopLevelEntitySchemaTypes {
     }
 }
 
-function typeToResolver(type: GraphQLBuiltInScalarType | Neo4jGraphQLScalarType): GraphQLResolver | undefined {
+function typeToResolver(type: Neo4jGraphQLScalarType): GraphQLResolver | undefined {
     switch (type) {
         case GraphQLBuiltInScalarType.Int:
         case GraphQLBuiltInScalarType.Float:

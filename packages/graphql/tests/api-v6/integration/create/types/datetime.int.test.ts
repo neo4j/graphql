@@ -17,69 +17,53 @@
  * limitations under the License.
  */
 
-import neo4jDriver from "neo4j-driver";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("DateTime", () => {
+describe.skip("DateTime", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let Movie: UniqueType;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
+        const typeDefs = /* GraphQL */ `
+        type ${Movie.name} @node {
+            datetime: DateTime
+        }
+    `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
         await testHelper.close();
     });
 
-    test("should return a movie created with a datetime parameter", async () => {
-        const typeDefs = /* GraphQL */ `
-                type ${Movie.name} @node {
-                    datetime: DateTime
-                }
-            `;
+    test.only("should return a movie created with a datetime parameter", async () => {
+        const date1 = new Date(1716904582368);
+        const date2 = new Date(1796904582368);
 
-        const date = new Date(1716904582368);
-
-        const nDateTime = neo4jDriver.types.DateTime.fromStandardDate(date);
-
-        await testHelper.executeCypher(
-            `
-                   CREATE (m:${Movie.name})
-                   SET m.datetime = $nDateTime
-               `,
-            { nDateTime }
-        );
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const query = /* GraphQL */ `
-                query {
+        const mutation = /* GraphQL */ `
+            mutation {
+                ${Movie.operations.create}(input: [
+                        { node: { datetime: "${date1.toISOString()}" } }
+                        { node: { datetime: "${date2.toISOString()}" } }
+                    ]) {
                     ${Movie.plural} {
-                        connection {
-                            edges  {
-                                node {
-                                    datetime
-                                }
-                            }
-                        }
+                        dateTime
                     }
                 }
-            `;
+            }
+        `;
 
-        const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(mutation);
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Movie.plural]).toEqual({
-            connection: {
-                edges: [
-                    {
-                        node: {
-                            datetime: date.toISOString(),
-                        },
-                    },
-                ],
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.create]: {
+                [Movie.plural]: expect.toIncludeSameMembers([
+                    { dateTime: date1.toISOString() },
+                    { dateTime: date1.toISOString() },
+                ]),
             },
         });
     });

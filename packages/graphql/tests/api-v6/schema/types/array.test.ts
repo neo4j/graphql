@@ -264,11 +264,35 @@ describe("Scalars", () => {
             }
 
             input NodeTypeCreateInput {
-              node: NodeTypeCreateNode
+              node: NodeTypeCreateNode!
             }
 
             input NodeTypeCreateNode {
               _emptyInput: Boolean
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
+              stringList: [String!]
+              stringListNullable: [String]
+              timeList: [Time!]
+              timeListNullable: [Time]
             }
 
             type NodeTypeCreateResponse {
@@ -420,11 +444,35 @@ describe("Scalars", () => {
             }
 
             input RelatedNodeCreateInput {
-              node: RelatedNodeCreateNode
+              node: RelatedNodeCreateNode!
             }
 
             input RelatedNodeCreateNode {
               _emptyInput: Boolean
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
+              stringList: [String!]
+              stringListNullable: [String]
+              timeList: [Time!]
+              timeListNullable: [Time]
             }
 
             type RelatedNodeCreateResponse {

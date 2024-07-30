@@ -172,11 +172,17 @@ describe("Temporals", () => {
             }
 
             input NodeTypeCreateInput {
-              node: NodeTypeCreateNode
+              node: NodeTypeCreateNode!
             }
 
             input NodeTypeCreateNode {
               _emptyInput: Boolean
+              date: Date
+              dateTime: DateTime
+              duration: Duration
+              localDateTime: LocalDateTime
+              localTime: LocalTime
+              time: Time
             }
 
             type NodeTypeCreateResponse {
@@ -314,11 +320,17 @@ describe("Temporals", () => {
             }
 
             input RelatedNodeCreateInput {
-              node: RelatedNodeCreateNode
+              node: RelatedNodeCreateNode!
             }
 
             input RelatedNodeCreateNode {
               _emptyInput: Boolean
+              date: Date
+              dateTime: DateTime
+              duration: Duration
+              localDateTime: LocalDateTime
+              localTime: LocalTime
+              time: Time
             }
 
             type RelatedNodeCreateResponse {

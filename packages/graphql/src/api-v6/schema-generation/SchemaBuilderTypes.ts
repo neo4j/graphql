@@ -21,7 +21,15 @@ import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } fr
 import type { SchemaComposer } from "graphql-compose";
 import { ScalarTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
-import { GraphQLBigInt } from "../../graphql/scalars";
+import {
+    GraphQLBigInt,
+    GraphQLDate,
+    GraphQLDateTime,
+    GraphQLDuration,
+    GraphQLLocalDateTime,
+    GraphQLLocalTime,
+    GraphQLTime,
+} from "../../graphql/scalars";
 
 export class SchemaBuilderTypes {
     private composer: SchemaComposer;
@@ -34,7 +42,6 @@ export class SchemaBuilderTypes {
     public get id(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLID, this.composer);
     }
-
     @Memoize()
     public get int(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLInt, this.composer);
@@ -54,5 +61,29 @@ export class SchemaBuilderTypes {
     @Memoize()
     public get boolean(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLBoolean, this.composer);
+    }
+    @Memoize()
+    public get date(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLDate, this.composer);
+    }
+    @Memoize()
+    public get dateTime(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLDateTime, this.composer);
+    }
+    @Memoize()
+    public get localDateTime(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLLocalDateTime, this.composer);
+    }
+    @Memoize()
+    public get time(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLTime, this.composer);
+    }
+    @Memoize()
+    public get localTime(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLLocalTime, this.composer);
+    }
+    @Memoize()
+    public get duration(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLDuration, this.composer);
     }
 }

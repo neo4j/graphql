@@ -95,7 +95,7 @@ describe("Spatial Types", () => {
             }
 
             input NodeTypeCreateInput {
-              node: NodeTypeCreateNode
+              node: NodeTypeCreateNode!
             }
 
             input NodeTypeCreateNode {
@@ -218,7 +218,7 @@ describe("Spatial Types", () => {
             }
 
             input RelatedNodeCreateInput {
-              node: RelatedNodeCreateNode
+              node: RelatedNodeCreateNode!
             }
 
             input RelatedNodeCreateNode {

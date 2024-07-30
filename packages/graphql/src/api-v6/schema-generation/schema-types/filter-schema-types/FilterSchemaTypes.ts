@@ -25,6 +25,7 @@ import {
     ListType,
     Neo4jGraphQLNumberType,
     Neo4jGraphQLTemporalType,
+    Neo4jTemporalType,
     ScalarType,
 } from "../../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
@@ -113,6 +114,9 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
         if (wrappedType instanceof ScalarType) {
             return this.createScalarType(wrappedType, isList);
         }
+        if (wrappedType instanceof Neo4jTemporalType) {
+            return this.createTemporalType(wrappedType, isList);
+        }
         // if (wrappedType instanceof Neo4jSpatialType) {
         //     return this.createSpatialType(wrappedType, isList);
         // }
@@ -166,7 +170,11 @@ export abstract class FilterSchemaTypes<T extends TopLevelEntityTypeNames | Rela
                 }
                 return this.schemaTypes.staticTypes.filters.bigIntWhere;
             }
+        }
+    }
 
+    private createTemporalType(type: Neo4jTemporalType, isList: boolean): InputTypeComposer {
+        switch (type.name) {
             case Neo4jGraphQLTemporalType.Date: {
                 if (isList) {
                     const isNullable = !type.isRequired;

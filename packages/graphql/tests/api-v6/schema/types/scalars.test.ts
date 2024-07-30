@@ -178,20 +178,22 @@ describe("Scalars", () => {
             }
 
             input NodeTypeCreateInput {
-              node: NodeTypeCreateNode
+              node: NodeTypeCreateNode!
             }
 
             input NodeTypeCreateNode {
               _emptyInput: Boolean
-              boolean: Boolean
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
               booleanNullable: Boolean
-              float: Float
+              float: Float!
               floatNullable: Float
-              id: ID
+              id: ID!
               idNullable: ID
-              int: Int
+              int: Int!
               intNullable: Int
-              string: String
+              string: String!
               stringNullable: String
             }
 
@@ -348,20 +350,22 @@ describe("Scalars", () => {
             }
 
             input RelatedNodeCreateInput {
-              node: RelatedNodeCreateNode
+              node: RelatedNodeCreateNode!
             }
 
             input RelatedNodeCreateNode {
               _emptyInput: Boolean
-              boolean: Boolean
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
               booleanNullable: Boolean
-              float: Float
+              float: Float!
               floatNullable: Float
-              id: ID
+              id: ID!
               idNullable: ID
-              int: Int
+              int: Int!
               intNullable: Int
-              string: String
+              string: String!
               stringNullable: String
             }
 

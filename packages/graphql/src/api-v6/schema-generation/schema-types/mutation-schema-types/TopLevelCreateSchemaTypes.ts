@@ -18,11 +18,15 @@
  */
 
 import type { GraphQLScalarType } from "graphql";
-import type { InputTypeComposer, ScalarTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, NonNullComposer, ScalarTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
+import type { AttributeType } from "../../../../schema-model/attribute/AttributeType";
 import {
     GraphQLBuiltInScalarType,
+    ListType,
     Neo4jGraphQLNumberType,
+    Neo4jGraphQLTemporalType,
+    Neo4jTemporalType,
     ScalarType,
 } from "../../../../schema-model/attribute/AttributeType";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
@@ -76,7 +80,7 @@ export class TopLevelCreateSchemaTypes {
     private getInputFields(attributes: Attribute[]): Record<string, InputTypeComposer> {
         const inputFields: Array<[string, InputTypeComposer | GraphQLScalarType] | []> = filterTruthy(
             attributes.map((attribute) => {
-                const inputField = this.attributeToInputField(attribute);
+                const inputField = this.attributeToInputField(attribute.type);
                 if (inputField) {
                     return [attribute.name, inputField];
                 }
@@ -85,9 +89,15 @@ export class TopLevelCreateSchemaTypes {
         return Object.fromEntries(inputFields);
     }
 
-    private attributeToInputField(attribute: Attribute): any {
-        if (attribute.type instanceof ScalarType) {
-            return this.createBuiltInFieldInput(attribute.type);
+    private attributeToInputField(type: AttributeType): any {
+        if (type instanceof ListType) {
+            return this.attributeToInputField(type.ofType).List;
+        }
+        if (type instanceof ScalarType) {
+            return this.createBuiltInFieldInput(type);
+        }
+        if (type instanceof Neo4jTemporalType) {
+            return this.createTemporalFieldInput(type);
         }
         /*  const isList = attribute.type instanceof ListType;
         const wrappedType = isList ? attribute.type.ofType : attribute.type;
@@ -96,27 +106,79 @@ export class TopLevelCreateSchemaTypes {
         } */
     }
 
-    private createBuiltInFieldInput(type: ScalarType): ScalarTypeComposer | undefined {
-        // TODO: add required sign and other types.
+    private createBuiltInFieldInput(type: ScalarType): ScalarTypeComposer | NonNullComposer<ScalarTypeComposer> {
+        let builtInType: ScalarTypeComposer;
         switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
-                return this.schemaBuilder.types.boolean;
+                builtInType = this.schemaBuilder.types.boolean;
+                break;
             }
             case GraphQLBuiltInScalarType.String: {
-                return this.schemaBuilder.types.string;
+                builtInType = this.schemaBuilder.types.string;
+                break;
             }
             case GraphQLBuiltInScalarType.ID: {
-                return this.schemaBuilder.types.id;
+                builtInType = this.schemaBuilder.types.id;
+                break;
             }
             case GraphQLBuiltInScalarType.Int: {
-                return this.schemaBuilder.types.int;
+                builtInType = this.schemaBuilder.types.int;
+                break;
             }
             case GraphQLBuiltInScalarType.Float: {
-                return this.schemaBuilder.types.float;
+                builtInType = this.schemaBuilder.types.float;
+                break;
             }
             case Neo4jGraphQLNumberType.BigInt: {
-                return this.schemaBuilder.types.bigInt;
+                builtInType = this.schemaBuilder.types.bigInt;
+                break;
+            }
+            default: {
+                throw new Error(`Unsupported type: ${type.name}`);
             }
         }
+        if (type.isRequired) {
+            return builtInType.NonNull;
+        }
+        return builtInType;
+    }
+
+    private createTemporalFieldInput(
+        type: Neo4jTemporalType
+    ): ScalarTypeComposer | NonNullComposer<ScalarTypeComposer> {
+        let builtInType: ScalarTypeComposer;
+        switch (type.name) {
+            case Neo4jGraphQLTemporalType.Date: {
+                builtInType = this.schemaBuilder.types.date;
+                break;
+            }
+            case Neo4jGraphQLTemporalType.DateTime: {
+                builtInType = this.schemaBuilder.types.dateTime;
+                break;
+            }
+            case Neo4jGraphQLTemporalType.LocalDateTime: {
+                builtInType = this.schemaBuilder.types.localDateTime;
+                break;
+            }
+            case Neo4jGraphQLTemporalType.Time: {
+                builtInType = this.schemaBuilder.types.time;
+                break;
+            }
+            case Neo4jGraphQLTemporalType.LocalTime: {
+                builtInType = this.schemaBuilder.types.localTime;
+                break;
+            }
+            case Neo4jGraphQLTemporalType.Duration: {
+                builtInType = this.schemaBuilder.types.duration;
+                break;
+            }
+            default: {
+                throw new Error(`Unsupported type: ${type.name}`);
+            }
+        }
+        if (type.isRequired) {
+            return builtInType.NonNull;
+        }
+        return builtInType;
     }
 }

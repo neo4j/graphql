@@ -81,7 +81,7 @@ describe("RelayId", () => {
 
             input MovieCreateNode {
               _emptyInput: Boolean
-              dbId: ID
+              dbId: ID!
               title: String
             }
 
